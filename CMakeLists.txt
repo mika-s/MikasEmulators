@@ -18,20 +18,9 @@ find_package(SDL2_image REQUIRED)
 
 # ------------------------ Main binary
 
-file(GLOB SOURCES_CPP
-        src/main.cpp
-        src/8080/*.cpp
-        src/8080/instructions/*.cpp
-        src/crosscutting/*.cpp
-        )
-file(GLOB SOURCES_H
-        src/8080/*.h
-        src/8080/instructions/*.h
-        src/8080/interfaces/*.h
-        src/crosscutting/*.h
-        )
+include(${PROJECT_SOURCE_DIR}/src/8080/SourceFiles.cmake)
 
-add_executable(${PROJECT_NAME} ${SOURCES_CPP} ${SOURCES_H})
+add_executable(${PROJECT_NAME} ${SOURCES_8080_CPP} ${SOURCES_8080_H})
 #target_link_libraries(${PROJECT_NAME} SDL2::Main SDL2::Image SDL2_mixer)
 target_link_libraries(${PROJECT_NAME} SDL2::Main SDL2::Image)
 target_include_directories(${PROJECT_NAME} PRIVATE
@@ -53,27 +42,9 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-file(GLOB TEST_SOURCES_CPP
-        src/8080/flags.cpp
-        src/8080/cpu.cpp
-        src/8080/emulator_memory.cpp
-        src/8080/tests/*.cpp
-        src/8080/instructions/*.cpp
-        src/8080/instructions/tests/*.cpp
-        src/crosscutting/*.cpp
-        )
-file(GLOB TEST_SOURCES_H
-        src/8080/flags.h
-        src/8080/cpu.h
-        src/8080/emulator_memory.h
-        src/8080/tests/*.h
-        src/8080/instructions/*.h
-        src/8080/interfaces/*.h
-        src/8080/instructions/tests/*.h
-        src/crosscutting/*.h
-        )
+include(${PROJECT_SOURCE_DIR}/src/8080/SourceFilesTest.cmake)
 
-add_executable(${PROJECT_NAME}test ${TEST_SOURCES_CPP} ${TEST_SOURCES_H})
+add_executable(${PROJECT_NAME}test ${TEST_SOURCES_8080_CPP} ${TEST_SOURCES_8080_H})
 target_link_libraries(${PROJECT_NAME}test gtest_main)
 target_include_directories(${PROJECT_NAME}test PRIVATE
         src/8080

@@ -21,9 +21,8 @@ namespace emu::cpu8080 {
      * @param args contains the argument with the address to the wanted value in memory
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void
-    lhld(std::uint8_t &l_reg, std::uint8_t &h_reg, const emu::cpu8080::EmulatorMemory &memory, const NextWord &args,
-            unsigned long &cycles) {
+    void lhld(std::uint8_t &l_reg, std::uint8_t &h_reg, const emu::cpu8080::EmulatorMemory &memory,
+              const NextWord &args, unsigned long &cycles) {
         l_reg = memory[emu::util::byte::to_uint16_t(args.sarg, args.farg)];
         h_reg = memory[emu::util::byte::to_uint16_t(args.sarg, args.farg) + 1];
 

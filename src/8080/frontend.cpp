@@ -73,7 +73,7 @@ namespace emu::cpu8080 {
 
     void Frontend::disassemble(const std::string &program) {
         EmulatorMemory memory;
-        memory.add(emu::util::file::read_file_into_vector(program));
+        memory.add(read_file_into_vector(program));
 
         Disassembler8080 disassembler(memory);
         disassembler.disassemble();
