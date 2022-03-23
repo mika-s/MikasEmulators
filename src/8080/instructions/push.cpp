@@ -1,7 +1,7 @@
 #include <cstdint>
 #include <iostream>
-#include "emulator_memory.h"
-#include "flags.h"
+#include "8080/emulator_memory.h"
+#include "8080/flags.h"
 
 namespace emu::cpu8080 {
     /**

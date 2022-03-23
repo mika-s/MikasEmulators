@@ -1,10 +1,10 @@
 #include <string>
 #include <iostream>
-#include "byte_util.h"
-#include "file_util.h"
+#include "crosscutting/byte_util.h"
+#include "crosscutting/file_util.h"
 #include "cpm_application.h"
 
-namespace emu::cpu8080 {
+namespace emu::cpu8080::applications::cpm {
 
     using emu::util::file::read_file_into_vector;
 

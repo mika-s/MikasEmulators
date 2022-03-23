@@ -3,9 +3,9 @@
 
 #include <cstdint>
 #include <string>
-#include "next_byte.h"
-#include "next_word.h"
-#include "emulator_memory.h"
+#include "8080/next_byte.h"
+#include "8080/next_word.h"
+#include "8080/emulator_memory.h"
 
 namespace emu::cpu8080 {
 

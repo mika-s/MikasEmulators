@@ -1,8 +1,8 @@
 #include <cstdint>
 #include <vector>
 #include <iostream>
-#include "next_byte.h"
-#include "string_util.h"
+#include "8080/next_byte.h"
+#include "crosscutting/string_util.h"
 
 namespace emu::cpu8080 {
     /**

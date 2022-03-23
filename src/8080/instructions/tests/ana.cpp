@@ -1,8 +1,8 @@
 #include <cstdint>
 #include <gtest/gtest.h>
-#include "byte_util.h"
-#include "flags.h"
-#include "instructions.h"
+#include "8080/flags.h"
+#include "8080/instructions/instructions.h"
+#include "crosscutting/byte_util.h"
 
 namespace emu::cpu8080::tests {
     TEST(AnaTest, ShouldAndGivenValueWithAccumulator) {

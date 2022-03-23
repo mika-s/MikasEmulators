@@ -3,12 +3,12 @@
 
 #include <cstdint>
 #include <vector>
-#include "emulator_memory.h"
-#include "flags.h"
-#include "in_observer.h"
-#include "next_word.h"
-#include "next_byte.h"
-#include "out_observer.h"
+#include "8080/flags.h"
+#include "8080/next_word.h"
+#include "8080/next_byte.h"
+#include "8080/emulator_memory.h"
+#include "8080/interfaces/in_observer.h"
+#include "8080/interfaces/out_observer.h"
 
 namespace emu::cpu8080 {
 

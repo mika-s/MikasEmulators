@@ -1,8 +1,8 @@
 #include <cstdint>
 #include <gtest/gtest.h>
-#include "flags.h"
-#include "instructions.h"
-#include "next_byte.h"
+#include "8080/flags.h"
+#include "8080/instructions/instructions.h"
+#include "8080/next_byte.h"
 
 namespace emu::cpu8080::tests {
     TEST(AdiTest, ShouldAddGivenValueToAccumulator) {

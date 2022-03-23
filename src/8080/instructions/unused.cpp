@@ -1,7 +1,7 @@
 #include <cstdint>
 #include <iostream>
-#include <next_word.h>
-#include "string_util.h"
+#include "8080/next_word.h"
+#include "crosscutting/string_util.h"
 
 namespace emu::cpu8080 {
     /**

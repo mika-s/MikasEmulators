@@ -1,5 +1,5 @@
 #include <iostream>
-#include "flags.h"
+#include "8080/flags.h"
 
 namespace emu::cpu8080 {
     /**

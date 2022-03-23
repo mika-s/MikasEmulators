@@ -1,6 +1,6 @@
 #include <cstdint>
 #include <gtest/gtest.h>
-#include "instructions.h"
+#include "8080/instructions/instructions.h"
 
 namespace emu::cpu8080::tests {
     TEST(LxiTest, ShouldLoadImmidiateIntoRegisterPair) {

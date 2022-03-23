@@ -2,9 +2,9 @@
 #define MIKA_EMULATORS_8080_INSTRUCTIONS_INSTRUCTION_UTIL_H
 
 #include <vector>
-#include "emulator_memory.h"
-#include "flags.h"
-#include "next_word.h"
+#include "8080/emulator_memory.h"
+#include "8080/flags.h"
+#include "8080/next_word.h"
 
 #define LOW_BIT 0
 #define HIGH_BIT 7

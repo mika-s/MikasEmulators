@@ -160,6 +160,7 @@ set(TEST_SOURCES_8080_CPP
         src/8080/instructions/tests/xra.cpp
         src/8080/instructions/tests/xri.cpp
         src/8080/instructions/tests/xthl.cpp
+        src/8080/tests/emulator_memory_tests.cpp
         src/crosscutting/byte_util.cpp
         src/crosscutting/file_util.cpp
         src/crosscutting/invalid_program_arguments_exception.cpp

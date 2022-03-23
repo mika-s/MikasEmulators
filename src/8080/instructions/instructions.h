@@ -3,10 +3,10 @@
 
 #include <vector>
 #include <string>
-#include "emulator_memory.h"
-#include "flags.h"
-#include "next_word.h"
-#include "next_byte.h"
+#include "8080/emulator_memory.h"
+#include "8080/flags.h"
+#include "8080/next_word.h"
+#include "8080/next_byte.h"
 
 #define NOP           0x00
 #define LXI_B         0x01

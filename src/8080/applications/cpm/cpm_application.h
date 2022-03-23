@@ -1,12 +1,13 @@
-#ifndef MIKA_EMULATORS_8080_CPM_APPLICATION_H
-#define MIKA_EMULATORS_8080_CPM_APPLICATION_H
+#ifndef MIKA_EMULATORS_8080_APPLICATIONS_CPM_CPM_APPLICATION_H
+#define MIKA_EMULATORS_8080_APPLICATIONS_CPM_CPM_APPLICATION_H
 
 #include <cstdint>
 #include <vector>
-#include "cpu.h"
-#include "emulator8080.h"
+#include "8080/cpu.h"
+#include "8080/interfaces/emulator8080.h"
+#include "8080/interfaces/out_observer.h"
 
-namespace emu::cpu8080 {
+namespace emu::cpu8080::applications::cpm {
     class CpmApplication : public Emulator8080, public OutObserver {
     public:
         explicit CpmApplication(const std::string &file);
@@ -46,4 +47,4 @@ namespace emu::cpu8080 {
     };
 }
 
-#endif //MIKA_EMULATORS_8080_CPM_APPLICATION_H
+#endif //MIKA_EMULATORS_8080_APPLICATIONS_CPM_CPM_APPLICATION_H

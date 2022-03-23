@@ -1,6 +1,6 @@
 #include <cstdint>
 #include <iostream>
-#include "byte_util.h"
+#include "crosscutting/byte_util.h"
 
 namespace emu::cpu8080 {
     /**

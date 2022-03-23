@@ -1,6 +1,6 @@
 #include <sstream>
-#include "string_util.h"
 #include "unrecognized_opcode_exception.h"
+#include "crosscutting/string_util.h"
 
 using namespace emu::util::string;
 

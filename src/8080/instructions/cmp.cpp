@@ -1,7 +1,7 @@
 #include <cstdint>
 #include <iostream>
-#include "flags.h"
-#include "instructions.h"
+#include "8080/flags.h"
+#include "8080/instructions/instructions.h"
 
 namespace emu::cpu8080 {
     /**

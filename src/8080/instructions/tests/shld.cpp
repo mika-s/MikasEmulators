@@ -1,7 +1,6 @@
 #include <cstdint>
 #include <gtest/gtest.h>
-#include "byte_util.h"
-#include "instructions.h"
+#include "8080/instructions/instructions.h"
 
 namespace emu::cpu8080::tests {
     TEST(ShldTest, ShouldLoadMemoryWithLAndHRegisters) {

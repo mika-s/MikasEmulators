@@ -1,8 +1,8 @@
 #include <cstdint>
-#include <emulator_memory.h>
 #include <iostream>
-#include "byte_util.h"
-#include "instruction_util.h"
+#include "8080/emulator_memory.h"
+#include "8080/instructions/instruction_util.h"
+#include "crosscutting/byte_util.h"
 
 namespace emu::cpu8080 {
     void rst(std::uint16_t &pc, std::uint16_t new_pc, std::uint16_t &sp, emu::cpu8080::EmulatorMemory &memory,

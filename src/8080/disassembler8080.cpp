@@ -1,8 +1,8 @@
 #include <iostream>
 #include "disassembler8080.h"
-#include "instructions.h"
-#include "string_util.h"
-#include "unrecognized_opcode_exception.h"
+#include "8080/instructions/instructions.h"
+#include "crosscutting/string_util.h"
+#include "crosscutting/unrecognized_opcode_exception.h"
 
 namespace emu::cpu8080 {
 

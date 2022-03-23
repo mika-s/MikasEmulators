@@ -1,7 +1,7 @@
 #include <cstdint>
 #include <iostream>
-#include "byte_util.h"
-#include "emulator_memory.h"
+#include "8080/emulator_memory.h"
+#include "crosscutting/byte_util.h"
 
 namespace emu::cpu8080 {
     /**

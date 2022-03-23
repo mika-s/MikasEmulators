@@ -5,6 +5,8 @@ This is my collection of emulators, written in C++. As of now, it only emulates 
 ## Dependencies
 
 - SDL2 (and SDL2_image)
+- Dear Imgui (included)
+- OpenGL
 - cmake 3.17 or better
 - gtest
 
@@ -121,19 +123,32 @@ An example:
 
 sets number of lives to 5 and bonus life at a score of 1500.
 
+It is also possible to switch between the ordinary GUI (plain SDL) and the debugging GUI (based on Dear Imgui), using
+the `-g` flag:
+
+- `ordinary` starts the ordinary GUI. The default value, if unset.
+- `debugging` starts the debugging GUI.
+
+An example:
+
+```sh
+./emulator 8080 run space_invaders -g debugging
+```
+
 The keymap is:
 
-- C: Insert coin
-- T: Tilt
-- R
-- Enter: P1 start
-- A: P1 left
-- D: P1 right
-- W: P1 shoot
-- Right shift: P2 start
-- Left: P2 left
-- Right: P2 right
-- Up: P2 shoot
+| Key     | Description |
+| ------- | ----------- |
+| C       | Insert coin |
+| T       | Tilt        |
+| Enter   | P1 start    |
+| A       | P1 left     |
+| D       | P1 right    |
+| W       | P1 shoot    |
+| R Shift | P2 start    |
+| Left    | P2 left     |
+| Right   | P2 right    |
+| Up      | P2 shoot    |
 
 #### Inspiration
 
@@ -141,6 +156,7 @@ I looked at the following emulators while developing my 8080 emulator:
 
 - [herrecito's Space Invaders / Intel 8080 emulator](https://github.com/herrecito/invaders): Mainly for the timing loop.
 - [Superzazu's Space Invaders emulator](https://github.com/superzazu/invaders): Mainly the drawing to screen.
+- [Dromaius, a C++ gameboy emulator / debugger](https://github.com/ThomasRinsma/dromaius): Dear Imgui implementation.
 
 The [Computer Archeology](http://computerarcheology.com/Arcade/SpaceInvaders/) page on Space Invaders was also used to
 look up how the game is supposed to behave.
@@ -152,3 +168,4 @@ look up how the game is supposed to behave.
 - Pause Space Invaders with the Pause key
 - Debugger with Dear ImGui
 - Fix the CMake file to use better best practices
+- Better argument handling

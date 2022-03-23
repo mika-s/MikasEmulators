@@ -1,12 +1,12 @@
 #include <algorithm>
 #include <iostream>
 #include "cpu.h"
-#include "byte_util.h"
-#include "unrecognized_opcode_exception.h"
-#include "string_util.h"
-#include "instructions.h"
-#include "next_word.h"
-#include "next_byte.h"
+#include "8080/next_byte.h"
+#include "8080/next_word.h"
+#include "8080/instructions/instructions.h"
+#include "crosscutting/byte_util.h"
+#include "crosscutting/unrecognized_opcode_exception.h"
+#include "crosscutting/string_util.h"
 
 namespace emu::cpu8080 {
 

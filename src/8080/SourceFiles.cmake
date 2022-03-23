@@ -1,13 +1,18 @@
 set(SOURCES_8080_CPP
         src/main.cpp
-        src/8080/cpm_application.cpp
+        src/8080/applications/cpm/cpm_application.cpp
+        src/8080/applications/space_invaders/space_invaders.cpp
+        src/8080/applications/space_invaders/gui_imgui.cpp
+        src/8080/applications/space_invaders/gui_sdl.cpp
+        src/8080/applications/space_invaders/input_imgui.cpp
+        src/8080/applications/space_invaders/input_sdl.cpp
+        src/8080/applications/space_invaders/io.cpp
         src/8080/cpu.cpp
         src/8080/disassembler8080.cpp
         src/8080/emulator_memory.cpp
         src/8080/flags.cpp
         src/8080/frontend.cpp
         src/8080/shift_register.cpp
-        src/8080/space_invaders.cpp
         src/8080/instructions/aci.cpp
         src/8080/instructions/adc.cpp
         src/8080/instructions/add.cpp
@@ -93,10 +98,20 @@ set(SOURCES_8080_CPP
         src/crosscutting/invalid_program_arguments_exception.cpp
         src/crosscutting/string_util.cpp
         src/crosscutting/unrecognized_opcode_exception.cpp
+        src/crosscutting/gui/debug_log.cpp
         )
 
 set(SOURCES_8080_H
-        src/8080/cpm_application.h
+        src/8080/applications/cpm/cpm_application.h
+        src/8080/applications/space_invaders/space_invaders.h
+        src/8080/applications/space_invaders/gui_imgui.h
+        src/8080/applications/space_invaders/gui_sdl.h
+        src/8080/applications/space_invaders/input_imgui.h
+        src/8080/applications/space_invaders/input_sdl.h
+        src/8080/applications/space_invaders/io.h
+        src/8080/applications/space_invaders/settings.h
+        src/8080/applications/space_invaders/interfaces/gui.h
+        src/8080/applications/space_invaders/interfaces/input.h
         src/8080/cpu.h
         src/8080/disassembler8080.h
         src/8080/emulator_memory.h
@@ -105,7 +120,6 @@ set(SOURCES_8080_H
         src/8080/next_byte.h
         src/8080/next_word.h
         src/8080/shift_register.h
-        src/8080/space_invaders.h
         src/8080/instructions/instruction_util.h
         src/8080/instructions/instructions.h
         src/8080/interfaces/emulator8080.h
@@ -116,4 +130,6 @@ set(SOURCES_8080_H
         src/crosscutting/invalid_program_arguments_exception.h
         src/crosscutting/string_util.h
         src/crosscutting/unrecognized_opcode_exception.h
+        src/crosscutting/gui/debug_log.h
+        src/crosscutting/gui/gui_type.h
         )

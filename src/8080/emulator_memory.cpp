@@ -1,6 +1,6 @@
 #include <stdexcept>
 #include <sstream>
-#include "emulator_memory.h"
+#include "8080/emulator_memory.h"
 
 namespace emu::cpu8080 {
 

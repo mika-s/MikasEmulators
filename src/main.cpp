@@ -1,9 +1,9 @@
 #include <iostream>
 #include <unordered_map>
-#include "disassembler8080.h"
-#include "frontend.h"
-#include "invalid_program_arguments_exception.h"
-#include "string_util.h"
+#include "8080/disassembler8080.h"
+#include "8080/frontend.h"
+#include "crosscutting/invalid_program_arguments_exception.h"
+#include "crosscutting/string_util.h"
 
 using emu::util::exceptions::InvalidProgramArgumentsException;
 
@@ -20,20 +20,35 @@ void print_usage(const std::string &program_name) {
 }
 
 std::unordered_map<std::string, std::vector<std::string>> find_options(int argc, char *argv[]) {
+    const std::string dipswitch_flag = "-d";
+    const std::string gui_flag = "-g";
+
     std::unordered_map<std::string, std::vector<std::string>> options;
 
     for (int arg_idx = 0; arg_idx < argc; ++arg_idx) {
-        if (std::string(argv[arg_idx]) == "-d") {
-            if (arg_idx != argc - 1) {
-                if (options.count("-d") == 0) {
-                    std::vector<std::string> vec;
-                    vec.emplace_back(argv[arg_idx + 1]);
-                    options["-d"] = vec;
-                } else {
-                    options["-d"].push_back(argv[arg_idx + 1]);
-                }
+        if (std::string(argv[arg_idx]) == dipswitch_flag) {
+            if (arg_idx == argc - 1) {
+                throw InvalidProgramArgumentsException(dipswitch_flag + " flag at the end of the line, without a value.");
+            }
+
+            if (options.count(dipswitch_flag) == 0) {
+                std::vector<std::string> vec;
+                vec.emplace_back(argv[arg_idx + 1]);
+                options[dipswitch_flag] = vec;
             } else {
-                throw InvalidProgramArgumentsException("-d flag at the end of the line, without a value.");
+                options[dipswitch_flag].push_back(argv[arg_idx + 1]);
+            }
+        } else if (std::string(argv[arg_idx]) == gui_flag) {
+            if (arg_idx == argc - 1) {
+                throw InvalidProgramArgumentsException(gui_flag + " flag at the end of the line, without a value.");
+            }
+
+            if (options.count(gui_flag) == 0) {
+                std::vector<std::string> vec;
+                vec.emplace_back(argv[arg_idx + 1]);
+                options[gui_flag] = vec;
+            } else {
+                options[gui_flag].push_back(argv[arg_idx + 1]);
             }
         }
     }
@@ -57,8 +72,7 @@ int main(int argc, char *argv[]) {
         } else {
             throw InvalidProgramArgumentsException("No arguments provided");
         }
-    }
-    catch (InvalidProgramArgumentsException &ex) {
+    } catch (InvalidProgramArgumentsException &ex) {
         std::cout << ex.what() << "\n\n";
         print_usage(short_name);
     }
