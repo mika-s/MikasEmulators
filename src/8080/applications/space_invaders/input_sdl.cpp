@@ -29,13 +29,13 @@ namespace emu::cpu8080::applications::space_invaders {
             6	P2 joystick right
             7	dipswitch coin info 1:off,0:on
     */
-    void InputSdl::read(bool &is_finished, bool &is_paused, Io &cpu_io) {
+    void InputSdl::read(RunStatus &run_status, Io &cpu_io) {
         SDL_Event read_input_event;
 
         while (SDL_PollEvent(&read_input_event) != 0) {
             switch (read_input_event.type) {
                 case SDL_QUIT:
-                    is_finished = true;
+                    run_status = RunStatus::NOT_RUNNING;
                     break;
                 case SDL_KEYUP:
                     switch (read_input_event.key.keysym.scancode) {
@@ -76,7 +76,11 @@ namespace emu::cpu8080::applications::space_invaders {
                 case SDL_KEYDOWN:
                     switch (read_input_event.key.keysym.scancode) {
                         case pause:
-                            is_paused = !is_paused;
+                            if (run_status == RunStatus::PAUSED) {
+                                run_status = RunStatus::RUNNING;
+                            } else if (run_status == RunStatus::RUNNING) {
+                                run_status = RunStatus::PAUSED;
+                            }
                             break;
                         case insert_coin:
                             set_bit(cpu_io.in_port1, 0);

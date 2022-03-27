@@ -2,6 +2,7 @@
 #define MIKA_EMULATORS_8080_APPLICATIONS_SPACE_INVADERS_INPUT_SDL_H
 
 #include <SDL_scancode.h>
+#include "8080/run_status.h"
 #include "8080/applications/space_invaders/io.h"
 #include "8080/applications/space_invaders/interfaces/input.h"
 
@@ -9,7 +10,7 @@ namespace emu::cpu8080::applications::space_invaders {
 
     class InputSdl: public Input {
     public:
-        void read(bool &is_finished, bool &is_paused, Io &cpu_io) override;
+        void read(RunStatus &run_status, Io &cpu_io) override;
 
     private:
         static constexpr SDL_Scancode pause = SDL_SCANCODE_PAUSE;

@@ -5,6 +5,7 @@
 #include <vector>
 #include <SDL_video.h>
 #include <SDL_render.h>
+#include "8080/run_status.h"
 #include "8080/applications/space_invaders/interfaces/gui.h"
 #include "crosscutting/gui/debug_log.h"
 
@@ -16,7 +17,11 @@ namespace emu::cpu8080::applications::space_invaders {
 
         ~GuiImgui() override;
 
-        void update_screen(const std::vector<std::uint8_t> &vram) override;
+        void add_gui_observer(GuiObserver &observer) override;
+
+        void remove_gui_observer(GuiObserver *observer) override;
+
+        void update_screen(const std::vector<std::uint8_t> &vram, RunStatus run_status) override;
 
     private:
         static constexpr float scale = 4.0;
@@ -38,13 +43,17 @@ namespace emu::cpu8080::applications::space_invaders {
         bool show_log;
         bool show_demo;
 
+        std::vector<GuiObserver *> gui_observers;
+
         emu::util::gui::DebugLog log;
+
+        void notify_gui_observers(RunStatus new_status);
 
         void init();
 
-        void render();
+        void render(RunStatus run_status);
 
-        void render_game_window();
+        void render_game_window(RunStatus run_status);
 
         void render_game_info_window();
 

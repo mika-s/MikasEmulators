@@ -7,18 +7,20 @@
 #include <SDL_render.h>
 #include <SDL_video.h>
 #include "8080/cpu.h"
+#include "8080/run_status.h"
 #include "8080/shift_register.h"
 #include "8080/applications/space_invaders/interfaces/input.h"
 #include "8080/applications/space_invaders/io.h"
 #include "8080/applications/space_invaders/interfaces/gui.h"
 #include "8080/instructions/instructions.h"
 #include "8080/interfaces/emulator8080.h"
+#include "8080/interfaces/gui_observer.h"
 #include "8080/interfaces/in_observer.h"
 #include "8080/interfaces/out_observer.h"
 
 namespace emu::cpu8080::applications::space_invaders {
 
-    class SpaceInvaders : public Emulator8080, public OutObserver, public InObserver {
+    class SpaceInvaders : public Emulator8080, public GuiObserver, public OutObserver, public InObserver {
     public:
         SpaceInvaders(
                 const Settings &settings,
@@ -28,12 +30,14 @@ namespace emu::cpu8080::applications::space_invaders {
 
         void run() override;
 
+        void run_status_changed(emu::cpu8080::RunStatus new_status) override;
+
         void in_requested(std::uint8_t port) override;
 
         void out_changed(std::uint8_t port) override;
 
     private:
-        bool is_paused;
+        emu::cpu8080::RunStatus run_status;
 
         Io cpu_io;
         std::shared_ptr<Gui> gui;

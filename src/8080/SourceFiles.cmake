@@ -119,10 +119,12 @@ set(SOURCES_8080_H
         src/8080/frontend.h
         src/8080/next_byte.h
         src/8080/next_word.h
+        src/8080/run_status.h
         src/8080/shift_register.h
         src/8080/instructions/instruction_util.h
         src/8080/instructions/instructions.h
         src/8080/interfaces/emulator8080.h
+        src/8080/interfaces/gui_observer.h
         src/8080/interfaces/in_observer.h
         src/8080/interfaces/out_observer.h
         src/crosscutting/byte_util.h

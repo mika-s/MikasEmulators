@@ -25,6 +25,24 @@ namespace emu::cpu8080::applications::space_invaders {
         win = nullptr;
     }
 
+    void GuiSdl::add_gui_observer(GuiObserver &observer) {
+        gui_observers.push_back(&observer);
+    }
+
+    void GuiSdl::remove_gui_observer(GuiObserver *observer) {
+        gui_observers.erase(
+                std::remove(gui_observers.begin(), gui_observers.end(), observer),
+                gui_observers.end()
+        );
+    }
+
+    void GuiSdl::notify_gui_observers(RunStatus new_status) {
+        for (GuiObserver *observer: gui_observers) {
+            observer->run_status_changed(new_status);
+        }
+    }
+
+
     void GuiSdl::init() {
         if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
             std::cerr << "error initializing SDL: " << SDL_GetError() << "\n";
@@ -65,7 +83,7 @@ namespace emu::cpu8080::applications::space_invaders {
         }
     }
 
-    void GuiSdl::update_screen(const std::vector <std::uint8_t> &vram) {
+    void GuiSdl::update_screen(const std::vector <std::uint8_t> &vram, [[maybe_unused]] RunStatus run_status) {
         std::uint8_t screen[height][width][colors + 1];
 
         for (int i = 0; i < height * width / bits_in_byte; i++) {
@@ -120,8 +138,17 @@ namespace emu::cpu8080::applications::space_invaders {
             memcpy(pixels, screen, pitch * height);
         }
 
-        SDL_UnlockTexture(texture);
+        std::string title;
+        if (run_status == RunStatus::RUNNING) {
+            title = "Space Invaders";
+        } else if (run_status == RunStatus::PAUSED) {
+            title = "Space Invaders - Paused";
+        } else if (run_status == RunStatus::NOT_RUNNING) {
+            title = "Space Invaders - Stopped";
+        }
 
+        SDL_SetWindowTitle(win, title.c_str());
+        SDL_UnlockTexture(texture);
         SDL_RenderClear(rend);
         SDL_RenderCopy(rend, texture, nullptr, nullptr);
         SDL_RenderPresent(rend);

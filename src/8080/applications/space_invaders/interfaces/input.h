@@ -9,7 +9,7 @@ namespace emu::cpu8080::applications::space_invaders {
     public:
         virtual ~Input() = default;
 
-        virtual void read(bool &is_finished, bool &is_paused, Io &cpu_io) = 0;
+        virtual void read(RunStatus &run_status, Io &cpu_io) = 0;
     };
 }
 

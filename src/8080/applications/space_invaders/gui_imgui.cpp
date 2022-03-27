@@ -27,6 +27,10 @@ namespace emu::cpu8080::applications::space_invaders {
     }
 
     GuiImgui::~GuiImgui() {
+//        for (auto observer : gui_observers) {
+//            remove_gui_observer(observer);
+//        }
+
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplSDL2_Shutdown();
         ImGui::DestroyContext();
@@ -37,6 +41,23 @@ namespace emu::cpu8080::applications::space_invaders {
 
         win = nullptr;
         gl_context = nullptr;
+    }
+
+    void GuiImgui::add_gui_observer(GuiObserver &observer) {
+        gui_observers.push_back(&observer);
+    }
+
+    void GuiImgui::remove_gui_observer(GuiObserver *observer) {
+        gui_observers.erase(
+                std::remove(gui_observers.begin(), gui_observers.end(), observer),
+                gui_observers.end()
+        );
+    }
+
+    void GuiImgui::notify_gui_observers(RunStatus new_status) {
+        for (GuiObserver *observer: gui_observers) {
+            observer->run_status_changed(new_status);
+        }
     }
 
     void GuiImgui::init() {
@@ -117,7 +138,7 @@ namespace emu::cpu8080::applications::space_invaders {
         memset(screen_pixels, 0, sizeof(screen_pixels));
     }
 
-    void GuiImgui::update_screen([[maybe_unused]] const std::vector<std::uint8_t> &vram) {
+    void GuiImgui::update_screen([[maybe_unused]] const std::vector<std::uint8_t> &vram, RunStatus run_status) {
         std::uint8_t screen[height][width][colors];
 
         for (int i = 0; i < height * width / bits_in_byte; i++) {
@@ -180,10 +201,10 @@ namespace emu::cpu8080::applications::space_invaders {
 
         glBindTexture(GL_TEXTURE_2D, 0);
 
-        render();
+        render(run_status);
     }
 
-    void GuiImgui::render() {
+    void GuiImgui::render(RunStatus run_status) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         ImGui_ImplOpenGL3_NewFrame();
@@ -246,7 +267,7 @@ namespace emu::cpu8080::applications::space_invaders {
             render_log_window();
         }
         if (show_game) {
-            render_game_window();
+            render_game_window(run_status);
         }
         if (show_game_info) {
             render_game_info_window();
@@ -263,8 +284,19 @@ namespace emu::cpu8080::applications::space_invaders {
         SDL_GL_SwapWindow(win);
     }
 
-    void GuiImgui::render_game_window() {
-        ImGui::Begin("Game", &show_game);
+    void GuiImgui::render_game_window(RunStatus run_status) {
+        std::string prefix = "Game";
+        std::string id = "###" + prefix;
+        std::string title;
+        if (run_status == RunStatus::RUNNING) {
+            title = prefix + id;
+        } else if (run_status == RunStatus::PAUSED) {
+            title = prefix + " - Paused" + id;
+        } else if (run_status == RunStatus::NOT_RUNNING) {
+            title = prefix + "- Stopped" + id;
+        }
+
+        ImGui::Begin(title.c_str(), &show_game);
 
         const ImVec2 image_size = ImVec2(scaled_width, scaled_height);
         ImGui::Image(
@@ -282,6 +314,18 @@ namespace emu::cpu8080::applications::space_invaders {
         ImGui::Begin("Game info", &show_game);
 
         ImGui::Text("Avg %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+        if (ImGui::Button("Run")) {
+            notify_gui_observers(RUNNING);
+        }
+        ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+        if (ImGui::Button("Pause")) {
+            notify_gui_observers(PAUSED);
+        }
+        ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+        if (ImGui::Button("Stop")) {
+//            notify_gui_observers(NOT_RUNNING);
+        }
 
         ImGui::End();
     }

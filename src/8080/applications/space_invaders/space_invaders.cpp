@@ -8,6 +8,7 @@
 
 namespace emu::cpu8080::applications::space_invaders {
 
+    using emu::cpu8080::RunStatus;
     using emu::util::file::read_file_into_vector;
 
     SpaceInvaders::SpaceInvaders(
@@ -15,7 +16,7 @@ namespace emu::cpu8080::applications::space_invaders {
             std::shared_ptr<Gui> gui,
             std::shared_ptr<Input> input
     )
-            : is_paused(false),
+            : run_status(NOT_RUNNING),
               cpu_io(Io(0, 0b00001000, 0)),
               gui(std::move(gui)),
               input(std::move(input)) {
@@ -44,6 +45,10 @@ namespace emu::cpu8080::applications::space_invaders {
 
         cpu->add_out_observer(*this);
         cpu->add_in_observer(*this);
+    }
+
+    void SpaceInvaders::run_status_changed(emu::cpu8080::RunStatus new_status) {
+        run_status = new_status;
     }
 
     void SpaceInvaders::in_requested(std::uint8_t port) {
@@ -102,35 +107,44 @@ namespace emu::cpu8080::applications::space_invaders {
     }
 
     void SpaceInvaders::run() {
+        gui->add_gui_observer(*this);
         cpu->start();
+        run_status = RunStatus::RUNNING;
 
-        bool is_finished = false;
         unsigned long i;
 
         std::uint64_t last_tick = SDL_GetTicks64();
-        while (!is_finished) {
-            if (SDL_GetTicks64() - last_tick >= tick_limit) {
-                last_tick = SDL_GetTicks();
+        while (run_status == RunStatus::RUNNING || run_status == RunStatus::PAUSED) {
+            if (run_status == RunStatus::RUNNING) {
+                if (SDL_GetTicks64() - last_tick >= tick_limit) {
+                    last_tick = SDL_GetTicks();
 
-                i = 0;
-                while (i < static_cast<long>(cycles_per_tick / 2)) {
-                    i += cpu->next_instruction();
+                    i = 0;
+                    while (i < static_cast<long>(cycles_per_tick / 2)) {
+                        i += cpu->next_instruction();
+                    }
+
+                    if (cpu->is_inta()) {
+                        cpu->interrupt(RST_1);
+                    }
+
+                    i = 0;
+                    while (i < static_cast<long>(cycles_per_tick / 2)) {
+                        i += cpu->next_instruction();
+                    }
+
+                    input->read(run_status, cpu_io);
+                    gui->update_screen(this->vram(), run_status);
+
+                    if (cpu->is_inta() ) {
+                        cpu->interrupt(RST_2);
+                    }
                 }
-
-                if (cpu->is_inta()) {
-                    cpu->interrupt(RST_1);
-                }
-
-                i = 0;
-                while (i < static_cast<long>(cycles_per_tick / 2)) {
-                    i += cpu->next_instruction();
-                }
-
-                input->read(is_finished, is_paused, cpu_io);
-                gui->update_screen(this->vram());
-
-                if (cpu->is_inta()) {
-                    cpu->interrupt(RST_2);
+            } else {
+                if (SDL_GetTicks64() - last_tick >= tick_limit) {
+                    last_tick = SDL_GetTicks();
+                    input->read(run_status, cpu_io);
+                    gui->update_screen(this->vram(), run_status);
                 }
             }
         }

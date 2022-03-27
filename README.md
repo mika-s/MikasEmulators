@@ -137,18 +137,19 @@ An example:
 
 The keymap is:
 
-| Key     | Description |
-| ------- | ----------- |
-| C       | Insert coin |
-| T       | Tilt        |
-| Enter   | P1 start    |
-| A       | P1 left     |
-| D       | P1 right    |
-| W       | P1 shoot    |
-| R Shift | P2 start    |
-| Left    | P2 left     |
-| Right   | P2 right    |
-| Up      | P2 shoot    |
+| Key     | Description   |
+| ------- | ------------- |
+| C       | Insert coin   |
+| T       | Tilt          |
+| Enter   | P1 start      |
+| A       | P1 left       |
+| D       | P1 right      |
+| W       | P1 shoot      |
+| R Shift | P2 start      |
+| Left    | P2 left       |
+| Right   | P2 right      |
+| Up      | P2 shoot      |
+| Pause   | Pause/unpause |
 
 #### Inspiration
 
@@ -165,7 +166,7 @@ look up how the game is supposed to behave.
 
 - Sound for Space Invaders
 - Save state in Space Invaders
-- Pause Space Invaders with the Pause key
 - Debugger with Dear ImGui
 - Fix the CMake file to use better best practices
 - Better argument handling
+- Refactor to "sessions" for Space Invaders and the 8080 cpu
