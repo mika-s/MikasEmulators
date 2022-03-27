@@ -13,7 +13,7 @@ namespace emu::cpu8080 {
     Cpu::Cpu(emu::cpu8080::EmulatorMemory &memory, const std::uint16_t initial_pc) :
             stopped(true),
             inte(false),
-            is_interrupted(false),
+            m_is_interrupted(false),
             instruction_from_interruptor(0),
             memory(memory),
             memory_size(memory.size()),
@@ -85,7 +85,7 @@ namespace emu::cpu8080 {
         sp = 0;
         stopped = true;
         inte = false;
-        is_interrupted = false;
+        m_is_interrupted = false;
         instruction_from_interruptor = 0;
     }
 
@@ -98,7 +98,7 @@ namespace emu::cpu8080 {
     }
 
     void Cpu::interrupt(std::uint8_t instruction_to_perform) {
-        is_interrupted = true;
+        m_is_interrupted = true;
         instruction_from_interruptor = instruction_to_perform;
     }
 
@@ -113,9 +113,9 @@ namespace emu::cpu8080 {
     unsigned long Cpu::next_instruction() {
         unsigned long cycles = 0;
 
-        if (inte && is_interrupted) {
+        if (inte && m_is_interrupted) {
             inte = false;
-            is_interrupted = false;
+            m_is_interrupted = false;
             opcode = instruction_from_interruptor;
         } else {
             opcode = get_next_byte().farg;
@@ -928,6 +928,10 @@ namespace emu::cpu8080 {
         return pc;
     }
 
+    std::uint16_t Cpu::SP() const {
+        return sp;
+    }
+
     std::uint8_t Cpu::A() const {
         return acc_reg;
     }
@@ -954,6 +958,10 @@ namespace emu::cpu8080 {
 
     std::uint8_t Cpu::L() const {
         return l_reg;
+    }
+
+    bool Cpu::is_interrupted() const {
+        return m_is_interrupted;
     }
 
     void Cpu::notify_out_observers(std::uint8_t port) {

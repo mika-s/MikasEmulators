@@ -1,7 +1,7 @@
+#include <iostream>
 #include <SDL.h>
 #include <SDL_timer.h>
-#include <glad/glad.h>
-#include <iostream>
+#include "glad/glad.h"
 #include "imgui.h"
 #include "imgui_impl_sdl.h"
 #include "imgui_impl_opengl3.h"
@@ -21,6 +21,7 @@ namespace emu::cpu8080::applications::space_invaders {
               screen_pixels(),
               show_game(true),
               show_game_info(true),
+              show_cpu_info(true),
               show_log(true),
               show_demo(false) {
         init();
@@ -58,6 +59,10 @@ namespace emu::cpu8080::applications::space_invaders {
         for (GuiObserver *observer: gui_observers) {
             observer->run_status_changed(new_status);
         }
+    }
+
+    void GuiImgui::attach_debug_container(DebugContainer &debug_container) {
+        cpu_info.attach_debug_container(debug_container);
     }
 
     void GuiImgui::init() {
@@ -138,7 +143,7 @@ namespace emu::cpu8080::applications::space_invaders {
         memset(screen_pixels, 0, sizeof(screen_pixels));
     }
 
-    void GuiImgui::update_screen([[maybe_unused]] const std::vector<std::uint8_t> &vram, RunStatus run_status) {
+    void GuiImgui::update_screen(const std::vector<std::uint8_t> &vram, RunStatus run_status) {
         std::uint8_t screen[height][width][colors];
 
         for (int i = 0; i < height * width / bits_in_byte; i++) {
@@ -243,12 +248,14 @@ namespace emu::cpu8080::applications::space_invaders {
         if (ImGui::BeginMenuBar()) {
             if (ImGui::BeginMenu("File")) {
                 if (ImGui::MenuItem("Exit", "Alt+F4")) {
-                    exit(0);
+                    notify_gui_observers(NOT_RUNNING);
                 }
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Windows")) {
                 ImGui::MenuItem("Game", nullptr, &show_game);
+                ImGui::MenuItem("Game info", nullptr, &show_game_info);
+                ImGui::MenuItem("CPU info", nullptr, &show_cpu_info);
                 ImGui::MenuItem("Log", nullptr, &show_log);
                 ImGui::MenuItem("Demo", nullptr, &show_demo);
                 ImGui::EndMenu();
@@ -272,6 +279,9 @@ namespace emu::cpu8080::applications::space_invaders {
         if (show_game_info) {
             render_game_info_window();
         }
+        if (show_cpu_info) {
+            render_cpu_info_window();
+        }
         if (show_demo) {
             ImGui::ShowDemoWindow();
         }
@@ -288,11 +298,11 @@ namespace emu::cpu8080::applications::space_invaders {
         std::string prefix = "Game";
         std::string id = "###" + prefix;
         std::string title;
-        if (run_status == RunStatus::RUNNING) {
+        if (run_status == RUNNING) {
             title = prefix + id;
-        } else if (run_status == RunStatus::PAUSED) {
+        } else if (run_status == PAUSED) {
             title = prefix + " - Paused" + id;
-        } else if (run_status == RunStatus::NOT_RUNNING) {
+        } else if (run_status == NOT_RUNNING) {
             title = prefix + "- Stopped" + id;
         }
 
@@ -315,6 +325,8 @@ namespace emu::cpu8080::applications::space_invaders {
 
         ImGui::Text("Avg %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
+        ImGui::Separator();
+
         if (ImGui::Button("Run")) {
             notify_gui_observers(RUNNING);
         }
@@ -328,6 +340,10 @@ namespace emu::cpu8080::applications::space_invaders {
         }
 
         ImGui::End();
+    }
+
+    void GuiImgui::render_cpu_info_window() {
+        cpu_info.draw("CPU info", &show_cpu_info);
     }
 
     void GuiImgui::render_log_window() {

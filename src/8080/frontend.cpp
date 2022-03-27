@@ -16,14 +16,8 @@
 
 namespace emu::cpu8080 {
 
-    using applications::space_invaders::InputSdl;
-    using applications::space_invaders::InputImgui;
-    using applications::space_invaders::GuiSdl;
-    using applications::space_invaders::GuiImgui;
-    using emu::cpu8080::applications::space_invaders::SpaceInvaders;
     using emu::cpu8080::applications::space_invaders::Settings;
     using emu::util::exceptions::InvalidProgramArgumentsException;
-    using emu::util::file::read_file_into_vector;
     using emu::util::gui::GuiType;
 
     void Frontend::run(
@@ -45,8 +39,8 @@ namespace emu::cpu8080 {
                     const std::string program(argv[3]);
 
                     if (is_supporting(program)) {
-                        Settings settings = find_space_invaders_settings(options);
-                        GuiType gui_type = find_gui_type(options);
+                        const Settings settings = find_space_invaders_settings(options);
+                        const GuiType gui_type = find_gui_type(options);
                         ordinary(program, settings, gui_type);
                     } else {
                         throw InvalidProgramArgumentsException("Unsupported game or program.");
@@ -83,6 +77,8 @@ namespace emu::cpu8080 {
     }
 
     void Frontend::disassemble(const std::string &program) {
+        using emu::util::file::read_file_into_vector;
+
         EmulatorMemory memory;
         memory.add(read_file_into_vector(program));
 
@@ -95,6 +91,13 @@ namespace emu::cpu8080 {
             const Settings &settings,
             GuiType gui_type
     ) {
+        using emu::cpu8080::applications::cpm::CpmApplication;
+        using emu::cpu8080::applications::space_invaders::InputSdl;
+        using emu::cpu8080::applications::space_invaders::InputImgui;
+        using emu::cpu8080::applications::space_invaders::GuiSdl;
+        using emu::cpu8080::applications::space_invaders::GuiImgui;
+        using emu::cpu8080::applications::space_invaders::SpaceInvaders;
+
         if (program == "space_invaders") {
             if (gui_type == GuiType::DEBUGGING) {
                 return std::make_unique<SpaceInvaders>(
@@ -110,13 +113,13 @@ namespace emu::cpu8080 {
                 );
             }
         } else if (program == "TST8080") {
-            return std::make_unique<applications::cpm::CpmApplication>("TST8080.COM");
+            return std::make_unique<CpmApplication>("TST8080.COM");
         } else if (program == "8080PRE") {
-            return std::make_unique<applications::cpm::CpmApplication>("8080PRE.COM");
+            return std::make_unique<CpmApplication>("8080PRE.COM");
         } else if (program == "8080EXM") {
-            return std::make_unique<applications::cpm::CpmApplication>("8080EXM.COM");
+            return std::make_unique<CpmApplication>("8080EXM.COM");
         } else if (program == "CPUTEST") {
-            return std::make_unique<applications::cpm::CpmApplication>("CPUTEST.COM");
+            return std::make_unique<CpmApplication>("CPUTEST.COM");
         } else {
             throw std::invalid_argument("Illegal program argument when choosing emulator");
         }
@@ -130,9 +133,9 @@ namespace emu::cpu8080 {
         using emu::cpu8080::applications::space_invaders::NumberOfLives;
 
         Settings settings{};
-        settings.number_of_lives = emu::cpu8080::applications::space_invaders::NumberOfLives::Three;
-        settings.bonus_life_at = emu::cpu8080::applications::space_invaders::BonusLifeAt::_1500;
-        settings.coin_info = emu::cpu8080::applications::space_invaders::CoinInfo::On;
+        settings.number_of_lives = NumberOfLives::Three;
+        settings.bonus_life_at = BonusLifeAt::_1500;
+        settings.coin_info = CoinInfo::On;
 
         for (auto &opt: options["-d"]) {
             switch (opt[0]) {

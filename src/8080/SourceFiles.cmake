@@ -8,6 +8,7 @@ set(SOURCES_8080_CPP
         src/8080/applications/space_invaders/input_sdl.cpp
         src/8080/applications/space_invaders/io.cpp
         src/8080/cpu.cpp
+        src/8080/debug_container.cpp
         src/8080/disassembler8080.cpp
         src/8080/emulator_memory.cpp
         src/8080/flags.cpp
@@ -98,6 +99,7 @@ set(SOURCES_8080_CPP
         src/crosscutting/invalid_program_arguments_exception.cpp
         src/crosscutting/string_util.cpp
         src/crosscutting/unrecognized_opcode_exception.cpp
+        src/crosscutting/gui/cpu_info.cpp
         src/crosscutting/gui/debug_log.cpp
         )
 
@@ -113,6 +115,7 @@ set(SOURCES_8080_H
         src/8080/applications/space_invaders/interfaces/gui.h
         src/8080/applications/space_invaders/interfaces/input.h
         src/8080/cpu.h
+        src/8080/debug_container.h
         src/8080/disassembler8080.h
         src/8080/emulator_memory.h
         src/8080/flags.h
@@ -132,6 +135,7 @@ set(SOURCES_8080_H
         src/crosscutting/invalid_program_arguments_exception.h
         src/crosscutting/string_util.h
         src/crosscutting/unrecognized_opcode_exception.h
+        src/crosscutting/gui/cpu_info.h
         src/crosscutting/gui/debug_log.h
         src/crosscutting/gui/gui_type.h
         )

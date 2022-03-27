@@ -54,7 +54,11 @@ namespace emu::cpu8080 {
 
         [[nodiscard]] std::uint16_t PC() const;
 
+        [[nodiscard]] std::uint16_t SP() const;
+
         [[nodiscard]] bool is_inta() const;
+
+        [[nodiscard]] bool is_interrupted() const;
 
         void interrupt(std::uint8_t supplied_instruction_from_interruptor);
 
@@ -66,7 +70,7 @@ namespace emu::cpu8080 {
         bool stopped;
 
         bool inte;
-        bool is_interrupted;
+        bool m_is_interrupted;
         std::uint8_t instruction_from_interruptor;
 
         emu::cpu8080::EmulatorMemory &memory;

@@ -42,6 +42,8 @@ namespace emu::cpu8080::applications::space_invaders {
         }
     }
 
+    void GuiSdl::attach_debug_container([[maybe_unused]] DebugContainer &debug_container) {
+    }
 
     void GuiSdl::init() {
         if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
@@ -83,7 +85,7 @@ namespace emu::cpu8080::applications::space_invaders {
         }
     }
 
-    void GuiSdl::update_screen(const std::vector <std::uint8_t> &vram, [[maybe_unused]] RunStatus run_status) {
+    void GuiSdl::update_screen(const std::vector<std::uint8_t> &vram, [[maybe_unused]] RunStatus run_status) {
         std::uint8_t screen[height][width][colors + 1];
 
         for (int i = 0; i < height * width / bits_in_byte; i++) {

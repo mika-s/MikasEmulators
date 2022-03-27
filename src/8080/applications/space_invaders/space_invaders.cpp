@@ -1,5 +1,4 @@
 #include <iostream>
-#include <utility>
 #include <SDL_timer.h>
 #include "space_invaders.h"
 #include "8080/cpu.h"
@@ -21,11 +20,13 @@ namespace emu::cpu8080::applications::space_invaders {
               gui(std::move(gui)),
               input(std::move(input)) {
         load_file();
+        setup_cpu();
+        setup_debugging();
         cpu_io.set_dipswitches(settings);
     }
 
     void SpaceInvaders::load_file() {
-        // Memory map:
+                                                                      // Memory map:
         memory.add(read_file_into_vector("invaders.h")); // $0000-$07ff: invaders.h
         memory.add(read_file_into_vector("invaders.g")); // $0800-$0fff: invaders.g
         memory.add(read_file_into_vector("invaders.f")); // $1000-$17ff: invaders.f
@@ -38,13 +39,30 @@ namespace emu::cpu8080::applications::space_invaders {
         memory.add_link(0x2000, 0x4000);
         memory.add_link(0x2000, 0x4000);
         memory.add_link(0x2000, 0x4000);
+    }
 
-        const std::uint16_t initial_PC = 0;
+    void SpaceInvaders::setup_cpu() {
+        const std::uint16_t initial_pc = 0;
 
-        cpu = std::make_unique<Cpu>(memory, initial_PC);
+        cpu = std::make_unique<Cpu>(memory, initial_pc);
 
         cpu->add_out_observer(*this);
         cpu->add_in_observer(*this);
+    }
+
+    void SpaceInvaders::setup_debugging() {
+        debug_container.add_register("A", [&]() { return cpu->A(); });
+        debug_container.add_register("B", [&]() { return cpu->B(); });
+        debug_container.add_register("C", [&]() { return cpu->C(); });
+        debug_container.add_register("D", [&]() { return cpu->D(); });
+        debug_container.add_register("E", [&]() { return cpu->E(); });
+        debug_container.add_register("H", [&]() { return cpu->H(); });
+        debug_container.add_register("L", [&]() { return cpu->L(); });
+        debug_container.add_pc([&]() { return cpu->PC(); });
+        debug_container.add_sp([&]() { return cpu->SP(); });
+        debug_container.add_is_interrupted([&]() { return cpu->is_interrupted(); });
+
+        gui->attach_debug_container(debug_container);
     }
 
     void SpaceInvaders::run_status_changed(emu::cpu8080::RunStatus new_status) {

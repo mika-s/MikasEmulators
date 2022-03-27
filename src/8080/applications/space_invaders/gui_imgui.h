@@ -5,8 +5,10 @@
 #include <vector>
 #include <SDL_video.h>
 #include <SDL_render.h>
+#include "8080/debug_container.h"
 #include "8080/run_status.h"
 #include "8080/applications/space_invaders/interfaces/gui.h"
+#include "crosscutting/gui/cpu_info.h"
 #include "crosscutting/gui/debug_log.h"
 
 namespace emu::cpu8080::applications::space_invaders {
@@ -22,6 +24,8 @@ namespace emu::cpu8080::applications::space_invaders {
         void remove_gui_observer(GuiObserver *observer) override;
 
         void update_screen(const std::vector<std::uint8_t> &vram, RunStatus run_status) override;
+
+        void attach_debug_container(DebugContainer &debug_container) override;
 
     private:
         static constexpr float scale = 4.0;
@@ -40,12 +44,14 @@ namespace emu::cpu8080::applications::space_invaders {
 
         bool show_game;
         bool show_game_info;
+        bool show_cpu_info;
         bool show_log;
         bool show_demo;
 
         std::vector<GuiObserver *> gui_observers;
 
         emu::util::gui::DebugLog log;
+        emu::util::gui::CpuInfo cpu_info;
 
         void notify_gui_observers(RunStatus new_status);
 
@@ -56,6 +62,8 @@ namespace emu::cpu8080::applications::space_invaders {
         void render_game_window(RunStatus run_status);
 
         void render_game_info_window();
+
+        void render_cpu_info_window();
 
         void render_log_window();
     };

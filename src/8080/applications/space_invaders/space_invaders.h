@@ -7,6 +7,7 @@
 #include <SDL_render.h>
 #include <SDL_video.h>
 #include "8080/cpu.h"
+#include "8080/debug_container.h"
 #include "8080/run_status.h"
 #include "8080/shift_register.h"
 #include "8080/applications/space_invaders/interfaces/input.h"
@@ -46,6 +47,8 @@ namespace emu::cpu8080::applications::space_invaders {
 
         EmulatorMemory memory;
 
+        DebugContainer debug_container;
+
         // Game loop - begin
         static constexpr double fps = 60.0;
         static constexpr long double tick_limit = 1000.0 / fps;
@@ -67,6 +70,10 @@ namespace emu::cpu8080::applications::space_invaders {
         // IO - end
 
         void load_file();
+
+        void setup_cpu();
+
+        void setup_debugging();
 
         std::vector<std::uint8_t> vram();
 
