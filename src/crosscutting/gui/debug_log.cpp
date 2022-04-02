@@ -2,27 +2,27 @@
 
 namespace emu::util::gui {
     DebugLog::DebugLog()
-            : autoscroll(true) {
+            : m_should_autoscroll(true) {
         clear();
     }
 
     void DebugLog::clear() {
-        buf.clear();
-        line_offsets.clear();
-        line_offsets.push_back(0);
+        m_buf.clear();
+        m_line_offsets.clear();
+        m_line_offsets.push_back(0);
     }
 
     void DebugLog::add_log(const char *fmt, ...) {
-        int old_size = buf.size();
+        int old_size = m_buf.size();
         va_list args;
 
         va_start(args, fmt);
-        buf.appendfv(fmt, args);
+        m_buf.appendfv(fmt, args);
         va_end(args);
 
-        for (int new_size = buf.size(); old_size < new_size; old_size++) {
-            if (buf[old_size] == '\n') {
-                line_offsets.push_back(old_size + 1);
+        for (int new_size = m_buf.size(); old_size < new_size; old_size++) {
+            if (m_buf[old_size] == '\n') {
+                m_line_offsets.push_back(old_size + 1);
             }
         }
     }
@@ -34,7 +34,7 @@ namespace emu::util::gui {
         }
 
         if (ImGui::BeginPopup("Options")) {
-            ImGui::Checkbox("Auto-scroll", &autoscroll);
+            ImGui::Checkbox("Auto-scroll", &m_should_autoscroll);
             ImGui::EndPopup();
         }
 
@@ -46,7 +46,7 @@ namespace emu::util::gui {
         ImGui::SameLine();
         bool copy_button = ImGui::Button("Copy");
         ImGui::SameLine();
-        filter.Draw("Filter", -100.0f);
+        m_filter.Draw("Filter", -100.0f);
 
         ImGui::Separator();
         ImGui::BeginChild("scrolling", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
@@ -59,27 +59,27 @@ namespace emu::util::gui {
         }
 
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
-        const char *buff = buf.begin();
-        const char *buf_end = buf.end();
+        const char *buff = m_buf.begin();
+        const char *buf_end = m_buf.end();
 
-        if (filter.IsActive()) {
-            for (int line_no = 0; line_no < line_offsets.Size; line_no++) {
-                const char *line_start = buff + line_offsets[line_no];
-                const char *line_end = (line_no + 1 < line_offsets.Size) ? (buff + line_offsets[line_no + 1] - 1)
-                                                                         : buf_end;
-                if (filter.PassFilter(line_start, line_end)) {
+        if (m_filter.IsActive()) {
+            for (int line_no = 0; line_no < m_line_offsets.Size; line_no++) {
+                const char *line_start = buff + m_line_offsets[line_no];
+                const char *line_end = (line_no + 1 < m_line_offsets.Size) ? (buff + m_line_offsets[line_no + 1] - 1)
+                                                                           : buf_end;
+                if (m_filter.PassFilter(line_start, line_end)) {
                     ImGui::TextUnformatted(line_start, line_end);
                 }
             }
         } else {
             ImGuiListClipper clipper;
-            clipper.Begin(line_offsets.Size);
+            clipper.Begin(m_line_offsets.Size);
 
             while (clipper.Step()) {
                 for (int line_no = clipper.DisplayStart; line_no < clipper.DisplayEnd; line_no++) {
-                    const char *line_start = buff + line_offsets[line_no];
-                    const char *line_end = (line_no + 1 < line_offsets.Size) ? (buff + line_offsets[line_no + 1] - 1)
-                                                                             : buf_end;
+                    const char *line_start = buff + m_line_offsets[line_no];
+                    const char *line_end = (line_no + 1 < m_line_offsets.Size) ? (buff + m_line_offsets[line_no + 1] - 1)
+                                                                               : buf_end;
                     ImGui::TextUnformatted(line_start, line_end);
                 }
             }
@@ -89,7 +89,7 @@ namespace emu::util::gui {
 
         ImGui::PopStyleVar();
 
-        if (autoscroll && ImGui::GetScrollY() >= ImGui::GetScrollMaxY()) {
+        if (m_should_autoscroll && ImGui::GetScrollY() >= ImGui::GetScrollMaxY()) {
             ImGui::SetScrollHereY(1.0f);
         }
 

@@ -9,13 +9,13 @@ namespace emu::util::exceptions {
     }
 
     const char *InvalidProgramArgumentsException::what() const noexcept {
-        return message.c_str();
+        return m_message.c_str();
     }
 
     void InvalidProgramArgumentsException::make_message(const std::string &msg) {
         std::stringstream ss;
         ss << runtime_error::what() << msg;
 
-        message = ss.str();
+        m_message = ss.str();
     }
 }

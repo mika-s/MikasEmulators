@@ -15,73 +15,88 @@ namespace emu::cpu8080::applications::space_invaders {
             std::shared_ptr<Gui> gui,
             std::shared_ptr<Input> input
     )
-            : run_status(NOT_RUNNING),
-              cpu_io(Io(0, 0b00001000, 0)),
-              gui(std::move(gui)),
-              input(std::move(input)) {
+            : m_is_in_debug_mode(false),
+              m_run_status(NOT_RUNNING),
+              m_cpu_io(CpuIo(0, 0b00001000, 0)),
+              m_gui(std::move(gui)),
+              m_input(std::move(input)) {
         load_file();
         setup_cpu();
         setup_debugging();
-        cpu_io.set_dipswitches(settings);
+        m_cpu_io.set_dipswitches(settings);
     }
 
     void SpaceInvaders::load_file() {
-                                                                      // Memory map:
-        memory.add(read_file_into_vector("invaders.h")); // $0000-$07ff: invaders.h
-        memory.add(read_file_into_vector("invaders.g")); // $0800-$0fff: invaders.g
-        memory.add(read_file_into_vector("invaders.f")); // $1000-$17ff: invaders.f
-        memory.add(read_file_into_vector("invaders.e")); // $1800-$1fff: invaders.e
-        memory.add(create_work_ram());                   // $2000-$23ff: work RAM
-        memory.add(create_vram());                       // $2400-$3fff: video RAM
-        memory.add_link(0x2000, 0x4000);                 // $4000-: RAM mirror
-        memory.add_link(0x2000, 0x4000);
-        memory.add_link(0x2000, 0x4000);
-        memory.add_link(0x2000, 0x4000);
-        memory.add_link(0x2000, 0x4000);
-        memory.add_link(0x2000, 0x4000);
+        m_memory.add(read_file_into_vector("invaders.h")); // $0000-$07ff: invaders.h
+        m_memory.add(read_file_into_vector("invaders.g")); // $0800-$0fff: invaders.g
+        m_memory.add(read_file_into_vector("invaders.f")); // $1000-$17ff: invaders.f
+        m_memory.add(read_file_into_vector("invaders.e")); // $1800-$1fff: invaders.e
+        m_memory.add(create_work_ram());                   // $2000-$23ff: work RAM
+        m_memory.add(create_vram());                       // $2400-$3fff: video RAM
+        m_memory.add_link(0x2000, 0x4000);                 // $4000-: RAM mirror
+        m_memory.add_link(0x2000, 0x4000);
+        m_memory.add_link(0x2000, 0x4000);
+        m_memory.add_link(0x2000, 0x4000);
+        m_memory.add_link(0x2000, 0x4000);
+        m_memory.add_link(0x2000, 0x4000);
     }
 
     void SpaceInvaders::setup_cpu() {
         const std::uint16_t initial_pc = 0;
 
-        cpu = std::make_unique<Cpu>(memory, initial_pc);
+        m_cpu = std::make_unique<Cpu>(m_memory, initial_pc);
 
-        cpu->add_out_observer(*this);
-        cpu->add_in_observer(*this);
+        m_cpu->add_out_observer(*this);
+        m_cpu->add_in_observer(*this);
     }
 
     void SpaceInvaders::setup_debugging() {
-        debug_container.add_register("A", [&]() { return cpu->A(); });
-        debug_container.add_register("B", [&]() { return cpu->B(); });
-        debug_container.add_register("C", [&]() { return cpu->C(); });
-        debug_container.add_register("D", [&]() { return cpu->D(); });
-        debug_container.add_register("E", [&]() { return cpu->E(); });
-        debug_container.add_register("H", [&]() { return cpu->H(); });
-        debug_container.add_register("L", [&]() { return cpu->L(); });
-        debug_container.add_pc([&]() { return cpu->PC(); });
-        debug_container.add_sp([&]() { return cpu->SP(); });
-        debug_container.add_is_interrupted([&]() { return cpu->is_interrupted(); });
+        m_debug_container.add_register("A", [&]() { return m_cpu->a(); });
+        m_debug_container.add_register("B", [&]() { return m_cpu->b(); });
+        m_debug_container.add_register("C", [&]() { return m_cpu->c(); });
+        m_debug_container.add_register("D", [&]() { return m_cpu->d(); });
+        m_debug_container.add_register("E", [&]() { return m_cpu->e(); });
+        m_debug_container.add_register("H", [&]() { return m_cpu->h(); });
+        m_debug_container.add_register("L", [&]() { return m_cpu->l(); });
+        m_debug_container.add_pc([&]() { return m_cpu->pc(); });
+        m_debug_container.add_sp([&]() { return m_cpu->sp(); });
+        m_debug_container.add_is_interrupted([&]() { return m_cpu->is_interrupted(); });
+        m_debug_container.add_flag_register("F", [&]() { return m_cpu->f(); },
+                                            {
+                                                  std::make_tuple("s", 7),
+                                                  std::make_tuple("z", 6),
+                                                  std::make_tuple("u", 5),
+                                                  std::make_tuple("a", 4),
+                                                  std::make_tuple("u", 3),
+                                                  std::make_tuple("p", 2),
+                                                  std::make_tuple("u", 1),
+                                                  std::make_tuple("c", 0)
+                                          });
 
-        gui->attach_debug_container(debug_container);
+        m_gui->attach_debug_container(m_debug_container);
     }
 
     void SpaceInvaders::run_status_changed(emu::cpu8080::RunStatus new_status) {
-        run_status = new_status;
+        m_run_status = new_status;
+    }
+
+    void SpaceInvaders::debug_mode_changed(bool is_in_debug_mode) {
+        m_is_in_debug_mode = is_in_debug_mode;
     }
 
     void SpaceInvaders::in_requested(std::uint8_t port) {
         switch (port) {
             case in_port_unused:
-                cpu->input(in_port_unused, cpu_io.in_port0);
+                m_cpu->input(in_port_unused, m_cpu_io.m_in_port0);
                 break;
             case in_port_1:
-                cpu->input(in_port_1, cpu_io.in_port1);
+                m_cpu->input(in_port_1, m_cpu_io.m_in_port1);
                 break;
             case in_port_2:
-                cpu->input(in_port_2, cpu_io.in_port2);
+                m_cpu->input(in_port_2, m_cpu_io.m_in_port2);
                 break;
             case in_port_read_shift:
-                cpu->input(in_port_read_shift, cpu_io.shift_register.read());
+                m_cpu->input(in_port_read_shift, m_cpu_io.m_shift_register.read());
                 break;
             default:
                 throw std::runtime_error("Illegal input port for Space Invaders");
@@ -91,7 +106,7 @@ namespace emu::cpu8080::applications::space_invaders {
     void SpaceInvaders::out_changed(std::uint8_t port) {
         switch (port) {
             case out_port_shift_offset:
-                cpu_io.shift_register.change_offset(cpu->A());
+                m_cpu_io.m_shift_register.change_offset(m_cpu->a());
                 break;
             case out_port_sound_1: {
                 /*
@@ -107,13 +122,13 @@ namespace emu::cpu8080::applications::space_invaders {
                  *   Port 4: (discrete sounds)
                  *   bit 0-7 shift data (LSB on 1st write, MSB on 2nd)
                  */
-                if (cpu->A() & (1 << 3)) {  // invader die
+                if (m_cpu->a() & (1 << 3)) {  // invader die
                 }
 
                 break;
             }
             case out_port_do_shift:
-                cpu_io.shift_register.shift(cpu->A());
+                m_cpu_io.m_shift_register.shift(m_cpu->a());
                 break;
             case out_port_sound_2:
                 break;
@@ -124,46 +139,67 @@ namespace emu::cpu8080::applications::space_invaders {
         }
     }
 
+    void SpaceInvaders::io_changed(IoRequest request) {
+        switch (request) {
+            case IoRequest::BREAK_EXECUTION:
+                m_run_status = STEPPING;
+                break;
+            case IoRequest::CONTINUE_EXECUTION:
+                break;
+            case IoRequest::STEP_OVER:
+                break;
+            case IoRequest::STEP_INTO:
+                break;
+            default:
+                throw std::runtime_error("Unhandled IoRequest in io_changed");
+        }
+    }
+
     void SpaceInvaders::run() {
-        gui->add_gui_observer(*this);
-        cpu->start();
-        run_status = RunStatus::RUNNING;
+        m_gui->add_gui_observer(*this);
+        m_input->add_io_observer(*this);
+        m_cpu->start();
+        m_run_status = RunStatus::RUNNING;
 
         unsigned long i;
-
         std::uint64_t last_tick = SDL_GetTicks64();
-        while (run_status == RunStatus::RUNNING || run_status == RunStatus::PAUSED) {
-            if (run_status == RunStatus::RUNNING) {
+
+        while (m_run_status == RUNNING || m_run_status == PAUSED || m_run_status == STEPPING) {
+            if (m_run_status == RUNNING) {
                 if (SDL_GetTicks64() - last_tick >= tick_limit) {
                     last_tick = SDL_GetTicks();
 
                     i = 0;
                     while (i < static_cast<long>(cycles_per_tick / 2)) {
-                        i += cpu->next_instruction();
+                        i += m_cpu->next_instruction();
                     }
 
-                    if (cpu->is_inta()) {
-                        cpu->interrupt(RST_1);
+                    if (m_cpu->is_inta()) {
+                        m_cpu->interrupt(RST_1);
                     }
 
                     i = 0;
                     while (i < static_cast<long>(cycles_per_tick / 2)) {
-                        i += cpu->next_instruction();
+                        i += m_cpu->next_instruction();
                     }
 
-                    input->read(run_status, cpu_io);
-                    gui->update_screen(this->vram(), run_status);
+                    m_input->read(m_run_status, m_cpu_io);
+                    m_gui->update_screen(this->vram(), m_run_status);
 
-                    if (cpu->is_inta() ) {
-                        cpu->interrupt(RST_2);
+                    if (m_cpu->is_inta()) {
+                        m_cpu->interrupt(RST_2);
                     }
                 }
+            } else if (m_run_status == PAUSED) {
+                if (SDL_GetTicks64() - last_tick >= tick_limit) {
+                    last_tick = SDL_GetTicks();
+                    m_input->read(m_run_status, m_cpu_io);
+                    m_gui->update_screen(this->vram(), m_run_status);
+                }
+            } else if (m_run_status == STEPPING) {
+                throw std::runtime_error("Stepping has not been implemented yet");
             } else {
-                if (SDL_GetTicks64() - last_tick >= tick_limit) {
-                    last_tick = SDL_GetTicks();
-                    input->read(run_status, cpu_io);
-                    gui->update_screen(this->vram(), run_status);
-                }
+                throw std::runtime_error("Some kind of run_status has not been handled in the main loop");
             }
         }
     }
@@ -193,6 +229,6 @@ namespace emu::cpu8080::applications::space_invaders {
     }
 
     std::vector<std::uint8_t> SpaceInvaders::vram() {
-        return {memory.begin() + 0x2400, memory.begin() + 0x3fff};
+        return {m_memory.begin() + 0x2400, m_memory.begin() + 0x3fff};
     }
 }

@@ -64,11 +64,11 @@ namespace emu::cpu8080 {
         [[nodiscard]] bool is_parity_flag_set() const;
 
     private:
-        bool carry;
-        bool parity; // True if even number of one-bits.
-        bool auxiliary_carry;
-        bool zero;
-        bool sign;
+        bool m_carry;
+        bool m_parity; // True if even number of one-bits.
+        bool m_auxiliary_carry;
+        bool m_zero;
+        bool m_sign;
     };
 }
 

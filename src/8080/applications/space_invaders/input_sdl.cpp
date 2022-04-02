@@ -8,6 +8,24 @@ namespace emu::cpu8080::applications::space_invaders {
     using emu::util::byte::set_bit;
     using emu::util::byte::unset_bit;
 
+    void InputSdl::add_io_observer(IoObserver &observer) {
+        m_io_observers.push_back(&observer);
+
+    }
+
+    void InputSdl::remove_io_observer(IoObserver *observer) {
+        m_io_observers.erase(
+                std::remove(m_io_observers.begin(), m_io_observers.end(), observer),
+                m_io_observers.end()
+        );
+    }
+
+    void InputSdl::notify_io_observers(IoRequest request) {
+        for (IoObserver *observer: m_io_observers) {
+            observer->io_changed(request);
+        }
+    }
+
     /*
      Ports:
         Read 1
@@ -29,7 +47,7 @@ namespace emu::cpu8080::applications::space_invaders {
             6	P2 joystick right
             7	dipswitch coin info 1:off,0:on
     */
-    void InputSdl::read(RunStatus &run_status, Io &cpu_io) {
+    void InputSdl::read(RunStatus &run_status, CpuIo &cpu_io) {
         SDL_Event read_input_event;
 
         while (SDL_PollEvent(&read_input_event) != 0) {
@@ -40,34 +58,34 @@ namespace emu::cpu8080::applications::space_invaders {
                 case SDL_KEYUP:
                     switch (read_input_event.key.keysym.scancode) {
                         case insert_coin:
-                            unset_bit(cpu_io.in_port1, 0);
+                            unset_bit(cpu_io.m_in_port1, 0);
                             break;
                         case tilt:
-                            unset_bit(cpu_io.in_port2, 2);
+                            unset_bit(cpu_io.m_in_port2, 2);
                             break;
                         case p1_start:
-                            unset_bit(cpu_io.in_port1, 2);
+                            unset_bit(cpu_io.m_in_port1, 2);
                             break;
                         case p1_shoot:
-                            unset_bit(cpu_io.in_port1, 4);
+                            unset_bit(cpu_io.m_in_port1, 4);
                             break;
                         case p1_left:
-                            unset_bit(cpu_io.in_port1, 5);
+                            unset_bit(cpu_io.m_in_port1, 5);
                             break;
                         case p1_right:
-                            unset_bit(cpu_io.in_port1, 6);
+                            unset_bit(cpu_io.m_in_port1, 6);
                             break;
                         case p2_start:
-                            unset_bit(cpu_io.in_port1, 1);
+                            unset_bit(cpu_io.m_in_port1, 1);
                             break;
                         case p2_shoot:
-                            unset_bit(cpu_io.in_port2, 4);
+                            unset_bit(cpu_io.m_in_port2, 4);
                             break;
                         case p2_left:
-                            unset_bit(cpu_io.in_port2, 5);
+                            unset_bit(cpu_io.m_in_port2, 5);
                             break;
                         case p2_right:
-                            unset_bit(cpu_io.in_port2, 6);
+                            unset_bit(cpu_io.m_in_port2, 6);
                             break;
                         default:
                             break;
@@ -83,34 +101,34 @@ namespace emu::cpu8080::applications::space_invaders {
                             }
                             break;
                         case insert_coin:
-                            set_bit(cpu_io.in_port1, 0);
+                            set_bit(cpu_io.m_in_port1, 0);
                             break;
                         case tilt:
-                            set_bit(cpu_io.in_port2, 2);
+                            set_bit(cpu_io.m_in_port2, 2);
                             break;
                         case p1_start:
-                            set_bit(cpu_io.in_port1, 2);
+                            set_bit(cpu_io.m_in_port1, 2);
                             break;
                         case p1_shoot:
-                            set_bit(cpu_io.in_port1, 4);
+                            set_bit(cpu_io.m_in_port1, 4);
                             break;
                         case p1_left:
-                            set_bit(cpu_io.in_port1, 5);
+                            set_bit(cpu_io.m_in_port1, 5);
                             break;
                         case p1_right:
-                            set_bit(cpu_io.in_port1, 6);
+                            set_bit(cpu_io.m_in_port1, 6);
                             break;
                         case p2_start:
-                            set_bit(cpu_io.in_port1, 1);
+                            set_bit(cpu_io.m_in_port1, 1);
                             break;
                         case p2_shoot:
-                            set_bit(cpu_io.in_port2, 4);
+                            set_bit(cpu_io.m_in_port2, 4);
                             break;
                         case p2_left:
-                            set_bit(cpu_io.in_port2, 5);
+                            set_bit(cpu_io.m_in_port2, 5);
                             break;
                         case p2_right:
-                            set_bit(cpu_io.in_port2, 6);
+                            set_bit(cpu_io.m_in_port2, 6);
                             break;
                         default:
                             break;

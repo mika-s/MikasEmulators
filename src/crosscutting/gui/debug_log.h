@@ -15,10 +15,10 @@ namespace emu::util::gui {
         void draw(const char *title, bool *p_open = nullptr);
 
     private:
-        ImGuiTextBuffer buf;
-        ImGuiTextFilter filter;
-        ImVector<int> line_offsets;
-        bool autoscroll;
+        ImGuiTextBuffer m_buf;
+        ImGuiTextFilter m_filter;
+        ImVector<int> m_line_offsets;
+        bool m_should_autoscroll;
     };
 }
 

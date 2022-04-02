@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <vector>
+#include <memory>
 #include "8080/cpu.h"
 #include "8080/interfaces/emulator8080.h"
 #include "8080/interfaces/out_observer.h"
@@ -12,8 +13,6 @@ namespace emu::cpu8080::applications::cpm {
     public:
         explicit CpmApplication(const std::string &file);
 
-        ~CpmApplication() override;
-
         void run() override;
 
         void out_changed(std::uint8_t port) override;
@@ -22,15 +21,14 @@ namespace emu::cpu8080::applications::cpm {
         static constexpr int C_WRITE = 2;
         static constexpr int C_WRITESTR = 9;
 
-        Cpu *cpu;
-
-        std::string loaded_file;
-
-        emu::cpu8080::EmulatorMemory memory;
-
-        bool finished;
+        std::unique_ptr<Cpu> m_cpu;
+        emu::cpu8080::EmulatorMemory m_memory;
+        std::string m_loaded_file;
+        bool m_is_finished;
 
         void load_file(const std::string &file);
+
+        void setup_cpu();
 
         static std::vector<std::uint8_t> create_initial_offset();
 

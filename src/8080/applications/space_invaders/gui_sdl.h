@@ -23,6 +23,8 @@ namespace emu::cpu8080::applications::space_invaders {
 
         void update_screen(const std::vector<std::uint8_t> &vram, RunStatus run_status) override;
 
+        void update_debug_only() override;
+
         void attach_debug_container(DebugContainer &debug_container) override;
 
     private:
@@ -34,11 +36,11 @@ namespace emu::cpu8080::applications::space_invaders {
         static constexpr int scaled_width = (int) (scale * (float) width);
         static constexpr int scaled_height = (int) (scale * (float) height);
 
-        SDL_Window *win;
-        SDL_Renderer *rend;
-        SDL_Texture *texture;
+        SDL_Window *m_win;
+        SDL_Renderer *m_rend;
+        SDL_Texture *m_texture;
 
-        std::vector<GuiObserver *> gui_observers;
+        std::vector<GuiObserver *> m_gui_observers;
 
         void notify_gui_observers(RunStatus new_status);
 

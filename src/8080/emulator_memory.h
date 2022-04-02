@@ -23,8 +23,8 @@ namespace emu::cpu8080 {
         [[nodiscard]] std::vector<std::uint8_t>::const_iterator end() const;
 
     private:
-        std::vector<std::uint8_t> real_memory;
-        std::vector<std::uint16_t> indices;
+        std::vector<std::uint8_t> m_real_memory;
+        std::vector<std::uint16_t> m_indices;
     };
 }
 

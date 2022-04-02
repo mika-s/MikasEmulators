@@ -6,7 +6,12 @@ namespace emu::cpu8080 {
 
     using emu::util::byte::is_bit_set;
 
-    Flags::Flags() : carry(false), parity(false), auxiliary_carry(false), zero(false), sign(false) {}
+    Flags::Flags()
+            : m_carry(false),
+              m_parity(false),
+              m_auxiliary_carry(false),
+              m_zero(false),
+              m_sign(false) {}
 
     void Flags::reset() {
         clear_carry_flag();
@@ -17,24 +22,24 @@ namespace emu::cpu8080 {
     }
 
     std::uint8_t Flags::to_uint8_t() const {
-        const std::uint8_t s = (sign ? 1 : 0) << 7;
-        const std::uint8_t z = (zero ? 1 : 0) << 6;
+        const std::uint8_t s = (m_sign ? 1 : 0) << 7;
+        const std::uint8_t z = (m_zero ? 1 : 0) << 6;
         const std::uint8_t unused1 = 0 << 5;
-        const std::uint8_t ac = (auxiliary_carry ? 1 : 0) << 4;
+        const std::uint8_t ac = (m_auxiliary_carry ? 1 : 0) << 4;
         const std::uint8_t unused2 = 0 << 3;
-        const std::uint8_t p = (parity ? 1 : 0) << 2;
+        const std::uint8_t p = (m_parity ? 1 : 0) << 2;
         const std::uint8_t unused3 = 1 << 1;
-        const std::uint8_t c = (carry ? 1 : 0) << 0;
+        const std::uint8_t c = (m_carry ? 1 : 0) << 0;
 
         return s | z | unused1 | ac | unused2 | p | unused3 | c;
     }
 
     void Flags::from_uint8_t(std::uint8_t value) {
-        sign = is_bit_set(value, 7);
-        zero = is_bit_set(value, 6);
-        auxiliary_carry = is_bit_set(value, 4);
-        parity = is_bit_set(value, 2);
-        carry = is_bit_set(value, 0);
+        m_sign = is_bit_set(value, 7);
+        m_zero = is_bit_set(value, 6);
+        m_auxiliary_carry = is_bit_set(value, 4);
+        m_parity = is_bit_set(value, 2);
+        m_carry = is_bit_set(value, 0);
     }
 
     void Flags::handle_carry_flag(std::uint8_t previous, int value_to_add) {
@@ -120,27 +125,27 @@ namespace emu::cpu8080 {
     }
 
     void Flags::set_zero_flag() {
-        zero = true;
+        m_zero = true;
     }
 
     void Flags::clear_zero_flag() {
-        zero = false;
+        m_zero = false;
     }
 
     bool Flags::is_zero_flag_set() const {
-        return zero;
+        return m_zero;
     }
 
     void Flags::set_carry_flag() {
-        carry = true;
+        m_carry = true;
     }
 
     void Flags::clear_carry_flag() {
-        carry = false;
+        m_carry = false;
     }
 
     bool Flags::is_carry_flag_set() const {
-        return carry;
+        return m_carry;
     }
 
     void Flags::toggle_carry_flag() {
@@ -152,38 +157,38 @@ namespace emu::cpu8080 {
     }
 
     void Flags::set_aux_carry_flag() {
-        auxiliary_carry = true;
+        m_auxiliary_carry = true;
     }
 
     void Flags::clear_aux_carry_flag() {
-        auxiliary_carry = false;
+        m_auxiliary_carry = false;
     }
 
     bool Flags::is_aux_carry_flag_set() const {
-        return auxiliary_carry;
+        return m_auxiliary_carry;
     }
 
     void Flags::set_sign_flag() {
-        sign = true;
+        m_sign = true;
     }
 
     void Flags::clear_sign_flag() {
-        sign = false;
+        m_sign = false;
     }
 
     bool Flags::is_sign_flag_set() const {
-        return sign;
+        return m_sign;
     }
 
     void Flags::set_parity_flag() {
-        parity = true;
+        m_parity = true;
     }
 
     void Flags::clear_parity_flag() {
-        parity = false;
+        m_parity = false;
     }
 
     bool Flags::is_parity_flag_set() const {
-        return parity;
+        return m_parity;
     }
 }

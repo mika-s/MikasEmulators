@@ -1,12 +1,12 @@
 set(SOURCES_8080_CPP
         src/main.cpp
         src/8080/applications/cpm/cpm_application.cpp
+        src/8080/applications/space_invaders/cpu_io.cpp
         src/8080/applications/space_invaders/space_invaders.cpp
         src/8080/applications/space_invaders/gui_imgui.cpp
         src/8080/applications/space_invaders/gui_sdl.cpp
         src/8080/applications/space_invaders/input_imgui.cpp
         src/8080/applications/space_invaders/input_sdl.cpp
-        src/8080/applications/space_invaders/io.cpp
         src/8080/cpu.cpp
         src/8080/debug_container.cpp
         src/8080/disassembler8080.cpp
@@ -101,19 +101,22 @@ set(SOURCES_8080_CPP
         src/crosscutting/unrecognized_opcode_exception.cpp
         src/crosscutting/gui/cpu_info.cpp
         src/crosscutting/gui/debug_log.cpp
+        src/crosscutting/gui/disassembly_window.cpp
         )
 
 set(SOURCES_8080_H
         src/8080/applications/cpm/cpm_application.h
+        src/8080/applications/space_invaders/cpu_io.h
         src/8080/applications/space_invaders/space_invaders.h
         src/8080/applications/space_invaders/gui_imgui.h
         src/8080/applications/space_invaders/gui_sdl.h
         src/8080/applications/space_invaders/input_imgui.h
         src/8080/applications/space_invaders/input_sdl.h
-        src/8080/applications/space_invaders/io.h
+        src/8080/applications/space_invaders/io_request.h
         src/8080/applications/space_invaders/settings.h
         src/8080/applications/space_invaders/interfaces/gui.h
         src/8080/applications/space_invaders/interfaces/input.h
+        src/8080/applications/space_invaders/interfaces/io_observer.h
         src/8080/cpu.h
         src/8080/debug_container.h
         src/8080/disassembler8080.h
@@ -137,5 +140,6 @@ set(SOURCES_8080_H
         src/crosscutting/unrecognized_opcode_exception.h
         src/crosscutting/gui/cpu_info.h
         src/crosscutting/gui/debug_log.h
+        src/crosscutting/gui/disassembly_window.h
         src/crosscutting/gui/gui_type.h
         )

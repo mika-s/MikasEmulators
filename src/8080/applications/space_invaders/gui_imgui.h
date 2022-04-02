@@ -10,6 +10,7 @@
 #include "8080/applications/space_invaders/interfaces/gui.h"
 #include "crosscutting/gui/cpu_info.h"
 #include "crosscutting/gui/debug_log.h"
+#include "crosscutting/gui/disassembly_window.h"
 
 namespace emu::cpu8080::applications::space_invaders {
 
@@ -25,6 +26,8 @@ namespace emu::cpu8080::applications::space_invaders {
 
         void update_screen(const std::vector<std::uint8_t> &vram, RunStatus run_status) override;
 
+        void update_debug_only() override;
+
         void attach_debug_container(DebugContainer &debug_container) override;
 
     private:
@@ -33,27 +36,33 @@ namespace emu::cpu8080::applications::space_invaders {
         static constexpr int height = 256;
         static constexpr int colors = 3;
         static constexpr int bits_in_byte = 8;
-        static constexpr int scaled_width = (int) (scale * (float) width);
-        static constexpr int scaled_height = (int) (scale * (float) height);
+        static constexpr int scaled_width = static_cast<int>(scale * static_cast<float>(width));
+        static constexpr int scaled_height = static_cast<int>(scale * static_cast<float>(height));
 
-        SDL_Window *win;
-        SDL_GLContext gl_context;
+        SDL_Window *m_win;
+        SDL_GLContext m_gl_context;
 
-        std::uint32_t screen_texture;
-        std::uint32_t screen_pixels[width * height];
+        std::uint32_t m_screen_texture;
+        std::uint32_t m_screen_pixels[width * height];
 
-        bool show_game;
-        bool show_game_info;
-        bool show_cpu_info;
-        bool show_log;
-        bool show_demo;
+        bool m_show_game;
+        bool m_show_game_info;
+        bool m_show_cpu_info;
+        bool m_show_log;
+        bool m_show_disassembly;
+        bool m_show_demo;
 
-        std::vector<GuiObserver *> gui_observers;
+        bool m_is_in_debug_mode;
 
-        emu::util::gui::DebugLog log;
-        emu::util::gui::CpuInfo cpu_info;
+        std::vector<GuiObserver *> m_gui_observers;
 
-        void notify_gui_observers(RunStatus new_status);
+        emu::util::gui::DebugLog m_log;
+        emu::util::gui::DisassemblyWindow m_disassembly;
+        emu::util::gui::CpuInfo m_cpu_info;
+
+        void notify_gui_observers_about_run_status(RunStatus new_status);
+
+        void notify_gui_observers_about_debug_mode();
 
         void init();
 
@@ -66,6 +75,8 @@ namespace emu::cpu8080::applications::space_invaders {
         void render_cpu_info_window();
 
         void render_log_window();
+
+        void render_disassembly_window();
     };
 }
 

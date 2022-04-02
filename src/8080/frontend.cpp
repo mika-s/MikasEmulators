@@ -133,21 +133,21 @@ namespace emu::cpu8080 {
         using emu::cpu8080::applications::space_invaders::NumberOfLives;
 
         Settings settings{};
-        settings.number_of_lives = NumberOfLives::Three;
-        settings.bonus_life_at = BonusLifeAt::_1500;
-        settings.coin_info = CoinInfo::On;
+        settings.m_number_of_lives = NumberOfLives::Three;
+        settings.m_bonus_life_at = BonusLifeAt::_1500;
+        settings.m_coin_info = CoinInfo::On;
 
         for (auto &opt: options["-d"]) {
             switch (opt[0]) {
                 case 'n':
                     if (opt == "n=3") {
-                        settings.number_of_lives = NumberOfLives::Three;
+                        settings.m_number_of_lives = NumberOfLives::Three;
                     } else if (opt == "n=4") {
-                        settings.number_of_lives = NumberOfLives::Four;
+                        settings.m_number_of_lives = NumberOfLives::Four;
                     } else if (opt == "n=5") {
-                        settings.number_of_lives = NumberOfLives::Five;
+                        settings.m_number_of_lives = NumberOfLives::Five;
                     } else if (opt == "n=6") {
-                        settings.number_of_lives = NumberOfLives::Six;
+                        settings.m_number_of_lives = NumberOfLives::Six;
                     } else {
                         std::stringstream ss;
                         ss << "Invalid number of lives passed to the -d option: " << opt
@@ -157,9 +157,9 @@ namespace emu::cpu8080 {
                     break;
                 case 'b':
                     if (opt == "b=1500") {
-                        settings.bonus_life_at = BonusLifeAt::_1500;
+                        settings.m_bonus_life_at = BonusLifeAt::_1500;
                     } else if (opt == "b=1000") {
-                        settings.bonus_life_at = BonusLifeAt::_1000;
+                        settings.m_bonus_life_at = BonusLifeAt::_1000;
                     } else {
                         std::stringstream ss;
                         ss << "Invalid bonus life at passed to the -d option: " << opt
@@ -169,9 +169,9 @@ namespace emu::cpu8080 {
                     break;
                 case 'c':
                     if (opt == "c=on") {
-                        settings.coin_info = CoinInfo::On;
+                        settings.m_coin_info = CoinInfo::On;
                     } else if (opt == "c=off") {
-                        settings.coin_info = CoinInfo::Off;
+                        settings.m_coin_info = CoinInfo::Off;
                     } else {
                         std::stringstream ss;
                         ss << "Invalid coin info passed to the -d option: " << opt

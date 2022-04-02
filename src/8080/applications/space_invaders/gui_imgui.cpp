@@ -15,15 +15,17 @@ namespace emu::cpu8080::applications::space_invaders {
     using emu::util::byte::is_bit_set;
 
     GuiImgui::GuiImgui()
-            : win(nullptr),
-              gl_context(nullptr),
-              screen_texture(0),
-              screen_pixels(),
-              show_game(true),
-              show_game_info(true),
-              show_cpu_info(true),
-              show_log(true),
-              show_demo(false) {
+            : m_win(nullptr),
+              m_gl_context(nullptr),
+              m_screen_texture(0),
+              m_screen_pixels(),
+              m_show_game(true),
+              m_show_game_info(true),
+              m_show_cpu_info(true),
+              m_show_log(true),
+              m_show_disassembly(true),
+              m_show_demo(false),
+              m_is_in_debug_mode(false) {
         init();
     }
 
@@ -36,33 +38,39 @@ namespace emu::cpu8080::applications::space_invaders {
         ImGui_ImplSDL2_Shutdown();
         ImGui::DestroyContext();
 
-        SDL_GL_DeleteContext(gl_context);
-        SDL_DestroyWindow(win);
+        SDL_GL_DeleteContext(m_gl_context);
+        SDL_DestroyWindow(m_win);
         SDL_Quit();
 
-        win = nullptr;
-        gl_context = nullptr;
+        m_win = nullptr;
+        m_gl_context = nullptr;
     }
 
     void GuiImgui::add_gui_observer(GuiObserver &observer) {
-        gui_observers.push_back(&observer);
+        m_gui_observers.push_back(&observer);
     }
 
     void GuiImgui::remove_gui_observer(GuiObserver *observer) {
-        gui_observers.erase(
-                std::remove(gui_observers.begin(), gui_observers.end(), observer),
-                gui_observers.end()
+        m_gui_observers.erase(
+                std::remove(m_gui_observers.begin(), m_gui_observers.end(), observer),
+                m_gui_observers.end()
         );
     }
 
-    void GuiImgui::notify_gui_observers(RunStatus new_status) {
-        for (GuiObserver *observer: gui_observers) {
+    void GuiImgui::notify_gui_observers_about_run_status(RunStatus new_status) {
+        for (GuiObserver *observer: m_gui_observers) {
             observer->run_status_changed(new_status);
         }
     }
 
+    void GuiImgui::notify_gui_observers_about_debug_mode() {
+        for (GuiObserver *observer: m_gui_observers) {
+            observer->debug_mode_changed(m_is_in_debug_mode);
+        }
+    }
+
     void GuiImgui::attach_debug_container(DebugContainer &debug_container) {
-        cpu_info.attach_debug_container(debug_container);
+        m_cpu_info.attach_debug_container(debug_container);
     }
 
     void GuiImgui::init() {
@@ -100,7 +108,7 @@ namespace emu::cpu8080::applications::space_invaders {
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 #endif
 
-        win = SDL_CreateWindow(
+        m_win = SDL_CreateWindow(
                 "Space Invaders",
                 SDL_WINDOWPOS_CENTERED,
                 SDL_WINDOWPOS_CENTERED,
@@ -108,14 +116,14 @@ namespace emu::cpu8080::applications::space_invaders {
                 scaled_height,
                 SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_MAXIMIZED
         );
-        if (!win) {
+        if (!m_win) {
             std::cerr << "error creating SDL window: " << SDL_GetError() << "\n";
             exit(1);
         }
 
-        SDL_SetWindowMinimumSize(win, width, height);
-        gl_context = SDL_GL_CreateContext(win);
-        SDL_GL_MakeCurrent(win, gl_context);
+        SDL_SetWindowMinimumSize(m_win, width, height);
+        m_gl_context = SDL_GL_CreateContext(m_win);
+        SDL_GL_MakeCurrent(m_win, m_gl_context);
         SDL_GL_SetSwapInterval(1);
 
         if (!gladLoadGLLoader((GLADloadproc) SDL_GL_GetProcAddress)) {
@@ -133,14 +141,14 @@ namespace emu::cpu8080::applications::space_invaders {
 
         ImGui::StyleColorsDark();
 
-        ImGui_ImplSDL2_InitForOpenGL(win, gl_context);
+        ImGui_ImplSDL2_InitForOpenGL(m_win, m_gl_context);
         ImGui_ImplOpenGL3_Init(glsl_version.c_str());
 
         const ImVec4 background = ImVec4(35 / 255.0f, 35 / 255.0f, 35 / 255.0f, 1.00f);
         glClearColor(background.x, background.y, background.z, background.w);
 
-        glGenTextures(1, &screen_texture);
-        memset(screen_pixels, 0, sizeof(screen_pixels));
+        glGenTextures(1, &m_screen_texture);
+        memset(m_screen_pixels, 0, sizeof(m_screen_pixels));
     }
 
     void GuiImgui::update_screen(const std::vector<std::uint8_t> &vram, RunStatus run_status) {
@@ -195,14 +203,14 @@ namespace emu::cpu8080::applications::space_invaders {
                 std::uint8_t r = width_idx[0];
                 std::uint8_t g = width_idx[1];
                 std::uint8_t b = width_idx[2];
-                screen_pixels[pixel_idx++] = 0xFF000000 | b << 16 | g << 8 | r;
+                m_screen_pixels[pixel_idx++] = 0xFF000000 | b << 16 | g << 8 | r;
             }
         }
 
-        glBindTexture(GL_TEXTURE_2D, screen_texture);
+        glBindTexture(GL_TEXTURE_2D, m_screen_texture);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, screen_pixels);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_screen_pixels);
 
         glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -213,7 +221,7 @@ namespace emu::cpu8080::applications::space_invaders {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplSDL2_NewFrame(win);
+        ImGui_ImplSDL2_NewFrame(m_win);
         ImGui::NewFrame();
 
         ImGuiStyle &style = ImGui::GetStyle();
@@ -221,7 +229,7 @@ namespace emu::cpu8080::applications::space_invaders {
 
         int window_width;
         int window_height;
-        SDL_GetWindowSize(win, &window_width, &window_height);
+        SDL_GetWindowSize(m_win, &window_width, &window_height);
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
         ImGui::SetNextWindowPos(ImVec2(.0f, .0f), ImGuiCond_Always);
@@ -248,16 +256,17 @@ namespace emu::cpu8080::applications::space_invaders {
         if (ImGui::BeginMenuBar()) {
             if (ImGui::BeginMenu("File")) {
                 if (ImGui::MenuItem("Exit", "Alt+F4")) {
-                    notify_gui_observers(NOT_RUNNING);
+                    notify_gui_observers_about_run_status(NOT_RUNNING);
                 }
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Windows")) {
-                ImGui::MenuItem("Game", nullptr, &show_game);
-                ImGui::MenuItem("Game info", nullptr, &show_game_info);
-                ImGui::MenuItem("CPU info", nullptr, &show_cpu_info);
-                ImGui::MenuItem("Log", nullptr, &show_log);
-                ImGui::MenuItem("Demo", nullptr, &show_demo);
+                ImGui::MenuItem("Game", nullptr, &m_show_game);
+                ImGui::MenuItem("Game info", nullptr, &m_show_game_info);
+                ImGui::MenuItem("CPU info", nullptr, &m_show_cpu_info);
+                ImGui::MenuItem("Log", nullptr, &m_show_log);
+                ImGui::MenuItem("Disassembly", nullptr, &m_show_disassembly);
+                ImGui::MenuItem("Demo", nullptr, &m_show_demo);
                 ImGui::EndMenu();
             }
 
@@ -270,19 +279,22 @@ namespace emu::cpu8080::applications::space_invaders {
                 ImGuiDockNodeFlags_None | ImGuiDockNodeFlags_PassthruCentralNode
         );
 
-        if (show_log) {
+        if (m_show_log) {
             render_log_window();
         }
-        if (show_game) {
+        if (m_show_disassembly) {
+            render_disassembly_window();
+        }
+        if (m_show_game) {
             render_game_window(run_status);
         }
-        if (show_game_info) {
+        if (m_show_game_info) {
             render_game_info_window();
         }
-        if (show_cpu_info) {
+        if (m_show_cpu_info) {
             render_cpu_info_window();
         }
-        if (show_demo) {
+        if (m_show_demo) {
             ImGui::ShowDemoWindow();
         }
 
@@ -291,7 +303,11 @@ namespace emu::cpu8080::applications::space_invaders {
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-        SDL_GL_SwapWindow(win);
+        SDL_GL_SwapWindow(m_win);
+    }
+
+    void GuiImgui::update_debug_only() {
+        render(RunStatus::RUNNING);
     }
 
     void GuiImgui::render_game_window(RunStatus run_status) {
@@ -304,13 +320,15 @@ namespace emu::cpu8080::applications::space_invaders {
             title = prefix + " - Paused" + id;
         } else if (run_status == NOT_RUNNING) {
             title = prefix + "- Stopped" + id;
+        } else {
+            title = "Unknown TODO" + id;
         }
 
-        ImGui::Begin(title.c_str(), &show_game);
+        ImGui::Begin(title.c_str(), &m_show_game);
 
         const ImVec2 image_size = ImVec2(scaled_width, scaled_height);
         ImGui::Image(
-                (void *) ((intptr_t) screen_texture), image_size,
+                (void *) ((intptr_t) m_screen_texture), image_size,
                 ImVec2(0, 0),
                 ImVec2(1, 1),
                 ImColor(255, 255, 255, 255),
@@ -321,32 +339,40 @@ namespace emu::cpu8080::applications::space_invaders {
     }
 
     void GuiImgui::render_game_info_window() {
-        ImGui::Begin("Game info", &show_game);
+        ImGui::Begin("Game info", &m_show_game);
 
         ImGui::Text("Avg %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
         ImGui::Separator();
 
         if (ImGui::Button("Run")) {
-            notify_gui_observers(RUNNING);
+            notify_gui_observers_about_run_status(RUNNING);
         }
         ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
         if (ImGui::Button("Pause")) {
-            notify_gui_observers(PAUSED);
+            notify_gui_observers_about_run_status(PAUSED);
         }
         ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
         if (ImGui::Button("Stop")) {
-//            notify_gui_observers(NOT_RUNNING);
+//            notify_gui_observers_about_run_status(NOT_RUNNING);
+        }
+        ImGui::Separator();
+        if (ImGui::Checkbox("Debug mode", &m_is_in_debug_mode)) {
+            notify_gui_observers_about_debug_mode();
         }
 
         ImGui::End();
     }
 
     void GuiImgui::render_cpu_info_window() {
-        cpu_info.draw("CPU info", &show_cpu_info);
+        m_cpu_info.draw("CPU info", &m_show_cpu_info);
     }
 
     void GuiImgui::render_log_window() {
-        log.draw("Log", &show_log);
+        m_log.draw("Log", &m_show_log);
+    }
+
+    void GuiImgui::render_disassembly_window() {
+        m_disassembly.draw("Disassembly", &m_show_disassembly);
     }
 }

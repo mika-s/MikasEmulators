@@ -15,6 +15,8 @@ namespace emu::cpu8080::applications::space_invaders {
 
         virtual void update_screen(const std::vector<std::uint8_t> &vram, RunStatus run_status) = 0;
 
+        virtual void update_debug_only() = 0;
+
         virtual void attach_debug_container(DebugContainer &debug_container) = 0;
     };
 }

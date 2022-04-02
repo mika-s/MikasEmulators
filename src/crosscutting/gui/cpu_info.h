@@ -18,9 +18,7 @@ namespace emu::util::gui {
         void draw(const char *title, bool *p_open = nullptr);
 
     private:
-        emu::cpu8080::DebugContainer debug_container;
-
-        void add_register(const std::string& name, const std::function<std::uint8_t()>& value_retriever);
+        emu::cpu8080::DebugContainer m_debug_container;
     };
 }
 

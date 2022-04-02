@@ -7,24 +7,24 @@
 namespace emu::cpu8080 {
 
     Disassembler8080::Disassembler8080(emu::cpu8080::EmulatorMemory &memory)
-            : memory(memory),
-              memory_size(memory.size()),
-              pc(0),
-              opcode(0) {
+            : m_memory(memory),
+              m_memory_size(memory.size()),
+              m_pc(0),
+              m_opcode(0) {
     }
 
     void Disassembler8080::disassemble() {
-        while (pc < memory_size) {
+        while (m_pc < m_memory_size) {
             print_next_instruction();
         }
     }
 
     void Disassembler8080::print_next_instruction() {
-        std::cout << emu::util::string::hexify_wo_0x(pc, 4) << "\t\t";
+        std::cout << emu::util::string::hexify_wo_0x(m_pc, 4) << "\t\t";
 
-        opcode = get_next_byte().farg;
+        m_opcode = get_next_byte().farg;
 
-        switch (opcode) {
+        switch (m_opcode) {
         case NOP:
             print_nop();
             break;
@@ -794,7 +794,7 @@ namespace emu::cpu8080 {
             print_rst(7);
             break;
         default:
-            throw emu::util::exceptions::UnrecognizedOpcodeException(opcode);
+            throw emu::util::exceptions::UnrecognizedOpcodeException(m_opcode);
         }
 
         std::cout << "\n";
@@ -802,14 +802,14 @@ namespace emu::cpu8080 {
 
     NextByte Disassembler8080::get_next_byte() {
         return {
-                .farg = memory[pc++]
+                .farg = m_memory[m_pc++]
         };
     }
 
     NextWord Disassembler8080::get_next_word() {
         return {
-                .farg = memory[pc++],
-                .sarg = memory[pc++]
+                .farg = m_memory[m_pc++],
+                .sarg = m_memory[m_pc++]
         };
     }
 }

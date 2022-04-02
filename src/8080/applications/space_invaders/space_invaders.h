@@ -2,17 +2,18 @@
 #define MIKA_EMULATORS_8080_APPLICATIONS_SPACE_INVADERS_SPACE_INVADERS_H
 
 #include <cstdint>
-#include <vector>
 #include <memory>
+#include <vector>
 #include <SDL_render.h>
 #include <SDL_video.h>
 #include "8080/cpu.h"
 #include "8080/debug_container.h"
 #include "8080/run_status.h"
 #include "8080/shift_register.h"
-#include "8080/applications/space_invaders/interfaces/input.h"
-#include "8080/applications/space_invaders/io.h"
+#include "8080/applications/space_invaders/cpu_io.h"
 #include "8080/applications/space_invaders/interfaces/gui.h"
+#include "8080/applications/space_invaders/interfaces/input.h"
+#include "8080/applications/space_invaders/interfaces/io_observer.h"
 #include "8080/instructions/instructions.h"
 #include "8080/interfaces/emulator8080.h"
 #include "8080/interfaces/gui_observer.h"
@@ -21,7 +22,7 @@
 
 namespace emu::cpu8080::applications::space_invaders {
 
-    class SpaceInvaders : public Emulator8080, public GuiObserver, public OutObserver, public InObserver {
+    class SpaceInvaders : public Emulator8080, public GuiObserver, public OutObserver, public InObserver, public IoObserver {
     public:
         SpaceInvaders(
                 const Settings &settings,
@@ -33,21 +34,26 @@ namespace emu::cpu8080::applications::space_invaders {
 
         void run_status_changed(emu::cpu8080::RunStatus new_status) override;
 
+        void debug_mode_changed(bool is_in_debug_mode) override;
+
         void in_requested(std::uint8_t port) override;
 
         void out_changed(std::uint8_t port) override;
 
+        void io_changed(IoRequest request) override;
+
     private:
-        emu::cpu8080::RunStatus run_status;
+        bool m_is_in_debug_mode;
+        emu::cpu8080::RunStatus m_run_status;
 
-        Io cpu_io;
-        std::shared_ptr<Gui> gui;
-        std::shared_ptr<Input> input;
-        std::unique_ptr<Cpu> cpu;
+        CpuIo m_cpu_io;
+        std::shared_ptr<Gui> m_gui;
+        std::shared_ptr<Input> m_input;
+        std::unique_ptr<Cpu> m_cpu;
 
-        EmulatorMemory memory;
+        EmulatorMemory m_memory;
 
-        DebugContainer debug_container;
+        DebugContainer m_debug_container;
 
         // Game loop - begin
         static constexpr double fps = 60.0;

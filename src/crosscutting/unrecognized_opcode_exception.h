@@ -16,7 +16,7 @@ namespace emu::util::exceptions {
     private:
         void make_message(std::uint8_t opcode);
 
-        std::string message;
+        std::string m_message;
     };
 }
 

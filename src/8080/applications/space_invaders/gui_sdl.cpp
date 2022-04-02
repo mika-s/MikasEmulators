@@ -8,36 +8,36 @@ namespace emu::cpu8080::applications::space_invaders {
     using emu::util::byte::is_bit_set;
 
     GuiSdl::GuiSdl()
-            : win(nullptr),
-              rend(nullptr),
-              texture(nullptr) {
+            : m_win(nullptr),
+              m_rend(nullptr),
+              m_texture(nullptr) {
         init();
     }
 
     GuiSdl::~GuiSdl() {
-        SDL_DestroyTexture(texture);
-        SDL_DestroyRenderer(rend);
-        SDL_DestroyWindow(win);
+        SDL_DestroyTexture(m_texture);
+        SDL_DestroyRenderer(m_rend);
+        SDL_DestroyWindow(m_win);
         SDL_Quit();
 
-        texture = nullptr;
-        rend = nullptr;
-        win = nullptr;
+        m_texture = nullptr;
+        m_rend = nullptr;
+        m_win = nullptr;
     }
 
     void GuiSdl::add_gui_observer(GuiObserver &observer) {
-        gui_observers.push_back(&observer);
+        m_gui_observers.push_back(&observer);
     }
 
     void GuiSdl::remove_gui_observer(GuiObserver *observer) {
-        gui_observers.erase(
-                std::remove(gui_observers.begin(), gui_observers.end(), observer),
-                gui_observers.end()
+        m_gui_observers.erase(
+                std::remove(m_gui_observers.begin(), m_gui_observers.end(), observer),
+                m_gui_observers.end()
         );
     }
 
     void GuiSdl::notify_gui_observers(RunStatus new_status) {
-        for (GuiObserver *observer: gui_observers) {
+        for (GuiObserver *observer: m_gui_observers) {
             observer->run_status_changed(new_status);
         }
     }
@@ -51,7 +51,7 @@ namespace emu::cpu8080::applications::space_invaders {
             exit(1);
         }
 
-        win = SDL_CreateWindow(
+        m_win = SDL_CreateWindow(
                 "Space Invaders",
                 SDL_WINDOWPOS_CENTERED,
                 SDL_WINDOWPOS_CENTERED,
@@ -59,27 +59,27 @@ namespace emu::cpu8080::applications::space_invaders {
                 scaled_height,
                 SDL_WINDOW_RESIZABLE
         );
-        if (!win) {
+        if (!m_win) {
             std::cerr << "error creating SDL window: " << SDL_GetError() << "\n";
             exit(1);
         }
 
-        rend = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED);
+        m_rend = SDL_CreateRenderer(m_win, -1, SDL_RENDERER_ACCELERATED);
 
-        if (!rend) {
+        if (!m_rend) {
             std::cerr << "error creating SDL renderer: " << SDL_GetError() << "\n";
             exit(1);
         }
 
-        if (SDL_RenderSetScale(rend, scale, scale) != 0) {
+        if (SDL_RenderSetScale(m_rend, scale, scale) != 0) {
             std::cerr << "error setting renderer scale in SDL: " << SDL_GetError() << "\n";
             exit(1);
         }
 
-        texture = SDL_CreateTexture(rend, SDL_PIXELFORMAT_RGBA32,
-                                    SDL_TEXTUREACCESS_STREAMING, width, height);
+        m_texture = SDL_CreateTexture(m_rend, SDL_PIXELFORMAT_RGBA32,
+                                      SDL_TEXTUREACCESS_STREAMING, width, height);
 
-        if (!texture) {
+        if (!m_texture) {
             std::cerr << "error creating SDL texture: " << SDL_GetError() << "\n";
             exit(1);
         }
@@ -134,7 +134,7 @@ namespace emu::cpu8080::applications::space_invaders {
         void *pixels = nullptr;
         int pitch = 0;
 
-        if (SDL_LockTexture(texture, nullptr, &pixels, &pitch) != 0) {
+        if (SDL_LockTexture(m_texture, nullptr, &pixels, &pitch) != 0) {
             std::cerr << "error while unlocking SDL texture: " << SDL_GetError() << "\n";
         } else {
             memcpy(pixels, screen, pitch * height);
@@ -149,10 +149,13 @@ namespace emu::cpu8080::applications::space_invaders {
             title = "Space Invaders - Stopped";
         }
 
-        SDL_SetWindowTitle(win, title.c_str());
-        SDL_UnlockTexture(texture);
-        SDL_RenderClear(rend);
-        SDL_RenderCopy(rend, texture, nullptr, nullptr);
-        SDL_RenderPresent(rend);
+        SDL_SetWindowTitle(m_win, title.c_str());
+        SDL_UnlockTexture(m_texture);
+        SDL_RenderClear(m_rend);
+        SDL_RenderCopy(m_rend, m_texture, nullptr, nullptr);
+        SDL_RenderPresent(m_rend);
+    }
+
+    void GuiSdl::update_debug_only() {
     }
 }

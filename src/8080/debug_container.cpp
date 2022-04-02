@@ -3,55 +3,78 @@
 namespace emu::cpu8080 {
 
     DebugContainer::DebugContainer()
-            : is_pc_set_(false),
-              is_sp_set_(false),
-              is_interrupted_set_(false) {
+            : m_is_flag_register_set(false),
+              m_is_pc_set(false),
+              m_is_sp_set(false),
+              m_is_interrupted_set(false) {
     }
 
     void DebugContainer::add_register(const std::string &name, const std::function<std::uint8_t()> &value_retriever) {
-        registers.emplace_back(name, value_retriever);
+        m_register_retrievers.emplace_back(name, value_retriever);
     }
 
-    std::vector<std::tuple<std::string, std::function<std::uint8_t()>>> DebugContainer::get_registers() {
-        return registers;
+    std::vector<std::tuple<std::string, std::function<std::uint8_t()>>> DebugContainer::registers() {
+        return m_register_retrievers;
+    }
+
+    void DebugContainer::add_flag_register(
+            const std::string &name,
+            const std::function<std::uint8_t()> &value_retriever,
+            const std::vector<std::tuple<std::string, int>> &flag_names
+    ) {
+        m_flag_register_retriever = std::make_tuple(name, value_retriever);
+        m_flag_names = flag_names;
+        m_is_flag_register_set = true;
+    }
+
+    std::tuple<std::string, std::function<std::uint8_t()>> DebugContainer::flag_register() const {
+        return m_flag_register_retriever;
+    }
+
+    std::vector<std::tuple<std::string, int>> DebugContainer::flag_names() const {
+        return m_flag_names;
+    }
+
+    bool DebugContainer::is_flag_register_set() const {
+        return m_is_flag_register_set;
     }
 
     void DebugContainer::add_pc(const std::function<std::uint16_t()> &value_retriever) {
-        pc_retriever = value_retriever;
-        is_pc_set_ = true;
+        m_pc_retriever = value_retriever;
+        m_is_pc_set = true;
     }
 
-    std::uint16_t DebugContainer::get_pc() const {
-        return pc_retriever();
+    std::uint16_t DebugContainer::pc() const {
+        return m_pc_retriever();
     }
 
     bool DebugContainer::is_pc_set() const {
-        return is_pc_set_;
+        return m_is_pc_set;
     }
 
     void DebugContainer::add_sp(const std::function<std::uint16_t()> &value_retriever) {
-        sp_retriever = value_retriever;
-        is_sp_set_ = true;
+        m_sp_retriever = value_retriever;
+        m_is_sp_set = true;
     }
 
-    std::uint16_t DebugContainer::get_sp() const {
-        return sp_retriever();
+    std::uint16_t DebugContainer::sp() const {
+        return m_sp_retriever();
     }
 
     bool DebugContainer::is_sp_set() const {
-        return is_sp_set_;
+        return m_is_sp_set;
     }
 
     void DebugContainer::add_is_interrupted(const std::function<bool()> &value_retriever) {
-        is_interrupted_retriever = value_retriever;
-        is_interrupted_set_ = true;
+        m_is_interrupted_retriever = value_retriever;
+        m_is_interrupted_set = true;
     }
 
-    bool DebugContainer::get_is_interrupted() const {
-        return is_interrupted_retriever();
+    bool DebugContainer::is_interrupted() const {
+        return m_is_interrupted_retriever();
     }
 
     bool DebugContainer::is_interrupted_set() const {
-        return is_interrupted_set_;
+        return m_is_interrupted_set;
     }
 }

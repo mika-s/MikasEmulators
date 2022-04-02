@@ -17,9 +17,9 @@ namespace emu::cpu8080::applications::space_invaders {
 
     class Settings {
     public:
-        NumberOfLives number_of_lives;
-        BonusLifeAt bonus_life_at;
-        CoinInfo coin_info;
+        NumberOfLives m_number_of_lives;
+        BonusLifeAt m_bonus_life_at;
+        CoinInfo m_coin_info;
     };
 }
 

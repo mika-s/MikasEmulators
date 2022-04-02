@@ -36,25 +36,27 @@ namespace emu::cpu8080 {
 
         void remove_in_observer(InObserver *observer);
 
-        emu::cpu8080::EmulatorMemory &Memory();
+        emu::cpu8080::EmulatorMemory &memory();
 
-        [[nodiscard]] std::uint8_t A() const;
+        [[nodiscard]] std::uint8_t a() const;
 
-        [[nodiscard]] std::uint8_t B() const;
+        [[nodiscard]] std::uint8_t b() const;
 
-        [[nodiscard]] std::uint8_t C() const;
+        [[nodiscard]] std::uint8_t c() const;
 
-        [[nodiscard]] std::uint8_t D() const;
+        [[nodiscard]] std::uint8_t d() const;
 
-        [[nodiscard]] std::uint8_t E() const;
+        [[nodiscard]] std::uint8_t e() const;
 
-        [[nodiscard]] std::uint8_t H() const;
+        [[nodiscard]] std::uint8_t h() const;
 
-        [[nodiscard]] std::uint8_t L() const;
+        [[nodiscard]] std::uint8_t l() const;
 
-        [[nodiscard]] std::uint16_t PC() const;
+        [[nodiscard]] std::uint8_t f() const;
 
-        [[nodiscard]] std::uint16_t SP() const;
+        [[nodiscard]] std::uint16_t pc() const;
+
+        [[nodiscard]] std::uint16_t sp() const;
 
         [[nodiscard]] bool is_inta() const;
 
@@ -67,37 +69,36 @@ namespace emu::cpu8080 {
     private:
         static constexpr unsigned int number_of_io_ports = 256;
 
-        bool stopped;
+        bool m_is_stopped;
 
-        bool inte;
+        bool m_inte;
         bool m_is_interrupted;
-        std::uint8_t instruction_from_interruptor;
+        std::uint8_t m_instruction_from_interruptor;
 
-        emu::cpu8080::EmulatorMemory &memory;
-        std::size_t memory_size;
+        emu::cpu8080::EmulatorMemory &m_memory;
+        std::size_t m_memory_size;
 
-        std::vector<std::uint8_t> io_in;
-        std::vector<std::uint8_t> io_out;
+        std::vector<std::uint8_t> m_io_in;
+        std::vector<std::uint8_t> m_io_out;
 
-        std::uint8_t opcode;
-        std::uint16_t sp;
-        std::uint16_t pc;
-        std::uint8_t acc_reg;
-        std::uint8_t b_reg;
-        std::uint8_t c_reg;
-        std::uint8_t d_reg;
-        std::uint8_t e_reg;
-        std::uint8_t h_reg;
-        std::uint8_t l_reg;
-        Flags flag_reg;
+        std::uint8_t m_opcode;
+        std::uint16_t m_sp;
+        std::uint16_t m_pc;
+        std::uint8_t m_acc_reg;
+        std::uint8_t m_b_reg;
+        std::uint8_t m_c_reg;
+        std::uint8_t m_d_reg;
+        std::uint8_t m_e_reg;
+        std::uint8_t m_h_reg;
+        std::uint8_t m_l_reg;
+        Flags m_flag_reg;
+
+        std::vector<OutObserver *> m_out_observers;
+        std::vector<InObserver *> m_in_observers;
 
         NextByte get_next_byte();
 
         NextWord get_next_word();
-
-        std::vector<OutObserver *> out_observers;
-
-        std::vector<InObserver *> in_observers;
 
         void notify_out_observers(std::uint8_t port);
 
