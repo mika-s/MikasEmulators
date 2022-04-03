@@ -18,7 +18,6 @@ namespace emu::cpu8080::applications::space_invaders {
             : m_win(nullptr),
               m_gl_context(nullptr),
               m_screen_texture(0),
-              m_screen_pixels(),
               m_show_game(true),
               m_show_game_info(true),
               m_show_cpu_info(true),
@@ -148,69 +147,15 @@ namespace emu::cpu8080::applications::space_invaders {
         glClearColor(background.x, background.y, background.z, background.w);
 
         glGenTextures(1, &m_screen_texture);
-        memset(m_screen_pixels, 0, sizeof(m_screen_pixels));
     }
 
     void GuiImgui::update_screen(const std::vector<std::uint8_t> &vram, RunStatus run_status) {
-        std::uint8_t screen[height][width][colors];
-
-        for (int i = 0; i < height * width / bits_in_byte; i++) {
-            const int y = i * bits_in_byte / height;
-            const int base_x = (i * bits_in_byte) % height;
-            const std::uint8_t current_byte = vram[i];
-
-            for (std::uint8_t bit = 0; bit < bits_in_byte; bit++) {
-                int px = base_x + bit;
-                int py = y;
-                const bool is_pixel_lit = is_bit_set(current_byte, bit);
-                std::uint8_t r = 0;
-                std::uint8_t g = 0;
-                std::uint8_t b = 0;
-
-                if (is_pixel_lit) {
-                    if (px < 16) {
-                        if (py < 16 || 134 < py) {
-                            r = 255;
-                            g = 255;
-                            b = 255;
-                        } else {
-                            g = 255;
-                        }
-                    } else if (16 <= px && px <= 72) {
-                        g = 255;
-                    } else if (192 <= px && px < 224) {
-                        r = 255;
-                    } else {
-                        r = 255;
-                        g = 255;
-                        b = 255;
-                    }
-                }
-
-                const int temp_x = px;
-                px = py;
-                py = -temp_x + height - 1;
-
-                screen[py][px][0] = r;
-                screen[py][px][1] = g;
-                screen[py][px][2] = b;
-            }
-        }
-
-        int pixel_idx = 0;
-        for (auto &height_idx: screen) {
-            for (auto &width_idx: height_idx) {
-                std::uint8_t r = width_idx[0];
-                std::uint8_t g = width_idx[1];
-                std::uint8_t b = width_idx[2];
-                m_screen_pixels[pixel_idx++] = 0xFF000000 | b << 16 | g << 8 | r;
-            }
-        }
+        std::vector<std::uint32_t> frame_buffer = create_framebuffer(vram);
 
         glBindTexture(GL_TEXTURE_2D, m_screen_texture);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_screen_pixels);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, frame_buffer.data());
 
         glBindTexture(GL_TEXTURE_2D, 0);
 

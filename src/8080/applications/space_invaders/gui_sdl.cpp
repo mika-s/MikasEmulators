@@ -85,51 +85,8 @@ namespace emu::cpu8080::applications::space_invaders {
         }
     }
 
-    void GuiSdl::update_screen(const std::vector<std::uint8_t> &vram, [[maybe_unused]] RunStatus run_status) {
-        std::uint8_t screen[height][width][colors + 1];
-
-        for (int i = 0; i < height * width / bits_in_byte; i++) {
-            const int y = i * bits_in_byte / height;
-            const int base_x = (i * bits_in_byte) % height;
-            const std::uint8_t current_byte = vram[i];
-
-            for (std::uint8_t bit = 0; bit < bits_in_byte; bit++) {
-                int px = base_x + bit;
-                int py = y;
-                const bool is_pixel_lit = is_bit_set(current_byte, bit);
-                std::uint8_t r = 0;
-                std::uint8_t g = 0;
-                std::uint8_t b = 0;
-
-                if (is_pixel_lit) {
-                    if (px < 16) {
-                        if (py < 16 || 134 < py) {
-                            r = 255;
-                            g = 255;
-                            b = 255;
-                        } else {
-                            g = 255;
-                        }
-                    } else if (16 <= px && px <= 72) {
-                        g = 255;
-                    } else if (192 <= px && px < 224) {
-                        r = 255;
-                    } else {
-                        r = 255;
-                        g = 255;
-                        b = 255;
-                    }
-                }
-
-                const int temp_x = px;
-                px = py;
-                py = -temp_x + height - 1;
-
-                screen[py][px][0] = r;
-                screen[py][px][1] = g;
-                screen[py][px][2] = b;
-            }
-        }
+    void GuiSdl::update_screen(const std::vector<std::uint8_t> &vram, RunStatus run_status) {
+        std::vector<std::uint32_t> frame_buffer = create_framebuffer(vram);
 
         void *pixels = nullptr;
         int pitch = 0;
@@ -137,7 +94,7 @@ namespace emu::cpu8080::applications::space_invaders {
         if (SDL_LockTexture(m_texture, nullptr, &pixels, &pitch) != 0) {
             std::cerr << "error while unlocking SDL texture: " << SDL_GetError() << "\n";
         } else {
-            memcpy(pixels, screen, pitch * height);
+            memcpy(pixels, frame_buffer.data(), pitch * height);
         }
 
         std::string title;

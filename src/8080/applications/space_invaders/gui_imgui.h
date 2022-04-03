@@ -7,7 +7,7 @@
 #include <SDL_render.h>
 #include "8080/debug_container.h"
 #include "8080/run_status.h"
-#include "8080/applications/space_invaders/interfaces/gui.h"
+#include "gui.h"
 #include "crosscutting/gui/cpu_info.h"
 #include "crosscutting/gui/debug_log.h"
 #include "crosscutting/gui/disassembly_window.h"
@@ -31,19 +31,9 @@ namespace emu::cpu8080::applications::space_invaders {
         void attach_debug_container(DebugContainer &debug_container) override;
 
     private:
-        static constexpr float scale = 4.0;
-        static constexpr int width = 224;
-        static constexpr int height = 256;
-        static constexpr int colors = 3;
-        static constexpr int bits_in_byte = 8;
-        static constexpr int scaled_width = static_cast<int>(scale * static_cast<float>(width));
-        static constexpr int scaled_height = static_cast<int>(scale * static_cast<float>(height));
-
         SDL_Window *m_win;
         SDL_GLContext m_gl_context;
-
         std::uint32_t m_screen_texture;
-        std::uint32_t m_screen_pixels[width * height];
 
         bool m_show_game;
         bool m_show_game_info;

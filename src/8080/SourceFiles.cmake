@@ -108,13 +108,13 @@ set(SOURCES_8080_H
         src/8080/applications/cpm/cpm_application.h
         src/8080/applications/space_invaders/cpu_io.h
         src/8080/applications/space_invaders/space_invaders.h
+        src/8080/applications/space_invaders/gui.h
         src/8080/applications/space_invaders/gui_imgui.h
         src/8080/applications/space_invaders/gui_sdl.h
         src/8080/applications/space_invaders/input_imgui.h
         src/8080/applications/space_invaders/input_sdl.h
         src/8080/applications/space_invaders/io_request.h
         src/8080/applications/space_invaders/settings.h
-        src/8080/applications/space_invaders/interfaces/gui.h
         src/8080/applications/space_invaders/interfaces/input.h
         src/8080/applications/space_invaders/interfaces/io_observer.h
         src/8080/cpu.h

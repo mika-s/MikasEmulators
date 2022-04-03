@@ -11,7 +11,7 @@
 #include "8080/run_status.h"
 #include "8080/shift_register.h"
 #include "8080/applications/space_invaders/cpu_io.h"
-#include "8080/applications/space_invaders/interfaces/gui.h"
+#include "gui.h"
 #include "8080/applications/space_invaders/interfaces/input.h"
 #include "8080/applications/space_invaders/interfaces/io_observer.h"
 #include "8080/instructions/instructions.h"
