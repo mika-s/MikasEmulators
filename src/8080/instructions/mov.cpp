@@ -44,7 +44,9 @@ namespace emu::cpu8080 {
         }
     }
 
-    void print_mov(const std::string &reg1, const std::string &reg2) {
-        std::cout << "MOV " << reg1 << "," << reg2;
+    void print_mov(std::ostream& ostream, const std::string &reg1, const std::string &reg2) {
+        ostream << "MOV "
+                << reg1 << ","
+                << reg2;
     }
 }

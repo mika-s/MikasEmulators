@@ -82,7 +82,7 @@ namespace emu::cpu8080 {
         EmulatorMemory memory;
         memory.add(read_file_into_vector(program));
 
-        Disassembler8080 disassembler(memory);
+        Disassembler8080 disassembler(memory, std::cout);
         disassembler.disassemble();
     }
 

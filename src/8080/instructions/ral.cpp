@@ -33,7 +33,7 @@ namespace emu::cpu8080 {
         cycles = 4;
     }
 
-    void print_ral() {
-        std::cout << "RAL";
+    void print_ral(std::ostream& ostream) {
+        ostream << "RAL";
     }
 }

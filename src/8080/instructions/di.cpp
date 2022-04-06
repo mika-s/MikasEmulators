@@ -19,7 +19,7 @@ namespace emu::cpu8080 {
         cycles = 4;
     }
 
-    void print_di() {
-        std::cout << "DI";
+    void print_di(std::ostream& ostream) {
+        ostream << "DI";
     }
 }

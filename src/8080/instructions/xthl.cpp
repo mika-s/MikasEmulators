@@ -28,7 +28,7 @@ namespace emu::cpu8080 {
         cycles = 18;
     }
 
-    void print_xthl() {
-        std::cout << "XTHL";
+    void print_xthl(std::ostream& ostream) {
+        ostream << "XTHL";
     }
 }

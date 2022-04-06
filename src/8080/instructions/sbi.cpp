@@ -26,8 +26,8 @@ namespace emu::cpu8080 {
         cycles = 7;
     }
 
-    void print_sbi(const NextByte &args) {
-        std::cout << "SBI "
-                  << emu::util::string::hexify_wo_0x(args.farg);
+    void print_sbi(std::ostream& ostream, const NextByte &args) {
+        ostream << "SBI "
+                << emu::util::string::hexify_wo_0x(args.farg);
     }
 }

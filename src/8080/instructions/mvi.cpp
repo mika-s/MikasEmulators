@@ -46,8 +46,9 @@ namespace emu::cpu8080 {
         }
     }
 
-    void print_mvi(const std::string &reg, const NextByte &args) {
-        std::cout << "MVI " << reg << ","
-                  << emu::util::string::hexify_wo_0x(args.farg);
+    void print_mvi(std::ostream& ostream, const std::string &reg, const NextByte &args) {
+        ostream << "MVI "
+                << reg << ","
+                << emu::util::string::hexify_wo_0x(args.farg);
     }
 }

@@ -32,7 +32,7 @@ namespace emu::cpu8080 {
         cycles += 5;
     }
 
-    void print_rnc() {
-        std::cout << "RNC";
+    void print_rnc(std::ostream& ostream) {
+        ostream << "RNC";
     }
 }

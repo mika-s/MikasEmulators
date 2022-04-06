@@ -20,7 +20,7 @@ namespace emu::cpu8080 {
         cycles = 4;
     }
 
-    void print_cma() {
-        std::cout << "CMA";
+    void print_cma(std::ostream& ostream) {
+        ostream << "CMA";
     }
 }

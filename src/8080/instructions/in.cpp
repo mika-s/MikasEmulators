@@ -26,8 +26,8 @@ namespace emu::cpu8080 {
         cycles = 10;
     }
 
-    void print_in(const NextByte &args) {
-        std::cout << "IN "
-                  << emu::util::string::hexify_wo_0x(args.farg);
+    void print_in(std::ostream& ostream, const NextByte &args) {
+        ostream << "IN "
+                << emu::util::string::hexify_wo_0x(args.farg);
     }
 }

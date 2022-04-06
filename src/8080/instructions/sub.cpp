@@ -47,7 +47,8 @@ namespace emu::cpu8080 {
         }
     }
 
-    void print_sub(const std::string &reg) {
-        std::cout << "SUB " << reg;
+    void print_sub(std::ostream& ostream, const std::string &reg) {
+        ostream << "SUB "
+                << reg;
     }
 }

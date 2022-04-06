@@ -18,7 +18,7 @@ namespace emu::cpu8080::tests {
                 dad(h_reg, l_reg, value_to_add, flag_reg, cycles);
                 EXPECT_EQ(
                         static_cast<std::uint16_t>(hl_counter + value_to_add),
-                        emu::util::byte::to_uint16_t(h_reg, l_reg)
+                        emu::util::byte::to_u16(h_reg, l_reg)
                 );
             }
         }

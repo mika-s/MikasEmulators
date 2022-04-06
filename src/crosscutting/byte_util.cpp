@@ -14,7 +14,7 @@ namespace emu::util::byte {
         variable &= ~(1U << bit_position);
     }
 
-    std::uint16_t to_uint16_t(std::uint8_t farg, std::uint8_t sarg) {
+    std::uint16_t to_u16(std::uint8_t farg, std::uint8_t sarg) {
         return (farg << 8u) + sarg;
     }
 

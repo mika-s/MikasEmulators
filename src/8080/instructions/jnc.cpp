@@ -22,15 +22,15 @@ namespace emu::cpu8080 {
      */
     void jnc(std::uint16_t &pc, const NextWord &args, const Flags &flag_reg, unsigned long &cycles) {
         if (!flag_reg.is_carry_flag_set()) {
-            pc = emu::util::byte::to_uint16_t(args.sarg, args.farg);
+            pc = emu::util::byte::to_u16(args.sarg, args.farg);
         }
 
         cycles = 10;
     }
 
-    void print_jnc(const NextWord &args) {
-        std::cout << "JZ "
-                  << emu::util::string::hexify_wo_0x(args.sarg)
-                  << emu::util::string::hexify_wo_0x(args.farg);
+    void print_jnc(std::ostream& ostream, const NextWord &args) {
+        ostream << "JZ "
+                << emu::util::string::hexify_wo_0x(args.sarg)
+                << emu::util::string::hexify_wo_0x(args.farg);
     }
 }

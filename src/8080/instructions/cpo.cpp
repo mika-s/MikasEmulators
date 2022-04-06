@@ -34,9 +34,9 @@ namespace emu::cpu8080 {
         cycles += 11;
     }
 
-    void print_cpo(const NextWord &args) {
-        std::cout << "CPO "
-                  << emu::util::string::hexify_wo_0x(args.sarg)
-                  << emu::util::string::hexify_wo_0x(args.farg);
+    void print_cpo(std::ostream& ostream, const NextWord &args) {
+        ostream << "CPO "
+                << emu::util::string::hexify_wo_0x(args.sarg)
+                << emu::util::string::hexify_wo_0x(args.farg);
     }
 }

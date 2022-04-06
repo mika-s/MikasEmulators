@@ -23,7 +23,7 @@ namespace emu::cpu8080 {
      */
     void shld(std::uint8_t l_reg, std::uint8_t h_reg, emu::cpu8080::EmulatorMemory &memory, const NextWord &args,
             unsigned long &cycles) {
-        const std::uint16_t l_address = emu::util::byte::to_uint16_t(args.sarg, args.farg);
+        const std::uint16_t l_address = emu::util::byte::to_u16(args.sarg, args.farg);
         const std::uint16_t h_address = l_address + 1;
 
         memory[l_address] = l_reg;
@@ -32,9 +32,9 @@ namespace emu::cpu8080 {
         cycles = 16;
     }
 
-    void print_shld(const NextWord &args) {
-        std::cout << "SHLD "
-                  << emu::util::string::hexify_wo_0x(args.sarg)
-                  << emu::util::string::hexify_wo_0x(args.farg);
+    void print_shld(std::ostream& ostream, const NextWord &args) {
+        ostream << "SHLD "
+                << emu::util::string::hexify_wo_0x(args.sarg)
+                << emu::util::string::hexify_wo_0x(args.farg);
     }
 }

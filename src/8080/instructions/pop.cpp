@@ -49,7 +49,8 @@ namespace emu::cpu8080 {
         cycles = 10;
     }
 
-    void print_pop(const std::string &reg) {
-        std::cout << "POP " << reg;
+    void print_pop(std::ostream& ostream, const std::string &reg) {
+        ostream << "POP "
+                << reg;
     }
 }

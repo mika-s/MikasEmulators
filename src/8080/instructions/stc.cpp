@@ -20,7 +20,7 @@ namespace emu::cpu8080 {
         cycles = 4;
     }
 
-    void print_stc() {
-        std::cout << "STC";
+    void print_stc(std::ostream& ostream) {
+        ostream << "STC";
     }
 }

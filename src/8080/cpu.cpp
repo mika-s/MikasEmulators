@@ -150,7 +150,7 @@ namespace emu::cpu8080 {
                 unused_1(m_opcode, cycles);
                 break;
             case DAD_B:
-                dad(m_h_reg, m_l_reg, emu::util::byte::to_uint16_t(m_b_reg, m_c_reg), m_flag_reg, cycles);
+                dad(m_h_reg, m_l_reg, emu::util::byte::to_u16(m_b_reg, m_c_reg), m_flag_reg, cycles);
                 break;
             case LDAX_B:
                 ldax(m_acc_reg, m_b_reg, m_c_reg, m_memory, cycles);
@@ -198,7 +198,7 @@ namespace emu::cpu8080 {
                 unused_1(m_opcode, cycles);
                 break;
             case DAD_D:
-                dad(m_h_reg, m_l_reg, emu::util::byte::to_uint16_t(m_d_reg, m_e_reg), m_flag_reg, cycles);
+                dad(m_h_reg, m_l_reg, emu::util::byte::to_u16(m_d_reg, m_e_reg), m_flag_reg, cycles);
                 break;
             case LDAX_D:
                 ldax(m_acc_reg, m_d_reg, m_e_reg, m_memory, cycles);
@@ -246,7 +246,7 @@ namespace emu::cpu8080 {
                 unused_1(m_opcode, cycles);
                 break;
             case DAD_H:
-                dad(m_h_reg, m_l_reg, emu::util::byte::to_uint16_t(m_h_reg, m_l_reg), m_flag_reg, cycles);
+                dad(m_h_reg, m_l_reg, emu::util::byte::to_u16(m_h_reg, m_l_reg), m_flag_reg, cycles);
                 break;
             case LHLD:
                 lhld(m_l_reg, m_h_reg, m_memory, get_next_word(), cycles);
@@ -917,7 +917,7 @@ namespace emu::cpu8080 {
     }
 
     std::uint16_t Cpu::address_in_HL() const {
-        return emu::util::byte::to_uint16_t(m_h_reg, m_l_reg);
+        return emu::util::byte::to_u16(m_h_reg, m_l_reg);
     }
 
     emu::cpu8080::EmulatorMemory &Cpu::memory() {

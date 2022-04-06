@@ -21,16 +21,16 @@ namespace emu::cpu8080 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void sta(std::uint8_t &acc_reg, emu::cpu8080::EmulatorMemory &memory, const NextWord &args, unsigned long &cycles) {
-        const std::uint16_t address = emu::util::byte::to_uint16_t(args.sarg, args.farg);
+        const std::uint16_t address = emu::util::byte::to_u16(args.sarg, args.farg);
 
         memory[address] = acc_reg;
 
         cycles = 13;
     }
 
-    void print_sta(const NextWord &args) {
-        std::cout << "STA "
-                  << emu::util::string::hexify_wo_0x(args.sarg)
-                  << emu::util::string::hexify_wo_0x(args.farg);
+    void print_sta(std::ostream& ostream, const NextWord &args) {
+        ostream << "STA "
+                << emu::util::string::hexify_wo_0x(args.sarg)
+                << emu::util::string::hexify_wo_0x(args.farg);
     }
 }

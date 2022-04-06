@@ -20,7 +20,7 @@ namespace emu::cpu8080 {
         cycles = 4;
     }
 
-    void print_cmc() {
-        std::cout << "CMC";
+    void print_cmc(std::ostream& ostream) {
+        ostream << "CMC";
     }
 }

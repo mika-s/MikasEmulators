@@ -21,12 +21,13 @@ namespace emu::cpu8080 {
      */
     void ldax(std::uint8_t &acc_reg, std::uint8_t reg1, std::uint8_t reg2, const emu::cpu8080::EmulatorMemory &memory,
             unsigned long &cycles) {
-        acc_reg = memory[emu::util::byte::to_uint16_t(reg1, reg2)];
+        acc_reg = memory[emu::util::byte::to_u16(reg1, reg2)];
 
         cycles = 7;
     }
 
-    void print_ldax(const std::string &reg) {
-        std::cout << "LDAX " << reg;
+    void print_ldax(std::ostream& ostream, const std::string &reg) {
+        ostream << "LDAX "
+                << reg;
     }
 }

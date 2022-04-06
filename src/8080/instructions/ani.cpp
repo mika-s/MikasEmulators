@@ -42,8 +42,8 @@ namespace emu::cpu8080 {
         cycles = 7;
     }
 
-    void print_ani(const NextByte &args) {
-        std::cout << "ANI "
-                  << emu::util::string::hexify_wo_0x(args.farg);
+    void print_ani(std::ostream& ostream, const NextByte &args) {
+        ostream << "ANI "
+                << emu::util::string::hexify_wo_0x(args.farg);
     }
 }

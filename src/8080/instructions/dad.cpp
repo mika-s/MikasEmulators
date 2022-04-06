@@ -20,7 +20,7 @@ namespace emu::cpu8080 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void dad(std::uint8_t &h_reg, std::uint8_t &l_reg, std::uint16_t value_to_add, Flags &flag_reg, unsigned long &cycles) {
-        const std::uint16_t previous = emu::util::byte::to_uint16_t(h_reg, l_reg);
+        const std::uint16_t previous = emu::util::byte::to_u16(h_reg, l_reg);
         const std::uint16_t next = previous + value_to_add;
         h_reg = emu::util::byte::second_byte(next);
         l_reg = emu::util::byte::first_byte(next);
@@ -30,7 +30,8 @@ namespace emu::cpu8080 {
         cycles = 10;
     }
 
-    void print_dad(const std::string &reg) {
-        std::cout << "DAD " << reg;
+    void print_dad(std::ostream& ostream, const std::string &reg) {
+        ostream << "DAD "
+                << reg;
     }
 }

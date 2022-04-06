@@ -6,11 +6,12 @@
 
 namespace emu::cpu8080 {
 
-    Disassembler8080::Disassembler8080(emu::cpu8080::EmulatorMemory &memory)
+    Disassembler8080::Disassembler8080(emu::cpu8080::EmulatorMemory &memory, std::ostream& ostream)
             : m_memory(memory),
               m_memory_size(memory.size()),
               m_pc(0),
-              m_opcode(0) {
+              m_opcode(0),
+              m_ostream(ostream) {
     }
 
     void Disassembler8080::disassemble() {
@@ -26,772 +27,772 @@ namespace emu::cpu8080 {
 
         switch (m_opcode) {
         case NOP:
-            print_nop();
+            print_nop(m_ostream);
             break;
         case LXI_B:
-            print_lxi("B", get_next_word());
+            print_lxi(m_ostream, "B", get_next_word());
             break;
         case STAX_B:
-            print_stax("B");
+            print_stax(m_ostream, "B");
             break;
         case INX_B:
-            print_inx("B");
+            print_inx(m_ostream, "B");
             break;
         case INR_B:
-            print_inr("B");
+            print_inr(m_ostream, "B");
             break;
         case DCR_B:
-            print_dcr("B");
+            print_dcr(m_ostream, "B");
             break;
         case MVI_B:
-            print_mvi("B", get_next_byte());
+            print_mvi(m_ostream, "B", get_next_byte());
             break;
         case RLC_B:
-            print_rlc("B");
+            print_rlc(m_ostream, "B");
             break;
         case UNUSED_NOP_1:
-            print_unused_nop();
+            print_unused_nop(m_ostream);
             break;
         case DAD_B:
-            print_dad("B");
+            print_dad(m_ostream, "B");
             break;
         case LDAX_B:
-            print_ldax("B");
+            print_ldax(m_ostream, "B");
             break;
         case DCX_B:
-            print_dcx("B");
+            print_dcx(m_ostream, "B");
             break;
         case INR_C:
-            print_inr("C");
+            print_inr(m_ostream, "C");
             break;
         case DCR_C:
-            print_dcr("C");
+            print_dcr(m_ostream, "C");
             break;
         case MVI_C:
-            print_mvi("C", get_next_byte());
+            print_mvi(m_ostream, "C", get_next_byte());
             break;
         case RRC:
-            print_rrc();
+            print_rrc(m_ostream);
             break;
         case UNUSED_NOP_2:
-            print_unused_nop();
+            print_unused_nop(m_ostream);
             break;
         case LXI_D:
-            print_lxi("D", get_next_word());
+            print_lxi(m_ostream, "D", get_next_word());
             break;
         case STAX_D:
-            print_stax("D");
+            print_stax(m_ostream, "D");
             break;
         case INX_D:
-            print_inx("D");
+            print_inx(m_ostream, "D");
             break;
         case INR_D:
-            print_inr("D");
+            print_inr(m_ostream, "D");
             break;
         case DCR_D:
-            print_dcr("D");
+            print_dcr(m_ostream, "D");
             break;
         case MVI_D:
-            print_mvi("D", get_next_byte());
+            print_mvi(m_ostream, "D", get_next_byte());
             break;
         case RAL:
-            print_ral();
+            print_ral(m_ostream);
             break;
         case UNUSED_NOP_3:
-            print_unused_nop();
+            print_unused_nop(m_ostream);
             break;
         case DAD_D:
-            print_dad("D");
+            print_dad(m_ostream, "D");
             break;
         case LDAX_D:
-            print_ldax("D");
+            print_ldax(m_ostream, "D");
             break;
         case DCX_D:
-            print_dcx("D");
+            print_dcx(m_ostream, "D");
             break;
         case INR_E:
-            print_inr("E");
+            print_inr(m_ostream, "E");
             break;
         case DCR_E:
-            print_dcr("E");
+            print_dcr(m_ostream, "E");
             break;
         case MVI_E:
-            print_mvi("E", get_next_byte());
+            print_mvi(m_ostream, "E", get_next_byte());
             break;
         case RAR:
-            print_rar();
+            print_rar(m_ostream);
             break;
         case UNUSED_NOP_4:
-            print_unused_nop();
+            print_unused_nop(m_ostream);
             break;
         case LXI_H:
-            print_lxi("H", get_next_word());
+            print_lxi(m_ostream, "H", get_next_word());
             break;
         case SHLD:
-            print_shld(get_next_word());
+            print_shld(m_ostream, get_next_word());
             break;
         case INX_H:
-            print_inx("H");
+            print_inx(m_ostream, "H");
             break;
         case INR_H:
-            print_inr("H");
+            print_inr(m_ostream, "H");
             break;
         case DCR_H:
-            print_dcr("H");
+            print_dcr(m_ostream, "H");
             break;
         case MVI_H:
-            print_mvi("H", get_next_byte());
+            print_mvi(m_ostream, "H", get_next_byte());
             break;
         case DAA:
-            print_daa();
+            print_daa(m_ostream);
             break;
         case UNUSED_NOP_5:
-            print_unused_nop();
+            print_unused_nop(m_ostream);
             break;
         case DAD_H:
-            print_dad("H");
+            print_dad(m_ostream, "H");
             break;
         case LHLD:
-            print_lhld(get_next_word());
+            print_lhld(m_ostream, get_next_word());
             break;
         case DCX_H:
-            print_dcx("H");
+            print_dcx(m_ostream, "H");
             break;
         case INR_L:
-            print_inr("L");
+            print_inr(m_ostream, "L");
             break;
         case DCR_L:
-            print_dcr("L");
+            print_dcr(m_ostream, "L");
             break;
         case MVI_L:
-            print_mvi("L", get_next_byte());
+            print_mvi(m_ostream, "L", get_next_byte());
             break;
         case CMA:
-            print_cma();
+            print_cma(m_ostream);
             break;
         case UNUSED_NOP_6:
-            print_unused_nop();
+            print_unused_nop(m_ostream);
             break;
         case LXI_SP:
-            print_lxi("SP", get_next_word());
+            print_lxi(m_ostream, "SP", get_next_word());
             break;
         case STA:
-            print_sta(get_next_word());
+            print_sta(m_ostream, get_next_word());
             break;
         case INX_SP:
-            print_inx("SP");
+            print_inx(m_ostream, "SP");
             break;
         case INR_M:
-            print_inr("M");
+            print_inr(m_ostream, "M");
             break;
         case DCR_M:
-            print_dcr("M");
+            print_dcr(m_ostream, "M");
             break;
         case MVI_M:
-            print_mvi("M", get_next_byte());
+            print_mvi(m_ostream, "M", get_next_byte());
             break;
         case STC:
-            print_stc();
+            print_stc(m_ostream);
             break;
         case UNUSED_NOP_7:
-            print_unused_nop();
+            print_unused_nop(m_ostream);
             break;
         case DAD_SP:
-            print_dad("SP");
+            print_dad(m_ostream, "SP");
             break;
         case LDA:
-            print_lda(get_next_word());
+            print_lda(m_ostream, get_next_word());
             break;
         case DCX_SP:
-            print_dcx("SP");
+            print_dcx(m_ostream, "SP");
             break;
         case INR_A:
-            print_inr("A");
+            print_inr(m_ostream, "A");
             break;
         case DCR_A:
-            print_dcr("A");
+            print_dcr(m_ostream, "A");
             break;
         case MVI_A:
-            print_mvi("A", get_next_byte());
+            print_mvi(m_ostream, "A", get_next_byte());
             break;
         case CMC:
-            print_cmc();
+            print_cmc(m_ostream);
             break;
         case MOV_B_B:
-            print_mov("B", "B");
+            print_mov(m_ostream, "B", "B");
             break;
         case MOV_B_C:
-            print_mov("B", "C");
+            print_mov(m_ostream, "B", "C");
             break;
         case MOV_B_D:
-            print_mov("B", "D");
+            print_mov(m_ostream, "B", "D");
             break;
         case MOV_B_E:
-            print_mov("B", "E");
+            print_mov(m_ostream, "B", "E");
             break;
         case MOV_B_H:
-            print_mov("B", "H");
+            print_mov(m_ostream, "B", "H");
             break;
         case MOV_B_L:
-            print_mov("B", "L");
+            print_mov(m_ostream, "B", "L");
             break;
         case MOV_B_M:
-            print_mov("B", "M");
+            print_mov(m_ostream, "B", "M");
             break;
         case MOV_B_A:
-            print_mov("B", "A");
+            print_mov(m_ostream, "B", "A");
             break;
         case MOV_C_B:
-            print_mov("C", "B");
+            print_mov(m_ostream, "C", "B");
             break;
         case MOV_C_C:
-            print_mov("C", "C");
+            print_mov(m_ostream, "C", "C");
             break;
         case MOV_C_D:
-            print_mov("C", "D");
+            print_mov(m_ostream, "C", "D");
             break;
         case MOV_C_E:
-            print_mov("C", "E");
+            print_mov(m_ostream, "C", "E");
             break;
         case MOV_C_H:
-            print_mov("C", "H");
+            print_mov(m_ostream, "C", "H");
             break;
         case MOV_C_L:
-            print_mov("C", "L");
+            print_mov(m_ostream, "C", "L");
             break;
         case MOV_C_M:
-            print_mov("C", "M");
+            print_mov(m_ostream, "C", "M");
             break;
         case MOV_C_A:
-            print_mov("C", "A");
+            print_mov(m_ostream, "C", "A");
             break;
         case MOV_D_B:
-            print_mov("D", "B");
+            print_mov(m_ostream, "D", "B");
             break;
         case MOV_D_C:
-            print_mov("D", "C");
+            print_mov(m_ostream, "D", "C");
             break;
         case MOV_D_D:
-            print_mov("D", "D");
+            print_mov(m_ostream, "D", "D");
             break;
         case MOV_D_E:
-            print_mov("D", "E");
+            print_mov(m_ostream, "D", "E");
             break;
         case MOV_D_H:
-            print_mov("D", "H");
+            print_mov(m_ostream, "D", "H");
             break;
         case MOV_D_L:
-            print_mov("D", "L");
+            print_mov(m_ostream, "D", "L");
             break;
         case MOV_D_M:
-            print_mov("D", "M");
+            print_mov(m_ostream, "D", "M");
             break;
         case MOV_D_A:
-            print_mov("D", "A");
+            print_mov(m_ostream, "D", "A");
             break;
         case MOV_E_B:
-            print_mov("E", "B");
+            print_mov(m_ostream, "E", "B");
             break;
         case MOV_E_C:
-            print_mov("E", "C");
+            print_mov(m_ostream, "E", "C");
             break;
         case MOV_E_D:
-            print_mov("E", "D");
+            print_mov(m_ostream, "E", "D");
             break;
         case MOV_E_E:
-            print_mov("E", "E");
+            print_mov(m_ostream, "E", "E");
             break;
         case MOV_E_H:
-            print_mov("E", "H");
+            print_mov(m_ostream, "E", "H");
             break;
         case MOV_E_L:
-            print_mov("E", "L");
+            print_mov(m_ostream, "E", "L");
             break;
         case MOV_E_M:
-            print_mov("E", "M");
+            print_mov(m_ostream, "E", "M");
             break;
         case MOV_E_A:
-            print_mov("E", "A");
+            print_mov(m_ostream, "E", "A");
             break;
         case MOV_H_B:
-            print_mov("H", "B");
+            print_mov(m_ostream, "H", "B");
             break;
         case MOV_H_C:
-            print_mov("H", "C");
+            print_mov(m_ostream, "H", "C");
             break;
         case MOV_H_D:
-            print_mov("H", "D");
+            print_mov(m_ostream, "H", "D");
             break;
         case MOV_H_E:
-            print_mov("H", "E");
+            print_mov(m_ostream, "H", "E");
             break;
         case MOV_H_H:
-            print_mov("H", "H");
+            print_mov(m_ostream, "H", "H");
             break;
         case MOV_H_L:
-            print_mov("H", "L");
+            print_mov(m_ostream, "H", "L");
             break;
         case MOV_H_M:
-            print_mov("H", "M");
+            print_mov(m_ostream, "H", "M");
             break;
         case MOV_H_A:
-            print_mov("H", "A");
+            print_mov(m_ostream, "H", "A");
             break;
         case MOV_L_B:
-            print_mov("L", "B");
+            print_mov(m_ostream, "L", "B");
             break;
         case MOV_L_C:
-            print_mov("L", "C");
+            print_mov(m_ostream, "L", "C");
             break;
         case MOV_L_D:
-            print_mov("L", "D");
+            print_mov(m_ostream, "L", "D");
             break;
         case MOV_L_E:
-            print_mov("L", "E");
+            print_mov(m_ostream, "L", "E");
             break;
         case MOV_L_H:
-            print_mov("L", "H");
+            print_mov(m_ostream, "L", "H");
             break;
         case MOV_L_L:
-            print_mov("L", "L");
+            print_mov(m_ostream, "L", "L");
             break;
         case MOV_L_M:
-            print_mov("L", "M");
+            print_mov(m_ostream, "L", "M");
             break;
         case MOV_L_A:
-            print_mov("L", "A");
+            print_mov(m_ostream, "L", "A");
             break;
         case MOV_M_B:
-            print_mov("M", "B");
+            print_mov(m_ostream, "M", "B");
             break;
         case MOV_M_C:
-            print_mov("M", "C");
+            print_mov(m_ostream, "M", "C");
             break;
         case MOV_M_D:
-            print_mov("M", "D");
+            print_mov(m_ostream, "M", "D");
             break;
         case MOV_M_E:
-            print_mov("M", "E");
+            print_mov(m_ostream, "M", "E");
             break;
         case MOV_M_H:
-            print_mov("M", "H");
+            print_mov(m_ostream, "M", "H");
             break;
         case MOV_M_L:
-            print_mov("M", "L");
+            print_mov(m_ostream, "M", "L");
             break;
         case HLT:
-            print_hlt();
+            print_hlt(m_ostream);
             break;
         case MOV_M_A:
-            print_mov("M", "A");
+            print_mov(m_ostream, "M", "A");
             break;
         case MOV_A_B:
-            print_mov("A", "B");
+            print_mov(m_ostream, "A", "B");
             break;
         case MOV_A_C:
-            print_mov("A", "C");
+            print_mov(m_ostream, "A", "C");
             break;
         case MOV_A_D:
-            print_mov("A", "D");
+            print_mov(m_ostream, "A", "D");
             break;
         case MOV_A_E:
-            print_mov("A", "E");
+            print_mov(m_ostream, "A", "E");
             break;
         case MOV_A_H:
-            print_mov("A", "H");
+            print_mov(m_ostream, "A", "H");
             break;
         case MOV_A_L:
-            print_mov("A", "L");
+            print_mov(m_ostream, "A", "L");
             break;
         case MOV_A_M:
-            print_mov("A", "M");
+            print_mov(m_ostream, "A", "M");
             break;
         case MOV_A_A:
-            print_mov("A", "A");
+            print_mov(m_ostream, "A", "A");
             break;
         case ADD_B:
-            print_add("B");
+            print_add(m_ostream, "B");
             break;
         case ADD_C:
-            print_add("C");
+            print_add(m_ostream, "C");
             break;
         case ADD_D:
-            print_add("D");
+            print_add(m_ostream, "D");
             break;
         case ADD_E:
-            print_add("E");
+            print_add(m_ostream, "E");
             break;
         case ADD_H:
-            print_add("H");
+            print_add(m_ostream, "H");
             break;
         case ADD_L:
-            print_add("L");
+            print_add(m_ostream, "L");
             break;
         case ADD_M:
-            print_add("M");
+            print_add(m_ostream, "M");
             break;
         case ADD_A:
-            print_add("A");
+            print_add(m_ostream, "A");
             break;
         case ADC_B:
-            print_adc("B");
+            print_adc(m_ostream, "B");
             break;
         case ADC_C:
-            print_adc("C");
+            print_adc(m_ostream, "C");
             break;
         case ADC_D:
-            print_adc("D");
+            print_adc(m_ostream, "D");
             break;
         case ADC_E:
-            print_adc("E");
+            print_adc(m_ostream, "E");
             break;
         case ADC_H:
-            print_adc("H");
+            print_adc(m_ostream, "H");
             break;
         case ADC_L:
-            print_adc("L");
+            print_adc(m_ostream, "L");
             break;
         case ADC_M:
-            print_adc("M");
+            print_adc(m_ostream, "M");
             break;
         case ADC_A:
-            print_adc("A");
+            print_adc(m_ostream, "A");
             break;
         case SUB_B:
-            print_sub("B");
+            print_sub(m_ostream, "B");
             break;
         case SUB_C:
-            print_sub("C");
+            print_sub(m_ostream, "C");
             break;
         case SUB_D:
-            print_sub("D");
+            print_sub(m_ostream, "D");
             break;
         case SUB_E:
-            print_sub("E");
+            print_sub(m_ostream, "E");
             break;
         case SUB_H:
-            print_sub("H");
+            print_sub(m_ostream, "H");
             break;
         case SUB_L:
-            print_sub("L");
+            print_sub(m_ostream, "L");
             break;
         case SUB_M:
-            print_sub("M");
+            print_sub(m_ostream, "M");
             break;
         case SUB_A:
-            print_sub("A");
+            print_sub(m_ostream, "A");
             break;
         case SBB_B:
-            print_sbb("B");
+            print_sbb(m_ostream, "B");
             break;
         case SBB_C:
-            print_sbb("C");
+            print_sbb(m_ostream, "C");
             break;
         case SBB_D:
-            print_sbb("D");
+            print_sbb(m_ostream, "D");
             break;
         case SBB_E:
-            print_sbb("E");
+            print_sbb(m_ostream, "E");
             break;
         case SBB_H:
-            print_sbb("H");
+            print_sbb(m_ostream, "H");
             break;
         case SBB_L:
-            print_sbb("L");
+            print_sbb(m_ostream, "L");
             break;
         case SBB_M:
-            print_sbb("M");
+            print_sbb(m_ostream, "M");
             break;
         case SBB_A:
-            print_sbb("A");
+            print_sbb(m_ostream, "A");
             break;
         case ANA_B:
-            print_ana("B");
+            print_ana(m_ostream, "B");
             break;
         case ANA_C:
-            print_ana("C");
+            print_ana(m_ostream, "C");
             break;
         case ANA_D:
-            print_ana("D");
+            print_ana(m_ostream, "D");
             break;
         case ANA_E:
-            print_ana("E");
+            print_ana(m_ostream, "E");
             break;
         case ANA_H:
-            print_ana("H");
+            print_ana(m_ostream, "H");
             break;
         case ANA_L:
-            print_ana("L");
+            print_ana(m_ostream, "L");
             break;
         case ANA_M:
-            print_ana("M");
+            print_ana(m_ostream, "M");
             break;
         case ANA_A:
-            print_ana("A");
+            print_ana(m_ostream, "A");
             break;
         case XRA_B:
-            print_xra("B");
+            print_xra(m_ostream, "B");
             break;
         case XRA_C:
-            print_xra("C");
+            print_xra(m_ostream, "C");
             break;
         case XRA_D:
-            print_xra("D");
+            print_xra(m_ostream, "D");
             break;
         case XRA_E:
-            print_xra("E");
+            print_xra(m_ostream, "E");
             break;
         case XRA_H:
-            print_xra("H");
+            print_xra(m_ostream, "H");
             break;
         case XRA_L:
-            print_xra("L");
+            print_xra(m_ostream, "L");
             break;
         case XRA_M:
-            print_xra("M");
+            print_xra(m_ostream, "M");
             break;
         case XRA_A:
-            print_xra("A");
+            print_xra(m_ostream, "A");
             break;
         case ORA_B:
-            print_ora("B");
+            print_ora(m_ostream, "B");
             break;
         case ORA_C:
-            print_ora("C");
+            print_ora(m_ostream, "C");
             break;
         case ORA_D:
-            print_ora("D");
+            print_ora(m_ostream, "D");
             break;
         case ORA_E:
-            print_ora("E");
+            print_ora(m_ostream, "E");
             break;
         case ORA_H:
-            print_ora("H");
+            print_ora(m_ostream, "H");
             break;
         case ORA_L:
-            print_ora("L");
+            print_ora(m_ostream, "L");
             break;
         case ORA_M:
-            print_ora("M");
+            print_ora(m_ostream, "M");
             break;
         case ORA_A:
-            print_ora("A");
+            print_ora(m_ostream, "A");
             break;
         case CMP_B:
-            print_cmp("B");
+            print_cmp(m_ostream, "B");
             break;
         case CMP_C:
-            print_cmp("C");
+            print_cmp(m_ostream, "C");
             break;
         case CMP_D:
-            print_cmp("D");
+            print_cmp(m_ostream, "D");
             break;
         case CMP_E:
-            print_cmp("E");
+            print_cmp(m_ostream, "E");
             break;
         case CMP_H:
-            print_cmp("H");
+            print_cmp(m_ostream, "H");
             break;
         case CMP_L:
-            print_cmp("L");
+            print_cmp(m_ostream, "L");
             break;
         case CMP_M:
-            print_cmp("M");
+            print_cmp(m_ostream, "M");
             break;
         case CMP_A:
-            print_cmp("A");
+            print_cmp(m_ostream, "A");
             break;
         case RNZ:
-            print_rnz();
+            print_rnz(m_ostream);
             break;
         case POP_B:
-            print_pop("B");
+            print_pop(m_ostream, "B");
             break;
         case JNZ:
-            print_jnz(get_next_word());
+            print_jnz(m_ostream, get_next_word());
             break;
         case JMP:
-            print_jmp(get_next_word());
+            print_jmp(m_ostream, get_next_word());
             break;
         case CNZ:
-            print_cnz(get_next_word());
+            print_cnz(m_ostream, get_next_word());
             break;
         case PUSH_B:
-            print_push("B");
+            print_push(m_ostream, "B");
             break;
         case ADI:
-            print_adi(get_next_byte());
+            print_adi(m_ostream, get_next_byte());
             break;
         case RST_0:
-            print_rst(0);
+            print_rst(m_ostream, 0);
             break;
         case RZ:
-            print_rz();
+            print_rz(m_ostream);
             break;
         case RET:
-            print_ret();
+            print_ret(m_ostream);
             break;
         case JZ:
-            print_jz(get_next_word());
+            print_jz(m_ostream, get_next_word());
             break;
         case UNUSED_JMP_1:
-            print_unused_jmp(get_next_word());
+            print_unused_jmp(m_ostream, get_next_word());
             break;
         case CZ:
-            print_cz(get_next_word());
+            print_cz(m_ostream, get_next_word());
             break;
         case CALL:
-            print_call(get_next_word());
+            print_call(m_ostream, get_next_word());
             break;
         case ACI:
-            print_aci(get_next_byte());
+            print_aci(m_ostream, get_next_byte());
             break;
         case RST_1:
-            print_rst(1);
+            print_rst(m_ostream, 1);
             break;
         case RNC:
-            print_rnc();
+            print_rnc(m_ostream);
             break;
         case POP_D:
-            print_pop("D");
+            print_pop(m_ostream, "D");
             break;
         case JNC:
-            print_jnc(get_next_word());
+            print_jnc(m_ostream, get_next_word());
             break;
         case OUT:
-            print_out(get_next_byte());
+            print_out(m_ostream, get_next_byte());
             break;
         case CNC:
-            print_cnc(get_next_word());
+            print_cnc(m_ostream, get_next_word());
             break;
         case PUSH_D:
-            print_push("D");
+            print_push(m_ostream, "D");
             break;
         case SUI:
-            print_sui(get_next_byte());
+            print_sui(m_ostream, get_next_byte());
             break;
         case RST_2:
-            print_rst(2);
+            print_rst(m_ostream, 2);
             break;
         case RC:
-            print_rc();
+            print_rc(m_ostream);
             break;
         case UNUSED_RET_1:
-            print_unused_ret();
+            print_unused_ret(m_ostream);
             break;
         case JC:
-            print_jc(get_next_word());
+            print_jc(m_ostream, get_next_word());
             break;
         case IN:
-            print_in(get_next_byte());
+            print_in(m_ostream, get_next_byte());
             break;
         case CC:
-            print_cc(get_next_word());
+            print_cc(m_ostream, get_next_word());
             break;
         case UNUSED_CALL_1:
-            print_unused_call(get_next_word());
+            print_unused_call(m_ostream, get_next_word());
             break;
         case SBI:
-            print_sbi(get_next_byte());
+            print_sbi(m_ostream, get_next_byte());
             break;
         case RST_3:
-            print_rst(3);
+            print_rst(m_ostream, 3);
             break;
         case RPO:
-            print_rpo();
+            print_rpo(m_ostream);
             break;
         case POP_H:
-            print_pop("H");
+            print_pop(m_ostream, "H");
             break;
         case JPO:
-            print_jpo(get_next_word());
+            print_jpo(m_ostream, get_next_word());
             break;
         case XTHL:
-            print_xthl();
+            print_xthl(m_ostream);
             break;
         case CPO:
-            print_cpo(get_next_word());
+            print_cpo(m_ostream, get_next_word());
             break;
         case PUSH_H:
-            print_push("H");
+            print_push(m_ostream, "H");
             break;
         case ANI:
-            print_ani(get_next_byte());
+            print_ani(m_ostream, get_next_byte());
             break;
         case RST_4:
-            print_rst(4);
+            print_rst(m_ostream, 4);
             break;
         case RPE:
-            print_rpe();
+            print_rpe(m_ostream);
             break;
         case PCHL:
-            print_pchl();
+            print_pchl(m_ostream);
             break;
         case JPE:
-            print_jpe(get_next_word());
+            print_jpe(m_ostream, get_next_word());
             break;
         case XCHG:
-            print_xchg();
+            print_xchg(m_ostream);
             break;
         case CPE:
-            print_cpe(get_next_word());
+            print_cpe(m_ostream, get_next_word());
             break;
         case UNUSED_CALL_2:
-            print_unused_call(get_next_word());
+            print_unused_call(m_ostream, get_next_word());
             break;
         case XRI:
-            print_xri(get_next_byte());
+            print_xri(m_ostream, get_next_byte());
             break;
         case RST_5:
-            print_rst(5);
+            print_rst(m_ostream, 5);
             break;
         case RP:
-            print_rp();
+            print_rp(m_ostream);
             break;
         case POS_PSW:
-            print_pop("PSW");
+            print_pop(m_ostream, "PSW");
             break;
         case JP:
-            print_jp(get_next_word());
+            print_jp(m_ostream, get_next_word());
             break;
         case DI:
-            print_di();
+            print_di(m_ostream);
             break;
         case CP:
-            print_cp(get_next_word());
+            print_cp(m_ostream, get_next_word());
             break;
         case PUSH_PSW:
-            print_push("PSW");
+            print_push(m_ostream, "PSW");
             break;
         case ORI:
-            print_ori(get_next_byte());
+            print_ori(m_ostream, get_next_byte());
             break;
         case RST_6:
-            print_rst(6);
+            print_rst(m_ostream, 6);
             break;
         case RM:
-            print_rm();
+            print_rm(m_ostream);
             break;
         case SPHL:
-            print_sphl();
+            print_sphl(m_ostream);
             break;
         case JM:
-            print_jm(get_next_word());
+            print_jm(m_ostream, get_next_word());
             break;
         case EI:
-            print_ei();
+            print_ei(m_ostream);
             break;
         case CM:
-            print_cm(get_next_word());
+            print_cm(m_ostream, get_next_word());
             break;
         case UNUSED_CALL_3:
-            print_unused_call(get_next_word());
+            print_unused_call(m_ostream, get_next_word());
             break;
         case CPI:
-            print_cpi(get_next_byte());
+            print_cpi(m_ostream, get_next_byte());
             break;
         case RST_7:
-            print_rst(7);
+            print_rst(m_ostream, 7);
             break;
         default:
             throw emu::util::exceptions::UnrecognizedOpcodeException(m_opcode);

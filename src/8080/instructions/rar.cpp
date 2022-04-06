@@ -33,7 +33,7 @@ namespace emu::cpu8080 {
         cycles = 4;
     }
 
-    void print_rar() {
-        std::cout << "RAR";
+    void print_rar(std::ostream& ostream) {
+        ostream << "RAR";
     }
 }

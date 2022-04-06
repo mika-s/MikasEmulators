@@ -44,7 +44,7 @@ namespace emu::cpu8080 {
         cycles = 4;
     }
 
-    void print_daa() {
-        std::cout << "DAA";
+    void print_daa(std::ostream& ostream) {
+        ostream << "DAA";
     }
 }

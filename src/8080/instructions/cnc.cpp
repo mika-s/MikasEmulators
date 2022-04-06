@@ -34,9 +34,9 @@ namespace emu::cpu8080 {
         cycles += 11;
     }
 
-    void print_cnc(const NextWord &args) {
-        std::cout << "CNC "
-                  << emu::util::string::hexify_wo_0x(args.sarg)
-                  << emu::util::string::hexify_wo_0x(args.farg);
+    void print_cnc(std::ostream& ostream, const NextWord &args) {
+        ostream << "CNC "
+                << emu::util::string::hexify_wo_0x(args.sarg)
+                << emu::util::string::hexify_wo_0x(args.farg);
     }
 }

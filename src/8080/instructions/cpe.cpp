@@ -34,9 +34,9 @@ namespace emu::cpu8080 {
         cycles += 11;
     }
 
-    void print_cpe(const NextWord &args) {
-        std::cout << "CPE "
-                  << emu::util::string::hexify_wo_0x(args.sarg)
-                  << emu::util::string::hexify_wo_0x(args.farg);
+    void print_cpe(std::ostream& ostream, const NextWord &args) {
+        ostream << "CPE "
+                << emu::util::string::hexify_wo_0x(args.sarg)
+                << emu::util::string::hexify_wo_0x(args.farg);
     }
 }

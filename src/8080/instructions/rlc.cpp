@@ -31,7 +31,8 @@ namespace emu::cpu8080 {
         cycles = 4;
     }
 
-    void print_rlc(const std::string &reg) {
-        std::cout << "RLC " << reg;
+    void print_rlc(std::ostream& ostream, const std::string &reg) {
+        ostream << "RLC "
+                << reg;
     }
 }

@@ -47,7 +47,8 @@ namespace emu::cpu8080 {
         }
     }
 
-    void print_sbb(const std::string &reg) {
-        std::cout << "SBB " << reg;
+    void print_sbb(std::ostream& ostream, const std::string &reg) {
+        ostream << "SBB "
+                << reg;
     }
 }

@@ -19,7 +19,7 @@ namespace emu::cpu8080 {
         cycles = 4;
     }
 
-    void print_ei() {
-        std::cout << "EI";
+    void print_ei(std::ostream& ostream) {
+        ostream << "EI";
     }
 }

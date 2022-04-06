@@ -11,7 +11,7 @@ namespace emu::cpu8080 {
 
     class Disassembler8080 {
     public:
-        explicit Disassembler8080(emu::cpu8080::EmulatorMemory &memory);
+        Disassembler8080(emu::cpu8080::EmulatorMemory &memory, std::ostream& iostream);
 
         void disassemble();
 
@@ -20,6 +20,7 @@ namespace emu::cpu8080 {
         std::size_t m_memory_size;
         std::uint16_t m_pc;
         std::uint8_t m_opcode;
+        std::ostream &m_ostream;
 
         void print_next_instruction();
 

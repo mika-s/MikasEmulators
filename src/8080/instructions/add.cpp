@@ -48,7 +48,8 @@ namespace emu::cpu8080 {
         }
     }
 
-    void print_add(const std::string &reg) {
-        std::cout << "ADD " << reg;
+    void print_add(std::ostream& ostream, const std::string &reg) {
+        ostream << "ADD "
+                << reg;
     }
 }

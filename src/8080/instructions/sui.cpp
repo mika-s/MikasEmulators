@@ -32,8 +32,8 @@ namespace emu::cpu8080 {
         cycles = 7;
     }
 
-    void print_sui(const NextByte &args) {
-        std::cout << "SUI "
-                  << emu::util::string::hexify_wo_0x(args.farg);
+    void print_sui(std::ostream& ostream, const NextByte &args) {
+        ostream << "SUI "
+                << emu::util::string::hexify_wo_0x(args.farg);
     }
 }

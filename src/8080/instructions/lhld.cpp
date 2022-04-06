@@ -23,15 +23,15 @@ namespace emu::cpu8080 {
      */
     void lhld(std::uint8_t &l_reg, std::uint8_t &h_reg, const emu::cpu8080::EmulatorMemory &memory,
               const NextWord &args, unsigned long &cycles) {
-        l_reg = memory[emu::util::byte::to_uint16_t(args.sarg, args.farg)];
-        h_reg = memory[emu::util::byte::to_uint16_t(args.sarg, args.farg) + 1];
+        l_reg = memory[emu::util::byte::to_u16(args.sarg, args.farg)];
+        h_reg = memory[emu::util::byte::to_u16(args.sarg, args.farg) + 1];
 
         cycles = 16;
     }
 
-    void print_lhld(const NextWord &args) {
-        std::cout << "LHLD "
-                  << emu::util::string::hexify_wo_0x(args.sarg)
-                  << emu::util::string::hexify_wo_0x(args.farg);
+    void print_lhld(std::ostream& ostream, const NextWord &args) {
+        ostream << "LHLD "
+                << emu::util::string::hexify_wo_0x(args.sarg)
+                << emu::util::string::hexify_wo_0x(args.farg);
     }
 }

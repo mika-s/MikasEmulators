@@ -21,7 +21,7 @@ namespace emu::cpu8080 {
         cycles = 5;
     }
 
-    void print_sphl() {
-        std::cout << "SPHL";
+    void print_sphl(std::ostream& ostream) {
+        ostream << "SPHL";
     }
 }

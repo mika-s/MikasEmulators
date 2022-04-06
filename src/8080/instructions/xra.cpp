@@ -58,7 +58,8 @@ namespace emu::cpu8080 {
         }
     }
 
-    void print_xra(const std::string &reg) {
-        std::cout << "XRA " << reg;
+    void print_xra(std::ostream& ostream, const std::string &reg) {
+        ostream << "XRA "
+                << reg;
     }
 }

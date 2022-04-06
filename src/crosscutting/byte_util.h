@@ -11,7 +11,7 @@ namespace emu::util::byte {
 
     void unset_bit(std::uint8_t &variable, unsigned int bit_position);
 
-    std::uint16_t to_uint16_t(std::uint8_t farg, std::uint8_t sarg);
+    std::uint16_t to_u16(std::uint8_t farg, std::uint8_t sarg);
 
     std::uint8_t first_byte(std::uint16_t number);
 

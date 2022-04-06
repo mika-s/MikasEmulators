@@ -17,7 +17,7 @@ namespace emu::cpu8080 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void dcx(std::uint8_t &reg1, std::uint8_t &reg2, unsigned long &cycles) {
-        std::uint16_t val = emu::util::byte::to_uint16_t(reg1, reg2);
+        std::uint16_t val = emu::util::byte::to_u16(reg1, reg2);
         --val;
 
         reg2 = emu::util::byte::first_byte(val);
@@ -44,7 +44,8 @@ namespace emu::cpu8080 {
         cycles = 5;
     }
 
-    void print_dcx(const std::string &reg) {
-        std::cout << "DCX " << reg;
+    void print_dcx(std::ostream& ostream, const std::string &reg) {
+        ostream << "DCX "
+                << reg;
     }
 }

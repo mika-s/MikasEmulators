@@ -51,7 +51,8 @@ namespace emu::cpu8080 {
         }
     }
 
-    void print_dcr(const std::string &reg) {
-        std::cout << "DCR " << reg;
+    void print_dcr(std::ostream& ostream, const std::string &reg) {
+        ostream << "DCR "
+                << reg;
     }
 }

@@ -25,8 +25,8 @@ namespace emu::cpu8080 {
         cycles = 10;
     }
 
-    void print_out(const NextByte &args) {
-        std::cout << "OUT "
-                  << emu::util::string::hexify_wo_0x(args.farg);
+    void print_out(std::ostream& ostream, const NextByte &args) {
+        ostream << "OUT "
+                << emu::util::string::hexify_wo_0x(args.farg);
     }
 }

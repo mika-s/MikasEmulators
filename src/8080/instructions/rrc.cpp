@@ -31,7 +31,7 @@ namespace emu::cpu8080 {
         cycles = 4;
     }
 
-    void print_rrc() {
-        std::cout << "RRC";
+    void print_rrc(std::ostream& ostream) {
+        ostream << "RRC";
     }
 }

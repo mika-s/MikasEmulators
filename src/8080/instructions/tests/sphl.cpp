@@ -11,7 +11,7 @@ namespace emu::cpu8080::tests {
         std::uint8_t h_reg = 0x11;
         std::uint8_t l_reg = 0x22;
 
-        sphl(sp, emu::util::byte::to_uint16_t(h_reg, l_reg), cycles);
+        sphl(sp, emu::util::byte::to_u16(h_reg, l_reg), cycles);
         EXPECT_EQ(0x1122, sp);
     }
 
@@ -22,7 +22,7 @@ namespace emu::cpu8080::tests {
         std::uint8_t h_reg = 0x11;
         std::uint8_t l_reg = 0x22;
 
-        sphl(sp, emu::util::byte::to_uint16_t(h_reg, l_reg), cycles);
+        sphl(sp, emu::util::byte::to_u16(h_reg, l_reg), cycles);
         EXPECT_EQ(5, cycles);
     }
 }

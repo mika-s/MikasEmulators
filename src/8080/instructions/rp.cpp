@@ -32,7 +32,7 @@ namespace emu::cpu8080 {
         cycles += 5;
     }
 
-    void print_rp() {
-        std::cout << "RP";
+    void print_rp(std::ostream& ostream) {
+        ostream << "RP";
     }
 }

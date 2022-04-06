@@ -36,8 +36,8 @@ namespace emu::cpu8080 {
         cycles = 7;
     }
 
-    void print_ori(const NextByte &args) {
-        std::cout << "ORI "
-                  << emu::util::string::hexify_wo_0x(args.farg);
+    void print_ori(std::ostream& ostream, const NextByte &args) {
+        ostream << "ORI "
+                << emu::util::string::hexify_wo_0x(args.farg);
     }
 }

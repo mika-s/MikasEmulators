@@ -10,6 +10,8 @@ namespace emu::util::gui {
             return;
         }
 
+        // - Scroll when PC leaves the visible area, but not otherwise.
+
         ImGui::Text("Placeholder");
 
         ImGui::End();

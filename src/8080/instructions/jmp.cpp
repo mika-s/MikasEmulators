@@ -19,14 +19,14 @@ namespace emu::cpu8080 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void jmp(std::uint16_t &pc, const NextWord &args, unsigned long &cycles) {
-        pc = emu::util::byte::to_uint16_t(args.sarg, args.farg);
+        pc = emu::util::byte::to_u16(args.sarg, args.farg);
 
         cycles = 10;
     }
 
-    void print_jmp(const NextWord &args) {
-        std::cout << "JMP "
-                  << emu::util::string::hexify_wo_0x(args.sarg)
-                  << emu::util::string::hexify_wo_0x(args.farg);
+    void print_jmp(std::ostream& ostream, const NextWord &args) {
+        ostream << "JMP "
+                << emu::util::string::hexify_wo_0x(args.sarg)
+                << emu::util::string::hexify_wo_0x(args.farg);
     }
 }

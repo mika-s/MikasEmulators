@@ -474,169 +474,169 @@ namespace emu::cpu8080 {
 
     void xthl(std::uint8_t &h_reg, std::uint8_t &l_reg, std::uint8_t &sp0, std::uint8_t &sp1, unsigned long &cycles);
 
-    void print_nop();
+    void print_nop(std::ostream& ostream);
 
-    void print_lxi(const std::string &reg, const NextWord &args);
+    void print_lxi(std::ostream& ostream, const std::string &reg, const NextWord &args);
 
-    void print_stax(const std::string &reg);
+    void print_stax(std::ostream& ostream, const std::string &reg);
 
-    void print_inx(const std::string &reg);
+    void print_inx(std::ostream& ostream, const std::string &reg);
 
-    void print_dcx(const std::string &reg);
+    void print_dcx(std::ostream& ostream, const std::string &reg);
 
-    void print_inr(const std::string &reg);
+    void print_inr(std::ostream& ostream, const std::string &reg);
 
-    void print_dcr(const std::string &reg);
+    void print_dcr(std::ostream& ostream, const std::string &reg);
 
-    void print_mvi(const std::string &reg, const NextByte &args);
+    void print_mvi(std::ostream& ostream, const std::string &reg, const NextByte &args);
 
-    void print_ral();
+    void print_ral(std::ostream& ostream);
 
-    void print_rar();
+    void print_rar(std::ostream& ostream);
 
-    void print_rrc();
+    void print_rrc(std::ostream& ostream);
 
-    void print_rlc(const std::string &reg);
+    void print_rlc(std::ostream& ostream, const std::string &reg);
 
-    void print_unused_nop();
+    void print_unused_nop(std::ostream& ostream);
 
-    void print_unused_jmp(const NextWord &args);
+    void print_unused_jmp(std::ostream& ostream, const NextWord &args);
 
-    void print_unused_ret();
+    void print_unused_ret(std::ostream& ostream);
 
-    void print_unused_call(const NextWord &args);
+    void print_unused_call(std::ostream& ostream, const NextWord &args);
 
-    void print_daa();
+    void print_daa(std::ostream& ostream);
 
-    void print_dad(const std::string &reg);
+    void print_dad(std::ostream& ostream, const std::string &reg);
 
-    void print_ldax(const std::string &reg);
+    void print_ldax(std::ostream& ostream, const std::string &reg);
 
-    void print_shld(const NextWord &args);
+    void print_shld(std::ostream& ostream, const NextWord &args);
 
-    void print_lhld(const NextWord &args);
+    void print_lhld(std::ostream& ostream, const NextWord &args);
 
-    void print_cma();
+    void print_cma(std::ostream& ostream);
 
-    void print_sta(const NextWord &args);
+    void print_sta(std::ostream& ostream, const NextWord &args);
 
-    void print_stc();
+    void print_stc(std::ostream& ostream);
 
-    void print_lda(const NextWord &args);
+    void print_lda(std::ostream& ostream, const NextWord &args);
 
-    void print_cmc();
+    void print_cmc(std::ostream& ostream);
 
-    void print_mov(const std::string &reg1, const std::string &reg2);
+    void print_mov(std::ostream& ostream, const std::string &reg1, const std::string &reg2);
 
-    void print_hlt();
+    void print_hlt(std::ostream& ostream);
 
-    void print_add(const std::string &reg);
+    void print_add(std::ostream& ostream, const std::string &reg);
 
-    void print_adc(const std::string &reg);
+    void print_adc(std::ostream& ostream, const std::string &reg);
 
-    void print_sub(const std::string &reg);
+    void print_sub(std::ostream& ostream, const std::string &reg);
 
-    void print_sbb(const std::string &reg);
+    void print_sbb(std::ostream& ostream, const std::string &reg);
 
-    void print_ana(const std::string &reg);
+    void print_ana(std::ostream& ostream, const std::string &reg);
 
-    void print_xra(const std::string &reg);
+    void print_xra(std::ostream& ostream, const std::string &reg);
 
-    void print_ora(const std::string &reg);
+    void print_ora(std::ostream& ostream, const std::string &reg);
 
-    void print_cmp(const std::string &reg);
+    void print_cmp(std::ostream& ostream, const std::string &reg);
 
-    void print_cnz(const NextWord &args);
+    void print_cnz(std::ostream& ostream, const NextWord &args);
 
-    void print_cz(const NextWord &args);
+    void print_cz(std::ostream& ostream, const NextWord &args);
 
-    void print_call(const NextWord &args);
+    void print_call(std::ostream& ostream, const NextWord &args);
 
-    void print_cnc(const NextWord &args);
+    void print_cnc(std::ostream& ostream, const NextWord &args);
 
-    void print_cc(const NextWord &args);
+    void print_cc(std::ostream& ostream, const NextWord &args);
 
-    void print_cpo(const NextWord &args);
+    void print_cpo(std::ostream& ostream, const NextWord &args);
 
-    void print_cp(const NextWord &args);
+    void print_cp(std::ostream& ostream, const NextWord &args);
 
-    void print_cpe(const NextWord &args);
+    void print_cpe(std::ostream& ostream, const NextWord &args);
 
-    void print_cm(const NextWord &args);
+    void print_cm(std::ostream& ostream, const NextWord &args);
 
-    void print_rnz();
+    void print_rnz(std::ostream& ostream);
 
-    void print_rz();
+    void print_rz(std::ostream& ostream);
 
-    void print_ret();
+    void print_ret(std::ostream& ostream);
 
-    void print_rnc();
+    void print_rnc(std::ostream& ostream);
 
-    void print_rc();
+    void print_rc(std::ostream& ostream);
 
-    void print_rpo();
+    void print_rpo(std::ostream& ostream);
 
-    void print_rpe();
+    void print_rpe(std::ostream& ostream);
 
-    void print_rp();
+    void print_rp(std::ostream& ostream);
 
-    void print_rm();
+    void print_rm(std::ostream& ostream);
 
-    void print_pop(const std::string &reg);
+    void print_pop(std::ostream& ostream, const std::string &reg);
 
-    void print_push(const std::string &reg);
+    void print_push(std::ostream& ostream, const std::string &reg);
 
-    void print_jnz(const NextWord &args);
+    void print_jnz(std::ostream& ostream, const NextWord &args);
 
-    void print_jmp(const NextWord &args);
+    void print_jmp(std::ostream& ostream, const NextWord &args);
 
-    void print_jz(const NextWord &args);
+    void print_jz(std::ostream& ostream, const NextWord &args);
 
-    void print_jnc(const NextWord &args);
+    void print_jnc(std::ostream& ostream, const NextWord &args);
 
-    void print_jc(const NextWord &args);
+    void print_jc(std::ostream& ostream, const NextWord &args);
 
-    void print_jpo(const NextWord &args);
+    void print_jpo(std::ostream& ostream, const NextWord &args);
 
-    void print_jpe(const NextWord &args);
+    void print_jpe(std::ostream& ostream, const NextWord &args);
 
-    void print_jp(const NextWord &args);
+    void print_jp(std::ostream& ostream, const NextWord &args);
 
-    void print_jm(const NextWord &args);
+    void print_jm(std::ostream& ostream, const NextWord &args);
 
-    void print_di();
+    void print_di(std::ostream& ostream);
 
-    void print_ei();
+    void print_ei(std::ostream& ostream);
 
-    void print_rst(int number);
+    void print_rst(std::ostream& ostream, int number);
 
-    void print_out(const NextByte &args);
+    void print_out(std::ostream& ostream, const NextByte &args);
 
-    void print_in(const NextByte &args);
+    void print_in(std::ostream& ostream, const NextByte &args);
 
-    void print_adi(const NextByte &args);
+    void print_adi(std::ostream& ostream, const NextByte &args);
 
-    void print_aci(const NextByte &args);
+    void print_aci(std::ostream& ostream, const NextByte &args);
 
-    void print_sui(const NextByte &args);
+    void print_sui(std::ostream& ostream, const NextByte &args);
 
-    void print_sbi(const NextByte &args);
+    void print_sbi(std::ostream& ostream, const NextByte &args);
 
-    void print_ani(const NextByte &args);
+    void print_ani(std::ostream& ostream, const NextByte &args);
 
-    void print_cpi(const NextByte &args);
+    void print_cpi(std::ostream& ostream, const NextByte &args);
 
-    void print_xri(const NextByte &args);
+    void print_xri(std::ostream& ostream, const NextByte &args);
 
-    void print_ori(const NextByte &args);
+    void print_ori(std::ostream& ostream, const NextByte &args);
 
-    void print_xthl();
+    void print_xthl(std::ostream& ostream);
 
-    void print_pchl();
+    void print_pchl(std::ostream& ostream);
 
-    void print_xchg();
+    void print_xchg(std::ostream& ostream);
 
-    void print_sphl();
+    void print_sphl(std::ostream& ostream);
 }
 
 #endif //MIKA_EMULATORS_8080_INSTRUCTIONS_INSTRUCTIONS_H

@@ -34,9 +34,9 @@ namespace emu::cpu8080 {
         cycles += 11;
     }
 
-    void print_cz(const NextWord &args) {
-        std::cout << "CZ "
-                  << emu::util::string::hexify_wo_0x(args.sarg)
-                  << emu::util::string::hexify_wo_0x(args.farg);
+    void print_cz(std::ostream& ostream, const NextWord &args) {
+        ostream << "CZ "
+                << emu::util::string::hexify_wo_0x(args.sarg)
+                << emu::util::string::hexify_wo_0x(args.farg);
     }
 }

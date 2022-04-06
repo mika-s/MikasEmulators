@@ -57,7 +57,8 @@ namespace emu::cpu8080 {
         }
     }
 
-    void print_ora(const std::string &reg) {
-        std::cout << "ORA " << reg;
+    void print_ora(std::ostream& ostream, const std::string &reg) {
+        ostream << "ORA "
+                << reg;
     }
 }

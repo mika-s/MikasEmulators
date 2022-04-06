@@ -6,7 +6,7 @@
 
 namespace emu::cpu8080::applications::cpm {
 
-    using emu::util::byte::to_uint16_t;
+    using emu::util::byte::to_u16;
     using emu::util::file::read_file_into_vector;
 
     CpmApplication::CpmApplication(const std::string &file)
@@ -53,7 +53,7 @@ namespace emu::cpu8080::applications::cpm {
             if (operation == C_WRITE) {
                 c_write(m_cpu->e());
             } else if (operation == C_WRITESTR) {
-                c_writestr(m_cpu->memory(), to_uint16_t(m_cpu->d(), m_cpu->e()));
+                c_writestr(m_cpu->memory(), to_u16(m_cpu->d(), m_cpu->e()));
             }
         } else {
             throw std::runtime_error("Illegal output port");

@@ -27,9 +27,9 @@ namespace emu::cpu8080 {
         cycles = 17;
     }
 
-    void print_call(const NextWord &args) {
-        std::cout << "CALL "
-                  << emu::util::string::hexify_wo_0x(args.sarg)
-                  << emu::util::string::hexify_wo_0x(args.farg);
+    void print_call(std::ostream& ostream, const NextWord &args) {
+        ostream << "CALL "
+                << emu::util::string::hexify_wo_0x(args.sarg)
+                << emu::util::string::hexify_wo_0x(args.farg);
     }
 }

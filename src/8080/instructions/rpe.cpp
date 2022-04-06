@@ -32,7 +32,7 @@ namespace emu::cpu8080 {
         cycles += 5;
     }
 
-    void print_rpe() {
-        std::cout << "RPE";
+    void print_rpe(std::ostream& ostream) {
+        ostream << "RPE";
     }
 }

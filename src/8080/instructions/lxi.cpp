@@ -40,14 +40,15 @@ namespace emu::cpu8080 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void lxi_sp(std::uint16_t &sp, const NextWord &args, unsigned long &cycles) {
-        sp = emu::util::byte::to_uint16_t(args.sarg, args.farg);
+        sp = emu::util::byte::to_u16(args.sarg, args.farg);
 
         cycles = 10;
     }
 
-    void print_lxi(const std::string &reg, const NextWord &args) {
-        std::cout << "LXI " << reg << ","
-                  << emu::util::string::hexify_wo_0x(args.sarg)
-                  << emu::util::string::hexify_wo_0x(args.farg);
+    void print_lxi(std::ostream& ostream, const std::string &reg, const NextWord &args) {
+        ostream << "LXI "
+                << reg << ","
+                << emu::util::string::hexify_wo_0x(args.sarg)
+                << emu::util::string::hexify_wo_0x(args.farg);
     }
 }

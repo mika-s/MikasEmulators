@@ -157,7 +157,8 @@ namespace emu::cpu8080 {
         rst(pc, 0x38, sp, memory, cycles);
     }
 
-    void print_rst(int number) {
-        std::cout << "RST " << number;
+    void print_rst(std::ostream& ostream, int number) {
+        ostream << "RST "
+                << number;
     }
 }

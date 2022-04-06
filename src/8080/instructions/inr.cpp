@@ -50,7 +50,8 @@ namespace emu::cpu8080 {
         }
     }
 
-    void print_inr(const std::string &reg) {
-        std::cout << "INR " << reg;
+    void print_inr(std::ostream& ostream, const std::string &reg) {
+        ostream << "INR "
+                << reg;
     }
 }

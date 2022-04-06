@@ -48,7 +48,8 @@ namespace emu::cpu8080 {
         }
     }
 
-    void print_adc(const std::string &reg) {
-        std::cout << "ADC " << reg;
+    void print_adc(std::ostream& ostream, const std::string &reg) {
+        ostream << "ADC "
+                << reg;
     }
 }

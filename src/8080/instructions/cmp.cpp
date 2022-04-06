@@ -54,7 +54,7 @@ namespace emu::cpu8080 {
         }
     }
 
-    void print_cmp(const std::string &reg) {
-        std::cout << "CMP " << reg;
+    void print_cmp(std::ostream& ostream, const std::string &reg) {
+        ostream << "CMP " << reg;
     }
 }

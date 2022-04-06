@@ -24,7 +24,7 @@ namespace emu::cpu8080 {
         cycles = 10;
     }
 
-    void print_ret() {
-        std::cout << "RET";
+    void print_ret(std::ostream& ostream) {
+        ostream << "RET";
     }
 }

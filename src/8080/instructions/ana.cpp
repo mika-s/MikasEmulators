@@ -64,7 +64,8 @@ namespace emu::cpu8080 {
         }
     }
 
-    void print_ana(const std::string &reg) {
-        std::cout << "ANA " << reg;
+    void print_ana(std::ostream& ostream, const std::string &reg) {
+        ostream << "ANA "
+                << reg;
     }
 }

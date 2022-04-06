@@ -15,7 +15,7 @@ namespace emu::cpu8080 {
         cycles = 4;
     }
 
-    void print_nop() {
-        std::cout << "NOP";
+    void print_nop(std::ostream& ostream) {
+        ostream << "NOP";
     }
 }

@@ -19,7 +19,7 @@ namespace emu::cpu8080 {
         cycles = 7;
     }
 
-    void print_hlt() {
-        std::cout << "HLT";
+    void print_hlt(std::ostream& ostream) {
+        ostream << "HLT";
     }
 }

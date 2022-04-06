@@ -50,7 +50,8 @@ namespace emu::cpu8080 {
         cycles = 11;
     }
 
-    void print_push(const std::string &reg) {
-        std::cout << "PUSH " << reg;
+    void print_push(std::ostream& ostream, const std::string &reg) {
+        ostream << "PUSH "
+                << reg;
     }
 }

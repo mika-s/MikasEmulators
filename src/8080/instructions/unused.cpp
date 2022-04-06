@@ -25,23 +25,23 @@ namespace emu::cpu8080 {
         pc += 2;
     }
 
-    void print_unused_nop() {
-        std::cout << "*NOP";
+    void print_unused_nop(std::ostream& ostream) {
+        ostream << "*NOP";
     }
 
-    void print_unused_jmp(const NextWord &args) {
-        std::cout << "*JMP "
-                  << emu::util::string::hexify_wo_0x(args.sarg)
-                  << emu::util::string::hexify_wo_0x(args.farg);
+    void print_unused_jmp(std::ostream& ostream, const NextWord &args) {
+        ostream << "*JMP "
+                << emu::util::string::hexify_wo_0x(args.sarg)
+                << emu::util::string::hexify_wo_0x(args.farg);
     }
 
-    void print_unused_ret() {
-        std::cout << "*RET";
+    void print_unused_ret(std::ostream& ostream) {
+        ostream << "*RET";
     }
 
-    void print_unused_call(const NextWord &args) {
-        std::cout << "*CALL "
-                  << emu::util::string::hexify_wo_0x(args.sarg)
-                  << emu::util::string::hexify_wo_0x(args.farg);
+    void print_unused_call(std::ostream& ostream, const NextWord &args) {
+        ostream << "*CALL "
+                << emu::util::string::hexify_wo_0x(args.sarg)
+                << emu::util::string::hexify_wo_0x(args.farg);
     }
 }

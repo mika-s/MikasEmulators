@@ -28,7 +28,7 @@ namespace emu::cpu8080 {
         cycles = 4;
     }
 
-    void print_xchg() {
-        std::cout << "XCHG";
+    void print_xchg(std::ostream& ostream) {
+        ostream << "XCHG";
     }
 }

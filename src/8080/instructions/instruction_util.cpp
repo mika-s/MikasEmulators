@@ -30,18 +30,18 @@ namespace emu::cpu8080 {
     void execute_call(std::uint16_t &pc, std::uint16_t &sp, emu::cpu8080::EmulatorMemory &memory, const NextWord &args) {
         memory[--sp] = emu::util::byte::second_byte(pc);
         memory[--sp] = emu::util::byte::first_byte(pc);
-        pc = emu::util::byte::to_uint16_t(args.sarg, args.farg);
+        pc = emu::util::byte::to_u16(args.sarg, args.farg);
     }
 
     void execute_call(std::uint16_t &pc, std::uint16_t &sp, emu::cpu8080::EmulatorMemory &memory, std::uint8_t farg, std::uint8_t sarg) {
         memory[--sp] = emu::util::byte::second_byte(pc);
         memory[--sp] = emu::util::byte::first_byte(pc);
-        pc = emu::util::byte::to_uint16_t(sarg, farg);
+        pc = emu::util::byte::to_u16(sarg, farg);
     }
 
     void execute_return(std::uint16_t &pc, std::uint16_t &sp, const emu::cpu8080::EmulatorMemory &memory) {
         const std::uint8_t sarg = memory[sp++];
         const std::uint8_t farg = memory[sp++];
-        pc = emu::util::byte::to_uint16_t(farg, sarg);
+        pc = emu::util::byte::to_u16(farg, sarg);
     }
 }

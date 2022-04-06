@@ -22,14 +22,14 @@ namespace emu::cpu8080 {
      */
     void lda(std::uint8_t &acc_reg, const emu::cpu8080::EmulatorMemory &memory, const NextWord &args,
             unsigned long &cycles) {
-        acc_reg = memory[emu::util::byte::to_uint16_t(args.sarg, args.farg)];
+        acc_reg = memory[emu::util::byte::to_u16(args.sarg, args.farg)];
 
         cycles = 13;
     }
 
-    void print_lda(const NextWord &args) {
-        std::cout << "LDA "
-                  << emu::util::string::hexify_wo_0x(args.sarg)
-                  << emu::util::string::hexify_wo_0x(args.farg);
+    void print_lda(std::ostream& ostream, const NextWord &args) {
+        ostream << "LDA "
+                << emu::util::string::hexify_wo_0x(args.sarg)
+                << emu::util::string::hexify_wo_0x(args.farg);
     }
 }

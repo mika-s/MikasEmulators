@@ -33,8 +33,8 @@ namespace emu::cpu8080 {
         cycles = 7;
     }
 
-    void print_aci(const NextByte &args) {
-        std::cout << "ACI "
-                  << emu::util::string::hexify_wo_0x(args.farg);
+    void print_aci(std::ostream& ostream, const NextByte &args) {
+        ostream << "ACI "
+                << emu::util::string::hexify_wo_0x(args.farg);
     }
 }
