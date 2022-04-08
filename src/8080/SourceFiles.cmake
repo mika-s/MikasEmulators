@@ -1,6 +1,7 @@
 set(SOURCES_8080_CPP
         src/main.cpp
         src/8080/applications/cpm/cpm_application.cpp
+        src/8080/applications/space_invaders/audio.cpp
         src/8080/applications/space_invaders/cpu_io.cpp
         src/8080/applications/space_invaders/space_invaders.cpp
         src/8080/applications/space_invaders/gui_imgui.cpp
@@ -106,6 +107,7 @@ set(SOURCES_8080_CPP
 
 set(SOURCES_8080_H
         src/8080/applications/cpm/cpm_application.h
+        src/8080/applications/space_invaders/audio.h
         src/8080/applications/space_invaders/cpu_io.h
         src/8080/applications/space_invaders/space_invaders.h
         src/8080/applications/space_invaders/gui.h

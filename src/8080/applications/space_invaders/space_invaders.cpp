@@ -108,29 +108,14 @@ namespace emu::cpu8080::applications::space_invaders {
             case out_port_shift_offset:
                 m_cpu_io.m_shift_register.change_offset(m_cpu->a());
                 break;
-            case out_port_sound_1: {
-                /*
-                 * Port 3: (discrete sounds)
-                 *   bit 0=UFO (repeats)        SX0 0.raw
-                 *   bit 1=Shot                 SX1 1.raw
-                 *   bit 2=Flash (player die)   SX2 2.raw
-                 *   bit 3=Invader die          SX3 3.raw
-                 *   bit 4=Extended play        SX4
-                 *   bit 5= AMP enable          SX5
-                 *   bit 6= NC (not wired)
-                 *   bit 7= NC (not wired)
-                 *   Port 4: (discrete sounds)
-                 *   bit 0-7 shift data (LSB on 1st write, MSB on 2nd)
-                 */
-                if (m_cpu->a() & (1 << 3)) {  // invader die
-                }
-
+            case out_port_sound_1:
+                Audio::play_sound_port_1(m_cpu->a());
                 break;
-            }
             case out_port_do_shift:
                 m_cpu_io.m_shift_register.shift(m_cpu->a());
                 break;
             case out_port_sound_2:
+                Audio::play_sound_port_2(m_cpu->a());
                 break;
             case out_port_watchdog:
                 break;
