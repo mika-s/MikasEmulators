@@ -1,3 +1,6 @@
+#include <chrono>
+#include <fmt/chrono.h>
+#include <string>
 #include "debug_log.h"
 
 namespace emu::util::gui {
@@ -10,6 +13,11 @@ namespace emu::util::gui {
         m_buf.clear();
         m_line_offsets.clear();
         m_line_offsets.push_back(0);
+    }
+
+    void DebugLog::add_log_with_timestamp(const char *fmt, ...) {
+        auto now = std::chrono::system_clock::now();
+        add_log("%s", prepend(fmt::format("{:%Y-%m-%d %H:%M:%OS}: ", now), fmt).c_str());
     }
 
     void DebugLog::add_log(const char *fmt, ...) {
@@ -95,5 +103,19 @@ namespace emu::util::gui {
 
         ImGui::EndChild();
         ImGui::End();
+    }
+
+    std::string DebugLog::prepend(std::string prefix, const char *txt) {
+        char *out = new char[strlen(txt) + prefix.size()];
+
+        for (size_t i = 0; i < prefix.size(); ++i) {
+            out[i] = prefix[i];
+        }
+
+        for (size_t i = prefix.size(); i < strlen(txt) + prefix.size(); ++i) {
+            out[i] = txt[i - prefix.size()];
+        }
+
+        return {out};
     }
 }

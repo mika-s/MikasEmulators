@@ -1,6 +1,6 @@
 #include <string>
-#include <iostream>
 #include "cpm_application.h"
+#include "8080/applications/cpm/cpm_application_session.h"
 #include "crosscutting/byte_util.h"
 #include "crosscutting/file_util.h"
 
@@ -9,10 +9,12 @@ namespace emu::cpu8080::applications::cpm {
     using emu::util::byte::to_u16;
     using emu::util::file::read_file_into_vector;
 
-    CpmApplication::CpmApplication(const std::string &file)
-            : m_is_finished(false) {
+    CpmApplication::CpmApplication(const std::string &file) {
         load_file(file);
-        setup_cpu();
+    }
+
+    std::unique_ptr<Session> CpmApplication::new_session() {
+        return std::make_unique<CpmApplicationSession>(m_loaded_file, m_memory);
     }
 
     void CpmApplication::load_file(const std::string &file) {
@@ -22,42 +24,6 @@ namespace emu::cpu8080::applications::cpm {
         m_memory.add(read_file_into_vector(file));
         m_memory.add(create_work_ram(UINT16_MAX + 1 - m_memory.size()));
         patch_program(m_memory);
-    }
-
-    void CpmApplication::setup_cpu() {
-        const std::uint16_t initial_pc = 0x100;
-
-        m_cpu = std::make_unique<Cpu>(m_memory, initial_pc);
-
-        m_cpu->add_out_observer(*this);
-    }
-
-    void CpmApplication::run() {
-        std::cout << "--------------- Starting " << m_loaded_file << " ---------------\n\n";
-        m_cpu->start();
-
-        while (m_cpu->can_run_next_instruction() && !m_is_finished) {
-            m_cpu->next_instruction();
-        }
-
-        m_cpu->stop();
-        std::cout << "\n\n--------------- Finished " << m_loaded_file << " ---------------\n\n";
-    }
-
-    void CpmApplication::out_changed(std::uint8_t port) {
-        if (port == 0) {
-            m_is_finished = true;
-        } else if (port == 1) {
-            std::uint8_t operation = m_cpu->c();
-
-            if (operation == C_WRITE) {
-                c_write(m_cpu->e());
-            } else if (operation == C_WRITESTR) {
-                c_writestr(m_cpu->memory(), to_u16(m_cpu->d(), m_cpu->e()));
-            }
-        } else {
-            throw std::runtime_error("Illegal output port");
-        }
     }
 
     std::vector<std::uint8_t> CpmApplication::create_initial_offset() {
@@ -88,16 +54,5 @@ namespace emu::cpu8080::applications::cpm {
         program[0x0005] = 0xd3;
         program[0x0006] = 0x01;
         program[0x0007] = 0xc9;
-    }
-
-    void CpmApplication::c_write(std::uint8_t e) {
-        std::cout << e;
-    }
-
-    void CpmApplication::c_writestr(const emu::cpu8080::EmulatorMemory &memory, std::uint16_t address) {
-        do {
-            std::cout << memory[address];
-            address++;
-        } while (memory[address] != '$');
     }
 }

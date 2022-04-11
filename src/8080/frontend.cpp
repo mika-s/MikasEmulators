@@ -73,7 +73,7 @@ namespace emu::cpu8080 {
     }
 
     void Frontend::ordinary(const std::string &program, const Settings &settings, GuiType gui_type) {
-        choose_emulator(program, settings, gui_type)->run();
+        choose_emulator(program, settings, gui_type)->new_session()->run();
     }
 
     void Frontend::disassemble(const std::string &program) {

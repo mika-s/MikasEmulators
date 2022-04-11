@@ -1,6 +1,8 @@
 #ifndef MIKA_EMULATORS_8080_INTERFACES_GUI_OBSERVER_H
 #define MIKA_EMULATORS_8080_INTERFACES_GUI_OBSERVER_H
 
+#include "8080/run_status.h"
+
 namespace emu::cpu8080 {
 
     class GuiObserver {

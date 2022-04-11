@@ -29,10 +29,6 @@ namespace emu::cpu8080::applications::space_invaders {
     }
 
     GuiImgui::~GuiImgui() {
-//        for (auto observer : gui_observers) {
-//            remove_gui_observer(observer);
-//        }
-
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplSDL2_Shutdown();
         ImGui::DestroyContext();
@@ -147,6 +143,8 @@ namespace emu::cpu8080::applications::space_invaders {
         glClearColor(background.x, background.y, background.z, background.w);
 
         glGenTextures(1, &m_screen_texture);
+
+        m_log.add_log_with_timestamp("Init GUI");
     }
 
     void GuiImgui::update_screen(const std::vector<std::uint8_t> &vram, RunStatus run_status) {
@@ -299,7 +297,7 @@ namespace emu::cpu8080::applications::space_invaders {
         }
         ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
         if (ImGui::Button("Stop")) {
-//            notify_gui_observers_about_run_status(NOT_RUNNING);
+            notify_gui_observers_about_run_status(NOT_RUNNING);
         }
         ImGui::Separator();
         if (ImGui::Checkbox("Debug mode", &m_is_in_debug_mode)) {

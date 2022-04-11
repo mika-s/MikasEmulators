@@ -1,6 +1,7 @@
 #ifndef MIKA_EMULATORS_8080_APPLICATIONS_SPACE_INVADERS_GUI_H
 #define MIKA_EMULATORS_8080_APPLICATIONS_SPACE_INVADERS_GUI_H
 
+#include "8080/debug_container.h"
 #include "8080/interfaces/gui_observer.h"
 #include "crosscutting/byte_util.h"
 
@@ -84,7 +85,7 @@ namespace emu::cpu8080::applications::space_invaders {
                     std::uint8_t r = width_idx[0];
                     std::uint8_t g = width_idx[1];
                     std::uint8_t b = width_idx[2];
-                    output.push_back(0xFF000000 | b << 16 | g << 8 | r);
+                    output.push_back(0xff000000 | b << 16 | g << 8 | r);
                 }
             }
 

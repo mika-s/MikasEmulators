@@ -6,6 +6,7 @@ namespace emu::cpu8080 {
         NOT_RUNNING,
         RUNNING,
         PAUSED,
+        FINISHED,
         STEPPING,
     };
 }
