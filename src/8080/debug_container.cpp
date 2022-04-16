@@ -1,12 +1,15 @@
 #include "debug_container.h"
 
+#include <utility>
+
 namespace emu::cpu8080 {
 
     DebugContainer::DebugContainer()
             : m_is_flag_register_set(false),
               m_is_pc_set(false),
               m_is_sp_set(false),
-              m_is_interrupted_set(false) {
+              m_is_interrupted_set(false),
+              m_is_disassembled_program_set(false) {
     }
 
     void DebugContainer::add_register(const std::string &name, const std::function<std::uint8_t()> &value_retriever) {
@@ -76,5 +79,18 @@ namespace emu::cpu8080 {
 
     bool DebugContainer::is_interrupted_set() const {
         return m_is_interrupted_set;
+    }
+
+    void DebugContainer::add_disassembled_program(std::vector<std::string> disassembled_program) {
+        m_disassembled_program = std::move(disassembled_program);
+        m_is_disassembled_program_set = true;
+    }
+
+    std::vector<std::string> DebugContainer::disassembled_program() {
+        return m_disassembled_program;
+    }
+
+    bool DebugContainer::is_disassembled_program_set() const {
+        return m_is_disassembled_program_set;
     }
 }

@@ -31,6 +31,8 @@ namespace emu::cpu8080::applications::space_invaders {
                 EmulatorMemory memory
         );
 
+        ~SpaceInvadersSession() override;
+
         void run() override;
 
         void pause() override;
@@ -85,6 +87,8 @@ namespace emu::cpu8080::applications::space_invaders {
         void setup_debugging();
 
         std::vector<std::uint8_t> vram();
+
+        std::vector<std::string> disassemble_program();
     };
 }
 

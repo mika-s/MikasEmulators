@@ -1,6 +1,9 @@
 #include <SDL_timer.h>
+#include <sstream>
 #include <utility>
 #include "space_invaders_session.h"
+#include "8080/disassembler8080.h"
+#include "crosscutting/string_util.h"
 
 namespace emu::cpu8080::applications::space_invaders {
 
@@ -22,6 +25,13 @@ namespace emu::cpu8080::applications::space_invaders {
 
         m_gui->add_gui_observer(*this);
         m_input->add_io_observer(*this);
+    }
+
+    SpaceInvadersSession::~SpaceInvadersSession() {
+        m_gui->remove_gui_observer(this);
+        m_input->remove_io_observer(this);
+        m_cpu->remove_in_observer(this);
+        m_cpu->remove_out_observer(this);
     }
 
     void SpaceInvadersSession::run() {
@@ -116,6 +126,7 @@ namespace emu::cpu8080::applications::space_invaders {
                                                     std::make_tuple("u", 1),
                                                     std::make_tuple("c", 0)
                                             });
+        m_debug_container.add_disassembled_program(disassemble_program());
 
         m_gui->attach_debug_container(m_debug_container);
     }
@@ -186,5 +197,17 @@ namespace emu::cpu8080::applications::space_invaders {
 
     std::vector<std::uint8_t> SpaceInvadersSession::vram() {
         return {m_memory.begin() + 0x2400, m_memory.begin() + 0x3fff};
+    }
+
+    std::vector<std::string> SpaceInvadersSession::disassemble_program() {
+        EmulatorMemory sliced_for_disassembly = m_memory.slice(0, 0x2000);
+
+        std::stringstream ss;
+        Disassembler8080 disassembler(sliced_for_disassembly, ss);
+        disassembler.disassemble();
+
+        std::vector<std::string> disassembled_program = emu::util::string::split(ss, "\n");
+
+        return disassembled_program;
     }
 }

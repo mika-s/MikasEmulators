@@ -31,6 +31,26 @@ namespace emu::cpu8080 {
         return m_indices.size();
     }
 
+    /**
+     * Creates a slice of the memory. Follows links, but does not create new links.
+     *
+     * @param from is the index to start from
+     * @param to is the index to slice until
+     * @return a new EmulatorMemory object that contains the sliced memory
+     */
+    EmulatorMemory EmulatorMemory::slice(int from, int to) {
+        std::vector<std::uint8_t> data;
+
+        for (int i = from; i < to; ++i) {
+            data.push_back(m_real_memory[m_indices[i]]);
+        }
+
+        EmulatorMemory sliced_memory;
+        sliced_memory.add(data);
+
+        return sliced_memory;
+    }
+
     std::uint8_t &EmulatorMemory::operator[](std::size_t d) {
         if (d > m_indices.size()) {
             std::stringstream ss;

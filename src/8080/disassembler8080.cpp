@@ -21,7 +21,7 @@ namespace emu::cpu8080 {
     }
 
     void Disassembler8080::print_next_instruction() {
-        std::cout << emu::util::string::hexify_wo_0x(m_pc, 4) << "\t\t";
+        m_ostream << emu::util::string::hexify_wo_0x(m_pc, 4) << "\t\t";
 
         m_opcode = get_next_byte().farg;
 
@@ -798,7 +798,7 @@ namespace emu::cpu8080 {
             throw emu::util::exceptions::UnrecognizedOpcodeException(m_opcode);
         }
 
-        std::cout << "\n";
+        m_ostream << "\n";
     }
 
     NextByte Disassembler8080::get_next_byte() {

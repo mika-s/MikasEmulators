@@ -45,6 +45,12 @@ namespace emu::cpu8080 {
 
         [[nodiscard]] bool is_interrupted_set() const;
 
+        void add_disassembled_program(std::vector<std::string> disassembled_program);
+
+        std::vector<std::string> disassembled_program();
+
+        [[nodiscard]] bool is_disassembled_program_set() const;
+
     private:
         std::vector<std::tuple<std::string, std::function<std::uint8_t()>>> m_register_retrievers;
 
@@ -60,6 +66,9 @@ namespace emu::cpu8080 {
 
         std::function<bool()> m_is_interrupted_retriever;
         bool m_is_interrupted_set;
+
+        std::vector<std::string> m_disassembled_program;
+        bool m_is_disassembled_program_set;
     };
 }
 

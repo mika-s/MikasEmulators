@@ -9,8 +9,8 @@ namespace emu::util::gui {
 
     CpuInfo::CpuInfo() = default;
 
-    void CpuInfo::attach_debug_container(emu::cpu8080::DebugContainer &debug_container_to_attach) {
-        this->m_debug_container = debug_container_to_attach;
+    void CpuInfo::attach_debug_container(emu::cpu8080::DebugContainer &debug_container) {
+        m_debug_container = debug_container;
     }
 
     void CpuInfo::draw(const char *title, bool *p_open) {

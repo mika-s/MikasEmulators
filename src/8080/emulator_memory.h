@@ -9,9 +9,15 @@ namespace emu::cpu8080 {
 
     public:
         void add(const std::vector<std::uint8_t> &to_add);
+
         void add_link(std::uint16_t from, std::uint16_t to);
+
         std::size_t size();
+
+        EmulatorMemory slice(int from, int to);
+
         std::uint8_t &operator[](std::size_t d);
+
         const std::uint8_t &operator[](std::size_t d) const;
 
         std::vector<std::uint8_t>::iterator begin();

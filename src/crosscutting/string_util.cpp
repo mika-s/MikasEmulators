@@ -46,4 +46,19 @@ namespace emu::util::string {
 
         return name;
     }
+
+    std::vector<std::string> split(const std::stringstream &ss, const std::string& delimiter) {
+        std::vector<std::string> split_string;
+        std::string s = ss.str();
+        std::string token;
+        size_t pos;
+
+        while ((pos = s.find(delimiter)) != std::string::npos) {
+            token = s.substr(0, pos);
+            split_string.push_back(token);
+            s.erase(0, pos + delimiter.length());
+        }
+
+        return split_string;
+    }
 }
