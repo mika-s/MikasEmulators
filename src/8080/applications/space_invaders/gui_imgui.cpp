@@ -145,7 +145,7 @@ namespace emu::cpu8080::applications::space_invaders {
 
         glGenTextures(1, &m_screen_texture);
 
-        m_log.add_log_with_timestamp("Init GUI");
+        m_log.add_log_with_timestamp("[INFO] Init GUI\n");
     }
 
     void GuiImgui::update_screen(const std::vector<std::uint8_t> &vram, RunStatus run_status) {

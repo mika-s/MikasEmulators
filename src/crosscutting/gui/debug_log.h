@@ -17,12 +17,12 @@ namespace emu::util::gui {
         void draw(const char *title, bool *p_open = nullptr);
 
     private:
-
-
         ImGuiTextBuffer m_buf;
         ImGuiTextFilter m_filter;
         ImVector<int> m_line_offsets;
         bool m_should_autoscroll;
+
+        void add_log(const char *fmt, va_list args);
 
         static std::string prepend(std::string prefix, const char *txt);
     };

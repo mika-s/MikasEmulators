@@ -17,16 +17,25 @@ namespace emu::util::gui {
 
     void DebugLog::add_log_with_timestamp(const char *fmt, ...) {
         auto now = std::chrono::system_clock::now();
-        add_log("%s", prepend(fmt::format("{:%Y-%m-%d %H:%M:%OS}: ", now), fmt).c_str());
-    }
-
-    void DebugLog::add_log(const char *fmt, ...) {
-        int old_size = m_buf.size();
         va_list args;
 
         va_start(args, fmt);
-        m_buf.appendfv(fmt, args);
+        add_log(prepend(fmt::format("{:%Y-%m-%d %H:%M:%OS}: ", now), fmt).c_str(), args);
         va_end(args);
+    }
+
+    void DebugLog::add_log(const char *fmt, ...) {
+        va_list args;
+
+        va_start(args, fmt);
+        add_log(fmt, args);
+        va_end(args);
+    }
+
+    void DebugLog::add_log(const char *fmt, va_list args) {
+        int old_size = m_buf.size();
+
+        m_buf.appendfv(fmt, args);
 
         for (int new_size = m_buf.size(); old_size < new_size; old_size++) {
             if (m_buf[old_size] == '\n') {
@@ -106,7 +115,7 @@ namespace emu::util::gui {
     }
 
     std::string DebugLog::prepend(std::string prefix, const char *txt) {
-        char *out = new char[strlen(txt) + prefix.size()];
+        char *out = new char[strlen(txt) + prefix.size() + 1];
 
         for (size_t i = 0; i < prefix.size(); ++i) {
             out[i] = prefix[i];
@@ -115,6 +124,8 @@ namespace emu::util::gui {
         for (size_t i = prefix.size(); i < strlen(txt) + prefix.size(); ++i) {
             out[i] = txt[i - prefix.size()];
         }
+
+        out[strlen(txt) + prefix.size()] = '\0';
 
         return {out};
     }
