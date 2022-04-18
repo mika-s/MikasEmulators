@@ -4,10 +4,12 @@
 #include "8080/debug_container.h"
 #include "8080/interfaces/gui_observer.h"
 #include "crosscutting/byte_util.h"
+#include "crosscutting/debugger.h"
 
 namespace emu::cpu8080::applications::space_invaders {
 
     using emu::util::byte::is_bit_set;
+    using emu::util::debugger::Debugger;
 
     class Gui {
     public:
@@ -20,6 +22,8 @@ namespace emu::cpu8080::applications::space_invaders {
         virtual void update_screen(const std::vector<std::uint8_t> &vram, RunStatus run_status) = 0;
 
         virtual void update_debug_only() = 0;
+
+        virtual void attach_debugger(Debugger &debugger) = 0;
 
         virtual void attach_debug_container(DebugContainer &debug_container) = 0;
 

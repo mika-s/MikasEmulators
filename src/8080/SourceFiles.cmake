@@ -97,7 +97,9 @@ set(SOURCES_8080_CPP
         src/8080/instructions/xra.cpp
         src/8080/instructions/xri.cpp
         src/8080/instructions/xthl.cpp
+        src/crosscutting/breakpoint.cpp
         src/crosscutting/byte_util.cpp
+        src/crosscutting/debugger.cpp
         src/crosscutting/file_util.cpp
         src/crosscutting/invalid_program_arguments_exception.cpp
         src/crosscutting/string_util.cpp
@@ -140,7 +142,9 @@ set(SOURCES_8080_H
         src/8080/interfaces/in_observer.h
         src/8080/interfaces/out_observer.h
         src/8080/interfaces/session.h
+        src/crosscutting/breakpoint.h
         src/crosscutting/byte_util.h
+        src/crosscutting/debugger.h
         src/crosscutting/file_util.h
         src/crosscutting/invalid_program_arguments_exception.h
         src/crosscutting/string_util.h

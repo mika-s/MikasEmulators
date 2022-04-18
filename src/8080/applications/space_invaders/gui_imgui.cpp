@@ -64,6 +64,10 @@ namespace emu::cpu8080::applications::space_invaders {
         }
     }
 
+    void GuiImgui::attach_debugger(Debugger &debugger) {
+        m_disassembly.attach_debugger(debugger);
+    }
+
     void GuiImgui::attach_debug_container(DebugContainer &debug_container) {
         m_cpu_info.attach_debug_container(debug_container);
         m_disassembly.attach_debug_container(debug_container);

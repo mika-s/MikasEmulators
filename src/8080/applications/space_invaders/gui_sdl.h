@@ -5,9 +5,10 @@
 #include <vector>
 #include <SDL_video.h>
 #include <SDL_render.h>
+#include "gui.h"
 #include "8080/debug_container.h"
 #include "8080/run_status.h"
-#include "gui.h"
+#include "crosscutting/debugger.h"
 
 namespace emu::cpu8080::applications::space_invaders {
 
@@ -24,6 +25,8 @@ namespace emu::cpu8080::applications::space_invaders {
         void update_screen(const std::vector<std::uint8_t> &vram, RunStatus run_status) override;
 
         void update_debug_only() override;
+
+        void attach_debugger(Debugger &debugger) override;
 
         void attach_debug_container(DebugContainer &debug_container) override;
 
