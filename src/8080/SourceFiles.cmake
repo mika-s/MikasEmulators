@@ -97,13 +97,13 @@ set(SOURCES_8080_CPP
         src/8080/instructions/xra.cpp
         src/8080/instructions/xri.cpp
         src/8080/instructions/xthl.cpp
-        src/crosscutting/breakpoint.cpp
         src/crosscutting/byte_util.cpp
-        src/crosscutting/debugger.cpp
         src/crosscutting/file_util.cpp
         src/crosscutting/invalid_program_arguments_exception.cpp
         src/crosscutting/string_util.cpp
         src/crosscutting/unrecognized_opcode_exception.cpp
+        src/crosscutting/debugging/breakpoint.cpp
+        src/crosscutting/debugging/debugger.cpp
         src/crosscutting/gui/cpu_info.cpp
         src/crosscutting/gui/debug_log.cpp
         src/crosscutting/gui/disassembly_window.cpp
@@ -142,13 +142,13 @@ set(SOURCES_8080_H
         src/8080/interfaces/in_observer.h
         src/8080/interfaces/out_observer.h
         src/8080/interfaces/session.h
-        src/crosscutting/breakpoint.h
         src/crosscutting/byte_util.h
-        src/crosscutting/debugger.h
         src/crosscutting/file_util.h
         src/crosscutting/invalid_program_arguments_exception.h
         src/crosscutting/string_util.h
         src/crosscutting/unrecognized_opcode_exception.h
+        src/crosscutting/debugging/breakpoint.h
+        src/crosscutting/debugging/debugger.h
         src/crosscutting/gui/cpu_info.h
         src/crosscutting/gui/debug_log.h
         src/crosscutting/gui/disassembly_window.h

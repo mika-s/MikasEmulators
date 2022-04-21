@@ -2,13 +2,14 @@
 #define MIKA_EMULATORS_8080_APPLICATIONS_SPACE_INVADERS_GUI_IMGUI_H
 
 #include <cstdint>
+#include <memory>
 #include <vector>
 #include <SDL_video.h>
 #include <SDL_render.h>
 #include "gui.h"
 #include "8080/debug_container.h"
 #include "8080/run_status.h"
-#include "crosscutting/debugger.h"
+#include "crosscutting/debugging/debugger.h"
 #include "crosscutting/gui/cpu_info.h"
 #include "crosscutting/gui/debug_log.h"
 #include "crosscutting/gui/disassembly_window.h"
@@ -29,7 +30,7 @@ namespace emu::cpu8080::applications::space_invaders {
 
         void update_debug_only() override;
 
-        void attach_debugger(Debugger &debugger) override;
+        void attach_debugger(std::shared_ptr<Debugger> debugger) override;
 
         void attach_debug_container(DebugContainer &debug_container) override;
 

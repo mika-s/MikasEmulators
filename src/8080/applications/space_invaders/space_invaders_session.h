@@ -19,7 +19,7 @@
 #include "8080/interfaces/in_observer.h"
 #include "8080/interfaces/out_observer.h"
 #include "8080/interfaces/session.h"
-#include "crosscutting/debugger.h"
+#include "crosscutting/debugging/debugger.h"
 
 namespace emu::cpu8080::applications::space_invaders {
 
@@ -61,7 +61,7 @@ namespace emu::cpu8080::applications::space_invaders {
 
         EmulatorMemory m_memory;
 
-        emu::util::debugger::Debugger m_debugger;
+        std::shared_ptr<emu::util::debugger::Debugger> m_debugger;
         DebugContainer m_debug_container;
 
         // Game loop - begin

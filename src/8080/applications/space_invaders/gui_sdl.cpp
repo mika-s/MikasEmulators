@@ -42,7 +42,7 @@ namespace emu::cpu8080::applications::space_invaders {
         }
     }
 
-    void GuiSdl::attach_debugger([[maybe_unused]] Debugger &debugger) {
+    void GuiSdl::attach_debugger([[maybe_unused]] std::shared_ptr<Debugger> debugger) {
     }
 
     void GuiSdl::attach_debug_container([[maybe_unused]] DebugContainer &debug_container) {

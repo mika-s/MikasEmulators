@@ -1,5 +1,5 @@
+#include <iostream>
 #include <SDL_timer.h>
-#include <sstream>
 #include <utility>
 #include "space_invaders_session.h"
 #include "8080/disassembler8080.h"
@@ -18,7 +18,8 @@ namespace emu::cpu8080::applications::space_invaders {
               m_cpu_io(CpuIo(0, 0b00001000, 0)),
               m_gui(std::move(gui)),
               m_input(std::move(input)),
-              m_memory(std::move(memory)) {
+              m_memory(std::move(memory)),
+              m_debugger(std::make_shared<util::debugger::Debugger>()) {
         setup_cpu();
         setup_debugging();
         m_cpu_io.set_dipswitches(settings);
@@ -53,6 +54,9 @@ namespace emu::cpu8080::applications::space_invaders {
                     i = 0;
                     while (i < static_cast<long>(cycles_per_tick / 2)) {
                         i += m_cpu->next_instruction();
+                        if (m_is_in_debug_mode && m_debugger->has_breakpoint(m_cpu->pc())) {
+                            m_run_status = STEPPING;
+                        }
                     }
 
                     if (m_cpu->is_inta()) {
@@ -62,6 +66,9 @@ namespace emu::cpu8080::applications::space_invaders {
                     i = 0;
                     while (i < static_cast<long>(cycles_per_tick / 2)) {
                         i += m_cpu->next_instruction();
+                        if (m_is_in_debug_mode && m_debugger->has_breakpoint(m_cpu->pc())) {
+                            m_run_status = STEPPING;
+                        }
                     }
 
                     m_input->read(m_run_status, m_cpu_io);
@@ -128,6 +135,7 @@ namespace emu::cpu8080::applications::space_invaders {
                                             });
         m_debug_container.add_disassembled_program(disassemble_program());
 
+        m_gui->attach_debugger(m_debugger);
         m_gui->attach_debug_container(m_debug_container);
     }
 

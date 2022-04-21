@@ -1,12 +1,15 @@
 #include <stdexcept>
+#include <memory>
+#include <utility>
 #include "imgui.h"
 #include "disassembly_window.h"
-#include "crosscutting/breakpoint.h"
+#include "src/crosscutting/debugging/breakpoint.h"
 #include "crosscutting/string_util.h"
 
 namespace emu::util::gui {
 
     using emu::util::debugger::Breakpoint;
+    using emu::util::debugger::Debugger;
 
     DisassemblyWindow::DisassemblyWindow()
             : m_address_to_goto_str("00000000"),
@@ -18,8 +21,8 @@ namespace emu::util::gui {
               m_is_going_to_breakpoint(false) {
     }
 
-    void DisassemblyWindow::attach_debugger(debugger::Debugger &debugger) {
-        m_debugger = debugger;
+    void DisassemblyWindow::attach_debugger(std::shared_ptr<Debugger> debugger) {
+        m_debugger = std::move(debugger);
     }
 
     void DisassemblyWindow::attach_debug_container(cpu8080::DebugContainer &debug_container) {
@@ -53,14 +56,14 @@ namespace emu::util::gui {
             if (ImGui::BeginMenu("Menu")) {
                 if (ImGui::BeginMenu("Breakpoints")) {
                     if (ImGui::Button("Clear all")) {
-                        m_debugger.clear_all_breakpoints();
+                        m_debugger->clear_all_breakpoints();
                     }
                     ImGui::BeginChild("breakpoint_list_child",
                                       ImVec2(200, 200),
                                       false,
                                       ImGuiWindowFlags_HorizontalScrollbar);
                     if (ImGui::BeginTable("breakpoint_table", 3)) {
-                        for (auto &breakpoint: m_debugger.breakpoints()) {
+                        for (auto &breakpoint: m_debugger->breakpoints()) {
                             const std::uint16_t address = std::get<0>(breakpoint);
 
                             ImGui::PushID(address);
@@ -83,7 +86,7 @@ namespace emu::util::gui {
 
                             ImGui::TableSetColumnIndex(2);
                             if (ImGui::Button("Delete")) {
-                                m_debugger.remove_breakpoint(address);
+                                m_debugger->remove_breakpoint(address);
                             }
 
                             ImGui::PopID();
@@ -150,13 +153,13 @@ namespace emu::util::gui {
                     ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(0,255,0,255));
                 }
 
-                const bool is_breakpoint = m_debugger.has_breakpoint(address);
+                const bool is_breakpoint = m_debugger->has_breakpoint(address);
                 if (ImGui::Selectable(line.c_str(), is_breakpoint, ImGuiSelectableFlags_AllowDoubleClick)) {
                     if (ImGui::IsMouseDoubleClicked(0)) {
                         if (is_breakpoint) {
-                            m_debugger.remove_breakpoint(address);
+                            m_debugger->remove_breakpoint(address);
                         } else {
-                            m_debugger.add_breakpoint(address, Breakpoint(address, line));
+                            m_debugger->add_breakpoint(address, Breakpoint(address, line));
                         }
                     }
                 }

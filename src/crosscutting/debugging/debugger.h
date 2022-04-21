@@ -1,9 +1,9 @@
-#ifndef MIKA_EMULATORS_CROSSCUTTING_DEBUGGER_H
-#define MIKA_EMULATORS_CROSSCUTTING_DEBUGGER_H
+#ifndef MIKA_EMULATORS_CROSSCUTTING_DEBUGGING_DEBUGGER_H
+#define MIKA_EMULATORS_CROSSCUTTING_DEBUGGING_DEBUGGER_H
 
 #include <cstdint>
 #include <unordered_map>
-#include "crosscutting/breakpoint.h"
+#include "breakpoint.h"
 
 namespace emu::util::debugger {
 
@@ -13,7 +13,7 @@ namespace emu::util::debugger {
 
         void remove_breakpoint(std::uint16_t breakpoint_address);
 
-        std::unordered_map<std::uint16_t, Breakpoint> breakpoints();
+        std::unordered_map<std::uint16_t, Breakpoint> &breakpoints();
 
         void clear_all_breakpoints();
 
@@ -24,4 +24,4 @@ namespace emu::util::debugger {
     };
 }
 
-#endif //MIKA_EMULATORS_CROSSCUTTING_DEBUGGER_H
+#endif //MIKA_EMULATORS_CROSSCUTTING_DEBUGGING_DEBUGGER_H

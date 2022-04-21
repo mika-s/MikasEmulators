@@ -10,7 +10,7 @@ namespace emu::util::debugger {
         m_breakpoints.erase(breakpoint_address);
     }
 
-    std::unordered_map<std::uint16_t, Breakpoint> Debugger::breakpoints() {
+    std::unordered_map<std::uint16_t, Breakpoint> &Debugger::breakpoints() {
         return m_breakpoints;
     }
 

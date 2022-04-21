@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include "8080/debug_container.h"
-#include "crosscutting/debugger.h"
+#include "src/crosscutting/debugging/debugger.h"
 
 namespace emu::util::gui {
 
@@ -12,7 +12,7 @@ namespace emu::util::gui {
     public:
         DisassemblyWindow();
 
-        void attach_debugger(emu::util::debugger::Debugger &debugger);
+        void attach_debugger(std::shared_ptr<emu::util::debugger::Debugger> debugger);
 
         void attach_debug_container(emu::cpu8080::DebugContainer &debug_container);
 
@@ -22,7 +22,7 @@ namespace emu::util::gui {
         static constexpr int max_address_size = 9;
         static constexpr int address_base = 16;
 
-        emu::util::debugger::Debugger m_debugger;
+        std::shared_ptr<emu::util::debugger::Debugger> m_debugger;
         emu::cpu8080::DebugContainer m_debug_container;
         std::vector<std::string> m_content;
 

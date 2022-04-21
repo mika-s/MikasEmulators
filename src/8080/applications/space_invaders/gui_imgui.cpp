@@ -64,7 +64,7 @@ namespace emu::cpu8080::applications::space_invaders {
         }
     }
 
-    void GuiImgui::attach_debugger(Debugger &debugger) {
+    void GuiImgui::attach_debugger(std::shared_ptr<Debugger> debugger) {
         m_disassembly.attach_debugger(debugger);
     }
 
