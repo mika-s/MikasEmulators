@@ -1,4 +1,5 @@
 #include <iostream>
+#include "doctest.h"
 
 namespace emu::cpu8080 {
     /**
@@ -19,7 +20,32 @@ namespace emu::cpu8080 {
         cycles = 4;
     }
 
-    void print_di(std::ostream& ostream) {
+    void print_di(std::ostream &ostream) {
         ostream << "DI";
+    }
+
+    TEST_CASE("8080: DI") {
+        unsigned long cycles = 0;
+
+        SUBCASE("should disable interrupts") {
+            bool inte = true;
+
+            di(inte, cycles);
+
+            CHECK_EQ(false, inte);
+
+            di(inte, cycles);
+
+            CHECK_EQ(false, inte);
+        }
+
+        SUBCASE("should use 4 cycles") {
+            cycles = 0;
+            bool inte = false;
+
+            di(inte, cycles);
+
+            CHECK_EQ(4, cycles);
+        }
     }
 }

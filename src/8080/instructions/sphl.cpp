@@ -1,5 +1,7 @@
 #include <cstdint>
 #include <iostream>
+#include "doctest.h"
+#include "crosscutting/byte_util.h"
 
 namespace emu::cpu8080 {
     /**
@@ -21,7 +23,28 @@ namespace emu::cpu8080 {
         cycles = 5;
     }
 
-    void print_sphl(std::ostream& ostream) {
+    void print_sphl(std::ostream &ostream) {
         ostream << "SPHL";
+    }
+
+    TEST_CASE("8080: SPHL") {
+        unsigned long cycles = 0;
+        std::uint16_t sp = 0;
+        std::uint8_t h_reg = 0x11;
+        std::uint8_t l_reg = 0x22;
+
+        SUBCASE("should move HL into SP") {
+            sphl(sp, emu::util::byte::to_u16(h_reg, l_reg), cycles);
+
+            CHECK_EQ(0x1122, sp);
+        }
+
+        SUBCASE("should use 5 cycles") {
+            cycles = 0;
+
+            sphl(sp, emu::util::byte::to_u16(h_reg, l_reg), cycles);
+
+            CHECK_EQ(5, cycles);
+        }
     }
 }

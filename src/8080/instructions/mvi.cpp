@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <iostream>
+#include "doctest.h"
 #include "8080/next_byte.h"
 #include "8080/instructions/instructions.h"
 #include "crosscutting/string_util.h"
@@ -46,9 +47,71 @@ namespace emu::cpu8080 {
         }
     }
 
-    void print_mvi(std::ostream& ostream, const std::string &reg, const NextByte &args) {
+    void print_mvi(std::ostream &ostream, const std::string &reg, const NextByte &args) {
         ostream << "MVI "
                 << reg << ","
                 << emu::util::string::hexify_wo_0x(args.farg);
+    }
+
+    TEST_CASE("8080: MVI") {
+        unsigned long cycles = 0;
+
+        SUBCASE("should load registers with value") {
+            std::uint8_t reg = 0;
+            NextByte args = {.farg = 0};
+
+            mvi(reg, args, cycles);
+            CHECK_EQ(0, reg);
+
+            args = {.farg = 0xa};
+            mvi(reg, args, cycles);
+            CHECK_EQ(0xa, reg);
+
+            mvi(reg, args, cycles);
+            CHECK_EQ(0xa, reg);
+
+            args = {.farg = 0xff};
+            mvi(reg, args, cycles);
+            CHECK_EQ(0xff, reg);
+        }
+
+        SUBCASE("should load memory with value") {
+            std::uint8_t memory_location = 0;
+            NextByte args = {.farg = 0};
+
+            mvi(memory_location, args, cycles, true);
+            CHECK_EQ(0, memory_location);
+
+            args = {.farg = 0xa};
+            mvi(memory_location, args, cycles, true);
+            CHECK_EQ(0xa, memory_location);
+
+            mvi(memory_location, args, cycles, true);
+            CHECK_EQ(0xa, memory_location);
+
+            args = {.farg = 0xff};
+            mvi(memory_location, args, cycles, true);
+            CHECK_EQ(0xff, memory_location);
+        }
+
+        SUBCASE("should use 7 cycles if memory is not involved") {
+            cycles = 0;
+            std::uint8_t reg = 0;
+            NextByte args = {.farg = 0x11};
+
+            mvi(reg, args, cycles);
+
+            CHECK_EQ(7, cycles);
+        }
+
+        SUBCASE("should use 10 cycles if memory is involved") {
+            cycles = 0;
+            std::uint8_t memory_location = 0;
+            NextByte args = {.farg = 0x21};
+
+            mvi(memory_location, args, cycles, true);
+
+            CHECK_EQ(10, cycles);
+        }
     }
 }

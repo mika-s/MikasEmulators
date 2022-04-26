@@ -38,6 +38,8 @@ namespace emu::cpu8080 {
 
         static void disassemble(const std::string &file_path);
 
+        static void test();
+
         static std::unique_ptr<Emulator8080> choose_emulator(
                 const std::string &program,
                 const emu::cpu8080::applications::space_invaders::Settings &settings,

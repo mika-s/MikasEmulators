@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <iostream>
+#include "doctest.h"
 
 namespace emu::cpu8080 {
     /**
@@ -21,7 +22,27 @@ namespace emu::cpu8080 {
         cycles = 5;
     }
 
-    void print_pchl(std::ostream& ostream) {
+    void print_pchl(std::ostream &ostream) {
         ostream << "PCHL";
+    }
+
+    TEST_CASE("8080: PCHL") {
+        unsigned long cycles = 0;
+        std::uint16_t pc = 0x1111;
+        std::uint16_t address = 0x432a;
+
+        SUBCASE("should load address into PC") {
+            pchl(pc, address, cycles);
+
+            CHECK_EQ(address, pc);
+        }
+
+        SUBCASE("should use 5 cycles") {
+            cycles = 0;
+
+            pchl(pc, address, cycles);
+
+            CHECK_EQ(5, cycles);
+        }
     }
 }

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <unordered_map>
 #include <sstream>
+#include "doctest.h"
 #include "frontend.h"
 #include "8080/disassembler8080.h"
 #include "8080/applications/cpm/cpm_application.h"
@@ -48,6 +49,8 @@ namespace emu::cpu8080 {
                 } else {
                     throw InvalidProgramArgumentsException("Wrong number of arguments to run mode.");
                 }
+            } else if (mode == "test") {
+                test();
             } else {
                 std::stringstream ss;
                 ss << "Unknown mode: " << mode << "\n";
@@ -63,11 +66,11 @@ namespace emu::cpu8080 {
     }
 
     std::string Frontend::supported() {
-        const char *const delim = ", ";
+        const char *const delimiter = ", ";
 
         std::ostringstream imploded;
         std::copy(supported_programs.begin(), supported_programs.end(),
-                  std::experimental::ostream_joiner<std::string>(imploded, delim));
+                  std::experimental::ostream_joiner<std::string>(imploded, delimiter));
 
         return imploded.str();
     }
@@ -123,6 +126,19 @@ namespace emu::cpu8080 {
         } else {
             throw std::invalid_argument("Illegal program argument when choosing emulator");
         }
+    }
+
+    void Frontend::test() {
+        doctest::Context context;
+        context.addFilter("test-case", "8080*");
+        context.addFilter("test-case", "crosscutting*");
+        int res = context.run();
+
+        if (context.shouldExit()) {
+            exit(res);
+        }
+
+        exit(res);
     }
 
     Settings Frontend::find_space_invaders_settings(

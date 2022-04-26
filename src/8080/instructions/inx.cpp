@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <iostream>
+#include "doctest.h"
 #include "crosscutting/byte_util.h"
 
 namespace emu::cpu8080 {
@@ -44,8 +45,54 @@ namespace emu::cpu8080 {
         cycles = 5;
     }
 
-    void print_inx(std::ostream& ostream, const std::string &reg) {
+    void print_inx(std::ostream &ostream, const std::string &reg) {
         ostream << "INX "
                 << reg;
+    }
+
+    TEST_CASE("8080: INX") {
+        unsigned long cycles = 0;
+        std::uint8_t reg1 = 0;
+        std::uint8_t reg2 = 0;
+        std::uint8_t expected_reg1 = 0;
+        std::uint8_t expected_reg2;
+        std::uint16_t sp = 0;
+
+        SUBCASE("should increase register pair") {
+            for (int i = 0; i < UINT16_MAX; ++i) {
+                inx(reg1, reg2, cycles);
+
+                if (reg2 % (UINT8_MAX + 1) == 0 && i != 0) {
+                    ++expected_reg1;
+                }
+
+                expected_reg2 = i + 1;
+
+                CHECK_EQ(expected_reg1, reg1);
+                CHECK_EQ(expected_reg2, reg2);
+            }
+        }
+
+        SUBCASE("should increase SP") {
+            for (std::uint16_t expected_sp = 0; expected_sp < UINT16_MAX; ++expected_sp) {
+                sp = expected_sp;
+
+                inx_sp(sp, cycles);
+
+                CHECK_EQ(expected_sp + 1, sp);
+            }
+        }
+
+        SUBCASE("should use 5 cycles") {
+            cycles = 0;
+
+            inx(reg1, reg2, cycles);
+
+            CHECK_EQ(5, cycles);
+
+            inx_sp(sp, cycles);
+
+            CHECK_EQ(5, cycles);
+        }
     }
 }

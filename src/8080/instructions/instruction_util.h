@@ -14,11 +14,11 @@ namespace emu::cpu8080 {
 
     void sub_from_register(std::uint8_t &acc_reg, std::uint8_t value, bool cf, Flags &flag_reg);
 
-    void execute_call(std::uint16_t &pc, std::uint16_t &sp, emu::cpu8080::EmulatorMemory &memory, const NextWord &args);
+    void execute_call(std::uint16_t &pc, std::uint16_t &sp, EmulatorMemory &memory, const NextWord &args);
 
-    void execute_call(std::uint16_t &pc, std::uint16_t &sp, emu::cpu8080::EmulatorMemory &memory, std::uint8_t farg, std::uint8_t sarg);
+    void execute_call(std::uint16_t &pc, std::uint16_t &sp, EmulatorMemory &memory, std::uint8_t farg, std::uint8_t sarg);
 
-    void execute_return(std::uint16_t &pc, std::uint16_t &sp, const emu::cpu8080::EmulatorMemory &memory);
+    void execute_return(std::uint16_t &pc, std::uint16_t &sp, const EmulatorMemory &memory);
 }
 
 #endif //MIKA_EMULATORS_8080_INSTRUCTIONS_INSTRUCTION_UTIL_H

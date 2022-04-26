@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <iostream>
+#include "doctest.h"
 #include "8080/next_word.h"
 #include "8080/instructions/instruction_util.h"
 #include "crosscutting/string_util.h"
@@ -21,15 +22,44 @@ namespace emu::cpu8080 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void call(std::uint16_t &pc, std::uint16_t &sp, emu::cpu8080::EmulatorMemory &memory, const NextWord &args,
-            unsigned long &cycles) {
+              unsigned long &cycles) {
         execute_call(pc, sp, memory, args);
 
         cycles = 17;
     }
 
-    void print_call(std::ostream& ostream, const NextWord &args) {
+    void print_call(std::ostream &ostream, const NextWord &args) {
         ostream << "CALL "
                 << emu::util::string::hexify_wo_0x(args.sarg)
                 << emu::util::string::hexify_wo_0x(args.farg);
+    }
+
+    TEST_CASE("8080: CALL") {
+        unsigned long cycles = 0;
+        EmulatorMemory memory;
+        memory.add(std::vector<std::uint8_t>{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0xA});
+        NextWord args = {.farg = 0x2, .sarg = 0x0};
+
+        SUBCASE("should push current PC on the stack and change PC to the address in args") {
+            std::uint16_t pc = 0x100f;
+            std::uint16_t sp = 0x2;
+
+            call(pc, sp, memory, args, cycles);
+
+            CHECK_EQ(0x0002, pc);
+            CHECK_EQ(0x0f, memory[0]);
+            CHECK_EQ(0x10, memory[1]);
+        }
+
+        SUBCASE("should use 17 cycles") {
+            cycles = 0;
+
+            std::uint16_t pc = 0;
+            std::uint16_t sp = 0x2;
+
+            call(pc, sp, memory, args, cycles);
+
+            CHECK_EQ(17, cycles);
+        }
     }
 }

@@ -1,5 +1,8 @@
+#define DOCTEST_CONFIG_IMPLEMENT
+
 #include <iostream>
 #include <unordered_map>
+#include "doctest.h"
 #include "8080/disassembler8080.h"
 #include "8080/frontend.h"
 #include "crosscutting/invalid_program_arguments_exception.h"
@@ -16,6 +19,7 @@ void print_usage(const std::string &program_name) {
     std::cout << "      Example: ./" << program_name << " 8080 disassemble my_file.h\n";
     std::cout << "    - run: Runs a specific game or program. Available: "
               << emu::cpu8080::Frontend::supported() << "\n";
+    std::cout << "    - test: Run unit tests related to 8080.";
     std::cout << "      Example: ./" << program_name << " 8080 run space_invaders\n";
 }
 

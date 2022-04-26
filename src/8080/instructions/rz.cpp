@@ -1,7 +1,9 @@
 #include <cstdint>
 #include <iostream>
+#include "doctest.h"
 #include "8080/flags.h"
 #include "8080/instructions/instruction_util.h"
+#include "crosscutting/byte_util.h"
 
 namespace emu::cpu8080 {
     /**
@@ -32,7 +34,61 @@ namespace emu::cpu8080 {
         cycles += 5;
     }
 
-    void print_rz(std::ostream& ostream) {
+    void print_rz(std::ostream &ostream) {
         ostream << "RZ";
+    }
+
+    TEST_CASE("8080: RZ") {
+        unsigned long cycles = 0;
+        EmulatorMemory memory;
+        memory.add(std::vector<std::uint8_t>{0xab, 0x01, 0x02, 0x03, 0x04, 0x05});
+
+        SUBCASE("should pop PC off the stack when the zero flag is set") {
+            std::uint16_t pc = 0x100f;
+            std::uint16_t sp = 0;
+
+            Flags flag_reg;
+            flag_reg.set_zero_flag();
+
+            rz(pc, sp, memory, flag_reg, cycles);
+
+            CHECK_EQ(emu::util::byte::to_u16(memory[1], memory[0]), pc);
+            CHECK_EQ(0x2, sp);
+        }
+
+        SUBCASE("should not pop PC off the stack when the zero flag is unset") {
+            std::uint16_t pc = 0x100f;
+            std::uint16_t sp = 0;
+            Flags flag_reg;
+            flag_reg.clear_zero_flag();
+
+            rz(pc, sp, memory, flag_reg, cycles);
+
+            CHECK_EQ(0x100f, pc);
+            CHECK_EQ(0, sp);
+        }
+
+        SUBCASE("should use 5 cycles when not returning") {
+            cycles = 0;
+            std::uint16_t pc = 0;
+            std::uint16_t sp = 0;
+            Flags flag_reg;
+
+            rz(pc, sp, memory, flag_reg, cycles);
+
+            CHECK_EQ(5, cycles);
+        }
+
+        SUBCASE("should use 11 cycles when returning") {
+            cycles = 0;
+            std::uint16_t pc = 0;
+            std::uint16_t sp = 0;
+            Flags flag_reg;
+            flag_reg.set_zero_flag();
+
+            rz(pc, sp, memory, flag_reg, cycles);
+
+            CHECK_EQ(11, cycles);
+        }
     }
 }

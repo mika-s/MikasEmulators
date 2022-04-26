@@ -270,25 +270,31 @@ namespace emu::cpu8080 {
 
     void adc(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg, unsigned long &cycles);
 
-    void adc(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg, unsigned long &cycles, bool is_memory_involved);
+    void adc(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg, unsigned long &cycles,
+             bool is_memory_involved);
 
     void add(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg, unsigned long &cycles);
 
-    void add(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg, unsigned long &cycles, bool is_memory_involved);
+    void add(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg, unsigned long &cycles,
+             bool is_memory_involved);
 
     void adi(std::uint8_t &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles);
 
     void ana(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg, unsigned long &cycles);
 
-    void ana(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg, unsigned long &cycles, bool is_memory_involved);
+    void ana(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg, unsigned long &cycles,
+             bool is_memory_involved);
 
     void ani(std::uint8_t &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles);
 
-    void call(std::uint16_t &pc, std::uint16_t &sp, emu::cpu8080::EmulatorMemory &memory, const NextWord &args, unsigned long &cycles);
+    void call(std::uint16_t &pc, std::uint16_t &sp, EmulatorMemory &memory, const NextWord &args,
+              unsigned long &cycles);
 
-    void cc(std::uint16_t &pc, std::uint16_t &sp, emu::cpu8080::EmulatorMemory &memory, const NextWord &args, const Flags &flag_reg, unsigned long &cycles);
+    void cc(std::uint16_t &pc, std::uint16_t &sp, EmulatorMemory &memory, const NextWord &args, const Flags &flag_reg,
+            unsigned long &cycles);
 
-    void cm(std::uint16_t &pc, std::uint16_t &sp, emu::cpu8080::EmulatorMemory &memory, const NextWord &args, const Flags &flag_reg, unsigned long &cycles);
+    void cm(std::uint16_t &pc, std::uint16_t &sp, EmulatorMemory &memory, const NextWord &args, const Flags &flag_reg,
+            unsigned long &cycles);
 
     void cma(std::uint8_t &acc_reg, unsigned long &cycles);
 
@@ -296,21 +302,28 @@ namespace emu::cpu8080 {
 
     void cmp(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg, unsigned long &cycles);
 
-    void cmp(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg, unsigned long &cycles, bool is_memory_involved);
+    void cmp(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg,
+             unsigned long &cycles, bool is_memory_involved);
 
-    void cnc(std::uint16_t &pc, std::uint16_t &sp, emu::cpu8080::EmulatorMemory &memory, const NextWord &args, const Flags &flag_reg, unsigned long &cycles);
+    void cnc(std::uint16_t &pc, std::uint16_t &sp, EmulatorMemory &memory, const NextWord &args, const Flags &flag_reg,
+             unsigned long &cycles);
 
-    void cnz(std::uint16_t &pc, std::uint16_t &sp, emu::cpu8080::EmulatorMemory &memory, const NextWord &args, const Flags &flag_reg, unsigned long &cycles);
+    void cnz(std::uint16_t &pc, std::uint16_t &sp, EmulatorMemory &memory, const NextWord &args, const Flags &flag_reg,
+             unsigned long &cycles);
 
-    void cp(std::uint16_t &pc, std::uint16_t &sp, emu::cpu8080::EmulatorMemory &memory, const NextWord &args, const Flags &flag_reg, unsigned long &cycles);
+    void cp(std::uint16_t &pc, std::uint16_t &sp, EmulatorMemory &memory, const NextWord &args, const Flags &flag_reg,
+            unsigned long &cycles);
 
-    void cpe(std::uint16_t &pc, std::uint16_t &sp, emu::cpu8080::EmulatorMemory &memory, const NextWord &args, const Flags &flag_reg, unsigned long &cycles);
+    void cpe(std::uint16_t &pc, std::uint16_t &sp, EmulatorMemory &memory, const NextWord &args, const Flags &flag_reg,
+             unsigned long &cycles);
 
     void cpi(std::uint8_t &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles);
 
-    void cpo(std::uint16_t &pc, std::uint16_t &sp, emu::cpu8080::EmulatorMemory &memory, const NextWord &args, const Flags &flag_reg, unsigned long &cycles);
+    void cpo(std::uint16_t &pc, std::uint16_t &sp, EmulatorMemory &memory, const NextWord &args, const Flags &flag_reg,
+             unsigned long &cycles);
 
-    void cz(std::uint16_t &pc, std::uint16_t &sp, emu::cpu8080::EmulatorMemory &memory, const NextWord &args, const Flags &flag_reg, unsigned long &cycles);
+    void cz(std::uint16_t &pc, std::uint16_t &sp, EmulatorMemory &memory, const NextWord &args, const Flags &flag_reg,
+            unsigned long &cycles);
 
     void daa(std::uint8_t &acc_reg, Flags &flag_reg, unsigned long &cycles);
 
@@ -358,11 +371,13 @@ namespace emu::cpu8080 {
 
     void jz(std::uint16_t &pc, const NextWord &args, const Flags &flag_reg, unsigned long &cycles);
 
-    void lda(std::uint8_t &acc_reg, const emu::cpu8080::EmulatorMemory &memory, const NextWord &args, unsigned long &cycles);
+    void lda(std::uint8_t &acc_reg, const EmulatorMemory &memory, const NextWord &args, unsigned long &cycles);
 
-    void ldax(std::uint8_t &acc_reg, std::uint8_t reg1, std::uint8_t reg2, const emu::cpu8080::EmulatorMemory &memory, unsigned long &cycles);
+    void ldax(std::uint8_t &acc_reg, std::uint8_t reg1, std::uint8_t reg2, const EmulatorMemory &memory,
+              unsigned long &cycles);
 
-    void lhld(std::uint8_t &l_reg, std::uint8_t &h_reg, const emu::cpu8080::EmulatorMemory &memory, const NextWord &args, unsigned long &cycles);
+    void lhld(std::uint8_t &l_reg, std::uint8_t &h_reg, const EmulatorMemory &memory, const NextWord &args,
+              unsigned long &cycles);
 
     void lxi(std::uint8_t &reg1, std::uint8_t &reg2, const NextWord &args, unsigned long &cycles);
 
@@ -380,7 +395,8 @@ namespace emu::cpu8080 {
 
     void ora(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg, unsigned long &cycles);
 
-    void ora(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg, unsigned long &cycles, bool is_memory_involved);
+    void ora(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg, unsigned long &cycles,
+             bool is_memory_involved);
 
     void ori(std::uint8_t &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles);
 
@@ -388,75 +404,89 @@ namespace emu::cpu8080 {
 
     void pchl(std::uint16_t &pc, std::uint16_t address, unsigned long &cycles);
 
-    void pop(std::uint8_t &reg1, std::uint8_t &reg2, std::uint16_t &sp, const emu::cpu8080::EmulatorMemory &memory, unsigned long &cycles);
+    void pop(std::uint8_t &reg1, std::uint8_t &reg2, std::uint16_t &sp, const EmulatorMemory &memory,
+             unsigned long &cycles);
 
-    void pop_psw(Flags &flag_reg, std::uint8_t &acc_reg, std::uint16_t &sp, const emu::cpu8080::EmulatorMemory &memory, unsigned long &cycles);
+    void pop_psw(Flags &flag_reg, std::uint8_t &acc_reg, std::uint16_t &sp, const EmulatorMemory &memory,
+                 unsigned long &cycles);
 
-    void push(std::uint8_t reg1, std::uint8_t reg2, std::uint16_t &sp, emu::cpu8080::EmulatorMemory &memory, unsigned long &cycles);
+    void push(std::uint8_t reg1, std::uint8_t reg2, std::uint16_t &sp, EmulatorMemory &memory, unsigned long &cycles);
 
-    void push_psw(const Flags &flag_reg, std::uint8_t &acc_reg, std::uint16_t &sp, emu::cpu8080::EmulatorMemory &memory, unsigned long &cycles);
+    void push_psw(const Flags &flag_reg, std::uint8_t &acc_reg, std::uint16_t &sp, EmulatorMemory &memory,
+                  unsigned long &cycles);
 
     void ral(std::uint8_t &acc_reg, Flags &flag_reg, unsigned long &cycles);
 
     void rar(std::uint8_t &acc_reg, Flags &flag_reg, unsigned long &cycles);
 
-    void rc(std::uint16_t &pc, std::uint16_t &sp, const emu::cpu8080::EmulatorMemory &memory, const Flags &flag_reg, unsigned long &cycles);
+    void rc(std::uint16_t &pc, std::uint16_t &sp, const EmulatorMemory &memory, const Flags &flag_reg,
+            unsigned long &cycles);
 
-    void ret(std::uint16_t &pc, std::uint16_t &sp, const emu::cpu8080::EmulatorMemory &memory, unsigned long &cycles);
+    void ret(std::uint16_t &pc, std::uint16_t &sp, const EmulatorMemory &memory, unsigned long &cycles);
 
     void rlc(std::uint8_t &acc_reg, Flags &flag_reg, unsigned long &cycles);
 
-    void rm(std::uint16_t &pc, std::uint16_t &sp, emu::cpu8080::EmulatorMemory &memory, const Flags &flag_reg, unsigned long &cycles);
+    void rm(std::uint16_t &pc, std::uint16_t &sp, EmulatorMemory &memory, const Flags &flag_reg, unsigned long &cycles);
 
-    void rnc(std::uint16_t &pc, std::uint16_t &sp, const emu::cpu8080::EmulatorMemory &memory, const Flags &flag_reg, unsigned long &cycles);
+    void rnc(std::uint16_t &pc, std::uint16_t &sp, const EmulatorMemory &memory, const Flags &flag_reg,
+             unsigned long &cycles);
 
-    void rnz(std::uint16_t &pc, std::uint16_t &sp, const emu::cpu8080::EmulatorMemory &memory, const Flags &flag_reg, unsigned long &cycles);
+    void rnz(std::uint16_t &pc, std::uint16_t &sp, const EmulatorMemory &memory, const Flags &flag_reg,
+             unsigned long &cycles);
 
-    void rp(std::uint16_t &pc, std::uint16_t &sp, const emu::cpu8080::EmulatorMemory &memory, const Flags &flag_reg, unsigned long &cycles);
+    void rp(std::uint16_t &pc, std::uint16_t &sp, const EmulatorMemory &memory, const Flags &flag_reg,
+            unsigned long &cycles);
 
-    void rpe(std::uint16_t &pc, std::uint16_t &sp, const emu::cpu8080::EmulatorMemory &memory, const Flags &flag_reg, unsigned long &cycles);
+    void rpe(std::uint16_t &pc, std::uint16_t &sp, const EmulatorMemory &memory, const Flags &flag_reg,
+             unsigned long &cycles);
 
-    void rpo(std::uint16_t &pc, std::uint16_t &sp, const emu::cpu8080::EmulatorMemory &memory, const Flags &flag_reg, unsigned long &cycles);
+    void rpo(std::uint16_t &pc, std::uint16_t &sp, const EmulatorMemory &memory, const Flags &flag_reg,
+             unsigned long &cycles);
 
     void rrc(std::uint8_t &acc_reg, Flags &flag_reg, unsigned long &cycles);
 
-    void rst_0(std::uint16_t &pc, std::uint16_t &sp, emu::cpu8080::EmulatorMemory &memory, unsigned long &cycles);
+    void rst_0(std::uint16_t &pc, std::uint16_t &sp, EmulatorMemory &memory, unsigned long &cycles);
 
-    void rst_1(std::uint16_t &pc, std::uint16_t &sp, emu::cpu8080::EmulatorMemory &memory, unsigned long &cycles);
+    void rst_1(std::uint16_t &pc, std::uint16_t &sp, EmulatorMemory &memory, unsigned long &cycles);
 
-    void rst_2(std::uint16_t &pc, std::uint16_t &sp, emu::cpu8080::EmulatorMemory &memory, unsigned long &cycles);
+    void rst_2(std::uint16_t &pc, std::uint16_t &sp, EmulatorMemory &memory, unsigned long &cycles);
 
-    void rst_3(std::uint16_t &pc, std::uint16_t &sp, emu::cpu8080::EmulatorMemory &memory, unsigned long &cycles);
+    void rst_3(std::uint16_t &pc, std::uint16_t &sp, EmulatorMemory &memory, unsigned long &cycles);
 
-    void rst_4(std::uint16_t &pc, std::uint16_t &sp, emu::cpu8080::EmulatorMemory &memory, unsigned long &cycles);
+    void rst_4(std::uint16_t &pc, std::uint16_t &sp, EmulatorMemory &memory, unsigned long &cycles);
 
-    void rst_5(std::uint16_t &pc, std::uint16_t &sp, emu::cpu8080::EmulatorMemory &memory, unsigned long &cycles);
+    void rst_5(std::uint16_t &pc, std::uint16_t &sp, EmulatorMemory &memory, unsigned long &cycles);
 
-    void rst_6(std::uint16_t &pc, std::uint16_t &sp, emu::cpu8080::EmulatorMemory &memory, unsigned long &cycles);
+    void rst_6(std::uint16_t &pc, std::uint16_t &sp, EmulatorMemory &memory, unsigned long &cycles);
 
-    void rst_7(std::uint16_t &pc, std::uint16_t &sp, emu::cpu8080::EmulatorMemory &memory, unsigned long &cycles);
+    void rst_7(std::uint16_t &pc, std::uint16_t &sp, EmulatorMemory &memory, unsigned long &cycles);
 
-    void rz(std::uint16_t &pc, std::uint16_t &sp, const emu::cpu8080::EmulatorMemory &memory, const Flags &flag_reg, unsigned long &cycles);
+    void rz(std::uint16_t &pc, std::uint16_t &sp, const EmulatorMemory &memory, const Flags &flag_reg,
+            unsigned long &cycles);
 
     void sbb(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg, unsigned long &cycles);
 
-    void sbb(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg, unsigned long &cycles, bool is_memory_involved);
+    void sbb(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg, unsigned long &cycles,
+             bool is_memory_involved);
 
     void sbi(std::uint8_t &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles);
 
-    void shld(std::uint8_t l_reg, std::uint8_t h_reg, emu::cpu8080::EmulatorMemory &memory, const NextWord &args, unsigned long &cycles);
+    void shld(std::uint8_t l_reg, std::uint8_t h_reg, EmulatorMemory &memory, const NextWord &args,
+              unsigned long &cycles);
 
     void sphl(std::uint16_t &sp, std::uint16_t address, unsigned long &cycles);
 
-    void sta(std::uint8_t &acc_reg, emu::cpu8080::EmulatorMemory &memory, const NextWord &args, unsigned long &cycles);
+    void sta(std::uint8_t &acc_reg, EmulatorMemory &memory, const NextWord &args, unsigned long &cycles);
 
-    void stax(std::uint8_t acc_reg, std::uint8_t reg1, std::uint8_t reg2, emu::cpu8080::EmulatorMemory &memory, unsigned long &cycles);
+    void stax(std::uint8_t acc_reg, std::uint8_t reg1, std::uint8_t reg2, EmulatorMemory &memory,
+              unsigned long &cycles);
 
     void stc(Flags &flag_reg, unsigned long &cycles);
 
     void sub(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg, unsigned long &cycles);
 
-    void sub(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg, unsigned long &cycles, bool is_memory_involved);
+    void sub(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg, unsigned long &cycles,
+             bool is_memory_involved);
 
     void sui(std::uint8_t &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles);
 
@@ -464,179 +494,181 @@ namespace emu::cpu8080 {
 
     void unused_3(std::uint8_t opcode, std::uint16_t &pc, unsigned long &cycles);
 
-    void xchg(std::uint8_t &h_reg, std::uint8_t &l_reg, std::uint8_t &d_reg, std::uint8_t &e_reg, unsigned long &cycles);
+    void xchg(std::uint8_t &h_reg, std::uint8_t &l_reg, std::uint8_t &d_reg, std::uint8_t &e_reg,
+              unsigned long &cycles);
 
     void xra(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg, unsigned long &cycles);
 
-    void xra(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg, unsigned long &cycles, bool is_memory_involved);
+    void xra(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg,
+             unsigned long &cycles, bool is_memory_involved);
 
     void xri(std::uint8_t &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles);
 
     void xthl(std::uint8_t &h_reg, std::uint8_t &l_reg, std::uint8_t &sp0, std::uint8_t &sp1, unsigned long &cycles);
 
-    void print_nop(std::ostream& ostream);
+    void print_nop(std::ostream &ostream);
 
-    void print_lxi(std::ostream& ostream, const std::string &reg, const NextWord &args);
+    void print_lxi(std::ostream &ostream, const std::string &reg, const NextWord &args);
 
-    void print_stax(std::ostream& ostream, const std::string &reg);
+    void print_stax(std::ostream &ostream, const std::string &reg);
 
-    void print_inx(std::ostream& ostream, const std::string &reg);
+    void print_inx(std::ostream &ostream, const std::string &reg);
 
-    void print_dcx(std::ostream& ostream, const std::string &reg);
+    void print_dcx(std::ostream &ostream, const std::string &reg);
 
-    void print_inr(std::ostream& ostream, const std::string &reg);
+    void print_inr(std::ostream &ostream, const std::string &reg);
 
-    void print_dcr(std::ostream& ostream, const std::string &reg);
+    void print_dcr(std::ostream &ostream, const std::string &reg);
 
-    void print_mvi(std::ostream& ostream, const std::string &reg, const NextByte &args);
+    void print_mvi(std::ostream &ostream, const std::string &reg, const NextByte &args);
 
-    void print_ral(std::ostream& ostream);
+    void print_ral(std::ostream &ostream);
 
-    void print_rar(std::ostream& ostream);
+    void print_rar(std::ostream &ostream);
 
-    void print_rrc(std::ostream& ostream);
+    void print_rrc(std::ostream &ostream);
 
-    void print_rlc(std::ostream& ostream, const std::string &reg);
+    void print_rlc(std::ostream &ostream, const std::string &reg);
 
-    void print_unused_nop(std::ostream& ostream);
+    void print_unused_nop(std::ostream &ostream);
 
-    void print_unused_jmp(std::ostream& ostream, const NextWord &args);
+    void print_unused_jmp(std::ostream &ostream, const NextWord &args);
 
-    void print_unused_ret(std::ostream& ostream);
+    void print_unused_ret(std::ostream &ostream);
 
-    void print_unused_call(std::ostream& ostream, const NextWord &args);
+    void print_unused_call(std::ostream &ostream, const NextWord &args);
 
-    void print_daa(std::ostream& ostream);
+    void print_daa(std::ostream &ostream);
 
-    void print_dad(std::ostream& ostream, const std::string &reg);
+    void print_dad(std::ostream &ostream, const std::string &reg);
 
-    void print_ldax(std::ostream& ostream, const std::string &reg);
+    void print_ldax(std::ostream &ostream, const std::string &reg);
 
-    void print_shld(std::ostream& ostream, const NextWord &args);
+    void print_shld(std::ostream &ostream, const NextWord &args);
 
-    void print_lhld(std::ostream& ostream, const NextWord &args);
+    void print_lhld(std::ostream &ostream, const NextWord &args);
 
-    void print_cma(std::ostream& ostream);
+    void print_cma(std::ostream &ostream);
 
-    void print_sta(std::ostream& ostream, const NextWord &args);
+    void print_sta(std::ostream &ostream, const NextWord &args);
 
-    void print_stc(std::ostream& ostream);
+    void print_stc(std::ostream &ostream);
 
-    void print_lda(std::ostream& ostream, const NextWord &args);
+    void print_lda(std::ostream &ostream, const NextWord &args);
 
-    void print_cmc(std::ostream& ostream);
+    void print_cmc(std::ostream &ostream);
 
-    void print_mov(std::ostream& ostream, const std::string &reg1, const std::string &reg2);
+    void print_mov(std::ostream &ostream, const std::string &reg1, const std::string &reg2);
 
-    void print_hlt(std::ostream& ostream);
+    void print_hlt(std::ostream &ostream);
 
-    void print_add(std::ostream& ostream, const std::string &reg);
+    void print_add(std::ostream &ostream, const std::string &reg);
 
-    void print_adc(std::ostream& ostream, const std::string &reg);
+    void print_adc(std::ostream &ostream, const std::string &reg);
 
-    void print_sub(std::ostream& ostream, const std::string &reg);
+    void print_sub(std::ostream &ostream, const std::string &reg);
 
-    void print_sbb(std::ostream& ostream, const std::string &reg);
+    void print_sbb(std::ostream &ostream, const std::string &reg);
 
-    void print_ana(std::ostream& ostream, const std::string &reg);
+    void print_ana(std::ostream &ostream, const std::string &reg);
 
-    void print_xra(std::ostream& ostream, const std::string &reg);
+    void print_xra(std::ostream &ostream, const std::string &reg);
 
-    void print_ora(std::ostream& ostream, const std::string &reg);
+    void print_ora(std::ostream &ostream, const std::string &reg);
 
-    void print_cmp(std::ostream& ostream, const std::string &reg);
+    void print_cmp(std::ostream &ostream, const std::string &reg);
 
-    void print_cnz(std::ostream& ostream, const NextWord &args);
+    void print_cnz(std::ostream &ostream, const NextWord &args);
 
-    void print_cz(std::ostream& ostream, const NextWord &args);
+    void print_cz(std::ostream &ostream, const NextWord &args);
 
-    void print_call(std::ostream& ostream, const NextWord &args);
+    void print_call(std::ostream &ostream, const NextWord &args);
 
-    void print_cnc(std::ostream& ostream, const NextWord &args);
+    void print_cnc(std::ostream &ostream, const NextWord &args);
 
-    void print_cc(std::ostream& ostream, const NextWord &args);
+    void print_cc(std::ostream &ostream, const NextWord &args);
 
-    void print_cpo(std::ostream& ostream, const NextWord &args);
+    void print_cpo(std::ostream &ostream, const NextWord &args);
 
-    void print_cp(std::ostream& ostream, const NextWord &args);
+    void print_cp(std::ostream &ostream, const NextWord &args);
 
-    void print_cpe(std::ostream& ostream, const NextWord &args);
+    void print_cpe(std::ostream &ostream, const NextWord &args);
 
-    void print_cm(std::ostream& ostream, const NextWord &args);
+    void print_cm(std::ostream &ostream, const NextWord &args);
 
-    void print_rnz(std::ostream& ostream);
+    void print_rnz(std::ostream &ostream);
 
-    void print_rz(std::ostream& ostream);
+    void print_rz(std::ostream &ostream);
 
-    void print_ret(std::ostream& ostream);
+    void print_ret(std::ostream &ostream);
 
-    void print_rnc(std::ostream& ostream);
+    void print_rnc(std::ostream &ostream);
 
-    void print_rc(std::ostream& ostream);
+    void print_rc(std::ostream &ostream);
 
-    void print_rpo(std::ostream& ostream);
+    void print_rpo(std::ostream &ostream);
 
-    void print_rpe(std::ostream& ostream);
+    void print_rpe(std::ostream &ostream);
 
-    void print_rp(std::ostream& ostream);
+    void print_rp(std::ostream &ostream);
 
-    void print_rm(std::ostream& ostream);
+    void print_rm(std::ostream &ostream);
 
-    void print_pop(std::ostream& ostream, const std::string &reg);
+    void print_pop(std::ostream &ostream, const std::string &reg);
 
-    void print_push(std::ostream& ostream, const std::string &reg);
+    void print_push(std::ostream &ostream, const std::string &reg);
 
-    void print_jnz(std::ostream& ostream, const NextWord &args);
+    void print_jnz(std::ostream &ostream, const NextWord &args);
 
-    void print_jmp(std::ostream& ostream, const NextWord &args);
+    void print_jmp(std::ostream &ostream, const NextWord &args);
 
-    void print_jz(std::ostream& ostream, const NextWord &args);
+    void print_jz(std::ostream &ostream, const NextWord &args);
 
-    void print_jnc(std::ostream& ostream, const NextWord &args);
+    void print_jnc(std::ostream &ostream, const NextWord &args);
 
-    void print_jc(std::ostream& ostream, const NextWord &args);
+    void print_jc(std::ostream &ostream, const NextWord &args);
 
-    void print_jpo(std::ostream& ostream, const NextWord &args);
+    void print_jpo(std::ostream &ostream, const NextWord &args);
 
-    void print_jpe(std::ostream& ostream, const NextWord &args);
+    void print_jpe(std::ostream &ostream, const NextWord &args);
 
-    void print_jp(std::ostream& ostream, const NextWord &args);
+    void print_jp(std::ostream &ostream, const NextWord &args);
 
-    void print_jm(std::ostream& ostream, const NextWord &args);
+    void print_jm(std::ostream &ostream, const NextWord &args);
 
-    void print_di(std::ostream& ostream);
+    void print_di(std::ostream &ostream);
 
-    void print_ei(std::ostream& ostream);
+    void print_ei(std::ostream &ostream);
 
-    void print_rst(std::ostream& ostream, int number);
+    void print_rst(std::ostream &ostream, int number);
 
-    void print_out(std::ostream& ostream, const NextByte &args);
+    void print_out(std::ostream &ostream, const NextByte &args);
 
-    void print_in(std::ostream& ostream, const NextByte &args);
+    void print_in(std::ostream &ostream, const NextByte &args);
 
-    void print_adi(std::ostream& ostream, const NextByte &args);
+    void print_adi(std::ostream &ostream, const NextByte &args);
 
-    void print_aci(std::ostream& ostream, const NextByte &args);
+    void print_aci(std::ostream &ostream, const NextByte &args);
 
-    void print_sui(std::ostream& ostream, const NextByte &args);
+    void print_sui(std::ostream &ostream, const NextByte &args);
 
-    void print_sbi(std::ostream& ostream, const NextByte &args);
+    void print_sbi(std::ostream &ostream, const NextByte &args);
 
-    void print_ani(std::ostream& ostream, const NextByte &args);
+    void print_ani(std::ostream &ostream, const NextByte &args);
 
-    void print_cpi(std::ostream& ostream, const NextByte &args);
+    void print_cpi(std::ostream &ostream, const NextByte &args);
 
-    void print_xri(std::ostream& ostream, const NextByte &args);
+    void print_xri(std::ostream &ostream, const NextByte &args);
 
-    void print_ori(std::ostream& ostream, const NextByte &args);
+    void print_ori(std::ostream &ostream, const NextByte &args);
 
-    void print_xthl(std::ostream& ostream);
+    void print_xthl(std::ostream &ostream);
 
-    void print_pchl(std::ostream& ostream);
+    void print_pchl(std::ostream &ostream);
 
-    void print_xchg(std::ostream& ostream);
+    void print_xchg(std::ostream &ostream);
 
-    void print_sphl(std::ostream& ostream);
+    void print_sphl(std::ostream &ostream);
 }
 
 #endif //MIKA_EMULATORS_8080_INSTRUCTIONS_INSTRUCTIONS_H

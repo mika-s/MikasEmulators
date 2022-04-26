@@ -17,6 +17,7 @@ find_package(SDL2_image REQUIRED)
 #find_package(SDL2_mixer REQUIRED)
 find_package(fmt)
 
+include(${PROJECT_SOURCE_DIR}/libs/doctest/SourceFiles.cmake)
 include(${PROJECT_SOURCE_DIR}/libs/glad/SourceFiles.cmake)
 include(${PROJECT_SOURCE_DIR}/libs/imgui/SourceFiles.cmake)
 
@@ -24,40 +25,16 @@ include(${PROJECT_SOURCE_DIR}/libs/imgui/SourceFiles.cmake)
 
 include(${PROJECT_SOURCE_DIR}/src/8080/SourceFiles.cmake)
 
-add_executable(${PROJECT_NAME} ${SOURCES_8080_CPP} ${SOURCES_8080_H} ${SOURCES_GLAD} ${SOURCES_IMGUI})
+add_executable(${PROJECT_NAME} ${SOURCES_8080_CPP} ${SOURCES_8080_H} ${SOURCES_DOCTEST} ${SOURCES_GLAD} ${SOURCES_IMGUI})
 #target_link_libraries(${PROJECT_NAME} SDL2::Main SDL2::Image SDL2_mixer)
 target_link_libraries(${PROJECT_NAME} SDL2::Main SDL2::Image fmt::fmt)
 target_include_directories(${PROJECT_NAME} PRIVATE
+        libs/doctest
         libs/glad/include
         libs/imgui
         src
         )
 target_compile_options(${PROJECT_NAME} PRIVATE -Werror -Wall -Wextra)
-
-# ------------------------ Test binary
-
-include(FetchContent)
-FetchContent_Declare(
-        googletest
-        URL https://github.com/google/googletest/archive/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip
-)
-# For Windows: Prevent overriding the parent project's compiler/linker settings
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
-
-include(${PROJECT_SOURCE_DIR}/src/8080/SourceFilesTest.cmake)
-
-add_executable(${PROJECT_NAME}test ${TEST_SOURCES_8080_CPP} ${TEST_SOURCES_8080_H})
-target_link_libraries(${PROJECT_NAME}test gtest_main)
-target_include_directories(${PROJECT_NAME}test PRIVATE
-        src
-        )
-
-include(GoogleTest)
-
-gtest_discover_tests(${PROJECT_NAME}test)
-add_test(NAME ${PROJECT_NAME}test COMMAND ${PROJECT_NAME}test)
-enable_testing(true)
 
 # ------------------------ Copy files to working directory
 

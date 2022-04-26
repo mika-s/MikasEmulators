@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <iostream>
+#include "doctest.h"
 #include "8080/next_word.h"
 #include "crosscutting/byte_util.h"
 #include "crosscutting/string_util.h"
@@ -45,10 +46,39 @@ namespace emu::cpu8080 {
         cycles = 10;
     }
 
-    void print_lxi(std::ostream& ostream, const std::string &reg, const NextWord &args) {
+    void print_lxi(std::ostream &ostream, const std::string &reg, const NextWord &args) {
         ostream << "LXI "
                 << reg << ","
                 << emu::util::string::hexify_wo_0x(args.sarg)
                 << emu::util::string::hexify_wo_0x(args.farg);
+    }
+
+    TEST_CASE("8080: LXI") {
+        unsigned long cycles = 0;
+        std::uint16_t sp = 0xe;
+        std::uint8_t reg1 = 0xe;
+        std::uint8_t reg2 = 0;
+        NextWord args = {.farg = 0x12, .sarg = 0x3a};
+
+        SUBCASE("should load immediate into register pair") {
+            lxi(reg1, reg2, args, cycles);
+
+            CHECK_EQ(args.sarg, reg1);
+            CHECK_EQ(args.farg, reg2);
+        }
+
+        SUBCASE("should load immediate into SP") {
+            lxi_sp(sp, args, cycles);
+
+            CHECK_EQ(emu::util::byte::to_u16(args.sarg, args.farg), sp);
+        }
+
+        SUBCASE("should use 10 cycles") {
+            cycles = 0;
+
+            lxi(reg1, reg2, args, cycles);
+
+            CHECK_EQ(10, cycles);
+        }
     }
 }

@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <iostream>
+#include "doctest.h"
 #include "8080/flags.h"
 #include "8080/instructions/instruction_util.h"
 #include "crosscutting/byte_util.h"
@@ -33,7 +34,53 @@ namespace emu::cpu8080 {
         cycles = 4;
     }
 
-    void print_ral(std::ostream& ostream) {
+    void print_ral(std::ostream &ostream) {
         ostream << "RAL";
+    }
+
+    TEST_CASE("8080: RAL") {
+        unsigned long cycles = 0;
+        std::uint8_t acc_reg = 0;
+
+        SUBCASE("should rotate the accumulator left") {
+            for (std::uint8_t acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
+                Flags flag_reg;
+                acc_reg = acc_reg_counter;
+
+                ral(acc_reg, flag_reg, cycles);
+
+                CHECK_EQ(static_cast<std::uint8_t>(acc_reg_counter << 1u), acc_reg);
+            }
+        }
+
+        SUBCASE("should set the carry flag if shifted out of msb") {
+            acc_reg = 0b10000000;
+            Flags flag_reg;
+
+            CHECK_EQ(false, flag_reg.is_carry_flag_set());
+
+            ral(acc_reg, flag_reg, cycles);
+
+            CHECK_EQ(true, flag_reg.is_carry_flag_set());
+        }
+
+        SUBCASE("should take the carry flag into account when shifting") {
+            acc_reg = 0;
+            Flags flag_reg;
+            flag_reg.set_carry_flag();
+
+            ral(acc_reg, flag_reg, cycles);
+
+            CHECK_EQ(0b00000001, acc_reg);
+        }
+
+        SUBCASE("should use 4 cycles") {
+            cycles = 0;
+            Flags flag_reg;
+
+            ral(acc_reg, flag_reg, cycles);
+
+            CHECK_EQ(4, cycles);
+        }
     }
 }

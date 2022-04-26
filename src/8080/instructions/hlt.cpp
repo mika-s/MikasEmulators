@@ -1,4 +1,5 @@
 #include <iostream>
+#include "doctest.h"
 
 namespace emu::cpu8080 {
     /**
@@ -19,7 +20,33 @@ namespace emu::cpu8080 {
         cycles = 7;
     }
 
-    void print_hlt(std::ostream& ostream) {
+    void print_hlt(std::ostream &ostream) {
         ostream << "HLT";
+    }
+
+    TEST_CASE("8080: HLT") {
+        unsigned long cycles = 0;
+
+        SUBCASE("should stop the program") {
+            bool stopped = false;
+
+            hlt(stopped, cycles);
+
+            CHECK_EQ(true, stopped);
+
+            hlt(stopped, cycles);
+
+            CHECK_EQ(true, stopped);
+        }
+
+        SUBCASE("should use 7 cycles") {
+            cycles = 0;
+
+            bool stopped = false;
+
+            hlt(stopped, cycles);
+
+            CHECK_EQ(7, cycles);
+        }
     }
 }

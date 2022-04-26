@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <iostream>
+#include "doctest.h"
 #include "8080/instructions/instructions.h"
 
 namespace emu::cpu8080 {
@@ -44,9 +45,65 @@ namespace emu::cpu8080 {
         }
     }
 
-    void print_mov(std::ostream& ostream, const std::string &reg1, const std::string &reg2) {
+    void print_mov(std::ostream &ostream, const std::string &reg1, const std::string &reg2) {
         ostream << "MOV "
                 << reg1 << ","
                 << reg2;
+    }
+
+    TEST_CASE("8080: MOV") {
+        unsigned long cycles = 0;
+
+        SUBCASE("should load registers with value") {
+            std::uint8_t reg1 = 0;
+            std::uint8_t reg2 = 0;
+
+            mov(reg1, reg2, cycles);
+            CHECK_EQ(0, reg1);
+
+            reg2 = 0xa;
+            mov(reg1, reg2, cycles);
+            CHECK_EQ(0xa, reg1);
+
+            reg2 = 0xff;
+            mov(reg1, reg2, cycles);
+            CHECK_EQ(0xff, reg1);
+        }
+
+        SUBCASE("should load the memory with value") {
+            std::uint8_t reg1 = 0;
+            std::uint8_t reg2 = 0;
+
+            mov(reg1, reg2, cycles, true);
+            CHECK_EQ(0, reg1);
+
+            reg2 = 0xa;
+            mov(reg1, reg2, cycles, true);
+            CHECK_EQ(0xa, reg1);
+
+            reg2 = 0xff;
+            mov(reg1, reg2, cycles, true);
+            CHECK_EQ(0xff, reg1);
+        }
+
+        SUBCASE("should use 5 cycles if memory is not involved") {
+            cycles = 0;
+            std::uint8_t reg1 = 0;
+            std::uint8_t reg2 = 0x11;
+
+            mov(reg1, reg2, cycles);
+
+            CHECK_EQ(5, cycles);
+        }
+
+        SUBCASE("should use 7 cycles if memory is involved") {
+            cycles = 0;
+            std::uint8_t reg1 = 0;
+            std::uint8_t reg2 = 0x11;
+
+            mov(reg1, reg2, cycles, true);
+
+            CHECK_EQ(7, cycles);
+        }
     }
 }

@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <iostream>
+#include "doctest.h"
 #include "8080/next_word.h"
 #include "crosscutting/byte_util.h"
 #include "crosscutting/string_util.h"
@@ -24,9 +25,29 @@ namespace emu::cpu8080 {
         cycles = 10;
     }
 
-    void print_jmp(std::ostream& ostream, const NextWord &args) {
+    void print_jmp(std::ostream &ostream, const NextWord &args) {
         ostream << "JMP "
                 << emu::util::string::hexify_wo_0x(args.sarg)
                 << emu::util::string::hexify_wo_0x(args.farg);
+    }
+
+    TEST_CASE("8080: JMP") {
+        unsigned long cycles = 0;
+        std::uint16_t pc = 0;
+        NextWord args = {.farg = 0x11, .sarg = 0x22};
+
+        SUBCASE("should jump") {
+            jmp(pc, args, cycles);
+
+            CHECK_EQ(emu::util::byte::to_u16(args.sarg, args.farg), pc);
+        }
+
+        SUBCASE("should use 10 cycles") {
+            cycles = 0;
+
+            jmp(pc, args, cycles);
+
+            CHECK_EQ(10, cycles);
+        }
     }
 }

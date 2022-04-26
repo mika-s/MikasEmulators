@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <iostream>
+#include "doctest.h"
 #include "8080/emulator_memory.h"
 #include "8080/next_word.h"
 #include "crosscutting/byte_util.h"
@@ -28,9 +29,31 @@ namespace emu::cpu8080 {
         cycles = 13;
     }
 
-    void print_sta(std::ostream& ostream, const NextWord &args) {
+    void print_sta(std::ostream &ostream, const NextWord &args) {
         ostream << "STA "
                 << emu::util::string::hexify_wo_0x(args.sarg)
                 << emu::util::string::hexify_wo_0x(args.farg);
+    }
+
+    TEST_CASE("8080: STA") {
+        unsigned long cycles = 0;
+        EmulatorMemory memory;
+        memory.add(std::vector<std::uint8_t>{0x00, 0x01, 0x02, 0x03, 0xfd, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
+        std::uint8_t acc_reg = 0x45;
+        NextWord args = {.farg = 0x3, .sarg = 0x0};
+
+        SUBCASE("should store the accumulator in memory at the given address") {
+            sta(acc_reg, memory, args, cycles);
+
+            CHECK_EQ(acc_reg, memory[0x3]);
+        }
+
+        SUBCASE("should use 13 cycles") {
+            cycles = 0;
+
+            sta(acc_reg, memory, args, cycles);
+
+            CHECK_EQ(13, cycles);
+        }
     }
 }

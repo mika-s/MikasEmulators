@@ -1,4 +1,5 @@
 #include <iostream>
+#include "doctest.h"
 #include "8080/flags.h"
 
 namespace emu::cpu8080 {
@@ -20,7 +21,43 @@ namespace emu::cpu8080 {
         cycles = 4;
     }
 
-    void print_cmc(std::ostream& ostream) {
+    void print_cmc(std::ostream &ostream) {
         ostream << "CMC";
+    }
+
+    TEST_CASE("8080: CMC") {
+        unsigned long cycles = 0;
+
+        SUBCASE("should toggle the carry flag") {
+            Flags flag_reg;
+
+            CHECK_EQ(false, flag_reg.is_carry_flag_set());
+
+            cmc(flag_reg, cycles);
+
+            CHECK_EQ(true, flag_reg.is_carry_flag_set());
+            CHECK_EQ(false, flag_reg.is_aux_carry_flag_set());
+            CHECK_EQ(false, flag_reg.is_sign_flag_set());
+            CHECK_EQ(false, flag_reg.is_parity_flag_set());
+            CHECK_EQ(false, flag_reg.is_zero_flag_set());
+
+            cmc(flag_reg, cycles);
+
+            CHECK_EQ(false, flag_reg.is_carry_flag_set());
+            CHECK_EQ(false, flag_reg.is_aux_carry_flag_set());
+            CHECK_EQ(false, flag_reg.is_sign_flag_set());
+            CHECK_EQ(false, flag_reg.is_parity_flag_set());
+            CHECK_EQ(false, flag_reg.is_zero_flag_set());
+        }
+
+        SUBCASE("should use 4 cycles") {
+            cycles = 0;
+
+            Flags flag_reg;
+
+            cmc(flag_reg, cycles);
+
+            CHECK_EQ(4, cycles);
+        }
     }
 }

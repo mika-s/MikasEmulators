@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <iostream>
+#include "doctest.h"
 #include "8080/flags.h"
 #include "8080/instructions/instructions.h"
 
@@ -50,8 +51,114 @@ namespace emu::cpu8080 {
         }
     }
 
-    void print_inr(std::ostream& ostream, const std::string &reg) {
+    void print_inr(std::ostream &ostream, const std::string &reg) {
         ostream << "INR "
                 << reg;
+    }
+
+    TEST_CASE("8080: INR") {
+        unsigned long cycles = 0;
+
+        SUBCASE("should increase register or memory") {
+            std::uint8_t reg = 0;
+            Flags flag_reg;
+
+            inr(reg, flag_reg, cycles);
+            CHECK_EQ(1, reg);
+
+            inr(reg, flag_reg, cycles);
+            CHECK_EQ(2, reg);
+
+            inr(reg, flag_reg, cycles);
+            CHECK_EQ(3, reg);
+
+            inr(reg, flag_reg, cycles);
+            CHECK_EQ(4, reg);
+
+            inr(reg, flag_reg, cycles);
+            CHECK_EQ(5, reg);
+        }
+
+        SUBCASE("should not affect the carry flag") {
+            std::uint8_t reg = 255;
+            Flags flag_reg;
+
+            CHECK_EQ(false, flag_reg.is_carry_flag_set());
+
+            inr(reg, flag_reg, cycles);
+
+            CHECK_EQ(0, reg);
+            CHECK_EQ(false, flag_reg.is_carry_flag_set());
+        }
+
+        SUBCASE("should set correct aux carry flag") {
+            std::uint8_t reg = 15;
+            Flags flag_reg;
+
+            CHECK_EQ(false, flag_reg.is_aux_carry_flag_set());
+
+            inr(reg, flag_reg, cycles);
+
+            CHECK_EQ(16, reg);
+            CHECK_EQ(true, flag_reg.is_aux_carry_flag_set());
+        }
+
+        SUBCASE("should set correct parity in the parity flag") {
+            std::uint8_t reg = 0;
+            Flags flag_reg;
+
+            inr(reg, flag_reg, cycles);
+
+            CHECK_EQ(false, flag_reg.is_parity_flag_set());
+
+            inr(reg, flag_reg, cycles);
+            inr(reg, flag_reg, cycles);
+
+            CHECK_EQ(true, flag_reg.is_parity_flag_set());
+        }
+
+        SUBCASE("should set correct value in the zero flag") {
+            std::uint8_t reg = 254;
+            Flags flag_reg;
+
+            inr(reg, flag_reg, cycles);
+
+            CHECK_EQ(false, flag_reg.is_zero_flag_set());
+
+            inr(reg, flag_reg, cycles);
+
+            CHECK_EQ(true, flag_reg.is_zero_flag_set());
+        }
+
+        SUBCASE("should set the sign flag when going above 127") {
+            std::uint8_t reg = 127;
+            Flags flag_reg;
+
+            CHECK_EQ(false, flag_reg.is_sign_flag_set());
+
+            inr(reg, flag_reg, cycles);
+
+            CHECK_EQ(true, flag_reg.is_sign_flag_set());
+        }
+
+        SUBCASE("should use 5 cycles when memory is not involved") {
+            cycles = 0;
+            Flags flag_reg;
+
+            std::uint8_t reg = 0xE;
+            inr(reg, flag_reg, cycles);
+
+            CHECK_EQ(5, cycles);
+        }
+
+        SUBCASE("should use 10 cycles when memory is involved") {
+            cycles = 0;
+            Flags flag_reg;
+
+            std::uint8_t reg = 0xE;
+            inr(reg, flag_reg, cycles, true);
+
+            CHECK_EQ(10, cycles);
+        }
     }
 }

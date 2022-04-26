@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <iostream>
+#include "doctest.h"
 #include "8080/flags.h"
 #include "8080/next_word.h"
 #include "crosscutting/byte_util.h"
@@ -28,9 +29,68 @@ namespace emu::cpu8080 {
         cycles = 10;
     }
 
-    void print_jc(std::ostream& ostream, const NextWord &args) {
+    void print_jc(std::ostream &ostream, const NextWord &args) {
         ostream << "JC "
                 << emu::util::string::hexify_wo_0x(args.sarg)
                 << emu::util::string::hexify_wo_0x(args.farg);
+    }
+
+    TEST_CASE("8080: JC") {
+        unsigned long cycles = 0;
+
+        SUBCASE("should jump when the carry flag is set") {
+            std::uint16_t pc = 0;
+            NextWord args = {.farg = 0x11, .sarg = 0x22};
+            Flags flag_reg;
+            flag_reg.set_carry_flag();
+
+            jc(pc, args, flag_reg, cycles);
+
+            CHECK_EQ(emu::util::byte::to_u16(args.sarg, args.farg), pc);
+        }
+
+        SUBCASE("should not jump when the carry flag is unset") {
+            std::uint16_t pc = 0;
+            NextWord args = {.farg = 0x11, .sarg = 0x22};
+            Flags flag_reg;
+            flag_reg.clear_carry_flag();
+
+            jc(pc, args, flag_reg, cycles);
+
+            CHECK_EQ(0, pc);
+        }
+
+        SUBCASE("should not affect any flags") {
+            std::uint16_t pc = 0;
+            NextWord args = {.farg = 0x11, .sarg = 0x22};
+            Flags flag_reg;
+            flag_reg.set_carry_flag();
+
+            jc(pc, args, flag_reg, cycles);
+
+            CHECK_EQ(false, flag_reg.is_zero_flag_set());
+            CHECK_EQ(true, flag_reg.is_carry_flag_set());
+            CHECK_EQ(false, flag_reg.is_aux_carry_flag_set());
+            CHECK_EQ(false, flag_reg.is_sign_flag_set());
+            CHECK_EQ(false, flag_reg.is_parity_flag_set());
+        }
+
+        SUBCASE("should use 10 cycles") {
+            cycles = 0;
+            std::uint16_t pc = 0;
+            NextWord args = {.farg = 0x11, .sarg = 0x22};
+            Flags flag_reg;
+            flag_reg.set_carry_flag();
+
+            jc(pc, args, flag_reg, cycles);
+
+            CHECK_EQ(10, cycles);
+
+            flag_reg.clear_carry_flag();
+
+            jc(pc, args, flag_reg, cycles);
+
+            CHECK_EQ(10, cycles);
+        }
     }
 }

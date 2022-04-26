@@ -1,4 +1,5 @@
 #include <iostream>
+#include "doctest.h"
 
 namespace emu::cpu8080 {
     /**
@@ -15,7 +16,17 @@ namespace emu::cpu8080 {
         cycles = 4;
     }
 
-    void print_nop(std::ostream& ostream) {
+    void print_nop(std::ostream &ostream) {
         ostream << "NOP";
+    }
+
+    TEST_CASE("8080: NOP") {
+        unsigned long cycles = 0;
+
+        SUBCASE("should use 4 cycles") {
+            nop(cycles);
+
+            CHECK_EQ(4, cycles);
+        }
     }
 }

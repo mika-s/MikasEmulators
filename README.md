@@ -8,12 +8,12 @@ This is my collection of emulators, written in C++. As of now, it only emulates 
 - [Dear Imgui](https://github.com/ocornut/imgui) (included)
 - [OpenGL](https://www.opengl.org/)
 - [cmake](https://cmake.org/) 3.17 or better
-- [gtest](https://github.com/google/googletest)
+- [doctest](https://github.com/doctest/doctest)
 - [fmt](https://fmt.dev/)
 
 ## Building
 
-CMake, fmt, OpenGL and SDL2 have to be installed before building. GTest will be downloaded by CMake.
+CMake, fmt, OpenGL and SDL2 have to be installed before building.
 
 ```sh
 mkdir cmake-build-debug

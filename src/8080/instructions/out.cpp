@@ -1,6 +1,7 @@
 #include <cstdint>
 #include <vector>
 #include <iostream>
+#include "doctest.h"
 #include "8080/next_byte.h"
 #include "crosscutting/string_util.h"
 
@@ -25,8 +26,29 @@ namespace emu::cpu8080 {
         cycles = 10;
     }
 
-    void print_out(std::ostream& ostream, const NextByte &args) {
+    void print_out(std::ostream &ostream, const NextByte &args) {
         ostream << "OUT "
                 << emu::util::string::hexify_wo_0x(args.farg);
+    }
+
+    TEST_CASE("8080: OUT") {
+        unsigned long cycles = 0;
+        std::vector<std::uint8_t> io = {0, 2, 4, 6, 8, 10};
+        NextByte args = {.farg = 0x1};
+        std::uint8_t acc_reg = 100;
+
+        SUBCASE("should store the accumulator in the addressed IO") {
+            out(acc_reg, args, io, cycles);
+
+            CHECK_EQ(acc_reg, io[args.farg]);
+        }
+
+        SUBCASE("should use 10 cycles") {
+            cycles = 0;
+
+            out(acc_reg, args, io, cycles);
+
+            CHECK_EQ(10, cycles);
+        }
     }
 }

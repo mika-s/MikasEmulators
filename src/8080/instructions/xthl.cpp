@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <iostream>
+#include "doctest.h"
 
 namespace emu::cpu8080 {
     /**
@@ -28,7 +29,37 @@ namespace emu::cpu8080 {
         cycles = 18;
     }
 
-    void print_xthl(std::ostream& ostream) {
+    void print_xthl(std::ostream &ostream) {
         ostream << "XTHL";
+    }
+
+    TEST_CASE("8080: XTHL") {
+        unsigned long cycles = 0;
+
+        SUBCASE("should exchange HL with top of the stack") {
+            std::uint8_t h_reg = 0x11;
+            std::uint8_t l_reg = 0x22;
+            std::uint8_t sp0 = 0x33;
+            std::uint8_t sp1 = 0x44;
+
+            xthl(h_reg, l_reg, sp0, sp1, cycles);
+
+            CHECK_EQ(0x44, h_reg);
+            CHECK_EQ(0x33, l_reg);
+            CHECK_EQ(0x22, sp0);
+            CHECK_EQ(0x11, sp1);
+        }
+
+        SUBCASE("should use 18 cycles") {
+            cycles = 0;
+            std::uint8_t h_reg = 0x11;
+            std::uint8_t l_reg = 0x22;
+            std::uint8_t sp0 = 0;
+            std::uint8_t sp1 = 0;
+
+            xthl(h_reg, l_reg, sp0, sp1, cycles);
+
+            CHECK_EQ(18, cycles);
+        }
     }
 }

@@ -1,7 +1,9 @@
 #include <cstdint>
 #include <iostream>
+#include "doctest.h"
 #include "8080/flags.h"
 #include "8080/instructions/instructions.h"
+#include "crosscutting/byte_util.h"
 
 namespace emu::cpu8080 {
     /**
@@ -37,7 +39,8 @@ namespace emu::cpu8080 {
      * @param cycles is the number of cycles variable, which will be mutated
      * @param is_memory_involved is true if memory is involved, either written or read
      */
-    void ana(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg, unsigned long &cycles, bool is_memory_involved) {
+    void ana(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg,
+             unsigned long &cycles, bool is_memory_involved) {
         const std::uint8_t previous = acc_reg;
         acc_reg &= value;
 
@@ -64,8 +67,120 @@ namespace emu::cpu8080 {
         }
     }
 
-    void print_ana(std::ostream& ostream, const std::string &reg) {
+    void print_ana(std::ostream &ostream, const std::string &reg) {
         ostream << "ANA "
                 << reg;
+    }
+
+    TEST_CASE("8080: ANA") {
+        unsigned long cycles = 0;
+        std::uint8_t acc_reg = 0;
+
+        SUBCASE("should and given value with the accumulator") {
+            for (std::uint8_t acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
+                for (std::uint8_t value = 0; value < UINT8_MAX; ++value) {
+                    Flags flag_reg;
+                    acc_reg = acc_reg_counter;
+
+                    ana(acc_reg, value, flag_reg, cycles);
+
+                    CHECK_EQ(acc_reg_counter & value, acc_reg);
+                }
+            }
+        }
+
+        SUBCASE("should always clear the carry flag") {
+            for (std::uint8_t acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
+                for (std::uint8_t value = 0; value < UINT8_MAX; ++value) {
+                    Flags flag_reg;
+                    acc_reg = acc_reg_counter;
+
+                    ana(acc_reg, value, flag_reg, cycles);
+
+                    CHECK_EQ(false, flag_reg.is_carry_flag_set());
+                }
+            }
+        }
+
+        SUBCASE("should set the zero flag when zero and not set it otherwise") {
+            for (std::uint8_t acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
+                for (std::uint8_t value = 0; value < UINT8_MAX; ++value) {
+                    Flags flag_reg;
+                    acc_reg = acc_reg_counter;
+
+                    ana(acc_reg, value, flag_reg, cycles);
+
+                    CHECK_EQ(acc_reg == 0, flag_reg.is_zero_flag_set());
+                }
+            }
+        }
+
+        SUBCASE("should set the sign flag when above 127 and not set it otherwise") {
+            for (std::uint8_t acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
+                for (std::uint8_t value = 0; value < UINT8_MAX; ++value) {
+                    Flags flag_reg;
+                    acc_reg = acc_reg_counter;
+
+                    ana(acc_reg, value, flag_reg, cycles);
+
+                    CHECK_EQ(acc_reg > 127, flag_reg.is_sign_flag_set());
+                }
+            }
+        }
+
+        SUBCASE("should set the parity flag when even parity") {
+            Flags flag_reg;
+            acc_reg = 0x3;
+            std::uint8_t value = 0xff;
+
+            ana(acc_reg, value, flag_reg, cycles);
+
+            CHECK_EQ(true, flag_reg.is_parity_flag_set());
+        }
+
+        SUBCASE("should not set the parity flag when odd parity") {
+            Flags flag_reg;
+            acc_reg = 0x2;
+            std::uint8_t value = 0xff;
+
+            ana(acc_reg, value, flag_reg, cycles);
+
+            CHECK_EQ(false, flag_reg.is_parity_flag_set());
+        }
+
+        SUBCASE("should set the aux carry when the bitwise ored third bit is set") {
+            for (std::uint8_t acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
+                for (std::uint8_t value = 0; value < UINT8_MAX; ++value) {
+                    Flags flag_reg;
+                    acc_reg = acc_reg_counter;
+
+                    ana(acc_reg, value, flag_reg, cycles);
+
+                    CHECK_EQ(emu::util::byte::is_bit_set(acc_reg_counter | value, 3), flag_reg.is_aux_carry_flag_set());
+                }
+            }
+        }
+
+        SUBCASE("should use 4 cycles if memory is not involved") {
+            cycles = 0;
+            acc_reg = 0xe;
+            std::uint8_t value = 0;
+            Flags flag_reg;
+
+            ana(acc_reg, value, flag_reg, cycles);
+
+            CHECK_EQ(4, cycles);
+        }
+
+        SUBCASE("should use 7 cycles if memory is involved") {
+            cycles = 0;
+            acc_reg = 0xe;
+            std::uint8_t value = 0;
+            Flags flag_reg;
+
+            ana(acc_reg, value, flag_reg, cycles, true);
+
+            CHECK_EQ(7, cycles);
+        }
     }
 }

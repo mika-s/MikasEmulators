@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <iostream>
+#include "doctest.h"
 #include "8080/emulator_memory.h"
 #include "crosscutting/byte_util.h"
 
@@ -20,14 +21,37 @@ namespace emu::cpu8080 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void ldax(std::uint8_t &acc_reg, std::uint8_t reg1, std::uint8_t reg2, const emu::cpu8080::EmulatorMemory &memory,
-            unsigned long &cycles) {
+              unsigned long &cycles) {
         acc_reg = memory[emu::util::byte::to_u16(reg1, reg2)];
 
         cycles = 7;
     }
 
-    void print_ldax(std::ostream& ostream, const std::string &reg) {
+    void print_ldax(std::ostream &ostream, const std::string &reg) {
         ostream << "LDAX "
                 << reg;
+    }
+
+    TEST_CASE("8080: LDAX") {
+        unsigned long cycles = 0;
+        std::uint8_t acc_reg = 0xe;
+        EmulatorMemory memory;
+        memory.add(std::vector<std::uint8_t>{0x00, 0x01, 0x02, 0x03, 0xfd, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
+        std::uint8_t reg1 = 0;
+        std::uint8_t reg2 = 0x04;
+
+        SUBCASE("should load the accumulator from memory using address in args") {
+            ldax(acc_reg, reg1, reg2, memory, cycles);
+
+            CHECK_EQ(memory[0x04], acc_reg);
+        }
+
+        SUBCASE("should use 7 cycles") {
+            cycles = 0;
+
+            ldax(acc_reg, reg1, reg2, memory, cycles);
+
+            CHECK_EQ(7, cycles);
+        }
     }
 }

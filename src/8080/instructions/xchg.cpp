@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <iostream>
+#include "doctest.h"
 
 namespace emu::cpu8080 {
     /**
@@ -28,7 +29,38 @@ namespace emu::cpu8080 {
         cycles = 4;
     }
 
-    void print_xchg(std::ostream& ostream) {
+    void print_xchg(std::ostream &ostream) {
         ostream << "XCHG";
+    }
+
+    TEST_CASE("8080: XCHG") {
+        unsigned long cycles = 0;
+
+        SUBCASE("should exchange HL with DE") {
+            std::uint8_t h_reg = 0x11;
+            std::uint8_t l_reg = 0x22;
+            std::uint8_t d_reg = 0x33;
+            std::uint8_t e_reg = 0x44;
+
+            xchg(h_reg, l_reg, d_reg, e_reg, cycles);
+
+            CHECK_EQ(0x33, h_reg);
+            CHECK_EQ(0x44, l_reg);
+            CHECK_EQ(0x11, d_reg);
+            CHECK_EQ(0x22, e_reg);
+        }
+
+        SUBCASE("should use 4 cycles") {
+            cycles = 0;
+
+            std::uint8_t h_reg = 0x11;
+            std::uint8_t l_reg = 0x22;
+            std::uint8_t d_reg = 0;
+            std::uint8_t e_reg = 0;
+
+            xchg(h_reg, l_reg, d_reg, e_reg, cycles);
+
+            CHECK_EQ(4, cycles);
+        }
     }
 }

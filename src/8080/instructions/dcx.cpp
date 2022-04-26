@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <iostream>
+#include "doctest.h"
 #include "crosscutting/byte_util.h"
 
 namespace emu::cpu8080 {
@@ -44,8 +45,55 @@ namespace emu::cpu8080 {
         cycles = 5;
     }
 
-    void print_dcx(std::ostream& ostream, const std::string &reg) {
+    void print_dcx(std::ostream &ostream, const std::string &reg) {
         ostream << "DCX "
                 << reg;
+    }
+
+    TEST_CASE("8080: DCX") {
+        unsigned long cycles = 0;
+        std::uint8_t reg1 = UINT8_MAX;
+        std::uint8_t reg2 = UINT8_MAX;
+        std::uint8_t expected_reg1 = UINT8_MAX;
+        std::uint8_t expected_reg2;
+        std::uint16_t sp = UINT16_MAX;
+
+        SUBCASE("should decrease register pair") {
+            for (int i = UINT16_MAX; i > UINT16_MAX; --i) {
+                if (reg2 == 0 && i != 0) {
+                    --expected_reg1;
+                }
+
+                expected_reg2 = i - 1;
+
+                dcx(reg1, reg2, cycles);
+
+                CHECK_EQ(expected_reg1, reg1);
+                CHECK_EQ(expected_reg2, reg2);
+            }
+        }
+
+        SUBCASE("should decrease SP") {
+            for (std::uint16_t expected_sp = UINT16_MAX; expected_sp > 0; --expected_sp) {
+                sp = expected_sp;
+                dcx_sp(sp, cycles);
+
+                CHECK_EQ(expected_sp - 1, sp);
+            }
+        }
+
+        SUBCASE("should use 5 cycles") {
+            cycles = 0;
+
+            dcx(reg1, reg2, cycles);
+
+            CHECK_EQ(5, cycles);
+
+            cycles = 0;
+
+            dcx_sp(sp, cycles);
+
+            CHECK_EQ(5, cycles);
+        }
     }
 }

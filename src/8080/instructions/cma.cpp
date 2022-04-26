@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <iostream>
+#include "doctest.h"
 
 namespace emu::cpu8080 {
     /**
@@ -20,7 +21,32 @@ namespace emu::cpu8080 {
         cycles = 4;
     }
 
-    void print_cma(std::ostream& ostream) {
+    void print_cma(std::ostream &ostream) {
         ostream << "CMA";
+    }
+
+    TEST_CASE("8080: CMA") {
+        unsigned long cycles = 0;
+        std::uint8_t acc_reg = 0;
+
+        SUBCASE("should complement the accumulator") {
+            for (std::uint8_t acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
+                for (std::uint8_t value = 0; value < UINT8_MAX; ++value) {
+                    acc_reg = acc_reg_counter;
+
+                    cma(acc_reg, cycles);
+
+                    CHECK_EQ(static_cast<std::uint8_t>(~acc_reg_counter), acc_reg);
+                }
+            }
+        }
+
+        SUBCASE("should use 4 cycles") {
+            cycles = 0;
+
+            cma(acc_reg, cycles);
+
+            CHECK_EQ(4, cycles);
+        }
     }
 }

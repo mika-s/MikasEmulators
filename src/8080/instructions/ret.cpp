@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <iostream>
+#include "doctest.h"
 #include "8080/instructions/instruction_util.h"
 
 namespace emu::cpu8080 {
@@ -24,7 +25,29 @@ namespace emu::cpu8080 {
         cycles = 10;
     }
 
-    void print_ret(std::ostream& ostream) {
+    void print_ret(std::ostream &ostream) {
         ostream << "RET";
+    }
+
+    TEST_CASE("8080: RET") {
+        unsigned long cycles = 0;
+        std::uint16_t pc = 0x100f;
+        std::uint16_t sp = 0;
+        EmulatorMemory memory;
+        memory.add(std::vector<std::uint8_t>{0xab, 0x01, 0x02, 0x03, 0x04, 0x05});
+
+        SUBCASE("should pop PC off the stack") {
+            ret(pc, sp, memory, cycles);
+
+            CHECK_EQ(0x01ab, pc);
+        }
+
+        SUBCASE("should use 10 cycles") {
+            cycles = 0;
+
+            ret(pc, sp, memory, cycles);
+
+            CHECK_EQ(10, cycles);
+        }
     }
 }
