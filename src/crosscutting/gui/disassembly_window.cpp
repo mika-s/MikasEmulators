@@ -1,6 +1,7 @@
 #include <stdexcept>
 #include <memory>
 #include <utility>
+#include <iostream>
 #include "imgui.h"
 #include "disassembly_window.h"
 #include "src/crosscutting/debugging/breakpoint.h"
@@ -87,6 +88,8 @@ namespace emu::util::gui {
                             ImGui::TableSetColumnIndex(2);
                             if (ImGui::Button("Delete")) {
                                 m_debugger->remove_breakpoint(address);
+                                ImGui::PopID();
+                                break;
                             }
 
                             ImGui::PopID();
