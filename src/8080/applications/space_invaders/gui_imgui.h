@@ -13,6 +13,7 @@
 #include "crosscutting/gui/cpu_info.h"
 #include "crosscutting/gui/debug_log.h"
 #include "crosscutting/gui/disassembly_window.h"
+#include "crosscutting/gui/io_info.h"
 
 namespace emu::cpu8080::applications::space_invaders {
 
@@ -42,6 +43,7 @@ namespace emu::cpu8080::applications::space_invaders {
         bool m_show_game;
         bool m_show_game_info;
         bool m_show_cpu_info;
+        bool m_show_io_info;
         bool m_show_log;
         bool m_show_disassembly;
         bool m_show_demo;
@@ -53,6 +55,7 @@ namespace emu::cpu8080::applications::space_invaders {
         emu::util::gui::DebugLog m_log;
         emu::util::gui::DisassemblyWindow m_disassembly;
         emu::util::gui::CpuInfo m_cpu_info;
+        emu::util::gui::IoInfo m_io_info;
 
         void notify_gui_observers_about_run_status(RunStatus new_status);
 
@@ -67,6 +70,8 @@ namespace emu::cpu8080::applications::space_invaders {
         void render_game_info_window();
 
         void render_cpu_info_window();
+
+        void render_io_info_window();
 
         void render_log_window();
 

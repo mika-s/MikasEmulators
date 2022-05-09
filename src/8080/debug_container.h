@@ -27,6 +27,16 @@ namespace emu::cpu8080 {
 
         [[nodiscard]] bool is_flag_register_set() const;
 
+        void add_io(
+                const std::string &name,
+                const std::function<bool()> &is_active_retriever,
+                const std::function<std::uint8_t()> &value_retriever
+        );
+
+        [[nodiscard]] std::vector<std::tuple<std::string, std::function<bool()>, std::function<std::uint8_t()>>> io() const;
+
+        [[nodiscard]] bool is_io_set() const;
+
         void add_pc(const std::function<std::uint16_t()> &value_retriever);
 
         [[nodiscard]] std::uint16_t pc() const;
@@ -57,6 +67,9 @@ namespace emu::cpu8080 {
         std::tuple<std::string, std::function<std::uint8_t()>> m_flag_register_retriever;
         std::vector<std::tuple<std::string, int>> m_flag_names;
         bool m_is_flag_register_set;
+
+        std::vector<std::tuple<std::string, std::function<bool()>, std::function<std::uint8_t()>>> m_io_retrievers;
+        bool m_is_io_set;
 
         std::function<std::uint16_t()> m_pc_retriever;
         bool m_is_pc_set;

@@ -107,6 +107,7 @@ set(SOURCES_8080_CPP
         src/crosscutting/gui/cpu_info.cpp
         src/crosscutting/gui/debug_log.cpp
         src/crosscutting/gui/disassembly_window.cpp
+        src/crosscutting/gui/io_info.cpp
         )
 
 set(SOURCES_8080_H
@@ -153,4 +154,5 @@ set(SOURCES_8080_H
         src/crosscutting/gui/debug_log.h
         src/crosscutting/gui/disassembly_window.h
         src/crosscutting/gui/gui_type.h
+        src/crosscutting/gui/io_info.h
         )

@@ -19,7 +19,8 @@ namespace emu::cpu8080::applications::space_invaders {
               m_gui(std::move(gui)),
               m_input(std::move(input)),
               m_memory(std::move(memory)),
-              m_debugger(std::make_shared<util::debugger::Debugger>()) {
+              m_debugger(std::make_shared<util::debugger::Debugger>()),
+              m_output_on_port(UINT8_MAX) {
         setup_cpu();
         setup_debugging();
         m_cpu_io.set_dipswitches(settings);
@@ -133,6 +134,31 @@ namespace emu::cpu8080::applications::space_invaders {
                                                     std::make_tuple("u", 1),
                                                     std::make_tuple("c", 0)
                                             });
+        m_debug_container.add_io(
+                "shift (change offset)",
+                [&]() { return m_output_on_port == out_port_shift_offset; },
+                [&]() { return m_cpu->a(); }
+        );
+        m_debug_container.add_io(
+                "shift (do shift)",
+                [&]() { return m_output_on_port == out_port_sound_1; },
+                [&]() { return m_cpu->a(); }
+        );
+        m_debug_container.add_io(
+                "out sound 1",
+                [&]() { return m_output_on_port == out_port_do_shift; },
+                [&]() { return m_cpu->a(); }
+        );
+        m_debug_container.add_io(
+                "out sound 2",
+                [&]() { return m_output_on_port == out_port_sound_2; },
+                [&]() { return m_cpu->a(); }
+        );
+        m_debug_container.add_io(
+                "watchdog",
+                [&]() { return m_output_on_port == out_port_watchdog; },
+                [&]() { return m_cpu->a(); }
+        );
         m_debug_container.add_disassembled_program(disassemble_program());
 
         m_gui->attach_debugger(m_debugger);
@@ -167,6 +193,7 @@ namespace emu::cpu8080::applications::space_invaders {
     }
 
     void SpaceInvadersSession::out_changed(std::uint8_t port) {
+        m_output_on_port = port;
         switch (port) {
             case out_port_shift_offset:
                 m_cpu_io.m_shift_register.change_offset(m_cpu->a());

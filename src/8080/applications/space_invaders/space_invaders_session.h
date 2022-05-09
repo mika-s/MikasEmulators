@@ -63,6 +63,7 @@ namespace emu::cpu8080::applications::space_invaders {
 
         std::shared_ptr<emu::util::debugger::Debugger> m_debugger;
         DebugContainer m_debug_container;
+        std::uint8_t m_output_on_port;
 
         // Game loop - begin
         static constexpr double fps = 60.0;

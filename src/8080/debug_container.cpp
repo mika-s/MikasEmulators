@@ -5,6 +5,7 @@ namespace emu::cpu8080 {
 
     DebugContainer::DebugContainer()
             : m_is_flag_register_set(false),
+              m_is_io_set(false),
               m_is_pc_set(false),
               m_is_sp_set(false),
               m_is_interrupted_set(false),
@@ -39,6 +40,23 @@ namespace emu::cpu8080 {
 
     bool DebugContainer::is_flag_register_set() const {
         return m_is_flag_register_set;
+    }
+
+    void DebugContainer::add_io(
+            const std::string &name,
+            const std::function<bool()> &is_active_retriever,
+            const std::function<std::uint8_t()> &value_retriever
+    ) {
+        m_io_retrievers.emplace_back(std::make_tuple(name, is_active_retriever, value_retriever));
+        m_is_io_set = true;
+    }
+
+    std::vector<std::tuple<std::string, std::function<bool()>, std::function<std::uint8_t()>>> DebugContainer::io() const {
+        return m_io_retrievers;
+    }
+
+    bool DebugContainer::is_io_set() const {
+        return m_is_io_set;
     }
 
     void DebugContainer::add_pc(const std::function<std::uint16_t()> &value_retriever) {

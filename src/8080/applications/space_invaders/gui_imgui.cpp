@@ -21,6 +21,7 @@ namespace emu::cpu8080::applications::space_invaders {
               m_show_game(true),
               m_show_game_info(true),
               m_show_cpu_info(true),
+              m_show_io_info(true),
               m_show_log(true),
               m_show_disassembly(true),
               m_show_demo(false),
@@ -70,6 +71,7 @@ namespace emu::cpu8080::applications::space_invaders {
 
     void GuiImgui::attach_debug_container(DebugContainer &debug_container) {
         m_cpu_info.attach_debug_container(debug_container);
+        m_io_info.attach_debug_container(debug_container);
         m_disassembly.attach_debug_container(debug_container);
     }
 
@@ -212,6 +214,7 @@ namespace emu::cpu8080::applications::space_invaders {
                 ImGui::MenuItem("Game", nullptr, &m_show_game);
                 ImGui::MenuItem("Game info", nullptr, &m_show_game_info);
                 ImGui::MenuItem("CPU info", nullptr, &m_show_cpu_info);
+                ImGui::MenuItem("IO info", nullptr, &m_show_io_info);
                 ImGui::MenuItem("Log", nullptr, &m_show_log);
                 ImGui::MenuItem("Disassembly", nullptr, &m_show_disassembly);
                 ImGui::MenuItem("Demo", nullptr, &m_show_demo);
@@ -241,6 +244,9 @@ namespace emu::cpu8080::applications::space_invaders {
         }
         if (m_show_cpu_info) {
             render_cpu_info_window();
+        }
+        if (m_show_io_info) {
+            render_io_info_window();
         }
         if (m_show_demo) {
             ImGui::ShowDemoWindow();
@@ -314,6 +320,10 @@ namespace emu::cpu8080::applications::space_invaders {
 
     void GuiImgui::render_cpu_info_window() {
         m_cpu_info.draw("CPU info", &m_show_cpu_info);
+    }
+
+    void GuiImgui::render_io_info_window() {
+        m_io_info.draw("IO info", &m_show_io_info);
     }
 
     void GuiImgui::render_log_window() {

@@ -1,4 +1,4 @@
-#include <iostream>
+#include <imgui.h>
 #include "cpu_info.h"
 #include "crosscutting/byte_util.h"
 #include "crosscutting/string_util.h"
@@ -6,6 +6,7 @@
 namespace emu::util::gui {
 
     using emu::util::byte::is_bit_set;
+    using emu::util::string::hexify;
 
     CpuInfo::CpuInfo() = default;
 
@@ -27,7 +28,7 @@ namespace emu::util::gui {
 
             ImGui::Text("%s", name.c_str());
             ImGui::SameLine(100.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-            ImGui::Text("%s", emu::util::string::hexify(value).c_str());
+            ImGui::Text("%s", hexify(value).c_str());
         }
         if (m_debug_container.is_flag_register_set()) {
             std::string name = std::get<0>(m_debug_container.flag_register());
@@ -36,7 +37,7 @@ namespace emu::util::gui {
             ImGui::Separator();
             ImGui::Text("%s", name.c_str());
             ImGui::SameLine(100.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-            ImGui::Text("%s", emu::util::string::hexify(value).c_str());
+            ImGui::Text("%s", hexify(value).c_str());
             ImGui::SameLine(200.0f, ImGui::GetStyle().ItemInnerSpacing.x);
 
             float offset = 0.0f;
@@ -47,18 +48,19 @@ namespace emu::util::gui {
                 offset += 10.0f;
                 ImGui::SameLine(200.0f + offset, ImGui::GetStyle().ItemInnerSpacing.x);
             }
+            ImGui::NewLine();
         }
         if (m_debug_container.is_pc_set()) {
             ImGui::Separator();
             ImGui::Text("PC:");
             ImGui::SameLine(100.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-            ImGui::Text("%s", emu::util::string::hexify(m_debug_container.pc()).c_str());
+            ImGui::Text("%s", hexify(m_debug_container.pc()).c_str());
         }
         if (m_debug_container.is_sp_set()) {
             ImGui::Separator();
             ImGui::Text("SP:");
             ImGui::SameLine(100.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-            ImGui::Text("%s", emu::util::string::hexify(m_debug_container.sp()).c_str());
+            ImGui::Text("%s", hexify(m_debug_container.sp()).c_str());
         }
         if (m_debug_container.is_interrupted_set()) {
             ImGui::Separator();

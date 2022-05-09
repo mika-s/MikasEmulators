@@ -1,11 +1,6 @@
 #ifndef MIKA_EMULATORS_CROSSCUTTING_GUI_CPU_INFO_H
 #define MIKA_EMULATORS_CROSSCUTTING_GUI_CPU_INFO_H
 
-#include <functional>
-#include <imgui.h>
-#include <string>
-#include <tuple>
-#include <vector>
 #include "8080/debug_container.h"
 
 namespace emu::util::gui {
