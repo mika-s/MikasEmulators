@@ -20,6 +20,7 @@ namespace emu::cpu8080::applications::space_invaders {
         void remove_io_observer(IoObserver *observer) override;
 
     private:
+        static constexpr SDL_Scancode mute = SDL_SCANCODE_M;
         static constexpr SDL_Scancode pause = SDL_SCANCODE_PAUSE;
 
         static constexpr SDL_Scancode insert_coin = SDL_SCANCODE_C;

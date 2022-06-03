@@ -121,6 +121,7 @@ set(SOURCES_8080_H
         src/8080/applications/space_invaders/input_imgui.h
         src/8080/applications/space_invaders/input_sdl.h
         src/8080/applications/space_invaders/io_request.h
+        src/8080/applications/space_invaders/sounds.h
         src/8080/applications/space_invaders/space_invaders.h
         src/8080/applications/space_invaders/space_invaders_session.h
         src/8080/applications/space_invaders/settings.h

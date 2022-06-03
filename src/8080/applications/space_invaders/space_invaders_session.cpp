@@ -199,13 +199,13 @@ namespace emu::cpu8080::applications::space_invaders {
                 m_cpu_io.m_shift_register.change_offset(m_cpu->a());
                 break;
             case out_port_sound_1:
-                Audio::play_sound_port_1(m_cpu->a());
+                m_audio.play_sound_port_1(m_cpu->a());
                 break;
             case out_port_do_shift:
                 m_cpu_io.m_shift_register.shift(m_cpu->a());
                 break;
             case out_port_sound_2:
-                Audio::play_sound_port_2(m_cpu->a());
+                m_audio.play_sound_port_2(m_cpu->a());
                 break;
             case out_port_watchdog:
                 break;
@@ -224,6 +224,9 @@ namespace emu::cpu8080::applications::space_invaders {
             case IoRequest::STEP_OVER:
                 break;
             case IoRequest::STEP_INTO:
+                break;
+            case IoRequest::TOGGLE_MUTE:
+                m_audio.toggle_mute();
                 break;
             default:
                 throw std::runtime_error("Unhandled IoRequest in io_changed");

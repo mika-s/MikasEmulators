@@ -2,16 +2,59 @@
 #define MIKA_EMULATORS_8080_APPLICATIONS_SPACE_INVADERS_AUDIO_H
 
 #include <cstdint>
+#include <SDL.h>
+#include <vector>
 
 namespace emu::cpu8080::applications::space_invaders {
     class Audio {
 
     public:
-        static void play_sound_port_1(std::uint8_t acc_reg);
+        Audio();
 
-        static void play_sound_port_2(std::uint8_t acc_reg);
+        ~Audio();
+
+        void play_sound_port_1(std::uint8_t acc_reg);
+
+        void play_sound_port_2(std::uint8_t acc_reg);
+
+        void change_volume(unsigned int new_volume);
+
+        void mute();
+
+        void unmute();
+
+        void toggle_mute();
 
     private:
+        SDL_AudioDeviceID m_audio_device;
+        size_t m_ufo_x = 0;
+        size_t m_shot_x = 0;
+        size_t m_flash_x = 0;
+        size_t m_invader_die_x = 0;
+        size_t m_extended_play_x = 0;
+
+        size_t m_fleet_movement_1_x = 0;
+        size_t m_fleet_movement_2_x = 0;
+        size_t m_fleet_movement_3_x = 0;
+        size_t m_fleet_movement_4_x = 0;
+        size_t m_ufo_hit_x = 0;
+
+        bool m_is_ufo_sound_on;
+        bool m_is_shot_sound_on;
+        bool m_is_flash_sound_on;
+        bool m_is_invader_die_sound_on;
+        bool m_is_extended_play_sound_on;
+        bool m_is_fleet_movement_1_sound_on;
+        bool m_is_fleet_movement_2_sound_on;
+        bool m_is_fleet_movement_3_sound_on;
+        bool m_is_fleet_movement_4_sound_on;
+        bool m_is_ufo_hit_sound_on;
+
+        bool m_is_muted;
+
+        std::uint8_t m_last_acc_reg;
+
+        unsigned int m_volume = 5000;
 
         /* Port 3: (discrete sounds)
          *   bit 0 = UFO (repeats)        SX0 0.raw
@@ -20,15 +63,14 @@ namespace emu::cpu8080::applications::space_invaders {
          *   bit 3 = Invader die          SX3 3.raw
          *   bit 4 = Extended play        SX4
          *   bit 5 = AMP enable           SX5
-         *   bit 6 = NC (not wired)
-         *   bit 7 = NC (not wired)
          */
         static constexpr unsigned int ufo = 0;
         static constexpr unsigned int shot = 1;
         static constexpr unsigned int flash = 2;
         static constexpr unsigned int invader_die = 3;
         static constexpr unsigned int extended_play = 4;
-        static constexpr unsigned int amp_enable = 5;
+        static constexpr unsigned int amp_enable = 5;       // not implemented
+        static constexpr unsigned int no_sound = 255;
 
         /* Port 5:
          *   bit 0 = Fleet movement 1     SX6 4.raw
@@ -36,17 +78,25 @@ namespace emu::cpu8080::applications::space_invaders {
          *   bit 2 = Fleet movement 3     SX8 6.raw
          *   bit 3 = Fleet movement 4     SX9 7.raw
          *   bit 4 = UFO Hit              SX10 8.raw
-         *   bit 5 = NC (Cocktail mode control ... to flip screen)
-         *   bit 6 = NC (not wired)
-         *   bit 7 = NC (not wired)
          */
         static constexpr unsigned int fleet_movement_1 = 0;
         static constexpr unsigned int fleet_movement_2 = 1;
         static constexpr unsigned int fleet_movement_3 = 2;
         static constexpr unsigned int fleet_movement_4 = 3;
         static constexpr unsigned int ufo_hit = 4;
-    };
 
+        [[nodiscard]] bool is_rising_edge(std::uint8_t acc_reg, unsigned int value) const;
+
+        [[nodiscard]] bool is_falling_edge(std::uint8_t acc_reg, unsigned int value) const;
+
+        void generate_audio(Uint8 *stream, int len);
+
+        void play(std::vector<double> sound, int samples, Sint16 *stream16, size_t &x, bool &is_sound_on) const;
+
+        static void forward_callback(void *userdata, Uint8 *stream, int len) {
+            static_cast<Audio *>(userdata)->generate_audio(stream, len);
+        }
+    };
 }
 
 #endif //MIKA_EMULATORS_8080_APPLICATIONS_SPACE_INVADERS_AUDIO_H

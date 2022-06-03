@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <SDL.h>
 #include <vector>
 #include "8080/cpu.h"
 #include "8080/debug_container.h"
@@ -58,6 +59,7 @@ namespace emu::cpu8080::applications::space_invaders {
         std::shared_ptr<Gui> m_gui;
         std::shared_ptr<Input> m_input;
         std::unique_ptr<Cpu> m_cpu;
+        Audio m_audio;
 
         EmulatorMemory m_memory;
 

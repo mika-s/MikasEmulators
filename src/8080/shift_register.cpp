@@ -11,13 +11,13 @@ namespace emu::cpu8080 {
     }
 
     void ShiftRegister::shift(std::uint8_t shift_value) {
-        std::uint16_t lsb = (m_value >> 8) & 0x00FF;
+        std::uint16_t lsb = (m_value >> 8) & 0x00ff;
         std::uint16_t msb = shift_value << 8;
         m_value = msb | lsb;
     }
 
     std::uint8_t ShiftRegister::read() const {
         std::uint16_t result = m_value << m_offset;
-        return (result & 0xFF00) >> 8;
+        return (result & 0xff00) >> 8;
     }
 }

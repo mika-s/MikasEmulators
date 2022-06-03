@@ -38,8 +38,8 @@ namespace emu::cpu8080 {
      * @param cycles is the number of cycles variable, which will be mutated
      * @param is_memory_involved is true if memory is involved, either written or read
      */
-    void
-    cmp(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg, unsigned long &cycles, bool is_memory_involved) {
+    void cmp(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg, unsigned long &cycles,
+             bool is_memory_involved) {
         const std::uint8_t previous = acc_reg;
         const std::uint8_t new_acc_reg = previous - value;
 

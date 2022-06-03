@@ -151,6 +151,7 @@ The keymap is:
 | Right   | P2 right      |
 | Up      | P2 shoot      |
 | Pause   | Pause/unpause |
+| M       | Mute/unmute   |
 
 #### Inspiration
 
@@ -165,7 +166,6 @@ look up how the game is supposed to behave.
 
 #### Todo
 
-- Sound for Space Invaders
 - Save state in Space Invaders
 - Debugger with Dear ImGui
 - Fix the CMake file to use better best practices

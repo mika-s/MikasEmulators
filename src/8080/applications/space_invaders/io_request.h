@@ -8,6 +8,7 @@ namespace emu::cpu8080::applications::space_invaders {
         CONTINUE_EXECUTION,
         STEP_OVER,
         STEP_INTO,
+        TOGGLE_MUTE,
     };
 }
 

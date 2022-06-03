@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <SDL.h>
 #include "imgui_impl_sdl.h"
 #include "input_sdl.h"
@@ -93,6 +94,9 @@ namespace emu::cpu8080::applications::space_invaders {
                     break;
                 case SDL_KEYDOWN:
                     switch (read_input_event.key.keysym.scancode) {
+                        case mute:
+                            notify_io_observers(IoRequest::TOGGLE_MUTE);
+                            break;
                         case pause:
                             if (run_status == RunStatus::PAUSED) {
                                 run_status = RunStatus::RUNNING;
