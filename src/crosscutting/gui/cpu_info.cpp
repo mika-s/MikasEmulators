@@ -23,16 +23,16 @@ namespace emu::util::gui {
         ImGui::Text("Registers:");
         ImGui::Separator();
         for (const auto &reg : m_debug_container.registers()) {
-            std::string name = std::get<0>(reg);
-            std::uint8_t value = std::get<1>(reg)();
+            const std::string name = reg.name();
+            const std::uint8_t value = reg.value();
 
             ImGui::Text("%s", name.c_str());
             ImGui::SameLine(100.0f, ImGui::GetStyle().ItemInnerSpacing.x);
             ImGui::Text("%s", hexify(value).c_str());
         }
         if (m_debug_container.is_flag_register_set()) {
-            std::string name = std::get<0>(m_debug_container.flag_register());
-            std::uint8_t value = std::get<1>(m_debug_container.flag_register())();
+            const std::string name = m_debug_container.flag_register().name();
+            const std::uint8_t value = m_debug_container.flag_register().value();
 
             ImGui::Separator();
             ImGui::Text("%s", name.c_str());
@@ -41,7 +41,7 @@ namespace emu::util::gui {
             ImGui::SameLine(200.0f, ImGui::GetStyle().ItemInnerSpacing.x);
 
             float offset = 0.0f;
-            for (const auto &bit : m_debug_container.flag_names()) {
+            for (const auto &bit : m_debug_container.flag_register().flag_names()) {
                 std::string bit_name = std::get<0>(bit);
                 std::uint8_t bit_number = std::get<1>(bit);
                 ImGui::Text("%s", is_bit_set(value, bit_number) ? bit_name.c_str() : "-");

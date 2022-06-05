@@ -3,8 +3,81 @@
 
 namespace emu::cpu8080 {
 
+    RegisterDebugContainer::RegisterDebugContainer(
+            std::string name,
+            std::function<std::uint8_t()> value_retriever
+    ) : m_name(std::move(name)),
+        m_value_retriever(std::move(value_retriever)) {
+    }
+
+    std::string RegisterDebugContainer::name() const {
+        return m_name;
+    }
+
+    std::uint8_t RegisterDebugContainer::value() const {
+        return m_value_retriever();
+    }
+
+    FlagRegisterDebugContainer::FlagRegisterDebugContainer() = default;
+
+    FlagRegisterDebugContainer::FlagRegisterDebugContainer(
+            std::string name,
+            std::function<std::uint8_t()> value_retriever,
+            std::vector<std::tuple<std::string, int>> flag_names
+    ) : m_name(std::move(name)),
+        m_value_retriever(std::move(value_retriever)),
+        m_flag_names(std::move(flag_names)) {
+    }
+
+    std::string FlagRegisterDebugContainer::name() const {
+        return m_name;
+    }
+
+    std::uint8_t FlagRegisterDebugContainer::value() const {
+        return m_value_retriever();
+    }
+
+    std::vector<std::tuple<std::string, int>> FlagRegisterDebugContainer::flag_names() const {
+        return m_flag_names;
+    }
+
+    IoDebugContainer::IoDebugContainer(
+            std::string name,
+            std::function<bool()> is_active_retriever,
+            std::function<std::uint8_t()> value_retriever
+    ) : m_name(std::move(name)),
+        m_is_active_retriever(std::move(is_active_retriever)),
+        m_value_retriever(std::move(value_retriever)),
+        m_is_divided_into_bits(false) {
+    }
+
+    IoDebugContainer::IoDebugContainer(
+            std::string name,
+            std::function<bool()> is_active_retriever,
+            std::function<std::uint8_t()> value_retriever,
+            std::vector<std::tuple<std::string, int>> bit_name
+    ) : m_name(std::move(name)),
+        m_is_active_retriever(std::move(is_active_retriever)),
+        m_value_retriever(std::move(value_retriever)),
+        m_bit_name(std::move(bit_name)),
+        m_is_divided_into_bits(true) {
+    }
+
+    std::string IoDebugContainer::name() const {
+        return m_name;
+    }
+
+    bool IoDebugContainer::is_active() const {
+        return m_is_active_retriever();
+    }
+
+    std::uint8_t IoDebugContainer::value() const {
+        return m_value_retriever();
+    }
+
     DebugContainer::DebugContainer()
-            : m_is_flag_register_set(false),
+            : m_flag_register_retriever(FlagRegisterDebugContainer()),
+              m_is_flag_register_set(false),
               m_is_io_set(false),
               m_is_pc_set(false),
               m_is_sp_set(false),
@@ -12,46 +85,33 @@ namespace emu::cpu8080 {
               m_is_disassembled_program_set(false) {
     }
 
-    void DebugContainer::add_register(const std::string &name, const std::function<std::uint8_t()> &value_retriever) {
-        m_register_retrievers.emplace_back(name, value_retriever);
+    void DebugContainer::add_register(const RegisterDebugContainer &reg) {
+        m_register_retrievers.emplace_back(reg);
     }
 
-    std::vector<std::tuple<std::string, std::function<std::uint8_t()>>> DebugContainer::registers() {
+    std::vector<RegisterDebugContainer> DebugContainer::registers() {
         return m_register_retrievers;
     }
 
-    void DebugContainer::add_flag_register(
-            const std::string &name,
-            const std::function<std::uint8_t()> &value_retriever,
-            const std::vector<std::tuple<std::string, int>> &flag_names
-    ) {
-        m_flag_register_retriever = std::make_tuple(name, value_retriever);
-        m_flag_names = flag_names;
+    void DebugContainer::add_flag_register(const FlagRegisterDebugContainer &flag_reg) {
+        m_flag_register_retriever = flag_reg;
         m_is_flag_register_set = true;
     }
 
-    std::tuple<std::string, std::function<std::uint8_t()>> DebugContainer::flag_register() const {
+    FlagRegisterDebugContainer DebugContainer::flag_register() const {
         return m_flag_register_retriever;
-    }
-
-    std::vector<std::tuple<std::string, int>> DebugContainer::flag_names() const {
-        return m_flag_names;
     }
 
     bool DebugContainer::is_flag_register_set() const {
         return m_is_flag_register_set;
     }
 
-    void DebugContainer::add_io(
-            const std::string &name,
-            const std::function<bool()> &is_active_retriever,
-            const std::function<std::uint8_t()> &value_retriever
-    ) {
-        m_io_retrievers.emplace_back(std::make_tuple(name, is_active_retriever, value_retriever));
+    void DebugContainer::add_io(const IoDebugContainer &io) {
+        m_io_retrievers.emplace_back(io);
         m_is_io_set = true;
     }
 
-    std::vector<std::tuple<std::string, std::function<bool()>, std::function<std::uint8_t()>>> DebugContainer::io() const {
+    std::vector<IoDebugContainer> DebugContainer::io() const {
         return m_io_retrievers;
     }
 

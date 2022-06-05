@@ -7,33 +7,90 @@
 
 namespace emu::cpu8080 {
 
+    class RegisterDebugContainer {
+    public:
+        RegisterDebugContainer(
+                std::string name,
+                std::function<std::uint8_t()> value_retriever
+        );
+
+        [[nodiscard]] std::string name() const;
+
+        [[nodiscard]] std::uint8_t value() const;
+
+    private:
+        std::string m_name;
+        std::function<std::uint8_t()> m_value_retriever;
+    };
+
+    class FlagRegisterDebugContainer {
+    public:
+        FlagRegisterDebugContainer();
+
+        FlagRegisterDebugContainer(
+                std::string name,
+                std::function<std::uint8_t()> value_retriever,
+                std::vector<std::tuple<std::string, int>> flag_names
+        );
+
+        [[nodiscard]] std::string name() const;
+
+        [[nodiscard]] std::uint8_t value() const;
+
+        [[nodiscard]] std::vector<std::tuple<std::string, int>> flag_names() const;
+
+    private:
+        std::string m_name;
+        std::function<std::uint8_t()> m_value_retriever;
+        std::vector<std::tuple<std::string, int>> m_flag_names;
+    };
+
+    class IoDebugContainer {
+    public:
+        IoDebugContainer(
+                std::string name,
+                std::function<bool()> is_active_retriever,
+                std::function<std::uint8_t()> value_retriever
+        );
+
+        IoDebugContainer(
+                std::string name,
+                std::function<bool()> is_active_retriever,
+                std::function<std::uint8_t()> value_retriever,
+                std::vector<std::tuple<std::string, int>> bit_name
+        );
+
+        [[nodiscard]] std::string name() const;
+
+        [[nodiscard]] bool is_active() const;
+
+        [[nodiscard]] std::uint8_t value() const;
+
+    private:
+        std::string m_name;
+        std::function<bool()> m_is_active_retriever;
+        std::function<std::uint8_t()> m_value_retriever;
+        std::vector<std::tuple<std::string, int>> m_bit_name;
+        bool m_is_divided_into_bits;
+    };
+
     class DebugContainer {
     public:
         DebugContainer();
 
-        void add_register(const std::string &name, const std::function<std::uint8_t()> &value_retriever);
+        void add_register(const RegisterDebugContainer &reg);
 
-        std::vector<std::tuple<std::string, std::function<std::uint8_t()>>> registers();
+        std::vector<RegisterDebugContainer> registers();
 
-        void add_flag_register(
-                const std::string &name,
-                const std::function<std::uint8_t()> &value_retriever,
-                const std::vector<std::tuple<std::string, int>> &flag_names
-        );
+        void add_flag_register(const FlagRegisterDebugContainer &flag_reg);
 
-        [[nodiscard]] std::tuple<std::string, std::function<std::uint8_t()>> flag_register() const;
-
-        [[nodiscard]] std::vector<std::tuple<std::string, int>> flag_names() const;
+        [[nodiscard]] FlagRegisterDebugContainer flag_register() const;
 
         [[nodiscard]] bool is_flag_register_set() const;
 
-        void add_io(
-                const std::string &name,
-                const std::function<bool()> &is_active_retriever,
-                const std::function<std::uint8_t()> &value_retriever
-        );
+        void add_io(const IoDebugContainer& io);
 
-        [[nodiscard]] std::vector<std::tuple<std::string, std::function<bool()>, std::function<std::uint8_t()>>> io() const;
+        [[nodiscard]] std::vector<IoDebugContainer> io() const;
 
         [[nodiscard]] bool is_io_set() const;
 
@@ -62,13 +119,12 @@ namespace emu::cpu8080 {
         [[nodiscard]] bool is_disassembled_program_set() const;
 
     private:
-        std::vector<std::tuple<std::string, std::function<std::uint8_t()>>> m_register_retrievers;
+        std::vector<RegisterDebugContainer> m_register_retrievers;
 
-        std::tuple<std::string, std::function<std::uint8_t()>> m_flag_register_retriever;
-        std::vector<std::tuple<std::string, int>> m_flag_names;
+        FlagRegisterDebugContainer m_flag_register_retriever;
         bool m_is_flag_register_set;
 
-        std::vector<std::tuple<std::string, std::function<bool()>, std::function<std::uint8_t()>>> m_io_retrievers;
+        std::vector<IoDebugContainer> m_io_retrievers;
         bool m_is_io_set;
 
         std::function<std::uint16_t()> m_pc_retriever;

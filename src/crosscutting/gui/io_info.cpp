@@ -11,7 +11,7 @@ namespace emu::util::gui {
     void IoInfo::attach_debug_container(emu::cpu8080::DebugContainer &debug_container) {
         m_debug_container = debug_container;
         for (auto &io : debug_container.io()) {
-            std::string name = std::get<0>(io);
+            const std::string name = io.name();
             saved_values[name] = std::make_tuple(0, 0);
         }
     }
@@ -26,9 +26,9 @@ namespace emu::util::gui {
         ImGui::Separator();
         if (m_debug_container.is_io_set()) {
             for (const auto &io : m_debug_container.io()) {
-                std::string name = std::get<0>(io);
-                bool is_active = std::get<1>(io)();
-                std::uint8_t new_value = std::get<2>(io)();
+                const std::string name = io.name();
+                const bool is_active = io.is_active();
+                const std::uint8_t new_value = io.value();
 
                 auto &[cycles_kept, kept_value] = saved_values[name];
                 cycles_kept++;

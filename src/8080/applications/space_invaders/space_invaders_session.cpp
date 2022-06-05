@@ -113,52 +113,68 @@ namespace emu::cpu8080::applications::space_invaders {
     }
 
     void SpaceInvadersSession::setup_debugging() {
-        m_debug_container.add_register("A", [&]() { return m_cpu->a(); });
-        m_debug_container.add_register("B", [&]() { return m_cpu->b(); });
-        m_debug_container.add_register("C", [&]() { return m_cpu->c(); });
-        m_debug_container.add_register("D", [&]() { return m_cpu->d(); });
-        m_debug_container.add_register("E", [&]() { return m_cpu->e(); });
-        m_debug_container.add_register("H", [&]() { return m_cpu->h(); });
-        m_debug_container.add_register("L", [&]() { return m_cpu->l(); });
+        m_debug_container.add_register(RegisterDebugContainer("A", [&]() { return m_cpu->a(); }));
+        m_debug_container.add_register(RegisterDebugContainer("B", [&]() { return m_cpu->b(); }));
+        m_debug_container.add_register(RegisterDebugContainer("C", [&]() { return m_cpu->c(); }));
+        m_debug_container.add_register(RegisterDebugContainer("D", [&]() { return m_cpu->d(); }));
+        m_debug_container.add_register(RegisterDebugContainer("E", [&]() { return m_cpu->e(); }));
+        m_debug_container.add_register(RegisterDebugContainer("H", [&]() { return m_cpu->h(); }));
+        m_debug_container.add_register(RegisterDebugContainer("L", [&]() { return m_cpu->l(); }));
         m_debug_container.add_pc([&]() { return m_cpu->pc(); });
         m_debug_container.add_sp([&]() { return m_cpu->sp(); });
         m_debug_container.add_is_interrupted([&]() { return m_cpu->is_interrupted(); });
-        m_debug_container.add_flag_register("F", [&]() { return m_cpu->f(); },
-                                            {
-                                                    std::make_tuple("s", 7),
-                                                    std::make_tuple("z", 6),
-                                                    std::make_tuple("u", 5),
-                                                    std::make_tuple("a", 4),
-                                                    std::make_tuple("u", 3),
-                                                    std::make_tuple("p", 2),
-                                                    std::make_tuple("u", 1),
-                                                    std::make_tuple("c", 0)
-                                            });
-        m_debug_container.add_io(
+        m_debug_container.add_flag_register(FlagRegisterDebugContainer(
+                "F",
+                [&]() { return m_cpu->f(); },
+                {
+                        {"s", 7},
+                        {"z", 6},
+                        {"u", 5},
+                        {"a", 4},
+                        {"u", 3},
+                        {"p", 2},
+                        {"u", 1},
+                        {"c", 0}
+                }));
+        m_debug_container.add_io(IoDebugContainer(
                 "shift (change offset)",
                 [&]() { return m_output_on_port == out_port_shift_offset; },
                 [&]() { return m_cpu->a(); }
-        );
-        m_debug_container.add_io(
+        ));
+        m_debug_container.add_io(IoDebugContainer(
                 "shift (do shift)",
                 [&]() { return m_output_on_port == out_port_sound_1; },
                 [&]() { return m_cpu->a(); }
-        );
-        m_debug_container.add_io(
+        ));
+        m_debug_container.add_io(IoDebugContainer(
                 "out sound 1",
                 [&]() { return m_output_on_port == out_port_do_shift; },
                 [&]() { return m_cpu->a(); }
-        );
-        m_debug_container.add_io(
+//                {
+//                        {"ufo",           0},
+//                        {"shot",          1},
+//                        {"flash",         2},
+//                        {"invader_die",   3},
+//                        {"extended_play", 4},
+//                }
+        ));
+        m_debug_container.add_io(IoDebugContainer(
                 "out sound 2",
                 [&]() { return m_output_on_port == out_port_sound_2; },
                 [&]() { return m_cpu->a(); }
-        );
-        m_debug_container.add_io(
+//                {
+//                        {"fleet_movement_1", 0},
+//                        {"fleet_movement_2", 1},
+//                        {"fleet_movement_3", 2},
+//                        {"fleet_movement_4", 3},
+//                        {"ufo_hit",          4},
+//                }
+        ));
+        m_debug_container.add_io(IoDebugContainer(
                 "watchdog",
                 [&]() { return m_output_on_port == out_port_watchdog; },
                 [&]() { return m_cpu->a(); }
-        );
+        ));
         m_debug_container.add_disassembled_program(disassemble_program());
 
         m_gui->attach_debugger(m_debugger);

@@ -158,10 +158,8 @@ namespace emu::cpu8080::applications::space_invaders {
             if (x < sound.size()) {
                 stream16[i] += static_cast<Sint16>(sound[x++] * m_volume * !m_is_muted);
             } else {
-                SDL_LockAudioDevice(m_audio_device);
                 is_sound_on = false;
                 x = 0;
-                SDL_UnlockAudioDevice(m_audio_device);
                 break;
             }
         }
