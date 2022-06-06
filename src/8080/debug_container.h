@@ -66,11 +66,15 @@ namespace emu::cpu8080 {
 
         [[nodiscard]] std::uint8_t value() const;
 
+        [[nodiscard]] bool is_divided_into_bits() const;
+
+        [[nodiscard]] std::vector<std::tuple<std::string, int>> bit_names() const;
+
     private:
         std::string m_name;
         std::function<bool()> m_is_active_retriever;
         std::function<std::uint8_t()> m_value_retriever;
-        std::vector<std::tuple<std::string, int>> m_bit_name;
+        std::vector<std::tuple<std::string, int>> m_bit_names;
         bool m_is_divided_into_bits;
     };
 

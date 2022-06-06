@@ -17,9 +17,6 @@ namespace emu::util::gui {
 
     private:
         emu::cpu8080::DebugContainer m_debug_container;
-        std::unordered_map<std::string, std::tuple<int, std::uint8_t>> saved_values;
-
-        static constexpr int cycles_to_keep_value = 300;
     };
 }
 

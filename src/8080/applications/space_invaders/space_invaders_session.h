@@ -5,6 +5,7 @@
 #include <memory>
 #include <SDL.h>
 #include <vector>
+#include <unordered_map>
 #include "8080/cpu.h"
 #include "8080/debug_container.h"
 #include "8080/run_status.h"
@@ -41,7 +42,7 @@ namespace emu::cpu8080::applications::space_invaders {
 
         void stop() override;
 
-        void run_status_changed(emu::cpu8080::RunStatus new_status) override;
+        void run_status_changed(RunStatus new_status) override;
 
         void debug_mode_changed(bool is_in_debug_mode) override;
 
@@ -53,7 +54,7 @@ namespace emu::cpu8080::applications::space_invaders {
 
     private:
         bool m_is_in_debug_mode;
-        emu::cpu8080::RunStatus m_run_status;
+        RunStatus m_run_status;
 
         CpuIo m_cpu_io;
         std::shared_ptr<Gui> m_gui;
@@ -65,7 +66,7 @@ namespace emu::cpu8080::applications::space_invaders {
 
         std::shared_ptr<emu::util::debugger::Debugger> m_debugger;
         DebugContainer m_debug_container;
-        std::uint8_t m_output_on_port;
+        std::unordered_map<std::uint8_t, std::uint8_t> m_outputs_during_cycle;
 
         // Game loop - begin
         static constexpr double fps = 60.0;

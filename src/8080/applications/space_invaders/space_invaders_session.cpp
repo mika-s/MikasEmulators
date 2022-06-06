@@ -19,8 +19,7 @@ namespace emu::cpu8080::applications::space_invaders {
               m_gui(std::move(gui)),
               m_input(std::move(input)),
               m_memory(std::move(memory)),
-              m_debugger(std::make_shared<util::debugger::Debugger>()),
-              m_output_on_port(UINT8_MAX) {
+              m_debugger(std::make_shared<util::debugger::Debugger>()) {
         setup_cpu();
         setup_debugging();
         m_cpu_io.set_dipswitches(settings);
@@ -49,6 +48,8 @@ namespace emu::cpu8080::applications::space_invaders {
 
         while (m_run_status == RUNNING || m_run_status == PAUSED || m_run_status == STEPPING) {
             if (m_run_status == RUNNING) {
+                m_outputs_during_cycle.clear();
+
                 if (SDL_GetTicks64() - last_tick >= tick_limit) {
                     last_tick = SDL_GetTicks();
 
@@ -138,42 +139,42 @@ namespace emu::cpu8080::applications::space_invaders {
                 }));
         m_debug_container.add_io(IoDebugContainer(
                 "shift (change offset)",
-                [&]() { return m_output_on_port == out_port_shift_offset; },
-                [&]() { return m_cpu->a(); }
+                [&]() { return m_outputs_during_cycle.contains(out_port_shift_offset); },
+                [&]() { return m_outputs_during_cycle[out_port_shift_offset]; }
         ));
         m_debug_container.add_io(IoDebugContainer(
                 "shift (do shift)",
-                [&]() { return m_output_on_port == out_port_sound_1; },
-                [&]() { return m_cpu->a(); }
-        ));
-        m_debug_container.add_io(IoDebugContainer(
-                "out sound 1",
-                [&]() { return m_output_on_port == out_port_do_shift; },
-                [&]() { return m_cpu->a(); }
-//                {
-//                        {"ufo",           0},
-//                        {"shot",          1},
-//                        {"flash",         2},
-//                        {"invader_die",   3},
-//                        {"extended_play", 4},
-//                }
-        ));
-        m_debug_container.add_io(IoDebugContainer(
-                "out sound 2",
-                [&]() { return m_output_on_port == out_port_sound_2; },
-                [&]() { return m_cpu->a(); }
-//                {
-//                        {"fleet_movement_1", 0},
-//                        {"fleet_movement_2", 1},
-//                        {"fleet_movement_3", 2},
-//                        {"fleet_movement_4", 3},
-//                        {"ufo_hit",          4},
-//                }
+                [&]() { return m_outputs_during_cycle.contains(out_port_do_shift); },
+                [&]() { return m_outputs_during_cycle[out_port_do_shift]; }
         ));
         m_debug_container.add_io(IoDebugContainer(
                 "watchdog",
-                [&]() { return m_output_on_port == out_port_watchdog; },
-                [&]() { return m_cpu->a(); }
+                [&]() { return m_outputs_during_cycle.contains(out_port_watchdog); },
+                [&]() { return m_outputs_during_cycle[out_port_watchdog]; }
+        ));
+        m_debug_container.add_io(IoDebugContainer(
+                "out sound 1",
+                [&]() { return m_outputs_during_cycle.contains(out_port_sound_1); },
+                [&]() { return m_outputs_during_cycle[out_port_sound_1]; },
+                {
+                        {"ufo",           0},
+                        {"shot",          1},
+                        {"flash",         2},
+                        {"invader_die",   3},
+                        {"extended_play", 4}
+                }
+        ));
+        m_debug_container.add_io(IoDebugContainer(
+                "out sound 2",
+                [&]() { return m_outputs_during_cycle.contains(out_port_sound_2); },
+                [&]() { return m_outputs_during_cycle[out_port_sound_2]; },
+                {
+                        {"fleet_movement_1", 0},
+                        {"fleet_movement_2", 1},
+                        {"fleet_movement_3", 2},
+                        {"fleet_movement_4", 3},
+                        {"ufo_hit",          4}
+                }
         ));
         m_debug_container.add_disassembled_program(disassemble_program());
 
@@ -209,7 +210,12 @@ namespace emu::cpu8080::applications::space_invaders {
     }
 
     void SpaceInvadersSession::out_changed(std::uint8_t port) {
-        m_output_on_port = port;
+        if (!m_outputs_during_cycle.contains(port)) {
+            m_outputs_during_cycle[port] = m_cpu->a();
+        } else {
+            m_outputs_during_cycle[port] |= m_cpu->a();
+        }
+
         switch (port) {
             case out_port_shift_offset:
                 m_cpu_io.m_shift_register.change_offset(m_cpu->a());

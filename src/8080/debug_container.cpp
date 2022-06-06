@@ -55,11 +55,11 @@ namespace emu::cpu8080 {
             std::string name,
             std::function<bool()> is_active_retriever,
             std::function<std::uint8_t()> value_retriever,
-            std::vector<std::tuple<std::string, int>> bit_name
+            std::vector<std::tuple<std::string, int>> m_bit_names
     ) : m_name(std::move(name)),
         m_is_active_retriever(std::move(is_active_retriever)),
         m_value_retriever(std::move(value_retriever)),
-        m_bit_name(std::move(bit_name)),
+        m_bit_names(std::move(m_bit_names)),
         m_is_divided_into_bits(true) {
     }
 
@@ -73,6 +73,14 @@ namespace emu::cpu8080 {
 
     std::uint8_t IoDebugContainer::value() const {
         return m_value_retriever();
+    }
+
+    bool IoDebugContainer::is_divided_into_bits() const {
+        return m_is_divided_into_bits;
+    }
+
+    std::vector<std::tuple<std::string, int>> IoDebugContainer::bit_names() const {
+        return m_bit_names;
     }
 
     DebugContainer::DebugContainer()
