@@ -31,6 +31,8 @@ namespace emu::cpu8080::applications::space_invaders {
 
         void attach_debug_container(DebugContainer &debug_container) override;
 
+        void attach_logger(std::shared_ptr<Logger> logger) override;
+
     private:
         SDL_Window *m_win;
         SDL_Renderer *m_rend;

@@ -14,10 +14,15 @@
 #include "crosscutting/gui/debug_log.h"
 #include "crosscutting/gui/disassembly_window.h"
 #include "crosscutting/gui/io_info.h"
+#include "crosscutting/logging/log_observer.h"
+#include "crosscutting/logging/logger.h"
 
 namespace emu::cpu8080::applications::space_invaders {
 
+    using emu::util::logging::Logger;
+
     class GuiImgui : public Gui {
+
     public:
         GuiImgui();
 
@@ -35,6 +40,8 @@ namespace emu::cpu8080::applications::space_invaders {
 
         void attach_debug_container(DebugContainer &debug_container) override;
 
+        void attach_logger(std::shared_ptr<Logger> logger) override;
+
     private:
         SDL_Window *m_win;
         SDL_GLContext m_gl_context;
@@ -51,6 +58,7 @@ namespace emu::cpu8080::applications::space_invaders {
         bool m_is_in_debug_mode;
 
         std::vector<GuiObserver *> m_gui_observers;
+        std::shared_ptr<Logger> m_logger;
 
         emu::util::gui::DebugLog m_log;
         emu::util::gui::DisassemblyWindow m_disassembly;

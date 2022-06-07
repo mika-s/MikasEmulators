@@ -1,9 +1,14 @@
 #include <chrono>
 #include <fmt/chrono.h>
 #include <string>
+#include "crosscutting/string_util.h"
 #include "debug_log.h"
 
 namespace emu::util::gui {
+
+    using emu::util::string::append;
+    using emu::util::string::prepend;
+
     DebugLog::DebugLog()
             : m_should_autoscroll(true) {
         clear();
@@ -15,21 +20,9 @@ namespace emu::util::gui {
         m_line_offsets.push_back(0);
     }
 
-    void DebugLog::add_log_with_timestamp(const char *fmt, ...) {
+    void DebugLog::add_log_with_timestamp(const char *fmt, va_list args) {
         auto now = std::chrono::system_clock::now();
-        va_list args;
-
-        va_start(args, fmt);
         add_log(prepend(fmt::format("{:%Y-%m-%d %H:%M:%OS}: ", now), fmt).c_str(), args);
-        va_end(args);
-    }
-
-    void DebugLog::add_log(const char *fmt, ...) {
-        va_list args;
-
-        va_start(args, fmt);
-        add_log(fmt, args);
-        va_end(args);
     }
 
     void DebugLog::add_log(const char *fmt, va_list args) {
@@ -82,8 +75,9 @@ namespace emu::util::gui {
         if (m_filter.IsActive()) {
             for (int line_no = 0; line_no < m_line_offsets.Size; line_no++) {
                 const char *line_start = buff + m_line_offsets[line_no];
-                const char *line_end = (line_no + 1 < m_line_offsets.Size) ? (buff + m_line_offsets[line_no + 1] - 1)
-                                                                           : buf_end;
+                const char *line_end = (line_no + 1 < m_line_offsets.Size)
+                                       ? (buff + m_line_offsets[line_no + 1] - 1)
+                                       : buf_end;
                 if (m_filter.PassFilter(line_start, line_end)) {
                     ImGui::TextUnformatted(line_start, line_end);
                 }
@@ -95,8 +89,9 @@ namespace emu::util::gui {
             while (clipper.Step()) {
                 for (int line_no = clipper.DisplayStart; line_no < clipper.DisplayEnd; line_no++) {
                     const char *line_start = buff + m_line_offsets[line_no];
-                    const char *line_end = (line_no + 1 < m_line_offsets.Size) ? (buff + m_line_offsets[line_no + 1] - 1)
-                                                                               : buf_end;
+                    const char *line_end = (line_no + 1 < m_line_offsets.Size)
+                                           ? (buff + m_line_offsets[line_no + 1] - 1)
+                                           : buf_end;
                     ImGui::TextUnformatted(line_start, line_end);
                 }
             }
@@ -114,19 +109,12 @@ namespace emu::util::gui {
         ImGui::End();
     }
 
-    std::string DebugLog::prepend(std::string prefix, const char *txt) {
-        char *out = new char[strlen(txt) + prefix.size() + 1];
+    void DebugLog::log_element_added(const char *fmt, va_list args) {
+        add_log_with_timestamp(append("\n", fmt).c_str(), args);
+    }
 
-        for (size_t i = 0; i < prefix.size(); ++i) {
-            out[i] = prefix[i];
-        }
-
-        for (size_t i = prefix.size(); i < strlen(txt) + prefix.size(); ++i) {
-            out[i] = txt[i - prefix.size()];
-        }
-
-        out[strlen(txt) + prefix.size()] = '\0';
-
-        return {out};
+    void DebugLog::attach_logger(std::shared_ptr<emu::util::logging::Logger> logger) {
+        m_logger = std::move(logger);
+        m_logger->add_log_observer(*this);
     }
 }

@@ -5,11 +5,13 @@
 #include "8080/interfaces/gui_observer.h"
 #include "crosscutting/byte_util.h"
 #include "crosscutting/debugging/debugger.h"
+#include "crosscutting/logging/logger.h"
 
 namespace emu::cpu8080::applications::space_invaders {
 
     using emu::util::byte::is_bit_set;
     using emu::util::debugger::Debugger;
+    using emu::util::logging::Logger;
 
     class Gui {
     public:
@@ -26,6 +28,8 @@ namespace emu::cpu8080::applications::space_invaders {
         virtual void attach_debugger(std::shared_ptr<Debugger> debugger) = 0;
 
         virtual void attach_debug_container(DebugContainer &debug_container) = 0;
+
+        virtual void attach_logger(std::shared_ptr<Logger> logger) = 0;
 
     protected:
         static constexpr int bits_in_byte = 8;

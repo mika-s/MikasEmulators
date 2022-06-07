@@ -1,7 +1,6 @@
 #include <stdexcept>
 #include <memory>
 #include <utility>
-#include <iostream>
 #include "imgui.h"
 #include "disassembly_window.h"
 #include "src/crosscutting/debugging/breakpoint.h"
@@ -17,6 +16,7 @@ namespace emu::util::gui {
               m_address_to_goto(0),
               m_bp_address_to_goto(0),
               m_is_following_pc(false),
+              m_is_following_pc_previous(false),
               m_is_going_to_pc(false),
               m_is_going_to_address(false),
               m_is_going_to_breakpoint(false) {
@@ -28,6 +28,10 @@ namespace emu::util::gui {
 
     void DisassemblyWindow::attach_debug_container(cpu8080::DebugContainer &debug_container) {
         m_debug_container = debug_container;
+    }
+
+    void DisassemblyWindow::attach_logger(std::shared_ptr<Logger> logger) {
+        m_logger = std::move(logger);
     }
 
     void DisassemblyWindow::draw(const char *title, bool *p_open) {
@@ -58,6 +62,7 @@ namespace emu::util::gui {
                 if (ImGui::BeginMenu("Breakpoints")) {
                     if (ImGui::Button("Clear all")) {
                         m_debugger->clear_all_breakpoints();
+                        m_logger->info("Clearing all breakpoints");
                     }
                     ImGui::BeginChild("breakpoint_list_child",
                                       ImVec2(200, 200),
@@ -88,6 +93,7 @@ namespace emu::util::gui {
                             ImGui::TableSetColumnIndex(2);
                             if (ImGui::Button("Delete")) {
                                 m_debugger->remove_breakpoint(address);
+                                m_logger->info("Removing breakpoint: 0x%04x", address);
                                 ImGui::PopID();
                                 break;
                             }
@@ -109,16 +115,22 @@ namespace emu::util::gui {
 
     void DisassemblyWindow::draw_buttons() {
         ImGui::Checkbox("Follow PC", &m_is_following_pc);
+        if (m_is_following_pc != m_is_following_pc_previous) {
+            m_logger->info(m_is_following_pc ? "Following PC" : "Stop following PC");
+        }
+        m_is_following_pc_previous = m_is_following_pc;
         ImGui::SameLine();
 
         if (ImGui::Button("Go to PC")) {
             m_is_going_to_pc = true;
+            m_logger->info("Going to PC");
         }
         ImGui::SameLine();
 
         if (ImGui::Button("Go to address")) {
             m_is_going_to_address = true;
             m_is_following_pc = false;
+            m_logger->info("Going to address: 0x%04x", m_address_to_goto);
         }
         ImGui::SameLine();
 
@@ -129,7 +141,6 @@ namespace emu::util::gui {
 
     void DisassemblyWindow::draw_addresses() {
         const std::uint16_t pc = m_debug_container.pc();
-
 
         if (m_debug_container.is_disassembled_program_set()) {
             ImGui::BeginChild("disassembled_code_child",
@@ -161,8 +172,10 @@ namespace emu::util::gui {
                     if (ImGui::IsMouseDoubleClicked(0)) {
                         if (is_breakpoint) {
                             m_debugger->remove_breakpoint(address);
+                            m_logger->info("Removing breakpoint: 0x%04x", address);
                         } else {
                             m_debugger->add_breakpoint(address, Breakpoint(address, line));
+                            m_logger->info("Adding breakpoint: 0x%04x", address);
                         }
                     }
                 }

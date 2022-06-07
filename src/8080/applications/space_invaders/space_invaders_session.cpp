@@ -19,6 +19,7 @@ namespace emu::cpu8080::applications::space_invaders {
               m_gui(std::move(gui)),
               m_input(std::move(input)),
               m_memory(std::move(memory)),
+              m_logger(std::make_shared<util::logging::Logger>()),
               m_debugger(std::make_shared<util::debugger::Debugger>()) {
         setup_cpu();
         setup_debugging();
@@ -94,6 +95,7 @@ namespace emu::cpu8080::applications::space_invaders {
         }
 
         m_run_status = FINISHED;
+//        m_logger->info("Done\n");
     }
 
     void SpaceInvadersSession::pause() {
@@ -180,6 +182,7 @@ namespace emu::cpu8080::applications::space_invaders {
 
         m_gui->attach_debugger(m_debugger);
         m_gui->attach_debug_container(m_debug_container);
+        m_gui->attach_logger(m_logger);
     }
 
     void SpaceInvadersSession::run_status_changed(emu::cpu8080::RunStatus new_status) {

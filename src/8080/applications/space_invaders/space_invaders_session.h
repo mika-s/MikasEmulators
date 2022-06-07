@@ -22,10 +22,17 @@
 #include "8080/interfaces/out_observer.h"
 #include "8080/interfaces/session.h"
 #include "crosscutting/debugging/debugger.h"
+#include "crosscutting/logging/log_observer.h"
+#include "crosscutting/logging/logger.h"
 
 namespace emu::cpu8080::applications::space_invaders {
 
-    class SpaceInvadersSession : public Session, public GuiObserver, public OutObserver, public InObserver, public IoObserver {
+    class SpaceInvadersSession
+            : public Session,
+              public GuiObserver,
+              public OutObserver,
+              public InObserver,
+              public IoObserver {
     public:
         SpaceInvadersSession(
                 const Settings &settings,
@@ -64,6 +71,7 @@ namespace emu::cpu8080::applications::space_invaders {
 
         EmulatorMemory m_memory;
 
+        std::shared_ptr<emu::util::logging::Logger> m_logger;
         std::shared_ptr<emu::util::debugger::Debugger> m_debugger;
         DebugContainer m_debug_container;
         std::unordered_map<std::uint8_t, std::uint8_t> m_outputs_during_cycle;

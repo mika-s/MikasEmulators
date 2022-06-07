@@ -75,6 +75,12 @@ namespace emu::cpu8080::applications::space_invaders {
         m_disassembly.attach_debug_container(debug_container);
     }
 
+    void GuiImgui::attach_logger(std::shared_ptr<Logger> logger) {
+        m_logger = std::move(logger);
+        m_log.attach_logger(m_logger);
+        m_disassembly.attach_logger(m_logger);
+    }
+
     void GuiImgui::init() {
         if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
             std::cerr << "error initializing SDL: " << SDL_GetError() << "\n";
@@ -150,8 +156,6 @@ namespace emu::cpu8080::applications::space_invaders {
         glClearColor(background.x, background.y, background.z, background.w);
 
         glGenTextures(1, &m_screen_texture);
-
-        m_log.add_log_with_timestamp("[INFO] Init GUI\n");
     }
 
     void GuiImgui::update_screen(const std::vector<std::uint8_t> &vram, RunStatus run_status) {

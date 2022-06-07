@@ -48,6 +48,9 @@ namespace emu::cpu8080::applications::space_invaders {
     void GuiSdl::attach_debug_container([[maybe_unused]] DebugContainer &debug_container) {
     }
 
+    void GuiSdl::attach_logger([[maybe_unused]] std::shared_ptr<Logger> logger) {
+    }
+
     void GuiSdl::init() {
         if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
             std::cerr << "error initializing SDL: " << SDL_GetError() << "\n";

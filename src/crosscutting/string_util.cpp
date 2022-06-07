@@ -1,3 +1,4 @@
+#include <cstring>
 #include "string_util.h"
 
 namespace emu::util::string {
@@ -60,5 +61,37 @@ namespace emu::util::string {
         }
 
         return split_string;
+    }
+
+    std::string prepend(std::string prefix, const char *txt) {
+        char *out = new char[strlen(txt) + prefix.size() + 1];
+
+        for (size_t i = 0; i < prefix.size(); ++i) {
+            out[i] = prefix[i];
+        }
+
+        for (size_t i = prefix.size(); i < strlen(txt) + prefix.size(); ++i) {
+            out[i] = txt[i - prefix.size()];
+        }
+
+        out[strlen(txt) + prefix.size()] = '\0';
+
+        return {out};
+    }
+
+    std::string append(std::string postfix, const char *txt) {
+        char *out = new char[strlen(txt) + postfix.size() + 1];
+
+        for (size_t i = 0; i < strlen(txt); ++i) {
+            out[i] = txt[i];
+        }
+
+        for (size_t i = strlen(txt); i < strlen(txt) + postfix.size(); ++i) {
+            out[i] = postfix[i - strlen(txt)];
+        }
+
+        out[strlen(txt) + postfix.size()] = '\0';
+
+        return {out};
     }
 }
