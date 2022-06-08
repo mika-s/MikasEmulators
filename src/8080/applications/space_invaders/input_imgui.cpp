@@ -53,106 +53,110 @@ namespace emu::cpu8080::applications::space_invaders {
         while (SDL_PollEvent(&read_input_event) != 0) {
             ImGui_ImplSDL2_ProcessEvent(&read_input_event);
 
-            switch (read_input_event.type) {
-                case SDL_QUIT:
-                    run_status = RunStatus::NOT_RUNNING;
-                    break;
-                case SDL_KEYUP:
-                    switch (read_input_event.key.keysym.scancode) {
-                        case insert_coin:
-                            unset_bit(cpu_io.m_in_port1, 0);
-                            break;
-                        case tilt:
-                            unset_bit(cpu_io.m_in_port2, 2);
-                            break;
-                        case p1_start:
-                            unset_bit(cpu_io.m_in_port1, 2);
-                            break;
-                        case p1_shoot:
-                            unset_bit(cpu_io.m_in_port1, 4);
-                            break;
-                        case p1_left:
-                            unset_bit(cpu_io.m_in_port1, 5);
-                            break;
-                        case p1_right:
-                            unset_bit(cpu_io.m_in_port1, 6);
-                            break;
-                        case p2_start:
-                            unset_bit(cpu_io.m_in_port1, 1);
-                            break;
-                        case p2_shoot:
-                            unset_bit(cpu_io.m_in_port2, 4);
-                            break;
-                        case p2_left:
-                            unset_bit(cpu_io.m_in_port2, 5);
-                            break;
-                        case p2_right:
-                            unset_bit(cpu_io.m_in_port2, 6);
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-                case SDL_KEYDOWN:
-                    switch (read_input_event.key.keysym.scancode) {
-                        case mute:
-                            notify_io_observers(IoRequest::TOGGLE_MUTE);
-                            break;
-                        case pause:
-                            if (run_status == RunStatus::PAUSED) {
-                                run_status = RunStatus::RUNNING;
-                            } else if (run_status == RunStatus::RUNNING) {
-                                run_status = RunStatus::PAUSED;
-                            }
-                            break;
-                        case insert_coin:
-                            set_bit(cpu_io.m_in_port1, 0);
-                            break;
-                        case tilt:
-                            set_bit(cpu_io.m_in_port2, 2);
-                            break;
-                        case p1_start:
-                            set_bit(cpu_io.m_in_port1, 2);
-                            break;
-                        case p1_shoot:
-                            set_bit(cpu_io.m_in_port1, 4);
-                            break;
-                        case p1_left:
-                            set_bit(cpu_io.m_in_port1, 5);
-                            break;
-                        case p1_right:
-                            set_bit(cpu_io.m_in_port1, 6);
-                            break;
-                        case p2_start:
-                            set_bit(cpu_io.m_in_port1, 1);
-                            break;
-                        case p2_shoot:
-                            set_bit(cpu_io.m_in_port2, 4);
-                            break;
-                        case p2_left:
-                            set_bit(cpu_io.m_in_port2, 5);
-                            break;
-                        case p2_right:
-                            set_bit(cpu_io.m_in_port2, 6);
-                            break;
-                        case break_program:
-                            notify_io_observers(BREAK_EXECUTION);
-                            break;
-                        case step_into:
-                            notify_io_observers(STEP_INTO);
-                            break;
-                        case step_over:
-                            notify_io_observers(STEP_OVER);
-                            break;
-                        case continue_running:
-                            notify_io_observers(CONTINUE_EXECUTION);
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-                default:
-                    break;
+            ImGuiIO &io = ImGui::GetIO();
+
+            if (!io.WantCaptureKeyboard) {
+                switch (read_input_event.type) {
+                    case SDL_QUIT:
+                        run_status = RunStatus::NOT_RUNNING;
+                        break;
+                    case SDL_KEYUP:
+                        switch (read_input_event.key.keysym.scancode) {
+                            case insert_coin:
+                                unset_bit(cpu_io.m_in_port1, 0);
+                                break;
+                            case tilt:
+                                unset_bit(cpu_io.m_in_port2, 2);
+                                break;
+                            case p1_start:
+                                unset_bit(cpu_io.m_in_port1, 2);
+                                break;
+                            case p1_shoot:
+                                unset_bit(cpu_io.m_in_port1, 4);
+                                break;
+                            case p1_left:
+                                unset_bit(cpu_io.m_in_port1, 5);
+                                break;
+                            case p1_right:
+                                unset_bit(cpu_io.m_in_port1, 6);
+                                break;
+                            case p2_start:
+                                unset_bit(cpu_io.m_in_port1, 1);
+                                break;
+                            case p2_shoot:
+                                unset_bit(cpu_io.m_in_port2, 4);
+                                break;
+                            case p2_left:
+                                unset_bit(cpu_io.m_in_port2, 5);
+                                break;
+                            case p2_right:
+                                unset_bit(cpu_io.m_in_port2, 6);
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                    case SDL_KEYDOWN:
+                        switch (read_input_event.key.keysym.scancode) {
+                            case mute:
+                                notify_io_observers(IoRequest::TOGGLE_MUTE);
+                                break;
+                            case pause:
+                                if (run_status == RunStatus::PAUSED) {
+                                    run_status = RunStatus::RUNNING;
+                                } else if (run_status == RunStatus::RUNNING) {
+                                    run_status = RunStatus::PAUSED;
+                                }
+                                break;
+                            case insert_coin:
+                                set_bit(cpu_io.m_in_port1, 0);
+                                break;
+                            case tilt:
+                                set_bit(cpu_io.m_in_port2, 2);
+                                break;
+                            case p1_start:
+                                set_bit(cpu_io.m_in_port1, 2);
+                                break;
+                            case p1_shoot:
+                                set_bit(cpu_io.m_in_port1, 4);
+                                break;
+                            case p1_left:
+                                set_bit(cpu_io.m_in_port1, 5);
+                                break;
+                            case p1_right:
+                                set_bit(cpu_io.m_in_port1, 6);
+                                break;
+                            case p2_start:
+                                set_bit(cpu_io.m_in_port1, 1);
+                                break;
+                            case p2_shoot:
+                                set_bit(cpu_io.m_in_port2, 4);
+                                break;
+                            case p2_left:
+                                set_bit(cpu_io.m_in_port2, 5);
+                                break;
+                            case p2_right:
+                                set_bit(cpu_io.m_in_port2, 6);
+                                break;
+                            case break_program:
+                                notify_io_observers(BREAK_EXECUTION);
+                                break;
+                            case step_into:
+                                notify_io_observers(STEP_INTO);
+                                break;
+                            case step_over:
+                                notify_io_observers(STEP_OVER);
+                                break;
+                            case continue_running:
+                                notify_io_observers(CONTINUE_EXECUTION);
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }

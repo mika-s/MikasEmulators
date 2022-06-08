@@ -14,7 +14,6 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
-#find_package(SDL2_mixer REQUIRED)
 find_package(fmt)
 
 include(${PROJECT_SOURCE_DIR}/libs/doctest/SourceFiles.cmake)
@@ -26,7 +25,6 @@ include(${PROJECT_SOURCE_DIR}/libs/imgui/SourceFiles.cmake)
 include(${PROJECT_SOURCE_DIR}/src/8080/SourceFiles.cmake)
 
 add_executable(${PROJECT_NAME} ${SOURCES_8080_CPP} ${SOURCES_8080_H} ${SOURCES_DOCTEST} ${SOURCES_GLAD} ${SOURCES_IMGUI})
-#target_link_libraries(${PROJECT_NAME} SDL2::Main SDL2::Image SDL2_mixer)
 target_link_libraries(${PROJECT_NAME} SDL2::Main SDL2::Image fmt::fmt)
 target_include_directories(${PROJECT_NAME} PRIVATE
         libs/doctest
