@@ -13,7 +13,10 @@ namespace emu::util::gui {
     }
 
     void MemoryEditorWindow::draw(const char *title, bool *p_open) {
-        ImGui::Begin(title, p_open);
+        if (!ImGui::Begin(title, p_open, ImGuiWindowFlags_MenuBar)) {
+            ImGui::End();
+            return;
+        }
 
         if (m_debug_container.is_memory_set()) {
             m_memory_editor.DrawContents(

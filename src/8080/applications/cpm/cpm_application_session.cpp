@@ -1,5 +1,4 @@
 #include <iostream>
-#include <utility>
 #include "cpm_application_session.h"
 #include "crosscutting/byte_util.h"
 

@@ -161,6 +161,12 @@ Extra keys while debugging:
 | F8      | Step cycle         |
 | F9      | Continue execution |
 
+Screenshots:
+
+![Plain Space Invaders](assets/images/8080_SI.png "Plain Space Invaders")
+
+![Space Invaders with debugger](assets/images/8080_SI_debugger.png "Space Invaders with debugger")
+
 #### Inspiration
 
 I looked at the following emulators while developing my 8080 emulator:
@@ -174,8 +180,6 @@ look up how the game is supposed to behave.
 
 #### Todo
 
-- Save state in Space Invaders
-- Debugger with Dear ImGui
 - Fix the CMake file to use better best practices
 - Better argument handling
 - Refactor to "sessions" for Space Invaders and the 8080 cpu
