@@ -143,4 +143,6 @@ namespace emu::cpu8080::applications::space_invaders {
             }
         }
     }
+
+    void InputSdl::read_debug_only([[maybe_unused]] RunStatus &run_status) {}
 }

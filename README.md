@@ -153,6 +153,14 @@ The keymap is:
 | Pause   | Pause/unpause |
 | M       | Mute/unmute   |
 
+Extra keys while debugging:
+
+| Key     | Description        |
+| ------- | ------------------ |
+| F7      | Step instruction   |
+| F8      | Step cycle         |
+| F9      | Continue execution |
+
 #### Inspiration
 
 I looked at the following emulators while developing my 8080 emulator:

@@ -15,6 +15,8 @@ namespace emu::cpu8080::applications::space_invaders {
     public:
         void read(RunStatus &run_status, CpuIo &cpu_io) override;
 
+        void read_debug_only(RunStatus &run_status) override;
+
         void add_io_observer(IoObserver &observer) override;
 
         void remove_io_observer(IoObserver *observer) override;

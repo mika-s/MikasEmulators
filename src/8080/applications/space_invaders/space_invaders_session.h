@@ -61,6 +61,9 @@ namespace emu::cpu8080::applications::space_invaders {
 
     private:
         bool m_is_in_debug_mode;
+        bool m_is_stepping_instruction;
+        bool m_is_stepping_cycle;
+        bool m_is_continuing_execution;
         RunStatus m_run_status;
 
         CpuIo m_cpu_io;
@@ -95,6 +98,14 @@ namespace emu::cpu8080::applications::space_invaders {
         static constexpr int out_port_sound_2 = 5;
         static constexpr int out_port_watchdog = 6;
         // IO - end
+
+        void running(std::uint64_t &last_tick, unsigned long &cycles);
+
+        void pausing(std::uint64_t &last_tick);
+
+        void stepping(std::uint64_t &last_tick, unsigned long &cycles);
+
+        void await_input_and_update_debug();
 
         void setup_cpu();
 

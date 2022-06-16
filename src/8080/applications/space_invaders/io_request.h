@@ -4,10 +4,9 @@
 namespace emu::cpu8080::applications::space_invaders {
 
     enum IoRequest {
-        BREAK_EXECUTION,
+        STEP_INSTRUCTION,
+        STEP_CYCLE,
         CONTINUE_EXECUTION,
-        STEP_OVER,
-        STEP_INTO,
         TOGGLE_MUTE,
     };
 }

@@ -1,6 +1,5 @@
 #include <iostream>
 #include <SDL_timer.h>
-#include <utility>
 #include "space_invaders_session.h"
 #include "8080/disassembler8080.h"
 #include "crosscutting/string_util.h"
@@ -14,6 +13,9 @@ namespace emu::cpu8080::applications::space_invaders {
             EmulatorMemory memory
     )
             : m_is_in_debug_mode(false),
+              m_is_stepping_instruction(false),
+              m_is_stepping_cycle(false),
+              m_is_continuing_execution(false),
               m_run_status(NOT_RUNNING),
               m_cpu_io(CpuIo(0, 0b00001000, 0)),
               m_gui(std::move(gui)),
@@ -44,58 +46,128 @@ namespace emu::cpu8080::applications::space_invaders {
         m_cpu->start();
         m_run_status = RUNNING;
 
-        unsigned long i;
+        unsigned long cycles;
         std::uint64_t last_tick = SDL_GetTicks64();
 
         while (m_run_status == RUNNING || m_run_status == PAUSED || m_run_status == STEPPING) {
             if (m_run_status == RUNNING) {
-                m_outputs_during_cycle.clear();
-
-                if (SDL_GetTicks64() - last_tick >= tick_limit) {
-                    last_tick = SDL_GetTicks();
-
-                    i = 0;
-                    while (i < static_cast<long>(cycles_per_tick / 2)) {
-                        i += m_cpu->next_instruction();
-                        if (m_is_in_debug_mode && m_debugger->has_breakpoint(m_cpu->pc())) {
-                            m_run_status = STEPPING;
-                        }
-                    }
-
-                    if (m_cpu->is_inta()) {
-                        m_cpu->interrupt(RST_1);
-                    }
-
-                    i = 0;
-                    while (i < static_cast<long>(cycles_per_tick / 2)) {
-                        i += m_cpu->next_instruction();
-                        if (m_is_in_debug_mode && m_debugger->has_breakpoint(m_cpu->pc())) {
-                            m_run_status = STEPPING;
-                        }
-                    }
-
-                    m_input->read(m_run_status, m_cpu_io);
-                    m_gui->update_screen(this->vram(), m_run_status);
-
-                    if (m_cpu->is_inta()) {
-                        m_cpu->interrupt(RST_2);
-                    }
-                }
+                running(last_tick, cycles);
             } else if (m_run_status == PAUSED) {
-                if (SDL_GetTicks64() - last_tick >= tick_limit) {
-                    last_tick = SDL_GetTicks();
-                    m_input->read(m_run_status, m_cpu_io);
-                    m_gui->update_screen(this->vram(), m_run_status);
-                }
-            } else if (m_run_status == STEPPING) {
-                throw std::runtime_error("Stepping has not been implemented yet");
+                pausing(last_tick);
             } else {
-                throw std::runtime_error("Some kind of run_status has not been handled in the main loop");
+                stepping(last_tick, cycles);
             }
         }
 
         m_run_status = FINISHED;
-//        m_logger->info("Done\n");
+    }
+
+    void SpaceInvadersSession::running(std::uint64_t &last_tick, unsigned long &cycles) {
+        m_outputs_during_cycle.clear();
+
+        if (SDL_GetTicks64() - last_tick >= tick_limit) {
+            last_tick = SDL_GetTicks();
+
+            cycles = 0;
+            while (cycles < static_cast<long>(cycles_per_tick / 2)) {
+                cycles += m_cpu->next_instruction();
+                if (m_is_in_debug_mode && m_debugger->has_breakpoint(m_cpu->pc())) {
+                    m_logger->info("Breakpoint hit: 0x%04x", m_cpu->pc());
+                    m_run_status = STEPPING;
+                    return;
+                }
+            }
+
+            if (m_cpu->is_inta()) {
+                m_cpu->interrupt(RST_1);
+            }
+
+            cycles = 0;
+            while (cycles < static_cast<long>(cycles_per_tick / 2)) {
+                cycles += m_cpu->next_instruction();
+                if (m_is_in_debug_mode && m_debugger->has_breakpoint(m_cpu->pc())) {
+                    m_logger->info("Breakpoint hit: 0x%04x", m_cpu->pc());
+                    m_run_status = STEPPING;
+                    return;
+                }
+            }
+
+            m_input->read(m_run_status, m_cpu_io);
+            m_gui->update_screen(this->vram(), m_run_status);
+
+            if (m_cpu->is_inta()) {
+                m_cpu->interrupt(RST_2);
+            }
+        }
+    }
+
+    void SpaceInvadersSession::pausing(std::uint64_t &last_tick) {
+        if (SDL_GetTicks64() - last_tick >= tick_limit) {
+            last_tick = SDL_GetTicks();
+            m_input->read(m_run_status, m_cpu_io);
+            m_gui->update_screen(this->vram(), m_run_status);
+        }
+    }
+
+    void SpaceInvadersSession::stepping([[maybe_unused]] uint64_t &last_tick, unsigned long &cycles) {
+        m_outputs_during_cycle.clear();
+
+        await_input_and_update_debug();
+        if (m_run_status == NOT_RUNNING) {
+            return;
+        }
+
+        cycles = 0;
+        while (cycles < static_cast<long>(cycles_per_tick / 2)) {
+            cycles += m_cpu->next_instruction();
+            if (!m_is_stepping_cycle && !m_is_continuing_execution) {
+                await_input_and_update_debug();
+            }
+            if (m_run_status == NOT_RUNNING) {
+                return;
+            }
+        }
+
+        if (m_cpu->is_inta()) {
+            m_cpu->interrupt(RST_1);
+        }
+
+        cycles = 0;
+        while (cycles < static_cast<long>(cycles_per_tick / 2)) {
+            cycles += m_cpu->next_instruction();
+            if (!m_is_stepping_cycle) {
+                await_input_and_update_debug();
+            }
+            if (m_run_status == NOT_RUNNING) {
+                return;
+            }
+        }
+
+        m_input->read(m_run_status, m_cpu_io);
+        m_gui->update_screen(this->vram(), m_run_status);
+
+        if (m_cpu->is_inta()) {
+            m_cpu->interrupt(RST_2);
+        }
+
+        m_is_stepping_cycle = false;
+        if (m_is_continuing_execution) {
+            m_is_continuing_execution = false;
+            m_run_status = RUNNING;
+        }
+    }
+
+    void SpaceInvadersSession::await_input_and_update_debug() {
+        while (!m_is_stepping_instruction && !m_is_stepping_cycle && !m_is_continuing_execution) {
+            m_input->read_debug_only(m_run_status);
+            if (m_run_status == NOT_RUNNING) {
+                return;
+            }
+
+            m_gui->update_debug_only();
+        }
+
+        m_is_stepping_instruction = false;
     }
 
     void SpaceInvadersSession::pause() {
@@ -241,16 +313,22 @@ namespace emu::cpu8080::applications::space_invaders {
 
     void SpaceInvadersSession::io_changed(IoRequest request) {
         switch (request) {
-            case IoRequest::BREAK_EXECUTION:
-                m_run_status = STEPPING;
+            case STEP_INSTRUCTION:
+                if (m_is_in_debug_mode) {
+                    m_is_stepping_instruction = true;
+                }
                 break;
-            case IoRequest::CONTINUE_EXECUTION:
+            case STEP_CYCLE:
+                if (m_is_in_debug_mode) {
+                    m_is_stepping_cycle = true;
+                }
                 break;
-            case IoRequest::STEP_OVER:
+            case CONTINUE_EXECUTION:
+                if (m_is_in_debug_mode) {
+                    m_is_continuing_execution = true;
+                }
                 break;
-            case IoRequest::STEP_INTO:
-                break;
-            case IoRequest::TOGGLE_MUTE:
+            case TOGGLE_MUTE:
                 m_audio.toggle_mute();
                 break;
             default:

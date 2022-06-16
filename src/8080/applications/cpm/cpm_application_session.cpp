@@ -64,8 +64,7 @@ namespace emu::cpu8080::applications::cpm {
 
     void CpmApplicationSession::c_writestr(const emu::cpu8080::EmulatorMemory &memory, std::uint16_t address) {
         do {
-            std::cout << memory[address];
-            address++;
+            std::cout << memory[address++];
         } while (memory[address] != '$');
     }
 }

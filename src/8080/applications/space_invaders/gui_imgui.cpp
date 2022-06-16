@@ -265,7 +265,7 @@ namespace emu::cpu8080::applications::space_invaders {
     }
 
     void GuiImgui::update_debug_only() {
-        render(RunStatus::RUNNING);
+        render(STEPPING);
     }
 
     void GuiImgui::render_game_window(RunStatus run_status) {
@@ -277,7 +277,9 @@ namespace emu::cpu8080::applications::space_invaders {
         } else if (run_status == PAUSED) {
             title = prefix + " - Paused" + id;
         } else if (run_status == NOT_RUNNING) {
-            title = prefix + "- Stopped" + id;
+            title = prefix + " - Stopped" + id;
+        } else if (run_status == STEPPING) {
+            title = prefix + " - Stepping" + id;
         } else {
             title = "Unknown TODO" + id;
         }

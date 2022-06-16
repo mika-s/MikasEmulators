@@ -15,6 +15,8 @@ namespace emu::cpu8080::applications::space_invaders {
     public:
         void read(RunStatus &run_status, CpuIo &cpu_io) override;
 
+        void read_debug_only(RunStatus &run_status) override;
+
         void add_io_observer(IoObserver &observer) override;
 
         void remove_io_observer(IoObserver *observer) override;
@@ -22,9 +24,8 @@ namespace emu::cpu8080::applications::space_invaders {
     private:
         static constexpr SDL_Scancode mute = SDL_SCANCODE_M;
         static constexpr SDL_Scancode pause = SDL_SCANCODE_PAUSE;
-        static constexpr SDL_Scancode break_program = SDL_SCANCODE_B;
-        static constexpr SDL_Scancode step_into = SDL_SCANCODE_F7;
-        static constexpr SDL_Scancode step_over = SDL_SCANCODE_F8;
+        static constexpr SDL_Scancode step_instruction = SDL_SCANCODE_F7;
+        static constexpr SDL_Scancode step_cycle = SDL_SCANCODE_F8;
         static constexpr SDL_Scancode continue_running = SDL_SCANCODE_F9;
 
         static constexpr SDL_Scancode insert_coin = SDL_SCANCODE_C;

@@ -138,14 +138,44 @@ namespace emu::cpu8080::applications::space_invaders {
                             case p2_right:
                                 set_bit(cpu_io.m_in_port2, 6);
                                 break;
-                            case break_program:
-                                notify_io_observers(BREAK_EXECUTION);
+                            default:
                                 break;
-                            case step_into:
-                                notify_io_observers(STEP_INTO);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+
+    void InputImgui::read_debug_only(RunStatus &run_status) {
+        SDL_Event read_input_event;
+
+        while (SDL_PollEvent(&read_input_event) != 0) {
+            ImGui_ImplSDL2_ProcessEvent(&read_input_event);
+
+            ImGuiIO &io = ImGui::GetIO();
+
+            if (!io.WantCaptureKeyboard) {
+                switch (read_input_event.type) {
+                    case SDL_QUIT:
+                        run_status = NOT_RUNNING;
+                        break;
+                    case SDL_KEYDOWN:
+                        switch (read_input_event.key.keysym.scancode) {
+                            case pause:
+                                if (run_status == PAUSED) {
+                                    run_status = STEPPING;
+                                } else if (run_status == STEPPING) {
+                                    run_status = PAUSED;
+                                }
                                 break;
-                            case step_over:
-                                notify_io_observers(STEP_OVER);
+                            case step_instruction:
+                                notify_io_observers(STEP_INSTRUCTION);
+                                break;
+                            case step_cycle:
+                                notify_io_observers(STEP_CYCLE);
                                 break;
                             case continue_running:
                                 notify_io_observers(CONTINUE_EXECUTION);
