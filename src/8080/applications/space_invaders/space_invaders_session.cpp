@@ -250,6 +250,9 @@ namespace emu::cpu8080::applications::space_invaders {
                         {"ufo_hit",          4}
                 }
         ));
+        m_debug_container.add_memory(MemoryDebugContainer(
+                [&]() { return memory(); }
+        ));
         m_debug_container.add_disassembled_program(disassemble_program());
 
         m_gui->attach_debugger(m_debugger);
@@ -339,6 +342,11 @@ namespace emu::cpu8080::applications::space_invaders {
     std::vector<std::uint8_t> SpaceInvadersSession::vram() {
         return {m_memory.begin() + 0x2400, m_memory.begin() + 0x3fff};
     }
+
+    std::vector<std::uint8_t> SpaceInvadersSession::memory() {
+        return {m_memory.begin(), m_memory.begin() + 0x3fff};
+    }
+
 
     std::vector<std::string> SpaceInvadersSession::disassemble_program() {
         EmulatorMemory sliced_for_disassembly = m_memory.slice(0, 0x2000);

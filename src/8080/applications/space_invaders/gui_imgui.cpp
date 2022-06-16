@@ -24,6 +24,7 @@ namespace emu::cpu8080::applications::space_invaders {
               m_show_io_info(true),
               m_show_log(true),
               m_show_disassembly(true),
+              m_show_memory_editor(true),
               m_show_demo(false),
               m_is_in_debug_mode(false) {
         init();
@@ -73,6 +74,7 @@ namespace emu::cpu8080::applications::space_invaders {
         m_cpu_info.attach_debug_container(debug_container);
         m_io_info.attach_debug_container(debug_container);
         m_disassembly.attach_debug_container(debug_container);
+        m_memory_editor.attach_debug_container(debug_container);
     }
 
     void GuiImgui::attach_logger(std::shared_ptr<Logger> logger) {
@@ -221,6 +223,7 @@ namespace emu::cpu8080::applications::space_invaders {
                 ImGui::MenuItem("IO info", nullptr, &m_show_io_info);
                 ImGui::MenuItem("Log", nullptr, &m_show_log);
                 ImGui::MenuItem("Disassembly", nullptr, &m_show_disassembly);
+                ImGui::MenuItem("Memory editor", nullptr, &m_show_memory_editor);
                 ImGui::MenuItem("Demo", nullptr, &m_show_demo);
                 ImGui::EndMenu();
             }
@@ -251,6 +254,9 @@ namespace emu::cpu8080::applications::space_invaders {
         }
         if (m_show_io_info) {
             render_io_info_window();
+        }
+        if (m_show_memory_editor) {
+            render_memory_editor_window();
         }
         if (m_show_demo) {
             ImGui::ShowDemoWindow();
@@ -338,5 +344,9 @@ namespace emu::cpu8080::applications::space_invaders {
 
     void GuiImgui::render_disassembly_window() {
         m_disassembly.draw("Disassembly", &m_show_disassembly);
+    }
+
+    void GuiImgui::render_memory_editor_window() {
+        m_memory_editor.draw("Memory editor", &m_show_memory_editor);
     }
 }

@@ -108,6 +108,7 @@ set(SOURCES_8080_CPP
         src/crosscutting/gui/debug_log.cpp
         src/crosscutting/gui/disassembly_window.cpp
         src/crosscutting/gui/io_info.cpp
+        src/crosscutting/gui/memory_editor_window.cpp
         src/crosscutting/logging/logger.cpp
         )
 
@@ -157,6 +158,7 @@ set(SOURCES_8080_H
         src/crosscutting/gui/disassembly_window.h
         src/crosscutting/gui/gui_type.h
         src/crosscutting/gui/io_info.h
+        src/crosscutting/gui/memory_editor_window.h
         src/crosscutting/logging/log_observer.h
         src/crosscutting/logging/logger.h
         )

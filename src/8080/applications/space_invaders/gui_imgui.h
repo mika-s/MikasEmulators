@@ -14,6 +14,7 @@
 #include "crosscutting/gui/debug_log.h"
 #include "crosscutting/gui/disassembly_window.h"
 #include "crosscutting/gui/io_info.h"
+#include "crosscutting/gui/memory_editor_window.h"
 #include "crosscutting/logging/log_observer.h"
 #include "crosscutting/logging/logger.h"
 
@@ -53,6 +54,7 @@ namespace emu::cpu8080::applications::space_invaders {
         bool m_show_io_info;
         bool m_show_log;
         bool m_show_disassembly;
+        bool m_show_memory_editor;
         bool m_show_demo;
 
         bool m_is_in_debug_mode;
@@ -64,6 +66,7 @@ namespace emu::cpu8080::applications::space_invaders {
         emu::util::gui::DisassemblyWindow m_disassembly;
         emu::util::gui::CpuInfo m_cpu_info;
         emu::util::gui::IoInfo m_io_info;
+        emu::util::gui::MemoryEditorWindow m_memory_editor;
 
         void notify_gui_observers_about_run_status(RunStatus new_status);
 
@@ -84,6 +87,8 @@ namespace emu::cpu8080::applications::space_invaders {
         void render_log_window();
 
         void render_disassembly_window();
+
+        void render_memory_editor_window();
     };
 }
 

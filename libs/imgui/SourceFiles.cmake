@@ -10,6 +10,7 @@ set(SOURCES_IMGUI
         libs/imgui/imgui_impl_sdl.cpp
         libs/imgui/imgui_impl_sdl.h
         libs/imgui/imgui_internal.h
+        libs/imgui/imgui_memory_editor.h
         libs/imgui/imgui_tables.cpp
         libs/imgui/imgui_widgets.cpp
         libs/imgui/imstb_rectpack.h

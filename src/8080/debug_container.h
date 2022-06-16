@@ -78,6 +78,20 @@ namespace emu::cpu8080 {
         bool m_is_divided_into_bits;
     };
 
+    class MemoryDebugContainer {
+    public:
+        MemoryDebugContainer();
+
+        MemoryDebugContainer(
+                std::function<std::vector<std::uint8_t>()> value_retriever
+        );
+
+        [[nodiscard]] std::vector<std::uint8_t> value() const;
+
+    private:
+        std::function<std::vector<std::uint8_t>()> m_value_retriever;
+    };
+
     class DebugContainer {
     public:
         DebugContainer();
@@ -97,6 +111,12 @@ namespace emu::cpu8080 {
         [[nodiscard]] std::vector<IoDebugContainer> io() const;
 
         [[nodiscard]] bool is_io_set() const;
+
+        void add_memory(const MemoryDebugContainer& memory);
+
+        [[nodiscard]] MemoryDebugContainer memory() const;
+
+        [[nodiscard]] bool is_memory_set() const;
 
         void add_pc(const std::function<std::uint16_t()> &value_retriever);
 
@@ -130,6 +150,9 @@ namespace emu::cpu8080 {
 
         std::vector<IoDebugContainer> m_io_retrievers;
         bool m_is_io_set;
+
+        MemoryDebugContainer m_memory_retriever;
+        bool m_is_memory_set;
 
         std::function<std::uint16_t()> m_pc_retriever;
         bool m_is_pc_set;

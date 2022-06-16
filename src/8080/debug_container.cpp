@@ -82,10 +82,21 @@ namespace emu::cpu8080 {
         return m_bit_names;
     }
 
+    MemoryDebugContainer::MemoryDebugContainer() = default;
+
+    MemoryDebugContainer::MemoryDebugContainer(std::function<std::vector<std::uint8_t>()> value_retriever) {
+        m_value_retriever = std::move(value_retriever);
+    }
+
+    std::vector<std::uint8_t> MemoryDebugContainer::value() const {
+        return m_value_retriever();
+    }
+
     DebugContainer::DebugContainer()
             : m_flag_register_retriever(FlagRegisterDebugContainer()),
               m_is_flag_register_set(false),
               m_is_io_set(false),
+              m_is_memory_set(false),
               m_is_pc_set(false),
               m_is_sp_set(false),
               m_is_interrupted_set(false),
@@ -124,6 +135,19 @@ namespace emu::cpu8080 {
 
     bool DebugContainer::is_io_set() const {
         return m_is_io_set;
+    }
+
+    void DebugContainer::add_memory(const MemoryDebugContainer &memory) {
+        m_memory_retriever = memory;
+        m_is_memory_set = true;
+    }
+
+    MemoryDebugContainer DebugContainer::memory() const {
+        return m_memory_retriever;
+    }
+
+    bool DebugContainer::is_memory_set() const {
+        return m_is_memory_set;
     }
 
     void DebugContainer::add_pc(const std::function<std::uint16_t()> &value_retriever) {

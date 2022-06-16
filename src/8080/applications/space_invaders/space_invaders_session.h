@@ -113,6 +113,8 @@ namespace emu::cpu8080::applications::space_invaders {
 
         std::vector<std::uint8_t> vram();
 
+        std::vector<std::uint8_t> memory();
+
         std::vector<std::string> disassemble_program();
     };
 }
