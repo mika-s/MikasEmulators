@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include "crosscutting/typedefs.h"
 
-namespace emu::util::exceptions {
+namespace emu::exceptions {
 
     class UnrecognizedOpcodeException : public std::runtime_error {
     public:

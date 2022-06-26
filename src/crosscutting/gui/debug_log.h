@@ -5,12 +5,12 @@
 #include "crosscutting/logging/log_observer.h"
 #include "crosscutting/logging/logger.h"
 
-namespace emu::util::gui {
+namespace emu::gui {
 
-    using emu::util::logging::Logger;
-    using emu::util::logging::LogObserver;
+    using emu::logging::Logger;
+    using emu::logging::LogObserver;
 
-    class DebugLog: public LogObserver {
+    class DebugLog : public LogObserver {
     public:
         DebugLog();
 

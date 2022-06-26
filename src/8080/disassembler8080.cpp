@@ -1,8 +1,8 @@
 #include <iostream>
 #include "disassembler8080.h"
 #include "8080/instructions/instructions.h"
-#include "crosscutting/string_util.h"
-#include "crosscutting/unrecognized_opcode_exception.h"
+#include "crosscutting/exceptions/unrecognized_opcode_exception.h"
+#include "crosscutting/util/string_util.h"
 
 namespace emu::cpu8080 {
 
@@ -795,7 +795,7 @@ namespace emu::cpu8080 {
             print_rst(m_ostream, 7);
             break;
         default:
-            throw emu::util::exceptions::UnrecognizedOpcodeException(m_opcode);
+            throw emu::exceptions::UnrecognizedOpcodeException(m_opcode);
         }
 
         m_ostream << "\n";

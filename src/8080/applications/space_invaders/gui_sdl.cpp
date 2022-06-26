@@ -1,7 +1,7 @@
 #include <iostream>
 #include <SDL.h>
 #include "gui_sdl.h"
-#include "crosscutting/byte_util.h"
+#include "crosscutting/util/byte_util.h"
 
 namespace emu::cpu8080::applications::space_invaders {
 

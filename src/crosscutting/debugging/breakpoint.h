@@ -4,7 +4,7 @@
 #include <string>
 #include "crosscutting/typedefs.h"
 
-namespace emu::util::debugger {
+namespace emu::debugger {
 
     class Breakpoint {
     public:

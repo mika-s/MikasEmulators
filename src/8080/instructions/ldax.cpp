@@ -1,8 +1,8 @@
 #include <iostream>
 #include "doctest.h"
 #include "8080/emulator_memory.h"
-#include "crosscutting/byte_util.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/util/byte_util.h"
 
 namespace emu::cpu8080 {
 

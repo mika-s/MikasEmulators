@@ -21,7 +21,11 @@
 
 namespace emu::cpu8080::applications::space_invaders {
 
-    using emu::util::logging::Logger;
+    using emu::gui::DebugLog;
+    using emu::gui::DisassemblyWindow;
+    using emu::gui::CpuInfo;
+    using emu::gui::IoInfo;
+    using emu::gui::MemoryEditorWindow;
 
     class GuiImgui : public Gui {
 
@@ -63,11 +67,11 @@ namespace emu::cpu8080::applications::space_invaders {
         std::vector<GuiObserver *> m_gui_observers;
         std::shared_ptr<Logger> m_logger;
 
-        emu::util::gui::DebugLog m_log;
-        emu::util::gui::DisassemblyWindow m_disassembly;
-        emu::util::gui::CpuInfo m_cpu_info;
-        emu::util::gui::IoInfo m_io_info;
-        emu::util::gui::MemoryEditorWindow m_memory_editor;
+        DebugLog m_log;
+        DisassemblyWindow m_disassembly;
+        CpuInfo m_cpu_info;
+        IoInfo m_io_info;
+        MemoryEditorWindow m_memory_editor;
 
         void notify_gui_observers_about_run_status(RunStatus new_status);
 

@@ -2,8 +2,8 @@
 #include <iostream>
 #include "doctest.h"
 #include "8080/next_byte.h"
-#include "crosscutting/string_util.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/util/string_util.h"
 
 namespace emu::cpu8080 {
 

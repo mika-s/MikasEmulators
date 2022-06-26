@@ -1,7 +1,7 @@
 #ifndef MIKA_EMULATORS_CROSSCUTTING_GUI_GUI_TYPE_H
 #define MIKA_EMULATORS_CROSSCUTTING_GUI_GUI_TYPE_H
 
-namespace emu::util::gui {
+namespace emu::gui {
 
     enum GuiType {
         ORDINARY,

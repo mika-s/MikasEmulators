@@ -1,10 +1,10 @@
 #include <imgui.h>
 #include "io_info.h"
-#include "crosscutting/byte_util.h"
-#include "crosscutting/string_util.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/util/byte_util.h"
+#include "crosscutting/util/string_util.h"
 
-namespace emu::util::gui {
+namespace emu::gui {
 
     using emu::util::byte::is_bit_set;
     using emu::util::string::hexify;

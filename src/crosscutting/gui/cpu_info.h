@@ -3,7 +3,7 @@
 
 #include "8080/debug_container.h"
 
-namespace emu::util::gui {
+namespace emu::gui {
 
     class CpuInfo {
     public:

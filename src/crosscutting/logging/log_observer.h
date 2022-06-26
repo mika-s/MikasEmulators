@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace emu::util::logging {
+namespace emu::logging {
 
     class LogObserver {
     public:

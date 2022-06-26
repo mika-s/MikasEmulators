@@ -3,7 +3,7 @@
 #include <SDL_timer.h>
 #include "space_invaders_session.h"
 #include "8080/disassembler8080.h"
-#include "crosscutting/string_util.h"
+#include "crosscutting/util/string_util.h"
 
 namespace emu::cpu8080::applications::space_invaders {
 

@@ -1,5 +1,5 @@
 #include "8080/flags.h"
-#include "crosscutting/byte_util.h"
+#include "crosscutting/util/byte_util.h"
 
 namespace emu::cpu8080 {
 

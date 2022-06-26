@@ -1,9 +1,10 @@
 #include <algorithm>
 #include <cstdarg>
-#include "crosscutting/string_util.h"
 #include "logger.h"
+#include "crosscutting/logging/log_observer.h"
+#include "crosscutting/util/string_util.h"
 
-namespace emu::util::logging {
+namespace emu::logging {
 
     using emu::util::string::prepend;
 

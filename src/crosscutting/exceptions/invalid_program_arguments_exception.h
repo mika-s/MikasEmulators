@@ -5,7 +5,7 @@
 #include <exception>
 #include <stdexcept>
 
-namespace emu::util::exceptions {
+namespace emu::exceptions {
 
     class InvalidProgramArgumentsException : public std::runtime_error {
     public:

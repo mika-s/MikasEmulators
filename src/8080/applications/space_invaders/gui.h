@@ -3,16 +3,16 @@
 
 #include "8080/debug_container.h"
 #include "8080/interfaces/gui_observer.h"
-#include "crosscutting/byte_util.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/debugging/debugger.h"
 #include "crosscutting/logging/logger.h"
+#include "crosscutting/util/byte_util.h"
 
 namespace emu::cpu8080::applications::space_invaders {
 
     using emu::util::byte::is_bit_set;
-    using emu::util::debugger::Debugger;
-    using emu::util::logging::Logger;
+    using emu::debugger::Debugger;
+    using emu::logging::Logger;
 
     class Gui {
     public:

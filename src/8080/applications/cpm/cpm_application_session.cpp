@@ -1,7 +1,7 @@
 #include <iostream>
 #include <utility>
 #include "cpm_application_session.h"
-#include "crosscutting/byte_util.h"
+#include "crosscutting/util/byte_util.h"
 
 namespace emu::cpu8080::applications::cpm {
 

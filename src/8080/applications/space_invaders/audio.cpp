@@ -2,7 +2,7 @@
 #include <SDL.h>
 #include "audio.h"
 #include "8080/applications/space_invaders/sounds.h"
-#include "crosscutting/byte_util.h"
+#include "crosscutting/util/byte_util.h"
 
 namespace emu::cpu8080::applications::space_invaders {
 

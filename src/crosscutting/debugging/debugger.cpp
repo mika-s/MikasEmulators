@@ -1,6 +1,7 @@
 #include "debugger.h"
+#include "breakpoint.h"
 
-namespace emu::util::debugger {
+namespace emu::debugger {
 
     void Debugger::add_breakpoint(u16 breakpoint_address, Breakpoint breakpoint) {
         m_breakpoints.insert_or_assign(breakpoint_address, std::move(breakpoint));

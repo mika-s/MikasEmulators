@@ -1,8 +1,8 @@
 #include <sstream>
 #include "unrecognized_opcode_exception.h"
-#include "crosscutting/string_util.h"
+#include "crosscutting/util/string_util.h"
 
-namespace emu::util::exceptions {
+namespace emu::exceptions {
 
     using namespace emu::util::string;
 

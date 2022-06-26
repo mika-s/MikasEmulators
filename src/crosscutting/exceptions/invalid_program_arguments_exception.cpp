@@ -1,7 +1,7 @@
 #include <sstream>
 #include "invalid_program_arguments_exception.h"
 
-namespace emu::util::exceptions {
+namespace emu::exceptions {
 
     InvalidProgramArgumentsException::InvalidProgramArgumentsException(const std::string &msg)
             : runtime_error("Error in program arguments: ") {

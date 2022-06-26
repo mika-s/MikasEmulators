@@ -1,7 +1,7 @@
 #include "space_invaders.h"
 #include "8080/cpu.h"
-#include "crosscutting/byte_util.h"
-#include "crosscutting/file_util.h"
+#include "crosscutting/util/byte_util.h"
+#include "crosscutting/util/file_util.h"
 
 namespace emu::cpu8080::applications::space_invaders {
 

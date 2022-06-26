@@ -5,10 +5,10 @@
 #include "doctest.h"
 #include "8080/disassembler8080.h"
 #include "8080/frontend.h"
-#include "crosscutting/invalid_program_arguments_exception.h"
-#include "crosscutting/string_util.h"
+#include "crosscutting/exceptions/invalid_program_arguments_exception.h"
+#include "crosscutting/util/string_util.h"
 
-using emu::util::exceptions::InvalidProgramArgumentsException;
+using emu::exceptions::InvalidProgramArgumentsException;
 
 void print_usage(const std::string &program_name) {
     std::cout << "USAGE:\n\n";

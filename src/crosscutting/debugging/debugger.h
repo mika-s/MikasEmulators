@@ -5,7 +5,7 @@
 #include "crosscutting/typedefs.h"
 #include "crosscutting/debugging/breakpoint.h"
 
-namespace emu::util::debugger {
+namespace emu::debugger {
 
     class Debugger {
     public:

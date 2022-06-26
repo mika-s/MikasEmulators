@@ -4,7 +4,7 @@
 #include <vector>
 #include "crosscutting/logging/log_observer.h"
 
-namespace emu::util::logging {
+namespace emu::logging {
 
     class Logger {
 

@@ -2,14 +2,14 @@
 #include <memory>
 #include "imgui.h"
 #include "disassembly_window.h"
-#include "crosscutting/string_util.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/debugging/breakpoint.h"
+#include "crosscutting/util/string_util.h"
 
-namespace emu::util::gui {
+namespace emu::gui {
 
-    using emu::util::debugger::Breakpoint;
-    using emu::util::debugger::Debugger;
+    using emu::debugger::Breakpoint;
+    using emu::debugger::Debugger;
     using emu::util::string::hexify;
 
     DisassemblyWindow::DisassemblyWindow()

@@ -2,7 +2,7 @@
 #include <SDL.h>
 #include "imgui_impl_sdl.h"
 #include "input_sdl.h"
-#include "crosscutting/byte_util.h"
+#include "crosscutting/util/byte_util.h"
 
 namespace emu::cpu8080::applications::space_invaders {
 

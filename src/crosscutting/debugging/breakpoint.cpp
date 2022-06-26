@@ -1,6 +1,6 @@
 #include "breakpoint.h"
 
-namespace emu::util::debugger {
+namespace emu::debugger {
 
     Breakpoint::Breakpoint(u16 address, std::string line)
             : m_address(address),

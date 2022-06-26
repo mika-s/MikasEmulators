@@ -4,15 +4,15 @@
 #include "8080/next_byte.h"
 #include "8080/next_word.h"
 #include "8080/instructions/instructions.h"
-#include "crosscutting/byte_util.h"
-#include "crosscutting/unrecognized_opcode_exception.h"
-#include "crosscutting/string_util.h"
+#include "crosscutting/util/byte_util.h"
+#include "crosscutting/exceptions/unrecognized_opcode_exception.h"
+#include "crosscutting/util/string_util.h"
 
 namespace emu::cpu8080 {
 
     using emu::util::byte::to_u16;
     using emu::util::string::hexify;
-    using emu::util::exceptions::UnrecognizedOpcodeException;
+    using emu::exceptions::UnrecognizedOpcodeException;
 
     Cpu::Cpu(
             EmulatorMemory &memory,

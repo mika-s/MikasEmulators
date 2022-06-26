@@ -1,10 +1,10 @@
 #include <chrono>
 #include <fmt/chrono.h>
 #include <string>
-#include "crosscutting/string_util.h"
 #include "debug_log.h"
+#include "crosscutting/util/string_util.h"
 
-namespace emu::util::gui {
+namespace emu::gui {
 
     using emu::util::string::append;
     using emu::util::string::prepend;
@@ -113,7 +113,7 @@ namespace emu::util::gui {
         add_log_with_timestamp(append("\n", fmt).c_str(), args);
     }
 
-    void DebugLog::attach_logger(std::shared_ptr<emu::util::logging::Logger> logger) {
+    void DebugLog::attach_logger(std::shared_ptr<Logger> logger) {
         m_logger = std::move(logger);
         m_logger->add_log_observer(*this);
     }

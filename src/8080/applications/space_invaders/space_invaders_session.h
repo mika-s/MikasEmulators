@@ -27,8 +27,8 @@
 
 namespace emu::cpu8080::applications::space_invaders {
 
-    using emu::util::debugger::Debugger;
-    using emu::util::logging::Logger;
+    using emu::debugger::Debugger;
+    using emu::logging::Logger;
 
     class SpaceInvadersSession
             : public Session,

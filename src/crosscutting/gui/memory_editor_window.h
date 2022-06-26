@@ -6,7 +6,7 @@
 #include "imgui_memory_editor.h"
 #include "8080/debug_container.h"
 
-namespace emu::util::gui {
+namespace emu::gui {
 
     class MemoryEditorWindow {
     public:

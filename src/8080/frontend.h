@@ -10,7 +10,7 @@
 
 namespace emu::cpu8080 {
 
-    using emu::util::gui::GuiType;
+    using emu::gui::GuiType;
     using emu::cpu8080::applications::space_invaders::Settings;
 
     class Frontend {

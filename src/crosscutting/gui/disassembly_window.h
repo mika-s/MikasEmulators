@@ -8,10 +8,10 @@
 #include "crosscutting/debugging/debugger.h"
 #include "crosscutting/logging/logger.h"
 
-namespace emu::util::gui {
+namespace emu::gui {
 
-    using emu::util::debugger::Debugger;
-    using emu::util::logging::Logger;
+    using emu::debugger::Debugger;
+    using emu::logging::Logger;
 
     class DisassemblyWindow {
     public:
@@ -45,8 +45,11 @@ namespace emu::util::gui {
         bool m_is_going_to_breakpoint;
 
         void reset_temp_state();
+
         void draw_menubar();
+
         void draw_buttons();
+
         void draw_addresses();
 
         static u16 address_from_disassembly_line(std::string line);

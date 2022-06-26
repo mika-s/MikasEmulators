@@ -12,12 +12,12 @@
 #include "8080/applications/space_invaders/input_sdl.h"
 #include "8080/applications/space_invaders/gui_imgui.h"
 #include "8080/applications/space_invaders/gui_sdl.h"
-#include "crosscutting/file_util.h"
-#include "crosscutting/invalid_program_arguments_exception.h"
+#include "crosscutting/exceptions/invalid_program_arguments_exception.h"
+#include "crosscutting/util/file_util.h"
 
 namespace emu::cpu8080 {
 
-    using emu::util::exceptions::InvalidProgramArgumentsException;
+    using emu::exceptions::InvalidProgramArgumentsException;
 
     void Frontend::run(
             int argc, char *argv[],

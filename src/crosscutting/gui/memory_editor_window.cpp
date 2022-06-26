@@ -2,9 +2,9 @@
 #include <memory>
 #include "imgui.h"
 #include "memory_editor_window.h"
-#include "crosscutting/string_util.h"
+#include "crosscutting/util/string_util.h"
 
-namespace emu::util::gui {
+namespace emu::gui {
 
     MemoryEditorWindow::MemoryEditorWindow() = default;
 
