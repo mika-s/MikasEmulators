@@ -1,19 +1,19 @@
 #ifndef MIKA_EMULATORS_CROSSCUTTING_DEBUGGING_BREAKPOINT_H
 #define MIKA_EMULATORS_CROSSCUTTING_DEBUGGING_BREAKPOINT_H
 
-#include <cstdint>
 #include <string>
+#include "crosscutting/typedefs.h"
 
 namespace emu::util::debugger {
 
     class Breakpoint {
     public:
-        Breakpoint(std::uint16_t address, std::string line);
+        Breakpoint(u16 address, std::string line);
 
         std::string line();
 
     private:
-        std::uint16_t m_address;
+        u16 m_address;
         std::string m_line;
     };
 }

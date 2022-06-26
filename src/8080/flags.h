@@ -1,6 +1,8 @@
 #ifndef MIKA_EMULATORS_8080_FLAGS_H
 #define MIKA_EMULATORS_8080_FLAGS_H
 
+#include "crosscutting/typedefs.h"
+
 namespace emu::cpu8080 {
 
     class Flags {
@@ -9,27 +11,27 @@ namespace emu::cpu8080 {
 
         void reset();
 
-        [[nodiscard]] std::uint8_t to_uint8_t() const;
+        [[nodiscard]] u8 to_u8() const;
 
-        void from_uint8_t(std::uint8_t value);
+        void from_u8(u8 value);
 
-        void handle_zero_flag(std::uint8_t number);
+        void handle_zero_flag(u8 number);
 
-        void handle_carry_flag(std::uint8_t previous, int value_to_add);
+        void handle_carry_flag(u8 previous, int value_to_add);
 
-        void handle_carry_flag_dad(std::uint16_t previous, std::uint16_t value_to_add);
+        void handle_carry_flag_dad(u16 previous, u16 value_to_add);
 
-        void handle_borrow_flag(std::uint8_t previous, int value_to_subtract);
+        void handle_borrow_flag(u8 previous, int value_to_subtract);
 
-        void handle_aux_carry_flag(std::uint8_t previous, std::uint8_t value_to_add, bool cf);
+        void handle_aux_carry_flag(u8 previous, u8 value_to_add, bool cf);
 
-        void handle_aux_borrow_flag(std::uint8_t previous, std::uint8_t value_to_subtract, bool cf);
+        void handle_aux_borrow_flag(u8 previous, u8 value_to_subtract, bool cf);
 
-        void handle_parity_flag(std::uint8_t number);
+        void handle_parity_flag(u8 number);
 
-        void handle_sign_flag(std::uint8_t number);
+        void handle_sign_flag(u8 number);
 
-        static bool should_parity_flag_be_set(std::uint8_t number);
+        static bool should_parity_flag_be_set(u8 number);
 
         void set_zero_flag();
 

@@ -2,11 +2,11 @@
 #include "unrecognized_opcode_exception.h"
 #include "crosscutting/string_util.h"
 
-using namespace emu::util::string;
-
 namespace emu::util::exceptions {
 
-    UnrecognizedOpcodeException::UnrecognizedOpcodeException(std::uint8_t opcode)
+    using namespace emu::util::string;
+
+    UnrecognizedOpcodeException::UnrecognizedOpcodeException(u8 opcode)
             : runtime_error("Unrecognized opcode") {
         make_message(opcode);
     }
@@ -15,7 +15,7 @@ namespace emu::util::exceptions {
         return m_message.c_str();
     }
 
-    void UnrecognizedOpcodeException::make_message(std::uint8_t opcode) {
+    void UnrecognizedOpcodeException::make_message(u8 opcode) {
         std::stringstream ss;
         ss << runtime_error::what() << ": opcode = " << hexify(opcode);
 

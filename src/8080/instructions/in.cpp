@@ -1,12 +1,15 @@
-#include <cstdint>
 #include <stdexcept>
 #include <vector>
 #include <iostream>
 #include "doctest.h"
 #include "8080/next_byte.h"
 #include "crosscutting/string_util.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
+
+    using emu::util::string::hexify_wo_0x;
+
     /**
      * Input from port
      * <ul>
@@ -21,7 +24,7 @@ namespace emu::cpu8080 {
      * @param io is the IO addresses
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void in(std::uint8_t &acc_reg, const NextByte &args, std::vector<std::uint8_t> io, unsigned long &cycles) {
+    void in(u8 &acc_reg, const NextByte &args, std::vector<u8> io, unsigned long &cycles) {
         acc_reg = io[args.farg];
 
         cycles = 10;
@@ -29,14 +32,14 @@ namespace emu::cpu8080 {
 
     void print_in(std::ostream &ostream, const NextByte &args) {
         ostream << "IN "
-                << emu::util::string::hexify_wo_0x(args.farg);
+                << hexify_wo_0x(args.farg);
     }
 
     TEST_CASE("8080: IN") {
         unsigned long cycles = 0;
-        std::vector<std::uint8_t> io = {0, 2, 4, 6, 8, 10};
+        std::vector<u8> io = {0, 2, 4, 6, 8, 10};
         NextByte args = {.farg = 0x1};
-        std::uint8_t acc_reg = 0;
+        u8 acc_reg = 0;
 
         SUBCASE("should store addressed IO in the accumulator") {
             in(acc_reg, args, io, cycles);

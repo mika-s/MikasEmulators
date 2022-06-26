@@ -6,7 +6,7 @@
 
 namespace emu::cpu8080 {
 
-    Disassembler8080::Disassembler8080(emu::cpu8080::EmulatorMemory &memory, std::ostream& ostream)
+    Disassembler8080::Disassembler8080(EmulatorMemory &memory, std::ostream& ostream)
             : m_memory(memory),
               m_memory_size(memory.size()),
               m_pc(0),

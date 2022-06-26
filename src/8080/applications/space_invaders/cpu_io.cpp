@@ -2,11 +2,7 @@
 
 namespace emu::cpu8080::applications::space_invaders {
 
-    CpuIo::CpuIo(
-            std::uint8_t in_port0,
-            std::uint8_t in_port1,
-            std::uint8_t in_port2
-    )
+    CpuIo::CpuIo(u8 in_port0, u8 in_port1, u8 in_port2)
             : m_in_port0(in_port0),
               m_in_port1(in_port1),
               m_in_port2(in_port2) {

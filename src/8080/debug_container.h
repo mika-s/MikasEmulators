@@ -4,6 +4,7 @@
 #include <functional>
 #include <string>
 #include <vector>
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
 
@@ -11,16 +12,16 @@ namespace emu::cpu8080 {
     public:
         RegisterDebugContainer(
                 std::string name,
-                std::function<std::uint8_t()> value_retriever
+                std::function<u8()> value_retriever
         );
 
         [[nodiscard]] std::string name() const;
 
-        [[nodiscard]] std::uint8_t value() const;
+        [[nodiscard]] u8 value() const;
 
     private:
         std::string m_name;
-        std::function<std::uint8_t()> m_value_retriever;
+        std::function<u8()> m_value_retriever;
     };
 
     class FlagRegisterDebugContainer {
@@ -29,19 +30,19 @@ namespace emu::cpu8080 {
 
         FlagRegisterDebugContainer(
                 std::string name,
-                std::function<std::uint8_t()> value_retriever,
+                std::function<u8()> value_retriever,
                 std::vector<std::tuple<std::string, int>> flag_names
         );
 
         [[nodiscard]] std::string name() const;
 
-        [[nodiscard]] std::uint8_t value() const;
+        [[nodiscard]] u8 value() const;
 
         [[nodiscard]] std::vector<std::tuple<std::string, int>> flag_names() const;
 
     private:
         std::string m_name;
-        std::function<std::uint8_t()> m_value_retriever;
+        std::function<u8()> m_value_retriever;
         std::vector<std::tuple<std::string, int>> m_flag_names;
     };
 
@@ -50,13 +51,13 @@ namespace emu::cpu8080 {
         IoDebugContainer(
                 std::string name,
                 std::function<bool()> is_active_retriever,
-                std::function<std::uint8_t()> value_retriever
+                std::function<u8()> value_retriever
         );
 
         IoDebugContainer(
                 std::string name,
                 std::function<bool()> is_active_retriever,
-                std::function<std::uint8_t()> value_retriever,
+                std::function<u8()> value_retriever,
                 std::vector<std::tuple<std::string, int>> bit_name
         );
 
@@ -64,7 +65,7 @@ namespace emu::cpu8080 {
 
         [[nodiscard]] bool is_active() const;
 
-        [[nodiscard]] std::uint8_t value() const;
+        [[nodiscard]] u8 value() const;
 
         [[nodiscard]] bool is_divided_into_bits() const;
 
@@ -73,7 +74,7 @@ namespace emu::cpu8080 {
     private:
         std::string m_name;
         std::function<bool()> m_is_active_retriever;
-        std::function<std::uint8_t()> m_value_retriever;
+        std::function<u8()> m_value_retriever;
         std::vector<std::tuple<std::string, int>> m_bit_names;
         bool m_is_divided_into_bits;
     };
@@ -82,14 +83,14 @@ namespace emu::cpu8080 {
     public:
         MemoryDebugContainer();
 
-        MemoryDebugContainer(
-                std::function<std::vector<std::uint8_t>()> value_retriever
+        explicit MemoryDebugContainer(
+                std::function<std::vector<u8>()> value_retriever
         );
 
-        [[nodiscard]] std::vector<std::uint8_t> value() const;
+        [[nodiscard]] std::vector<u8> value() const;
 
     private:
-        std::function<std::vector<std::uint8_t>()> m_value_retriever;
+        std::function<std::vector<u8>()> m_value_retriever;
     };
 
     class DebugContainer {
@@ -118,15 +119,15 @@ namespace emu::cpu8080 {
 
         [[nodiscard]] bool is_memory_set() const;
 
-        void add_pc(const std::function<std::uint16_t()> &value_retriever);
+        void add_pc(const std::function<u16()> &value_retriever);
 
-        [[nodiscard]] std::uint16_t pc() const;
+        [[nodiscard]] u16 pc() const;
 
         [[nodiscard]] bool is_pc_set() const;
 
-        void add_sp(const std::function<std::uint16_t()> &value_retriever);
+        void add_sp(const std::function<u16()> &value_retriever);
 
-        [[nodiscard]] std::uint16_t sp() const;
+        [[nodiscard]] u16 sp() const;
 
         [[nodiscard]] bool is_sp_set() const;
 
@@ -154,10 +155,10 @@ namespace emu::cpu8080 {
         MemoryDebugContainer m_memory_retriever;
         bool m_is_memory_set;
 
-        std::function<std::uint16_t()> m_pc_retriever;
+        std::function<u16()> m_pc_retriever;
         bool m_is_pc_set;
 
-        std::function<std::uint16_t()> m_sp_retriever;
+        std::function<u16()> m_sp_retriever;
         bool m_is_sp_set;
 
         std::function<bool()> m_is_interrupted_retriever;

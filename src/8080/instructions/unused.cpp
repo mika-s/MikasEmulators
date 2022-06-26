@@ -1,16 +1,20 @@
-#include <cstdint>
 #include <iostream>
 #include "8080/next_word.h"
 #include "crosscutting/string_util.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
+
+    using emu::util::string::hexify;
+    using emu::util::string::hexify_wo_0x;
+
     /**
      * Unused instruction of size 1
      * @param opcode is the opcode of the instruction
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void unused_1(std::uint8_t opcode, unsigned long &cycles) {
-        std::cout << "Opcode not supposed to be used: " << emu::util::string::hexify(opcode) << "\n";
+    void unused_1(u8 opcode, unsigned long &cycles) {
+        std::cout << "Opcode not supposed to be used: " << hexify(opcode) << "\n";
 
         cycles = 0;
     }
@@ -20,7 +24,7 @@ namespace emu::cpu8080 {
      * @param opcode is the opcode of the instruction
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void unused_3(std::uint8_t opcode, std::uint16_t &pc, unsigned long &cycles) {
+    void unused_3(u8 opcode, u16 &pc, unsigned long &cycles) {
         unused_1(opcode, cycles);
         pc += 2;
     }
@@ -31,8 +35,8 @@ namespace emu::cpu8080 {
 
     void print_unused_jmp(std::ostream& ostream, const NextWord &args) {
         ostream << "*JMP "
-                << emu::util::string::hexify_wo_0x(args.sarg)
-                << emu::util::string::hexify_wo_0x(args.farg);
+                << hexify_wo_0x(args.sarg)
+                << hexify_wo_0x(args.farg);
     }
 
     void print_unused_ret(std::ostream& ostream) {
@@ -41,7 +45,7 @@ namespace emu::cpu8080 {
 
     void print_unused_call(std::ostream& ostream, const NextWord &args) {
         ostream << "*CALL "
-                << emu::util::string::hexify_wo_0x(args.sarg)
-                << emu::util::string::hexify_wo_0x(args.farg);
+                << hexify_wo_0x(args.sarg)
+                << hexify_wo_0x(args.farg);
     }
 }

@@ -5,20 +5,22 @@
 #include "8080/emulator_memory.h"
 #include "8080/flags.h"
 #include "8080/next_word.h"
+#include "crosscutting/typedefs.h"
 
 #define LOW_BIT 0
 #define HIGH_BIT 7
 
 namespace emu::cpu8080 {
-    void add_to_register(std::uint8_t &acc_reg, std::uint8_t value, bool cf, Flags &flag_reg);
 
-    void sub_from_register(std::uint8_t &acc_reg, std::uint8_t value, bool cf, Flags &flag_reg);
+    void add_to_register(u8 &acc_reg, u8 value, bool cf, Flags &flag_reg);
 
-    void execute_call(std::uint16_t &pc, std::uint16_t &sp, EmulatorMemory &memory, const NextWord &args);
+    void sub_from_register(u8 &acc_reg, u8 value, bool cf, Flags &flag_reg);
 
-    void execute_call(std::uint16_t &pc, std::uint16_t &sp, EmulatorMemory &memory, std::uint8_t farg, std::uint8_t sarg);
+    void execute_call(u16 &pc, u16 &sp, EmulatorMemory &memory, const NextWord &args);
 
-    void execute_return(std::uint16_t &pc, std::uint16_t &sp, const EmulatorMemory &memory);
+    void execute_call(u16 &pc, u16 &sp, EmulatorMemory &memory, u8 farg, u8 sarg);
+
+    void execute_return(u16 &pc, u16 &sp, const EmulatorMemory &memory);
 }
 
 #endif //MIKA_EMULATORS_8080_INSTRUCTIONS_INSTRUCTION_UTIL_H

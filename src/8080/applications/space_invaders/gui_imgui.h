@@ -9,6 +9,7 @@
 #include "gui.h"
 #include "8080/debug_container.h"
 #include "8080/run_status.h"
+#include "crosscutting/typedefs.h"
 #include "crosscutting/debugging/debugger.h"
 #include "crosscutting/gui/cpu_info.h"
 #include "crosscutting/gui/debug_log.h"
@@ -33,7 +34,7 @@ namespace emu::cpu8080::applications::space_invaders {
 
         void remove_gui_observer(GuiObserver *observer) override;
 
-        void update_screen(const std::vector<std::uint8_t> &vram, RunStatus run_status) override;
+        void update_screen(const std::vector<u8> &vram, RunStatus run_status) override;
 
         void update_debug_only() override;
 
@@ -46,7 +47,7 @@ namespace emu::cpu8080::applications::space_invaders {
     private:
         SDL_Window *m_win;
         SDL_GLContext m_gl_context;
-        std::uint32_t m_screen_texture;
+        u32 m_screen_texture;
 
         bool m_show_game;
         bool m_show_game_info;

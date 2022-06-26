@@ -1,4 +1,3 @@
-#include <cstdint>
 #include "8080/flags.h"
 #include "crosscutting/byte_util.h"
 
@@ -21,20 +20,20 @@ namespace emu::cpu8080 {
         clear_sign_flag();
     }
 
-    std::uint8_t Flags::to_uint8_t() const {
-        const std::uint8_t s = (m_sign ? 1 : 0) << 7;
-        const std::uint8_t z = (m_zero ? 1 : 0) << 6;
-        const std::uint8_t unused1 = 0 << 5;
-        const std::uint8_t ac = (m_auxiliary_carry ? 1 : 0) << 4;
-        const std::uint8_t unused2 = 0 << 3;
-        const std::uint8_t p = (m_parity ? 1 : 0) << 2;
-        const std::uint8_t unused3 = 1 << 1;
-        const std::uint8_t c = (m_carry ? 1 : 0) << 0;
+    u8 Flags::to_u8() const {
+        const u8 s = (m_sign ? 1 : 0) << 7;
+        const u8 z = (m_zero ? 1 : 0) << 6;
+        const u8 unused1 = 0 << 5;
+        const u8 ac = (m_auxiliary_carry ? 1 : 0) << 4;
+        const u8 unused2 = 0 << 3;
+        const u8 p = (m_parity ? 1 : 0) << 2;
+        const u8 unused3 = 1 << 1;
+        const u8 c = (m_carry ? 1 : 0) << 0;
 
         return s | z | unused1 | ac | unused2 | p | unused3 | c;
     }
 
-    void Flags::from_uint8_t(std::uint8_t value) {
+    void Flags::from_u8(u8 value) {
         m_sign = is_bit_set(value, 7);
         m_zero = is_bit_set(value, 6);
         m_auxiliary_carry = is_bit_set(value, 4);
@@ -42,7 +41,7 @@ namespace emu::cpu8080 {
         m_carry = is_bit_set(value, 0);
     }
 
-    void Flags::handle_carry_flag(std::uint8_t previous, int value_to_add) {
+    void Flags::handle_carry_flag(u8 previous, int value_to_add) {
         int new_value = previous + value_to_add;
         if (new_value > 255) {
             set_carry_flag();
@@ -51,7 +50,7 @@ namespace emu::cpu8080 {
         }
     }
 
-    void Flags::handle_carry_flag_dad(std::uint16_t previous, std::uint16_t value_to_add) {
+    void Flags::handle_carry_flag_dad(u16 previous, u16 value_to_add) {
         if (((previous + value_to_add) >> 16) & 1) {
             set_carry_flag();
         } else {
@@ -59,7 +58,7 @@ namespace emu::cpu8080 {
         }
     }
 
-    void Flags::handle_borrow_flag(std::uint8_t previous, int value_to_subtract) {
+    void Flags::handle_borrow_flag(u8 previous, int value_to_subtract) {
         if (previous < value_to_subtract) {
             set_carry_flag();
         } else {
@@ -67,9 +66,9 @@ namespace emu::cpu8080 {
         }
     }
 
-    void Flags::handle_aux_carry_flag(std::uint8_t previous, std::uint8_t value_to_add, bool cf) {
-        const std::uint8_t result = previous + value_to_add + (cf ? 1 : 0);
-        const std::uint8_t half_carry = (previous ^ value_to_add ^ result) & 0x10;
+    void Flags::handle_aux_carry_flag(u8 previous, u8 value_to_add, bool cf) {
+        const u8 result = previous + value_to_add + (cf ? 1 : 0);
+        const u8 half_carry = (previous ^ value_to_add ^ result) & 0x10;
 
         if (half_carry > 0) {
             set_aux_carry_flag();
@@ -78,9 +77,9 @@ namespace emu::cpu8080 {
         }
     }
 
-    void Flags::handle_aux_borrow_flag(std::uint8_t previous, std::uint8_t value_to_subtract, bool cf) {
-        const std::uint8_t result = previous - value_to_subtract - (cf ? 1 : 0);
-        const std::uint8_t half_carry = ~(previous ^ value_to_subtract ^ result) & 0x10;
+    void Flags::handle_aux_borrow_flag(u8 previous, u8 value_to_subtract, bool cf) {
+        const u8 result = previous - value_to_subtract - (cf ? 1 : 0);
+        const u8 half_carry = ~(previous ^ value_to_subtract ^ result) & 0x10;
 
         if (half_carry > 0) {
             set_aux_carry_flag();
@@ -89,7 +88,7 @@ namespace emu::cpu8080 {
         }
     }
 
-    void Flags::handle_zero_flag(std::uint8_t number) {
+    void Flags::handle_zero_flag(u8 number) {
         if (number == 0) {
             set_zero_flag();
         } else {
@@ -97,7 +96,7 @@ namespace emu::cpu8080 {
         }
     }
 
-    void Flags::handle_parity_flag(std::uint8_t number) {
+    void Flags::handle_parity_flag(u8 number) {
         if (should_parity_flag_be_set(number)) {
             set_parity_flag();
         } else {
@@ -105,7 +104,7 @@ namespace emu::cpu8080 {
         }
     }
 
-    void Flags::handle_sign_flag(std::uint8_t number) {
+    void Flags::handle_sign_flag(u8 number) {
         if (number > 127) {
             set_sign_flag();
         } else {
@@ -113,9 +112,9 @@ namespace emu::cpu8080 {
         }
     }
 
-    bool Flags::should_parity_flag_be_set(std::uint8_t number) {
+    bool Flags::should_parity_flag_be_set(u8 number) {
         bool isOdd = false;
-        std::uint8_t copy = number;
+        u8 copy = number;
         while (copy) {
             isOdd = !isOdd;
             copy = copy & (copy - 1u);

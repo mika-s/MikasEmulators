@@ -2,8 +2,14 @@
 #include <iostream>
 #include "doctest.h"
 #include "crosscutting/byte_util.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
+
+    using emu::util::byte::first_byte;
+    using emu::util::byte::second_byte;
+    using emu::util::byte::to_u16;
+
     /**
      * Increment register pair
      * <ul>
@@ -17,12 +23,12 @@ namespace emu::cpu8080 {
      * @param reg2 is the second register in the register pair, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void inx(std::uint8_t &reg1, std::uint8_t &reg2, unsigned long &cycles) {
-        std::uint16_t val = emu::util::byte::to_u16(reg1, reg2);
+    void inx(u8 &reg1, u8 &reg2, unsigned long &cycles) {
+        u16 val = to_u16(reg1, reg2);
         ++val;
 
-        reg2 = emu::util::byte::first_byte(val);
-        reg1 = emu::util::byte::second_byte(val);
+        reg2 = first_byte(val);
+        reg1 = second_byte(val);
 
         cycles = 5;
     }
@@ -39,7 +45,7 @@ namespace emu::cpu8080 {
      * @param sp is the stack pointer, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void inx_sp(std::uint16_t &sp, unsigned long &cycles) {
+    void inx_sp(u16 &sp, unsigned long &cycles) {
         ++sp;
 
         cycles = 5;
@@ -52,11 +58,11 @@ namespace emu::cpu8080 {
 
     TEST_CASE("8080: INX") {
         unsigned long cycles = 0;
-        std::uint8_t reg1 = 0;
-        std::uint8_t reg2 = 0;
-        std::uint8_t expected_reg1 = 0;
-        std::uint8_t expected_reg2;
-        std::uint16_t sp = 0;
+        u8 reg1 = 0;
+        u8 reg2 = 0;
+        u8 expected_reg1 = 0;
+        u8 expected_reg2;
+        u16 sp = 0;
 
         SUBCASE("should increase register pair") {
             for (int i = 0; i < UINT16_MAX; ++i) {
@@ -74,7 +80,7 @@ namespace emu::cpu8080 {
         }
 
         SUBCASE("should increase SP") {
-            for (std::uint16_t expected_sp = 0; expected_sp < UINT16_MAX; ++expected_sp) {
+            for (u16 expected_sp = 0; expected_sp < UINT16_MAX; ++expected_sp) {
                 sp = expected_sp;
 
                 inx_sp(sp, cycles);

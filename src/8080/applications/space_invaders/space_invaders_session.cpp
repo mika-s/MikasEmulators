@@ -1,4 +1,5 @@
 #include <iostream>
+#include <utility>
 #include <SDL_timer.h>
 #include "space_invaders_session.h"
 #include "8080/disassembler8080.h"
@@ -21,8 +22,8 @@ namespace emu::cpu8080::applications::space_invaders {
               m_gui(std::move(gui)),
               m_input(std::move(input)),
               m_memory(std::move(memory)),
-              m_logger(std::make_shared<util::logging::Logger>()),
-              m_debugger(std::make_shared<util::debugger::Debugger>()) {
+              m_logger(std::make_shared<Logger>()),
+              m_debugger(std::make_shared<Debugger>()) {
         setup_cpu();
         setup_debugging();
         m_cpu_io.set_dipswitches(settings);
@@ -47,7 +48,7 @@ namespace emu::cpu8080::applications::space_invaders {
         m_run_status = RUNNING;
 
         unsigned long cycles;
-        std::uint64_t last_tick = SDL_GetTicks64();
+        u64 last_tick = SDL_GetTicks64();
 
         while (m_run_status == RUNNING || m_run_status == PAUSED || m_run_status == STEPPING) {
             if (m_run_status == RUNNING) {
@@ -62,7 +63,7 @@ namespace emu::cpu8080::applications::space_invaders {
         m_run_status = FINISHED;
     }
 
-    void SpaceInvadersSession::running(std::uint64_t &last_tick, unsigned long &cycles) {
+    void SpaceInvadersSession::running(u64 &last_tick, unsigned long &cycles) {
         m_outputs_during_cycle.clear();
 
         if (SDL_GetTicks64() - last_tick >= tick_limit) {
@@ -101,7 +102,7 @@ namespace emu::cpu8080::applications::space_invaders {
         }
     }
 
-    void SpaceInvadersSession::pausing(std::uint64_t &last_tick) {
+    void SpaceInvadersSession::pausing(u64 &last_tick) {
         if (SDL_GetTicks64() - last_tick >= tick_limit) {
             last_tick = SDL_GetTicks();
             m_input->read(m_run_status, m_cpu_io);
@@ -109,7 +110,7 @@ namespace emu::cpu8080::applications::space_invaders {
         }
     }
 
-    void SpaceInvadersSession::stepping([[maybe_unused]] uint64_t &last_tick, unsigned long &cycles) {
+    void SpaceInvadersSession::stepping([[maybe_unused]] u64 &last_tick, unsigned long &cycles) {
         m_outputs_during_cycle.clear();
 
         await_input_and_update_debug();
@@ -179,7 +180,7 @@ namespace emu::cpu8080::applications::space_invaders {
     }
 
     void SpaceInvadersSession::setup_cpu() {
-        const std::uint16_t initial_pc = 0;
+        const u16 initial_pc = 0;
 
         m_cpu = std::make_unique<Cpu>(m_memory, initial_pc);
 
@@ -268,7 +269,7 @@ namespace emu::cpu8080::applications::space_invaders {
         m_is_in_debug_mode = is_in_debug_mode;
     }
 
-    void SpaceInvadersSession::in_requested(std::uint8_t port) {
+    void SpaceInvadersSession::in_requested(u8 port) {
         switch (port) {
             case in_port_unused:
                 m_cpu->input(in_port_unused, m_cpu_io.m_in_port0);
@@ -287,7 +288,7 @@ namespace emu::cpu8080::applications::space_invaders {
         }
     }
 
-    void SpaceInvadersSession::out_changed(std::uint8_t port) {
+    void SpaceInvadersSession::out_changed(u8 port) {
         if (!m_outputs_during_cycle.contains(port)) {
             m_outputs_during_cycle[port] = m_cpu->a();
         } else {
@@ -339,12 +340,12 @@ namespace emu::cpu8080::applications::space_invaders {
         }
     }
 
-    std::vector<std::uint8_t> SpaceInvadersSession::vram() {
+    std::vector<u8> SpaceInvadersSession::vram() {
         return {m_memory.begin() + 0x2400, m_memory.begin() + 0x3fff};
     }
 
-    std::vector<std::uint8_t> SpaceInvadersSession::memory() {
-        return {m_memory.begin(), m_memory.begin() + 0x3fff};
+    std::vector<u8> SpaceInvadersSession::memory() {
+        return {m_memory.begin(), m_memory.begin() + 0x3fff + 1};
     }
 
 

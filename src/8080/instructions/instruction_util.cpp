@@ -1,12 +1,16 @@
-#include <cstdint>
 #include "8080/flags.h"
 #include "8080/next_word.h"
 #include "8080/instructions/instruction_util.h"
 #include "crosscutting/byte_util.h"
 
 namespace emu::cpu8080 {
-    void add_to_register(std::uint8_t &acc_reg, std::uint8_t value, bool cf, Flags &flag_reg) {
-        const std::uint8_t previous = acc_reg;
+
+    using emu::util::byte::first_byte;
+    using emu::util::byte::second_byte;
+    using emu::util::byte::to_u16;
+
+    void add_to_register(u8 &acc_reg, u8 value, bool cf, Flags &flag_reg) {
+        const u8 previous = acc_reg;
         acc_reg += value + (cf ? 1 : 0);
 
         flag_reg.handle_carry_flag(previous, value + (cf ? 1 : 0));
@@ -16,8 +20,8 @@ namespace emu::cpu8080 {
         flag_reg.handle_aux_carry_flag(previous, value, cf);
     }
 
-    void sub_from_register(std::uint8_t &acc_reg, std::uint8_t value, bool cf, Flags &flag_reg) {
-        const std::uint8_t previous = acc_reg;
+    void sub_from_register(u8 &acc_reg, u8 value, bool cf, Flags &flag_reg) {
+        const u8 previous = acc_reg;
         acc_reg -= (value + (cf ? 1 : 0));
 
         flag_reg.handle_borrow_flag(previous, value + (cf ? 1 : 0));
@@ -27,21 +31,23 @@ namespace emu::cpu8080 {
         flag_reg.handle_aux_borrow_flag(previous, value, cf);
     }
 
-    void execute_call(std::uint16_t &pc, std::uint16_t &sp, EmulatorMemory &memory, const NextWord &args) {
-        memory[--sp] = emu::util::byte::second_byte(pc);
-        memory[--sp] = emu::util::byte::first_byte(pc);
-        pc = emu::util::byte::to_u16(args.sarg, args.farg);
+    void execute_call(u16 &pc, u16 &sp, EmulatorMemory &memory, const NextWord &args) {
+        memory[--sp] = second_byte(pc);
+        memory[--sp] = first_byte(pc);
+
+        pc = to_u16(args.sarg, args.farg);
     }
 
-    void execute_call(std::uint16_t &pc, std::uint16_t &sp, EmulatorMemory &memory, std::uint8_t farg, std::uint8_t sarg) {
-        memory[--sp] = emu::util::byte::second_byte(pc);
-        memory[--sp] = emu::util::byte::first_byte(pc);
-        pc = emu::util::byte::to_u16(sarg, farg);
+    void execute_call(u16 &pc, u16 &sp, EmulatorMemory &memory, u8 farg, u8 sarg) {
+        memory[--sp] = second_byte(pc);
+        memory[--sp] = first_byte(pc);
+
+        pc = to_u16(sarg, farg);
     }
 
-    void execute_return(std::uint16_t &pc, std::uint16_t &sp, const EmulatorMemory &memory) {
-        const std::uint8_t sarg = memory[sp++];
-        const std::uint8_t farg = memory[sp++];
-        pc = emu::util::byte::to_u16(farg, sarg);
+    void execute_return(u16 &pc, u16 &sp, const EmulatorMemory &memory) {
+        const u8 sarg = memory[sp++];
+        const u8 farg = memory[sp++];
+        pc = to_u16(farg, sarg);
     }
 }

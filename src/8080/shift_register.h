@@ -1,23 +1,24 @@
 #ifndef MIKA_EMULATORS_8080_SHIFT_REGISTER_H
 #define MIKA_EMULATORS_8080_SHIFT_REGISTER_H
 
-#include <cstdint>
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
+
     class ShiftRegister {
 
     public:
         ShiftRegister();
 
-        void change_offset(std::uint8_t new_offset);
+        void change_offset(u8 new_offset);
 
-        void shift(std::uint8_t shift_value);
+        void shift(u8 shift_value);
 
-        [[nodiscard]] std::uint8_t read() const;
+        [[nodiscard]] u8 read() const;
 
     private:
-        std::uint16_t m_value;
-        std::uint8_t m_offset;
+        u16 m_value;
+        u8 m_offset;
     };
 }
 

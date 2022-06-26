@@ -10,7 +10,14 @@
 
 namespace emu::cpu8080 {
 
-    Cpu::Cpu(emu::cpu8080::EmulatorMemory &memory, const std::uint16_t initial_pc) :
+    using emu::util::byte::to_u16;
+    using emu::util::string::hexify;
+    using emu::util::exceptions::UnrecognizedOpcodeException;
+
+    Cpu::Cpu(
+            EmulatorMemory &memory,
+            const u16 initial_pc
+    ) :
             m_is_stopped(true),
             m_inte(false),
             m_is_interrupted(false),
@@ -27,7 +34,6 @@ namespace emu::cpu8080 {
             m_e_reg(0),
             m_h_reg(0),
             m_l_reg(0) {
-
         m_io_in.reserve(number_of_io_ports);
         m_io_out.reserve(number_of_io_ports);
         for (unsigned int i = 0; i < number_of_io_ports; ++i) {
@@ -37,11 +43,11 @@ namespace emu::cpu8080 {
     }
 
     Cpu::~Cpu() {
-        for (auto observer : m_out_observers) {
+        for (auto observer: m_out_observers) {
             remove_out_observer(observer);
         }
 
-        for (auto observer : m_in_observers) {
+        for (auto observer: m_in_observers) {
             remove_in_observer(observer);
         }
     }
@@ -97,7 +103,7 @@ namespace emu::cpu8080 {
         m_is_stopped = true;
     }
 
-    void Cpu::interrupt(std::uint8_t instruction_to_perform) {
+    void Cpu::interrupt(u8 instruction_to_perform) {
         m_is_interrupted = true;
         m_instruction_from_interruptor = instruction_to_perform;
     }
@@ -106,7 +112,7 @@ namespace emu::cpu8080 {
         return m_inte;
     }
 
-    void Cpu::input(int port, std::uint8_t value) {
+    void Cpu::input(int port, u8 value) {
         m_io_in[port] = value;
     }
 
@@ -150,7 +156,7 @@ namespace emu::cpu8080 {
                 unused_1(m_opcode, cycles);
                 break;
             case DAD_B:
-                dad(m_h_reg, m_l_reg, emu::util::byte::to_u16(m_b_reg, m_c_reg), m_flag_reg, cycles);
+                dad(m_h_reg, m_l_reg, to_u16(m_b_reg, m_c_reg), m_flag_reg, cycles);
                 break;
             case LDAX_B:
                 ldax(m_acc_reg, m_b_reg, m_c_reg, m_memory, cycles);
@@ -198,7 +204,7 @@ namespace emu::cpu8080 {
                 unused_1(m_opcode, cycles);
                 break;
             case DAD_D:
-                dad(m_h_reg, m_l_reg, emu::util::byte::to_u16(m_d_reg, m_e_reg), m_flag_reg, cycles);
+                dad(m_h_reg, m_l_reg, to_u16(m_d_reg, m_e_reg), m_flag_reg, cycles);
                 break;
             case LDAX_D:
                 ldax(m_acc_reg, m_d_reg, m_e_reg, m_memory, cycles);
@@ -246,7 +252,7 @@ namespace emu::cpu8080 {
                 unused_1(m_opcode, cycles);
                 break;
             case DAD_H:
-                dad(m_h_reg, m_l_reg, emu::util::byte::to_u16(m_h_reg, m_l_reg), m_flag_reg, cycles);
+                dad(m_h_reg, m_l_reg, to_u16(m_h_reg, m_l_reg), m_flag_reg, cycles);
                 break;
             case LHLD:
                 lhld(m_l_reg, m_h_reg, m_memory, get_next_word(), cycles);
@@ -897,7 +903,7 @@ namespace emu::cpu8080 {
                 rst_7(m_pc, m_sp, m_memory, cycles);
                 break;
             default:
-                throw emu::util::exceptions::UnrecognizedOpcodeException(m_opcode);
+                throw UnrecognizedOpcodeException(m_opcode);
         }
 
         return cycles;
@@ -916,81 +922,81 @@ namespace emu::cpu8080 {
         };
     }
 
-    std::uint16_t Cpu::address_in_HL() const {
-        return emu::util::byte::to_u16(m_h_reg, m_l_reg);
+    u16 Cpu::address_in_HL() const {
+        return to_u16(m_h_reg, m_l_reg);
     }
 
-    emu::cpu8080::EmulatorMemory &Cpu::memory() {
+    EmulatorMemory &Cpu::memory() {
         return m_memory;
     }
 
-    std::uint16_t Cpu::pc() const {
+    u16 Cpu::pc() const {
         return m_pc;
     }
 
-    std::uint16_t Cpu::sp() const {
+    u16 Cpu::sp() const {
         return m_sp;
     }
 
-    std::uint8_t Cpu::a() const {
+    u8 Cpu::a() const {
         return m_acc_reg;
     }
 
-    std::uint8_t Cpu::b() const {
+    u8 Cpu::b() const {
         return m_b_reg;
     }
 
-    std::uint8_t Cpu::c() const {
+    u8 Cpu::c() const {
         return m_c_reg;
     }
 
-    std::uint8_t Cpu::d() const {
+    u8 Cpu::d() const {
         return m_d_reg;
     }
 
-    std::uint8_t Cpu::e() const {
+    u8 Cpu::e() const {
         return m_e_reg;
     }
 
-    std::uint8_t Cpu::h() const {
+    u8 Cpu::h() const {
         return m_h_reg;
     }
 
-    std::uint8_t Cpu::l() const {
+    u8 Cpu::l() const {
         return m_l_reg;
     }
 
-    std::uint8_t Cpu::f() const {
-        return m_flag_reg.to_uint8_t();
+    u8 Cpu::f() const {
+        return m_flag_reg.to_u8();
     }
 
     bool Cpu::is_interrupted() const {
         return m_is_interrupted;
     }
 
-    void Cpu::notify_out_observers(std::uint8_t port) {
+    void Cpu::notify_out_observers(u8 port) {
         for (OutObserver *observer: m_out_observers) {
             observer->out_changed(port);
         }
     }
 
-    void Cpu::notify_in_observers(std::uint8_t port) {
+    void Cpu::notify_in_observers(u8 port) {
         for (InObserver *observer: m_in_observers) {
             observer->in_requested(port);
         }
     }
 
     void Cpu::print_debug() {
-        std::cout << "pc=" << emu::util::string::hexify(m_pc)
-                  << ",sp=" << emu::util::string::hexify(m_sp)
-                  << ",op=" << emu::util::string::hexify(m_opcode)
-                  << ",a=" << emu::util::string::hexify(m_acc_reg)
-                  << ",b=" << emu::util::string::hexify(m_b_reg)
-                  << ",c=" << emu::util::string::hexify(m_c_reg)
-                  << ",d=" << emu::util::string::hexify(m_d_reg)
-                  << ",e=" << emu::util::string::hexify(m_e_reg)
-                  << ",h=" << emu::util::string::hexify(m_h_reg)
-                  << ",l=" << emu::util::string::hexify(m_l_reg)
+        std::cout << "pc=" << hexify(m_pc)
+                  << ",sp=" << hexify(m_sp)
+                  << ",op=" << hexify(m_opcode)
+                  << ",a=" << hexify(m_acc_reg)
+                  << ",b=" << hexify(m_b_reg)
+                  << ",c=" << hexify(m_c_reg)
+                  << ",d=" << hexify(m_d_reg)
+                  << ",e=" << hexify(m_e_reg)
+                  << ",h=" << hexify(m_h_reg)
+                  << ",l=" << hexify(m_l_reg)
                   << ",ca=" << m_flag_reg.is_carry_flag_set()
                   << ",pa=" << m_flag_reg.is_parity_flag_set()
                   << ",ac=" << m_flag_reg.is_aux_carry_flag_set()

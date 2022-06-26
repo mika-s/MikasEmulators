@@ -6,8 +6,8 @@
 
 namespace emu::cpu8080::applications::cpm {
 
-    using emu::util::byte::to_u16;
-    using emu::util::file::read_file_into_vector;
+    using util::byte::to_u16;
+    using util::file::read_file_into_vector;
 
     CpmApplication::CpmApplication(const std::string &file) {
         load_file(file);
@@ -20,14 +20,19 @@ namespace emu::cpu8080::applications::cpm {
     void CpmApplication::load_file(const std::string &file) {
         m_loaded_file = file;
 
-        m_memory.add(create_initial_offset());
-        m_memory.add(read_file_into_vector(file));
-        m_memory.add(create_work_ram(UINT16_MAX + 1 - m_memory.size()));
+        const std::vector<u8> initial_offset = create_initial_offset();
+        const std::vector<u8> rom = read_file_into_vector(file);
+        const std::vector<u8> work_ram = create_work_ram(UINT16_MAX - initial_offset.size() - rom.size());
+
+        m_memory.add(initial_offset);
+        m_memory.add(rom);
+        m_memory.add(work_ram);
+
         patch_program(m_memory);
     }
 
-    std::vector<std::uint8_t> CpmApplication::create_initial_offset() {
-        std::vector<std::uint8_t> offset;
+    std::vector<u8> CpmApplication::create_initial_offset() {
+        std::vector<u8> offset;
         const int size = 0x100; // Because the initial "ORG 00100H" offset in the source
 
         offset.reserve(size);
@@ -38,8 +43,8 @@ namespace emu::cpu8080::applications::cpm {
         return offset;
     }
 
-    std::vector<std::uint8_t> CpmApplication::create_work_ram(size_t size) {
-        std::vector<std::uint8_t> work_ram;
+    std::vector<u8> CpmApplication::create_work_ram(size_t size) {
+        std::vector<u8> work_ram;
 
         work_ram.reserve(size);
         for (size_t i = 0; i < size; ++i) {
@@ -49,7 +54,7 @@ namespace emu::cpu8080::applications::cpm {
         return work_ram;
     }
 
-    void CpmApplication::patch_program(emu::cpu8080::EmulatorMemory &program) {
+    void CpmApplication::patch_program(EmulatorMemory &program) {
         program[0x0000] = 0xd3;
         program[0x0005] = 0xd3;
         program[0x0006] = 0x01;

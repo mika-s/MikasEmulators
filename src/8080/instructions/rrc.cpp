@@ -4,8 +4,13 @@
 #include "8080/flags.h"
 #include "8080/instructions/instruction_util.h"
 #include "crosscutting/byte_util.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
+
+    using emu::util::byte::is_bit_set;
+    using emu::util::byte::set_bit;
+
     /**
      * Rotate accumulator right
      * <ul>
@@ -19,12 +24,12 @@ namespace emu::cpu8080 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void rrc(std::uint8_t &acc_reg, Flags &flag_reg, unsigned long &cycles) {
-        const bool should_set_carry_flag = emu::util::byte::is_bit_set(acc_reg, LOW_BIT);
+    void rrc(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles) {
+        const bool should_set_carry_flag = is_bit_set(acc_reg, LOW_BIT);
         acc_reg = acc_reg >> 1;
         if (should_set_carry_flag) {
             flag_reg.set_carry_flag();
-            emu::util::byte::set_bit(acc_reg, HIGH_BIT);
+            set_bit(acc_reg, HIGH_BIT);
         } else {
             flag_reg.clear_carry_flag();
         }
@@ -38,17 +43,17 @@ namespace emu::cpu8080 {
 
     TEST_CASE("8080: RRC") {
         unsigned long cycles = 0;
-        std::uint8_t acc_reg = 0;
+        u8 acc_reg = 0;
 
         SUBCASE("should rotate the accumulator right") {
-            for (std::uint8_t acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
+            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
                 Flags flag_reg;
                 acc_reg = acc_reg_counter;
                 const bool cy = emu::util::byte::is_bit_set(acc_reg, LOW_BIT);
 
                 rrc(acc_reg, flag_reg, cycles);
 
-                std::uint8_t expected = acc_reg_counter >> 1u;
+                u8 expected = acc_reg_counter >> 1u;
                 if (cy) {
                     emu::util::byte::set_bit(expected, HIGH_BIT);
                 }

@@ -1,26 +1,26 @@
 #ifndef MIKA_EMULATORS_CROSSCUTTING_DEBUGGING_DEBUGGER_H
 #define MIKA_EMULATORS_CROSSCUTTING_DEBUGGING_DEBUGGER_H
 
-#include <cstdint>
 #include <unordered_map>
-#include "breakpoint.h"
+#include "crosscutting/typedefs.h"
+#include "crosscutting/debugging/breakpoint.h"
 
 namespace emu::util::debugger {
 
     class Debugger {
     public:
-        void add_breakpoint(std::uint16_t breakpoint_address, Breakpoint breakpoint);
+        void add_breakpoint(u16 breakpoint_address, Breakpoint breakpoint);
 
-        void remove_breakpoint(std::uint16_t breakpoint_address);
+        void remove_breakpoint(u16 breakpoint_address);
 
-        std::unordered_map<std::uint16_t, Breakpoint> &breakpoints();
+        std::unordered_map<u16, Breakpoint> &breakpoints();
 
         void clear_all_breakpoints();
 
-        bool has_breakpoint(std::uint16_t breakpoint_address);
+        bool has_breakpoint(u16 breakpoint_address);
 
     private:
-        std::unordered_map<std::uint16_t, Breakpoint> m_breakpoints;
+        std::unordered_map<u16, Breakpoint> m_breakpoints;
     };
 }
 

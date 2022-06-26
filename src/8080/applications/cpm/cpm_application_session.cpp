@@ -1,4 +1,5 @@
 #include <iostream>
+#include <utility>
 #include "cpm_application_session.h"
 #include "crosscutting/byte_util.h"
 
@@ -6,7 +7,10 @@ namespace emu::cpu8080::applications::cpm {
 
     using emu::util::byte::to_u16;
 
-    CpmApplicationSession::CpmApplicationSession(std::string loaded_file, emu::cpu8080::EmulatorMemory memory)
+    CpmApplicationSession::CpmApplicationSession(
+            std::string loaded_file,
+            EmulatorMemory memory
+    )
             : m_memory(std::move(memory)),
               m_loaded_file(std::move(loaded_file)),
               m_is_finished(false) {
@@ -33,11 +37,11 @@ namespace emu::cpu8080::applications::cpm {
         throw std::runtime_error("Stop is not implemented for CP/M programs");
     }
 
-    void CpmApplicationSession::out_changed(std::uint8_t port) {
+    void CpmApplicationSession::out_changed(u8 port) {
         if (port == finished_port) {
             m_is_finished = true;
         } else if (port == output_port) {
-            const std::uint8_t operation = m_cpu->c();
+            const u8 operation = m_cpu->c();
 
             if (operation == C_WRITE) {
                 c_write(m_cpu->e());
@@ -50,18 +54,18 @@ namespace emu::cpu8080::applications::cpm {
     }
 
     void CpmApplicationSession::setup_cpu() {
-        const std::uint16_t initial_pc = 0x100;
+        const u16 initial_pc = 0x100;
 
         m_cpu = std::make_unique<Cpu>(m_memory, initial_pc);
 
         m_cpu->add_out_observer(*this);
     }
 
-    void CpmApplicationSession::c_write(std::uint8_t e) {
+    void CpmApplicationSession::c_write(u8 e) {
         std::cout << e;
     }
 
-    void CpmApplicationSession::c_writestr(const emu::cpu8080::EmulatorMemory &memory, std::uint16_t address) {
+    void CpmApplicationSession::c_writestr(const EmulatorMemory &memory, u16 address) {
         do {
             std::cout << memory[address++];
         } while (memory[address] != '$');

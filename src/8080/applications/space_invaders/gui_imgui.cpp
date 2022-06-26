@@ -160,8 +160,8 @@ namespace emu::cpu8080::applications::space_invaders {
         glGenTextures(1, &m_screen_texture);
     }
 
-    void GuiImgui::update_screen(const std::vector<std::uint8_t> &vram, RunStatus run_status) {
-        std::vector<std::uint32_t> frame_buffer = create_framebuffer(vram);
+    void GuiImgui::update_screen(const std::vector<u8> &vram, RunStatus run_status) {
+        std::vector<u32> frame_buffer = create_framebuffer(vram);
 
         glBindTexture(GL_TEXTURE_2D, m_screen_texture);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);

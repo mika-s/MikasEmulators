@@ -5,14 +5,15 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include "crosscutting/typedefs.h"
 
 namespace emu::util::string {
 
-    std::string hexify(std::uint8_t val);
+    std::string hexify(u8 val);
 
-    std::string hexify(std::uint16_t val);
+    std::string hexify(u16 val);
 
-    std::string hexify_wo_0x(std::uint8_t val);
+    std::string hexify_wo_0x(u8 val);
 
     std::string hexify_wo_0x(unsigned int val, int width);
 

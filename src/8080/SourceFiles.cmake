@@ -150,6 +150,7 @@ set(SOURCES_8080_H
         src/crosscutting/file_util.h
         src/crosscutting/invalid_program_arguments_exception.h
         src/crosscutting/string_util.h
+        src/crosscutting/typedefs.h
         src/crosscutting/unrecognized_opcode_exception.h
         src/crosscutting/debugging/breakpoint.h
         src/crosscutting/debugging/debugger.h

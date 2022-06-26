@@ -1,12 +1,16 @@
-#include <cstdint>
 #include <iostream>
 #include "doctest.h"
 #include "8080/emulator_memory.h"
 #include "8080/next_word.h"
 #include "crosscutting/byte_util.h"
 #include "crosscutting/string_util.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
+    
+    using emu::util::byte::to_u16;
+    using emu::util::string::hexify_wo_0x;
+    
     /**
      * Load H and L direct
      * <ul>
@@ -22,26 +26,25 @@ namespace emu::cpu8080 {
      * @param args contains the argument with the address to the wanted value in memory
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void lhld(std::uint8_t &l_reg, std::uint8_t &h_reg, const emu::cpu8080::EmulatorMemory &memory,
-              const NextWord &args, unsigned long &cycles) {
-        l_reg = memory[emu::util::byte::to_u16(args.sarg, args.farg)];
-        h_reg = memory[emu::util::byte::to_u16(args.sarg, args.farg) + 1];
+    void lhld(u8 &l_reg, u8 &h_reg, const EmulatorMemory &memory, const NextWord &args, unsigned long &cycles) {
+        l_reg = memory[to_u16(args.sarg, args.farg)];
+        h_reg = memory[to_u16(args.sarg, args.farg) + 1];
 
         cycles = 16;
     }
 
     void print_lhld(std::ostream &ostream, const NextWord &args) {
         ostream << "LHLD "
-                << emu::util::string::hexify_wo_0x(args.sarg)
-                << emu::util::string::hexify_wo_0x(args.farg);
+                << hexify_wo_0x(args.sarg)
+                << hexify_wo_0x(args.farg);
     }
 
     TEST_CASE("8080: LHLD") {
         unsigned long cycles = 0;
-        std::uint8_t l_reg = 0xe;
-        std::uint8_t h_reg = 0x42;
+        u8 l_reg = 0xe;
+        u8 h_reg = 0x42;
         EmulatorMemory memory;
-        memory.add(std::vector<std::uint8_t>{0x00, 0x01, 0x02, 0x03, 0xfd, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
+        memory.add(std::vector<u8>{0x00, 0x01, 0x02, 0x03, 0xfd, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
         NextWord args = {.farg = 0x04, .sarg = 0};
 
         SUBCASE("should load the accumulator from memory using the address in args") {

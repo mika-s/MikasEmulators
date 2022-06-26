@@ -5,6 +5,7 @@
 #include "crosscutting/logging/log_observer.h"
 
 namespace emu::util::logging {
+
     class Logger {
 
     public:

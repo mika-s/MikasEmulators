@@ -1,7 +1,6 @@
 #ifndef MIKA_EMULATORS_8080_APPLICATIONS_SPACE_INVADERS_SPACE_INVADERS_SESSION_H
 #define MIKA_EMULATORS_8080_APPLICATIONS_SPACE_INVADERS_SPACE_INVADERS_SESSION_H
 
-#include <cstdint>
 #include <memory>
 #include <SDL.h>
 #include <vector>
@@ -21,11 +20,15 @@
 #include "8080/interfaces/in_observer.h"
 #include "8080/interfaces/out_observer.h"
 #include "8080/interfaces/session.h"
+#include "crosscutting/typedefs.h"
 #include "crosscutting/debugging/debugger.h"
 #include "crosscutting/logging/log_observer.h"
 #include "crosscutting/logging/logger.h"
 
 namespace emu::cpu8080::applications::space_invaders {
+
+    using emu::util::debugger::Debugger;
+    using emu::util::logging::Logger;
 
     class SpaceInvadersSession
             : public Session,
@@ -53,9 +56,9 @@ namespace emu::cpu8080::applications::space_invaders {
 
         void debug_mode_changed(bool is_in_debug_mode) override;
 
-        void in_requested(std::uint8_t port) override;
+        void in_requested(u8 port) override;
 
-        void out_changed(std::uint8_t port) override;
+        void out_changed(u8 port) override;
 
         void io_changed(IoRequest request) override;
 
@@ -74,10 +77,10 @@ namespace emu::cpu8080::applications::space_invaders {
 
         EmulatorMemory m_memory;
 
-        std::shared_ptr<emu::util::logging::Logger> m_logger;
-        std::shared_ptr<emu::util::debugger::Debugger> m_debugger;
+        std::shared_ptr<Logger> m_logger;
+        std::shared_ptr<Debugger> m_debugger;
         DebugContainer m_debug_container;
-        std::unordered_map<std::uint8_t, std::uint8_t> m_outputs_during_cycle;
+        std::unordered_map<u8, u8> m_outputs_during_cycle;
 
         // Game loop - begin
         static constexpr double fps = 60.0;
@@ -99,11 +102,11 @@ namespace emu::cpu8080::applications::space_invaders {
         static constexpr int out_port_watchdog = 6;
         // IO - end
 
-        void running(std::uint64_t &last_tick, unsigned long &cycles);
+        void running(u64 &last_tick, unsigned long &cycles);
 
-        void pausing(std::uint64_t &last_tick);
+        void pausing(u64 &last_tick);
 
-        void stepping(std::uint64_t &last_tick, unsigned long &cycles);
+        void stepping(u64 &last_tick, unsigned long &cycles);
 
         void await_input_and_update_debug();
 
@@ -111,9 +114,9 @@ namespace emu::cpu8080::applications::space_invaders {
 
         void setup_debugging();
 
-        std::vector<std::uint8_t> vram();
+        std::vector<u8> vram();
 
-        std::vector<std::uint8_t> memory();
+        std::vector<u8> memory();
 
         std::vector<std::string> disassemble_program();
     };

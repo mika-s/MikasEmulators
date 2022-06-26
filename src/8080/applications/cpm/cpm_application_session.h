@@ -5,15 +5,20 @@
 #include <vector>
 #include <memory>
 #include "8080/cpu.h"
+#include "8080/emulator_memory.h"
 #include "8080/interfaces/emulator8080.h"
 #include "8080/interfaces/out_observer.h"
 #include "8080/interfaces/session.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080::applications::cpm {
 
     class CpmApplicationSession : public Session, public OutObserver {
     public:
-        CpmApplicationSession(std::string loaded_file, emu::cpu8080::EmulatorMemory m_memory);
+        CpmApplicationSession(
+                std::string loaded_file,
+                EmulatorMemory m_memory
+        );
 
         void run() override;
 
@@ -21,7 +26,7 @@ namespace emu::cpu8080::applications::cpm {
 
         void stop() override;
 
-        void out_changed(std::uint8_t port) override;
+        void out_changed(u8 port) override;
 
     private:
         static constexpr int finished_port = 0;
@@ -30,7 +35,7 @@ namespace emu::cpu8080::applications::cpm {
         static constexpr int C_WRITESTR = 9;
 
         std::unique_ptr<Cpu> m_cpu;
-        emu::cpu8080::EmulatorMemory m_memory;
+        EmulatorMemory m_memory;
         std::string m_loaded_file;
         bool m_is_finished;
 
@@ -39,9 +44,9 @@ namespace emu::cpu8080::applications::cpm {
         // CP/M syscalls
         // https://www.seasip.info/Cpm/bdos.html
 
-        static void c_write(std::uint8_t e);
+        static void c_write(u8 e);
 
-        static void c_writestr(const emu::cpu8080::EmulatorMemory &memory, std::uint16_t address);
+        static void c_writestr(const EmulatorMemory &memory, u16 address);
     };
 }
 

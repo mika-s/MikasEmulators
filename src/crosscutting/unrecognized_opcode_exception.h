@@ -4,17 +4,18 @@
 #include <iostream>
 #include <exception>
 #include <stdexcept>
+#include "crosscutting/typedefs.h"
 
 namespace emu::util::exceptions {
 
     class UnrecognizedOpcodeException : public std::runtime_error {
     public:
-        explicit UnrecognizedOpcodeException(std::uint8_t opcode);
+        explicit UnrecognizedOpcodeException(u8 opcode);
 
         [[nodiscard]] const char *what() const noexcept override;
 
     private:
-        void make_message(std::uint8_t opcode);
+        void make_message(u8 opcode);
 
         std::string m_message;
     };

@@ -1,6 +1,6 @@
-#include <cstdint>
 #include <iostream>
 #include "doctest.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
     /**
@@ -18,9 +18,9 @@ namespace emu::cpu8080 {
      * @param e_reg is the E register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void xchg(std::uint8_t &h_reg, std::uint8_t &l_reg, std::uint8_t &d_reg, std::uint8_t &e_reg, unsigned long &cycles) {
-        const std::uint8_t h = h_reg;
-        const std::uint8_t l = l_reg;
+    void xchg(u8 &h_reg, u8 &l_reg, u8 &d_reg, u8 &e_reg, unsigned long &cycles) {
+        const u8 h = h_reg;
+        const u8 l = l_reg;
         h_reg = d_reg;
         l_reg = e_reg;
         d_reg = h;
@@ -37,10 +37,10 @@ namespace emu::cpu8080 {
         unsigned long cycles = 0;
 
         SUBCASE("should exchange HL with DE") {
-            std::uint8_t h_reg = 0x11;
-            std::uint8_t l_reg = 0x22;
-            std::uint8_t d_reg = 0x33;
-            std::uint8_t e_reg = 0x44;
+            u8 h_reg = 0x11;
+            u8 l_reg = 0x22;
+            u8 d_reg = 0x33;
+            u8 e_reg = 0x44;
 
             xchg(h_reg, l_reg, d_reg, e_reg, cycles);
 
@@ -53,10 +53,10 @@ namespace emu::cpu8080 {
         SUBCASE("should use 4 cycles") {
             cycles = 0;
 
-            std::uint8_t h_reg = 0x11;
-            std::uint8_t l_reg = 0x22;
-            std::uint8_t d_reg = 0;
-            std::uint8_t e_reg = 0;
+            u8 h_reg = 0x11;
+            u8 l_reg = 0x22;
+            u8 d_reg = 0;
+            u8 e_reg = 0;
 
             xchg(h_reg, l_reg, d_reg, e_reg, cycles);
 

@@ -1,4 +1,3 @@
-#include <cstdint>
 #include <iostream>
 #include "doctest.h"
 #include "8080/flags.h"
@@ -6,8 +5,12 @@
 #include "8080/instructions/instruction_util.h"
 #include "crosscutting/byte_util.h"
 #include "crosscutting/string_util.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
+
+    using emu::util::string::hexify_wo_0x;
+
     /**
      * Call if parity odd
      * <ul>
@@ -24,8 +27,8 @@ namespace emu::cpu8080 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void cpo(std::uint16_t &pc, std::uint16_t &sp, emu::cpu8080::EmulatorMemory &memory, const NextWord &args,
-             const Flags &flag_reg, unsigned long &cycles) {
+    void cpo(u16 &pc, u16 &sp, EmulatorMemory &memory, const NextWord &args, const Flags &flag_reg,
+             unsigned long &cycles) {
         cycles = 0;
 
         if (!flag_reg.is_parity_flag_set()) {
@@ -38,18 +41,18 @@ namespace emu::cpu8080 {
 
     void print_cpo(std::ostream &ostream, const NextWord &args) {
         ostream << "CPO "
-                << emu::util::string::hexify_wo_0x(args.sarg)
-                << emu::util::string::hexify_wo_0x(args.farg);
+                << hexify_wo_0x(args.sarg)
+                << hexify_wo_0x(args.farg);
     }
 
     TEST_CASE("8080: CPO") {
         unsigned long cycles = 0;
 
         SUBCASE("should push current PC on the stack and change PC to the address in args when the parity flag is unset") {
-            std::uint16_t pc = 0x100f;
-            std::uint16_t sp = 0x2;
+            u16 pc = 0x100f;
+            u16 sp = 0x2;
             EmulatorMemory memory;
-            memory.add(std::vector<std::uint8_t>{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
+            memory.add(std::vector<u8>{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
             NextWord args = {.farg = 0x2, .sarg = 0x0};
             Flags flag_reg;
             flag_reg.clear_parity_flag();
@@ -62,10 +65,10 @@ namespace emu::cpu8080 {
         }
 
         SUBCASE("should not do anything when the parity flag is set") {
-            std::uint16_t pc = 0x100f;
-            std::uint16_t sp = 0x2;
+            u16 pc = 0x100f;
+            u16 sp = 0x2;
             EmulatorMemory memory;
-            memory.add(std::vector<std::uint8_t>{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
+            memory.add(std::vector<u8>{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
             NextWord args = {.farg = 0x2, .sarg = 0x0};
             Flags flag_reg;
             flag_reg.set_parity_flag();
@@ -79,10 +82,10 @@ namespace emu::cpu8080 {
 
         SUBCASE("should use 11 cycles when not called") {
             cycles = 0;
-            std::uint16_t pc = 0;
-            std::uint16_t sp = 0x2;
+            u16 pc = 0;
+            u16 sp = 0x2;
             EmulatorMemory memory;
-            memory.add(std::vector<std::uint8_t>{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
+            memory.add(std::vector<u8>{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
             NextWord args = {.farg = 0x2, .sarg = 0x0};
             Flags flag_reg;
             flag_reg.set_parity_flag();
@@ -94,10 +97,10 @@ namespace emu::cpu8080 {
 
         SUBCASE("should use 17 cycles when called") {
             cycles = 0;
-            std::uint16_t pc = 0;
-            std::uint16_t sp = 0x2;
+            u16 pc = 0;
+            u16 sp = 0x2;
             EmulatorMemory memory;
-            memory.add(std::vector<std::uint8_t>{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
+            memory.add(std::vector<u8>{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
             NextWord args = {.farg = 0x2, .sarg = 0x0};
             Flags flag_reg;
             flag_reg.clear_parity_flag();

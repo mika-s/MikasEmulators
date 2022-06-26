@@ -9,12 +9,16 @@
 #include "8080/emulator_memory.h"
 #include "8080/interfaces/in_observer.h"
 #include "8080/interfaces/out_observer.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
 
     class Cpu {
     public:
-        Cpu(emu::cpu8080::EmulatorMemory &memory, std::uint16_t initial_pc);
+        Cpu(
+                EmulatorMemory &memory,
+                u16 initial_pc
+        );
 
         ~Cpu();
 
@@ -36,35 +40,35 @@ namespace emu::cpu8080 {
 
         void remove_in_observer(InObserver *observer);
 
-        emu::cpu8080::EmulatorMemory &memory();
+        EmulatorMemory &memory();
 
-        [[nodiscard]] std::uint8_t a() const;
+        [[nodiscard]] u8 a() const;
 
-        [[nodiscard]] std::uint8_t b() const;
+        [[nodiscard]] u8 b() const;
 
-        [[nodiscard]] std::uint8_t c() const;
+        [[nodiscard]] u8 c() const;
 
-        [[nodiscard]] std::uint8_t d() const;
+        [[nodiscard]] u8 d() const;
 
-        [[nodiscard]] std::uint8_t e() const;
+        [[nodiscard]] u8 e() const;
 
-        [[nodiscard]] std::uint8_t h() const;
+        [[nodiscard]] u8 h() const;
 
-        [[nodiscard]] std::uint8_t l() const;
+        [[nodiscard]] u8 l() const;
 
-        [[nodiscard]] std::uint8_t f() const;
+        [[nodiscard]] u8 f() const;
 
-        [[nodiscard]] std::uint16_t pc() const;
+        [[nodiscard]] u16 pc() const;
 
-        [[nodiscard]] std::uint16_t sp() const;
+        [[nodiscard]] u16 sp() const;
 
         [[nodiscard]] bool is_inta() const;
 
         [[nodiscard]] bool is_interrupted() const;
 
-        void interrupt(std::uint8_t supplied_instruction_from_interruptor);
+        void interrupt(u8 supplied_instruction_from_interruptor);
 
-        void input(int port, std::uint8_t value);
+        void input(int port, u8 value);
 
     private:
         static constexpr unsigned int number_of_io_ports = 256;
@@ -73,24 +77,24 @@ namespace emu::cpu8080 {
 
         bool m_inte;
         bool m_is_interrupted;
-        std::uint8_t m_instruction_from_interruptor;
+        u8 m_instruction_from_interruptor;
 
-        emu::cpu8080::EmulatorMemory &m_memory;
+        EmulatorMemory &m_memory;
         std::size_t m_memory_size;
 
-        std::vector<std::uint8_t> m_io_in;
-        std::vector<std::uint8_t> m_io_out;
+        std::vector<u8> m_io_in;
+        std::vector<u8> m_io_out;
 
-        std::uint8_t m_opcode;
-        std::uint16_t m_sp;
-        std::uint16_t m_pc;
-        std::uint8_t m_acc_reg;
-        std::uint8_t m_b_reg;
-        std::uint8_t m_c_reg;
-        std::uint8_t m_d_reg;
-        std::uint8_t m_e_reg;
-        std::uint8_t m_h_reg;
-        std::uint8_t m_l_reg;
+        u8 m_opcode;
+        u16 m_sp;
+        u16 m_pc;
+        u8 m_acc_reg;
+        u8 m_b_reg;
+        u8 m_c_reg;
+        u8 m_d_reg;
+        u8 m_e_reg;
+        u8 m_h_reg;
+        u8 m_l_reg;
         Flags m_flag_reg;
 
         std::vector<OutObserver *> m_out_observers;
@@ -100,11 +104,11 @@ namespace emu::cpu8080 {
 
         NextWord get_next_word();
 
-        void notify_out_observers(std::uint8_t port);
+        void notify_out_observers(u8 port);
 
-        void notify_in_observers(std::uint8_t port);
+        void notify_in_observers(u8 port);
 
-        [[nodiscard]] std::uint16_t address_in_HL() const;
+        [[nodiscard]] u16 address_in_HL() const;
 
         void print_debug();
     };

@@ -3,34 +3,32 @@
 
 #include <cstdint>
 #include <vector>
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
     class EmulatorMemory {
 
     public:
-        void add(const std::vector<std::uint8_t> &to_add);
-
-        void add_link(std::uint16_t from, std::uint16_t to);
+        void add(const std::vector<u8> &to_add);
 
         std::size_t size();
 
         EmulatorMemory slice(int from, int to);
 
-        std::uint8_t &operator[](std::size_t d);
+        u8 &operator[](std::size_t address);
 
-        const std::uint8_t &operator[](std::size_t d) const;
+        const u8 &operator[](std::size_t address) const;
 
-        std::vector<std::uint8_t>::iterator begin();
+        std::vector<u8>::iterator begin();
 
-        std::vector<std::uint8_t>::iterator end();
+        std::vector<u8>::iterator end();
 
-        [[nodiscard]] std::vector<std::uint8_t>::const_iterator begin() const;
+        [[nodiscard]] std::vector<u8>::const_iterator begin() const;
 
-        [[nodiscard]] std::vector<std::uint8_t>::const_iterator end() const;
+        [[nodiscard]] std::vector<u8>::const_iterator end() const;
 
     private:
-        std::vector<std::uint8_t> m_real_memory;
-        std::vector<std::uint16_t> m_indices;
+        std::vector<u8> m_memory;
     };
 }
 

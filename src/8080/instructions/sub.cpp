@@ -4,6 +4,7 @@
 #include "8080/flags.h"
 #include "8080/instructions/instructions.h"
 #include "8080/instructions/instruction_util.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
     /**
@@ -20,7 +21,7 @@ namespace emu::cpu8080 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void sub(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg, unsigned long &cycles) {
+    void sub(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles) {
         sub(acc_reg, value, flag_reg, cycles, false);
     }
 
@@ -38,8 +39,7 @@ namespace emu::cpu8080 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void sub(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg,
-             unsigned long &cycles, bool is_memory_involved) {
+    void sub(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles, bool is_memory_involved) {
         sub_from_register(acc_reg, value, false, flag_reg);
 
         cycles = 4;
@@ -56,17 +56,17 @@ namespace emu::cpu8080 {
 
     TEST_CASE("8080: SUB") {
         unsigned long cycles = 0;
-        std::uint8_t acc_reg = 0;
+        u8 acc_reg = 0;
 
         SUBCASE("should subtract the given value from the accumulator") {
-            for (std::uint8_t acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (std::uint8_t value = 0; value < UINT8_MAX; ++value) {
+            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
+                for (u8 value = 0; value < UINT8_MAX; ++value) {
                     Flags flag_reg;
                     acc_reg = acc_reg_counter;
 
                     sub(acc_reg, value, flag_reg, cycles);
 
-                    CHECK_EQ(static_cast<std::uint8_t>(acc_reg_counter - value), acc_reg);
+                    CHECK_EQ(static_cast<u8>(acc_reg_counter - value), acc_reg);
                 }
             }
         }
@@ -82,8 +82,8 @@ namespace emu::cpu8080 {
         }
 
         SUBCASE("should set the zero flag when zero and not set otherwise") {
-            for (std::uint8_t acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (std::uint8_t value = 0; value < UINT8_MAX; ++value) {
+            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
+                for (u8 value = 0; value < UINT8_MAX; ++value) {
                     Flags flag_reg;
                     acc_reg = acc_reg_counter;
 
@@ -95,8 +95,8 @@ namespace emu::cpu8080 {
         }
 
         SUBCASE("should set the sign flag when above 127 and not otherwise") {
-            for (std::uint8_t acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (std::uint8_t value = 0; value < UINT8_MAX; ++value) {
+            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
+                for (u8 value = 0; value < UINT8_MAX; ++value) {
                     Flags flag_reg;
                     acc_reg = acc_reg_counter;
                     sub(acc_reg, value, flag_reg, cycles);

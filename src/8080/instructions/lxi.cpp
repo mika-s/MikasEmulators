@@ -1,11 +1,15 @@
-#include <cstdint>
 #include <iostream>
 #include "doctest.h"
 #include "8080/next_word.h"
 #include "crosscutting/byte_util.h"
 #include "crosscutting/string_util.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
+
+    using emu::util::byte::to_u16;
+    using emu::util::string::hexify_wo_0x;
+
     /**
      * Load register pair immediate
      * <ul>
@@ -20,7 +24,7 @@ namespace emu::cpu8080 {
      * @param args contains value to load into the registers
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void lxi(std::uint8_t &reg1, std::uint8_t &reg2, const NextWord &args, unsigned long &cycles) {
+    void lxi(u8 &reg1, u8 &reg2, const NextWord &args, unsigned long &cycles) {
         reg1 = args.sarg;
         reg2 = args.farg;
 
@@ -40,8 +44,8 @@ namespace emu::cpu8080 {
      * @param args contains value to load into the register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void lxi_sp(std::uint16_t &sp, const NextWord &args, unsigned long &cycles) {
-        sp = emu::util::byte::to_u16(args.sarg, args.farg);
+    void lxi_sp(u16 &sp, const NextWord &args, unsigned long &cycles) {
+        sp = to_u16(args.sarg, args.farg);
 
         cycles = 10;
     }
@@ -49,15 +53,15 @@ namespace emu::cpu8080 {
     void print_lxi(std::ostream &ostream, const std::string &reg, const NextWord &args) {
         ostream << "LXI "
                 << reg << ","
-                << emu::util::string::hexify_wo_0x(args.sarg)
-                << emu::util::string::hexify_wo_0x(args.farg);
+                << hexify_wo_0x(args.sarg)
+                << hexify_wo_0x(args.farg);
     }
 
     TEST_CASE("8080: LXI") {
         unsigned long cycles = 0;
-        std::uint16_t sp = 0xe;
-        std::uint8_t reg1 = 0xe;
-        std::uint8_t reg2 = 0;
+        u16 sp = 0xe;
+        u8 reg1 = 0xe;
+        u8 reg2 = 0;
         NextWord args = {.farg = 0x12, .sarg = 0x3a};
 
         SUBCASE("should load immediate into register pair") {

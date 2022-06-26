@@ -17,9 +17,7 @@
 
 namespace emu::cpu8080 {
 
-    using emu::cpu8080::applications::space_invaders::Settings;
     using emu::util::exceptions::InvalidProgramArgumentsException;
-    using emu::util::gui::GuiType;
 
     void Frontend::run(
             int argc, char *argv[],
@@ -94,12 +92,12 @@ namespace emu::cpu8080 {
             const Settings &settings,
             GuiType gui_type
     ) {
-        using emu::cpu8080::applications::cpm::CpmApplication;
-        using emu::cpu8080::applications::space_invaders::InputSdl;
-        using emu::cpu8080::applications::space_invaders::InputImgui;
-        using emu::cpu8080::applications::space_invaders::GuiSdl;
-        using emu::cpu8080::applications::space_invaders::GuiImgui;
-        using emu::cpu8080::applications::space_invaders::SpaceInvaders;
+        using applications::cpm::CpmApplication;
+        using applications::space_invaders::InputSdl;
+        using applications::space_invaders::InputImgui;
+        using applications::space_invaders::GuiSdl;
+        using applications::space_invaders::GuiImgui;
+        using applications::space_invaders::SpaceInvaders;
 
         if (program == "space_invaders") {
             if (gui_type == GuiType::DEBUGGING) {
@@ -144,9 +142,9 @@ namespace emu::cpu8080 {
     Settings Frontend::find_space_invaders_settings(
             std::unordered_map<std::string, std::vector<std::string>> options
     ) {
-        using emu::cpu8080::applications::space_invaders::BonusLifeAt;
-        using emu::cpu8080::applications::space_invaders::CoinInfo;
-        using emu::cpu8080::applications::space_invaders::NumberOfLives;
+        using applications::space_invaders::BonusLifeAt;
+        using applications::space_invaders::CoinInfo;
+        using applications::space_invaders::NumberOfLives;
 
         Settings settings{};
         settings.m_number_of_lives = NumberOfLives::Three;
@@ -205,7 +203,7 @@ namespace emu::cpu8080 {
         return settings;
     }
 
-    emu::util::gui::GuiType Frontend::find_gui_type(
+    GuiType Frontend::find_gui_type(
             std::unordered_map<std::string, std::vector<std::string>> options
     ) {
         if (!options.contains("-g")) {

@@ -1,8 +1,8 @@
-#include <cstdint>
 #include <iostream>
 #include "doctest.h"
 #include "8080/emulator_memory.h"
 #include "8080/flags.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
     /**
@@ -20,8 +20,7 @@ namespace emu::cpu8080 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void push(std::uint8_t reg1, std::uint8_t reg2, std::uint16_t &sp, emu::cpu8080::EmulatorMemory &memory,
-              unsigned long &cycles) {
+    void push(u8 reg1, u8 reg2, u16 &sp, EmulatorMemory &memory, unsigned long &cycles) {
         memory[--sp] = reg1;
         memory[--sp] = reg2;
 
@@ -43,10 +42,9 @@ namespace emu::cpu8080 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void push_psw(const Flags &flag_reg, std::uint8_t &acc_reg, std::uint16_t &sp, emu::cpu8080::EmulatorMemory &memory,
-                  unsigned long &cycles) {
+    void push_psw(const Flags &flag_reg, u8 &acc_reg, u16 &sp, EmulatorMemory &memory, unsigned long &cycles) {
         memory[--sp] = acc_reg;
-        memory[--sp] = flag_reg.to_uint8_t();
+        memory[--sp] = flag_reg.to_u8();
 
         cycles = 11;
     }
@@ -60,12 +58,12 @@ namespace emu::cpu8080 {
         unsigned long cycles = 0;
 
         SUBCASE("should push registers onto the stack") {
-            std::uint8_t reg1 = 0xaa;
-            std::uint8_t reg2 = 0xbb;
-            std::uint16_t sp = 0x03;
+            u8 reg1 = 0xaa;
+            u8 reg2 = 0xbb;
+            u16 sp = 0x03;
 
             EmulatorMemory memory;
-            memory.add(std::vector<std::uint8_t>{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08});
+            memory.add(std::vector<u8>{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08});
 
             push(reg1, reg2, sp, memory, cycles);
 
@@ -81,28 +79,28 @@ namespace emu::cpu8080 {
             flag_reg.set_sign_flag();
             flag_reg.set_parity_flag();
             flag_reg.set_aux_carry_flag();
-            std::uint8_t acc_reg = 0xbb;
-            std::uint16_t sp = 0x03;
+            u8 acc_reg = 0xbb;
+            u16 sp = 0x03;
 
             EmulatorMemory memory;
-            memory.add(std::vector<std::uint8_t>{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08});
+            memory.add(std::vector<u8>{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08});
 
             push_psw(flag_reg, acc_reg, sp, memory, cycles);
 
             CHECK_EQ(acc_reg, memory[0x2]);
-            CHECK_EQ(flag_reg.to_uint8_t(), memory[0x1]);
+            CHECK_EQ(flag_reg.to_u8(), memory[0x1]);
             CHECK_EQ(0x01, sp);
         }
 
         SUBCASE("should use 11 cycles") {
             cycles = 0;
 
-            std::uint8_t reg1 = 0;
-            std::uint8_t reg2 = 0;
-            std::uint16_t sp = 0x03;
+            u8 reg1 = 0;
+            u8 reg2 = 0;
+            u16 sp = 0x03;
 
             EmulatorMemory memory;
-            memory.add(std::vector<std::uint8_t>{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08});
+            memory.add(std::vector<u8>{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08});
 
             push(reg1, reg2, sp, memory, cycles);
 

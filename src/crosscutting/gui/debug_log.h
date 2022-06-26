@@ -6,7 +6,11 @@
 #include "crosscutting/logging/logger.h"
 
 namespace emu::util::gui {
-    class DebugLog: public emu::util::logging::LogObserver {
+
+    using emu::util::logging::Logger;
+    using emu::util::logging::LogObserver;
+
+    class DebugLog: public LogObserver {
     public:
         DebugLog();
 
@@ -16,10 +20,10 @@ namespace emu::util::gui {
 
         void log_element_added(const char *fmt, va_list args) override;
 
-        void attach_logger(std::shared_ptr<emu::util::logging::Logger> logger);
+        void attach_logger(std::shared_ptr<Logger> logger);
 
     private:
-        std::shared_ptr<emu::util::logging::Logger> m_logger;
+        std::shared_ptr<Logger> m_logger;
 
         ImGuiTextBuffer m_buf;
         ImGuiTextFilter m_filter;

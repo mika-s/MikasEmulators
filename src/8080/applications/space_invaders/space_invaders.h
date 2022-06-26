@@ -3,10 +3,12 @@
 
 #include <cstdint>
 #include <memory>
+#include "8080/emulator_memory.h"
 #include "8080/applications/space_invaders/gui.h"
 #include "8080/applications/space_invaders/settings.h"
 #include "8080/applications/space_invaders/space_invaders_session.h"
 #include "8080/applications/space_invaders/interfaces/input.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080::applications::space_invaders {
 
@@ -28,9 +30,9 @@ namespace emu::cpu8080::applications::space_invaders {
 
         void load_file();
 
-        static std::vector<uint8_t> create_work_ram();
+        static std::vector<u8> create_work_ram();
 
-        static std::vector<uint8_t> create_vram();
+        static std::vector<u8> create_vram();
     };
 }
 

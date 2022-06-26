@@ -4,8 +4,12 @@
 #include "8080/flags.h"
 #include "8080/next_byte.h"
 #include "crosscutting/string_util.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
+
+    using emu::util::string::hexify_wo_0x;
+
     /**
      * Compare immediate with accumulator
      * <ul>
@@ -20,8 +24,8 @@ namespace emu::cpu8080 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void cpi(std::uint8_t &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles) {
-        const std::uint16_t new_acc_reg = acc_reg - args.farg;
+    void cpi(u8 &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles) {
+        const u16 new_acc_reg = acc_reg - args.farg;
 
         flag_reg.handle_borrow_flag(acc_reg, args.farg);
         flag_reg.handle_zero_flag(new_acc_reg);
@@ -34,24 +38,24 @@ namespace emu::cpu8080 {
 
     void print_cpi(std::ostream &ostream, const NextByte &args) {
         ostream << "CPI "
-                << emu::util::string::hexify_wo_0x(args.farg);
+                << hexify_wo_0x(args.farg);
     }
 
     TEST_CASE("8080: CPI") {
         unsigned long cycles = 0;
-        std::uint8_t acc_reg = 0;
+        u8 acc_reg = 0;
 
         SUBCASE("should compare the accumulator with value and set flags") {
-            for (std::uint8_t acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (std::uint8_t value = 0; value < UINT8_MAX; ++value) {
+            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
+                for (u8 value = 0; value < UINT8_MAX; ++value) {
                     Flags flag_reg;
                     NextByte args = {.farg = value};
                     acc_reg = acc_reg_counter;
 
                     cpi(acc_reg, args, flag_reg, cycles);
 
-                    CHECK_EQ(static_cast<std::uint8_t>(acc_reg - value) > 127, flag_reg.is_sign_flag_set());
-                    CHECK_EQ(static_cast<std::uint8_t>(acc_reg - value) == 0, flag_reg.is_zero_flag_set());
+                    CHECK_EQ(static_cast<u8>(acc_reg - value) > 127, flag_reg.is_sign_flag_set());
+                    CHECK_EQ(static_cast<u8>(acc_reg - value) == 0, flag_reg.is_zero_flag_set());
                     CHECK_EQ(acc_reg < value, flag_reg.is_carry_flag_set());
                 }
             }

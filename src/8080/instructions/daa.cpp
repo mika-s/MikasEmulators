@@ -1,8 +1,8 @@
-#include <cstdint>
 #include <iostream>
 #include "doctest.h"
 #include "8080/flags.h"
 #include "8080/instructions/instruction_util.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
     /**
@@ -18,12 +18,12 @@ namespace emu::cpu8080 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void daa(std::uint8_t &acc_reg, Flags &flag_reg, unsigned long &cycles) {
-        std::uint8_t lower_nibble = acc_reg & 0x0F;
-        std::uint8_t upper_nibble = acc_reg >> 4;
+    void daa(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles) {
+        const u8 lower_nibble = acc_reg & 0x0f;
+        const u8 upper_nibble = acc_reg >> 4;
 
         bool carry = flag_reg.is_carry_flag_set();
-        std::uint8_t value_to_add = 0;
+        u8 value_to_add = 0;
 
         if (lower_nibble > 9 || flag_reg.is_aux_carry_flag_set()) {
             value_to_add = 6;
@@ -54,7 +54,7 @@ namespace emu::cpu8080 {
 
         SUBCASE("should decimal adjust the accumulator") {
             // Example from the 8080 Programmers Manual.
-            std::uint8_t acc_reg = 0x9b;
+            u8 acc_reg = 0x9b;
             Flags flag_reg;
 
             daa(acc_reg, flag_reg, cycles);
@@ -65,7 +65,7 @@ namespace emu::cpu8080 {
         }
 
         SUBCASE("should set the zero flag when zero and not set otherwise") {
-            std::uint8_t acc_reg = 0x9a;
+            u8 acc_reg = 0x9a;
             Flags flag_reg;
 
             daa(acc_reg, flag_reg, cycles);
@@ -81,7 +81,7 @@ namespace emu::cpu8080 {
         }
 
         SUBCASE("should set the sign flag when above 127 and not otherwise") {
-            std::uint8_t acc_reg = 0x9a;
+            u8 acc_reg = 0x9a;
             Flags flag_reg;
 
             daa(acc_reg, flag_reg, cycles);
@@ -90,7 +90,7 @@ namespace emu::cpu8080 {
         }
 
         SUBCASE("should set the parity flag when even parity") {
-            std::uint8_t acc_reg = 0x9a;
+            u8 acc_reg = 0x9a;
             Flags flag_reg;
 
             daa(acc_reg, flag_reg, cycles);
@@ -99,7 +99,7 @@ namespace emu::cpu8080 {
         }
 
         SUBCASE("should not set the parity flag when odd parity") {
-            std::uint8_t acc_reg = 0x9b;
+            u8 acc_reg = 0x9b;
             Flags flag_reg;
 
             daa(acc_reg, flag_reg, cycles);
@@ -108,7 +108,7 @@ namespace emu::cpu8080 {
         }
 
         SUBCASE("should set the carry flag when carried out of msb") {
-            std::uint8_t acc_reg = 0xff;
+            u8 acc_reg = 0xff;
             Flags flag_reg;
 
             daa(acc_reg, flag_reg, cycles);
@@ -117,7 +117,7 @@ namespace emu::cpu8080 {
         }
 
         SUBCASE("should use 4 cycles") {
-            std::uint8_t acc_reg = 0;
+            u8 acc_reg = 0;
             Flags flag_reg;
 
             daa(acc_reg, flag_reg, cycles);

@@ -2,8 +2,14 @@
 #include <iostream>
 #include "doctest.h"
 #include "crosscutting/byte_util.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
+
+    using emu::util::byte::first_byte;
+    using emu::util::byte::second_byte;
+    using emu::util::byte::to_u16;
+
     /**
      * Decrement register pair
      * <ul>
@@ -17,12 +23,12 @@ namespace emu::cpu8080 {
      * @param reg2 is the second register in the register pair, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void dcx(std::uint8_t &reg1, std::uint8_t &reg2, unsigned long &cycles) {
-        std::uint16_t val = emu::util::byte::to_u16(reg1, reg2);
+    void dcx(u8 &reg1, u8 &reg2, unsigned long &cycles) {
+        u16 val = to_u16(reg1, reg2);
         --val;
 
-        reg2 = emu::util::byte::first_byte(val);
-        reg1 = emu::util::byte::second_byte(val);
+        reg2 = first_byte(val);
+        reg1 = second_byte(val);
 
         cycles = 5;
     }
@@ -39,7 +45,7 @@ namespace emu::cpu8080 {
      * @param sp is the stack pointer, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void dcx_sp(std::uint16_t &sp, unsigned long &cycles) {
+    void dcx_sp(u16 &sp, unsigned long &cycles) {
         --sp;
 
         cycles = 5;
@@ -52,11 +58,11 @@ namespace emu::cpu8080 {
 
     TEST_CASE("8080: DCX") {
         unsigned long cycles = 0;
-        std::uint8_t reg1 = UINT8_MAX;
-        std::uint8_t reg2 = UINT8_MAX;
-        std::uint8_t expected_reg1 = UINT8_MAX;
-        std::uint8_t expected_reg2;
-        std::uint16_t sp = UINT16_MAX;
+        u8 reg1 = UINT8_MAX;
+        u8 reg2 = UINT8_MAX;
+        u8 expected_reg1 = UINT8_MAX;
+        u8 expected_reg2;
+        u16 sp = UINT16_MAX;
 
         SUBCASE("should decrease register pair") {
             for (int i = UINT16_MAX; i > UINT16_MAX; --i) {
@@ -74,7 +80,7 @@ namespace emu::cpu8080 {
         }
 
         SUBCASE("should decrease SP") {
-            for (std::uint16_t expected_sp = UINT16_MAX; expected_sp > 0; --expected_sp) {
+            for (u16 expected_sp = UINT16_MAX; expected_sp > 0; --expected_sp) {
                 sp = expected_sp;
                 dcx_sp(sp, cycles);
 

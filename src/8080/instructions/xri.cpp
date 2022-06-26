@@ -4,8 +4,12 @@
 #include "8080/flags.h"
 #include "8080/next_byte.h"
 #include "crosscutting/string_util.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
+
+    using emu::util::string::hexify_wo_0x;
+
     /**
      * Exclusive or immediate with accumulator
      * <ul>
@@ -20,7 +24,7 @@ namespace emu::cpu8080 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void xri(std::uint8_t &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles) {
+    void xri(u8 &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles) {
         acc_reg ^= args.farg;
 
         flag_reg.clear_carry_flag();
@@ -39,16 +43,16 @@ namespace emu::cpu8080 {
 
     void print_xri(std::ostream &ostream, const NextByte &args) {
         ostream << "XRI "
-                << emu::util::string::hexify_wo_0x(args.farg);
+                << hexify_wo_0x(args.farg);
     }
 
     TEST_CASE("8080: XRI") {
         unsigned long cycles = 0;
-        std::uint8_t acc_reg = 0;
+        u8 acc_reg = 0;
 
         SUBCASE("should xor the given value with the accumulator") {
-            for (std::uint8_t acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (std::uint8_t value = 0; value < UINT8_MAX; ++value) {
+            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
+                for (u8 value = 0; value < UINT8_MAX; ++value) {
                     Flags flag_reg;
                     NextByte args = {value};
                     acc_reg = acc_reg_counter;
@@ -61,8 +65,8 @@ namespace emu::cpu8080 {
         }
 
         SUBCASE("should always clear the carry flag") {
-            for (std::uint8_t acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (std::uint8_t value = 0; value < UINT8_MAX; ++value) {
+            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
+                for (u8 value = 0; value < UINT8_MAX; ++value) {
                     Flags flag_reg;
                     NextByte args = {value};
                     acc_reg = acc_reg_counter;
@@ -75,8 +79,8 @@ namespace emu::cpu8080 {
         }
 
         SUBCASE("should set the zero flag when zero and not set it otherwise") {
-            for (std::uint8_t acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (std::uint8_t value = 0; value < UINT8_MAX; ++value) {
+            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
+                for (u8 value = 0; value < UINT8_MAX; ++value) {
                     Flags flag_reg;
                     NextByte args = {value};
                     acc_reg = acc_reg_counter;
@@ -89,8 +93,8 @@ namespace emu::cpu8080 {
         }
 
         SUBCASE("should set the sign flag when above 127 and not set it otherwise") {
-            for (std::uint8_t acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (std::uint8_t value = 0; value < UINT8_MAX; ++value) {
+            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
+                for (u8 value = 0; value < UINT8_MAX; ++value) {
                     Flags flag_reg;
                     NextByte args = {value};
                     acc_reg = acc_reg_counter;
@@ -123,8 +127,8 @@ namespace emu::cpu8080 {
         }
 
         SUBCASE("should always unset the aux carry flag") {
-            for (std::uint8_t acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (std::uint8_t value = 0; value < UINT8_MAX; ++value) {
+            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
+                for (u8 value = 0; value < UINT8_MAX; ++value) {
                     Flags flag_reg;
                     NextByte args = {value};
                     acc_reg = acc_reg_counter;

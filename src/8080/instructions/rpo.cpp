@@ -1,9 +1,9 @@
-#include <cstdint>
 #include <iostream>
 #include "doctest.h"
 #include "8080/flags.h"
 #include "8080/instructions/instruction_util.h"
 #include "crosscutting/byte_util.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
     /**
@@ -21,8 +21,7 @@ namespace emu::cpu8080 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void rpo(std::uint16_t &pc, std::uint16_t &sp, const emu::cpu8080::EmulatorMemory &memory, const Flags &flag_reg,
-             unsigned long &cycles) {
+    void rpo(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, unsigned long &cycles) {
         cycles = 0;
 
         if (!flag_reg.is_parity_flag_set()) {
@@ -41,11 +40,11 @@ namespace emu::cpu8080 {
     TEST_CASE("8080: RPO") {
         unsigned long cycles = 0;
         EmulatorMemory memory;
-        memory.add(std::vector<std::uint8_t>{0xab, 0x01, 0x02, 0x03, 0x04, 0x05});
+        memory.add(std::vector<u8>{0xab, 0x01, 0x02, 0x03, 0x04, 0x05});
 
         SUBCASE("should pop PC off the stack when the parity flag is unset") {
-            std::uint16_t pc = 0x100f;
-            std::uint16_t sp = 0;
+            u16 pc = 0x100f;
+            u16 sp = 0;
             Flags flag_reg;
             flag_reg.clear_parity_flag();
 
@@ -55,8 +54,8 @@ namespace emu::cpu8080 {
         }
 
         SUBCASE("should not pop PC off the stack when the parity flag is set") {
-            std::uint16_t pc = 0x100f;
-            std::uint16_t sp = 0;
+            u16 pc = 0x100f;
+            u16 sp = 0;
             Flags flag_reg;
             flag_reg.set_parity_flag();
 
@@ -68,8 +67,8 @@ namespace emu::cpu8080 {
         SUBCASE("should use 5 cycles when not returning") {
             cycles = 0;
 
-            std::uint16_t pc = 0;
-            std::uint16_t sp = 0;
+            u16 pc = 0;
+            u16 sp = 0;
             Flags flag_reg;
             flag_reg.set_parity_flag();
 
@@ -80,8 +79,8 @@ namespace emu::cpu8080 {
 
         SUBCASE("should use 11 cycles when returning") {
             cycles = 0;
-            std::uint16_t pc = 0;
-            std::uint16_t sp = 0;
+            u16 pc = 0;
+            u16 sp = 0;
             Flags flag_reg;
 
             rpo(pc, sp, memory, flag_reg, cycles);

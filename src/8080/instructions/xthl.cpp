@@ -1,6 +1,6 @@
-#include <cstdint>
 #include <iostream>
 #include "doctest.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
     /**
@@ -18,9 +18,9 @@ namespace emu::cpu8080 {
      * @param sp1 is the second from the top of the stack, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void xthl(std::uint8_t &h_reg, std::uint8_t &l_reg, std::uint8_t &sp0, std::uint8_t &sp1, unsigned long &cycles) {
-        const std::uint8_t h = h_reg;
-        const std::uint8_t l = l_reg;
+    void xthl(u8 &h_reg, u8 &l_reg, u8 &sp0, u8 &sp1, unsigned long &cycles) {
+        const u8 h = h_reg;
+        const u8 l = l_reg;
         l_reg = sp0;
         sp0 = l;
         h_reg = sp1;
@@ -37,10 +37,10 @@ namespace emu::cpu8080 {
         unsigned long cycles = 0;
 
         SUBCASE("should exchange HL with top of the stack") {
-            std::uint8_t h_reg = 0x11;
-            std::uint8_t l_reg = 0x22;
-            std::uint8_t sp0 = 0x33;
-            std::uint8_t sp1 = 0x44;
+            u8 h_reg = 0x11;
+            u8 l_reg = 0x22;
+            u8 sp0 = 0x33;
+            u8 sp1 = 0x44;
 
             xthl(h_reg, l_reg, sp0, sp1, cycles);
 
@@ -52,10 +52,10 @@ namespace emu::cpu8080 {
 
         SUBCASE("should use 18 cycles") {
             cycles = 0;
-            std::uint8_t h_reg = 0x11;
-            std::uint8_t l_reg = 0x22;
-            std::uint8_t sp0 = 0;
-            std::uint8_t sp1 = 0;
+            u8 h_reg = 0x11;
+            u8 l_reg = 0x22;
+            u8 sp0 = 0;
+            u8 sp1 = 0;
 
             xthl(h_reg, l_reg, sp0, sp1, cycles);
 

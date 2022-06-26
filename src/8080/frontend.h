@@ -9,6 +9,10 @@
 #include "crosscutting/gui/gui_type.h"
 
 namespace emu::cpu8080 {
+
+    using emu::util::gui::GuiType;
+    using emu::cpu8080::applications::space_invaders::Settings;
+
     class Frontend {
     public:
         static void run(
@@ -32,8 +36,8 @@ namespace emu::cpu8080 {
 
         static void ordinary(
                 const std::string &program,
-                const emu::cpu8080::applications::space_invaders::Settings &settings,
-                emu::util::gui::GuiType gui_type
+                const Settings &settings,
+                GuiType gui_type
         );
 
         static void disassemble(const std::string &file_path);
@@ -42,15 +46,15 @@ namespace emu::cpu8080 {
 
         static std::unique_ptr<Emulator8080> choose_emulator(
                 const std::string &program,
-                const emu::cpu8080::applications::space_invaders::Settings &settings,
-                emu::util::gui::GuiType gui_type
+                const Settings &settings,
+                GuiType gui_type
         );
 
-        static emu::cpu8080::applications::space_invaders::Settings find_space_invaders_settings(
+        static Settings find_space_invaders_settings(
                 std::unordered_map<std::string, std::vector<std::string>> options
         );
 
-        static emu::util::gui::GuiType find_gui_type(
+        static GuiType find_gui_type(
                 std::unordered_map<std::string, std::vector<std::string>> options
         );
     };

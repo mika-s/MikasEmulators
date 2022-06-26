@@ -2,13 +2,15 @@
 #include <memory>
 #include "imgui.h"
 #include "disassembly_window.h"
-#include "src/crosscutting/debugging/breakpoint.h"
 #include "crosscutting/string_util.h"
+#include "crosscutting/typedefs.h"
+#include "crosscutting/debugging/breakpoint.h"
 
 namespace emu::util::gui {
 
     using emu::util::debugger::Breakpoint;
     using emu::util::debugger::Debugger;
+    using emu::util::string::hexify;
 
     DisassemblyWindow::DisassemblyWindow()
             : m_address_to_goto_str("00000000"),
@@ -69,17 +71,17 @@ namespace emu::util::gui {
                                       ImGuiWindowFlags_HorizontalScrollbar);
                     if (ImGui::BeginTable("breakpoint_table", 3)) {
                         for (auto &breakpoint: m_debugger->breakpoints()) {
-                            const std::uint16_t address = std::get<0>(breakpoint);
+                            auto &[address, tooltip] = breakpoint;
 
                             ImGui::PushID(address);
                             ImGui::TableNextRow();
 
                             ImGui::TableSetColumnIndex(0);
                             ImGui::AlignTextToFramePadding();
-                            ImGui::Text("%s", emu::util::string::hexify(address).c_str());
+                            ImGui::Text("%s", hexify(address).c_str());
+
                             if (ImGui::IsItemHovered()) {
-                                const std::string tooltip = std::get<1>(breakpoint).line();
-                                ImGui::SetTooltip("%s", tooltip.c_str());
+                                ImGui::SetTooltip("%s", tooltip.line().c_str());
                             }
 
                             ImGui::TableSetColumnIndex(1);
@@ -135,11 +137,11 @@ namespace emu::util::gui {
 
         ImGui::InputText("address_to_goto", m_address_to_goto_str, IM_ARRAYSIZE(m_address_to_goto_str),
                          ImGuiInputTextFlags_CharsHexadecimal);
-        m_address_to_goto = static_cast<std::uint16_t>(std::stoi(m_address_to_goto_str, nullptr, address_base));
+        m_address_to_goto = static_cast<u16>(std::stoi(m_address_to_goto_str, nullptr, address_base));
     }
 
     void DisassemblyWindow::draw_addresses() {
-        const std::uint16_t pc = m_debug_container.pc();
+        const u16 pc = m_debug_container.pc();
 
         if (m_debug_container.is_disassembled_program_set()) {
             ImGui::BeginChild("disassembled_code_child",
@@ -148,7 +150,7 @@ namespace emu::util::gui {
                               ImGuiWindowFlags_HorizontalScrollbar);
 
             for (auto &line: m_debug_container.disassembled_program()) {
-                const std::uint16_t address = address_from_disassembly_line(line);
+                const u16 address = address_from_disassembly_line(line);
                 const bool is_currently_looking_at_pc = address == pc;
 
                 if (m_is_following_pc && is_currently_looking_at_pc) {
@@ -188,7 +190,7 @@ namespace emu::util::gui {
         }
     }
 
-    std::uint16_t DisassemblyWindow::address_from_disassembly_line(std::string line) {
+    u16 DisassemblyWindow::address_from_disassembly_line(std::string line) {
         const std::string delimiter = "\t";
         size_t pos;
         std::string token;
@@ -203,6 +205,6 @@ namespace emu::util::gui {
             throw std::runtime_error("Programming error: no elements in split disassembler line");
         }
 
-        return static_cast<std::uint16_t>(std::stoi(split[0], nullptr, address_base));
+        return static_cast<u16>(std::stoi(split[0], nullptr, address_base));
     }
 }

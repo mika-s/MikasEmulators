@@ -4,7 +4,7 @@ namespace emu::cpu8080 {
 
     RegisterDebugContainer::RegisterDebugContainer(
             std::string name,
-            std::function<std::uint8_t()> value_retriever
+            std::function<u8()> value_retriever
     ) : m_name(std::move(name)),
         m_value_retriever(std::move(value_retriever)) {
     }
@@ -13,7 +13,7 @@ namespace emu::cpu8080 {
         return m_name;
     }
 
-    std::uint8_t RegisterDebugContainer::value() const {
+    u8 RegisterDebugContainer::value() const {
         return m_value_retriever();
     }
 
@@ -21,7 +21,7 @@ namespace emu::cpu8080 {
 
     FlagRegisterDebugContainer::FlagRegisterDebugContainer(
             std::string name,
-            std::function<std::uint8_t()> value_retriever,
+            std::function<u8()> value_retriever,
             std::vector<std::tuple<std::string, int>> flag_names
     ) : m_name(std::move(name)),
         m_value_retriever(std::move(value_retriever)),
@@ -32,7 +32,7 @@ namespace emu::cpu8080 {
         return m_name;
     }
 
-    std::uint8_t FlagRegisterDebugContainer::value() const {
+    u8 FlagRegisterDebugContainer::value() const {
         return m_value_retriever();
     }
 
@@ -43,7 +43,7 @@ namespace emu::cpu8080 {
     IoDebugContainer::IoDebugContainer(
             std::string name,
             std::function<bool()> is_active_retriever,
-            std::function<std::uint8_t()> value_retriever
+            std::function<u8()> value_retriever
     ) : m_name(std::move(name)),
         m_is_active_retriever(std::move(is_active_retriever)),
         m_value_retriever(std::move(value_retriever)),
@@ -53,7 +53,7 @@ namespace emu::cpu8080 {
     IoDebugContainer::IoDebugContainer(
             std::string name,
             std::function<bool()> is_active_retriever,
-            std::function<std::uint8_t()> value_retriever,
+            std::function<u8()> value_retriever,
             std::vector<std::tuple<std::string, int>> m_bit_names
     ) : m_name(std::move(name)),
         m_is_active_retriever(std::move(is_active_retriever)),
@@ -70,7 +70,7 @@ namespace emu::cpu8080 {
         return m_is_active_retriever();
     }
 
-    std::uint8_t IoDebugContainer::value() const {
+    u8 IoDebugContainer::value() const {
         return m_value_retriever();
     }
 
@@ -84,11 +84,11 @@ namespace emu::cpu8080 {
 
     MemoryDebugContainer::MemoryDebugContainer() = default;
 
-    MemoryDebugContainer::MemoryDebugContainer(std::function<std::vector<std::uint8_t>()> value_retriever) {
+    MemoryDebugContainer::MemoryDebugContainer(std::function<std::vector<u8>()> value_retriever) {
         m_value_retriever = std::move(value_retriever);
     }
 
-    std::vector<std::uint8_t> MemoryDebugContainer::value() const {
+    std::vector<u8> MemoryDebugContainer::value() const {
         return m_value_retriever();
     }
 
@@ -150,12 +150,12 @@ namespace emu::cpu8080 {
         return m_is_memory_set;
     }
 
-    void DebugContainer::add_pc(const std::function<std::uint16_t()> &value_retriever) {
+    void DebugContainer::add_pc(const std::function<u16()> &value_retriever) {
         m_pc_retriever = value_retriever;
         m_is_pc_set = true;
     }
 
-    std::uint16_t DebugContainer::pc() const {
+    u16 DebugContainer::pc() const {
         return m_pc_retriever();
     }
 
@@ -163,12 +163,12 @@ namespace emu::cpu8080 {
         return m_is_pc_set;
     }
 
-    void DebugContainer::add_sp(const std::function<std::uint16_t()> &value_retriever) {
+    void DebugContainer::add_sp(const std::function<u16()> &value_retriever) {
         m_sp_retriever = value_retriever;
         m_is_sp_set = true;
     }
 
-    std::uint16_t DebugContainer::sp() const {
+    u16 DebugContainer::sp() const {
         return m_sp_retriever();
     }
 

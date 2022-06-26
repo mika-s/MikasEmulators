@@ -1,11 +1,12 @@
 #ifndef MIKA_EMULATORS_8080_NEXT_BYTE_H
 #define MIKA_EMULATORS_8080_NEXT_BYTE_H
 
-#include <cstdint>
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
+
     typedef struct NextByte_s {
-        std::uint8_t farg;
+        u8 farg;
     } NextByte;
 }
 

@@ -3,6 +3,7 @@
 #include "doctest.h"
 #include "8080/flags.h"
 #include "8080/instructions/instructions.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
     /**
@@ -19,7 +20,7 @@ namespace emu::cpu8080 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ora(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg, unsigned long &cycles) {
+    void ora(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles) {
         ora(acc_reg, value, flag_reg, cycles, false);
     }
 
@@ -38,7 +39,7 @@ namespace emu::cpu8080 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void
-    ora(std::uint8_t &acc_reg, std::uint8_t value, Flags &flag_reg, unsigned long &cycles, bool is_memory_involved) {
+    ora(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles, bool is_memory_involved) {
         acc_reg |= value;
 
         flag_reg.clear_carry_flag();
@@ -66,11 +67,11 @@ namespace emu::cpu8080 {
 
     TEST_CASE("8080: ORA") {
         unsigned long cycles = 0;
-        std::uint8_t acc_reg = 0;
+        u8 acc_reg = 0;
 
         SUBCASE("should or the given value with the accumulator") {
-            for (std::uint8_t acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (std::uint8_t value = 0; value < UINT8_MAX; ++value) {
+            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
+                for (u8 value = 0; value < UINT8_MAX; ++value) {
                     Flags flag_reg;
                     acc_reg = acc_reg_counter;
 
@@ -82,8 +83,8 @@ namespace emu::cpu8080 {
         }
 
         SUBCASE("should always clear the carry flag") {
-            for (std::uint8_t acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (std::uint8_t value = 0; value < UINT8_MAX; ++value) {
+            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
+                for (u8 value = 0; value < UINT8_MAX; ++value) {
                     Flags flag_reg;
                     acc_reg = acc_reg_counter;
 
@@ -95,8 +96,8 @@ namespace emu::cpu8080 {
         }
 
         SUBCASE("should set the zero flag when zero and not set it otherwise") {
-            for (std::uint8_t acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (std::uint8_t value = 0; value < UINT8_MAX; ++value) {
+            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
+                for (u8 value = 0; value < UINT8_MAX; ++value) {
                     Flags flag_reg;
                     acc_reg = acc_reg_counter;
 
@@ -108,8 +109,8 @@ namespace emu::cpu8080 {
         }
 
         SUBCASE("should set the sign flag when above 127 and not set it otherwise") {
-            for (std::uint8_t acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (std::uint8_t value = 0; value < UINT8_MAX; ++value) {
+            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
+                for (u8 value = 0; value < UINT8_MAX; ++value) {
                     Flags flag_reg;
                     acc_reg = acc_reg_counter;
 
@@ -123,7 +124,7 @@ namespace emu::cpu8080 {
         SUBCASE("should set the parity flag when even parity") {
             Flags flag_reg;
             acc_reg = 0x3;
-            std::uint8_t value = 0xff;
+            u8 value = 0xff;
 
             ora(acc_reg, value, flag_reg, cycles);
 
@@ -133,7 +134,7 @@ namespace emu::cpu8080 {
         SUBCASE("should not set the parity flag when odd parity") {
             Flags flag_reg;
             acc_reg = 0x2;
-            std::uint8_t value = 0xfe;
+            u8 value = 0xfe;
 
             ora(acc_reg, value, flag_reg, cycles);
 
@@ -141,8 +142,8 @@ namespace emu::cpu8080 {
         }
 
         SUBCASE("should always unset the aux carry") {
-            for (std::uint8_t acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (std::uint8_t value = 0; value < UINT8_MAX; ++value) {
+            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
+                for (u8 value = 0; value < UINT8_MAX; ++value) {
                     Flags flag_reg;
                     acc_reg = acc_reg_counter;
 
@@ -156,7 +157,7 @@ namespace emu::cpu8080 {
         SUBCASE("should use 4 cycles if memory is not involved") {
             cycles = 0;
             acc_reg = 0xe;
-            std::uint8_t value = 0;
+            u8 value = 0;
             Flags flag_reg;
 
             ora(acc_reg, value, flag_reg, cycles);
@@ -167,7 +168,7 @@ namespace emu::cpu8080 {
         SUBCASE("should use 7 cycles if memory is involved") {
             cycles = 0;
             acc_reg = 0xe;
-            std::uint8_t value = 0;
+            u8 value = 0;
             Flags flag_reg;
 
             ora(acc_reg, value, flag_reg, cycles, true);

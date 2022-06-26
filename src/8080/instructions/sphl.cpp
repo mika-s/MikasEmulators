@@ -1,7 +1,7 @@
-#include <cstdint>
 #include <iostream>
 #include "doctest.h"
 #include "crosscutting/byte_util.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
     /**
@@ -17,7 +17,7 @@ namespace emu::cpu8080 {
      * @param address_in_hl is the address stored in the HL registers
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void sphl(std::uint16_t &sp, std::uint16_t address_in_hl, unsigned long &cycles) {
+    void sphl(u16 &sp, u16 address_in_hl, unsigned long &cycles) {
         sp = address_in_hl;
 
         cycles = 5;
@@ -29,9 +29,9 @@ namespace emu::cpu8080 {
 
     TEST_CASE("8080: SPHL") {
         unsigned long cycles = 0;
-        std::uint16_t sp = 0;
-        std::uint8_t h_reg = 0x11;
-        std::uint8_t l_reg = 0x22;
+        u16 sp = 0;
+        u8 h_reg = 0x11;
+        u8 l_reg = 0x22;
 
         SUBCASE("should move HL into SP") {
             sphl(sp, emu::util::byte::to_u16(h_reg, l_reg), cycles);

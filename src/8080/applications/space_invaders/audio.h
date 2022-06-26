@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <SDL.h>
 #include <vector>
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080::applications::space_invaders {
     class Audio {
@@ -13,9 +14,9 @@ namespace emu::cpu8080::applications::space_invaders {
 
         ~Audio();
 
-        void play_sound_port_1(std::uint8_t acc_reg);
+        void play_sound_port_1(u8 acc_reg);
 
-        void play_sound_port_2(std::uint8_t acc_reg);
+        void play_sound_port_2(u8 acc_reg);
 
         void change_volume(unsigned int new_volume);
 
@@ -81,13 +82,13 @@ namespace emu::cpu8080::applications::space_invaders {
 
         bool m_is_muted;
 
-        std::uint8_t m_last_acc_reg;
+        u8 m_last_acc_reg;
 
         unsigned int m_volume = 5000;
 
-        [[nodiscard]] bool is_rising_edge(std::uint8_t acc_reg, unsigned int value) const;
+        [[nodiscard]] bool is_rising_edge(u8 acc_reg, unsigned int value) const;
 
-        [[nodiscard]] bool is_falling_edge(std::uint8_t acc_reg, unsigned int value) const;
+        [[nodiscard]] bool is_falling_edge(u8 acc_reg, unsigned int value) const;
 
         void generate_audio(Uint8 *stream, int len);
 

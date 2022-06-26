@@ -1,10 +1,13 @@
-#include <cstdint>
 #include <iostream>
 #include "doctest.h"
 #include "8080/emulator_memory.h"
 #include "crosscutting/byte_util.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
+
+    using emu::util::byte::to_u16;
+
     /**
      * Load accumulator indirect
      * <ul>
@@ -20,9 +23,8 @@ namespace emu::cpu8080 {
      * @param memory is the memory
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ldax(std::uint8_t &acc_reg, std::uint8_t reg1, std::uint8_t reg2, const emu::cpu8080::EmulatorMemory &memory,
-              unsigned long &cycles) {
-        acc_reg = memory[emu::util::byte::to_u16(reg1, reg2)];
+    void ldax(u8 &acc_reg, u8 reg1, u8 reg2, const EmulatorMemory &memory, unsigned long &cycles) {
+        acc_reg = memory[to_u16(reg1, reg2)];
 
         cycles = 7;
     }
@@ -34,11 +36,11 @@ namespace emu::cpu8080 {
 
     TEST_CASE("8080: LDAX") {
         unsigned long cycles = 0;
-        std::uint8_t acc_reg = 0xe;
+        u8 acc_reg = 0xe;
         EmulatorMemory memory;
-        memory.add(std::vector<std::uint8_t>{0x00, 0x01, 0x02, 0x03, 0xfd, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
-        std::uint8_t reg1 = 0;
-        std::uint8_t reg2 = 0x04;
+        memory.add(std::vector<u8>{0x00, 0x01, 0x02, 0x03, 0xfd, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
+        u8 reg1 = 0;
+        u8 reg2 = 0x04;
 
         SUBCASE("should load the accumulator from memory using address in args") {
             ldax(acc_reg, reg1, reg2, memory, cycles);

@@ -5,8 +5,12 @@
 #include "8080/next_byte.h"
 #include "8080/instructions/instruction_util.h"
 #include "crosscutting/string_util.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
+
+    using emu::util::string::hexify_wo_0x;
+
     /**
      * Subtract immediate with borrow
      * <ul>
@@ -21,7 +25,7 @@ namespace emu::cpu8080 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void sbi(std::uint8_t &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles) {
+    void sbi(u8 &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles) {
         sub_from_register(acc_reg, args.farg, flag_reg.is_carry_flag_set(), flag_reg);
 
         cycles = 7;
@@ -29,23 +33,23 @@ namespace emu::cpu8080 {
 
     void print_sbi(std::ostream &ostream, const NextByte &args) {
         ostream << "SBI "
-                << emu::util::string::hexify_wo_0x(args.farg);
+                << hexify_wo_0x(args.farg);
     }
 
     TEST_CASE("8080: SBI") {
         unsigned long cycles = 0;
-        std::uint8_t acc_reg = 0;
+        u8 acc_reg = 0;
 
         SUBCASE("should subtract the given value from the accumulator") {
-            for (std::uint8_t acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (std::uint8_t value = 0; value < UINT8_MAX; ++value) {
+            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
+                for (u8 value = 0; value < UINT8_MAX; ++value) {
                     Flags flag_reg;
                     acc_reg = acc_reg_counter;
                     NextByte args = {value};
 
                     sbi(acc_reg, args, flag_reg, cycles);
 
-                    CHECK_EQ(static_cast<std::uint8_t>(acc_reg_counter - value), acc_reg);
+                    CHECK_EQ(static_cast<u8>(acc_reg_counter - value), acc_reg);
                 }
             }
         }
@@ -62,8 +66,8 @@ namespace emu::cpu8080 {
         }
 
         SUBCASE("should set the zero flag when zero and not set otherwise") {
-            for (std::uint8_t acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (std::uint8_t value = 0; value < UINT8_MAX; ++value) {
+            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
+                for (u8 value = 0; value < UINT8_MAX; ++value) {
                     Flags flag_reg;
                     acc_reg = acc_reg_counter;
                     NextByte args = {value};
@@ -76,8 +80,8 @@ namespace emu::cpu8080 {
         }
 
         SUBCASE("should set the sign flag when above 127 and not otherwise") {
-            for (std::uint8_t acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (std::uint8_t value = 0; value < UINT8_MAX; ++value) {
+            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
+                for (u8 value = 0; value < UINT8_MAX; ++value) {
                     Flags flag_reg;
                     NextByte args = {value};
                     acc_reg = acc_reg_counter;

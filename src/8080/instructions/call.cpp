@@ -1,11 +1,14 @@
-#include <cstdint>
 #include <iostream>
 #include "doctest.h"
 #include "8080/next_word.h"
 #include "8080/instructions/instruction_util.h"
 #include "crosscutting/string_util.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
+
+    using emu::util::string::hexify_wo_0x;
+
     /**
      * Call
      * <ul>
@@ -21,8 +24,7 @@ namespace emu::cpu8080 {
      * @param args contains the argument with the address to call
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void call(std::uint16_t &pc, std::uint16_t &sp, emu::cpu8080::EmulatorMemory &memory, const NextWord &args,
-              unsigned long &cycles) {
+    void call(u16 &pc, u16 &sp, EmulatorMemory &memory, const NextWord &args, unsigned long &cycles) {
         execute_call(pc, sp, memory, args);
 
         cycles = 17;
@@ -30,19 +32,19 @@ namespace emu::cpu8080 {
 
     void print_call(std::ostream &ostream, const NextWord &args) {
         ostream << "CALL "
-                << emu::util::string::hexify_wo_0x(args.sarg)
-                << emu::util::string::hexify_wo_0x(args.farg);
+                << hexify_wo_0x(args.sarg)
+                << hexify_wo_0x(args.farg);
     }
 
     TEST_CASE("8080: CALL") {
         unsigned long cycles = 0;
         EmulatorMemory memory;
-        memory.add(std::vector<std::uint8_t>{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0xA});
+        memory.add(std::vector<u8>{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0xA});
         NextWord args = {.farg = 0x2, .sarg = 0x0};
 
         SUBCASE("should push current PC on the stack and change PC to the address in args") {
-            std::uint16_t pc = 0x100f;
-            std::uint16_t sp = 0x2;
+            u16 pc = 0x100f;
+            u16 sp = 0x2;
 
             call(pc, sp, memory, args, cycles);
 
@@ -54,8 +56,8 @@ namespace emu::cpu8080 {
         SUBCASE("should use 17 cycles") {
             cycles = 0;
 
-            std::uint16_t pc = 0;
-            std::uint16_t sp = 0x2;
+            u16 pc = 0;
+            u16 sp = 0x2;
 
             call(pc, sp, memory, args, cycles);
 

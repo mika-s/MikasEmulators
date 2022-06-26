@@ -1,8 +1,8 @@
-#include <cstdint>
 #include <iostream>
 #include "doctest.h"
 #include "8080/flags.h"
 #include "8080/instructions/instructions.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
     /**
@@ -18,7 +18,7 @@ namespace emu::cpu8080 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void inr(std::uint8_t &reg, Flags &flag_reg, unsigned long &cycles) {
+    void inr(u8 &reg, Flags &flag_reg, unsigned long &cycles) {
         inr(reg, flag_reg, cycles, false);
     }
 
@@ -35,8 +35,8 @@ namespace emu::cpu8080 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void inr(std::uint8_t &reg, Flags &flag_reg, unsigned long &cycles, bool is_memory_involved) {
-        const std::uint8_t previous = reg;
+    void inr(u8 &reg, Flags &flag_reg, unsigned long &cycles, bool is_memory_involved) {
+        const u8 previous = reg;
         reg++;
 
         flag_reg.handle_zero_flag(reg);
@@ -60,7 +60,7 @@ namespace emu::cpu8080 {
         unsigned long cycles = 0;
 
         SUBCASE("should increase register or memory") {
-            std::uint8_t reg = 0;
+            u8 reg = 0;
             Flags flag_reg;
 
             inr(reg, flag_reg, cycles);
@@ -80,7 +80,7 @@ namespace emu::cpu8080 {
         }
 
         SUBCASE("should not affect the carry flag") {
-            std::uint8_t reg = 255;
+            u8 reg = 255;
             Flags flag_reg;
 
             CHECK_EQ(false, flag_reg.is_carry_flag_set());
@@ -92,7 +92,7 @@ namespace emu::cpu8080 {
         }
 
         SUBCASE("should set correct aux carry flag") {
-            std::uint8_t reg = 15;
+            u8 reg = 15;
             Flags flag_reg;
 
             CHECK_EQ(false, flag_reg.is_aux_carry_flag_set());
@@ -104,7 +104,7 @@ namespace emu::cpu8080 {
         }
 
         SUBCASE("should set correct parity in the parity flag") {
-            std::uint8_t reg = 0;
+            u8 reg = 0;
             Flags flag_reg;
 
             inr(reg, flag_reg, cycles);
@@ -118,7 +118,7 @@ namespace emu::cpu8080 {
         }
 
         SUBCASE("should set correct value in the zero flag") {
-            std::uint8_t reg = 254;
+            u8 reg = 254;
             Flags flag_reg;
 
             inr(reg, flag_reg, cycles);
@@ -131,7 +131,7 @@ namespace emu::cpu8080 {
         }
 
         SUBCASE("should set the sign flag when going above 127") {
-            std::uint8_t reg = 127;
+            u8 reg = 127;
             Flags flag_reg;
 
             CHECK_EQ(false, flag_reg.is_sign_flag_set());
@@ -145,7 +145,7 @@ namespace emu::cpu8080 {
             cycles = 0;
             Flags flag_reg;
 
-            std::uint8_t reg = 0xE;
+            u8 reg = 0xE;
             inr(reg, flag_reg, cycles);
 
             CHECK_EQ(5, cycles);
@@ -155,7 +155,7 @@ namespace emu::cpu8080 {
             cycles = 0;
             Flags flag_reg;
 
-            std::uint8_t reg = 0xE;
+            u8 reg = 0xE;
             inr(reg, flag_reg, cycles, true);
 
             CHECK_EQ(10, cycles);

@@ -1,7 +1,7 @@
-#include <cstdint>
 #include <iostream>
 #include "doctest.h"
 #include "8080/instructions/instructions.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
     /**
@@ -17,7 +17,7 @@ namespace emu::cpu8080 {
      * @param value is the value to move into to_reg
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void mov(std::uint8_t &to, std::uint8_t value, unsigned long &cycles) {
+    void mov(u8 &to, u8 value, unsigned long &cycles) {
         mov(to, value, cycles, false);
     }
 
@@ -35,7 +35,7 @@ namespace emu::cpu8080 {
      * @param cycles is the number of cycles variable, which will be mutated
      * @param is_memory_involved is true if memory is involved, either written or read
      */
-    void mov(std::uint8_t &to, std::uint8_t value, unsigned long &cycles, bool is_memory_involved) {
+    void mov(u8 &to, u8 value, unsigned long &cycles, bool is_memory_involved) {
         to = value;
 
         cycles = 5;
@@ -55,8 +55,8 @@ namespace emu::cpu8080 {
         unsigned long cycles = 0;
 
         SUBCASE("should load registers with value") {
-            std::uint8_t reg1 = 0;
-            std::uint8_t reg2 = 0;
+            u8 reg1 = 0;
+            u8 reg2 = 0;
 
             mov(reg1, reg2, cycles);
             CHECK_EQ(0, reg1);
@@ -71,8 +71,8 @@ namespace emu::cpu8080 {
         }
 
         SUBCASE("should load the memory with value") {
-            std::uint8_t reg1 = 0;
-            std::uint8_t reg2 = 0;
+            u8 reg1 = 0;
+            u8 reg2 = 0;
 
             mov(reg1, reg2, cycles, true);
             CHECK_EQ(0, reg1);
@@ -88,8 +88,8 @@ namespace emu::cpu8080 {
 
         SUBCASE("should use 5 cycles if memory is not involved") {
             cycles = 0;
-            std::uint8_t reg1 = 0;
-            std::uint8_t reg2 = 0x11;
+            u8 reg1 = 0;
+            u8 reg2 = 0x11;
 
             mov(reg1, reg2, cycles);
 
@@ -98,8 +98,8 @@ namespace emu::cpu8080 {
 
         SUBCASE("should use 7 cycles if memory is involved") {
             cycles = 0;
-            std::uint8_t reg1 = 0;
-            std::uint8_t reg2 = 0x11;
+            u8 reg1 = 0;
+            u8 reg2 = 0x11;
 
             mov(reg1, reg2, cycles, true);
 

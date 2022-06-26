@@ -1,12 +1,16 @@
-#include <cstdint>
 #include <iostream>
 #include "doctest.h"
 #include "8080/emulator_memory.h"
 #include "8080/next_word.h"
 #include "crosscutting/byte_util.h"
 #include "crosscutting/string_util.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
+
+    using emu::util::byte::to_u16;
+    using emu::util::string::hexify_wo_0x;
+
     /**
      * Store H and L direct
      * <ul>
@@ -22,10 +26,9 @@ namespace emu::cpu8080 {
      * @param args contains the argument with the address to call
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void shld(std::uint8_t l_reg, std::uint8_t h_reg, emu::cpu8080::EmulatorMemory &memory, const NextWord &args,
-              unsigned long &cycles) {
-        const std::uint16_t l_address = emu::util::byte::to_u16(args.sarg, args.farg);
-        const std::uint16_t h_address = l_address + 1;
+    void shld(u8 l_reg, u8 h_reg, EmulatorMemory &memory, const NextWord &args, unsigned long &cycles) {
+        const u16 l_address = to_u16(args.sarg, args.farg);
+        const u16 h_address = l_address + 1;
 
         memory[l_address] = l_reg;
         memory[h_address] = h_reg;
@@ -35,16 +38,16 @@ namespace emu::cpu8080 {
 
     void print_shld(std::ostream &ostream, const NextWord &args) {
         ostream << "SHLD "
-                << emu::util::string::hexify_wo_0x(args.sarg)
-                << emu::util::string::hexify_wo_0x(args.farg);
+                << hexify_wo_0x(args.sarg)
+                << hexify_wo_0x(args.farg);
     }
 
     TEST_CASE("8080: SHLD") {
         unsigned long cycles = 0;
-        std::uint8_t l_reg = 0x22;
-        std::uint8_t h_reg = 0x11;
+        u8 l_reg = 0x22;
+        u8 h_reg = 0x11;
         EmulatorMemory memory;
-        memory.add(std::vector<std::uint8_t>{0x00, 0xff, 0xaa, 0xbb, 0xcc, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
+        memory.add(std::vector<u8>{0x00, 0xff, 0xaa, 0xbb, 0xcc, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
         NextWord args = {.farg = 0x2, .sarg = 0x0};
 
         SUBCASE("should load memory with H and L registers") {

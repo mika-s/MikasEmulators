@@ -4,6 +4,7 @@
 #include "8080/debug_container.h"
 #include "8080/interfaces/gui_observer.h"
 #include "crosscutting/byte_util.h"
+#include "crosscutting/typedefs.h"
 #include "crosscutting/debugging/debugger.h"
 #include "crosscutting/logging/logger.h"
 
@@ -21,7 +22,7 @@ namespace emu::cpu8080::applications::space_invaders {
 
         virtual void remove_gui_observer(GuiObserver *observer) = 0;
 
-        virtual void update_screen(const std::vector<std::uint8_t> &vram, RunStatus run_status) = 0;
+        virtual void update_screen(const std::vector<u8> &vram, RunStatus run_status) = 0;
 
         virtual void update_debug_only() = 0;
 
@@ -40,21 +41,21 @@ namespace emu::cpu8080::applications::space_invaders {
         static constexpr int scaled_width = static_cast<int>(scale * static_cast<float>(width));
         static constexpr int scaled_height = static_cast<int>(scale * static_cast<float>(height));
 
-        static std::vector<std::uint32_t> create_framebuffer(const std::vector<std::uint8_t> &vram) {
-            std::uint8_t screen[height][width][colors];
+        static std::vector<u32> create_framebuffer(const std::vector<u8> &vram) {
+            u8 screen[height][width][colors];
 
             for (int i = 0; i < height * width / bits_in_byte; i++) {
                 const int y = i * bits_in_byte / height;
                 const int base_x = (i * bits_in_byte) % height;
-                const std::uint8_t current_byte = vram[i];
+                const u8 current_byte = vram[i];
 
-                for (std::uint8_t bit = 0; bit < bits_in_byte; bit++) {
+                for (u8 bit = 0; bit < bits_in_byte; bit++) {
                     int px = base_x + bit;
                     int py = y;
                     const bool is_pixel_lit = is_bit_set(current_byte, bit);
-                    std::uint8_t r = 0;
-                    std::uint8_t g = 0;
-                    std::uint8_t b = 0;
+                    u8 r = 0;
+                    u8 g = 0;
+                    u8 b = 0;
 
                     if (is_pixel_lit) {
                         if (px < 16) {
@@ -86,13 +87,13 @@ namespace emu::cpu8080::applications::space_invaders {
                 }
             }
 
-            std::vector<std::uint32_t> output;
+            std::vector<u32> output;
 
             for (auto &height_idx: screen) {
                 for (auto &width_idx: height_idx) {
-                    std::uint8_t r = width_idx[0];
-                    std::uint8_t g = width_idx[1];
-                    std::uint8_t b = width_idx[2];
+                    u8 r = width_idx[0];
+                    u8 g = width_idx[1];
+                    u8 b = width_idx[2];
                     output.push_back(0xff000000 | b << 16 | g << 8 | r);
                 }
             }

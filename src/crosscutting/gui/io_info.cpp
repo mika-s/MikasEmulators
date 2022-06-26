@@ -2,6 +2,7 @@
 #include "io_info.h"
 #include "crosscutting/byte_util.h"
 #include "crosscutting/string_util.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::util::gui {
 
@@ -10,7 +11,7 @@ namespace emu::util::gui {
 
     IoInfo::IoInfo() = default;
 
-    void IoInfo::attach_debug_container(emu::cpu8080::DebugContainer &debug_container) {
+    void IoInfo::attach_debug_container(cpu8080::DebugContainer &debug_container) {
         m_debug_container = debug_container;
     }
 
@@ -26,7 +27,7 @@ namespace emu::util::gui {
             for (const auto &io: m_debug_container.io()) {
                 const std::string name = io.name();
                 const bool is_active = io.is_active();
-                const std::uint8_t new_value = io.value();
+                const u8 new_value = io.value();
                 const bool is_divided_into_bits = io.is_divided_into_bits();
 
                 ImGui::Text("%s", name.c_str());

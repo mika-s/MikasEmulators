@@ -1,21 +1,21 @@
 #ifndef MIKA_EMULATORS_CROSSCUTTING_BYTE_UTIL_H
 #define MIKA_EMULATORS_CROSSCUTTING_BYTE_UTIL_H
 
-#include <cstdint>
+#include "crosscutting/typedefs.h"
 
 namespace emu::util::byte {
 
-    bool is_bit_set(std::uint8_t variable, unsigned int bit_position);
+    bool is_bit_set(u8 variable, unsigned int bit_position);
 
-    void set_bit(std::uint8_t &variable, unsigned int bit_position);
+    void set_bit(u8 &variable, unsigned int bit_position);
 
-    void unset_bit(std::uint8_t &variable, unsigned int bit_position);
+    void unset_bit(u8 &variable, unsigned int bit_position);
 
-    std::uint16_t to_u16(std::uint8_t farg, std::uint8_t sarg);
+    u16 to_u16(u8 farg, u8 sarg);
 
-    std::uint8_t first_byte(std::uint16_t number);
+    u8 first_byte(u16 number);
 
-    std::uint8_t second_byte(std::uint16_t number);
+    u8 second_byte(u16 number);
 }
 
 #endif //MIKA_EMULATORS_CROSSCUTTING_BYTE_UTIL_H

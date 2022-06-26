@@ -9,6 +9,7 @@
 #include "gui.h"
 #include "8080/debug_container.h"
 #include "8080/run_status.h"
+#include "crosscutting/typedefs.h"
 #include "crosscutting/debugging/debugger.h"
 
 namespace emu::cpu8080::applications::space_invaders {
@@ -23,7 +24,7 @@ namespace emu::cpu8080::applications::space_invaders {
 
         void remove_gui_observer(GuiObserver *observer) override;
 
-        void update_screen(const std::vector<std::uint8_t> &vram, RunStatus run_status) override;
+        void update_screen(const std::vector<u8> &vram, RunStatus run_status) override;
 
         void update_debug_only() override;
 

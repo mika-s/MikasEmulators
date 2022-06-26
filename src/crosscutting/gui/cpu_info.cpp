@@ -10,7 +10,7 @@ namespace emu::util::gui {
 
     CpuInfo::CpuInfo() = default;
 
-    void CpuInfo::attach_debug_container(emu::cpu8080::DebugContainer &debug_container) {
+    void CpuInfo::attach_debug_container(cpu8080::DebugContainer &debug_container) {
         m_debug_container = debug_container;
     }
 
@@ -24,7 +24,7 @@ namespace emu::util::gui {
         ImGui::Separator();
         for (const auto &reg : m_debug_container.registers()) {
             const std::string name = reg.name();
-            const std::uint8_t value = reg.value();
+            const u8 value = reg.value();
 
             ImGui::Text("%s", name.c_str());
             ImGui::SameLine(100.0f, ImGui::GetStyle().ItemInnerSpacing.x);
@@ -32,7 +32,7 @@ namespace emu::util::gui {
         }
         if (m_debug_container.is_flag_register_set()) {
             const std::string name = m_debug_container.flag_register().name();
-            const std::uint8_t value = m_debug_container.flag_register().value();
+            const u8 value = m_debug_container.flag_register().value();
 
             ImGui::Separator();
             ImGui::Text("%s", name.c_str());
@@ -43,7 +43,7 @@ namespace emu::util::gui {
             float offset = 0.0f;
             for (const auto &bit : m_debug_container.flag_register().flag_names()) {
                 std::string bit_name = std::get<0>(bit);
-                std::uint8_t bit_number = std::get<1>(bit);
+                u8 bit_number = std::get<1>(bit);
                 ImGui::Text("%s", is_bit_set(value, bit_number) ? bit_name.c_str() : "-");
                 offset += 10.0f;
                 ImGui::SameLine(200.0f + offset, ImGui::GetStyle().ItemInnerSpacing.x);

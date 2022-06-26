@@ -1,6 +1,7 @@
 #include <cstdint>
 #include <iostream>
 #include "doctest.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
     /**
@@ -15,7 +16,7 @@ namespace emu::cpu8080 {
      * @param acc_reg is the accumulator register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void cma(std::uint8_t &acc_reg, unsigned long &cycles) {
+    void cma(u8 &acc_reg, unsigned long &cycles) {
         acc_reg = ~acc_reg;
 
         cycles = 4;
@@ -27,16 +28,16 @@ namespace emu::cpu8080 {
 
     TEST_CASE("8080: CMA") {
         unsigned long cycles = 0;
-        std::uint8_t acc_reg = 0;
+        u8 acc_reg = 0;
 
         SUBCASE("should complement the accumulator") {
-            for (std::uint8_t acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (std::uint8_t value = 0; value < UINT8_MAX; ++value) {
+            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
+                for (u8 value = 0; value < UINT8_MAX; ++value) {
                     acc_reg = acc_reg_counter;
 
                     cma(acc_reg, cycles);
 
-                    CHECK_EQ(static_cast<std::uint8_t>(~acc_reg_counter), acc_reg);
+                    CHECK_EQ(static_cast<u8>(~acc_reg_counter), acc_reg);
                 }
             }
         }

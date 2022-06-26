@@ -3,8 +3,14 @@
 #include "doctest.h"
 #include "8080/flags.h"
 #include "crosscutting/byte_util.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
+
+    using emu::util::byte::first_byte;
+    using emu::util::byte::second_byte;
+    using emu::util::byte::to_u16;
+
     /**
      * Double register add
      * <ul>
@@ -20,11 +26,11 @@ namespace emu::cpu8080 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void dad(std::uint8_t &h_reg, std::uint8_t &l_reg, std::uint16_t value_to_add, Flags &flag_reg, unsigned long &cycles) {
-        const std::uint16_t previous = emu::util::byte::to_u16(h_reg, l_reg);
-        const std::uint16_t next = previous + value_to_add;
-        h_reg = emu::util::byte::second_byte(next);
-        l_reg = emu::util::byte::first_byte(next);
+    void dad(u8 &h_reg, u8 &l_reg, u16 value_to_add, Flags &flag_reg, unsigned long &cycles) {
+        const u16 previous = to_u16(h_reg, l_reg);
+        const u16 next = previous + value_to_add;
+        h_reg = second_byte(next);
+        l_reg = first_byte(next);
 
         flag_reg.handle_carry_flag_dad(previous, value_to_add);
 
@@ -40,17 +46,17 @@ namespace emu::cpu8080 {
         unsigned long cycles = 0;
 
         SUBCASE("should add the given value to HL") {
-            for (std::uint16_t hl_counter = 0; hl_counter < 100; ++hl_counter) {
-                for (std::uint16_t value_to_add = 0; value_to_add < UINT16_MAX; ++value_to_add) {
+            for (u16 hl_counter = 0; hl_counter < 100; ++hl_counter) {
+                for (u16 value_to_add = 0; value_to_add < UINT16_MAX; ++value_to_add) {
                     Flags flag_reg;
 
-                    std::uint8_t h_reg = emu::util::byte::second_byte(hl_counter);
-                    std::uint8_t l_reg = emu::util::byte::first_byte(hl_counter);
+                    u8 h_reg = emu::util::byte::second_byte(hl_counter);
+                    u8 l_reg = emu::util::byte::first_byte(hl_counter);
 
                     dad(h_reg, l_reg, value_to_add, flag_reg, cycles);
 
                     CHECK_EQ(
-                            static_cast<std::uint16_t>(hl_counter + value_to_add),
+                            static_cast<u16>(hl_counter + value_to_add),
                             emu::util::byte::to_u16(h_reg, l_reg)
                     );
                 }
@@ -60,9 +66,9 @@ namespace emu::cpu8080 {
         SUBCASE("should set the carry flag when carried out of msb") {
             Flags flag_reg;
 
-            std::uint8_t h_reg = 0xff;
-            std::uint8_t l_reg = 0xff;
-            std::uint16_t value_to_add = 0x1;
+            u8 h_reg = 0xff;
+            u8 l_reg = 0xff;
+            u16 value_to_add = 0x1;
 
             dad(h_reg, l_reg, value_to_add, flag_reg, cycles);
 
@@ -73,9 +79,9 @@ namespace emu::cpu8080 {
             cycles = 0;
             Flags flag_reg;
 
-            std::uint8_t h_reg = 0;
-            std::uint8_t l_reg = 0xE;
-            std::uint16_t value_to_add = 0x4;
+            u8 h_reg = 0;
+            u8 l_reg = 0xE;
+            u16 value_to_add = 0x4;
 
             dad(h_reg, l_reg, value_to_add, flag_reg, cycles);
 

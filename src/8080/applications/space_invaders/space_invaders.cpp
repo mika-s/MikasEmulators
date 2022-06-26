@@ -30,32 +30,26 @@ namespace emu::cpu8080::applications::space_invaders {
         m_memory.add(read_file_into_vector("invaders.e")); // $1800-$1fff: invaders.e
         m_memory.add(create_work_ram());                   // $2000-$23ff: work RAM
         m_memory.add(create_vram());                       // $2400-$3fff: video RAM
-        m_memory.add_link(0x2000, 0x4000);                 // $4000-: RAM mirror
-        m_memory.add_link(0x2000, 0x4000);
-        m_memory.add_link(0x2000, 0x4000);
-        m_memory.add_link(0x2000, 0x4000);
-        m_memory.add_link(0x2000, 0x4000);
-        m_memory.add_link(0x2000, 0x4000);
     }
 
-    std::vector<std::uint8_t> SpaceInvaders::create_work_ram() {
-        std::vector<std::uint8_t> work_ram;
-        const int size = 1024;
+    std::vector<u8> SpaceInvaders::create_work_ram() {
+        std::vector<u8> work_ram;
+        const int size = 0x23ff - 0x2000;
 
         work_ram.reserve(size);
-        for (int i = 0; i < size; ++i) {
+        for (int i = 0; i <= size; ++i) {
             work_ram.push_back(0);
         }
 
         return work_ram;
     }
 
-    std::vector<std::uint8_t> SpaceInvaders::create_vram() {
-        std::vector<std::uint8_t> vram;
-        const int size = 7168;
+    std::vector<u8> SpaceInvaders::create_vram() {
+        std::vector<u8> vram;
+        const int size = 0x3fff - 0x2400;
 
         vram.reserve(size);
-        for (int i = 0; i < size + 1; ++i) {
+        for (int i = 0; i <= size; ++i) {
             vram.push_back(0);
         }
 

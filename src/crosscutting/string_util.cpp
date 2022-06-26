@@ -3,7 +3,7 @@
 
 namespace emu::util::string {
 
-    std::string hexify(std::uint8_t val) {
+    std::string hexify(u8 val) {
         std::stringstream ss;
         ss << "0x" << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(val);
         std::string returnVal = ss.str();
@@ -11,14 +11,14 @@ namespace emu::util::string {
         return returnVal;
     }
 
-    std::string hexify(std::uint16_t val) {
+    std::string hexify(u16 val) {
         std::stringstream ss;
         ss << "0x" << std::setfill('0') << std::setw(4) << std::hex << val;
 
         return ss.str();
     }
 
-    std::string hexify_wo_0x(std::uint8_t val) {
+    std::string hexify_wo_0x(u8 val) {
         std::stringstream ss;
         ss << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(val);
         std::string returnVal = ss.str();

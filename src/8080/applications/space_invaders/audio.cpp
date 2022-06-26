@@ -47,7 +47,7 @@ namespace emu::cpu8080::applications::space_invaders {
         SDL_CloseAudioDevice(m_audio_device);
     }
 
-    void Audio::play_sound_port_1(std::uint8_t acc_reg) {
+    void Audio::play_sound_port_1(u8 acc_reg) {
         if (is_rising_edge(acc_reg, ufo)) {
             m_is_ufo_sound_on = true;
         }
@@ -72,7 +72,7 @@ namespace emu::cpu8080::applications::space_invaders {
         m_last_acc_reg = acc_reg;
     }
 
-    void Audio::play_sound_port_2(std::uint8_t acc_reg) {
+    void Audio::play_sound_port_2(u8 acc_reg) {
         if (is_rising_edge(acc_reg, fleet_movement_1)) {
             m_is_fleet_movement_1_sound_on = true;
         }
@@ -165,14 +165,14 @@ namespace emu::cpu8080::applications::space_invaders {
         }
     }
 
-    bool Audio::is_rising_edge(std::uint8_t acc_reg, unsigned int value) const {
+    bool Audio::is_rising_edge(u8 acc_reg, unsigned int value) const {
         const bool is_currently_set = is_bit_set(acc_reg, value);
         const bool was_formerly_set = is_bit_set(m_last_acc_reg, value);
 
         return is_currently_set && !was_formerly_set;
     }
 
-    bool Audio::is_falling_edge(std::uint8_t acc_reg, unsigned int value) const {
+    bool Audio::is_falling_edge(u8 acc_reg, unsigned int value) const {
         const bool is_currently_set = is_bit_set(acc_reg, value);
         const bool was_formerly_set = is_bit_set(m_last_acc_reg, value);
 

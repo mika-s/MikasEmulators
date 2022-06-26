@@ -2,6 +2,16 @@
 
 This is my collection of emulators, written in C++. As of now, it only emulates Intel 8080, with the game Space Invaders.
 
+## Table of contents
+
+* [Dependencies](#dependencies)
+* [Building](#building)
+* [Emulated CPUs](#emulated-cpus)
+  * [Intel 8080](#intel-8080)
+    * [Space Invaders](#space-invaders)
+    * [Inspiration](#inspiration)
+    * [Todo](#todo)
+
 ## Dependencies
 
 - [SDL2](https://www.libsdl.org/) (and SDL2_image)

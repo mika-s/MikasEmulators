@@ -1,10 +1,13 @@
-#include <cstdint>
 #include <iostream>
 #include "doctest.h"
 #include "8080/emulator_memory.h"
 #include "crosscutting/byte_util.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
+
+    using emu::util::byte::to_u16;
+
     /**
      * Store accumulator indirect
      * <ul>
@@ -20,9 +23,8 @@ namespace emu::cpu8080 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void stax(std::uint8_t acc_reg, std::uint8_t reg1, std::uint8_t reg2, emu::cpu8080::EmulatorMemory &memory,
-              unsigned long &cycles) {
-        const std::uint16_t address = emu::util::byte::to_u16(reg1, reg2);
+    void stax(u8 acc_reg, u8 reg1, u8 reg2, EmulatorMemory &memory, unsigned long &cycles) {
+        const u16 address = to_u16(reg1, reg2);
 
         memory[address] = acc_reg;
 
@@ -37,10 +39,10 @@ namespace emu::cpu8080 {
     TEST_CASE("8080: STAX") {
         unsigned long cycles = 0;
         EmulatorMemory memory;
-        memory.add(std::vector<std::uint8_t>{0x00, 0x01, 0x02, 0x03, 0xfd, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
-        std::uint8_t acc_reg = 0;
-        std::uint8_t reg1 = 0x0;
-        std::uint8_t reg2 = 0x3;
+        memory.add(std::vector<u8>{0x00, 0x01, 0x02, 0x03, 0xfd, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
+        u8 acc_reg = 0;
+        u8 reg1 = 0x0;
+        u8 reg2 = 0x3;
 
         SUBCASE("should store the accumulator in memory at the given address") {
             stax(acc_reg, reg1, reg2, memory, cycles);

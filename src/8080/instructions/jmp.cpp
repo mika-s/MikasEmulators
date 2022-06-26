@@ -1,11 +1,15 @@
-#include <cstdint>
 #include <iostream>
 #include "doctest.h"
 #include "8080/next_word.h"
 #include "crosscutting/byte_util.h"
 #include "crosscutting/string_util.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::cpu8080 {
+
+    using emu::util::byte::to_u16;
+    using emu::util::string::hexify_wo_0x;
+
     /**
      * Jump
      * <ul>
@@ -19,21 +23,21 @@ namespace emu::cpu8080 {
      * @param args contains the argument with the address to jump to
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void jmp(std::uint16_t &pc, const NextWord &args, unsigned long &cycles) {
-        pc = emu::util::byte::to_u16(args.sarg, args.farg);
+    void jmp(u16 &pc, const NextWord &args, unsigned long &cycles) {
+        pc = to_u16(args.sarg, args.farg);
 
         cycles = 10;
     }
 
     void print_jmp(std::ostream &ostream, const NextWord &args) {
         ostream << "JMP "
-                << emu::util::string::hexify_wo_0x(args.sarg)
-                << emu::util::string::hexify_wo_0x(args.farg);
+                << hexify_wo_0x(args.sarg)
+                << hexify_wo_0x(args.farg);
     }
 
     TEST_CASE("8080: JMP") {
         unsigned long cycles = 0;
-        std::uint16_t pc = 0;
+        u16 pc = 0;
         NextWord args = {.farg = 0x11, .sarg = 0x22};
 
         SUBCASE("should jump") {
