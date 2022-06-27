@@ -1,11 +1,11 @@
 #include <cstdint>
 #include <iostream>
 #include "doctest.h"
-#include "8080/flags.h"
-#include "8080/instructions/instructions.h"
+#include "z80/flags.h"
+#include "z80/instructions/instructions.h"
 #include "crosscutting/typedefs.h"
 
-namespace emu::cpu8080 {
+namespace emu::z80 {
     /**
      * Exclusive or with accumulator
      * <ul>
@@ -39,7 +39,8 @@ namespace emu::cpu8080 {
      * @param cycles is the number of cycles variable, which will be mutated
      * @param is_memory_involved is true if memory is involved, either written or read
      */
-    void xra(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles, bool is_memory_involved) {
+    void
+    xra(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles, bool is_memory_involved) {
         acc_reg ^= value;
 
         flag_reg.clear_carry_flag();
@@ -65,7 +66,7 @@ namespace emu::cpu8080 {
                 << reg;
     }
 
-    TEST_CASE("8080: XRA") {
+    TEST_CASE("Z80: XRA") {
         unsigned long cycles = 0;
         u8 acc_reg = 0;
 

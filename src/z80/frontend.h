@@ -1,18 +1,18 @@
-#ifndef MIKA_EMULATORS_8080_FRONTEND_H
-#define MIKA_EMULATORS_8080_FRONTEND_H
+#ifndef MIKA_EMULATORS_Z80_FRONTEND_H
+#define MIKA_EMULATORS_Z80_FRONTEND_H
 
 #include <vector>
 #include <memory>
-#include "8080/cpu.h"
-#include "8080/applications/space_invaders/space_invaders.h"
-#include "8080/applications/space_invaders/settings.h"
-#include "8080/interfaces/emulator8080.h"
+#include "z80/cpu.h"
+//#include "z80/applications/space_invaders/space_invaders.h"
+#include "z80/applications/pacman/settings.h"
+#include "z80/interfaces/emulatorZ80.h"
 #include "crosscutting/gui/gui_type.h"
 
-namespace emu::cpu8080 {
+namespace emu::z80 {
 
     using emu::gui::GuiType;
-    using emu::cpu8080::applications::space_invaders::Settings;
+    using emu::z80::applications::pacman::Settings;
 
     class Frontend {
     public:
@@ -28,11 +28,10 @@ namespace emu::cpu8080 {
 
     private:
         static const inline std::vector<std::string> supported_programs = {
-                "space_invaders",
-                "TST8080",
-                "8080PRE",
-                "8080EXM",
-                "CPUTEST"
+                "pacman",
+                "prelim",
+                "zexall",
+                "zexdoc"
         };
 
         static void ordinary(
@@ -45,13 +44,13 @@ namespace emu::cpu8080 {
 
         static void test();
 
-        static std::unique_ptr<Emulator8080> choose_emulator(
+        static std::unique_ptr<EmulatorZ80> choose_emulator(
                 const std::string &program,
                 const Settings &settings,
                 GuiType gui_type
         );
 
-        static Settings find_space_invaders_settings(
+        static Settings find_pacman_settings(
                 std::unordered_map<std::string, std::vector<std::string>> options
         );
 
@@ -61,4 +60,4 @@ namespace emu::cpu8080 {
     };
 }
 
-#endif //MIKA_EMULATORS_8080_FRONTEND_H
+#endif //MIKA_EMULATORS_Z80_FRONTEND_H

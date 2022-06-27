@@ -3,24 +3,34 @@
 #include <iostream>
 #include <unordered_map>
 #include "doctest.h"
-#include "8080/disassembler8080.h"
 #include "8080/frontend.h"
+#include "z80/frontend.h"
 #include "crosscutting/exceptions/invalid_program_arguments_exception.h"
 #include "crosscutting/util/string_util.h"
 
 using emu::exceptions::InvalidProgramArgumentsException;
+using emu::util::string::find_short_executable_name;
 
 void print_usage(const std::string &program_name) {
     std::cout << "USAGE:\n\n";
     std::cout << "CPU:\n";
     std::cout << "  - 8080: Emulates the Intel 8080 CPU.\n\n";
-    std::cout << "    Modes:\n";
-    std::cout << "    - disassemble: Shows the assembly code of the given file.\n";
-    std::cout << "      Example: ./" << program_name << " 8080 disassemble my_file.h\n";
-    std::cout << "    - run: Runs a specific game or program. Available: "
+    std::cout << "       Modes:\n";
+    std::cout << "       - disassemble: Shows the assembly code of the given file.\n";
+    std::cout << "         Example: ./" << program_name << " 8080 disassemble my_file.h\n";
+    std::cout << "       - run: Runs a specific game or program. Available: "
               << emu::cpu8080::Frontend::supported() << "\n";
-    std::cout << "    - test: Run unit tests related to 8080.";
-    std::cout << "      Example: ./" << program_name << " 8080 run space_invaders\n";
+    std::cout << "       - test: Run unit tests related to 8080.\n\n";
+    std::cout << "       Example: ./" << program_name << " 8080 run space_invaders\n";
+    std::cout << "\n\n";
+    std::cout << "  - Z80: Emulates the Z80 CPU.\n\n";
+    std::cout << "       Modes:\n";
+    std::cout << "       - disassemble: Shows the assembly code of the given file.\n";
+    std::cout << "         Example: ./" << program_name << " Z80 disassemble my_file.h\n";
+    std::cout << "       - run: Runs a specific game or program. Available: "
+              << emu::z80::Frontend::supported() << "\n";
+    std::cout << "       - test: Run unit tests related to Z80.\n\n";
+    std::cout << "       Example: ./" << program_name << " Z80 run pacman\n";
 }
 
 std::unordered_map<std::string, std::vector<std::string>> find_options(int argc, char *argv[]) {
@@ -61,7 +71,7 @@ std::unordered_map<std::string, std::vector<std::string>> find_options(int argc,
 }
 
 int main(int argc, char *argv[]) {
-    const std::string short_name = emu::util::string::find_short_executable_name(argv[0]);
+    const std::string short_name = find_short_executable_name(argv[0]);
 
     try {
         if (argc > 1) {
@@ -70,6 +80,8 @@ int main(int argc, char *argv[]) {
 
             if (cpu == "8080") {
                 emu::cpu8080::Frontend::run(argc, argv, options);
+            } else if (cpu == "Z80") {
+                emu::z80::Frontend::run(argc, argv, options);
             } else {
                 throw InvalidProgramArgumentsException("Unknown CPU");
             }

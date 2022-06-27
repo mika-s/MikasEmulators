@@ -1,13 +1,14 @@
 #include <cstdint>
 #include <iostream>
 #include "doctest.h"
-#include "8080/flags.h"
-#include "8080/instructions/instructions.h"
+#include "z80/flags.h"
+#include "z80/instructions/instructions.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/util/byte_util.h"
 
-namespace emu::cpu8080 {
+namespace emu::z80 {
     /**
-     * Exclusive or with accumulator
+     * Logical and with accumulator
      * <ul>
      *   <li>Size: 2</li>
      *   <li>Cycles: 1</li>
@@ -16,16 +17,16 @@ namespace emu::cpu8080 {
      * </ul>
      *
      * @param acc_reg is the accumulator register
-     * @param value contains the argument that should be exclusive ored with the accumulator
+     * @param value contains the argument that should be anded with the accumulator
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void xra(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles) {
-        xra(acc_reg, value, flag_reg, cycles, false);
+    void ana(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles) {
+        ana(acc_reg, value, flag_reg, cycles, false);
     }
 
     /**
-     * Exclusive or with accumulator
+     * Logical and with accumulator
      * <ul>
      *   <li>Size: 2</li>
      *   <li>Cycles: 1</li>
@@ -34,24 +35,30 @@ namespace emu::cpu8080 {
      * </ul>
      *
      * @param acc_reg is the accumulator register
-     * @param value contains the argument that should be exclusive ored with the accumulator
+     * @param value contains the argument that should be anded with the accumulator
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      * @param is_memory_involved is true if memory is involved, either written or read
      */
-    void xra(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles, bool is_memory_involved) {
-        acc_reg ^= value;
+    void ana(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles, bool is_memory_involved) {
+        const u8 previous = acc_reg;
+        acc_reg &= value;
 
         flag_reg.clear_carry_flag();
         flag_reg.handle_zero_flag(acc_reg);
         flag_reg.handle_sign_flag(acc_reg);
         flag_reg.handle_parity_flag(acc_reg);
 
-        // The auxiliary carry is not supposed to be affected by XRA, according to Intel 8080 Assembly Language
-        // Programming Manual (Rev B), but should be reset according to the 8080/8085 Assembly Language Programming
-        // Manual. It is reset in this emulator.
+        // The auxiliary carry is not supposed to be affected by ANA, according to Intel 8080 Assembly Language
+        // Programming Manual (Rev B), but apparently has to be modified anyway. This is explained here:
+        // https://demin.ws/blog/english/2012/12/24/my-iz80-collection/
+        // The 8080/8085 Assembly Language Programming Manual also mentions auxiliary carry being modified by ANI.
 
-        flag_reg.clear_aux_carry_flag();
+        if (((previous | value) & 0x08) != 0) {
+            flag_reg.set_aux_carry_flag();
+        } else {
+            flag_reg.clear_aux_carry_flag();
+        }
 
         cycles = 4;
 
@@ -60,24 +67,24 @@ namespace emu::cpu8080 {
         }
     }
 
-    void print_xra(std::ostream &ostream, const std::string &reg) {
-        ostream << "XRA "
+    void print_ana(std::ostream &ostream, const std::string &reg) {
+        ostream << "ANA "
                 << reg;
     }
 
-    TEST_CASE("8080: XRA") {
+    TEST_CASE("Z80: ANA") {
         unsigned long cycles = 0;
         u8 acc_reg = 0;
 
-        SUBCASE("should or the given value with the accumulator") {
+        SUBCASE("should and given value with the accumulator") {
             for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
                 for (u8 value = 0; value < UINT8_MAX; ++value) {
                     Flags flag_reg;
                     acc_reg = acc_reg_counter;
 
-                    xra(acc_reg, value, flag_reg, cycles);
+                    ana(acc_reg, value, flag_reg, cycles);
 
-                    CHECK_EQ(acc_reg_counter ^ value, acc_reg);
+                    CHECK_EQ(acc_reg_counter & value, acc_reg);
                 }
             }
         }
@@ -88,33 +95,33 @@ namespace emu::cpu8080 {
                     Flags flag_reg;
                     acc_reg = acc_reg_counter;
 
-                    xra(acc_reg, value, flag_reg, cycles);
+                    ana(acc_reg, value, flag_reg, cycles);
 
                     CHECK_EQ(false, flag_reg.is_carry_flag_set());
                 }
             }
         }
 
-        SUBCASE("should set the zero flag when zero and not set otherwise") {
+        SUBCASE("should set the zero flag when zero and not set it otherwise") {
             for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
                 for (u8 value = 0; value < UINT8_MAX; ++value) {
                     Flags flag_reg;
                     acc_reg = acc_reg_counter;
 
-                    xra(acc_reg, value, flag_reg, cycles);
+                    ana(acc_reg, value, flag_reg, cycles);
 
                     CHECK_EQ(acc_reg == 0, flag_reg.is_zero_flag_set());
                 }
             }
         }
 
-        SUBCASE("should set the sign flag when above 127 and not set otherwise") {
+        SUBCASE("should set the sign flag when above 127 and not set it otherwise") {
             for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
                 for (u8 value = 0; value < UINT8_MAX; ++value) {
                     Flags flag_reg;
                     acc_reg = acc_reg_counter;
 
-                    xra(acc_reg, value, flag_reg, cycles);
+                    ana(acc_reg, value, flag_reg, cycles);
 
                     CHECK_EQ(acc_reg > 127, flag_reg.is_sign_flag_set());
                 }
@@ -126,7 +133,7 @@ namespace emu::cpu8080 {
             acc_reg = 0x3;
             u8 value = 0xff;
 
-            xra(acc_reg, value, flag_reg, cycles);
+            ana(acc_reg, value, flag_reg, cycles);
 
             CHECK_EQ(true, flag_reg.is_parity_flag_set());
         }
@@ -136,20 +143,20 @@ namespace emu::cpu8080 {
             acc_reg = 0x2;
             u8 value = 0xff;
 
-            xra(acc_reg, value, flag_reg, cycles);
+            ana(acc_reg, value, flag_reg, cycles);
 
             CHECK_EQ(false, flag_reg.is_parity_flag_set());
         }
 
-        SUBCASE("should always unset the aux carry") {
+        SUBCASE("should set the aux carry when the bitwise ored third bit is set") {
             for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
                 for (u8 value = 0; value < UINT8_MAX; ++value) {
                     Flags flag_reg;
                     acc_reg = acc_reg_counter;
 
-                    xra(acc_reg, value, flag_reg, cycles);
+                    ana(acc_reg, value, flag_reg, cycles);
 
-                    CHECK_EQ(false, flag_reg.is_aux_carry_flag_set());
+                    CHECK_EQ(emu::util::byte::is_bit_set(acc_reg_counter | value, 3), flag_reg.is_aux_carry_flag_set());
                 }
             }
         }
@@ -160,7 +167,7 @@ namespace emu::cpu8080 {
             u8 value = 0;
             Flags flag_reg;
 
-            xra(acc_reg, value, flag_reg, cycles);
+            ana(acc_reg, value, flag_reg, cycles);
 
             CHECK_EQ(4, cycles);
         }
@@ -171,7 +178,7 @@ namespace emu::cpu8080 {
             u8 value = 0;
             Flags flag_reg;
 
-            xra(acc_reg, value, flag_reg, cycles, true);
+            ana(acc_reg, value, flag_reg, cycles, true);
 
             CHECK_EQ(7, cycles);
         }

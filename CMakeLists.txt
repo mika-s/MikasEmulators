@@ -23,8 +23,15 @@ include(${PROJECT_SOURCE_DIR}/libs/imgui/SourceFiles.cmake)
 # ------------------------ Main binary
 
 include(${PROJECT_SOURCE_DIR}/src/8080/SourceFiles.cmake)
+include(${PROJECT_SOURCE_DIR}/src/z80/SourceFiles.cmake)
+include(${PROJECT_SOURCE_DIR}/src/crosscutting/SourceFiles.cmake)
 
-add_executable(${PROJECT_NAME} ${SOURCES_8080_CPP} ${SOURCES_8080_H} ${SOURCES_DOCTEST} ${SOURCES_GLAD} ${SOURCES_IMGUI})
+add_executable(${PROJECT_NAME}
+        ${SOURCES_DOCTEST} ${SOURCES_GLAD} ${SOURCES_IMGUI}
+        ${SOURCES_CROSSCUTTING_CPP} ${SOURCES_CROSSCUTTING_H}
+        ${SOURCES_8080_CPP} ${SOURCES_8080_H}
+        ${SOURCES_Z80_CPP} ${SOURCES_Z80_H}
+        )
 target_link_libraries(${PROJECT_NAME} SDL2::Main SDL2::Image fmt::fmt)
 target_include_directories(${PROJECT_NAME} PRIVATE
         libs/doctest
@@ -53,3 +60,7 @@ configure_file(roms/8080/TST8080.COM TST8080.COM COPYONLY)
 configure_file(roms/8080/8080PRE.COM 8080PRE.COM COPYONLY)
 configure_file(roms/8080/8080EXM.COM 8080EXM.COM COPYONLY)
 configure_file(roms/8080/CPUTEST.COM CPUTEST.COM COPYONLY)
+
+configure_file(roms/z80/prelim.z80 prelim.z80 COPYONLY)
+configure_file(roms/z80/zexall.z80 zexall.z80 COPYONLY)
+configure_file(roms/z80/zexdoc.z80 zexdoc.z80 COPYONLY)

@@ -5,17 +5,12 @@
 #include <sstream>
 #include "doctest.h"
 #include "frontend.h"
-#include "8080/disassembler8080.h"
-#include "8080/applications/cpm/cpm_application.h"
-#include "8080/applications/space_invaders/space_invaders.h"
-#include "8080/applications/space_invaders/input_imgui.h"
-#include "8080/applications/space_invaders/input_sdl.h"
-#include "8080/applications/space_invaders/gui_imgui.h"
-#include "8080/applications/space_invaders/gui_sdl.h"
+#include "z80/disassemblerZ80.h"
+#include "z80/applications/cpm/cpm_application.h"
 #include "crosscutting/exceptions/invalid_program_arguments_exception.h"
 #include "crosscutting/util/file_util.h"
 
-namespace emu::cpu8080 {
+namespace emu::z80 {
 
     using emu::exceptions::InvalidProgramArgumentsException;
 
@@ -38,7 +33,7 @@ namespace emu::cpu8080 {
                     const std::string program(argv[3]);
 
                     if (is_supporting(program)) {
-                        const Settings settings = find_space_invaders_settings(options);
+                        const Settings settings = find_pacman_settings(options);
                         const GuiType gui_type = find_gui_type(options);
                         ordinary(program, settings, gui_type);
                     } else {
@@ -55,7 +50,7 @@ namespace emu::cpu8080 {
                 throw InvalidProgramArgumentsException(ss.str());
             }
         } else {
-            throw InvalidProgramArgumentsException("Wrong number of arguments to 8080.");
+            throw InvalidProgramArgumentsException("Wrong number of arguments to Z80.");
         }
     }
 
@@ -83,44 +78,25 @@ namespace emu::cpu8080 {
         EmulatorMemory memory;
         memory.add(read_file_into_vector(program));
 
-        Disassembler8080 disassembler(memory, std::cout);
+        DisassemblerZ80 disassembler(memory, std::cout);
         disassembler.disassemble();
     }
 
-    std::unique_ptr<Emulator8080> Frontend::choose_emulator(
+    std::unique_ptr<EmulatorZ80> Frontend::choose_emulator(
             const std::string &program,
-            const Settings &settings,
-            GuiType gui_type
+            [[maybe_unused]] const Settings &settings,
+            [[maybe_unused]] GuiType gui_type
     ) {
         using applications::cpm::CpmApplication;
-        using applications::space_invaders::InputSdl;
-        using applications::space_invaders::InputImgui;
-        using applications::space_invaders::GuiSdl;
-        using applications::space_invaders::GuiImgui;
-        using applications::space_invaders::SpaceInvaders;
 
-        if (program == "space_invaders") {
-            if (gui_type == GuiType::DEBUGGING) {
-                return std::make_unique<SpaceInvaders>(
-                        settings,
-                        std::make_shared<GuiImgui>(),
-                        std::make_shared<InputImgui>()
-                );
-            } else {
-                return std::make_unique<SpaceInvaders>(
-                        settings,
-                        std::make_shared<GuiSdl>(),
-                        std::make_shared<InputSdl>()
-                );
-            }
-        } else if (program == "TST8080") {
-            return std::make_unique<CpmApplication>("TST8080.COM");
-        } else if (program == "8080PRE") {
-            return std::make_unique<CpmApplication>("8080PRE.COM");
-        } else if (program == "8080EXM") {
-            return std::make_unique<CpmApplication>("8080EXM.COM");
-        } else if (program == "CPUTEST") {
-            return std::make_unique<CpmApplication>("CPUTEST.COM");
+        if (program == "pacman") {
+            throw InvalidProgramArgumentsException("pacman not implemented yet");
+        } else if (program == "prelim") {
+            return std::make_unique<CpmApplication>("prelim.z80");
+        } else if (program == "zexall") {
+            return std::make_unique<CpmApplication>("zexall.z80");
+        } else if (program == "zexdoc") {
+            return std::make_unique<CpmApplication>("zexdoc.z80");
         } else {
             throw InvalidProgramArgumentsException("Illegal program argument when choosing emulator");
         }
@@ -128,7 +104,7 @@ namespace emu::cpu8080 {
 
     void Frontend::test() {
         doctest::Context context;
-        context.addFilter("test-case", "8080*");
+        context.addFilter("test-case", "Z80*");
         context.addFilter("test-case", "crosscutting*");
         int res = context.run();
 
@@ -139,12 +115,12 @@ namespace emu::cpu8080 {
         exit(res);
     }
 
-    Settings Frontend::find_space_invaders_settings(
+    Settings Frontend::find_pacman_settings(
             std::unordered_map<std::string, std::vector<std::string>> options
     ) {
-        using applications::space_invaders::BonusLifeAt;
-        using applications::space_invaders::CoinInfo;
-        using applications::space_invaders::NumberOfLives;
+        using applications::pacman::BonusLifeAt;
+        using applications::pacman::CoinInfo;
+        using applications::pacman::NumberOfLives;
 
         Settings settings{};
         settings.m_number_of_lives = NumberOfLives::Three;
