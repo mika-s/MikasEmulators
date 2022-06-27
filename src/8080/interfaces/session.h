@@ -1,7 +1,7 @@
 #ifndef MIKA_EMULATORS_8080_INTERFACES_SESSION_H
 #define MIKA_EMULATORS_8080_INTERFACES_SESSION_H
 
-namespace emu::cpu8080 {
+namespace emu::i8080 {
 
     class Session {
     public:

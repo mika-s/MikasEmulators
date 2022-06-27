@@ -5,7 +5,7 @@
 #include "8080/disassembler8080.h"
 #include "crosscutting/util/string_util.h"
 
-namespace emu::cpu8080::applications::space_invaders {
+namespace emu::i8080::applications::space_invaders {
 
     SpaceInvadersSession::SpaceInvadersSession(
             const Settings &settings,
@@ -261,7 +261,7 @@ namespace emu::cpu8080::applications::space_invaders {
         m_gui->attach_logger(m_logger);
     }
 
-    void SpaceInvadersSession::run_status_changed(emu::cpu8080::RunStatus new_status) {
+    void SpaceInvadersSession::run_status_changed(emu::i8080::RunStatus new_status) {
         m_run_status = new_status;
     }
 

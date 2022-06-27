@@ -1,6 +1,6 @@
 #include "debug_container.h"
 
-namespace emu::cpu8080 {
+namespace emu::i8080 {
 
     RegisterDebugContainer::RegisterDebugContainer(
             std::string name,

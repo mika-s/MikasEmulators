@@ -10,7 +10,7 @@
 #include "8080/interfaces/session.h"
 #include "crosscutting/typedefs.h"
 
-namespace emu::cpu8080::applications::cpm {
+namespace emu::i8080::applications::cpm {
 
     class CpmApplication : public Emulator8080 {
     public:

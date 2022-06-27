@@ -19,7 +19,7 @@
 #include "crosscutting/logging/log_observer.h"
 #include "crosscutting/logging/logger.h"
 
-namespace emu::cpu8080::applications::space_invaders {
+namespace emu::i8080::applications::space_invaders {
 
     using emu::gui::DebugLog;
     using emu::gui::DisassemblyWindow;

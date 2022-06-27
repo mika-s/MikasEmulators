@@ -8,7 +8,7 @@
 #include "crosscutting/logging/logger.h"
 #include "crosscutting/util/byte_util.h"
 
-namespace emu::cpu8080::applications::space_invaders {
+namespace emu::i8080::applications::space_invaders {
 
     using emu::util::byte::is_bit_set;
     using emu::debugger::Debugger;

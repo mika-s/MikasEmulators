@@ -15,7 +15,7 @@
 #include "crosscutting/exceptions/invalid_program_arguments_exception.h"
 #include "crosscutting/util/file_util.h"
 
-namespace emu::cpu8080 {
+namespace emu::i8080 {
 
     using emu::exceptions::InvalidProgramArgumentsException;
 

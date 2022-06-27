@@ -27,7 +27,7 @@ namespace emu::gui {
         m_debugger = std::move(debugger);
     }
 
-    void DisassemblyWindow::attach_debug_container(cpu8080::DebugContainer &debug_container) {
+    void DisassemblyWindow::attach_debug_container(i8080::DebugContainer &debug_container) {
         m_debug_container = debug_container;
     }
 

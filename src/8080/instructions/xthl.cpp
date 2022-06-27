@@ -2,7 +2,7 @@
 #include "doctest.h"
 #include "crosscutting/typedefs.h"
 
-namespace emu::cpu8080 {
+namespace emu::i8080 {
     /**
      * Exchange H&L with top of stack
      * <ul>

@@ -2,7 +2,7 @@
 #include "doctest.h"
 #include "8080/flags.h"
 
-namespace emu::cpu8080 {
+namespace emu::i8080 {
     /**
      * Complement carry
      * <ul>

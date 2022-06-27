@@ -1,7 +1,7 @@
 #include "8080/flags.h"
 #include "crosscutting/util/byte_util.h"
 
-namespace emu::cpu8080 {
+namespace emu::i8080 {
 
     using emu::util::byte::is_bit_set;
 

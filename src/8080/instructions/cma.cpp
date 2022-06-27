@@ -3,7 +3,7 @@
 #include "doctest.h"
 #include "crosscutting/typedefs.h"
 
-namespace emu::cpu8080 {
+namespace emu::i8080 {
     /**
      * Complement accumulator
      * <ul>

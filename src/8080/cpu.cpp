@@ -8,7 +8,7 @@
 #include "crosscutting/exceptions/unrecognized_opcode_exception.h"
 #include "crosscutting/util/string_util.h"
 
-namespace emu::cpu8080 {
+namespace emu::i8080 {
 
     using emu::util::byte::to_u16;
     using emu::util::string::hexify;

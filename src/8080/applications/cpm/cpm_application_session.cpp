@@ -3,7 +3,7 @@
 #include "cpm_application_session.h"
 #include "crosscutting/util/byte_util.h"
 
-namespace emu::cpu8080::applications::cpm {
+namespace emu::i8080::applications::cpm {
 
     using emu::util::byte::to_u16;
 

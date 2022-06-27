@@ -5,7 +5,7 @@
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
 
-namespace emu::cpu8080 {
+namespace emu::i8080 {
 
     using emu::util::byte::first_byte;
     using emu::util::byte::second_byte;

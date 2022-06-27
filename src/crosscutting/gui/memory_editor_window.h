@@ -12,13 +12,13 @@ namespace emu::gui {
     public:
         MemoryEditorWindow();
 
-        void attach_debug_container(cpu8080::DebugContainer &debug_container);
+        void attach_debug_container(i8080::DebugContainer &debug_container);
 
         void draw(const char *title, bool *p_open);
 
     private:
         MemoryEditor m_memory_editor;
-        cpu8080::DebugContainer m_debug_container;
+        i8080::DebugContainer m_debug_container;
     };
 }
 

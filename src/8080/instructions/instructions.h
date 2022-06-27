@@ -267,7 +267,7 @@
 #define RST_7         0xFF
 
 // @formatter:off
-namespace emu::cpu8080 {
+namespace emu::i8080 {
 
     void aci(u8 &acc_reg, NextByte args, Flags &flag_reg, unsigned long &cycles);
     void adc(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);

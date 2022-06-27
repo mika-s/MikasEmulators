@@ -3,9 +3,9 @@
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/file_util.h"
 
-namespace emu::cpu8080::applications::space_invaders {
+namespace emu::i8080::applications::space_invaders {
 
-    using emu::cpu8080::RunStatus;
+    using emu::i8080::RunStatus;
     using emu::util::file::read_file_into_vector;
 
     SpaceInvaders::SpaceInvaders(

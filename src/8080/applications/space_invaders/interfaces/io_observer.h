@@ -3,7 +3,7 @@
 
 #include "8080/applications/space_invaders/io_request.h"
 
-namespace emu::cpu8080::applications::space_invaders {
+namespace emu::i8080::applications::space_invaders {
 
     class IoObserver {
     public:

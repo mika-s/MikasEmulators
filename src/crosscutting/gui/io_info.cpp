@@ -11,7 +11,7 @@ namespace emu::gui {
 
     IoInfo::IoInfo() = default;
 
-    void IoInfo::attach_debug_container(cpu8080::DebugContainer &debug_container) {
+    void IoInfo::attach_debug_container(i8080::DebugContainer &debug_container) {
         m_debug_container = debug_container;
     }
 

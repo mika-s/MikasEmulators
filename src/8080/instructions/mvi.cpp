@@ -5,7 +5,7 @@
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/string_util.h"
 
-namespace emu::cpu8080 {
+namespace emu::i8080 {
 
     using emu::util::string::hexify_wo_0x;
 

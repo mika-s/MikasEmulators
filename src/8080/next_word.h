@@ -3,7 +3,7 @@
 
 #include "crosscutting/typedefs.h"
 
-namespace emu::cpu8080 {
+namespace emu::i8080 {
 
     typedef struct NextWord_s {
         u8 farg;

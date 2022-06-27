@@ -4,7 +4,7 @@
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/file_util.h"
 
-namespace emu::cpu8080::applications::cpm {
+namespace emu::i8080::applications::cpm {
 
     using util::byte::to_u16;
     using util::file::read_file_into_vector;

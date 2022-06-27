@@ -1,7 +1,7 @@
 #include <iostream>
 #include "doctest.h"
 
-namespace emu::cpu8080 {
+namespace emu::i8080 {
     /**
      * Disable interrupts
      * <ul>

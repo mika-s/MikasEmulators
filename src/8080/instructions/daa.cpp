@@ -4,7 +4,7 @@
 #include "8080/instructions/instruction_util.h"
 #include "crosscutting/typedefs.h"
 
-namespace emu::cpu8080 {
+namespace emu::i8080 {
     /**
      * Decimal adjust accumulator
      * <ul>

@@ -9,7 +9,7 @@
 #include "8080/applications/space_invaders/interfaces/input.h"
 #include "8080/applications/space_invaders/interfaces/io_observer.h"
 
-namespace emu::cpu8080::applications::space_invaders {
+namespace emu::i8080::applications::space_invaders {
 
     class InputImgui: public Input {
     public:

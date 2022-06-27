@@ -9,10 +9,10 @@
 #include "8080/interfaces/emulator8080.h"
 #include "crosscutting/gui/gui_type.h"
 
-namespace emu::cpu8080 {
+namespace emu::i8080 {
 
     using emu::gui::GuiType;
-    using emu::cpu8080::applications::space_invaders::Settings;
+    using emu::i8080::applications::space_invaders::Settings;
 
     class Frontend {
     public:

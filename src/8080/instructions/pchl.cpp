@@ -2,7 +2,7 @@
 #include "doctest.h"
 #include "crosscutting/typedefs.h"
 
-namespace emu::cpu8080 {
+namespace emu::i8080 {
     /**
      * Move H&L to program counter
      * <ul>

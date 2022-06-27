@@ -11,7 +11,7 @@
 #include "8080/interfaces/out_observer.h"
 #include "crosscutting/typedefs.h"
 
-namespace emu::cpu8080 {
+namespace emu::i8080 {
 
     class Cpu {
     public:

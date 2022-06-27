@@ -5,7 +5,7 @@
 #include "8080/applications/space_invaders/settings.h"
 #include "crosscutting/typedefs.h"
 
-namespace emu::cpu8080::applications::space_invaders {
+namespace emu::i8080::applications::space_invaders {
 
     class CpuIo {
     public:

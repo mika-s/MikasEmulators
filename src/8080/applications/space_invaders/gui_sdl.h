@@ -12,7 +12,7 @@
 #include "crosscutting/typedefs.h"
 #include "crosscutting/debugging/debugger.h"
 
-namespace emu::cpu8080::applications::space_invaders {
+namespace emu::i8080::applications::space_invaders {
 
     class GuiSdl: public Gui {
     public:

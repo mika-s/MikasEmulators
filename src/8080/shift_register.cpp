@@ -1,6 +1,6 @@
 #include "shift_register.h"
 
-namespace emu::cpu8080 {
+namespace emu::i8080 {
 
     ShiftRegister::ShiftRegister()
             : m_value(0),

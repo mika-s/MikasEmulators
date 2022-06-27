@@ -19,7 +19,7 @@ namespace emu::gui {
 
         void attach_debugger(std::shared_ptr<Debugger> debugger);
 
-        void attach_debug_container(cpu8080::DebugContainer &debug_container);
+        void attach_debug_container(i8080::DebugContainer &debug_container);
 
         void attach_logger(std::shared_ptr<Logger> logger);
 
@@ -30,7 +30,7 @@ namespace emu::gui {
         static constexpr int address_base = 16;
 
         std::shared_ptr<Debugger> m_debugger;
-        cpu8080::DebugContainer m_debug_container;
+        i8080::DebugContainer m_debug_container;
         std::vector<std::string> m_content;
         std::shared_ptr<Logger> m_logger;
 

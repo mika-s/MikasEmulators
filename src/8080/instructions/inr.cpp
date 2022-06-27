@@ -4,7 +4,7 @@
 #include "8080/instructions/instructions.h"
 #include "crosscutting/typedefs.h"
 
-namespace emu::cpu8080 {
+namespace emu::i8080 {
     /**
      * Increment
      * <ul>

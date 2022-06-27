@@ -4,7 +4,7 @@
 #include "8080/flags.h"
 #include "crosscutting/typedefs.h"
 
-namespace emu::cpu8080 {
+namespace emu::i8080 {
     /**
      * Pop
      * <ul>

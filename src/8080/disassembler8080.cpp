@@ -4,7 +4,7 @@
 #include "crosscutting/exceptions/unrecognized_opcode_exception.h"
 #include "crosscutting/util/string_util.h"
 
-namespace emu::cpu8080 {
+namespace emu::i8080 {
 
     Disassembler8080::Disassembler8080(EmulatorMemory &memory, std::ostream& ostream)
             : m_memory(memory),

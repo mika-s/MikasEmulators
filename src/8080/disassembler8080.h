@@ -7,7 +7,7 @@
 #include "8080/emulator_memory.h"
 #include "crosscutting/typedefs.h"
 
-namespace emu::cpu8080 {
+namespace emu::i8080 {
 
     class Disassembler8080 {
     public:

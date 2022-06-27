@@ -1,7 +1,7 @@
 #ifndef MIKA_EMULATORS_8080_APPLICATIONS_SPACE_INVADERS_SETTINGS_H
 #define MIKA_EMULATORS_8080_APPLICATIONS_SPACE_INVADERS_SETTINGS_H
 
-namespace emu::cpu8080::applications::space_invaders {
+namespace emu::i8080::applications::space_invaders {
 
     enum NumberOfLives {
         Three = 0, Four = 1, Five = 2, Six = 3

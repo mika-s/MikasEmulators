@@ -1,6 +1,6 @@
 #include "cpu_io.h"
 
-namespace emu::cpu8080::applications::space_invaders {
+namespace emu::i8080::applications::space_invaders {
 
     CpuIo::CpuIo(u8 in_port0, u8 in_port1, u8 in_port2)
             : m_in_port0(in_port0),

@@ -2,7 +2,7 @@
 #include "doctest.h"
 #include "8080/emulator_memory.h"
 
-namespace emu::cpu8080 {
+namespace emu::i8080 {
 
     void EmulatorMemory::add(const std::vector<u8> &to_add) {
         std::size_t current_size = m_memory.size();

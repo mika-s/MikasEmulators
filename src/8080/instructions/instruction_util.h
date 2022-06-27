@@ -10,7 +10,7 @@
 #define LOW_BIT 0
 #define HIGH_BIT 7
 
-namespace emu::cpu8080 {
+namespace emu::i8080 {
 
     void add_to_register(u8 &acc_reg, u8 value, bool cf, Flags &flag_reg);
 

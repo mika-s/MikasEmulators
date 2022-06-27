@@ -10,7 +10,7 @@ namespace emu::gui {
 
     CpuInfo::CpuInfo() = default;
 
-    void CpuInfo::attach_debug_container(cpu8080::DebugContainer &debug_container) {
+    void CpuInfo::attach_debug_container(i8080::DebugContainer &debug_container) {
         m_debug_container = debug_container;
     }
 
