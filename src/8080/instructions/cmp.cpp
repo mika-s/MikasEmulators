@@ -43,7 +43,7 @@ namespace emu::i8080 {
         const u8 previous = acc_reg;
         const u8 new_acc_reg = previous - value;
 
-        flag_reg.handle_borrow_flag(previous, value);
+        flag_reg.handle_borrow_flag(previous, value, false);
         flag_reg.handle_zero_flag(new_acc_reg);
         flag_reg.handle_parity_flag(new_acc_reg);
         flag_reg.handle_sign_flag(new_acc_reg);

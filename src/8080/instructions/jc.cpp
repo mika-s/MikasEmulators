@@ -50,7 +50,7 @@ namespace emu::i8080 {
 
             jc(pc, args, flag_reg, cycles);
 
-            CHECK_EQ(emu::util::byte::to_u16(args.sarg, args.farg), pc);
+            CHECK_EQ(to_u16(args.sarg, args.farg), pc);
         }
 
         SUBCASE("should not jump when the carry flag is unset") {

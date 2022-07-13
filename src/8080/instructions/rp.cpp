@@ -6,6 +6,9 @@
 #include "crosscutting/util/byte_util.h"
 
 namespace emu::i8080 {
+
+    using emu::util::byte::to_u16;
+
     /**
      * Return if positive
      * <ul>
@@ -50,7 +53,7 @@ namespace emu::i8080 {
 
             rp(pc, sp, memory, flag_reg, cycles);
 
-            CHECK_EQ(emu::util::byte::to_u16(memory[1], memory[0]), pc);
+            CHECK_EQ(to_u16(memory[1], memory[0]), pc);
         }
 
         SUBCASE("should not pop PC off the stack when the sign flag is set") {

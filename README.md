@@ -11,6 +11,11 @@ This is my collection of emulators, written in C++. As of now, it only emulates 
     * [Space Invaders](#space-invaders)
     * [Inspiration](#inspiration)
     * [Todo](#todo)
+  * [Z80](#z80)
+    * [Pacman](#pacman)
+    * [Inspiration](#inspiration-1)
+    * [Todo](#todo-1)
+
 
 ## Dependencies
 
@@ -190,6 +195,15 @@ look up how the game is supposed to behave.
 
 #### Todo
 
-- Fix the CMake file to use better best practices
-- Better argument handling
-- Refactor to "sessions" for Space Invaders and the 8080 cpu
+- [ ] Fix the CMake file to use better best practices
+- [ ] Better argument handling
+- [ ] Refactor to "sessions" for Space Invaders and the 8080 cpu
+
+
+### Z80
+
+#### Pacman
+
+#### Inspiration
+
+#### Todo

@@ -3,6 +3,8 @@
 
 namespace emu::i8080 {
 
+    using emu::util::byte::borrowed_out_of;
+    using emu::util::byte::carried_out_of;
     using emu::util::byte::is_bit_set;
 
     Flags::Flags()
@@ -41,9 +43,8 @@ namespace emu::i8080 {
         m_carry = is_bit_set(value, 0);
     }
 
-    void Flags::handle_carry_flag(u8 previous, int value_to_add) {
-        int new_value = previous + value_to_add;
-        if (new_value > 255) {
+    void Flags::handle_carry_flag(u8 previous, int value_to_add, bool cf) {
+        if (carried_out_of(msb, previous, value_to_add, cf)) {
             set_carry_flag();
         } else {
             clear_carry_flag();
@@ -58,19 +59,16 @@ namespace emu::i8080 {
         }
     }
 
-    void Flags::handle_borrow_flag(u8 previous, int value_to_subtract) {
-        if (previous < value_to_subtract) {
-            set_carry_flag();
-        } else {
+    void Flags::handle_borrow_flag(u8 previous, int value_to_subtract, bool cf) {
+        if (borrowed_out_of(msb, previous, value_to_subtract, cf)) {
             clear_carry_flag();
+        } else {
+            set_carry_flag();
         }
     }
 
     void Flags::handle_aux_carry_flag(u8 previous, u8 value_to_add, bool cf) {
-        const u8 result = previous + value_to_add + (cf ? 1 : 0);
-        const u8 half_carry = (previous ^ value_to_add ^ result) & 0x10;
-
-        if (half_carry > 0) {
+        if (carried_out_of(msb_first_nibble, previous, value_to_add, cf)) {
             set_aux_carry_flag();
         } else {
             clear_aux_carry_flag();
@@ -78,10 +76,7 @@ namespace emu::i8080 {
     }
 
     void Flags::handle_aux_borrow_flag(u8 previous, u8 value_to_subtract, bool cf) {
-        const u8 result = previous - value_to_subtract - (cf ? 1 : 0);
-        const u8 half_carry = ~(previous ^ value_to_subtract ^ result) & 0x10;
-
-        if (half_carry > 0) {
+        if (borrowed_out_of(msb_first_nibble, previous, value_to_subtract, cf)) {
             set_aux_carry_flag();
         } else {
             clear_aux_carry_flag();

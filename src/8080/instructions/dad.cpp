@@ -50,14 +50,14 @@ namespace emu::i8080 {
                 for (u16 value_to_add = 0; value_to_add < UINT16_MAX; ++value_to_add) {
                     Flags flag_reg;
 
-                    u8 h_reg = emu::util::byte::second_byte(hl_counter);
-                    u8 l_reg = emu::util::byte::first_byte(hl_counter);
+                    u8 h_reg = second_byte(hl_counter);
+                    u8 l_reg = first_byte(hl_counter);
 
                     dad(h_reg, l_reg, value_to_add, flag_reg, cycles);
 
                     CHECK_EQ(
                             static_cast<u16>(hl_counter + value_to_add),
-                            emu::util::byte::to_u16(h_reg, l_reg)
+                            to_u16(h_reg, l_reg)
                     );
                 }
             }
@@ -80,7 +80,7 @@ namespace emu::i8080 {
             Flags flag_reg;
 
             u8 h_reg = 0;
-            u8 l_reg = 0xE;
+            u8 l_reg = 0xe;
             u16 value_to_add = 0x4;
 
             dad(h_reg, l_reg, value_to_add, flag_reg, cycles);

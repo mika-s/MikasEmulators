@@ -27,7 +27,7 @@ namespace emu::i8080 {
     void cpi(u8 &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles) {
         const u16 new_acc_reg = acc_reg - args.farg;
 
-        flag_reg.handle_borrow_flag(acc_reg, args.farg);
+        flag_reg.handle_borrow_flag(acc_reg, args.farg, false);
         flag_reg.handle_zero_flag(new_acc_reg);
         flag_reg.handle_parity_flag(new_acc_reg);
         flag_reg.handle_sign_flag(new_acc_reg);

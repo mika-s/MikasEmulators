@@ -74,7 +74,7 @@ namespace emu::i8080 {
         SUBCASE("should load immediate into SP") {
             lxi_sp(sp, args, cycles);
 
-            CHECK_EQ(emu::util::byte::to_u16(args.sarg, args.farg), sp);
+            CHECK_EQ(to_u16(args.sarg, args.farg), sp);
         }
 
         SUBCASE("should use 10 cycles") {

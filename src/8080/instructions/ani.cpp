@@ -9,6 +9,7 @@
 
 namespace emu::i8080 {
 
+    using emu::util::byte::is_bit_set;
     using emu::util::string::hexify_wo_0x;
 
     /**
@@ -142,7 +143,7 @@ namespace emu::i8080 {
 
                     ani(acc_reg, args, flag_reg, cycles);
 
-                    CHECK_EQ(emu::util::byte::is_bit_set(acc_reg_counter | value, 3), flag_reg.is_aux_carry_flag_set());
+                    CHECK_EQ(is_bit_set(acc_reg_counter | value, 3), flag_reg.is_aux_carry_flag_set());
                 }
             }
         }

@@ -39,8 +39,7 @@ namespace emu::i8080 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void sbb(u8 &acc_reg, u8 value, Flags &flag_reg,
-             unsigned long &cycles, bool is_memory_involved) {
+    void sbb(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles, bool is_memory_involved) {
         sub_from_register(acc_reg, value, flag_reg.is_carry_flag_set(), flag_reg);
 
         cycles = 4;

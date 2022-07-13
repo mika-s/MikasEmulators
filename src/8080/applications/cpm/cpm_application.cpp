@@ -6,8 +6,8 @@
 
 namespace emu::i8080::applications::cpm {
 
-    using util::byte::to_u16;
-    using util::file::read_file_into_vector;
+    using emu::util::byte::to_u16;
+    using emu::util::file::read_file_into_vector;
 
     CpmApplication::CpmApplication(const std::string &file) {
         load_file(file);

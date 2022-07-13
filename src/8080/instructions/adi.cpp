@@ -29,7 +29,7 @@ namespace emu::i8080 {
         acc_reg += args.farg;
 
         flag_reg.handle_aux_carry_flag(previous, args.farg, false);
-        flag_reg.handle_carry_flag(previous, args.farg);
+        flag_reg.handle_carry_flag(previous, args.farg, false);
         flag_reg.handle_sign_flag(acc_reg);
         flag_reg.handle_zero_flag(acc_reg);
         flag_reg.handle_parity_flag(acc_reg);

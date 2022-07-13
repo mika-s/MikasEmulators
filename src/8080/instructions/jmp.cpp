@@ -43,7 +43,7 @@ namespace emu::i8080 {
         SUBCASE("should jump") {
             jmp(pc, args, cycles);
 
-            CHECK_EQ(emu::util::byte::to_u16(args.sarg, args.farg), pc);
+            CHECK_EQ(to_u16(args.sarg, args.farg), pc);
         }
 
         SUBCASE("should use 10 cycles") {

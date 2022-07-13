@@ -16,6 +16,10 @@ namespace emu::util::byte {
     u8 first_byte(u16 number);
 
     u8 second_byte(u16 number);
+
+    bool carried_out_of(unsigned int bit_position, u16 a, u16 b, bool cf);
+
+    bool borrowed_out_of(unsigned int bit_position, u16 a, u16 b, bool cf);
 }
 
 #endif //MIKA_EMULATORS_CROSSCUTTING_BYTE_UTIL_H

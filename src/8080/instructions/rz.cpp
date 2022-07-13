@@ -6,6 +6,9 @@
 #include "crosscutting/util/byte_util.h"
 
 namespace emu::i8080 {
+
+    using emu::util::byte::to_u16;
+
     /**
      * Return if zero
      * <ul>
@@ -51,7 +54,7 @@ namespace emu::i8080 {
 
             rz(pc, sp, memory, flag_reg, cycles);
 
-            CHECK_EQ(emu::util::byte::to_u16(memory[1], memory[0]), pc);
+            CHECK_EQ(to_u16(memory[1], memory[0]), pc);
             CHECK_EQ(0x2, sp);
         }
 

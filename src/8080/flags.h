@@ -17,11 +17,11 @@ namespace emu::i8080 {
 
         void handle_zero_flag(u8 number);
 
-        void handle_carry_flag(u8 previous, int value_to_add);
+        void handle_carry_flag(u8 previous, int value_to_add, bool cf);
 
         void handle_carry_flag_dad(u16 previous, u16 value_to_add);
 
-        void handle_borrow_flag(u8 previous, int value_to_subtract);
+        void handle_borrow_flag(u8 previous, int value_to_subtract, bool cf);
 
         void handle_aux_carry_flag(u8 previous, u8 value_to_add, bool cf);
 
@@ -66,6 +66,9 @@ namespace emu::i8080 {
         [[nodiscard]] bool is_parity_flag_set() const;
 
     private:
+        static constexpr unsigned int msb = 7;
+        static constexpr unsigned int msb_first_nibble = 3;
+
         bool m_carry;
         bool m_parity; // True if even number of one-bits.
         bool m_auxiliary_carry;

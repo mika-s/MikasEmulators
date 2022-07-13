@@ -9,6 +9,7 @@
 
 namespace emu::i8080 {
 
+    using emu::util::byte::to_u16;
     using emu::util::string::hexify_wo_0x;
 
     /**
@@ -59,7 +60,7 @@ namespace emu::i8080 {
 
             cpe(pc, sp, memory, args, flag_reg, cycles);
 
-            CHECK_EQ(emu::util::byte::to_u16(args.sarg, args.farg), pc);
+            CHECK_EQ(to_u16(args.sarg, args.farg), pc);
             CHECK_EQ(0x0f, memory[0]);
             CHECK_EQ(0x10, memory[1]);
         }

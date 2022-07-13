@@ -4,6 +4,9 @@
 #include "crosscutting/util/byte_util.h"
 
 namespace emu::i8080 {
+
+    using emu::util::byte::to_u16;
+
     /**
      * Move H&L to SP
      * <ul>
@@ -34,7 +37,7 @@ namespace emu::i8080 {
         u8 l_reg = 0x22;
 
         SUBCASE("should move HL into SP") {
-            sphl(sp, emu::util::byte::to_u16(h_reg, l_reg), cycles);
+            sphl(sp, to_u16(h_reg, l_reg), cycles);
 
             CHECK_EQ(0x1122, sp);
         }
@@ -42,7 +45,7 @@ namespace emu::i8080 {
         SUBCASE("should use 5 cycles") {
             cycles = 0;
 
-            sphl(sp, emu::util::byte::to_u16(h_reg, l_reg), cycles);
+            sphl(sp, to_u16(h_reg, l_reg), cycles);
 
             CHECK_EQ(5, cycles);
         }
