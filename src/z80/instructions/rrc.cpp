@@ -70,7 +70,7 @@ namespace emu::z80 {
             }
         }
 
-        SUBCASE("should set the carry flag if shifted out_Mn_A of lsb") {
+        SUBCASE("should set the carry flag if shifted out of lsb") {
             acc_reg = 0b00000001;
             Flags flag_reg;
 

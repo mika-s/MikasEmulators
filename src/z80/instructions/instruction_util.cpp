@@ -1,10 +1,9 @@
-#include "z80/flags.h"
-#include "z80/next_word.h"
 #include "z80/instructions/instruction_util.h"
 #include "crosscutting/util/byte_util.h"
 
 namespace emu::z80 {
 
+    using emu::misc::NextWord;
     using emu::util::byte::first_byte;
     using emu::util::byte::second_byte;
     using emu::util::byte::to_u16;

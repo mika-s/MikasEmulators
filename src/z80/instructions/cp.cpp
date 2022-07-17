@@ -2,12 +2,13 @@
 #include <iostream>
 #include "doctest.h"
 #include "z80/flags.h"
-#include "z80/instructions/instructions.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/misc/next_byte.h"
 #include "crosscutting/util/string_util.h"
 
 namespace emu::z80 {
 
+    using emu::misc::NextByte;
     using emu::util::string::hexify_wo_0x;
 
     void cp(u8 &acc_reg, u8 value, Flags &flag_reg) {
@@ -48,7 +49,7 @@ namespace emu::z80 {
      *   <li>Size: 2</li>
      *   <li>Cycles: 2</li>
      *   <li>States: 7</li>
-     *   <li>Condition bits affected: carry, auxiliary carry, zero, sign, parity/overflow, add/subtract</li>
+     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
      * </ul>
      *
      * @param acc_reg is the accumulator register

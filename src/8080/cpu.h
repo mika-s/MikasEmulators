@@ -4,14 +4,17 @@
 #include <cstdint>
 #include <vector>
 #include "8080/flags.h"
-#include "8080/next_word.h"
-#include "8080/next_byte.h"
 #include "8080/emulator_memory.h"
 #include "8080/interfaces/in_observer.h"
 #include "8080/interfaces/out_observer.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/misc/next_byte.h"
+#include "crosscutting/misc/next_word.h"
 
 namespace emu::i8080 {
+
+    using emu::misc::NextByte;
+    using emu::misc::NextWord;
 
     class Cpu {
     public:

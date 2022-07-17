@@ -29,6 +29,8 @@ set(SOURCES_CROSSCUTTING_H
         src/crosscutting/gui/memory_editor_window.h
         src/crosscutting/logging/log_observer.h
         src/crosscutting/logging/logger.h
+        src/crosscutting/misc/next_byte.h
+        src/crosscutting/misc/next_word.h
         src/crosscutting/util/byte_util.h
         src/crosscutting/util/file_util.h
         src/crosscutting/util/string_util.h

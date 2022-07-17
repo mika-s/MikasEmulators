@@ -2,14 +2,15 @@
 #include <iostream>
 #include "doctest.h"
 #include "z80/flags.h"
-#include "z80/instructions/instructions.h"
 #include "z80/instructions/instruction_util.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/misc/next_byte.h"
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
 
 namespace emu::z80 {
 
+    using emu::misc::NextByte;
     using emu::util::byte::first_byte;
     using emu::util::byte::second_byte;
     using emu::util::byte::to_u16;
@@ -222,7 +223,7 @@ namespace emu::z80 {
             CHECK_EQ(true, flag_reg.is_carry_flag_set());
         }
 
-        SUBCASE("should not set the carry flag when not carried out_Mn_A of msb") {
+        SUBCASE("should not set the carry flag when not carried out of msb") {
             Flags flag_reg;
             acc_reg = 0x1;
 
@@ -232,7 +233,7 @@ namespace emu::z80 {
             CHECK_EQ(false, flag_reg.is_carry_flag_set());
         }
 
-        SUBCASE("should set the half carry flag when carried out_Mn_A of the fourth bit") {
+        SUBCASE("should set the half carry flag when carried out of the fourth bit") {
             Flags flag_reg;
             acc_reg = 0xF;
 
@@ -242,7 +243,7 @@ namespace emu::z80 {
             CHECK_EQ(true, flag_reg.is_half_carry_flag_set());
         }
 
-        SUBCASE("should not set the half carry flag when not carried out_Mn_A of the fourth bit") {
+        SUBCASE("should not set the half carry flag when not carried out of the fourth bit") {
             Flags flag_reg;
             acc_reg = 0xe;
 
@@ -327,7 +328,7 @@ namespace emu::z80 {
             }
         }
 
-        SUBCASE("should set the carry flag when carried out_Mn_A of msb") {
+        SUBCASE("should set the carry flag when carried out of msb") {
             Flags flag_reg;
 
             u8 h_reg = 0xff;

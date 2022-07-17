@@ -1,10 +1,11 @@
 #include <iostream>
-#include "z80/next_word.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/misc/next_word.h"
 #include "crosscutting/util/string_util.h"
 
 namespace emu::z80 {
 
+    using emu::misc::NextWord;
     using emu::util::string::hexify;
     using emu::util::string::hexify_wo_0x;
 

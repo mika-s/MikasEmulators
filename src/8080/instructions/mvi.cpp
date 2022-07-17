@@ -1,30 +1,13 @@
 #include <iostream>
 #include "doctest.h"
-#include "8080/next_byte.h"
-#include "8080/instructions/instructions.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/misc/next_byte.h"
 #include "crosscutting/util/string_util.h"
 
 namespace emu::i8080 {
 
+    using emu::misc::NextByte;
     using emu::util::string::hexify_wo_0x;
-
-    /**
-     * Move immediate
-     * <ul>
-     *   <li>Size: 2</li>
-     *   <li>Cycles: 2</li>
-     *   <li>States: 7 or 10</li>
-     *   <li>Condition bits affected: none</li>
-     * </ul>
-     *
-     * @param reg is the register to load into, which will be mutated
-     * @param args contains value to load into the register
-     * @param cycles is the number of cycles variable, which will be mutated
-     */
-    void mvi(u8 &reg, const NextByte &args, unsigned long &cycles) {
-        mvi(reg, args, cycles, false);
-    }
 
     /**
      * Move immediate
@@ -48,6 +31,23 @@ namespace emu::i8080 {
         if (is_memory_involved) {
             cycles += 3;
         }
+    }
+
+    /**
+     * Move immediate
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 7 or 10</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param reg is the register to load into, which will be mutated
+     * @param args contains value to load into the register
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void mvi(u8 &reg, const NextByte &args, unsigned long &cycles) {
+        mvi(reg, args, cycles, false);
     }
 
     void print_mvi(std::ostream &ostream, const std::string &reg, const NextByte &args) {

@@ -2,12 +2,15 @@
 #define MIKA_EMULATORS_Z80_DISASSEMBLER_H
 
 #include <string>
-#include "z80/next_byte.h"
-#include "z80/next_word.h"
 #include "z80/emulator_memory.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/misc/next_byte.h"
+#include "crosscutting/misc/next_word.h"
 
 namespace emu::z80 {
+
+    using emu::misc::NextByte;
+    using emu::misc::NextWord;
 
     class DisassemblerZ80 {
     public:

@@ -1,6 +1,5 @@
 #include <iostream>
 #include "doctest.h"
-#include "z80/flags.h"
 #include "crosscutting/typedefs.h"
 
 namespace emu::z80 {

@@ -2,13 +2,14 @@
 #include <iostream>
 #include "doctest.h"
 #include "z80/flags.h"
-#include "z80/instructions/instructions.h"
 #include "z80/instructions/instruction_util.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/misc/next_byte.h"
 #include "crosscutting/util/string_util.h"
 
 namespace emu::z80 {
 
+    using emu::misc::NextByte;
     using emu::util::string::hexify_wo_0x;
 
     void adc(u8 &acc_reg, u8 value, Flags &flag_reg) {
@@ -22,7 +23,7 @@ namespace emu::z80 {
      *   <li>Size: 1</li>
      *   <li>Cycles: 1</li>
      *   <li>States: 4</li>
-     *   <li>Condition bits affected: carry, auxiliary carry, zero, sign, parity/overflow, add/subtract</li>
+     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
      * </ul>
      *
      * @param acc_reg is the accumulator register, which will be mutated
@@ -164,7 +165,7 @@ namespace emu::z80 {
             }
         }
 
-        SUBCASE("should set the carry flag when carried out_Mn_A of msb") {
+        SUBCASE("should set the carry flag when carried out of msb") {
             Flags flag_reg;
             acc_reg = 0x80;
 
@@ -174,7 +175,7 @@ namespace emu::z80 {
             CHECK_EQ(true, flag_reg.is_carry_flag_set());
         }
 
-        SUBCASE("should not set the carry flag when not carried out_Mn_A of msb") {
+        SUBCASE("should not set the carry flag when not carried out of msb") {
             Flags flag_reg;
             acc_reg = 0x1;
 
@@ -184,7 +185,7 @@ namespace emu::z80 {
             CHECK_EQ(false, flag_reg.is_carry_flag_set());
         }
 
-        SUBCASE("should set the half carry flag when carried out_Mn_A of the fourth bit") {
+        SUBCASE("should set the half carry flag when carried out of the fourth bit") {
             Flags flag_reg;
             acc_reg = 0xf;
 
@@ -194,7 +195,7 @@ namespace emu::z80 {
             CHECK_EQ(true, flag_reg.is_half_carry_flag_set());
         }
 
-        SUBCASE("should not set the half carry flag when not carried out_Mn_A of the fourth bit") {
+        SUBCASE("should not set the half carry flag when not carried out of the fourth bit") {
             Flags flag_reg;
             acc_reg = 0xe;
 

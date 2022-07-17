@@ -121,8 +121,6 @@ set(SOURCES_8080_H
         src/8080/emulator_memory.h
         src/8080/flags.h
         src/8080/frontend.h
-        src/8080/next_byte.h
-        src/8080/next_word.h
         src/8080/run_status.h
         src/8080/shift_register.h
         src/8080/instructions/instruction_util.h

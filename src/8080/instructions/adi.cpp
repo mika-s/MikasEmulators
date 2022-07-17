@@ -2,12 +2,13 @@
 #include <iostream>
 #include "doctest.h"
 #include "8080/flags.h"
-#include "8080/next_byte.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/misc/next_byte.h"
 #include "crosscutting/util/string_util.h"
 
 namespace emu::i8080 {
 
+    using emu::misc::NextByte;
     using emu::util::string::hexify_wo_0x;
 
     /**

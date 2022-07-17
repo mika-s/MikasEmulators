@@ -4,10 +4,12 @@
 #include <vector>
 #include "z80/emulator_memory.h"
 #include "z80/flags.h"
-#include "z80/next_word.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/misc/next_word.h"
 
 namespace emu::z80 {
+
+    using emu::misc::NextWord;
 
     static constexpr unsigned int lsb = 0;
     static constexpr unsigned int msb = 7;

@@ -2,7 +2,6 @@
 #include <iostream>
 #include "doctest.h"
 #include "z80/flags.h"
-#include "z80/instructions/instructions.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
 

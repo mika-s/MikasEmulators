@@ -2,13 +2,14 @@
 #include <iostream>
 #include "doctest.h"
 #include "8080/flags.h"
-#include "8080/next_byte.h"
 #include "8080/instructions/instruction_util.h"
+#include "crosscutting/misc/next_byte.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/string_util.h"
 
 namespace emu::i8080 {
 
+    using emu::misc::NextByte;
     using emu::util::string::hexify_wo_0x;
 
     /**
@@ -26,15 +27,6 @@ namespace emu::i8080 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void sui(u8 &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles) {
-//        const u8 previous = acc_reg;
-//        acc_reg -= args.farg;
-//
-//        flag_reg.handle_borrow_flag(previous, args.farg, false);
-//        flag_reg.handle_sign_flag(acc_reg);
-//        flag_reg.handle_zero_flag(acc_reg);
-//        flag_reg.handle_parity_flag(acc_reg);
-//        flag_reg.handle_aux_borrow_flag(previous, args.farg, false);
-
         sub_from_register(acc_reg, args.farg, false, flag_reg);
 
         cycles = 7;

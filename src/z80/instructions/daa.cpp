@@ -107,7 +107,7 @@ namespace emu::z80 {
 //            CHECK_EQ(false, flag_reg.is_parity_overflow_flag_set());
 //        }
 
-        SUBCASE("should set the carry flag when carried out_Mn_A of msb") {
+        SUBCASE("should set the carry flag when carried out of msb") {
             u8 acc_reg = 0xff;
             Flags flag_reg;
 

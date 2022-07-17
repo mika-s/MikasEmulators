@@ -2,13 +2,14 @@
 #include <iostream>
 #include "doctest.h"
 #include "z80/flags.h"
-#include "z80/instructions/instructions.h"
 #include "z80/instructions/instruction_util.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/misc/next_byte.h"
 #include "crosscutting/util/string_util.h"
 
 namespace emu::z80 {
 
+    using emu::misc::NextByte;
     using emu::util::string::hexify_wo_0x;
 
     void sbc(u8 &acc_reg, u8 value, Flags &flag_reg) {

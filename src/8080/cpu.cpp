@@ -1,11 +1,9 @@
 #include <algorithm>
 #include <iostream>
 #include "cpu.h"
-#include "8080/next_byte.h"
-#include "8080/next_word.h"
 #include "8080/instructions/instructions.h"
-#include "crosscutting/util/byte_util.h"
 #include "crosscutting/exceptions/unrecognized_opcode_exception.h"
+#include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
 
 namespace emu::i8080 {

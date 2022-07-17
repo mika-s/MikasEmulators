@@ -1,5 +1,3 @@
-#include "8080/flags.h"
-#include "8080/next_word.h"
 #include "8080/instructions/instruction_util.h"
 #include "crosscutting/util/byte_util.h"
 

@@ -5,9 +5,9 @@
 #include <string>
 #include "8080/emulator_memory.h"
 #include "8080/flags.h"
-#include "8080/next_word.h"
-#include "8080/next_byte.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/misc/next_byte.h"
+#include "crosscutting/misc/next_word.h"
 
 #define NOP           0x00
 #define LXI_B         0x01
@@ -268,6 +268,9 @@
 
 // @formatter:off
 namespace emu::i8080 {
+
+    using emu::misc::NextByte;
+    using emu::misc::NextWord;
 
     void aci(u8 &acc_reg, NextByte args, Flags &flag_reg, unsigned long &cycles);
     void adc(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);

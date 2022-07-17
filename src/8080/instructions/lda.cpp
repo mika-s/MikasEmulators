@@ -1,13 +1,14 @@
 #include <iostream>
 #include "doctest.h"
 #include "8080/emulator_memory.h"
-#include "8080/next_word.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/misc/next_word.h"
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
 
 namespace emu::i8080 {
-    
+
+    using emu::misc::NextWord;
     using emu::util::byte::to_u16;
     using emu::util::string::hexify_wo_0x;
     

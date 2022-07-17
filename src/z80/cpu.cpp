@@ -1,8 +1,6 @@
 #include <algorithm>
 #include <iostream>
 #include "cpu.h"
-#include "z80/next_byte.h"
-#include "z80/next_word.h"
 #include "z80/instructions/instructions.h"
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/exceptions/unrecognized_opcode_exception.h"

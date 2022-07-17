@@ -5,8 +5,8 @@
 #include <string>
 #include "z80/emulator_memory.h"
 #include "z80/flags.h"
-#include "z80/next_word.h"
-#include "z80/next_byte.h"
+#include "crosscutting/misc/next_byte.h"
+#include "crosscutting/misc/next_word.h"
 #include "crosscutting/typedefs.h"
 
 #define NOP           0x00
@@ -268,6 +268,9 @@
 
 // @formatter:off
 namespace emu::z80 {
+
+    using emu::misc::NextByte;
+    using emu::misc::NextWord;
 
     void adc_A_n(u8 &acc_reg, NextByte args, Flags &flag_reg, unsigned long &cycles);
     void adc_A_r(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);

@@ -4,14 +4,17 @@
 #include <cstdint>
 #include <vector>
 #include "z80/flags.h"
-#include "z80/next_word.h"
-#include "z80/next_byte.h"
 #include "z80/emulator_memory.h"
 #include "z80/interfaces/in_observer.h"
 #include "z80/interfaces/out_observer.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/misc/next_byte.h"
+#include "crosscutting/misc/next_word.h"
 
 namespace emu::z80 {
+
+    using emu::misc::NextByte;
+    using emu::misc::NextWord;
 
     class Cpu {
     public:
