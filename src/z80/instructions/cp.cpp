@@ -1,113 +1,155 @@
+#include <cstdint>
 #include <iostream>
 #include "doctest.h"
 #include "z80/flags.h"
-#include "z80/next_word.h"
-#include "z80/instructions/instruction_util.h"
+#include "z80/instructions/instructions.h"
 #include "crosscutting/typedefs.h"
-#include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
 
 namespace emu::z80 {
 
     using emu::util::string::hexify_wo_0x;
 
-    /**
-     * Call if positive
-     * <ul>
-     *   <li>Size: 3</li>
-     *   <li>Cycles: 3 or 5</li>
-     *   <li>States: 11 or 17</li>
-     *   <li>Condition bits affected: none</li>
-     * </ul>
-     *
-     * @param pc is the program counter, which will be mutated
-     * @param sp is the stack pointer, which will be mutated
-     * @param memory is the memory, which will be mutated
-     * @param args contains the argument with the address to call
-     * @param flag_reg is the flag register
-     * @param cycles is the number of cycles variable, which will be mutated
-     */
-    void cp(u16 &pc, u16 &sp, EmulatorMemory &memory, const NextWord &args, const Flags &flag_reg,
-            unsigned long &cycles) {
-        cycles = 0;
+    void cp(u8 &acc_reg, u8 value, Flags &flag_reg) {
+        const u8 previous = acc_reg;
+        const u8 new_acc_reg = previous - value;
 
-        if (!flag_reg.is_sign_flag_set()) {
-            execute_call(pc, sp, memory, args);
-            cycles += 6;
-        }
-
-        cycles += 11;
+        flag_reg.handle_borrow_flag(previous, value, false);
+        flag_reg.handle_zero_flag(new_acc_reg);
+        flag_reg.handle_parity_flag(new_acc_reg);
+        flag_reg.handle_sign_flag(new_acc_reg);
+        flag_reg.handle_half_borrow_flag(previous, value, false);
+        flag_reg.set_add_subtract_flag();
     }
 
-    void print_cp(std::ostream &ostream, const NextWord &args) {
+    /**
+     * Compare register with accumulator
+     * <ul>
+     *   <li>Size: 1</li>
+     *   <li>Cycles: 1</li>
+     *   <li>States: 4</li>
+     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+     * </ul>
+     *
+     * @param acc_reg is the accumulator register
+     * @param value is the value to compare with the accumulator register
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void cp_r(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles) {
+        cp(acc_reg, value, flag_reg);
+
+        cycles = 4;
+    }
+
+    /**
+     * Compare immediate with accumulator
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 7</li>
+     *   <li>Condition bits affected: carry, auxiliary carry, zero, sign, parity/overflow, add/subtract</li>
+     * </ul>
+     *
+     * @param acc_reg is the accumulator register
+     * @param args contains the argument with the immediate value
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void cp_n(u8 &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles) {
+        cp(acc_reg, args.farg, flag_reg);
+
+        cycles = 7;
+    }
+
+    /**
+     * Compare memory in HL's address with accumulator
+     * <ul>
+     *   <li>Size: 1</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 7</li>
+     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+     * </ul>
+     *
+     * @param acc_reg is the accumulator register
+     * @param value is the value to compare with the accumulator register
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void cp_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles) {
+        cp(acc_reg, value, flag_reg);
+
+        cycles = 7;
+    }
+
+    void print_cp(std::ostream &ostream, const std::string &reg) {
+        ostream << "CP " << reg;
+    }
+
+    void print_cp(std::ostream &ostream, const NextByte &args) {
         ostream << "CP "
-                << hexify_wo_0x(args.sarg)
                 << hexify_wo_0x(args.farg);
     }
 
     TEST_CASE("Z80: CP") {
+        u8 acc_reg = 0;
+        Flags flag_reg;
+
+        SUBCASE("should compare the accumulator with value and set flags") {
+            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
+                for (u8 value = 0; value < UINT8_MAX; ++value) {
+                    acc_reg = acc_reg_counter;
+
+                    cp(acc_reg, value, flag_reg);
+
+                    CHECK_EQ(static_cast<u8>(acc_reg - value) > 127, flag_reg.is_sign_flag_set());
+                    CHECK_EQ(static_cast<u8>(acc_reg - value) == 0, flag_reg.is_zero_flag_set());
+                    CHECK_EQ(acc_reg < value, flag_reg.is_carry_flag_set());
+                }
+            }
+        }
+    }
+
+    TEST_CASE("Z80: CP r") {
         unsigned long cycles = 0;
+        u8 acc_reg = 0;
 
-        SUBCASE("should push current PC on the stack and change PC to the address in args when the sign flag is unset") {
-            u16 pc = 0x100f;
-            u16 sp = 0x2;
-            EmulatorMemory memory;
-            memory.add(std::vector<u8>{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
-            NextWord args = {.farg = 0x2, .sarg = 0x0};
-            Flags flag_reg;
-            flag_reg.clear_sign_flag();
-
-            cp(pc, sp, memory, args, flag_reg, cycles);
-
-            CHECK_EQ(emu::util::byte::to_u16(args.sarg, args.farg), pc);
-            CHECK_EQ(0x0f, memory[0]);
-            CHECK_EQ(0x10, memory[1]);
-        }
-
-        SUBCASE("should not do anything when the sign flag is set") {
-            u16 pc = 0x100f;
-            u16 sp = 0x2;
-            EmulatorMemory memory;
-            memory.add(std::vector<u8>{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
-            NextWord args = {.farg = 0x2, .sarg = 0x0};
-            Flags flag_reg;
-            flag_reg.set_sign_flag();
-
-            cp(pc, sp, memory, args, flag_reg, cycles);
-
-            CHECK_EQ(0x100f, pc);
-            CHECK_EQ(0x00, memory[0]);
-            CHECK_EQ(0x01, memory[1]);
-        }
-
-        SUBCASE("should use 11 cycles when not called") {
+        SUBCASE("should use 7 cycles") {
             cycles = 0;
-            u16 pc = 0;
-            u16 sp = 0x2;
-            EmulatorMemory memory;
-            memory.add(std::vector<u8>{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
-            NextWord args = {.farg = 0x2, .sarg = 0x0};
             Flags flag_reg;
-            flag_reg.set_sign_flag();
 
-            cp(pc, sp, memory, args, flag_reg, cycles);
+            cp_r(acc_reg, 0, flag_reg, cycles);
 
-            CHECK_EQ(11, cycles);
+            CHECK_EQ(4, cycles);
         }
+    }
 
-        SUBCASE("should use 17 cycles when called") {
+    TEST_CASE("Z80: CP n") {
+        unsigned long cycles = 0;
+        u8 acc_reg = 0;
+
+        SUBCASE("should use 7 cycles") {
             cycles = 0;
-            u16 pc = 0;
-            u16 sp = 0x2;
-            EmulatorMemory memory;
-            memory.add(std::vector<u8>{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
-            NextWord args = {.farg = 0x2, .sarg = 0x0};
+            NextByte args = {.farg = 0};
             Flags flag_reg;
-            flag_reg.clear_sign_flag();
 
-            cp(pc, sp, memory, args, flag_reg, cycles);
+            cp_n(acc_reg, args, flag_reg, cycles);
 
-            CHECK_EQ(17, cycles);
+            CHECK_EQ(7, cycles);
+        }
+    }
+
+    TEST_CASE("Z80: CP [HL]") {
+        unsigned long cycles = 0;
+        u8 acc_reg = 0;
+
+        SUBCASE("should use 7 cycles") {
+            cycles = 0;
+            Flags flag_reg;
+
+            cp_MHL(acc_reg, 0, flag_reg, cycles);
+
+            CHECK_EQ(7, cycles);
         }
     }
 }

@@ -11,24 +11,26 @@ namespace emu::z80 {
 
     void add_to_register(u8 &acc_reg, u8 value, bool cf, Flags &flag_reg) {
         const u8 previous = acc_reg;
-        acc_reg += value + (cf ? 1 : 0);
+        const u8 to_add = value + (cf ? 1 : 0);
+        acc_reg += to_add;
 
-        flag_reg.handle_carry_flag(previous, value + (cf ? 1 : 0));
+        flag_reg.handle_carry_flag(previous, value, cf);
         flag_reg.handle_zero_flag(acc_reg);
-        flag_reg.handle_parity_flag(acc_reg);
+        flag_reg.handle_overflow_flag(previous, value, cf);
         flag_reg.handle_sign_flag(acc_reg);
-        flag_reg.handle_aux_carry_flag(previous, value, cf);
+        flag_reg.handle_half_carry_flag(previous, value, cf);
     }
 
     void sub_from_register(u8 &acc_reg, u8 value, bool cf, Flags &flag_reg) {
         const u8 previous = acc_reg;
-        acc_reg -= (value + (cf ? 1 : 0));
+        const u8 to_subtract = value + (cf ? 1 : 0);
+        acc_reg -= to_subtract;
 
-        flag_reg.handle_borrow_flag(previous, value + (cf ? 1 : 0));
+        flag_reg.handle_borrow_flag(previous, value, cf);
         flag_reg.handle_zero_flag(acc_reg);
-        flag_reg.handle_parity_flag(acc_reg);
+        flag_reg.handle_overflow_flag(previous, -value, cf);    // TODO: Fix the overflow flag for sub/sbc
         flag_reg.handle_sign_flag(acc_reg);
-        flag_reg.handle_aux_borrow_flag(previous, value, cf);
+        flag_reg.handle_half_borrow_flag(previous, value, cf);
     }
 
     void execute_call(u16 &pc, u16 &sp, EmulatorMemory &memory, const NextWord &args) {

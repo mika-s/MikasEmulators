@@ -17,24 +17,31 @@ namespace emu::z80 {
      *   <li>Size: 1</li>
      *   <li>Cycles: 1</li>
      *   <li>States: 4</li>
-     *   <li>Condition bits affected: carry</li>
+     *   <li>Condition bits affected: carry, half carry, add/subtract</li>
      * </ul>
      *
      * @param acc_reg is the accumulator register, which will be mutated
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void rlc(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles) {
-        const bool should_set_carry_flag = is_bit_set(acc_reg, HIGH_BIT);
+    void rlca(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles) {
+        const bool should_set_carry_flag = is_bit_set(acc_reg, msb);
         acc_reg = acc_reg << 1;
         if (should_set_carry_flag) {
             flag_reg.set_carry_flag();
-            set_bit(acc_reg, LOW_BIT);
+            set_bit(acc_reg, lsb);
         } else {
             flag_reg.clear_carry_flag();
         }
 
+        flag_reg.clear_half_carry_flag();
+        flag_reg.clear_add_subtract_flag();
+
         cycles = 4;
+    }
+
+    void print_rlca(std::ostream &ostream) {
+        ostream << "RLCA";
     }
 
     void print_rlc(std::ostream &ostream, const std::string &reg) {
@@ -42,7 +49,7 @@ namespace emu::z80 {
                 << reg;
     }
 
-    TEST_CASE("Z80: RLC") {
+    TEST_CASE("Z80: RLCA") {
         unsigned long cycles = 0;
         u8 acc_reg = 0;
 
@@ -50,26 +57,26 @@ namespace emu::z80 {
             for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
                 Flags flag_reg;
                 acc_reg = acc_reg_counter;
-                const bool cy = emu::util::byte::is_bit_set(acc_reg, HIGH_BIT);
+                const bool cy = is_bit_set(acc_reg, msb);
 
-                rlc(acc_reg, flag_reg, cycles);
+                rlca(acc_reg, flag_reg, cycles);
 
                 u8 expected = acc_reg_counter << 1u;
                 if (cy) {
-                    emu::util::byte::set_bit(expected, LOW_BIT);
+                    set_bit(expected, lsb);
                 }
 
                 CHECK_EQ(expected, acc_reg);
             }
         }
 
-        SUBCASE("should set the carry flag if shifted out of msb") {
+        SUBCASE("should set the carry flag if shifted out_Mn_A of msb") {
             acc_reg = 0b10000000;
             Flags flag_reg;
 
             CHECK_EQ(false, flag_reg.is_carry_flag_set());
 
-            rlc(acc_reg, flag_reg, cycles);
+            rlca(acc_reg, flag_reg, cycles);
 
             CHECK_EQ(true, flag_reg.is_carry_flag_set());
         }
@@ -79,9 +86,45 @@ namespace emu::z80 {
             Flags flag_reg;
             flag_reg.set_carry_flag();
 
-            rlc(acc_reg, flag_reg, cycles);
+            rlca(acc_reg, flag_reg, cycles);
 
             CHECK_EQ(0, acc_reg);
+        }
+
+        SUBCASE("should always reset the half carry flag") {
+            acc_reg = 0;
+            Flags flag_reg;
+            flag_reg.set_half_carry_flag();
+
+            rlca(acc_reg, flag_reg, cycles);
+
+            CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
+
+            rlca(acc_reg, flag_reg, cycles);
+
+            CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
+
+            rlca(acc_reg, flag_reg, cycles);
+
+            CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
+        }
+
+        SUBCASE("should always reset the add/subtract flag") {
+            acc_reg = 0;
+            Flags flag_reg;
+            flag_reg.set_add_subtract_flag();
+
+            rlca(acc_reg, flag_reg, cycles);
+
+            CHECK_EQ(false, flag_reg.is_add_subtract_flag_set());
+
+            rlca(acc_reg, flag_reg, cycles);
+
+            CHECK_EQ(false, flag_reg.is_add_subtract_flag_set());
+
+            rlca(acc_reg, flag_reg, cycles);
+
+            CHECK_EQ(false, flag_reg.is_add_subtract_flag_set());
         }
 
         SUBCASE("should use 4 cycles") {
@@ -90,7 +133,7 @@ namespace emu::z80 {
             Flags flag_reg;
             flag_reg.set_carry_flag();
 
-            rlc(acc_reg, flag_reg, cycles);
+            rlca(acc_reg, flag_reg, cycles);
 
             CHECK_EQ(4, cycles);
         }

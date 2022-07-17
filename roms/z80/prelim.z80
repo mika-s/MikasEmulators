@@ -42,10 +42,10 @@ start:	ld	a,1		; test simple compares and z/nz jumps
 	jp	lab0
 	halt			; emergency exit
 	db	0ffh
-	
+
 lab0:	call	lab2		; does a simple call work?
 lab1:	jp	0		; fail
-	
+
 lab2:	pop	hl		; check return address
 	ld	a,h
 	cp	high lab1
@@ -94,7 +94,7 @@ v:	set	v+2
 	endm
 
 ; test access to memory via (hl)
-	ld	hl,hlval
+	ld	hl,hlval ; 0x1EC
 	ld	a,(hl)
 	cp	0a5h
 	jp	nz,0
@@ -111,7 +111,7 @@ v:	set	v+2
 	jp	0
 
 ; test instructions needed for hex output
-reta:	ld	a,255
+reta:	ld	a,255 ; 0x209
 	and	a,15
 	cp	15
 	jp	nz,0
@@ -139,16 +139,16 @@ reta:	ld	a,255
 	jp	nz,0
 	ld	a,c
 	cp	034h
-	jp	nz,0
-	
+	jp	nz,0 ; 0x241
+
 ; from now on we can report errors by displaying an address
 
 ; test conditional call, ret, jp, jr
 tcond:	macro	flag,pcond,ncond,rel
-	ld	hl,&flag
+	ld	hl,&flag ; 0x244
 	push	hl
 	pop	af
-	call	&pcond,lab1&pcond
+	call	&pcond,lab1&pcond ; error here at 0x24c
 	jp	error
 lab1&pcond:	pop	hl
 	ld	hl,0d7h xor &flag
@@ -181,7 +181,7 @@ lab5&pcond:	ld	hl,0d7h xor &flag
 	pop	af
 	jp	&ncond,lab6&pcond
 	call	error
-lab6&pcond:	
+lab6&pcond:
       if	&rel
 	ld	hl,&flag
 	push	hl
@@ -238,8 +238,8 @@ lab10:	inc	hl
 	call	nz,error
 	ld	a,l
 	cp	0
-	call	nz,error
-	
+	call	nz,error ; 0x03CA (not sure)
+
 ; relative addressing
 reladr:	macro	r
 	ld	&r,hlval
@@ -252,7 +252,7 @@ reladr:	macro	r
 	inc	&r
 	ld	a,(&r-1)
 	cp	0a5h
-	call	nz,error
+	call	nz,error ; bug here => A is not 0xA5, but 0x00
 	ld	&r,hlval-126
 	ld	a,(&r+127)
 	cp	03ch
@@ -265,7 +265,7 @@ reladr:	macro	r
 
 	reladr	ix
 	reladr	iy
-	
+
 allok:	ld	de,okmsg
 	ld	c,9
 	call	5
@@ -273,9 +273,9 @@ allok:	ld	de,okmsg
 
 okmsg:	db	'Preliminary tests complete$'
 
-	
+
 ; display address at top of stack and exit
-error:	pop	bc
+error:	pop	bc ; 0x0465
 	ld	h,high hextab
 	ld	a,b
 	rrca
@@ -323,7 +323,7 @@ conout:	push	af
 	pop	bc
 	pop	af
 	ret
-	
+
 v:	set	0
 regs1:	rept	20
 v:	set	v+2

@@ -195,12 +195,13 @@ look up how the game is supposed to behave.
 
 #### Todo
 
-- [ ] Fix the CMake file to use better best practices
 - [ ] Better argument handling
 - [ ] Refactor to "sessions" for Space Invaders and the 8080 cpu
 
 
 ### Z80
+
+This CPU is currently being worked on.
 
 #### Pacman
 

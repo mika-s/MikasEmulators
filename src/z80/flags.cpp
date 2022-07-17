@@ -3,19 +3,23 @@
 
 namespace emu::z80 {
 
+    using emu::util::byte::borrowed_out_of;
+    using emu::util::byte::carried_out_of;
     using emu::util::byte::is_bit_set;
 
     Flags::Flags()
             : m_carry(false),
-              m_parity(false),
-              m_auxiliary_carry(false),
+              m_add_subtract(false),
+              m_parity_overflow(false),
+              m_half_carry(false),
               m_zero(false),
               m_sign(false) {}
 
     void Flags::reset() {
         clear_carry_flag();
-        clear_parity_flag();
-        clear_aux_carry_flag();
+        clear_add_subtract_flag();
+        clear_parity_overflow_flag();
+        clear_half_carry_flag();
         clear_zero_flag();
         clear_sign_flag();
     }
@@ -24,67 +28,69 @@ namespace emu::z80 {
         const u8 s = (m_sign ? 1 : 0) << 7;
         const u8 z = (m_zero ? 1 : 0) << 6;
         const u8 unused1 = 0 << 5;
-        const u8 ac = (m_auxiliary_carry ? 1 : 0) << 4;
+        const u8 h = (m_half_carry ? 1 : 0) << 4;
         const u8 unused2 = 0 << 3;
-        const u8 p = (m_parity ? 1 : 0) << 2;
-        const u8 unused3 = 1 << 1;
+        const u8 pv = (m_parity_overflow ? 1 : 0) << 2;
+        const u8 n = (m_add_subtract ? 1 : 0) << 1;
         const u8 c = (m_carry ? 1 : 0) << 0;
 
-        return s | z | unused1 | ac | unused2 | p | unused3 | c;
+        return s | z | unused1 | h | unused2 | pv | n | c;
     }
 
     void Flags::from_u8(u8 value) {
         m_sign = is_bit_set(value, 7);
         m_zero = is_bit_set(value, 6);
-        m_auxiliary_carry = is_bit_set(value, 4);
-        m_parity = is_bit_set(value, 2);
+        m_half_carry = is_bit_set(value, 4);
+        m_parity_overflow = is_bit_set(value, 2);
+        m_add_subtract = is_bit_set(value, 1);
         m_carry = is_bit_set(value, 0);
     }
 
-    void Flags::handle_carry_flag(u8 previous, int value_to_add) {
-        int new_value = previous + value_to_add;
-        if (new_value > 255) {
+    void Flags::handle_carry_flag(u8 previous, int to_add, bool cf) {
+        if (carried_out_of(msb, previous, to_add, cf)) {
             set_carry_flag();
         } else {
             clear_carry_flag();
         }
     }
 
-    void Flags::handle_carry_flag_dad(u16 previous, u16 value_to_add) {
-        if (((previous + value_to_add) >> 16) & 1) {
+    void Flags::handle_carry_flag(u16 previous, u16 to_add) {
+        if (((previous + to_add) >> 16) & 1) {
             set_carry_flag();
         } else {
             clear_carry_flag();
         }
     }
 
-    void Flags::handle_borrow_flag(u8 previous, int value_to_subtract) {
-        if (previous < value_to_subtract) {
-            set_carry_flag();
-        } else {
+    void Flags::handle_borrow_flag(u8 previous, int to_subtract, bool cf) {
+        if (borrowed_out_of(msb, previous, to_subtract, cf)) {
             clear_carry_flag();
+        } else {
+            set_carry_flag();
         }
     }
 
-    void Flags::handle_aux_carry_flag(u8 previous, u8 value_to_add, bool cf) {
-        const u8 result = previous + value_to_add + (cf ? 1 : 0);
-        const u8 half_carry = (previous ^ value_to_add ^ result) & 0x10;
-
-        if (half_carry > 0) {
-            set_aux_carry_flag();
+    void Flags::handle_half_carry_flag(u8 previous, u8 to_add, bool cf) {
+        if (carried_out_of(msb_first_nibble, previous, to_add, cf)) {
+            set_half_carry_flag();
         } else {
-            clear_aux_carry_flag();
+            clear_half_carry_flag();
         }
     }
 
-    void Flags::handle_aux_borrow_flag(u8 previous, u8 value_to_subtract, bool cf) {
-        const u8 result = previous - value_to_subtract - (cf ? 1 : 0);
-        const u8 half_carry = ~(previous ^ value_to_subtract ^ result) & 0x10;
-
-        if (half_carry > 0) {
-            set_aux_carry_flag();
+    void Flags::handle_half_carry_flag(u16 previous, u16 to_add, bool cf) {
+        if (carried_out_of(msb_first_nibble_u16, previous, to_add, cf)) {
+            set_half_carry_flag();
         } else {
-            clear_aux_carry_flag();
+            clear_half_carry_flag();
+        }
+    }
+
+    void Flags::handle_half_borrow_flag(u8 previous, u8 to_subtract, bool cf) {
+        if (borrowed_out_of(msb_first_nibble, previous, to_subtract, cf)) {
+            set_half_carry_flag();
+        } else {
+            clear_half_carry_flag();
         }
     }
 
@@ -98,9 +104,17 @@ namespace emu::z80 {
 
     void Flags::handle_parity_flag(u8 number) {
         if (should_parity_flag_be_set(number)) {
-            set_parity_flag();
+            set_parity_overflow_flag();
         } else {
-            clear_parity_flag();
+            clear_parity_overflow_flag();
+        }
+    }
+
+    void Flags::handle_overflow_flag(u8 previous, u8 to_add, bool cf) {
+        if (should_overflow_flag_be_set(previous, to_add, cf)) {
+            set_parity_overflow_flag();
+        } else {
+            clear_parity_overflow_flag();
         }
     }
 
@@ -121,6 +135,10 @@ namespace emu::z80 {
         }
 
         return !isOdd;
+    }
+
+    bool Flags::should_overflow_flag_be_set(u8 previous, u8 to_add, bool cf) {
+        return carried_out_of(msb, previous, to_add, cf) != carried_out_of(msb - 1, previous, to_add, cf);
     }
 
     void Flags::set_zero_flag() {
@@ -155,16 +173,28 @@ namespace emu::z80 {
         }
     }
 
-    void Flags::set_aux_carry_flag() {
-        m_auxiliary_carry = true;
+    void Flags::set_half_carry_flag() {
+        m_half_carry = true;
     }
 
-    void Flags::clear_aux_carry_flag() {
-        m_auxiliary_carry = false;
+    void Flags::clear_half_carry_flag() {
+        m_half_carry = false;
     }
 
-    bool Flags::is_aux_carry_flag_set() const {
-        return m_auxiliary_carry;
+    bool Flags::is_half_carry_flag_set() const {
+        return m_half_carry;
+    }
+
+    void Flags::set_add_subtract_flag() {
+        m_add_subtract = true;
+    }
+
+    void Flags::clear_add_subtract_flag() {
+        m_add_subtract = false;
+    }
+
+    bool Flags::is_add_subtract_flag_set() const {
+        return m_add_subtract;
     }
 
     void Flags::set_sign_flag() {
@@ -179,15 +209,15 @@ namespace emu::z80 {
         return m_sign;
     }
 
-    void Flags::set_parity_flag() {
-        m_parity = true;
+    void Flags::set_parity_overflow_flag() {
+        m_parity_overflow = true;
     }
 
-    void Flags::clear_parity_flag() {
-        m_parity = false;
+    void Flags::clear_parity_overflow_flag() {
+        m_parity_overflow = false;
     }
 
-    bool Flags::is_parity_flag_set() const {
-        return m_parity;
+    bool Flags::is_parity_overflow_flag_set() const {
+        return m_parity_overflow;
     }
 }

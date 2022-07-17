@@ -11,11 +11,11 @@ namespace emu::z80 {
      *   <li>Condition bits affected: none</li>
      * </ul>
      *
-     * @param inte is the interrupt bit, which will be mutated
+     * @param iff is the interrupt enable flip-flop, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void di(bool &inte, unsigned long &cycles) {
-        inte = false;
+    void di(bool &iff, unsigned long &cycles) {
+        iff = false;
 
         cycles = 4;
     }
@@ -28,22 +28,22 @@ namespace emu::z80 {
         unsigned long cycles = 0;
 
         SUBCASE("should disable interrupts") {
-            bool inte = true;
+            bool iff = true;
 
-            di(inte, cycles);
+            di(iff, cycles);
 
-            CHECK_EQ(false, inte);
+            CHECK_EQ(false, iff);
 
-            di(inte, cycles);
+            di(iff, cycles);
 
-            CHECK_EQ(false, inte);
+            CHECK_EQ(false, iff);
         }
 
         SUBCASE("should use 4 cycles") {
             cycles = 0;
-            bool inte = false;
+            bool iff = false;
 
-            di(inte, cycles);
+            di(iff, cycles);
 
             CHECK_EQ(4, cycles);
         }

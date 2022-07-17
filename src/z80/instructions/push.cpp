@@ -42,7 +42,7 @@ namespace emu::z80 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void push_psw(const Flags &flag_reg, u8 &acc_reg, u16 &sp, EmulatorMemory &memory, unsigned long &cycles) {
+    void push_af(const Flags &flag_reg, u8 &acc_reg, u16 &sp, EmulatorMemory &memory, unsigned long &cycles) {
         memory[--sp] = acc_reg;
         memory[--sp] = flag_reg.to_u8();
 
@@ -77,15 +77,15 @@ namespace emu::z80 {
             flag_reg.set_carry_flag();
             flag_reg.set_zero_flag();
             flag_reg.set_sign_flag();
-            flag_reg.set_parity_flag();
-            flag_reg.set_aux_carry_flag();
+            flag_reg.set_parity_overflow_flag();
+            flag_reg.set_half_carry_flag();
             u8 acc_reg = 0xbb;
             u16 sp = 0x03;
 
             EmulatorMemory memory;
             memory.add(std::vector<u8>{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08});
 
-            push_psw(flag_reg, acc_reg, sp, memory, cycles);
+            push_af(flag_reg, acc_reg, sp, memory, cycles);
 
             CHECK_EQ(acc_reg, memory[0x2]);
             CHECK_EQ(flag_reg.to_u8(), memory[0x1]);

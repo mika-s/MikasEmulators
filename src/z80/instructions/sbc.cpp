@@ -11,13 +11,12 @@ namespace emu::z80 {
 
     using emu::util::string::hexify_wo_0x;
 
-    void sub(u8 &acc_reg, u8 value, Flags &flag_reg) {
-        sub_from_register(acc_reg, value, false, flag_reg);
-        flag_reg.set_add_subtract_flag();
+    void sbc(u8 &acc_reg, u8 value, Flags &flag_reg) {
+        sub_from_register(acc_reg, value, flag_reg.is_carry_flag_set(), flag_reg);
     }
 
     /**
-     * Subtract
+     * Subtract with carry
      * <ul>
      *   <li>Size: 1</li>
      *   <li>Cycles: 1</li>
@@ -30,16 +29,16 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void sub_r(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles) {
-        sub(acc_reg, value, flag_reg);
+    void sbc_A_r(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles) {
+        sbc(acc_reg, value, flag_reg);
 
         cycles = 4;
     }
 
     /**
-     * Subtract immediate from the accumulator
+     * Subtract immediate with carry
      * <ul>
-     *   <li>Size: 2</li>
+     *   <li>Size: 1</li>
      *   <li>Cycles: 2</li>
      *   <li>States: 7</li>
      *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
@@ -50,14 +49,14 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void sub_n(u8 &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles) {
-        sub(acc_reg, args.farg, flag_reg);
+    void sbc_A_n(u8 &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles) {
+        sbc(acc_reg, args.farg, flag_reg);
 
         cycles = 7;
     }
 
     /**
-     * Subtract memory in HL's address from the accumulator
+     * Subtract memory in HL's address to accumulator with carry
      * <ul>
      *   <li>Size: 1</li>
      *   <li>Cycles: 2</li>
@@ -70,23 +69,27 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void sub_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles) {
-        sub(acc_reg, value, flag_reg);
+    void sbc_A_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles) {
+        sbc(acc_reg, value, flag_reg);
 
         cycles = 7;
     }
 
-    void print_sub(std::ostream &ostream, const std::string &reg) {
-        ostream << "SUB "
-                << reg;
+    void print_sbc(std::ostream &ostream, const std::string &dest, const std::string &src) {
+        ostream << "SBC "
+                << dest
+                << ", "
+                << src;
     }
 
-    void print_sub(std::ostream &ostream, const NextByte &args) {
-        ostream << "SUB "
+    void print_sbc(std::ostream &ostream, const std::string &reg, const NextByte &args) {
+        ostream << "SBC "
+                << reg
+                << ", "
                 << hexify_wo_0x(args.farg);
     }
 
-    TEST_CASE("Z80: SUB") {
+    TEST_CASE("Z80: SBC") {
         u8 acc_reg = 0;
 
         SUBCASE("should subtract the given value from the accumulator") {
@@ -95,21 +98,21 @@ namespace emu::z80 {
                     Flags flag_reg;
                     acc_reg = acc_reg_counter;
 
-                    sub(acc_reg, value, flag_reg);
+                    sbc(acc_reg, value, flag_reg);
 
                     CHECK_EQ(static_cast<u8>(acc_reg_counter - value), acc_reg);
                 }
             }
         }
 
-        SUBCASE("should subtract the given value from the accumulator without taking carry into account") {
+        SUBCASE("should subtract the given value from the accumulator taking carry into account") {
             Flags flag_reg;
             flag_reg.set_carry_flag();
             acc_reg = 0xab;
 
-            sub(acc_reg, 0x1, flag_reg);
+            sbc(acc_reg, 0x1, flag_reg);
 
-            CHECK_EQ(0xaa, acc_reg);
+            CHECK_EQ(0xa9, acc_reg);
         }
 
         SUBCASE("should set the zero flag when zero and not set otherwise") {
@@ -118,7 +121,7 @@ namespace emu::z80 {
                     Flags flag_reg;
                     acc_reg = acc_reg_counter;
 
-                    sub(acc_reg, value, flag_reg);
+                    sbc(acc_reg, value, flag_reg);
 
                     CHECK_EQ(acc_reg == 0, flag_reg.is_zero_flag_set());
                 }
@@ -131,38 +134,43 @@ namespace emu::z80 {
                     Flags flag_reg;
                     acc_reg = acc_reg_counter;
 
-                    sub(acc_reg, value, flag_reg);
+                    sbc(acc_reg, value, flag_reg);
 
                     CHECK_EQ(acc_reg > 127, flag_reg.is_sign_flag_set());
                 }
             }
         }
 
-//        SUBCASE("should set the parity flag when even parity") {
-//            Flags flag_reg;
-//            acc_reg = 0x3;
+//        SUBCASE("should set the overflow flag when overflowing and not otherwise") {
+//            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
+//                for (u8 value = 0; value < UINT8_MAX; ++value) {
+//                    Flags flag_reg;
+//                    acc_reg = acc_reg_counter;
 //
-//            sub(acc_reg, 0x0, flag_reg);
+//                    sbc(acc_reg, value, flag_reg);
 //
-//            CHECK_EQ(0x3, acc_reg);
-//            CHECK_EQ(true, flag_reg.is_parity_overflow_flag_set());
-//        }
-//
-//        SUBCASE("should not set the parity flag when odd parity") {
-//            Flags flag_reg;
-//            acc_reg = 0x1;
-//
-//            sub(acc_reg, 0x0, flag_reg);
-//
-//            CHECK_EQ(0x1, acc_reg);
-//            CHECK_EQ(false, flag_reg.is_parity_overflow_flag_set());
+//                    const bool are_same_sign = (acc_reg_counter <= 127 && value <= 127)
+//                                               || (127 < acc_reg_counter && 127 < value);
+//                    const bool are_positive = are_same_sign && acc_reg_counter <= 127;
+//                    const bool are_negative = are_same_sign && 127 < acc_reg_counter;
+//                    const bool goes_from_positive_to_negative = are_positive && acc_reg > 127;
+//                    const bool goes_negative_to_positive = are_negative && acc_reg <= 127;
+//                    if (goes_from_positive_to_negative || goes_negative_to_positive != flag_reg.is_parity_overflow_flag_set()) {
+//                        std::cout << "";
+//                    }
+//                    CHECK_EQ(
+//                            goes_from_positive_to_negative || goes_negative_to_positive,
+//                            flag_reg.is_parity_overflow_flag_set()
+//                    );
+//                }
+//            }
 //        }
 
         SUBCASE("should set the carry flag when carried out of msb") {
             Flags flag_reg;
             acc_reg = 0x80;
 
-            sub(acc_reg, 0x81, flag_reg);
+            sbc(acc_reg, 0x81, flag_reg);
 
             CHECK_EQ(0xff, acc_reg);
             CHECK_EQ(true, flag_reg.is_carry_flag_set());
@@ -172,66 +180,66 @@ namespace emu::z80 {
             Flags flag_reg;
             acc_reg = 0x2;
 
-            sub(acc_reg, 0x1, flag_reg);
+            sbc(acc_reg, 0x1, flag_reg);
 
             CHECK_EQ(0x1, acc_reg);
             CHECK_EQ(false, flag_reg.is_carry_flag_set());
         }
 
-        SUBCASE("should set the aux carry flag when carried out of the fourth bit") {
+        SUBCASE("should set the half carry flag when carried out of the fourth bit") {
             Flags flag_reg;
             acc_reg = 0xe;
 
-            sub(acc_reg, 0x1, flag_reg);
+            sbc(acc_reg, 0x1, flag_reg);
 
             CHECK_EQ(0xd, acc_reg);
             CHECK_EQ(true, flag_reg.is_half_carry_flag_set());
         }
 
-        SUBCASE("should not set the aux carry flag when not carried out of the fourth bit") {
+        SUBCASE("should not set the half carry flag when not carried out of the fourth bit") {
             Flags flag_reg;
             acc_reg = 0x10;
 
-            sub(acc_reg, 0x1, flag_reg);
+            sbc(acc_reg, 0x1, flag_reg);
 
-            CHECK_EQ(0xf, acc_reg);
+            CHECK_EQ(0xF, acc_reg);
             CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
         }
     }
 
-    TEST_CASE("Z80: SUB r") {
+    TEST_CASE("Z80: SBC A, n") {
         SUBCASE("should use 4 cycles") {
             unsigned long cycles = 0;
             Flags flag_reg;
             u8 acc_reg = 0xe;
 
-            sub_r(acc_reg, 0x1, flag_reg, cycles);
+            sbc_A_r(acc_reg, 0x1, flag_reg, cycles);
 
             CHECK_EQ(4, cycles);
         }
     }
 
-    TEST_CASE("Z80: SUB n") {
+    TEST_CASE("Z80: SBC A, n") {
         SUBCASE("should use 7 cycles") {
             unsigned long cycles = 0;
             Flags flag_reg;
             u8 acc_reg = 0xe;
             NextByte args = {0x1};
 
-            sub_n(acc_reg, args, flag_reg, cycles);
+            sbc_A_n(acc_reg, args, flag_reg, cycles);
 
             CHECK_EQ(7, cycles);
         }
     }
 
-    TEST_CASE("Z80: SUB (HL)") {
+    TEST_CASE("Z80: SBC A, (HL)") {
         SUBCASE("should use 7 cycles") {
             unsigned long cycles = 0;
             Flags flag_reg;
             u8 acc_reg = 0xe;
             NextByte args = {0x1};
 
-            sub_MHL(acc_reg, args.farg, flag_reg, cycles);
+            sbc_A_MHL(acc_reg, args.farg, flag_reg, cycles);
 
             CHECK_EQ(7, cycles);
         }

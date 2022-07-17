@@ -11,7 +11,6 @@ namespace emu::z80 {
     using emu::util::byte::second_byte;
 
     void rst(u16 &pc, u16 new_pc, u16 &sp, EmulatorMemory &memory, unsigned long &cycles) {
-
         execute_call(pc, sp, memory, first_byte(new_pc), second_byte(new_pc));
 
         cycles = 11;

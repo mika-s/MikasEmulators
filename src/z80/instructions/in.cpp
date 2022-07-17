@@ -14,8 +14,8 @@ namespace emu::z80 {
      * Input from port
      * <ul>
      *   <li>Size: 2</li>
-     *   <li>Cycles: 3</li>
-     *   <li>States: 10</li>
+     *   <li>Cycles: 4</li>
+     *   <li>States: 11</li>
      *   <li>Condition bits affected: none</li>
      * </ul>
      *
@@ -24,10 +24,10 @@ namespace emu::z80 {
      * @param io is the IO addresses
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void in(u8 &acc_reg, const NextByte &args, std::vector<u8> io, unsigned long &cycles) {
+    void in_A_Mn(u8 &acc_reg, const NextByte &args, std::vector<u8> io, unsigned long &cycles) {
         acc_reg = io[args.farg];
 
-        cycles = 10;
+        cycles = 11;
     }
 
     void print_in(std::ostream &ostream, const NextByte &args) {
@@ -35,24 +35,24 @@ namespace emu::z80 {
                 << hexify_wo_0x(args.farg);
     }
 
-    TEST_CASE("Z80: IN") {
+    TEST_CASE("Z80: IN A, [n]") {
         unsigned long cycles = 0;
         std::vector<u8> io = {0, 2, 4, 6, 8, 10};
         NextByte args = {.farg = 0x1};
         u8 acc_reg = 0;
 
         SUBCASE("should store addressed IO in the accumulator") {
-            in(acc_reg, args, io, cycles);
+            in_A_Mn(acc_reg, args, io, cycles);
 
             CHECK_EQ(io[args.farg], acc_reg);
         }
 
-        SUBCASE("should use 10 cycles") {
+        SUBCASE("should use 11 cycles") {
             cycles = 0;
 
-            in(acc_reg, args, io, cycles);
+            in_A_Mn(acc_reg, args, io, cycles);
 
-            CHECK_EQ(10, cycles);
+            CHECK_EQ(11, cycles);
         }
     }
 }
