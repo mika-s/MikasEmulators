@@ -94,7 +94,7 @@ v:	set	v+2
 	endm
 
 ; test access to memory via (hl)
-	ld	hl,hlval ; 0x1EC
+	ld	hl,hlval
 	ld	a,(hl)
 	cp	0a5h
 	jp	nz,0
@@ -111,7 +111,7 @@ v:	set	v+2
 	jp	0
 
 ; test instructions needed for hex output
-reta:	ld	a,255 ; 0x209
+reta:	ld	a,255
 	and	a,15
 	cp	15
 	jp	nz,0
@@ -139,16 +139,16 @@ reta:	ld	a,255 ; 0x209
 	jp	nz,0
 	ld	a,c
 	cp	034h
-	jp	nz,0 ; 0x241
+	jp	nz,0
 
 ; from now on we can report errors by displaying an address
 
 ; test conditional call, ret, jp, jr
 tcond:	macro	flag,pcond,ncond,rel
-	ld	hl,&flag ; 0x244
+	ld	hl,&flag
 	push	hl
 	pop	af
-	call	&pcond,lab1&pcond ; error here at 0x24c
+	call	&pcond,lab1&pcond
 	jp	error
 lab1&pcond:	pop	hl
 	ld	hl,0d7h xor &flag
@@ -238,7 +238,7 @@ lab10:	inc	hl
 	call	nz,error
 	ld	a,l
 	cp	0
-	call	nz,error ; 0x03CA (not sure)
+	call	nz,error
 
 ; relative addressing
 reladr:	macro	r
@@ -252,7 +252,7 @@ reladr:	macro	r
 	inc	&r
 	ld	a,(&r-1)
 	cp	0a5h
-	call	nz,error ; bug here => A is not 0xA5, but 0x00
+	call	nz,error
 	ld	&r,hlval-126
 	ld	a,(&r+127)
 	cp	03ch
@@ -275,7 +275,7 @@ okmsg:	db	'Preliminary tests complete$'
 
 
 ; display address at top of stack and exit
-error:	pop	bc ; 0x0465
+error:	pop	bc
 	ld	h,high hextab
 	ld	a,b
 	rrca

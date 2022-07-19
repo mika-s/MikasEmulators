@@ -139,6 +139,8 @@ namespace emu::z80 {
         std::vector<OutObserver *> m_out_observers;
         std::vector<InObserver *> m_in_observers;
 
+        void next_ixy_instruction(u8 ixy_opcode, u16 &ixy_reg, unsigned long cycles);
+
         NextByte get_next_byte();
 
         NextWord get_next_word();

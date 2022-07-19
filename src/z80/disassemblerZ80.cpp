@@ -608,7 +608,7 @@ namespace emu::z80 {
         case RET_NZ:
             print_ret(m_ostream, "NZ");
             break;
-        case POP_B:
+        case POP_BC:
             print_pop(m_ostream, "B");
             break;
         case JP_NZ:
@@ -620,7 +620,7 @@ namespace emu::z80 {
         case CALL_NZ:
             print_call(m_ostream, get_next_word(), "NZ");
             break;
-        case PUSH_B:
+        case PUSH_BC:
             print_push(m_ostream, "B");
             break;
         case ADD_A_n:
@@ -656,7 +656,7 @@ namespace emu::z80 {
         case RET_NC:
             print_ret(m_ostream, "NZ");
             break;
-        case POP_D:
+        case POP_DE:
             print_pop(m_ostream, "D");
             break;
         case JP_NC:
@@ -668,7 +668,7 @@ namespace emu::z80 {
         case CALL_NC:
             print_call(m_ostream, get_next_word(), "NC");
             break;
-        case PUSH_D:
+        case PUSH_DE:
             print_push(m_ostream, "D");
             break;
         case SUB_n:
@@ -704,7 +704,7 @@ namespace emu::z80 {
         case RET_PO:
             print_ret(m_ostream, "PO");
             break;
-        case POP_H:
+        case POP_HL:
             print_pop(m_ostream, "H");
             break;
         case JP_PO:
@@ -716,7 +716,7 @@ namespace emu::z80 {
         case CALL_PO:
             print_call(m_ostream, get_next_word(), "PO");
             break;
-        case PUSH_H:
+        case PUSH_HL:
             print_push(m_ostream, "H");
             break;
         case AND_n:
@@ -752,7 +752,7 @@ namespace emu::z80 {
         case RET_P:
             print_ret(m_ostream, "P");
             break;
-        case POS_PSW:
+        case POP_AF:
             print_pop(m_ostream, "AF");
             break;
         case JP_P:
@@ -764,7 +764,7 @@ namespace emu::z80 {
         case CALL_P:
             print_call(m_ostream, get_next_word(), "P");
             break;
-        case PUSH_PSW:
+        case PUSH_AF:
             print_push(m_ostream, "AF");
             break;
         case OR_n:

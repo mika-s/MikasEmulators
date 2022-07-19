@@ -18,18 +18,18 @@ namespace emu::z80 {
      *   <li>Condition bits affected: none</li>
      * </ul>
      *
-     * @param reg is the register to decrement, which will be mutated
+     * @param b_reg is the B register to decrement, which will be mutated
      * @param pc is the program counter, which will be mutated
      * @param args contains the argument with the displacement
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void djnz(u8 &reg, u16 &pc, const NextByte &args, unsigned long &cycles) {
+    void djnz(u8 &b_reg, u16 &pc, const NextByte &args, unsigned long &cycles) {
         cycles = 8;
 
-        reg--;
+        b_reg--;
 
-        if (reg != 0) {
-            pc += args.farg;
+        if (b_reg != 0) {
+            pc += static_cast<i8>(args.farg)  ;
             cycles += 5;
         }
     }
@@ -52,7 +52,7 @@ namespace emu::z80 {
             CHECK_EQ(0x100f, pc);
         }
 
-        SUBCASE("should decrement register and add_A_r a displacement if the register does not become 0") {
+        SUBCASE("should decrement register and add a displacement if the register does not become 0") {
             u16 pc = 0x1000;
             u8 b_reg = 0x02;
 

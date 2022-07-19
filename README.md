@@ -2,6 +2,10 @@
 
 This is my collection of emulators, written in C++. As of now, it only emulates Intel 8080, with the game Space Invaders.
 
+The project is licensed under [The MIT License](LICENSE.md), with the test roms and libraries as exceptions. They have
+their own licenses. See the source code of each test rom or in the library folders to see their license or copyright
+notice.
+
 ## Table of contents
 
 * [Dependencies](#dependencies)
@@ -198,10 +202,17 @@ look up how the game is supposed to behave.
 - [ ] Better argument handling
 - [ ] Refactor to "sessions" for Space Invaders and the 8080 cpu
 
-
 ### Z80
 
 This CPU is currently being worked on.
+
+Passes the following test binaries:
+
+- `prelim.com`:
+
+```
+Preliminary tests complete
+```
 
 #### Pacman
 

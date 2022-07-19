@@ -3,10 +3,14 @@
 #include "z80/emulator_memory.h"
 #include "z80/flags.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/util/byte_util.h"
 
 namespace emu::z80 {
+
+    using emu::util::byte::to_u16;
+
     /**
-     * Pop
+     * Pop register pair off the stack
      * <ul>
      *   <li>Size: 1</li>
      *   <li>Cycles: 3</li>
@@ -28,7 +32,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Pop
+     * Pop AF off the stack
      * <ul>
      *   <li>Size: 1</li>
      *   <li>Cycles: 3</li>
@@ -48,12 +52,35 @@ namespace emu::z80 {
         cycles = 10;
     }
 
+    /**
+     * Pop IX or IY off the stack
+     * <ul>
+     *   <li>Size: 1</li>
+     *   <li>Cycles: 4</li>
+     *   <li>States: 14</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param ix_reg is the IX register register, which will be mutated
+     * @param sp is the stack pointer, which will be mutated
+     * @param memory is the memory
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void pop_ix_iy(u16 &ix_iy_reg, u16 &sp, const EmulatorMemory &memory, unsigned long &cycles) {
+        const u8 lo = memory[sp++];
+        const u8 hi = memory[sp++];
+
+        ix_iy_reg = to_u16(hi, lo);
+
+        cycles = 14;
+    }
+
     void print_pop(std::ostream &ostream, const std::string &reg) {
         ostream << "POP "
                 << reg;
     }
 
-    TEST_CASE("Z80: POP") {
+    TEST_CASE("Z80: POP qq") {
         unsigned long cycles = 0;
 
         EmulatorMemory memory;
@@ -97,6 +124,24 @@ namespace emu::z80 {
             pop(reg1, reg2, sp, memory, cycles);
 
             CHECK_EQ(10, cycles);
+        }
+    }
+
+    TEST_CASE("Z80: POP IX/IY") {
+        unsigned long cycles = 0;
+
+        EmulatorMemory memory;
+        memory.add(std::vector<u8>{0x01, 0x02, 0x03, 0xff, 0x05, 0x06, 0x07, 0x08});
+
+        SUBCASE("should use 14 cycles") {
+            cycles = 0;
+
+            u16 ix = 0x1234;
+            u16 sp = 0x03;
+
+            pop_ix_iy(ix, sp, memory, cycles);
+
+            CHECK_EQ(14, cycles);
         }
     }
 }

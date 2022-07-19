@@ -101,19 +101,19 @@ namespace emu::z80 {
     }
 
     /**
-     * Increment register (IX or IY)
+     * Increment IX or IY register
      * <ul>
-     *   <li>Size: 1</li>
+     *   <li>Size: 2</li>
      *   <li>Cycles: 2</li>
      *   <li>States: 10</li>
      *   <li>Condition bits affected: none</li>
      * </ul>
      *
-     * @param sp is the stack pointer, which will be mutated
+     * @param ixy_reg is the IX or IY register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void inc_ix_iy(u16 &ix_or_iy, unsigned long &cycles) {
-        ++ix_or_iy;
+    void inc_ixy(u16 &ixy_reg, unsigned long &cycles) {
+        ++ixy_reg;
 
         cycles = 10;
     }
@@ -309,7 +309,7 @@ namespace emu::z80 {
         }
     }
 
-    TEST_CASE("Z80: INC (IX or IY)") {
+    TEST_CASE("Z80: INC IX or INC IY)") {
         unsigned long cycles = 0;
         u16 ix = 0;
 
@@ -317,7 +317,7 @@ namespace emu::z80 {
             for (u16 expected_ix = 0; expected_ix < UINT16_MAX; ++expected_ix) {
                 ix = expected_ix;
 
-                inc_ix_iy(ix, cycles);
+                inc_ixy(ix, cycles);
 
                 CHECK_EQ(expected_ix + 1, ix);
             }
@@ -326,7 +326,7 @@ namespace emu::z80 {
         SUBCASE("should use 10 cycles") {
             cycles = 0;
 
-            inc_ix_iy(ix, cycles);
+            inc_ixy(ix, cycles);
 
             CHECK_EQ(10, cycles);
         }

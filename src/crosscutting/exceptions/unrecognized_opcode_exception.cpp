@@ -11,6 +11,11 @@ namespace emu::exceptions {
         make_message(opcode);
     }
 
+    UnrecognizedOpcodeException::UnrecognizedOpcodeException(u8 opcode, const std::string& extra_message)
+            : runtime_error("Unrecognized opcode (" + extra_message + ")") {
+        make_message(opcode);
+    }
+
     const char *UnrecognizedOpcodeException::what() const noexcept {
         return m_message.c_str();
     }

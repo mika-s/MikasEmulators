@@ -855,7 +855,7 @@ namespace emu::i8080 {
             case RP:
                 rp(m_pc, m_sp, m_memory, m_flag_reg, cycles);
                 break;
-            case POS_PSW:
+            case POP_PSW:
                 pop_psw(m_flag_reg, m_acc_reg, m_sp, m_memory, cycles);
                 break;
             case JP:

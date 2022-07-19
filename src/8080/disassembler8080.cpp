@@ -749,7 +749,7 @@ namespace emu::i8080 {
         case RP:
             print_rp(m_ostream);
             break;
-        case POS_PSW:
+        case POP_PSW:
             print_pop(m_ostream, "PSW");
             break;
         case JP:

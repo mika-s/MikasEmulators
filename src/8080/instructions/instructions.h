@@ -250,7 +250,7 @@
 #define XRI           0xEE
 #define RST_5         0xEF
 #define RP            0xF0
-#define POS_PSW       0xF1
+#define POP_PSW       0xF1
 #define JP            0xF2
 #define DI            0xF3
 #define CP            0xF4
@@ -336,7 +336,7 @@ namespace emu::i8080 {
     void pop(u8 &reg1, u8 &reg2, u16 &sp, const EmulatorMemory &memory, unsigned long &cycles);
     void pop_psw(Flags &flag_reg, u8 &acc_reg, u16 &sp, const EmulatorMemory &memory, unsigned long &cycles);
     void push(u8 reg1, u8 reg2, u16 &sp, EmulatorMemory &memory, unsigned long &cycles);
-    void push_psw(const Flags &flag_reg, u8 &acc_reg, u16 &sp, EmulatorMemory &memory, unsigned long &cycles);
+    void push_psw(const Flags &flag_reg, u8 acc_reg, u16 &sp, EmulatorMemory &memory, unsigned long &cycles);
     void ral(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles);
     void rar(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles);
     void rc(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, unsigned long &cycles);

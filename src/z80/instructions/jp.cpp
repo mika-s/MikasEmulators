@@ -250,6 +250,25 @@ namespace emu::z80 {
         cycles = 4;
     }
 
+    /**
+     * Jump to address in IX or IY
+     * <ul>
+     *   <li>Size: 1</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 8</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param pc is the program counter, which will be mutated
+     * @param ixy_reg is the IX or IY register with the address to jump to
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void jp_ix_iy(u16 &pc, u16 ixy_reg, unsigned long &cycles) {
+        pc = ixy_reg;
+
+        cycles = 8;
+    }
+
     void print_jp(std::ostream &ostream, const NextWord &args) {
         ostream << "JP "
                 << hexify_wo_0x(args.sarg)
@@ -826,6 +845,20 @@ namespace emu::z80 {
             jp_hl(pc, address, cycles);
 
             CHECK_EQ(4, cycles);
+        }
+    }
+
+    TEST_CASE("Z80: JP (IX) or JP (IY)") {
+        unsigned long cycles = 0;
+        u16 pc = 0x1111;
+        u16 ix = 0x432a;
+
+        SUBCASE("should use 8 cycles") {
+            cycles = 0;
+
+            jp_ix_iy(pc, ix, cycles);
+
+            CHECK_EQ(8, cycles);
         }
     }
 }

@@ -11,6 +11,8 @@ namespace emu::z80 {
 
     using emu::misc::NextByte;
     using emu::misc::NextWord;
+    using emu::util::byte::first_byte;
+    using emu::util::byte::second_byte;
     using emu::util::byte::to_u16;
     using emu::util::string::hexify_wo_0x;
 
@@ -235,6 +237,68 @@ namespace emu::z80 {
         reg2 = args.farg;
 
         cycles = 10;
+    }
+
+    /**
+     * Load IX or IY immediate
+     * <ul>
+     *   <li>Size: 4</li>
+     *   <li>Cycles: 4</li>
+     *   <li>States: 14</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param ixy_reg is the IX or IY register to load into, which will be mutated
+     * @param args contains value to load into the registers
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void ld_ixy_nn(u16 &ixy_reg, const NextWord &args, unsigned long &cycles) {
+        ixy_reg = to_u16(args.sarg, args.farg);
+
+        cycles = 14;
+    }
+
+    /**
+     * Load memory location with IX or IY
+     * <ul>
+     *   <li>Size: 4</li>
+     *   <li>Cycles: 6</li>
+     *   <li>States: 20</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param args contains the address to load into
+     * @param ixy_reg is the IX or IY register to load into, which will be mutated
+     * @param args contains address
+     * @param memory is the memory, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void ld_Mnn_ixy(const NextByte &args, EmulatorMemory &memory, u16 ixy_reg, unsigned long &cycles) {
+        memory[args.farg] = first_byte(ixy_reg);
+        memory[args.farg + 1] = second_byte(ixy_reg);
+
+        cycles = 20;
+    }
+
+    /**
+     * Load register with (IXY + d)
+     * <ul>
+     *   <li>Size: 3</li>
+     *   <li>Cycles: 5</li>
+     *   <li>States: 19</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param reg is the register to load into, which will be mutated
+     * @param ixy_reg is the IX or IY register containing the base address
+     * @param args contains address offset
+     * @param memory is the memory
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void ld_r_MixyPd(u8 &reg, u16 ixy_reg, const NextByte &args, const EmulatorMemory &memory, unsigned long &cycles) {
+        reg = memory[ixy_reg + static_cast<i8>(args.farg)];
+
+        cycles = 19;
     }
 
     /**

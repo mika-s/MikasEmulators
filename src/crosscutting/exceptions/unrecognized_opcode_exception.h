@@ -12,6 +12,8 @@ namespace emu::exceptions {
     public:
         explicit UnrecognizedOpcodeException(u8 opcode);
 
+        UnrecognizedOpcodeException(u8 opcode, const std::string& extra_message);
+
         [[nodiscard]] const char *what() const noexcept override;
 
     private:

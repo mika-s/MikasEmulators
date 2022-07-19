@@ -727,7 +727,7 @@ namespace emu::z80 {
             case RET_NZ:
                 ret_nz(m_pc, m_sp, m_memory, m_flag_reg, cycles);
                 break;
-            case POP_B:
+            case POP_BC:
                 pop(m_b_reg, m_c_reg, m_sp, m_memory, cycles);
                 break;
             case JP_NZ:
@@ -739,8 +739,8 @@ namespace emu::z80 {
             case CALL_NZ:
                 call_nz(m_pc, m_sp, m_memory, get_next_word(), m_flag_reg, cycles);
                 break;
-            case PUSH_B:
-                push(m_b_reg, m_c_reg, m_sp, m_memory, cycles);
+            case PUSH_BC:
+                push_qq(m_b_reg, m_c_reg, m_sp, m_memory, cycles);
                 break;
             case ADD_A_n:
                 add_A_n(m_acc_reg, get_next_byte(), m_flag_reg, cycles);
@@ -775,7 +775,7 @@ namespace emu::z80 {
             case RET_NC:
                 ret_nc(m_pc, m_sp, m_memory, m_flag_reg, cycles);
                 break;
-            case POP_D:
+            case POP_DE:
                 pop(m_d_reg, m_e_reg, m_sp, m_memory, cycles);
                 break;
             case JP_NC:
@@ -790,8 +790,8 @@ namespace emu::z80 {
             case CALL_NC:
                 call_nc(m_pc, m_sp, m_memory, get_next_word(), m_flag_reg, cycles);
                 break;
-            case PUSH_D:
-                push(m_d_reg, m_e_reg, m_sp, m_memory, cycles);
+            case PUSH_DE:
+                push_qq(m_d_reg, m_e_reg, m_sp, m_memory, cycles);
                 break;
             case SUB_n:
                 sub_n(m_acc_reg, get_next_byte(), m_flag_reg, cycles);
@@ -821,7 +821,7 @@ namespace emu::z80 {
                 call_c(m_pc, m_sp, m_memory, get_next_word(), m_flag_reg, cycles);
                 break;
             case IX:
-                unused_3(m_opcode, m_pc, cycles); // IX ext
+                next_ixy_instruction(get_next_byte().farg, m_ix_reg, cycles);
                 break;
             case SBC_A_n:
                 sbc_A_n(m_acc_reg, get_next_byte(), m_flag_reg, cycles);
@@ -832,7 +832,7 @@ namespace emu::z80 {
             case RET_PO:
                 ret_po(m_pc, m_sp, m_memory, m_flag_reg, cycles);
                 break;
-            case POP_H:
+            case POP_HL:
                 pop(m_h_reg, m_l_reg, m_sp, m_memory, cycles);
                 break;
             case JP_PO:
@@ -844,8 +844,8 @@ namespace emu::z80 {
             case CALL_PO:
                 call_po(m_pc, m_sp, m_memory, get_next_word(), m_flag_reg, cycles);
                 break;
-            case PUSH_H:
-                push(m_h_reg, m_l_reg, m_sp, m_memory, cycles);
+            case PUSH_HL:
+                push_qq(m_h_reg, m_l_reg, m_sp, m_memory, cycles);
                 break;
             case AND_n:
                 and_n(m_acc_reg, get_next_byte(), m_flag_reg, cycles);
@@ -880,7 +880,7 @@ namespace emu::z80 {
             case RET_P:
                 ret_p(m_pc, m_sp, m_memory, m_flag_reg, cycles);
                 break;
-            case POS_PSW:
+            case POP_AF:
                 pop_af(m_flag_reg, m_acc_reg, m_sp, m_memory, cycles);
                 break;
             case JP_P:
@@ -892,7 +892,7 @@ namespace emu::z80 {
             case CALL_P:
                 call_p(m_pc, m_sp, m_memory, get_next_word(), m_flag_reg, cycles);
                 break;
-            case PUSH_PSW:
+            case PUSH_AF:
                 push_af(m_flag_reg, m_acc_reg, m_sp, m_memory, cycles);
                 break;
             case OR_n:
@@ -917,7 +917,7 @@ namespace emu::z80 {
                 call_m(m_pc, m_sp, m_memory, get_next_word(), m_flag_reg, cycles);
                 break;
             case IY:
-                unused_3(m_opcode, m_pc, cycles);   // IY ext
+                next_ixy_instruction(get_next_byte().farg, m_iy_reg, cycles);
                 break;
             case CP_n:
                 cp_n(m_acc_reg, get_next_byte(), m_flag_reg, cycles);
@@ -930,6 +930,66 @@ namespace emu::z80 {
         }
 
         return cycles;
+    }
+
+    void Cpu::next_ixy_instruction(u8 ixy_opcode, u16 &ixy_reg, unsigned long cycles) {
+        switch (ixy_opcode) {
+            case ADD_IXY_BC:
+                add_ix_iy_pp(ixy_reg, to_u16(m_b_reg, m_c_reg), m_flag_reg, cycles);
+                break;
+            case ADD_IXY_DE:
+                add_ix_iy_pp(ixy_reg, to_u16(m_d_reg, m_e_reg), m_flag_reg, cycles);
+                break;
+            case LD_IXY_nn:
+                ld_ixy_nn(ixy_reg, get_next_word(), cycles);
+                break;
+            case LD_Mnn_IXY:
+                ld_Mnn_ixy(get_next_byte(), memory(), ixy_reg, cycles);
+                break;
+            case INC_IXY:
+                inc_ixy(ixy_reg, cycles);
+                break;
+            case ADD_IXY_IXY:
+                add_ix_iy_pp(ixy_reg, ixy_reg, m_flag_reg, cycles);
+                break;
+            case LD_IXY_Mnn:
+                throw UnrecognizedOpcodeException(ixy_opcode, "IX/IY instructions");
+            case DEC_IXY:
+                dec_ix_iy(ixy_reg, cycles);
+                break;
+            case LD_B_MIXY_P_n:
+                ld_r_MixyPd(m_b_reg, ixy_reg, get_next_byte(), m_memory, cycles);
+                break;
+            case LD_C_MIXY_P_n:
+                ld_r_MixyPd(m_c_reg, ixy_reg, get_next_byte(), m_memory, cycles);
+                break;
+            case LD_D_MIXY_P_n:
+                ld_r_MixyPd(m_d_reg, ixy_reg, get_next_byte(), m_memory, cycles);
+                break;
+            case LD_E_MIXY_P_n:
+                ld_r_MixyPd(m_e_reg, ixy_reg, get_next_byte(), m_memory, cycles);
+                break;
+            case LD_H_MIXY_P_n:
+                ld_r_MixyPd(m_h_reg, ixy_reg, get_next_byte(), m_memory, cycles);
+                break;
+            case LD_L_MIXY_P_n:
+                ld_r_MixyPd(m_l_reg, ixy_reg, get_next_byte(), m_memory, cycles);
+                break;
+            case LD_A_MIXY_P_n:
+                ld_r_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, cycles);
+                break;
+            case POP_IXY:
+                pop_ix_iy(ixy_reg, m_sp, m_memory, cycles);
+                break;
+            case PUSH_IXY:
+                push_ix_iy(ixy_reg, m_sp, m_memory, cycles);
+                break;
+            case JP_MIXY:
+                jp_ix_iy(m_pc, ixy_reg, cycles);
+                break;
+            default:
+                throw UnrecognizedOpcodeException(ixy_opcode, "IX/IY instructions");
+        }
     }
 
     NextByte Cpu::get_next_byte() {

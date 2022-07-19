@@ -15,7 +15,7 @@ namespace emu::i8080 {
      * </ul>
      *
      * @param reg1 is the first register to place in memory
-     * @param reg1 is the second register to place in memory
+     * @param reg2 is the second register to place in memory
      * @param sp is the stack pointer, which will be mutated
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
@@ -42,7 +42,7 @@ namespace emu::i8080 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void push_psw(const Flags &flag_reg, u8 &acc_reg, u16 &sp, EmulatorMemory &memory, unsigned long &cycles) {
+    void push_psw(const Flags &flag_reg, u8 acc_reg, u16 &sp, EmulatorMemory &memory, unsigned long &cycles) {
         memory[--sp] = acc_reg;
         memory[--sp] = flag_reg.to_u8();
 

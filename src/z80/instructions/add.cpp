@@ -125,6 +125,31 @@ namespace emu::z80 {
         cycles = 11;
     }
 
+    /**
+     * Double register add to IX or IY
+     * <ul>
+     *   <li>Size: 3</li>
+     *   <li>Cycles: 4</li>
+     *   <li>States: 15</li>
+     *   <li>Condition bits affected: carry, half carry, add/subtract</li>
+     * </ul>
+     *
+     * @param ix_reg is the IX register, which will be mutated
+     * @param value_to_add contains the argument that should be added to HL
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void add_ix_iy_pp(u16 &ix_reg, u16 value_to_add, Flags &flag_reg, unsigned long &cycles) {
+        const u16 previous = ix_reg;
+        ix_reg = previous + value_to_add;
+
+        flag_reg.handle_carry_flag(previous, value_to_add);
+        flag_reg.handle_half_carry_flag(previous, value_to_add, false);
+        flag_reg.clear_add_subtract_flag();
+
+        cycles = 15;
+    }
+
     void print_add(std::ostream &ostream, const std::string &dest, const std::string &src) {
         ostream << "ADD "
                 << dest

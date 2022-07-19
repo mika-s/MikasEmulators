@@ -110,7 +110,7 @@ namespace emu::z80 {
      *   <li>Condition bits affected: none</li>
      * </ul>
      *
-     * @param sp is the stack pointer, which will be mutated
+     * @param ix_or_iy is either the IX or IY register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void dec_ix_iy(u16 &ix_or_iy, unsigned long &cycles) {
@@ -118,7 +118,6 @@ namespace emu::z80 {
 
         cycles = 10;
     }
-
 
     void print_dec(std::ostream &ostream, const std::string &reg) {
         ostream << "DEC "
