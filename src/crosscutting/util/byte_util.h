@@ -19,7 +19,7 @@ namespace emu::util::byte {
 
     bool carried_out_of(unsigned int bit_position, u16 a, u16 b, bool cf);
 
-    bool borrowed_out_of(unsigned int bit_position, u16 a, u16 b, bool cf);
+    bool borrow_from(unsigned int bit_position, u16 a, u16 b, bool cf);
 }
 
 #endif //MIKA_EMULATORS_CROSSCUTTING_BYTE_UTIL_H

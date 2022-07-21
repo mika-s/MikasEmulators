@@ -408,48 +408,102 @@ namespace emu::z80 {
         cycles = 20;
     }
 
-    void print_ld(std::ostream &ostream, const std::string &reg1, const std::string &reg2) {
-        ostream << "LD "
-                << reg1
-                << ","
-                << reg2;
+    /**
+     * Store SP direct
+     * <ul>
+     *   <li>Size: 4</li>
+     *   <li>Cycles: 6</li>
+     *   <li>States: 20</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param sp is the stack pointer to store
+     * @param memory is the memory, which will be mutated
+     * @param args contains the argument with the address to lookup
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void ld_Mnn_sp(u16 sp, EmulatorMemory &memory, const NextWord &args, unsigned long &cycles) {
+        ld_Mnn_dd(second_byte(sp), first_byte(sp), memory, args, cycles);
+
+        cycles = 20;
     }
 
-    void print_ld(std::ostream &ostream, const std::string &reg, const NextByte &args) {
+    /**
+     * Load SP with value in memory
+     * <ul>
+     *   <li>Size: 4</li>
+     *   <li>Cycles: 6</li>
+     *   <li>States: 20</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param sp is the stack pointer, which will be mutated
+     * @param memory is the memory
+     * @param args contains the argument with the address to lookup
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void ld_sp_Mnn(u16 &sp, EmulatorMemory memory, const NextWord &args, unsigned long &cycles) {
+        const u16 first_address = to_u16(args.sarg, args.farg);
+        const u16 second_address = first_address + 1;
+
+        const u8 lo = memory[first_address];
+        const u8 hi = memory[second_address];
+
+        sp = to_u16(hi, lo);
+
+        cycles = 20;
+    }
+
+    void print_ld(std::ostream &ostream, const std::string &dest, const std::string &src) {
         ostream << "LD "
-                << reg
+                << dest
+                << ","
+                << src;
+    }
+
+    void print_ld(std::ostream &ostream, const std::string &dest, const NextByte &args) {
+        ostream << "LD "
+                << dest
                 << ","
                 << hexify_wo_0x(args.farg);
     }
 
-    void print_ld(std::ostream &ostream, const std::string &reg, const NextWord &args) {
+    void print_ld(std::ostream &ostream, const std::string &dest, const NextWord &args) {
         ostream << "LD "
-                << reg
-                << ", ("
+                << dest
+                << ",("
                 << hexify_wo_0x(to_u16(args.farg, args.sarg))
                 << ")";
     }
 
-    void print_ld_dd_nn(std::ostream &ostream, const std::string &reg, const NextWord &args) {
+    void print_ld_dd_nn(std::ostream &ostream, const std::string &dest, const NextWord &args) {
         ostream << "LD "
-                << reg
+                << dest
                 << ","
                 << hexify_wo_0x(args.sarg)
                 << hexify_wo_0x(args.farg);
     }
 
-    void print_ld_Mnn_HL(std::ostream &ostream, const NextWord &args) {
+    void print_ld_Mnn_dd(std::ostream &ostream, const NextWord &args, const std::string &src) {
         ostream << "LD ("
                 << hexify_wo_0x(args.sarg)
                 << hexify_wo_0x(args.farg)
-                << "), HL";
+                << "),"
+                << src;
     }
 
-    void print_ld_Mnn_A(std::ostream &ostream, const NextWord &args) {
-        ostream << "LD ("
-                << hexify_wo_0x(args.sarg)
-                << hexify_wo_0x(args.farg)
-                << "), A";
+    void print_ld_r_MixyPn(std::ostream &ostream, const std::string &dest, const std::string &ixy_reg,
+                             const NextByte &args) {
+        const i8 signed_value = static_cast<i8>(args.farg);
+        const std::string plus_or_minus = (signed_value >= 0) ? "+" : "";
+
+        ostream << "LD "
+                << dest
+                << ",("
+                << ixy_reg
+                << plus_or_minus
+                << +signed_value
+                << ")";
     }
 
     TEST_CASE("Z80: LD") {

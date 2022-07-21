@@ -17,23 +17,29 @@ namespace emu::z80 {
 
         void handle_zero_flag(u8 number);
 
-        void handle_carry_flag(u8 previous, int value_to_add, bool cf);
+        void handle_zero_flag(u16 number);
 
-        void handle_carry_flag(u16 previous, u16 value_to_add);
+        void handle_carry_flag(u8 previous, int to_add, bool cf);
 
-        void handle_borrow_flag(u8 previous, int value_to_subtract, bool cf);
+        void handle_carry_flag(u16 previous, u16 to_add);
 
-        void handle_half_carry_flag(u8 previous, u8 value_to_add, bool cf);
+        void handle_borrow_flag(u8 previous, int to_subtract, bool cf);
 
-        void handle_half_carry_flag(u16 previous, u16 value_to_add, bool cf);
+        void handle_half_carry_flag(u8 previous, u8 to_add, bool cf);
 
-        void handle_half_borrow_flag(u8 previous, u8 value_to_subtract, bool cf);
+        void handle_half_carry_flag(u16 previous, u16 to_add, bool cf);
+
+        void handle_half_borrow_flag(u8 previous, u8 to_subtract, bool cf);
+
+        void handle_borrow_flag(u16 previous, int to_subtract, bool cf);
 
         void handle_parity_flag(u8 number);
 
         void handle_overflow_flag(u8 previous, u8 to_add, bool cf);
 
         void handle_sign_flag(u8 number);
+
+        void handle_sign_flag(u16 number);
 
         static bool should_parity_flag_be_set(u8 number);
 
@@ -78,6 +84,7 @@ namespace emu::z80 {
         [[nodiscard]] bool is_parity_overflow_flag_set() const;
 
     private:
+        static constexpr unsigned int msb_u16 = 15;
         static constexpr unsigned int msb = 7;
         static constexpr unsigned int msb_first_nibble = 3;
         static constexpr unsigned int msb_first_nibble_u16 = 11;

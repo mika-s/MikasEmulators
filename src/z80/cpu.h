@@ -141,6 +141,8 @@ namespace emu::z80 {
 
         void next_ixy_instruction(u8 ixy_opcode, u16 &ixy_reg, unsigned long cycles);
 
+        void next_extd_instruction(u8 extd_opcode, unsigned long cycles);
+
         NextByte get_next_byte();
 
         NextWord get_next_word();
@@ -152,6 +154,8 @@ namespace emu::z80 {
         [[nodiscard]] u16 address_in_HL() const;
 
         [[nodiscard]] u16 address_in_HL_p() const;
+
+        [[nodiscard]] u16 address_in_DE() const;
 
         void print_debug();
     };

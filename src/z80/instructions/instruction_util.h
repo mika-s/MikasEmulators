@@ -18,6 +18,8 @@ namespace emu::z80 {
 
     void sub_from_register(u8 &acc_reg, u8 value, bool cf, Flags &flag_reg);
 
+    void sub_from_register(u16 &acc_reg, u16 value, bool cf, Flags &flag_reg);
+
     void execute_call(u16 &pc, u16 &sp, EmulatorMemory &memory, const NextWord &args);
 
     void execute_call(u16 &pc, u16 &sp, EmulatorMemory &memory, u8 farg, u8 sarg);

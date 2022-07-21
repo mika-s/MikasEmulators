@@ -85,7 +85,7 @@ namespace emu::z80 {
     void print_ex(std::ostream &ostream, const std::string &reg, const std::string &comp_reg) {
         ostream << "EX "
                 << reg
-                << ", "
+                << ","
                 << comp_reg;
     }
 

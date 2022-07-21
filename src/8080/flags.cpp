@@ -3,7 +3,7 @@
 
 namespace emu::i8080 {
 
-    using emu::util::byte::borrowed_out_of;
+    using emu::util::byte::borrow_from;
     using emu::util::byte::carried_out_of;
     using emu::util::byte::is_bit_set;
 
@@ -60,7 +60,7 @@ namespace emu::i8080 {
     }
 
     void Flags::handle_borrow_flag(u8 previous, int value_to_subtract, bool cf) {
-        if (borrowed_out_of(msb, previous, value_to_subtract, cf)) {
+        if (borrow_from(msb + 1, previous, value_to_subtract, cf)) {
             clear_carry_flag();
         } else {
             set_carry_flag();
@@ -76,7 +76,7 @@ namespace emu::i8080 {
     }
 
     void Flags::handle_aux_borrow_flag(u8 previous, u8 value_to_subtract, bool cf) {
-        if (borrowed_out_of(msb_first_nibble, previous, value_to_subtract, cf)) {
+        if (borrow_from(msb_first_nibble + 1, previous, value_to_subtract, cf)) {
             set_aux_carry_flag();
         } else {
             clear_aux_carry_flag();

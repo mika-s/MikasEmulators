@@ -290,6 +290,14 @@
 
 // EXTD opcodes:
 
+#define SBC_HL_BC     0x42
+#define NEG           0x44
+#define RRD           0x67
+#define LD_Mnn_sp     0x73
+#define LD_sp_Mnn     0x7B
+#define LDI           0xA0
+#define LDIR          0xB0
+
 // BITS opcodes:
 
 // @formatter:off
@@ -353,7 +361,7 @@ namespace emu::z80 {
     void jp_pe(u16 &pc, const NextWord &args, const Flags &flag_reg, unsigned long &cycles);
     void jp_po(u16 &pc, const NextWord &args, const Flags &flag_reg, unsigned long &cycles);
     void jp_z(u16 &pc, const NextWord &args, const Flags &flag_reg, unsigned long &cycles);
-    void jp_ix_iy(u16 &pc, u16 ixy_reg, unsigned long &cycles);
+    void jp_ixy(u16 &pc, u16 ixy_reg, unsigned long &cycles);
     void jr(u16 &pc, const NextByte &args, unsigned long &cycles);
     void jr_c(u16 &pc, const NextByte &args, const Flags &flag_reg, unsigned long &cycles);
     void jr_nc(u16 &pc, const NextByte &args, const Flags &flag_reg, unsigned long &cycles);
@@ -374,10 +382,14 @@ namespace emu::z80 {
     void ld_Mnn_A(u8 &acc_reg, EmulatorMemory &memory, const NextWord &args, unsigned long &cycles);
     void ld_Mnn_HL(u8 l_reg, u8 h_reg, EmulatorMemory &memory, const NextWord &args, unsigned long &cycles);
     void ld_Mnn_dd(u8 l_reg, u8 h_reg, EmulatorMemory &memory, const NextWord &args, unsigned long &cycles);
+    void ld_Mnn_sp(u16 sp, EmulatorMemory &memory, const NextWord &args, unsigned long &cycles);
     void ld_Mnn_ixy(const NextByte &args, EmulatorMemory &memory, u16 ixy_reg, unsigned long &cycles);
     void ld_Mss_A(u8 &to, u8 acc_reg, unsigned long &cycles);
+    void ld_sp_Mnn(u16 &sp, EmulatorMemory memory, const NextWord &args, unsigned long &cycles);
     void ld_sp_nn(u16 &sp, const NextWord &args, unsigned long &cycles);
     void ld_sp_hl(u16 &sp, u16 address, unsigned long &cycles);
+    void ldir(u16 &pc, u8 &b_reg, u8 &c_reg, u8 &d_reg, u8 &e_reg, u8 &h_reg, u8 &l_reg, EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles);
+    void neg(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles);
     void nop(unsigned long &cycles);
     void or_r(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
     void or_n(u8 &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles);
@@ -385,7 +397,7 @@ namespace emu::z80 {
     void out_Mn_A(u8 acc_reg, const NextByte &args, std::vector<u8> &io, unsigned long &cycles);
     void pop(u8 &reg1, u8 &reg2, u16 &sp, const EmulatorMemory &memory, unsigned long &cycles);
     void pop_af(Flags &flag_reg, u8 &acc_reg, u16 &sp, const EmulatorMemory &memory, unsigned long &cycles);
-    void pop_ix_iy(u16 &ix_iy_reg, u16 &sp, const EmulatorMemory &memory, unsigned long &cycles);
+    void pop_ixy(u16 &ix_iy_reg, u16 &sp, const EmulatorMemory &memory, unsigned long &cycles);
     void push_qq(u8 reg1, u8 reg2, u16 &sp, EmulatorMemory &memory, unsigned long &cycles);
     void push_af(const Flags &flag_reg, u8 acc_reg, u16 &sp, EmulatorMemory &memory, unsigned long &cycles);
     void push_ix_iy(u16 ix_iy_reg, u16 &sp, EmulatorMemory &memory, unsigned long &cycles);
@@ -402,6 +414,7 @@ namespace emu::z80 {
     void rlca(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles);
     void rra(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles);
     void rrca(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles);
+    void rrd(u8 &acc_reg, u8 &value, Flags &flag_reg, unsigned long &cycles);
     void rst_0(u16 &pc, u16 &sp, EmulatorMemory &memory, unsigned long &cycles);
     void rst_1(u16 &pc, u16 &sp, EmulatorMemory &memory, unsigned long &cycles);
     void rst_2(u16 &pc, u16 &sp, EmulatorMemory &memory, unsigned long &cycles);
@@ -413,6 +426,7 @@ namespace emu::z80 {
     void sbc_A_n(u8 &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles);
     void sbc_A_r(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
     void sbc_A_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
+    void sbc_HL_ss(u8 &h_reg, u8 &l_reg, u8 reg1, u8 &reg2, Flags &flag_reg, unsigned long &cycles);
     void scf(Flags &flag_reg, unsigned long &cycles);
     void sub_n(u8 &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles);
     void sub_r(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
@@ -450,12 +464,14 @@ namespace emu::z80 {
     void print_jr(std::ostream &ostream, const NextByte &args);
     void print_jr(std::ostream &ostream, const std::string &condition, const NextByte &args);
     void print_inc(std::ostream &ostream, const std::string &reg);
-    void print_ld(std::ostream &ostream, const std::string &reg, const NextByte &args);
-    void print_ld(std::ostream &ostream, const std::string &reg, const NextWord &args);
-    void print_ld(std::ostream &ostream, const std::string &reg1, const std::string &reg2);
+    void print_ld(std::ostream &ostream, const std::string &dest, const std::string &src);
+    void print_ld(std::ostream &ostream, const std::string &dest, const NextByte &args);
+    void print_ld(std::ostream &ostream, const std::string &dest, const NextWord &args);
     void print_ld_dd_nn(std::ostream &ostream, const std::string &reg, const NextWord &args);
-    void print_ld_Mnn_A(std::ostream &ostream, const NextWord &args);
-    void print_ld_Mnn_HL(std::ostream &ostream, const NextWord &args);
+    void print_ld_Mnn_dd(std::ostream &ostream, const NextWord &args, const std::string &src);
+    void print_ld_r_MixyPn(std::ostream &ostream, const std::string &dest, const std::string &ixy_reg, const NextByte &args);
+    void print_ldir(std::ostream &ostream);
+    void print_neg(std::ostream &ostream);
     void print_nop(std::ostream &ostream);
     void print_or_r(std::ostream &ostream, const std::string &reg);
     void print_or_n(std::ostream &ostream, const NextByte &args);
@@ -473,6 +489,7 @@ namespace emu::z80 {
     void print_rra(std::ostream &ostream);
     void print_rrc(std::ostream &ostream, const std::string &reg);
     void print_rrca(std::ostream &ostream);
+    void print_rrd(std::ostream &ostream);
     void print_sbc(std::ostream &ostream, const std::string &dest, const std::string &src);
     void print_sbc(std::ostream &ostream, const std::string &reg, const NextByte &args);
     void print_scf(std::ostream &ostream);

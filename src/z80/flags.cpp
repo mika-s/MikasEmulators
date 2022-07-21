@@ -3,7 +3,7 @@
 
 namespace emu::z80 {
 
-    using emu::util::byte::borrowed_out_of;
+    using emu::util::byte::borrow_from;
     using emu::util::byte::carried_out_of;
     using emu::util::byte::is_bit_set;
 
@@ -63,7 +63,15 @@ namespace emu::z80 {
     }
 
     void Flags::handle_borrow_flag(u8 previous, int to_subtract, bool cf) {
-        if (borrowed_out_of(msb, previous, to_subtract, cf)) {
+        if (borrow_from(msb + 1, previous, to_subtract, cf)) {
+            clear_carry_flag();
+        } else {
+            set_carry_flag();
+        }
+    }
+
+    void Flags::handle_borrow_flag(u16 previous, int to_subtract, bool cf) {
+        if (borrow_from(msb_u16, previous, to_subtract, cf)) {
             clear_carry_flag();
         } else {
             set_carry_flag();
@@ -87,7 +95,7 @@ namespace emu::z80 {
     }
 
     void Flags::handle_half_borrow_flag(u8 previous, u8 to_subtract, bool cf) {
-        if (borrowed_out_of(msb_first_nibble, previous, to_subtract, cf)) {
+        if (borrow_from(msb_first_nibble, previous, to_subtract, cf)) {
             set_half_carry_flag();
         } else {
             clear_half_carry_flag();
@@ -95,6 +103,14 @@ namespace emu::z80 {
     }
 
     void Flags::handle_zero_flag(u8 number) {
+        if (number == 0) {
+            set_zero_flag();
+        } else {
+            clear_zero_flag();
+        }
+    }
+
+    void Flags::handle_zero_flag(u16 number) {
         if (number == 0) {
             set_zero_flag();
         } else {
@@ -120,6 +136,14 @@ namespace emu::z80 {
 
     void Flags::handle_sign_flag(u8 number) {
         if (number > 127) {
+            set_sign_flag();
+        } else {
+            clear_sign_flag();
+        }
+    }
+
+    void Flags::handle_sign_flag(u16 number) {
+        if (static_cast<i16>(number) < 0) {
             set_sign_flag();
         } else {
             clear_sign_flag();

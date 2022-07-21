@@ -66,7 +66,7 @@ namespace emu::z80 {
      * @param memory is the memory
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void pop_ix_iy(u16 &ix_iy_reg, u16 &sp, const EmulatorMemory &memory, unsigned long &cycles) {
+    void pop_ixy(u16 &ix_iy_reg, u16 &sp, const EmulatorMemory &memory, unsigned long &cycles) {
         const u8 lo = memory[sp++];
         const u8 hi = memory[sp++];
 
@@ -139,7 +139,7 @@ namespace emu::z80 {
             u16 ix = 0x1234;
             u16 sp = 0x03;
 
-            pop_ix_iy(ix, sp, memory, cycles);
+            pop_ixy(ix, sp, memory, cycles);
 
             CHECK_EQ(14, cycles);
         }
