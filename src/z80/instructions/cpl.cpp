@@ -32,65 +32,21 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: CPL") {
-        unsigned long cycles = 0;
-        u8 acc_reg = 0;
-
-
-        SUBCASE("should complement the accumulator") {
+        SUBCASE("should complement the accumulator and always set half carry and add/subtract") {
+            unsigned long cycles = 0;
+            u8 acc_reg = 0;
             Flags flag_reg;
 
             for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (u8 value = 0; value < UINT8_MAX; ++value) {
-                    acc_reg = acc_reg_counter;
+                acc_reg = acc_reg_counter;
 
-                    cpl(acc_reg, flag_reg, cycles);
+                cpl(acc_reg, flag_reg, cycles);
 
-                    CHECK_EQ(static_cast<u8>(~acc_reg_counter), acc_reg);
-                }
+                CHECK_EQ(static_cast<u8>(~acc_reg_counter), acc_reg);
+                CHECK_EQ(true, flag_reg.is_half_carry_flag_set());
+                CHECK_EQ(true, flag_reg.is_add_subtract_flag_set());
+                CHECK_EQ(4, cycles);
             }
-        }
-
-        SUBCASE("should always set the half carry flag") {
-            Flags flag_reg;
-            CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
-
-            cpl(acc_reg, flag_reg, cycles);
-
-            CHECK_EQ(true, flag_reg.is_half_carry_flag_set());
-
-            cpl(acc_reg, flag_reg, cycles);
-
-            CHECK_EQ(true, flag_reg.is_half_carry_flag_set());
-
-            cpl(acc_reg, flag_reg, cycles);
-
-            CHECK_EQ(true, flag_reg.is_half_carry_flag_set());
-        }
-
-        SUBCASE("should always set the add/subtract flag") {
-            Flags flag_reg;
-            CHECK_EQ(false, flag_reg.is_add_subtract_flag_set());
-
-            cpl(acc_reg, flag_reg, cycles);
-
-            CHECK_EQ(true, flag_reg.is_add_subtract_flag_set());
-
-            cpl(acc_reg, flag_reg, cycles);
-
-            CHECK_EQ(true, flag_reg.is_add_subtract_flag_set());
-
-            cpl(acc_reg, flag_reg, cycles);
-
-            CHECK_EQ(true, flag_reg.is_add_subtract_flag_set());
-        }
-
-        SUBCASE("should use 4 cycles") {
-            cycles = 0;
-            Flags flag_reg;
-
-            cpl(acc_reg, flag_reg, cycles);
-
-            CHECK_EQ(4, cycles);
         }
     }
 }

@@ -35,6 +35,7 @@ namespace emu::util::file {
             delete[] memory;
         } else {
             std::cout << "Unable to open file: " << path << "\n";
+            // TODO: Throw exception instead
         }
 
         return program;

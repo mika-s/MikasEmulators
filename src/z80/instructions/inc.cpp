@@ -1,6 +1,7 @@
 #include <iostream>
 #include "doctest.h"
 #include "z80/flags.h"
+#include "z80/instructions/instruction_util.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
 
@@ -11,14 +12,15 @@ namespace emu::z80 {
     using emu::util::byte::to_u16;
 
     void inc(u8 &reg, Flags &flag_reg) {
-        const u8 previous = reg;
-        reg++;
+        const bool old_carry = flag_reg.is_carry_flag_set();
 
-        flag_reg.handle_zero_flag(reg);
-        flag_reg.handle_overflow_flag(previous, 1, false);
-        flag_reg.handle_sign_flag(reg);
-        flag_reg.handle_half_carry_flag(previous, 1, false);
-        flag_reg.clear_add_subtract_flag();
+        add_to_register(reg, 1, false, flag_reg);
+
+        if (old_carry) {
+            flag_reg.set_carry_flag();
+        } else {
+            flag_reg.clear_carry_flag();
+        }
     }
 
     /**

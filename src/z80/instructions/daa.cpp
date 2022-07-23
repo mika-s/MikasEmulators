@@ -34,7 +34,15 @@ namespace emu::z80 {
             carry = true;
         }
 
+        const bool old_add_subtract_flag = flag_reg.is_add_subtract_flag_set();
+
         add_to_register(acc_reg, value_to_add, false, flag_reg);
+
+        if (old_add_subtract_flag) {
+            flag_reg.set_add_subtract_flag();
+        } else {
+            flag_reg.clear_add_subtract_flag();
+        }
 
         if (carry) {
             flag_reg.set_carry_flag();

@@ -710,7 +710,7 @@ namespace emu::z80 {
             case JP_PO:
                 print_jp(m_ostream, get_next_word(), "PO");
                 break;
-            case EX_SP_HL:
+            case EX_MSP_HL:
                 print_ex(m_ostream, "(SP)", "HL");
                 break;
             case CALL_PO:
@@ -830,6 +830,9 @@ namespace emu::z80 {
             case DEC_IXY:
                 print_dec(m_ostream, ixy_reg);
                 break;
+            case ADD_IX_SP:
+                print_add(m_ostream, "IX", "SP");
+                break;
             case LD_B_MIXY_P_n:
                 print_ld_r_MixyPn(m_ostream, "B", ixy_reg, get_next_byte());
                 break;
@@ -854,11 +857,17 @@ namespace emu::z80 {
             case POP_IXY:
                 print_pop(m_ostream, ixy_reg);
                 break;
+            case EX_MSP_IX:
+                print_ex(m_ostream, "(SP)", "IX");
+                break;
             case PUSH_IXY:
                 print_push(m_ostream, ixy_reg);
                 break;
             case JP_MIXY:
                 print_jp(m_ostream, "(" + ixy_reg + ")");
+                break;
+            case LD_SP_IX:
+                print_ld(m_ostream, "SP", "IX");
                 break;
             default:
                 throw UnrecognizedOpcodeException(ixy_opcode, "IX/IY instructions");
@@ -870,6 +879,12 @@ namespace emu::z80 {
             case SBC_HL_BC:
                 print_sbc(m_ostream, "HL", "BC");
                 break;
+            case NEG_UNDOC1:
+            case NEG_UNDOC2:
+            case NEG_UNDOC3:
+            case NEG_UNDOC4:
+            case NEG_UNDOC5:
+            case NEG_UNDOC6:
             case NEG:
                 print_neg(m_ostream);
                 break;

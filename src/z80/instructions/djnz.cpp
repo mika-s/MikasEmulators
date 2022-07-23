@@ -29,7 +29,7 @@ namespace emu::z80 {
         b_reg--;
 
         if (b_reg != 0) {
-            pc += static_cast<i8>(args.farg)  ;
+            pc += static_cast<i8>(args.farg);
             cycles += 5;
         }
     }

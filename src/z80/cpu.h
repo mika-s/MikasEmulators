@@ -102,7 +102,8 @@ namespace emu::z80 {
 
         bool m_is_stopped;
 
-        bool m_iff;
+        bool m_iff1;
+        bool m_iff2;
         bool m_is_interrupted;
         u8 m_instruction_from_interruptor;
 
@@ -157,7 +158,9 @@ namespace emu::z80 {
 
         [[nodiscard]] u16 address_in_DE() const;
 
-        void print_debug();
+        void r_tick();
+
+        void print_debug(u8 opcode);
     };
 }
 

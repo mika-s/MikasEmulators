@@ -33,7 +33,6 @@ namespace emu::z80 {
      */
     void add(u8 &acc_reg, u8 value, Flags &flag_reg) {
         add_to_register(acc_reg, value, false, flag_reg);
-        flag_reg.clear_add_subtract_flag();
     }
 
     /**
@@ -128,20 +127,20 @@ namespace emu::z80 {
     /**
      * Double register add to IX or IY
      * <ul>
-     *   <li>Size: 3</li>
+     *   <li>Size: 2</li>
      *   <li>Cycles: 4</li>
      *   <li>States: 15</li>
      *   <li>Condition bits affected: carry, half carry, add/subtract</li>
      * </ul>
      *
-     * @param ix_reg is the IX register, which will be mutated
-     * @param value_to_add contains the argument that should be added to HL
+     * @param ixy_reg is the IX or IY register, which will be mutated
+     * @param value_to_add contains the argument that should be added to IX or IY
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void add_ix_iy_pp(u16 &ix_reg, u16 value_to_add, Flags &flag_reg, unsigned long &cycles) {
-        const u16 previous = ix_reg;
-        ix_reg = previous + value_to_add;
+    void add_ixy_pp(u16 &ixy_reg, u16 value_to_add, Flags &flag_reg, unsigned long &cycles) {
+        const u16 previous = ixy_reg;
+        ixy_reg = previous + value_to_add;
 
         flag_reg.handle_carry_flag(previous, value_to_add);
         flag_reg.handle_half_carry_flag(previous, value_to_add, false);
@@ -170,70 +169,40 @@ namespace emu::z80 {
         SUBCASE("should add given value to the accumulator") {
             for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
                 for (u8 value = 0; value < UINT8_MAX; ++value) {
-                    Flags flag_reg;
-                    acc_reg = acc_reg_counter;
+                    for (int carry = 0; carry < 2; ++carry) {
+                        Flags flag_reg;
+                        if (carry) {
+                            flag_reg.set_carry_flag();
+                        } else {
+                            flag_reg.clear_carry_flag();
+                        }
 
-                    add(acc_reg, value, flag_reg);
+                        acc_reg = acc_reg_counter;
 
-                    CHECK_EQ(static_cast<u8>(acc_reg_counter + value), acc_reg);
-                }
-            }
-        }
+                        add(acc_reg, value, flag_reg);
 
-        SUBCASE("should add given value to the accumulator without taking carry into account") {
-            Flags flag_reg;
-            flag_reg.set_carry_flag();
-            acc_reg = 0;
+                        CHECK_EQ(static_cast<u8>(acc_reg_counter + value), acc_reg);
+                        CHECK_EQ(acc_reg == 0, flag_reg.is_zero_flag_set());
+                        CHECK_EQ(static_cast<i8>(acc_reg) < 0, flag_reg.is_sign_flag_set());
+                        CHECK_EQ(false, flag_reg.is_add_subtract_flag_set());
+                        CHECK_EQ(
+                                (((acc_reg_counter & 0xf) + (value & 0xf)) & 0x10) > 0,
+                                flag_reg.is_half_carry_flag_set()
+                        );
 
-            add(acc_reg, 0xab, flag_reg);
+                        const bool are_same_sign = (acc_reg_counter <= 127 && value <= 127)
+                                                   || (127 < acc_reg_counter && 127 < value);
+                        const bool are_positive = are_same_sign && acc_reg_counter <= 127;
+                        const bool are_negative = are_same_sign && 127 < acc_reg_counter;
+                        const bool goes_from_positive_to_negative = are_positive && acc_reg > 127;
+                        const bool goes_negative_to_positive = are_negative && acc_reg <= 127;
+                        CHECK_EQ(
+                                goes_from_positive_to_negative || goes_negative_to_positive,
+                                flag_reg.is_parity_overflow_flag_set()
+                        );
 
-            CHECK_EQ(0xab, acc_reg);
-        }
-
-        SUBCASE("should set the zero flag when zero and not set otherwise") {
-            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (u8 value = 0; value < UINT8_MAX; ++value) {
-                    Flags flag_reg;
-                    acc_reg = acc_reg_counter;
-
-                    add(acc_reg, value, flag_reg);
-
-                    CHECK_EQ(acc_reg == 0, flag_reg.is_zero_flag_set());
-                }
-            }
-        }
-
-        SUBCASE("should set the sign flag when above 127 and not otherwise") {
-            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (u8 value = 0; value < UINT8_MAX; ++value) {
-                    Flags flag_reg;
-                    acc_reg = acc_reg_counter;
-
-                    add(acc_reg, value, flag_reg);
-
-                    CHECK_EQ(acc_reg > 127, flag_reg.is_sign_flag_set());
-                }
-            }
-        }
-
-        SUBCASE("should set the overflow flag when overflowing and not otherwise") {
-            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (u8 value = 0; value < UINT8_MAX; ++value) {
-                    Flags flag_reg;
-                    acc_reg = acc_reg_counter;
-
-                    add(acc_reg, value, flag_reg);
-
-                    const bool are_same_sign = (acc_reg_counter <= 127 && value <= 127)
-                                               || (127 < acc_reg_counter && 127 < value);
-                    const bool are_positive = are_same_sign && acc_reg_counter <= 127;
-                    const bool are_negative = are_same_sign && 127 < acc_reg_counter;
-                    const bool goes_from_positive_to_negative = are_positive && acc_reg > 127;
-                    const bool goes_negative_to_positive = are_negative && acc_reg <= 127;
-                    CHECK_EQ(
-                            goes_from_positive_to_negative || goes_negative_to_positive,
-                            flag_reg.is_parity_overflow_flag_set()
-                    );
+                        // TODO: Move carry here
+                    }
                 }
             }
         }
@@ -256,45 +225,6 @@ namespace emu::z80 {
 
             CHECK_EQ(0x3, acc_reg);
             CHECK_EQ(false, flag_reg.is_carry_flag_set());
-        }
-
-        SUBCASE("should set the half carry flag when carried out of the fourth bit") {
-            Flags flag_reg;
-            acc_reg = 0xF;
-
-            add(acc_reg, 0x1, flag_reg);
-
-            CHECK_EQ(0x10, acc_reg);
-            CHECK_EQ(true, flag_reg.is_half_carry_flag_set());
-        }
-
-        SUBCASE("should not set the half carry flag when not carried out of the fourth bit") {
-            Flags flag_reg;
-            acc_reg = 0xe;
-
-            add(acc_reg, 0x1, flag_reg);
-
-            CHECK_EQ(0xF, acc_reg);
-            CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
-        }
-
-        SUBCASE("should always reset the add/subtract carry flag") {
-            Flags flag_reg;
-            acc_reg = 0xe;
-
-            CHECK_EQ(false, flag_reg.is_add_subtract_flag_set());
-
-            add(acc_reg, 0x1, flag_reg);
-
-            CHECK_EQ(false, flag_reg.is_add_subtract_flag_set());
-
-            add(acc_reg, 0x1, flag_reg);
-
-            CHECK_EQ(false, flag_reg.is_add_subtract_flag_set());
-
-            add(acc_reg, 0x1, flag_reg);
-
-            CHECK_EQ(false, flag_reg.is_add_subtract_flag_set());
         }
     }
 

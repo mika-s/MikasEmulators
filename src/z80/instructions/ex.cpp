@@ -1,9 +1,15 @@
 #include <iostream>
 #include "doctest.h"
+#include "z80/emulator_memory.h"
 #include "z80/flags.h"
+#include "crosscutting/util/byte_util.h"
 #include "crosscutting/typedefs.h"
 
 namespace emu::z80 {
+
+    using emu::util::byte::first_byte;
+    using emu::util::byte::second_byte;
+    using emu::util::byte::to_u16;
 
     /**
      * Exchange registers
@@ -30,8 +36,15 @@ namespace emu::z80 {
         cycles = 4;
     }
 
+    void ex_msp_dd(u16 sp, EmulatorMemory &memory, u16 &reg) {
+        const u16 previous_reg = reg;
+        reg = to_u16(memory[sp + 1], memory[sp]);
+        memory[sp] = first_byte(previous_reg);
+        memory[sp + 1] = second_byte(previous_reg);
+    }
+
     /**
-     * Exchange H&L with top of stack
+     * Exchange memory at SP's location with HL
      * <ul>
      *   <li>Size: 1</li>
      *   <li>Cycles: 5</li>
@@ -39,21 +52,39 @@ namespace emu::z80 {
      *   <li>Condition bits affected: none</li>
      * </ul>
      *
+     * @param sp is the stack pointer
+     * @param memory is the memory, which will be mutated
      * @param h_reg is the H register, which will be mutated
      * @param l_reg is the L register, which will be mutated
-     * @param sp0 is the top of the stack, which will be mutated
-     * @param sp1 is the second from the top of the stack, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ex_sp_hl(u8 &h_reg, u8 &l_reg, u8 &sp0, u8 &sp1, unsigned long &cycles) {
-        const u8 h = h_reg;
-        const u8 l = l_reg;
-        l_reg = sp0;
-        sp0 = l;
-        h_reg = sp1;
-        sp1 = h;
+    void ex_msp_hl(u16 sp, EmulatorMemory &memory, u8 &h_reg, u8 &l_reg, unsigned long &cycles) {
+        u16 hl = to_u16(h_reg, l_reg);
+        ex_msp_dd(sp, memory, hl);
+        h_reg = second_byte(hl);
+        l_reg = first_byte(hl);
 
         cycles = 19;
+    }
+
+    /**
+     * Exchange memory at SP's location with IX or IY
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 6</li>
+     *   <li>States: 23</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param sp is the stack pointer
+     * @param memory is the memory, which will be mutated
+     * @param ixy_reg is the IX or IY register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void ex_msp_ixy(u16 sp, EmulatorMemory &memory, u16 &ixy_reg, unsigned long &cycles) {
+        ex_msp_dd(sp, memory, ixy_reg);
+
+        cycles = 23;
     }
 
     /**
@@ -143,30 +174,61 @@ namespace emu::z80 {
     TEST_CASE("Z80: EX (SP), HL") {
         unsigned long cycles = 0;
 
-        SUBCASE("should exchange HL with top of the stack") {
+        SUBCASE("should exchange HL with memory at stack pointer") {
+            EmulatorMemory memory;
+            memory.add({0x33, 0x44});
             u8 h_reg = 0x11;
             u8 l_reg = 0x22;
-            u8 sp0 = 0x33;
-            u8 sp1 = 0x44;
+            u8 sp = 0x00;
 
-            ex_sp_hl(h_reg, l_reg, sp0, sp1, cycles);
+            ex_msp_hl(sp, memory, h_reg, l_reg, cycles);
 
             CHECK_EQ(0x44, h_reg);
             CHECK_EQ(0x33, l_reg);
-            CHECK_EQ(0x22, sp0);
-            CHECK_EQ(0x11, sp1);
+            CHECK_EQ(0x22, memory[sp]);
+            CHECK_EQ(0x11, memory[sp + 1]);
         }
 
         SUBCASE("should use 18 cycles") {
             cycles = 0;
+            EmulatorMemory memory;
+            memory.add({0x33, 0x44});
             u8 h_reg = 0x11;
             u8 l_reg = 0x22;
-            u8 sp0 = 0;
-            u8 sp1 = 0;
+            u8 sp = 0x00;
 
-            ex_sp_hl(h_reg, l_reg, sp0, sp1, cycles);
+            ex_msp_hl(sp, memory, h_reg, l_reg, cycles);
 
             CHECK_EQ(19, cycles);
+        }
+    }
+
+    TEST_CASE("Z80: EX (SP), IX") {
+        unsigned long cycles = 0;
+
+        SUBCASE("should exchange IX with memory at stack pointer") {
+            EmulatorMemory memory;
+            memory.add({0x90, 0x48});
+            u16 ix_reg = 0x3988;
+            u8 sp = 0x00;
+
+            ex_msp_ixy(sp, memory, ix_reg, cycles);
+
+            CHECK_EQ(0x4890, ix_reg);
+            CHECK_EQ(0x88, memory[sp]);
+            CHECK_EQ(0x39, memory[sp + 1]);
+        }
+
+        SUBCASE("should use 23 cycles") {
+            cycles = 0;
+            EmulatorMemory memory;
+            memory.add({0x33, 0x44});
+            u16 ix_reg = 0x1122;
+            u8 sp = 0x00;
+
+            ex_msp_ixy(sp, memory, ix_reg, cycles);
+
+            CHECK_EQ(23, cycles);
         }
     }
 

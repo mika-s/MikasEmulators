@@ -1,3 +1,4 @@
+#include "doctest.h"
 #include "z80/flags.h"
 #include "crosscutting/util/byte_util.h"
 
@@ -64,17 +65,17 @@ namespace emu::z80 {
 
     void Flags::handle_borrow_flag(u8 previous, int to_subtract, bool cf) {
         if (borrow_from(msb + 1, previous, to_subtract, cf)) {
-            clear_carry_flag();
-        } else {
             set_carry_flag();
+        } else {
+            clear_carry_flag();
         }
     }
 
     void Flags::handle_borrow_flag(u16 previous, int to_subtract, bool cf) {
         if (borrow_from(msb_u16, previous, to_subtract, cf)) {
-            clear_carry_flag();
-        } else {
             set_carry_flag();
+        } else {
+            clear_carry_flag();
         }
     }
 
@@ -95,7 +96,7 @@ namespace emu::z80 {
     }
 
     void Flags::handle_half_borrow_flag(u8 previous, u8 to_subtract, bool cf) {
-        if (borrow_from(msb_first_nibble, previous, to_subtract, cf)) {
+        if (borrow_from(msb_first_nibble + 1, previous, to_subtract, cf)) {
             set_half_carry_flag();
         } else {
             clear_half_carry_flag();
@@ -243,5 +244,21 @@ namespace emu::z80 {
 
     bool Flags::is_parity_overflow_flag_set() const {
         return m_parity_overflow;
+    }
+
+    TEST_CASE("Z80: Flags") {
+        SUBCASE("should set half carry when subtracting and half borrowing") {
+            Flags flag_reg;
+
+            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
+                for (u8 value = 0; value < UINT8_MAX; ++value) {
+                    for (int carry = 0; carry < 2; ++carry) {
+                        flag_reg.handle_half_borrow_flag(acc_reg_counter, value, carry == 1);
+                        const bool expected = ((acc_reg_counter & 0xf) - (value & 0xf) - (carry & 0xf)) & 0x10;
+                        CHECK_EQ(expected, flag_reg.is_half_carry_flag_set());
+                    }
+                }
+            }
+        }
     }
 }

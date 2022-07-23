@@ -2,24 +2,27 @@
 #include <iostream>
 #include "doctest.h"
 #include "z80/flags.h"
+#include "z80/instructions/instruction_util.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
 
 namespace emu::z80 {
 
+    using emu::util::byte::borrow_from;
     using emu::util::byte::first_byte;
     using emu::util::byte::second_byte;
     using emu::util::byte::to_u16;
 
-    void dec(u8 &reg, Flags &flag_reg) {
-        const u8 previous = reg;
-        reg--;
+    void dec_u8(u8 &reg, Flags &flag_reg) {
+        const bool old_carry = flag_reg.is_carry_flag_set();
 
-        flag_reg.handle_zero_flag(reg);
-        flag_reg.handle_overflow_flag(previous, -1, false);
-        flag_reg.handle_sign_flag(reg);
-        flag_reg.handle_half_borrow_flag(previous, 1, false);
-        flag_reg.set_add_subtract_flag();
+        sub_from_register(reg, 1, false, flag_reg);
+
+        if (old_carry) {
+            flag_reg.set_carry_flag();
+        } else {
+            flag_reg.clear_carry_flag();
+        }
     }
 
     /**
@@ -36,7 +39,7 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void dec_r(u8 &reg, Flags &flag_reg, unsigned long &cycles) {
-        dec(reg, flag_reg);
+        dec_u8(reg, flag_reg);
 
         cycles = 4;
     }
@@ -55,7 +58,7 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void dec_MHL(u8 &value_in_hl, Flags &flag_reg, unsigned long &cycles) {
-        dec(value_in_hl, flag_reg);
+        dec_u8(value_in_hl, flag_reg);
 
         cycles = 11;
     }
@@ -110,11 +113,11 @@ namespace emu::z80 {
      *   <li>Condition bits affected: none</li>
      * </ul>
      *
-     * @param ix_or_iy is either the IX or IY register, which will be mutated
+     * @param ixy_reg is either the IX or IY register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void dec_ix_iy(u16 &ix_or_iy, unsigned long &cycles) {
-        --ix_or_iy;
+    void dec_ixy(u16 &ixy_reg, unsigned long &cycles) {
+        --ixy_reg;
 
         cycles = 10;
     }
@@ -124,118 +127,25 @@ namespace emu::z80 {
                 << reg;
     }
 
-    TEST_CASE("Z80: DEC") {
-        unsigned long cycles = 0;
-
-        SUBCASE("should decrease register or memory") {
-            u8 reg = 10;
-            Flags flag_reg;
-
-            dec_r(reg, flag_reg, cycles);
-
-            CHECK_EQ(9, reg);
-
-            dec_r(reg, flag_reg, cycles);
-
-            CHECK_EQ(8, reg);
-
-            dec_r(reg, flag_reg, cycles);
-
-            CHECK_EQ(7, reg);
-
-            dec_r(reg, flag_reg, cycles);
-
-            CHECK_EQ(6, reg);
-
-            dec_r(reg, flag_reg, cycles);
-
-            CHECK_EQ(5, reg);
-        }
-
-        SUBCASE("should not affect the carry flag") {
-            u8 reg = 0;
-            Flags flag_reg;
-
-            CHECK_EQ(false, flag_reg.is_carry_flag_set());
-
-            dec_r(reg, flag_reg, cycles);
-
-            CHECK_EQ(255, reg);
-            CHECK_EQ(false, flag_reg.is_carry_flag_set());
-        }
-
-        SUBCASE("should set correct half carry flag") {
-            u8 reg = 15;
-            Flags flag_reg;
-
-            CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
-
-            dec_r(reg, flag_reg, cycles);
-
-            CHECK_EQ(14, reg);
-            CHECK_EQ(true, flag_reg.is_half_carry_flag_set());
-        }
-
-        SUBCASE("should set the overflow flag when overflowing and not otherwise") {
-            u8 acc_reg;
-
-            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
+    TEST_CASE("Z80: DEC (8-bit)") {
+        SUBCASE("should decrease value by 1") {
+            for (u8 reg_counter = 0; reg_counter < UINT8_MAX; ++reg_counter) {
                 Flags flag_reg;
-                acc_reg = acc_reg_counter;
+                u8 reg = reg_counter;
 
-                dec(acc_reg, flag_reg);
+                dec_u8(reg, flag_reg);
 
+                CHECK_EQ(static_cast<u8>(reg_counter - 1), reg);
+                CHECK_EQ(false, flag_reg.is_carry_flag_set());
                 CHECK_EQ( // The manual: P/V is set if m was 80h before operation; otherwise, it is reset.
-                        acc_reg_counter == 0x80,
+                        reg_counter == 0x80,
                         flag_reg.is_parity_overflow_flag_set()
                 );
+                CHECK_EQ(reg == 0, flag_reg.is_zero_flag_set());
+                CHECK_EQ(static_cast<i8>(reg) < 0, flag_reg.is_sign_flag_set());
+                CHECK_EQ(true, flag_reg.is_add_subtract_flag_set());
+                CHECK_EQ(borrow_from(4, reg_counter, 1, false), flag_reg.is_half_carry_flag_set());
             }
-        }
-
-        SUBCASE("should set correct value in the zero flag") {
-            u8 reg = 2;
-            Flags flag_reg;
-
-            dec_r(reg, flag_reg, cycles);
-
-            CHECK_EQ(false, flag_reg.is_zero_flag_set());
-
-            dec_r(reg, flag_reg, cycles);
-
-            CHECK_EQ(true, flag_reg.is_zero_flag_set());
-        }
-
-        SUBCASE("should set the sign flag when going above 127") {
-            u8 reg = 0;
-            Flags flag_reg;
-
-            CHECK_EQ(false, flag_reg.is_sign_flag_set());
-
-            dec_r(reg, flag_reg, cycles);
-
-            CHECK_EQ(true, flag_reg.is_sign_flag_set());
-        }
-
-        SUBCASE("should always set the add/subtract flag") {
-            u8 reg = 255;
-            Flags flag_reg;
-
-            CHECK_EQ(false, flag_reg.is_add_subtract_flag_set());
-
-            dec_r(reg, flag_reg, cycles);
-
-            CHECK_EQ(254, reg);
-            CHECK_EQ(true, flag_reg.is_add_subtract_flag_set());
-
-            dec_r(reg, flag_reg, cycles);
-
-            CHECK_EQ(253, reg);
-            CHECK_EQ(true, flag_reg.is_add_subtract_flag_set());
-
-            dec_r(reg, flag_reg, cycles);
-
-            CHECK_EQ(252, reg);
-            CHECK_EQ(true, flag_reg.is_add_subtract_flag_set());
         }
     }
 
@@ -286,20 +196,10 @@ namespace emu::z80 {
         unsigned long cycles = 0;
         u16 ix = 0;
 
-        SUBCASE("should decrease IX") {
-            for (u16 expected_ix = UINT16_MAX; expected_ix > 0; --expected_ix) {
-                ix = expected_ix;
-
-                dec_ix_iy(ix, cycles);
-
-                CHECK_EQ(expected_ix - 1, ix);
-            }
-        }
-
         SUBCASE("should use 10 cycles") {
             cycles = 0;
 
-            dec_ix_iy(ix, cycles);
+            dec_ixy(ix, cycles);
 
             CHECK_EQ(10, cycles);
         }

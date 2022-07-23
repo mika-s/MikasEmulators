@@ -2,6 +2,7 @@
 #include <iostream>
 #include "doctest.h"
 #include "z80/flags.h"
+#include "z80/instructions/instruction_util.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/misc/next_byte.h"
 #include "crosscutting/util/string_util.h"
@@ -12,15 +13,11 @@ namespace emu::z80 {
     using emu::util::string::hexify_wo_0x;
 
     void cp(u8 &acc_reg, u8 value, Flags &flag_reg) {
-        const u8 previous = acc_reg;
-        const u8 new_acc_reg = previous - value;
+        const u8 old_acc_reg = acc_reg;
 
-        flag_reg.handle_borrow_flag(previous, value, false);
-        flag_reg.handle_zero_flag(new_acc_reg);
-        flag_reg.handle_parity_flag(new_acc_reg);
-        flag_reg.handle_sign_flag(new_acc_reg);
-        flag_reg.handle_half_borrow_flag(previous, value, false);
-        flag_reg.set_add_subtract_flag();
+        sub_from_register(acc_reg, value, false, flag_reg);
+
+        acc_reg = old_acc_reg;
     }
 
     /**

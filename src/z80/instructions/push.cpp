@@ -63,15 +63,14 @@ namespace emu::z80 {
      *   <li>Condition bits affected: none</li>
      * </ul>
      *
-     * @param reg1 is the first register to place in memory
-     * @param reg1 is the second register to place in memory
+     * @param ixy_reg is the IX or IY register
      * @param sp is the stack pointer, which will be mutated
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void push_ix_iy(u16 ix_iy_reg, u16 &sp, EmulatorMemory &memory, unsigned long &cycles) {
-        memory[--sp] = second_byte(ix_iy_reg);
-        memory[--sp] = first_byte(ix_iy_reg);
+    void push_ixy(u16 ixy_reg, u16 &sp, EmulatorMemory &memory, unsigned long &cycles) {
+        memory[--sp] = second_byte(ixy_reg);
+        memory[--sp] = first_byte(ixy_reg);
 
         cycles = 15;
     }
@@ -147,7 +146,7 @@ namespace emu::z80 {
             EmulatorMemory memory;
             memory.add(std::vector<u8>{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08});
 
-            push_ix_iy(ix, sp, memory, cycles);
+            push_ixy(ix, sp, memory, cycles);
 
             CHECK_EQ(15, cycles);
         }

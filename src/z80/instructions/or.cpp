@@ -116,45 +116,11 @@ namespace emu::z80 {
                     or_(acc_reg, value, flag_reg);
 
                     CHECK_EQ(acc_reg_counter | value, acc_reg);
-                }
-            }
-        }
-
-        SUBCASE("should always reset the carry flag") {
-            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (u8 value = 0; value < UINT8_MAX; ++value) {
-                    Flags flag_reg;
-                    acc_reg = acc_reg_counter;
-
-                    or_(acc_reg, value, flag_reg);
-
                     CHECK_EQ(false, flag_reg.is_carry_flag_set());
-                }
-            }
-        }
-
-        SUBCASE("should set the zero flag when zero and not set it otherwise") {
-            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (u8 value = 0; value < UINT8_MAX; ++value) {
-                    Flags flag_reg;
-                    acc_reg = acc_reg_counter;
-
-                    or_(acc_reg, value, flag_reg);
-
                     CHECK_EQ(acc_reg == 0, flag_reg.is_zero_flag_set());
-                }
-            }
-        }
-
-        SUBCASE("should set the sign flag when above 127 and not set it otherwise") {
-            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (u8 value = 0; value < UINT8_MAX; ++value) {
-                    Flags flag_reg;
-                    acc_reg = acc_reg_counter;
-
-                    or_(acc_reg, value, flag_reg);
-
-                    CHECK_EQ(acc_reg > 127, flag_reg.is_sign_flag_set());
+                    CHECK_EQ(static_cast<i8>(acc_reg) < 0, flag_reg.is_sign_flag_set());
+                    CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
+                    CHECK_EQ(false, flag_reg.is_add_subtract_flag_set());
                 }
             }
         }
@@ -177,32 +143,6 @@ namespace emu::z80 {
             or_(acc_reg, value, flag_reg);
 
             CHECK_EQ(false, flag_reg.is_parity_overflow_flag_set());
-        }
-
-        SUBCASE("should always reset the half carry flag") {
-            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (u8 value = 0; value < UINT8_MAX; ++value) {
-                    Flags flag_reg;
-                    acc_reg = acc_reg_counter;
-
-                    or_(acc_reg, value, flag_reg);
-
-                    CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
-                }
-            }
-        }
-
-        SUBCASE("should always reset the add/subtract flag") {
-            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (u8 value = 0; value < UINT8_MAX; ++value) {
-                    Flags flag_reg;
-                    acc_reg = acc_reg_counter;
-
-                    or_(acc_reg, value, flag_reg);
-
-                    CHECK_EQ(false, flag_reg.is_add_subtract_flag_set());
-                }
-            }
         }
     }
 

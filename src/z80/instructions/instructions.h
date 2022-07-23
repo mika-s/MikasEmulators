@@ -237,7 +237,7 @@
 #define RET_PO        0xE0
 #define POP_HL        0xE1
 #define JP_PO         0xE2
-#define EX_SP_HL      0xE3
+#define EX_MSP_HL     0xE3
 #define CALL_PO       0xE4
 #define PUSH_HL       0xE5
 #define AND_n         0xE6
@@ -277,6 +277,7 @@
 #define ADD_IXY_IXY   0x29
 #define LD_IXY_Mnn    0x2A
 #define DEC_IXY       0x2B
+#define ADD_IX_SP     0x39
 #define LD_B_MIXY_P_n 0x46
 #define LD_C_MIXY_P_n 0x4E
 #define LD_D_MIXY_P_n 0x56
@@ -285,16 +286,25 @@
 #define LD_L_MIXY_P_n 0x6E
 #define LD_A_MIXY_P_n 0x7E
 #define POP_IXY       0xE1
+#define EX_MSP_IX     0xE3
 #define PUSH_IXY      0xE5
 #define JP_MIXY       0xE9
+#define LD_SP_IX      0xF9
 
 // EXTD opcodes:
 
 #define SBC_HL_BC     0x42
 #define NEG           0x44
+#define NEG_UNDOC1    0x4C
+#define NEG_UNDOC2    0x54
+#define NEG_UNDOC3    0x5C
+#define NEG_UNDOC4    0x64
 #define RRD           0x67
+#define NEG_UNDOC5    0x6C
 #define LD_Mnn_sp     0x73
+#define NEG_UNDOC6    0x74
 #define LD_sp_Mnn     0x7B
+#define NEG_UNDOC7    0x7C
 #define LDI           0xA0
 #define LDIR          0xB0
 
@@ -313,7 +323,7 @@ namespace emu::z80 {
     void add_A_r(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
     void add_A_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
     void add_HL_ss(u8 &h_reg, u8 &l_reg, u16 value, Flags &flag_reg, unsigned long &cycles);
-    void add_ix_iy_pp(u16 &ix_reg, u16 value_to_add, Flags &flag_reg, unsigned long &cycles);
+    void add_ixy_pp(u16 &ix_reg, u16 value_to_add, Flags &flag_reg, unsigned long &cycles);
     void and_n(u8 &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles);
     void and_r(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
     void and_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
@@ -336,13 +346,14 @@ namespace emu::z80 {
     void dec_ss(u8 &reg1, u8 &reg2, unsigned long &cycles);
     void dec_sp(u16 &sp, unsigned long &cycles);
     void dec_MHL(u8 &value_in_hl, Flags &flag_reg, unsigned long &cycles);
-    void dec_ix_iy(u16 &ix_or_iy, unsigned long &cycles);
-    void di(bool &inte, unsigned long &cycles);
+    void dec_ixy(u16 &ix_or_iy, unsigned long &cycles);
+    void di(bool &iff1, bool &iff2, unsigned long &cycles);
     void djnz(u8 &b_reg, u16 &pc, const NextByte &args, unsigned long &cycles);
-    void ei(bool &inte, unsigned long &cycles);
+    void ei(bool &iff1, bool &iff2, unsigned long &cycles);
     void ex(u8 &acc_reg, Flags &flag_reg, u8 &acc_p_reg, Flags &flag_p_reg, unsigned long &cycles);
     void ex_de_hl(u8 &h_reg, u8 &l_reg, u8 &d_reg, u8 &e_reg, unsigned long &cycles);
-    void ex_sp_hl(u8 &h_reg, u8 &l_reg, u8 &sp0, u8 &sp1, unsigned long &cycles);
+    void ex_msp_hl(u16 sp, EmulatorMemory &memory, u8 &h_reg, u8 &l_reg, unsigned long &cycles);
+    void ex_msp_ixy(u16 sp, EmulatorMemory &memory, u16 &ixy_reg, unsigned long &cycles);
     void exx(u8 &b_reg, u8 &c_reg, u8 &b_p_reg, u8 &c_p_reg, u8 &d_reg, u8 &e_reg, u8 &d_p_reg, u8 &e_p_reg, u8 &h_reg, u8 &l_reg, u8 &h_p_reg, u8 &l_p_reg, unsigned long &cycles);
     void halt(bool &stopped, unsigned long &cycles);
     void in_A_Mn(u8 &acc_reg, const NextByte &args, std::vector<u8> io, unsigned long &cycles);
@@ -376,6 +387,7 @@ namespace emu::z80 {
     void ld_HL_Mnn(u8 &reg1, u8 &reg2, const EmulatorMemory &memory, const NextWord &args, unsigned long &cycles);
     void ld_dd_nn(u8 &reg1, u8 &reg2, const NextWord &args, unsigned long &cycles);
     void ld_ixy_nn(u16 &ixy_reg, const NextWord &args, unsigned long &cycles);
+    void ld_ixy_Mnn(u16 &ixy_reg, const NextByte &args, const EmulatorMemory &memory, unsigned long &cycles);
     void ld_r_MixyPd(u8 &reg, u16 ixy_reg, const NextByte &args, const EmulatorMemory &memory, unsigned long &cycles);
     void ld_MHL_n(u8 &reg, const NextByte &args, unsigned long &cycles);
     void ld_MHL_r(u8 &to, u8 value, unsigned long &cycles);
@@ -388,6 +400,7 @@ namespace emu::z80 {
     void ld_sp_Mnn(u16 &sp, EmulatorMemory memory, const NextWord &args, unsigned long &cycles);
     void ld_sp_nn(u16 &sp, const NextWord &args, unsigned long &cycles);
     void ld_sp_hl(u16 &sp, u16 address, unsigned long &cycles);
+    void ld_sp_ixy(u16 &sp, u16 ixy, unsigned long &cycles);
     void ldir(u16 &pc, u8 &b_reg, u8 &c_reg, u8 &d_reg, u8 &e_reg, u8 &h_reg, u8 &l_reg, EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles);
     void neg(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles);
     void nop(unsigned long &cycles);
@@ -400,7 +413,7 @@ namespace emu::z80 {
     void pop_ixy(u16 &ix_iy_reg, u16 &sp, const EmulatorMemory &memory, unsigned long &cycles);
     void push_qq(u8 reg1, u8 reg2, u16 &sp, EmulatorMemory &memory, unsigned long &cycles);
     void push_af(const Flags &flag_reg, u8 acc_reg, u16 &sp, EmulatorMemory &memory, unsigned long &cycles);
-    void push_ix_iy(u16 ix_iy_reg, u16 &sp, EmulatorMemory &memory, unsigned long &cycles);
+    void push_ixy(u16 ixy_reg, u16 &sp, EmulatorMemory &memory, unsigned long &cycles);
     void ret(u16 &pc, u16 &sp, const EmulatorMemory &memory, unsigned long &cycles);
     void ret_c(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, unsigned long &cycles);
     void ret_m(u16 &pc, u16 &sp, EmulatorMemory &memory, const Flags &flag_reg, unsigned long &cycles);

@@ -32,10 +32,7 @@ namespace emu::i8080 {
     }
 
     void execute_call(u16 &pc, u16 &sp, EmulatorMemory &memory, const NextWord &args) {
-        memory[--sp] = second_byte(pc);
-        memory[--sp] = first_byte(pc);
-
-        pc = to_u16(args.sarg, args.farg);
+        execute_call(pc, sp, memory, args.farg, args.sarg);
     }
 
     void execute_call(u16 &pc, u16 &sp, EmulatorMemory &memory, u8 farg, u8 sarg) {

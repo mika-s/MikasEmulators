@@ -126,48 +126,30 @@ namespace emu::z80 {
         SUBCASE("should subtract the given value from the accumulator") {
             for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
                 for (u8 value = 0; value < UINT8_MAX; ++value) {
-                    Flags flag_reg;
-                    acc_reg = acc_reg_counter;
+                    for (int carry = 0; carry < 2; ++carry) {
+                        Flags flag_reg;
+                        if (carry) {
+                            flag_reg.set_carry_flag();
+                        } else {
+                            flag_reg.clear_carry_flag();
+                        }
 
-                    sbc(acc_reg, value, flag_reg);
+                        acc_reg = acc_reg_counter;
 
-                    CHECK_EQ(static_cast<u8>(acc_reg_counter - value), acc_reg);
-                }
-            }
-        }
+                        sbc(acc_reg, value, flag_reg);
 
-        SUBCASE("should subtract the given value from the accumulator taking carry into account") {
-            Flags flag_reg;
-            flag_reg.set_carry_flag();
-            acc_reg = 0xab;
+                        CHECK_EQ(static_cast<u8>(acc_reg_counter - value - carry), acc_reg);
+                        CHECK_EQ(acc_reg == 0, flag_reg.is_zero_flag_set());
+                        CHECK_EQ(static_cast<i8>(acc_reg) < 0, flag_reg.is_sign_flag_set());
+                        CHECK_EQ(true, flag_reg.is_add_subtract_flag_set());
+//                    CHECK_EQ(true, flag_reg.is_carry_flag_set());
+                        CHECK_EQ(
+                                (((acc_reg_counter & 0xf) - (value & 0xf) - (carry & 0xf)) & 0x10) > 0,
+                                flag_reg.is_half_carry_flag_set()
+                        );
+                        // todo: overflow flag, carry flag
+                    }
 
-            sbc(acc_reg, 0x1, flag_reg);
-
-            CHECK_EQ(0xa9, acc_reg);
-        }
-
-        SUBCASE("should set the zero flag when zero and not set otherwise") {
-            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (u8 value = 0; value < UINT8_MAX; ++value) {
-                    Flags flag_reg;
-                    acc_reg = acc_reg_counter;
-
-                    sbc(acc_reg, value, flag_reg);
-
-                    CHECK_EQ(acc_reg == 0, flag_reg.is_zero_flag_set());
-                }
-            }
-        }
-
-        SUBCASE("should set the sign flag when above 127 and not otherwise") {
-            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (u8 value = 0; value < UINT8_MAX; ++value) {
-                    Flags flag_reg;
-                    acc_reg = acc_reg_counter;
-
-                    sbc(acc_reg, value, flag_reg);
-
-                    CHECK_EQ(acc_reg > 127, flag_reg.is_sign_flag_set());
                 }
             }
         }
@@ -196,46 +178,6 @@ namespace emu::z80 {
 //                }
 //            }
 //        }
-
-        SUBCASE("should set the carry flag when carried out of msb") {
-            Flags flag_reg;
-            acc_reg = 0x80;
-
-            sbc(acc_reg, 0x81, flag_reg);
-
-            CHECK_EQ(0xff, acc_reg);
-            CHECK_EQ(true, flag_reg.is_carry_flag_set());
-        }
-
-        SUBCASE("should not set the carry flag when not carried out of msb") {
-            Flags flag_reg;
-            acc_reg = 0x2;
-
-            sbc(acc_reg, 0x1, flag_reg);
-
-            CHECK_EQ(0x1, acc_reg);
-            CHECK_EQ(false, flag_reg.is_carry_flag_set());
-        }
-
-        SUBCASE("should set the half carry flag when carried out of the fourth bit") {
-            Flags flag_reg;
-            acc_reg = 0xe;
-
-            sbc(acc_reg, 0x1, flag_reg);
-
-            CHECK_EQ(0xd, acc_reg);
-            CHECK_EQ(true, flag_reg.is_half_carry_flag_set());
-        }
-
-        SUBCASE("should not set the half carry flag when not carried out of the fourth bit") {
-            Flags flag_reg;
-            acc_reg = 0x10;
-
-            sbc(acc_reg, 0x1, flag_reg);
-
-            CHECK_EQ(0xF, acc_reg);
-            CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
-        }
     }
 
     TEST_CASE("Z80: SBC A, n") {
@@ -334,7 +276,8 @@ namespace emu::z80 {
 
         SUBCASE("should set the sign flag when above 32767 and not otherwise") {
             const u8 min_max = 100;
-            for (u16 hl_counter = UINT16_MAX / 2 - min_max; hl_counter < static_cast<u16>(UINT16_MAX / 2 + min_max); ++hl_counter) {
+            for (u16 hl_counter = UINT16_MAX / 2 - min_max;
+                 hl_counter < static_cast<u16>(UINT16_MAX / 2 + min_max); ++hl_counter) {
                 for (u16 value = 0; value < UINT8_MAX; ++value) {
                     Flags flag_reg;
                     h_reg = second_byte(hl_counter);

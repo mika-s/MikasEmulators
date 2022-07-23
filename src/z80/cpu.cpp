@@ -17,15 +17,16 @@ namespace emu::z80 {
             const u16 initial_pc
     ) :
             m_is_stopped(true),
-            m_iff(false),
+            m_iff1(false),
+            m_iff2(false),
             m_is_interrupted(false),
             m_instruction_from_interruptor(0),
             m_memory(memory),
             m_memory_size(memory.size()),
             m_opcode(0),
-            m_sp(0),
+            m_sp(0xffff),
             m_pc(initial_pc),
-            m_acc_reg(0),
+            m_acc_reg(0xff),
             m_acc_p_reg(0),
             m_b_reg(0),
             m_b_p_reg(0),
@@ -49,6 +50,8 @@ namespace emu::z80 {
             m_io_in.push_back(0);
             m_io_out.push_back(0);
         }
+        m_flag_reg.from_u8(0xff);
+        m_flag_p_reg.from_u8(0x00);
     }
 
     Cpu::~Cpu() {
@@ -88,7 +91,7 @@ namespace emu::z80 {
     }
 
     void Cpu::reset_state() {
-        m_acc_reg = 0;
+        m_acc_reg = 0xff;
         m_acc_p_reg = 0;
         m_b_reg = 0;
         m_b_p_reg = 0;
@@ -106,11 +109,13 @@ namespace emu::z80 {
         m_iy_reg = 0;
         m_i_reg = 0;
         m_r_reg = 0;
-        m_flag_reg.reset();
+        m_flag_reg.from_u8(0xff);
+        m_flag_p_reg.from_u8(0x00);
         m_pc = 0;
-        m_sp = 0;
+        m_sp = 0xffff;
         m_is_stopped = true;
-        m_iff = false;
+        m_iff1 = false;
+        m_iff2 = false;
         m_is_interrupted = false;
         m_instruction_from_interruptor = 0;
     }
@@ -129,7 +134,7 @@ namespace emu::z80 {
     }
 
     bool Cpu::is_inta() const {
-        return m_iff;
+        return m_iff1;
     }
 
     void Cpu::input(int port, u8 value) {
@@ -139,13 +144,18 @@ namespace emu::z80 {
     unsigned long Cpu::next_instruction() {
         unsigned long cycles = 0;
 
-        if (m_iff && m_is_interrupted) {
-            m_iff = false;
+        if (m_iff1 && m_is_interrupted) {
+            m_iff1 = false;
+            m_iff2 = false;
             m_is_interrupted = false;
             m_opcode = m_instruction_from_interruptor;
         } else {
             m_opcode = get_next_byte().farg;
         }
+
+        print_debug(m_opcode);
+
+        r_tick();
 
         switch (m_opcode) {
             case NOP:
@@ -838,8 +848,8 @@ namespace emu::z80 {
             case JP_PO:
                 jp_po(m_pc, get_next_word(), m_flag_reg, cycles);
                 break;
-            case EX_SP_HL:
-                ex_sp_hl(m_h_reg, m_l_reg, m_memory[m_sp], m_memory[m_sp + 1], cycles);
+            case EX_MSP_HL:
+                ex_msp_hl(m_sp, memory(), m_h_reg, m_l_reg, cycles);
                 break;
             case CALL_PO:
                 call_po(m_pc, m_sp, m_memory, get_next_word(), m_flag_reg, cycles);
@@ -887,7 +897,7 @@ namespace emu::z80 {
                 jp_p(m_pc, get_next_word(), m_flag_reg, cycles);
                 break;
             case DI:
-                di(m_iff, cycles);
+                di(m_iff1, m_iff2, cycles);
                 break;
             case CALL_P:
                 call_p(m_pc, m_sp, m_memory, get_next_word(), m_flag_reg, cycles);
@@ -911,7 +921,7 @@ namespace emu::z80 {
                 jp_m(m_pc, get_next_word(), m_flag_reg, cycles);
                 break;
             case EI:
-                ei(m_iff, cycles);
+                ei(m_iff1, m_iff2, cycles);
                 break;
             case CALL_M:
                 call_m(m_pc, m_sp, m_memory, get_next_word(), m_flag_reg, cycles);
@@ -933,12 +943,15 @@ namespace emu::z80 {
     }
 
     void Cpu::next_ixy_instruction(u8 ixy_opcode, u16 &ixy_reg, unsigned long cycles) {
+        print_debug(ixy_opcode);
+        r_tick();
+
         switch (ixy_opcode) {
             case ADD_IXY_BC:
-                add_ix_iy_pp(ixy_reg, to_u16(m_b_reg, m_c_reg), m_flag_reg, cycles);
+                add_ixy_pp(ixy_reg, to_u16(m_b_reg, m_c_reg), m_flag_reg, cycles);
                 break;
             case ADD_IXY_DE:
-                add_ix_iy_pp(ixy_reg, to_u16(m_d_reg, m_e_reg), m_flag_reg, cycles);
+                add_ixy_pp(ixy_reg, to_u16(m_d_reg, m_e_reg), m_flag_reg, cycles);
                 break;
             case LD_IXY_nn:
                 ld_ixy_nn(ixy_reg, get_next_word(), cycles);
@@ -950,12 +963,16 @@ namespace emu::z80 {
                 inc_ixy(ixy_reg, cycles);
                 break;
             case ADD_IXY_IXY:
-                add_ix_iy_pp(ixy_reg, ixy_reg, m_flag_reg, cycles);
+                add_ixy_pp(ixy_reg, ixy_reg, m_flag_reg, cycles);
                 break;
             case LD_IXY_Mnn:
-                throw UnrecognizedOpcodeException(ixy_opcode, "IX/IY instructions");
+                ld_ixy_Mnn(ixy_reg, get_next_byte(), memory(), cycles);
+                break;
             case DEC_IXY:
-                dec_ix_iy(ixy_reg, cycles);
+                dec_ixy(ixy_reg, cycles);
+                break;
+            case ADD_IX_SP:
+                add_ixy_pp(ixy_reg, m_sp, m_flag_reg, cycles);
                 break;
             case LD_B_MIXY_P_n:
                 ld_r_MixyPd(m_b_reg, ixy_reg, get_next_byte(), m_memory, cycles);
@@ -981,11 +998,17 @@ namespace emu::z80 {
             case POP_IXY:
                 pop_ixy(ixy_reg, m_sp, m_memory, cycles);
                 break;
+            case EX_MSP_IX:
+                ex_msp_ixy(m_sp, m_memory, ixy_reg, cycles);
+                break;
             case PUSH_IXY:
-                push_ix_iy(ixy_reg, m_sp, m_memory, cycles);
+                push_ixy(ixy_reg, m_sp, m_memory, cycles);
                 break;
             case JP_MIXY:
                 jp_ixy(m_pc, ixy_reg, cycles);
+                break;
+            case LD_SP_IX:
+                ld_sp_ixy(m_sp, m_ix_reg, cycles);
                 break;
             default:
                 throw UnrecognizedOpcodeException(ixy_opcode, "IX/IY instructions");
@@ -993,10 +1016,20 @@ namespace emu::z80 {
     }
 
     void Cpu::next_extd_instruction(u8 extd_opcode, unsigned long cycles) {
+        print_debug(extd_opcode);
+        r_tick();
+
         switch (extd_opcode) {
             case SBC_HL_BC:
                 sbc_HL_ss(m_h_reg, m_l_reg, m_b_reg, m_c_reg, m_flag_reg, cycles);
                 break;
+            case NEG_UNDOC1:
+            case NEG_UNDOC2:
+            case NEG_UNDOC3:
+            case NEG_UNDOC4:
+            case NEG_UNDOC5:
+            case NEG_UNDOC6:
+            case NEG_UNDOC7:
             case NEG:
                 neg(m_acc_reg, m_flag_reg, cycles);
                 break;
@@ -1153,40 +1186,46 @@ namespace emu::z80 {
         }
     }
 
-    void Cpu::print_debug() {
-        std::cout << "pc=" << hexify(m_pc)
-                  << ",sp=" << hexify(m_sp)
-                  << ",op=" << hexify(m_opcode)
-                  << ",a=" << hexify(m_acc_reg)
-                  << ",a'=" << hexify(m_acc_p_reg)
-                  << ",b=" << hexify(m_b_reg)
-                  << ",b'=" << hexify(m_b_p_reg)
-                  << ",c=" << hexify(m_c_reg)
-                  << ",c'=" << hexify(m_c_p_reg)
-                  << ",d=" << hexify(m_d_reg)
-                  << ",d'=" << hexify(m_d_p_reg)
-                  << ",e=" << hexify(m_e_reg)
-                  << ",e'=" << hexify(m_e_p_reg)
-                  << ",h=" << hexify(m_h_reg)
-                  << ",h'=" << hexify(m_h_p_reg)
-                  << ",l=" << hexify(m_l_reg)
-                  << ",l'=" << hexify(m_l_p_reg)
-                  << ",ix=" << hexify(m_ix_reg)
-                  << ",iy=" << hexify(m_iy_reg)
-                  << ",i=" << hexify(m_i_reg)
-                  << ",r=" << hexify(m_r_reg)
-                  << ",c=" << m_flag_reg.is_carry_flag_set()
-                  << ",po=" << m_flag_reg.is_parity_overflow_flag_set()
-                  << ",hc=" << m_flag_reg.is_half_carry_flag_set()
-                  << ",n=" << m_flag_reg.is_add_subtract_flag_set()
-                  << ",z=" << m_flag_reg.is_zero_flag_set()
-                  << ",s=" << m_flag_reg.is_sign_flag_set()
-                  << ",c'=" << m_flag_p_reg.is_carry_flag_set()
-                  << ",po'=" << m_flag_p_reg.is_parity_overflow_flag_set()
-                  << ",hc'=" << m_flag_p_reg.is_half_carry_flag_set()
-                  << ",n'=" << m_flag_p_reg.is_add_subtract_flag_set()
-                  << ",z'=" << m_flag_p_reg.is_zero_flag_set()
-                  << ",s'=" << m_flag_p_reg.is_sign_flag_set()
-                  << "\n";
+    void Cpu::r_tick() {
+        m_r_reg = m_r_reg == 127 ? 0 : m_r_reg + 1;
+    }
+
+    void Cpu::print_debug(u8 opcode) {
+        if (false) {
+            std::cout << "pc=" << hexify(m_pc)
+                      << ",sp=" << hexify(m_sp)
+                      << ",op=" << hexify(opcode)
+                      << ",a=" << hexify(m_acc_reg)
+                      << ",a'=" << hexify(m_acc_p_reg)
+                      << ",b=" << hexify(m_b_reg)
+                      << ",b'=" << hexify(m_b_p_reg)
+                      << ",c=" << hexify(m_c_reg)
+                      << ",c'=" << hexify(m_c_p_reg)
+                      << ",d=" << hexify(m_d_reg)
+                      << ",d'=" << hexify(m_d_p_reg)
+                      << ",e=" << hexify(m_e_reg)
+                      << ",e'=" << hexify(m_e_p_reg)
+                      << ",h=" << hexify(m_h_reg)
+                      << ",h'=" << hexify(m_h_p_reg)
+                      << ",l=" << hexify(m_l_reg)
+                      << ",l'=" << hexify(m_l_p_reg)
+                      << ",ix=" << hexify(m_ix_reg)
+                      << ",iy=" << hexify(m_iy_reg)
+                      << ",i=" << hexify(m_i_reg)
+                      << ",r=" << hexify(m_r_reg)
+                      << ",c=" << m_flag_reg.is_carry_flag_set()
+                      << ",po=" << m_flag_reg.is_parity_overflow_flag_set()
+                      << ",hc=" << m_flag_reg.is_half_carry_flag_set()
+                      << ",n=" << m_flag_reg.is_add_subtract_flag_set()
+                      << ",z=" << m_flag_reg.is_zero_flag_set()
+                      << ",s=" << m_flag_reg.is_sign_flag_set()
+                      //                  << ",c'=" << m_flag_p_reg.is_carry_flag_set()
+                      //                  << ",po'=" << m_flag_p_reg.is_parity_overflow_flag_set()
+                      //                  << ",hc'=" << m_flag_p_reg.is_half_carry_flag_set()
+                      //                  << ",n'=" << m_flag_p_reg.is_add_subtract_flag_set()
+                      //                  << ",z'=" << m_flag_p_reg.is_zero_flag_set()
+                      //                  << ",s'=" << m_flag_p_reg.is_sign_flag_set()
+                      << "\n";
+        }
     }
 }

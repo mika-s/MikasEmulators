@@ -62,7 +62,7 @@ namespace emu::z80 {
             CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
         }
 
-        SUBCASE("should always reset the add_A_r/subtract flag") {
+        SUBCASE("should always reset the add/subtract flag") {
             Flags flag_reg;
 
             flag_reg.set_add_subtract_flag();

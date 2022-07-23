@@ -61,9 +61,9 @@ namespace emu::i8080 {
 
     void Flags::handle_borrow_flag(u8 previous, int value_to_subtract, bool cf) {
         if (borrow_from(msb + 1, previous, value_to_subtract, cf)) {
-            clear_carry_flag();
-        } else {
             set_carry_flag();
+        } else {
+            clear_carry_flag();
         }
     }
 
@@ -77,9 +77,9 @@ namespace emu::i8080 {
 
     void Flags::handle_aux_borrow_flag(u8 previous, u8 value_to_subtract, bool cf) {
         if (borrow_from(msb_first_nibble + 1, previous, value_to_subtract, cf)) {
-            set_aux_carry_flag();
-        } else {
             clear_aux_carry_flag();
+        } else {
+            set_aux_carry_flag();
         }
     }
 

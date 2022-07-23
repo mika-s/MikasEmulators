@@ -281,6 +281,26 @@ namespace emu::z80 {
     }
 
     /**
+     * Load IX or IY with memory location
+     * <ul>
+     *   <li>Size: 4</li>
+     *   <li>Cycles: 6</li>
+     *   <li>States: 20</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param ixy_reg is the IX or IY register to load into, which will be mutated
+     * @param args contains the address to load from
+     * @param memory is the memory, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void ld_ixy_Mnn(u16 &ixy_reg, const NextByte &args, const EmulatorMemory &memory, unsigned long &cycles) {
+        ixy_reg = to_u16(memory[args.farg + 1], memory[args.farg]);
+
+        cycles = 20;
+    }
+
+    /**
      * Load register with (IXY + d)
      * <ul>
      *   <li>Size: 3</li>
@@ -342,7 +362,7 @@ namespace emu::z80 {
     /**
      * Move content of IX/IY register to SP
      * <ul>
-     *   <li>Size: 1</li>
+     *   <li>Size: 2</li>
      *   <li>Cycles: 2</li>
      *   <li>States: 10</li>
      *   <li>Condition bits affected: none</li>
@@ -493,7 +513,7 @@ namespace emu::z80 {
     }
 
     void print_ld_r_MixyPn(std::ostream &ostream, const std::string &dest, const std::string &ixy_reg,
-                             const NextByte &args) {
+                           const NextByte &args) {
         const i8 signed_value = static_cast<i8>(args.farg);
         const std::string plus_or_minus = (signed_value >= 0) ? "+" : "";
 
@@ -711,6 +731,26 @@ namespace emu::z80 {
             ld_sp_hl(sp, to_u16(h_reg, l_reg), cycles);
 
             CHECK_EQ(6, cycles);
+        }
+    }
+
+    TEST_CASE("Z80: LD SP, IX") {
+        unsigned long cycles = 0;
+        u16 sp = 0;
+        u16 ix_reg = 0x1122;
+
+        SUBCASE("should move HL into SP") {
+            ld_sp_ixy(sp, ix_reg, cycles);
+
+            CHECK_EQ(0x1122, sp);
+        }
+
+        SUBCASE("should use 10 cycles") {
+            cycles = 0;
+
+            ld_sp_ixy(sp, ix_reg, cycles);
+
+            CHECK_EQ(10, cycles);
         }
     }
 }
