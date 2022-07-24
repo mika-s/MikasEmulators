@@ -104,6 +104,18 @@ namespace emu::z80 {
                 << hexify_wo_0x(args.farg);
     }
 
+    void print_or_MixyPn(std::ostream &ostream, const std::string &ixy_reg, const NextByte &args) {
+        const i8 signed_value = static_cast<i8>(args.farg);
+        const std::string plus_or_minus = (signed_value >= 0) ? "+" : "";
+
+        ostream << "OR "
+                << "("
+                << ixy_reg
+                << plus_or_minus
+                << +signed_value
+                << ")";
+    }
+
     TEST_CASE("Z80: OR") {
         u8 acc_reg = 0;
 

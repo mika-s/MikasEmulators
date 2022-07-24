@@ -443,7 +443,7 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void ld_Mnn_sp(u16 sp, EmulatorMemory &memory, const NextWord &args, unsigned long &cycles) {
-        ld_Mnn_dd(second_byte(sp), first_byte(sp), memory, args, cycles);
+        ld_Mnn_dd(first_byte(sp), second_byte(sp), memory, args, cycles);
 
         cycles = 20;
     }
@@ -731,6 +731,23 @@ namespace emu::z80 {
             ld_sp_hl(sp, to_u16(h_reg, l_reg), cycles);
 
             CHECK_EQ(6, cycles);
+        }
+    }
+
+    TEST_CASE("Z80: LD SP, (nn)") {
+        unsigned long cycles = 0;
+        u16 sp = 0;
+        EmulatorMemory memory;
+        memory.add({0x65, 0x78});
+        NextWord args = {
+                .farg = 0,
+                .sarg = 0
+        };
+
+        SUBCASE("should move HL into SP") {
+            ld_sp_Mnn(sp, memory, args, cycles);
+
+            CHECK_EQ(0x7865, sp);
         }
     }
 

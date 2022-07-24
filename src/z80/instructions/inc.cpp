@@ -3,10 +3,12 @@
 #include "z80/flags.h"
 #include "z80/instructions/instruction_util.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/misc/next_byte.h"
 #include "crosscutting/util/byte_util.h"
 
 namespace emu::z80 {
 
+    using emu::misc::NextByte;
     using emu::util::byte::first_byte;
     using emu::util::byte::second_byte;
     using emu::util::byte::to_u16;
@@ -123,6 +125,18 @@ namespace emu::z80 {
     void print_inc(std::ostream &ostream, const std::string &reg) {
         ostream << "INC "
                 << reg;
+    }
+
+    void print_inc_MixyPn(std::ostream &ostream, const std::string &ixy_reg, const NextByte &args) {
+        const i8 signed_value = static_cast<i8>(args.farg);
+        const std::string plus_or_minus = (signed_value >= 0) ? "+" : "";
+
+        ostream << "INC "
+                << "("
+                << ixy_reg
+                << plus_or_minus
+                << +signed_value
+                << ")";
     }
 
     TEST_CASE("Z80: INC") {

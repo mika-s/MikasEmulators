@@ -56,6 +56,26 @@ namespace emu::z80 {
     }
 
     /**
+     * Add from IX or IY high or low to accumulator
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 8</li>
+     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+     * </ul>
+     *
+     * @param acc_reg is the accumulator register, which will be mutated
+     * @param value is the value to add_A_r to the accumulator register
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void add_A_ixy_h_or_l(u8 &acc_reg, u8 ixy_reg_h_or_l, Flags &flag_reg, unsigned long &cycles) {
+        add(acc_reg, ixy_reg_h_or_l, flag_reg);
+
+        cycles = 8;
+    }
+
+    /**
      * Add immediate to accumulator
      * <ul>
      *   <li>Size: 2</li>
@@ -161,6 +181,20 @@ namespace emu::z80 {
                 << reg
                 << ", "
                 << hexify_wo_0x(args.farg);
+    }
+
+    void print_add_MixyPn(std::ostream &ostream, const std::string &reg, const std::string &ixy_reg,
+                          const NextByte &args) {
+        const i8 signed_value = static_cast<i8>(args.farg);
+        const std::string plus_or_minus = (signed_value >= 0) ? "+" : "";
+
+        ostream << "ADD "
+                << reg
+                << ",("
+                << ixy_reg
+                << plus_or_minus
+                << +signed_value
+                << ")";
     }
 
     TEST_CASE("Z80: ADD") {

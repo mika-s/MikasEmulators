@@ -15,6 +15,8 @@ namespace emu::util::string {
 
     std::string hexify_wo_0x(u8 val);
 
+    std::string hexify_wo_0x(u16 val);
+
     std::string hexify_wo_0x(unsigned int val, int width);
 
     std::string find_short_executable_name(char *long_program_name);

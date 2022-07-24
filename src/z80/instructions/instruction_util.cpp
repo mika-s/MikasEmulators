@@ -21,6 +21,19 @@ namespace emu::z80 {
         flag_reg.clear_add_subtract_flag();
     }
 
+    void add_to_register(u16 &reg, u16 value, bool cf, Flags &flag_reg) {
+        u8 reg_lo = first_byte(reg);
+        u8 reg_hi = second_byte(reg);
+        u8 value_lo = first_byte(value);
+        u8 value_hi = second_byte(value);
+
+        add_to_register(reg_lo, value_lo, cf, flag_reg);
+        add_to_register(reg_hi, value_hi, cf, flag_reg);
+
+        reg = to_u16(reg_hi, reg_lo);
+        flag_reg.handle_zero_flag(reg);
+    }
+
     void sub_from_register(u8 &reg, u8 value, bool cf, Flags &flag_reg) {
         const u8 previous = reg;
         const u8 to_subtract = value + (cf ? 1 : 0);
@@ -35,15 +48,16 @@ namespace emu::z80 {
     }
 
     void sub_from_register(u16 &reg, u16 value, bool cf, Flags &flag_reg) {
-        const u16 previous = reg;
-        const u16 to_subtract = value + (cf ? 1 : 0);
-        reg -= to_subtract;
+        u8 reg_lo = first_byte(reg);
+        u8 reg_hi = second_byte(reg);
+        u8 value_lo = first_byte(value);
+        u8 value_hi = second_byte(value);
 
-        flag_reg.handle_borrow_flag(previous, value, cf);
+        sub_from_register(reg_lo, value_lo, cf, flag_reg);
+        sub_from_register(reg_hi, value_hi, cf, flag_reg);
+
+        reg = to_u16(reg_hi, reg_lo);
         flag_reg.handle_zero_flag(reg);
-        //flag_reg.handle_overflow_flag(next); // TODO: Handle overflow flag for sbc
-        flag_reg.handle_sign_flag(reg);
-        flag_reg.handle_half_carry_flag(previous, value, cf);
     }
 
     void execute_call(u16 &pc, u16 &sp, EmulatorMemory &memory, const NextWord &args) {

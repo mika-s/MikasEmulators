@@ -269,43 +269,74 @@
 
 // IX/IY opcodes:
 
-#define ADD_IXY_BC    0x09
-#define ADD_IXY_DE    0x19
-#define LD_IXY_nn     0x21
-#define LD_Mnn_IXY    0x22
-#define INC_IXY       0x23
-#define ADD_IXY_IXY   0x29
-#define LD_IXY_Mnn    0x2A
-#define DEC_IXY       0x2B
-#define ADD_IX_SP     0x39
-#define LD_B_MIXY_P_n 0x46
-#define LD_C_MIXY_P_n 0x4E
-#define LD_D_MIXY_P_n 0x56
-#define LD_E_MIXY_P_n 0x5E
-#define LD_H_MIXY_P_n 0x66
-#define LD_L_MIXY_P_n 0x6E
-#define LD_A_MIXY_P_n 0x7E
-#define POP_IXY       0xE1
-#define EX_MSP_IX     0xE3
-#define PUSH_IXY      0xE5
-#define JP_MIXY       0xE9
-#define LD_SP_IX      0xF9
+#define ADD_IXY_BC     0x09
+#define ADD_IXY_DE     0x19
+#define LD_IXY_nn      0x21
+#define LD_Mnn_IXY     0x22
+#define INC_IXY        0x23
+#define INC_IXH_UNDOC1 0x24
+#define ADD_IXY_IXY    0x29
+#define LD_IXY_Mnn     0x2A
+#define DEC_IXY        0x2B
+#define INC_IXL_UNDOC1 0x2C
+#define INC_MIXY_P_n   0x34
+#define ADD_IX_SP      0x39
+#define LD_B_MIXY_P_n  0x46
+#define LD_C_MIXY_P_n  0x4E
+#define LD_D_MIXY_P_n  0x56
+#define LD_E_MIXY_P_n  0x5E
+#define LD_H_MIXY_P_n  0x66
+#define LD_L_MIXY_P_n  0x6E
+#define LD_A_MIXY_P_n  0x7E
+#define ADD_A_IXH      0x84
+#define ADD_A_IXL      0x85
+#define ADD_A_MIXY_P_n 0x86
+#define SUB_IXH_UNDOC1 0x94
+#define XOR_IXL_UNDOC1 0xAD
+#define OR_MIXY_P_n    0xB6
+#define IXY_BITS       0xCB
+#define POP_IXY        0xE1
+#define EX_MSP_IX      0xE3
+#define PUSH_IXY       0xE5
+#define JP_MIXY        0xE9
+#define LD_SP_IX       0xF9
+
+// BITS opcodes:
+
+#define RLC_MIXY_P_n_B_UNDOC1 0x00
+#define RL_MIXY_P_n_B_UNDOC1  0x01
+
 
 // EXTD opcodes:
 
 #define SBC_HL_BC     0x42
+#define LD_Mnn_BC     0x43
 #define NEG           0x44
+#define IM_0_1        0x46
+#define ADC_HL_BC     0x4A
+#define LD_BC_Mnn     0x4B
 #define NEG_UNDOC1    0x4C
+#define SBC_HL_DE     0x52
 #define NEG_UNDOC2    0x54
+#define IM_1_1        0x56
 #define NEG_UNDOC3    0x5C
+#define ADC_HL_DE     0x5A
+#define SBC_HL_HL     0x62
 #define NEG_UNDOC4    0x64
+#define IM_0_2        0x66
 #define RRD           0x67
+#define ADC_HL_HL     0x6A
 #define NEG_UNDOC5    0x6C
+#define SBC_HL_SP     0x72
 #define LD_Mnn_sp     0x73
 #define NEG_UNDOC6    0x74
+#define IM_1_2        0x76
+#define ADC_HL_SP     0x7A
 #define LD_sp_Mnn     0x7B
 #define NEG_UNDOC7    0x7C
 #define LDI           0xA0
+#define CPI           0xA1
+#define CPD           0xA9
 #define LDIR          0xB0
 
 // BITS opcodes:
@@ -316,9 +347,11 @@ namespace emu::z80 {
     using emu::misc::NextByte;
     using emu::misc::NextWord;
 
+    void add_A_ixy_h_or_l(u8 &acc_reg, u8 ixy_reg, Flags &flag_reg, unsigned long &cycles);
     void adc_A_n(u8 &acc_reg, NextByte args, Flags &flag_reg, unsigned long &cycles);
     void adc_A_r(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
     void adc_A_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
+    void adc_hl_ss(u8 &h_reg, u8 &l_reg, u16 value, Flags &flag_reg, unsigned long &cycles);
     void add_A_n(u8 &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles);
     void add_A_r(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
     void add_A_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
@@ -439,7 +472,7 @@ namespace emu::z80 {
     void sbc_A_n(u8 &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles);
     void sbc_A_r(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
     void sbc_A_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
-    void sbc_HL_ss(u8 &h_reg, u8 &l_reg, u8 reg1, u8 &reg2, Flags &flag_reg, unsigned long &cycles);
+    void sbc_HL_ss(u8 &h_reg, u8 &l_reg, u16 value, Flags &flag_reg, unsigned long &cycles);
     void scf(Flags &flag_reg, unsigned long &cycles);
     void sub_n(u8 &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles);
     void sub_r(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
@@ -456,11 +489,14 @@ namespace emu::z80 {
     void print_add_r_n(std::ostream &ostream, const std::string &reg, const NextByte &args);
     void print_and_r(std::ostream &ostream, const std::string &reg);
     void print_and_n(std::ostream &ostream, const NextByte &args);
+    void print_add_MixyPn(std::ostream &ostream, const std::string &reg, const std::string &ixy_reg, const NextByte &args);
     void print_call(std::ostream &ostream, const NextWord &args);
     void print_call(std::ostream &ostream, const NextWord &args, const std::string &condition);
     void print_ccf(std::ostream &ostream);
     void print_cp(std::ostream &ostream, const std::string &reg);
     void print_cp(std::ostream &ostream, const NextByte &args);
+    void print_cpd(std::ostream &ostream);
+    void print_cpi(std::ostream &ostream);
     void print_cpl(std::ostream &ostream);
     void print_daa(std::ostream &ostream);
     void print_di(std::ostream &ostream);
@@ -470,6 +506,7 @@ namespace emu::z80 {
     void print_ex(std::ostream &ostream, const std::string& reg, const std::string& comp_reg);
     void print_exx(std::ostream &ostream);
     void print_halt(std::ostream &ostream);
+    void print_im(std::ostream &ostream, unsigned int interrupt_mode);
     void print_in(std::ostream &ostream, const NextByte &args);
     void print_jp(std::ostream &ostream, const NextWord &args);
     void print_jp(std::ostream &ostream, const NextWord &args, const std::string& condition);
@@ -477,16 +514,19 @@ namespace emu::z80 {
     void print_jr(std::ostream &ostream, const NextByte &args);
     void print_jr(std::ostream &ostream, const std::string &condition, const NextByte &args);
     void print_inc(std::ostream &ostream, const std::string &reg);
+    void print_inc_MixyPn(std::ostream &ostream, const std::string &ixy_reg, const NextByte &args);
     void print_ld(std::ostream &ostream, const std::string &dest, const std::string &src);
     void print_ld(std::ostream &ostream, const std::string &dest, const NextByte &args);
     void print_ld(std::ostream &ostream, const std::string &dest, const NextWord &args);
     void print_ld_dd_nn(std::ostream &ostream, const std::string &reg, const NextWord &args);
     void print_ld_Mnn_dd(std::ostream &ostream, const NextWord &args, const std::string &src);
     void print_ld_r_MixyPn(std::ostream &ostream, const std::string &dest, const std::string &ixy_reg, const NextByte &args);
+    void print_ldi(std::ostream &ostream);
     void print_ldir(std::ostream &ostream);
     void print_neg(std::ostream &ostream);
     void print_nop(std::ostream &ostream);
     void print_or_r(std::ostream &ostream, const std::string &reg);
+    void print_or_MixyPn(std::ostream &ostream, const std::string &ixy_reg, const NextByte &args);
     void print_or_n(std::ostream &ostream, const NextByte &args);
     void print_pop(std::ostream &ostream, const std::string &reg);
     void print_push(std::ostream &ostream, const std::string &reg);
@@ -495,7 +535,9 @@ namespace emu::z80 {
     void print_ret(std::ostream &ostream, const std::string& condition);
     void print_rla(std::ostream &ostream);
     void print_rl(std::ostream &ostream, const std::string &reg);
+    void print_rl_MixyPn_r(std::ostream &ostream, const std::string &ixy_reg, const NextByte &args, const std::string &reg);
     void print_rlc(std::ostream &ostream, const std::string &reg);
+    void print_rlc_MixyPn_r(std::ostream &ostream, const std::string &ixy_reg, const NextByte &args, const std::string &reg);
     void print_rlca(std::ostream &ostream);
     void print_rst(std::ostream &ostream, int number);
     void print_rr(std::ostream &ostream, const std::string &reg);

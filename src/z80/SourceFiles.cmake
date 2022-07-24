@@ -13,6 +13,8 @@ set(SOURCES_Z80_CPP
         src/z80/instructions/call.cpp
         src/z80/instructions/ccf.cpp
         src/z80/instructions/cp.cpp
+        src/z80/instructions/cpd.cpp
+        src/z80/instructions/cpi.cpp
         src/z80/instructions/cpl.cpp
         src/z80/instructions/daa.cpp
         src/z80/instructions/dec.cpp
@@ -22,12 +24,14 @@ set(SOURCES_Z80_CPP
         src/z80/instructions/ex.cpp
         src/z80/instructions/exx.cpp
         src/z80/instructions/halt.cpp
+        src/z80/instructions/im.cpp
         src/z80/instructions/in.cpp
         src/z80/instructions/inc.cpp
         src/z80/instructions/instruction_util.cpp
         src/z80/instructions/jp.cpp
         src/z80/instructions/jr.cpp
         src/z80/instructions/ld.cpp
+        src/z80/instructions/ldi.cpp
         src/z80/instructions/ldir.cpp
         src/z80/instructions/neg.cpp
         src/z80/instructions/nop.cpp

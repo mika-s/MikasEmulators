@@ -72,7 +72,7 @@ namespace emu::z80 {
     }
 
     void Flags::handle_borrow_flag(u16 previous, int to_subtract, bool cf) {
-        if (borrow_from(msb_u16, previous, to_subtract, cf)) {
+        if (borrow_from(msb_u16 + 1, previous, to_subtract, cf)) {
             set_carry_flag();
         } else {
             clear_carry_flag();

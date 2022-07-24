@@ -5,15 +5,23 @@
 #include "z80/instructions/instruction_util.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/misc/next_byte.h"
+#include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
 
 namespace emu::z80 {
 
     using emu::misc::NextByte;
+    using emu::util::byte::first_byte;
+    using emu::util::byte::second_byte;
+    using emu::util::byte::to_u16;
     using emu::util::string::hexify_wo_0x;
 
     void adc(u8 &acc_reg, u8 value, Flags &flag_reg) {
         add_to_register(acc_reg, value, flag_reg.is_carry_flag_set(), flag_reg);
+    }
+
+    void adc(u16 &reg, u16 value, Flags &flag_reg) {
+        add_to_register(reg, value, flag_reg.is_carry_flag_set(), flag_reg);
     }
 
     /**
@@ -74,6 +82,32 @@ namespace emu::z80 {
         adc(acc_reg, value, flag_reg);
 
         cycles = 7;
+    }
+
+    /**
+     * Add from register to HL with carry
+     * <ul>
+     *   <li>Size: 1</li>
+     *   <li>Cycles: 4</li>
+     *   <li>States: 15</li>
+     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+     * </ul>
+     *
+     * @param h_reg is the H register, which will be mutated
+     * @param l_reg is the L register, which will be mutated
+     * @param value contains value to add to HL
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void adc_hl_ss(u8 &h_reg, u8 &l_reg, u16 value, Flags &flag_reg, unsigned long &cycles) {
+        u16 hl = to_u16(h_reg, l_reg);
+
+        adc(hl, value, flag_reg);
+
+        h_reg = second_byte(hl);
+        l_reg = first_byte(hl);
+
+        cycles = 15;
     }
 
     void print_adc(std::ostream &ostream, const std::string &dest, const std::string &src) {

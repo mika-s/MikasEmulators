@@ -16,6 +16,8 @@ namespace emu::z80 {
 
     void add_to_register(u8 &reg, u8 value, bool cf, Flags &flag_reg);
 
+    void add_to_register(u16 &reg, u16 value, bool cf, Flags &flag_reg);
+
     void sub_from_register(u8 &reg, u8 value, bool cf, Flags &flag_reg);
 
     void sub_from_register(u16 &reg, u16 value, bool cf, Flags &flag_reg);

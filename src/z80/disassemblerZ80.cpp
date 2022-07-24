@@ -821,6 +821,9 @@ namespace emu::z80 {
             case INC_IXY:
                 print_inc(m_ostream, ixy_reg);
                 break;
+            case INC_IXH_UNDOC1:
+                print_inc(m_ostream, "IXH");
+                break;
             case ADD_IXY_IXY:
                 print_add(m_ostream, ixy_reg, ixy_reg);
                 break;
@@ -829,6 +832,15 @@ namespace emu::z80 {
                 break;
             case DEC_IXY:
                 print_dec(m_ostream, ixy_reg);
+                break;
+            case INC_IXL_UNDOC1:
+                print_inc(m_ostream, "IXL");
+                break;
+            case 0x32:
+                std::cout << "0x32 (data)";
+                break;
+            case INC_MIXY_P_n:
+                print_inc_MixyPn(m_ostream, ixy_reg, get_next_byte());
                 break;
             case ADD_IX_SP:
                 print_add(m_ostream, "IX", "SP");
@@ -854,6 +866,24 @@ namespace emu::z80 {
             case LD_A_MIXY_P_n:
                 print_ld_r_MixyPn(m_ostream, "A", ixy_reg, get_next_byte());
                 break;
+            case ADD_A_IXH:
+                print_add(m_ostream, "A", "IXH");
+                break;
+            case ADD_A_MIXY_P_n:
+                print_add_MixyPn(m_ostream, "A", ixy_reg, get_next_byte());
+                break;
+            case SUB_IXH_UNDOC1:
+                print_sub(m_ostream, "IXH");
+                break;
+            case XOR_IXL_UNDOC1:
+                print_xor_r(m_ostream, "IXL");
+                break;
+            case OR_MIXY_P_n:
+                print_or_MixyPn(m_ostream, ixy_reg, get_next_byte());
+                break;
+            case IXY_BITS:
+                print_next_ixy_bits_instruction(get_next_byte().farg, ixy_reg);
+                break;
             case POP_IXY:
                 print_pop(m_ostream, ixy_reg);
                 break;
@@ -874,10 +904,26 @@ namespace emu::z80 {
         }
     }
 
+    void DisassemblerZ80::print_next_ixy_bits_instruction(u8 bits_opcode, const std::string &ixy_reg) {
+        switch (bits_opcode) {
+            case RLC_MIXY_P_n_B_UNDOC1:
+                print_rlc_MixyPn_r(m_ostream, ixy_reg, get_next_byte(), "B");
+                break;
+            case RL_MIXY_P_n_B_UNDOC1:
+                print_rl_MixyPn_r(m_ostream, ixy_reg, get_next_byte(), "B");
+                break;
+            default:
+                throw UnrecognizedOpcodeException(bits_opcode, "BITS instructions");
+        }
+    }
+
     void DisassemblerZ80::print_next_extd_instruction(u8 extd_opcode) {
         switch (extd_opcode) {
             case SBC_HL_BC:
                 print_sbc(m_ostream, "HL", "BC");
+                break;
+            case LD_Mnn_BC:
+                print_ld_Mnn_dd(m_ostream, get_next_word(), "BC");
                 break;
             case NEG_UNDOC1:
             case NEG_UNDOC2:
@@ -888,6 +934,29 @@ namespace emu::z80 {
             case NEG:
                 print_neg(m_ostream);
                 break;
+            case IM_0_1:
+            case IM_0_2:
+                print_im(m_ostream, 0);
+                break;
+            case ADC_HL_BC:
+                print_adc(m_ostream, "HL", "BC");
+                break;
+            case LD_BC_Mnn:
+                print_ld(m_ostream, "BC", get_next_word());
+                break;
+            case SBC_HL_DE:
+                print_sbc(m_ostream, "HL", "DE");
+                break;
+            case SBC_HL_HL:
+                print_sbc(m_ostream, "HL", "HL");
+                break;
+            case SBC_HL_SP:
+                print_sbc(m_ostream, "HL", "SP");
+                break;
+            case IM_1_1:
+            case IM_1_2:
+                print_im(m_ostream, 1);
+                break;
             case RRD:
                 print_rrd(m_ostream);
                 break;
@@ -897,10 +966,26 @@ namespace emu::z80 {
             case LD_sp_Mnn:
                 print_ld(m_ostream, "SP", get_next_word());
                 break;
+            case 0x84:
+                std::cout << "0x84 (data)";
+                break;
             case LDI:
-                throw UnrecognizedOpcodeException(extd_opcode, "EXTD instructions");
+                print_ldi(m_ostream);
+                break;
+            case CPI:
+                print_cpi(m_ostream);
+                break;
+            case CPD:
+                print_cpd(m_ostream);
+                break;
             case LDIR:
                 print_ldir(m_ostream);
+                break;
+            case 0xc9:
+                std::cout << "0xc9 (data)";
+                break;
+            case 0xf5:
+                std::cout << "0xf5 (data)";
                 break;
             default:
                 throw UnrecognizedOpcodeException(extd_opcode, "EXTD instructions");

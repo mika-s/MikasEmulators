@@ -26,6 +26,14 @@ namespace emu::util::string {
         return returnVal;
     }
 
+    std::string hexify_wo_0x(u16 val) {
+        std::stringstream ss;
+        ss << std::setfill('0') << std::setw(4) << std::hex << static_cast<int>(val);
+        std::string returnVal = ss.str();
+
+        return returnVal;
+    }
+
     std::string hexify_wo_0x(unsigned int val, int width) {
         std::stringstream ss;
         ss << std::setfill('0') << std::setw(width) << std::hex << static_cast<int>(val);

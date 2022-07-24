@@ -8,6 +8,8 @@
 
 namespace emu::z80 {
 
+    using emu::util::byte::first_byte;
+    using emu::util::byte::second_byte;
     using emu::util::byte::to_u16;
     using emu::util::string::hexify;
     using emu::exceptions::UnrecognizedOpcodeException;
@@ -995,6 +997,12 @@ namespace emu::z80 {
             case LD_A_MIXY_P_n:
                 ld_r_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, cycles);
                 break;
+            case ADD_A_IXH:
+                add_A_ixy_h_or_l(m_acc_reg, second_byte(ixy_reg), m_flag_reg, cycles);
+                break;
+            case ADD_A_IXL:
+                add_A_ixy_h_or_l(m_acc_reg, first_byte(ixy_reg), m_flag_reg, cycles);
+                break;
             case POP_IXY:
                 pop_ixy(ixy_reg, m_sp, m_memory, cycles);
                 break;
@@ -1021,7 +1029,10 @@ namespace emu::z80 {
 
         switch (extd_opcode) {
             case SBC_HL_BC:
-                sbc_HL_ss(m_h_reg, m_l_reg, m_b_reg, m_c_reg, m_flag_reg, cycles);
+                sbc_HL_ss(m_h_reg, m_l_reg, to_u16(m_b_reg, m_c_reg), m_flag_reg, cycles);
+                break;
+            case SBC_HL_DE:
+                sbc_HL_ss(m_h_reg, m_l_reg, to_u16(m_d_reg, m_e_reg), m_flag_reg, cycles);
                 break;
             case NEG_UNDOC1:
             case NEG_UNDOC2:
@@ -1033,11 +1044,29 @@ namespace emu::z80 {
             case NEG:
                 neg(m_acc_reg, m_flag_reg, cycles);
                 break;
+            case ADC_HL_BC:
+                adc_hl_ss(m_h_reg, m_l_reg, to_u16(m_b_reg, m_c_reg), m_flag_reg, cycles);
+                break;
+            case ADC_HL_DE:
+                adc_hl_ss(m_h_reg, m_l_reg, to_u16(m_d_reg, m_e_reg), m_flag_reg, cycles);
+                break;
+            case SBC_HL_HL:
+                sbc_HL_ss(m_h_reg, m_l_reg, to_u16(m_h_reg, m_l_reg), m_flag_reg, cycles);
+                break;
             case RRD:
                 rrd(m_acc_reg, m_memory[address_in_HL()], m_flag_reg, cycles);
                 break;
+            case ADC_HL_HL:
+                adc_hl_ss(m_h_reg, m_l_reg, to_u16(m_h_reg, m_l_reg), m_flag_reg, cycles);
+                break;
+            case SBC_HL_SP:
+                sbc_HL_ss(m_h_reg, m_l_reg, m_sp, m_flag_reg, cycles);
+                break;
             case LD_Mnn_sp:
                 ld_Mnn_sp(m_sp, m_memory, get_next_word(), cycles);
+                break;
+            case ADC_HL_SP:
+                adc_hl_ss(m_h_reg, m_l_reg, m_sp, m_flag_reg, cycles);
                 break;
             case LD_sp_Mnn:
                 ld_sp_Mnn(m_sp, m_memory, get_next_word(), cycles);
@@ -1191,7 +1220,7 @@ namespace emu::z80 {
     }
 
     void Cpu::print_debug(u8 opcode) {
-        if (false) {
+        if (true) {
             std::cout << "pc=" << hexify(m_pc)
                       << ",sp=" << hexify(m_sp)
                       << ",op=" << hexify(opcode)

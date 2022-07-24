@@ -4,10 +4,12 @@
 #include "z80/flags.h"
 #include "z80/instructions/instruction_util.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/misc/next_byte.h"
 #include "crosscutting/util/byte_util.h"
 
 namespace emu::z80 {
 
+    using emu::misc::NextByte;
     using emu::util::byte::is_bit_set;
     using emu::util::byte::set_bit;
 
@@ -46,6 +48,20 @@ namespace emu::z80 {
 
     void print_rlc(std::ostream &ostream, const std::string &reg) {
         ostream << "RLC "
+                << reg;
+    }
+
+    void print_rlc_MixyPn_r(std::ostream &ostream, const std::string &ixy_reg, const NextByte &args,
+                            const std::string &reg) {
+        const i8 signed_value = static_cast<i8>(args.farg);
+        const std::string plus_or_minus = (signed_value >= 0) ? "+" : "";
+
+        ostream << "RLC "
+                << "("
+                << ixy_reg
+                << plus_or_minus
+                << +signed_value
+                << "),"
                 << reg;
     }
 
