@@ -9,42 +9,48 @@ namespace emu::z80 {
     using emu::util::byte::is_bit_set;
 
     Flags::Flags()
-            : m_carry(false),
-              m_add_subtract(false),
-              m_parity_overflow(false),
+            : m_zero(false),
+              m_sign(false),
+              m_y_unused_flag(false),
               m_half_carry(false),
-              m_zero(false),
-              m_sign(false) {}
+              m_x_unused_flag(false),
+              m_parity_overflow(false),
+              m_add_subtract(false),
+              m_carry(false) {}
 
     void Flags::reset() {
-        clear_carry_flag();
-        clear_add_subtract_flag();
-        clear_parity_overflow_flag();
-        clear_half_carry_flag();
-        clear_zero_flag();
         clear_sign_flag();
+        clear_zero_flag();
+        clear_y_flag();
+        clear_half_carry_flag();
+        clear_x_flag();
+        clear_parity_overflow_flag();
+        clear_add_subtract_flag();
+        clear_carry_flag();
     }
 
     u8 Flags::to_u8() const {
-        const u8 s = (m_sign ? 1 : 0) << 7;
-        const u8 z = (m_zero ? 1 : 0) << 6;
-        const u8 unused1 = 0 << 5;
-        const u8 h = (m_half_carry ? 1 : 0) << 4;
-        const u8 unused2 = 0 << 3;
-        const u8 pv = (m_parity_overflow ? 1 : 0) << 2;
-        const u8 n = (m_add_subtract ? 1 : 0) << 1;
-        const u8 c = (m_carry ? 1 : 0) << 0;
+        const u8 s = (m_sign ? 1 : 0) << sign_flag_bit_number;
+        const u8 z = (m_zero ? 1 : 0) << zero_flag_bit_number;
+        const u8 y = (m_y_unused_flag ? 1 : 0) << y_flag_bit_number;
+        const u8 h = (m_half_carry ? 1 : 0) << half_carry_flag_bit_number;
+        const u8 x = (m_x_unused_flag ? 1 : 0) << x_flag_bit_number;
+        const u8 pv = (m_parity_overflow ? 1 : 0) << parity_overflow_flag_bit_number;
+        const u8 n = (m_add_subtract ? 1 : 0) << add_subtract_bit_number;
+        const u8 c = (m_carry ? 1 : 0) << carry_flag_bit_number;
 
-        return s | z | unused1 | h | unused2 | pv | n | c;
+        return s | z | y | h | x | pv | n | c;
     }
 
     void Flags::from_u8(u8 value) {
-        m_sign = is_bit_set(value, 7);
-        m_zero = is_bit_set(value, 6);
-        m_half_carry = is_bit_set(value, 4);
-        m_parity_overflow = is_bit_set(value, 2);
-        m_add_subtract = is_bit_set(value, 1);
-        m_carry = is_bit_set(value, 0);
+        m_sign = is_bit_set(value, sign_flag_bit_number);
+        m_zero = is_bit_set(value, zero_flag_bit_number);
+        m_y_unused_flag = is_bit_set(value, y_flag_bit_number);
+        m_half_carry = is_bit_set(value, half_carry_flag_bit_number);
+        m_x_unused_flag = is_bit_set(value, x_flag_bit_number);
+        m_parity_overflow = is_bit_set(value, parity_overflow_flag_bit_number);
+        m_add_subtract = is_bit_set(value, add_subtract_bit_number);
+        m_carry = is_bit_set(value, carry_flag_bit_number);
     }
 
     void Flags::handle_carry_flag(u8 previous, int to_add, bool cf) {
@@ -56,7 +62,7 @@ namespace emu::z80 {
     }
 
     void Flags::handle_carry_flag(u16 previous, u16 to_add) {
-        if (((previous + to_add) >> 16) & 1) {
+        if (((previous + to_add) >> 16) & 1) {  // TODO: Change to carried_out_of bit 15
             set_carry_flag();
         } else {
             clear_carry_flag();
@@ -148,6 +154,20 @@ namespace emu::z80 {
             set_sign_flag();
         } else {
             clear_sign_flag();
+        }
+    }
+
+    void Flags::handle_xy_flags(u8 number) {
+        if (is_bit_set(number, y_flag_bit_number)) {
+            set_y_flag();
+        } else {
+            clear_y_flag();
+        }
+
+        if (is_bit_set(number, x_flag_bit_number)) {
+            set_x_flag();
+        } else {
+            clear_x_flag();
         }
     }
 
@@ -244,6 +264,30 @@ namespace emu::z80 {
 
     bool Flags::is_parity_overflow_flag_set() const {
         return m_parity_overflow;
+    }
+
+    bool Flags::is_y_flag_set() const {
+        return m_y_unused_flag;
+    }
+
+    void Flags::set_y_flag() {
+        m_y_unused_flag = true;
+    }
+
+    void Flags::clear_y_flag() {
+        m_y_unused_flag = false;
+    }
+
+    bool Flags::is_x_flag_set() const {
+        return m_x_unused_flag;
+    }
+
+    void Flags::set_x_flag() {
+        m_x_unused_flag = true;
+    }
+
+    void Flags::clear_x_flag() {
+        m_x_unused_flag = false;
     }
 
     TEST_CASE("Z80: Flags") {

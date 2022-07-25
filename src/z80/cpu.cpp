@@ -1075,7 +1075,7 @@ namespace emu::z80 {
                 throw UnrecognizedOpcodeException(extd_opcode, "EXTD instructions");
             case LDIR:
                 ldir(m_pc, m_b_reg, m_c_reg, m_d_reg, m_e_reg,
-                     m_h_reg, m_l_reg, m_memory, m_flag_reg, cycles);
+                     m_h_reg, m_l_reg, m_acc_reg, m_memory, m_flag_reg, cycles);
                 break;
             default:
                 throw UnrecognizedOpcodeException(extd_opcode, "EXTD instructions");
@@ -1225,18 +1225,18 @@ namespace emu::z80 {
                       << ",sp=" << hexify(m_sp)
                       << ",op=" << hexify(opcode)
                       << ",a=" << hexify(m_acc_reg)
-                      << ",a'=" << hexify(m_acc_p_reg)
                       << ",b=" << hexify(m_b_reg)
-                      << ",b'=" << hexify(m_b_p_reg)
                       << ",c=" << hexify(m_c_reg)
-                      << ",c'=" << hexify(m_c_p_reg)
                       << ",d=" << hexify(m_d_reg)
-                      << ",d'=" << hexify(m_d_p_reg)
                       << ",e=" << hexify(m_e_reg)
-                      << ",e'=" << hexify(m_e_p_reg)
                       << ",h=" << hexify(m_h_reg)
-                      << ",h'=" << hexify(m_h_p_reg)
                       << ",l=" << hexify(m_l_reg)
+                      << ",a'=" << hexify(m_acc_p_reg)
+                      << ",b'=" << hexify(m_b_p_reg)
+                      << ",c'=" << hexify(m_c_p_reg)
+                      << ",d'=" << hexify(m_d_p_reg)
+                      << ",e'=" << hexify(m_e_p_reg)
+                      << ",h'=" << hexify(m_h_p_reg)
                       << ",l'=" << hexify(m_l_p_reg)
                       << ",ix=" << hexify(m_ix_reg)
                       << ",iy=" << hexify(m_iy_reg)
@@ -1248,6 +1248,8 @@ namespace emu::z80 {
                       << ",n=" << m_flag_reg.is_add_subtract_flag_set()
                       << ",z=" << m_flag_reg.is_zero_flag_set()
                       << ",s=" << m_flag_reg.is_sign_flag_set()
+                      << ",y=" << m_flag_reg.is_y_flag_set()
+                      << ",x=" << m_flag_reg.is_x_flag_set()
                       //                  << ",c'=" << m_flag_p_reg.is_carry_flag_set()
                       //                  << ",po'=" << m_flag_p_reg.is_parity_overflow_flag_set()
                       //                  << ",hc'=" << m_flag_p_reg.is_half_carry_flag_set()

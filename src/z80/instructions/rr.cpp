@@ -38,6 +38,7 @@ namespace emu::z80 {
 
         flag_reg.clear_half_carry_flag();
         flag_reg.clear_add_subtract_flag();
+        flag_reg.handle_xy_flags(acc_reg);
 
         cycles = 4;
     }

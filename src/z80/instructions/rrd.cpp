@@ -36,6 +36,7 @@ namespace emu::z80 {
         flag_reg.handle_zero_flag(acc_reg);
         flag_reg.handle_parity_flag(acc_reg);
         flag_reg.clear_add_subtract_flag();
+        flag_reg.handle_xy_flags(acc_reg);
 
         cycles = 18;
     }

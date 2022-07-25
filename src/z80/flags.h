@@ -41,6 +41,8 @@ namespace emu::z80 {
 
         void handle_sign_flag(u16 number);
 
+        void handle_xy_flags(u8 number);
+
         static bool should_parity_flag_be_set(u8 number);
 
         static bool should_overflow_flag_be_set(u8 previous, u8 to_add, bool cf);
@@ -83,18 +85,41 @@ namespace emu::z80 {
 
         [[nodiscard]] bool is_parity_overflow_flag_set() const;
 
+        [[nodiscard]] bool is_y_flag_set() const;
+
+        void set_y_flag();
+
+        void clear_y_flag();
+
+        [[nodiscard]] bool is_x_flag_set() const;
+
+        void set_x_flag();
+
+        void clear_x_flag();
+
     private:
         static constexpr unsigned int msb_u16 = 15;
         static constexpr unsigned int msb = 7;
         static constexpr unsigned int msb_first_nibble = 3;
         static constexpr unsigned int msb_first_nibble_u16 = 11;
 
-        bool m_carry;
-        bool m_add_subtract;
-        bool m_parity_overflow; // Parity: True if even number of one-bits.
-        bool m_half_carry;
+        static constexpr unsigned int sign_flag_bit_number = 7;
+        static constexpr unsigned int zero_flag_bit_number = 6;
+        static constexpr unsigned int y_flag_bit_number = 5;
+        static constexpr unsigned int half_carry_flag_bit_number = 4;
+        static constexpr unsigned int x_flag_bit_number = 3;
+        static constexpr unsigned int parity_overflow_flag_bit_number = 2;
+        static constexpr unsigned int add_subtract_bit_number = 1;
+        static constexpr unsigned int carry_flag_bit_number = 0;
+
         bool m_zero;
         bool m_sign;
+        bool m_y_unused_flag;
+        bool m_half_carry;
+        bool m_x_unused_flag;
+        bool m_parity_overflow; // Parity: True if even number of one-bits.
+        bool m_add_subtract;
+        bool m_carry;
     };
 }
 

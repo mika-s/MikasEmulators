@@ -1,6 +1,7 @@
 # Emulators
 
-This is my collection of emulators, written in C++. As of now, it only emulates Intel 8080, with the game Space Invaders.
+This is my collection of emulators, written in C++. As of now, it only emulates Intel 8080, with the game Space
+Invaders.
 
 The project is licensed under [The MIT License](LICENSE.md), with the test roms and libraries as exceptions. They have
 their own licenses. See the source code of each test rom or in the library folders to see their license or copyright
@@ -11,15 +12,14 @@ notice.
 * [Dependencies](#dependencies)
 * [Building](#building)
 * [Emulated CPUs](#emulated-cpus)
-  * [Intel 8080](#intel-8080)
-    * [Space Invaders](#space-invaders)
-    * [Inspiration](#inspiration)
-    * [Todo](#todo)
-  * [Z80](#z80)
-    * [Pacman](#pacman)
-    * [Inspiration](#inspiration-1)
-    * [Todo](#todo-1)
-
+    * [Intel 8080](#intel-8080)
+        * [Space Invaders](#space-invaders)
+        * [Inspiration](#inspiration)
+        * [Todo](#todo)
+    * [Z80](#z80)
+        * [Pacman](#pacman)
+        * [Inspiration](#inspiration-1)
+        * [Todo](#todo-1)
 
 ## Dependencies
 
@@ -120,14 +120,16 @@ Unlike Space Invaders, the test binaries are provided.
 
 #### Space Invaders
 
-The emulator can also play Space Invaders. The rom files are not provided. To run Space Invaders, run the following after building:
+The emulator can also play Space Invaders. The rom files are not provided. To run Space Invaders, run the following
+after building:
 
 ```sh
 cd cmake-build-debug/
 ./emulator 8080 run space_invaders
 ```
 
-The four rom files (invaders.e, invaders.f, invaders.g and invaders.h) have to be in the same directory as the emulator binary.
+The four rom files (invaders.e, invaders.f, invaders.g and invaders.h) have to be in the same directory as the emulator
+binary.
 
 It is possible to provide arguments that sets the DIP switches. The flag is `-d`, and it has the following options:
 
@@ -157,6 +159,10 @@ An example:
 
 The keymap is:
 
+<table>
+<tr><th>Gameplay</th><th>Debugging</th></tr>
+<tr><td>
+
 | Key     | Description   |
 | ------- | ------------- |
 | C       | Insert coin   |
@@ -172,13 +178,15 @@ The keymap is:
 | Pause   | Pause/unpause |
 | M       | Mute/unmute   |
 
-Extra keys while debugging:
+</td><td>
 
 | Key     | Description        |
 | ------- | ------------------ |
 | F7      | Step instruction   |
 | F8      | Step cycle         |
 | F9      | Continue execution |
+
+</td></tr> </table>
 
 Screenshots:
 
@@ -201,6 +209,11 @@ look up how the game is supposed to behave.
 
 - [ ] Better argument handling
 - [ ] Refactor to "sessions" for Space Invaders and the 8080 cpu
+- [ ] Memory watcher for the debugger
+- [ ] Start in stopped state when running with the debugger
+- [ ] Disassembler syntax highlighting
+- [ ] Conditional breakpoints
+- [ ] Stack view (as in IDA Pro)
 
 ### Z80
 
@@ -217,5 +230,9 @@ Preliminary tests complete
 #### Pacman
 
 #### Inspiration
+
+I looked at the following emulators while developing my 8080 emulator:
+
+- [Superzazu's Z80 emulator](https://github.com/superzazu/z80): Used as a reference emulator while looking for errors.
 
 #### Todo

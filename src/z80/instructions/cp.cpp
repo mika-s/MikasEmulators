@@ -5,19 +5,31 @@
 #include "z80/instructions/instruction_util.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/misc/next_byte.h"
+#include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
 
 namespace emu::z80 {
 
     using emu::misc::NextByte;
     using emu::util::string::hexify_wo_0x;
+    using emu::util::byte::is_bit_set;
 
     void cp(u8 &acc_reg, u8 value, Flags &flag_reg) {
-        const u8 old_acc_reg = acc_reg;
+        u8 acc_reg_copy = acc_reg;
 
-        sub_from_register(acc_reg, value, false, flag_reg);
+        sub_from_register(acc_reg_copy, value, false, flag_reg);
 
-        acc_reg = old_acc_reg;
+        if (is_bit_set(value, 5)) {
+            flag_reg.set_x_flag();
+        } else {
+            flag_reg.clear_x_flag();
+        }
+
+        if (is_bit_set(value, 3)) {
+            flag_reg.set_y_flag();
+        } else {
+            flag_reg.clear_y_flag();
+        }
     }
 
     /**

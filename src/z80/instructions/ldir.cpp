@@ -8,6 +8,7 @@ namespace emu::z80 {
 
     using emu::util::byte::first_byte;
     using emu::util::byte::second_byte;
+    using emu::util::byte::is_bit_set;
     using emu::util::byte::to_u16;
 
     /**
@@ -26,15 +27,27 @@ namespace emu::z80 {
      * @param e_reg is the E register, which will be mutated
      * @param h_reg is the H register, which will be mutated
      * @param l_reg is the L register, which will be mutated
+     * @param acc_reg is the accumulator, for use in setting XF and YF
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void ldir(u16 &pc, u8 &b_reg, u8 &c_reg, u8 &d_reg, u8 &e_reg, u8 &h_reg, u8 &l_reg,
-              EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles) {
-
+              u8 acc_reg, EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles) {
         u16 de = to_u16(d_reg, e_reg);
         u16 hl = to_u16(h_reg, l_reg);
         memory[de] = memory[hl];
+
+        if (is_bit_set(acc_reg + memory[hl], 1)) {
+            flag_reg.set_y_flag();
+        } else {
+            flag_reg.clear_y_flag();
+        }
+
+        if (is_bit_set(acc_reg + memory[hl], 3)) {
+            flag_reg.set_x_flag();
+        } else {
+            flag_reg.clear_x_flag();
+        }
 
         ++de;
         d_reg = second_byte(de);
@@ -68,7 +81,7 @@ namespace emu::z80 {
 
     TEST_CASE("Z80: LDIR") {
         unsigned long cycles = 0;
-
+        u8 acc_reg = 0;
 
         SUBCASE("should transfer from (HL) to (DE) once, when BC is 1") {
             u16 pc = 0;
@@ -80,7 +93,7 @@ namespace emu::z80 {
             Flags flag_reg;
 
             ldir(pc, b_reg, c_reg, d_reg, e_reg, h_reg, l_reg,
-                 memory, flag_reg, cycles);
+                 acc_reg, memory, flag_reg, cycles);
 
             CHECK_EQ(0, pc);
             CHECK_EQ(0x23, memory[to_u16(d_reg, e_reg) - 1]);
@@ -101,24 +114,24 @@ namespace emu::z80 {
             flag_reg.set_half_carry_flag();
 
             ldir(pc, b_reg, c_reg, d_reg, e_reg, h_reg, l_reg,
-                 memory, flag_reg, cycles);
+                 acc_reg, memory, flag_reg, cycles);
 
             CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
 
             ldir(pc, b_reg, c_reg, d_reg, e_reg, h_reg, l_reg,
-                 memory, flag_reg, cycles);
+                 acc_reg, memory, flag_reg, cycles);
 
             CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
 
             ldir(pc, b_reg, c_reg, d_reg, e_reg, h_reg, l_reg,
-                 memory, flag_reg, cycles);
+                 acc_reg, memory, flag_reg, cycles);
 
             CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
 
             flag_reg.set_half_carry_flag();
 
             ldir(pc, b_reg, c_reg, d_reg, e_reg, h_reg, l_reg,
-                 memory, flag_reg, cycles);
+                 acc_reg, memory, flag_reg, cycles);
 
             CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
         }
@@ -134,24 +147,24 @@ namespace emu::z80 {
             flag_reg.set_add_subtract_flag();
 
             ldir(pc, b_reg, c_reg, d_reg, e_reg, h_reg, l_reg,
-                 memory, flag_reg, cycles);
+                 acc_reg, memory, flag_reg, cycles);
 
             CHECK_EQ(false, flag_reg.is_add_subtract_flag_set());
 
             ldir(pc, b_reg, c_reg, d_reg, e_reg, h_reg, l_reg,
-                 memory, flag_reg, cycles);
+                 acc_reg, memory, flag_reg, cycles);
 
             CHECK_EQ(false, flag_reg.is_add_subtract_flag_set());
 
             ldir(pc, b_reg, c_reg, d_reg, e_reg, h_reg, l_reg,
-                 memory, flag_reg, cycles);
+                 acc_reg, memory, flag_reg, cycles);
 
             CHECK_EQ(false, flag_reg.is_add_subtract_flag_set());
 
             flag_reg.set_add_subtract_flag();
 
             ldir(pc, b_reg, c_reg, d_reg, e_reg, h_reg, l_reg,
-                 memory, flag_reg, cycles);
+                 acc_reg, memory, flag_reg, cycles);
 
             CHECK_EQ(false, flag_reg.is_add_subtract_flag_set());
         }
@@ -167,17 +180,17 @@ namespace emu::z80 {
             flag_reg.set_add_subtract_flag();
 
             ldir(pc, b_reg, c_reg, d_reg, e_reg, h_reg, l_reg,
-                 memory, flag_reg, cycles);
+                 acc_reg, memory, flag_reg, cycles);
 
             CHECK_EQ(true, flag_reg.is_parity_overflow_flag_set());
 
             ldir(pc, b_reg, c_reg, d_reg, e_reg, h_reg, l_reg,
-                 memory, flag_reg, cycles);
+                 acc_reg, memory, flag_reg, cycles);
 
             CHECK_EQ(true, flag_reg.is_parity_overflow_flag_set());
 
             ldir(pc, b_reg, c_reg, d_reg, e_reg, h_reg, l_reg,
-                 memory, flag_reg, cycles);
+                 acc_reg, memory, flag_reg, cycles);
 
             CHECK_EQ(false, flag_reg.is_parity_overflow_flag_set());
         }
@@ -193,7 +206,7 @@ namespace emu::z80 {
             flag_reg.set_add_subtract_flag();
 
             ldir(pc, b_reg, c_reg, d_reg, e_reg, h_reg, l_reg,
-                 memory, flag_reg, cycles);
+                 acc_reg, memory, flag_reg, cycles);
 
             CHECK_EQ(21, cycles);
         }
@@ -209,7 +222,7 @@ namespace emu::z80 {
             flag_reg.set_add_subtract_flag();
 
             ldir(pc, b_reg, c_reg, d_reg, e_reg, h_reg, l_reg,
-                 memory, flag_reg, cycles);
+                 acc_reg, memory, flag_reg, cycles);
 
             CHECK_EQ(16, cycles);
         }

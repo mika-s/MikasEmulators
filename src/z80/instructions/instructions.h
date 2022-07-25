@@ -434,7 +434,7 @@ namespace emu::z80 {
     void ld_sp_nn(u16 &sp, const NextWord &args, unsigned long &cycles);
     void ld_sp_hl(u16 &sp, u16 address, unsigned long &cycles);
     void ld_sp_ixy(u16 &sp, u16 ixy, unsigned long &cycles);
-    void ldir(u16 &pc, u8 &b_reg, u8 &c_reg, u8 &d_reg, u8 &e_reg, u8 &h_reg, u8 &l_reg, EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles);
+    void ldir(u16 &pc, u8 &b_reg, u8 &c_reg, u8 &d_reg, u8 &e_reg, u8 &h_reg, u8 &l_reg, u8 acc_reg, EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles);
     void neg(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles);
     void nop(unsigned long &cycles);
     void or_r(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);

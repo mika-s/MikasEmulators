@@ -16,23 +16,34 @@ namespace emu::z80 {
     using emu::util::byte::to_u16;
     using emu::util::string::hexify_wo_0x;
 
-    /**
-     * Add
-     * <ul>
-     *   <li>Size: 1</li>
-     *   <li>Cycles: 1</li>
-     *   <li>States: 4 or 7</li>
-     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
-     * </ul>
-     *
-     * @param acc_reg is the accumulator register, which will be mutated
-     * @param value is the value to add_A_r to the accumulator register
-     * @param flag_reg is the flag register, which will be mutated
-     * @param cycles is the number of cycles variable, which will be mutated
-     * @param is_memory_involved is true if memory is involved, either written or read
-     */
     void add(u8 &acc_reg, u8 value, Flags &flag_reg) {
         add_to_register(acc_reg, value, false, flag_reg);
+    }
+
+    void add(u16 &reg, u16 value, Flags &flag_reg) {
+        bool was_sign_flag_set = flag_reg.is_sign_flag_set();
+        bool was_zero_flag_set = flag_reg.is_zero_flag_set();
+        bool was_parity_overflow_flag_set = flag_reg.is_parity_overflow_flag_set();
+
+        add_to_register(reg, value, false, flag_reg);
+
+        if (was_sign_flag_set) {
+            flag_reg.set_sign_flag();
+        } else {
+            flag_reg.clear_sign_flag();
+        }
+
+        if (was_zero_flag_set) {
+            flag_reg.set_zero_flag();
+        } else {
+            flag_reg.clear_zero_flag();
+        }
+
+        if (was_parity_overflow_flag_set) {
+            flag_reg.set_parity_overflow_flag();
+        } else {
+            flag_reg.clear_parity_overflow_flag();
+        }
     }
 
     /**
@@ -127,19 +138,17 @@ namespace emu::z80 {
      *
      * @param h_reg is the H register, which will be mutated
      * @param l_reg is the L register, which will be mutated
-     * @param value_to_add contains the argument that should be added to HL
+     * @param value contains the argument that should be added to HL
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void add_HL_ss(u8 &h_reg, u8 &l_reg, u16 value_to_add, Flags &flag_reg, unsigned long &cycles) {
-        const u16 previous = to_u16(h_reg, l_reg);
-        const u16 next = previous + value_to_add;
-        h_reg = second_byte(next);
-        l_reg = first_byte(next);
+    void add_HL_ss(u8 &h_reg, u8 &l_reg, u16 value, Flags &flag_reg, unsigned long &cycles) {
+        u16 hl = to_u16(h_reg, l_reg);
 
-        flag_reg.handle_carry_flag(previous, value_to_add);
-        flag_reg.handle_half_carry_flag(previous, value_to_add, false);
-        flag_reg.clear_add_subtract_flag();
+        add(hl, value, flag_reg);
+
+        h_reg = second_byte(hl);
+        l_reg = first_byte(hl);
 
         cycles = 11;
     }
