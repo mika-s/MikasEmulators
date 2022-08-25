@@ -269,37 +269,39 @@
 
 // IX/IY opcodes:
 
-#define ADD_IXY_BC     0x09
-#define ADD_IXY_DE     0x19
-#define LD_IXY_nn      0x21
-#define LD_Mnn_IXY     0x22
-#define INC_IXY        0x23
-#define INC_IXH_UNDOC1 0x24
-#define ADD_IXY_IXY    0x29
-#define LD_IXY_Mnn     0x2A
-#define DEC_IXY        0x2B
-#define INC_IXL_UNDOC1 0x2C
-#define INC_MIXY_P_n   0x34
-#define ADD_IX_SP      0x39
-#define LD_B_MIXY_P_n  0x46
-#define LD_C_MIXY_P_n  0x4E
-#define LD_D_MIXY_P_n  0x56
-#define LD_E_MIXY_P_n  0x5E
-#define LD_H_MIXY_P_n  0x66
-#define LD_L_MIXY_P_n  0x6E
-#define LD_A_MIXY_P_n  0x7E
-#define ADD_A_IXH      0x84
-#define ADD_A_IXL      0x85
-#define ADD_A_MIXY_P_n 0x86
-#define SUB_IXH_UNDOC1 0x94
-#define XOR_IXL_UNDOC1 0xAD
-#define OR_MIXY_P_n    0xB6
-#define IXY_BITS       0xCB
-#define POP_IXY        0xE1
-#define EX_MSP_IX      0xE3
-#define PUSH_IXY       0xE5
-#define JP_MIXY        0xE9
-#define LD_SP_IX       0xF9
+#define ADD_IXY_BC      0x09
+#define ADD_IXY_DE      0x19
+#define LD_IXY_nn       0x21
+#define LD_Mnn_IXY      0x22
+#define INC_IXY         0x23
+#define INC_IXH_UNDOC1  0x24
+#define ADD_IXY_IXY     0x29
+#define LD_IXY_Mnn      0x2A
+#define DEC_IXY         0x2B
+#define INC_IXL_UNDOC1  0x2C
+#define INC_MIXY_P_n    0x34
+#define ADD_IX_SP       0x39
+#define LD_B_MIXY_P_n   0x46
+#define LD_C_MIXY_P_n   0x4E
+#define LD_D_MIXY_P_n   0x56
+#define LD_E_MIXY_P_n   0x5E
+#define LD_H_MIXY_P_n   0x66
+#define LD_L_MIXY_P_n   0x6E
+#define LD_A_MIXY_P_n   0x7E
+#define ADD_A_IXH_UNDOC 0x84
+#define ADD_A_IXL_UNDOC 0x85
+#define ADD_A_MIXY_P_n  0x86
+#define ADC_A_IXH_UNDOC 0x8C
+#define ADC_A_IXL_UNDOC 0x8D
+#define SUB_IXH_UNDOC1  0x94
+#define XOR_IXL_UNDOC1  0xAD
+#define OR_MIXY_P_n     0xB6
+#define IXY_BITS        0xCB
+#define POP_IXY         0xE1
+#define EX_MSP_IX       0xE3
+#define PUSH_IXY        0xE5
+#define JP_MIXY         0xE9
+#define LD_SP_IX        0xF9
 
 // BITS opcodes:
 
@@ -347,11 +349,12 @@ namespace emu::z80 {
     using emu::misc::NextByte;
     using emu::misc::NextWord;
 
-    void add_A_ixy_h_or_l(u8 &acc_reg, u8 ixy_reg, Flags &flag_reg, unsigned long &cycles);
+    void adc_A_ixy_h_or_l(u8 &acc_reg, u8 ixy_reg_h_or_l, Flags &flag_reg, unsigned long &cycles);
     void adc_A_n(u8 &acc_reg, NextByte args, Flags &flag_reg, unsigned long &cycles);
     void adc_A_r(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
     void adc_A_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
     void adc_hl_ss(u8 &h_reg, u8 &l_reg, u16 value, Flags &flag_reg, unsigned long &cycles);
+    void add_A_ixy_h_or_l(u8 &acc_reg, u8 ixy_reg, Flags &flag_reg, unsigned long &cycles);
     void add_A_n(u8 &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles);
     void add_A_r(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
     void add_A_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);

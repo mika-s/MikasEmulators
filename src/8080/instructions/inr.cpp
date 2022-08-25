@@ -131,7 +131,7 @@ namespace emu::i8080 {
         }
 
         SUBCASE("should set the sign flag when going above 127") {
-            u8 reg = 127;
+            u8 reg = INT8_MAX;
             Flags flag_reg;
 
             CHECK_EQ(false, flag_reg.is_sign_flag_set());

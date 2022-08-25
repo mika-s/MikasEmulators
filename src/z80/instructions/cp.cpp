@@ -20,15 +20,15 @@ namespace emu::z80 {
         sub_from_register(acc_reg_copy, value, false, flag_reg);
 
         if (is_bit_set(value, 5)) {
-            flag_reg.set_x_flag();
-        } else {
-            flag_reg.clear_x_flag();
-        }
-
-        if (is_bit_set(value, 3)) {
             flag_reg.set_y_flag();
         } else {
             flag_reg.clear_y_flag();
+        }
+
+        if (is_bit_set(value, 3)) {
+            flag_reg.set_x_flag();
+        } else {
+            flag_reg.clear_x_flag();
         }
     }
 
@@ -112,7 +112,7 @@ namespace emu::z80 {
 
                     cp(acc_reg, value, flag_reg);
 
-                    CHECK_EQ(static_cast<u8>(acc_reg - value) > 127, flag_reg.is_sign_flag_set());
+                    CHECK_EQ(static_cast<u8>(acc_reg - value) > INT8_MAX, flag_reg.is_sign_flag_set());
                     CHECK_EQ(static_cast<u8>(acc_reg - value) == 0, flag_reg.is_zero_flag_set());
                     CHECK_EQ(acc_reg < value, flag_reg.is_carry_flag_set());
                 }

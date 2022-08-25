@@ -45,6 +45,26 @@ namespace emu::z80 {
     }
 
     /**
+     * Add from IX or IY high or low to accumulator with carry
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 8</li>
+     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+     * </ul>
+     *
+     * @param acc_reg is the accumulator register, which will be mutated
+     * @param value is the value to add_A_r to the accumulator register
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void adc_A_ixy_h_or_l(u8 &acc_reg, u8 ixy_reg_h_or_l, Flags &flag_reg, unsigned long &cycles) {
+        adc(acc_reg, ixy_reg_h_or_l, flag_reg);
+
+        cycles = 8;
+    }
+
+    /**
      * Add immediate to accumulator with carry
      * <ul>
      *   <li>Size: 2</li>
@@ -151,12 +171,12 @@ namespace emu::z80 {
                                 flag_reg.is_half_carry_flag_set()
                         );
 
-                        const bool are_same_sign = (acc_reg_counter <= 127 && value <= 127)
-                                                   || (127 < acc_reg_counter && 127 < value);
-                        const bool are_positive = are_same_sign && acc_reg_counter <= 127;
-                        const bool are_negative = are_same_sign && 127 < acc_reg_counter;
-                        const bool goes_from_positive_to_negative = are_positive && acc_reg > 127;
-                        const bool goes_negative_to_positive = are_negative && acc_reg <= 127;
+                        const bool are_same_sign = (acc_reg_counter <= INT8_MAX && value <= INT8_MAX)
+                                                   || (INT8_MAX < acc_reg_counter && INT8_MAX < value);
+                        const bool are_positive = are_same_sign && acc_reg_counter <= INT8_MAX;
+                        const bool are_negative = are_same_sign && INT8_MAX < acc_reg_counter;
+                        const bool goes_from_positive_to_negative = are_positive && acc_reg > INT8_MAX;
+                        const bool goes_negative_to_positive = are_negative && acc_reg <= INT8_MAX;
                         CHECK_EQ(
                                 goes_from_positive_to_negative || goes_negative_to_positive,
                                 flag_reg.is_parity_overflow_flag_set()

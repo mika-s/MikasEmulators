@@ -67,6 +67,8 @@ namespace emu::z80 {
 
         [[nodiscard]] bool is_half_carry_flag_set() const;
 
+        void toggle_half_carry_flag();
+
         void set_add_subtract_flag();
 
         void clear_add_subtract_flag();

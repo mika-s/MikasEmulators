@@ -100,7 +100,7 @@ namespace emu::i8080 {
     }
 
     void Flags::handle_sign_flag(u8 number) {
-        if (number > 127) {
+        if (number > INT8_MAX) {
             set_sign_flag();
         } else {
             clear_sign_flag();

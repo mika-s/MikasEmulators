@@ -997,11 +997,17 @@ namespace emu::z80 {
             case LD_A_MIXY_P_n:
                 ld_r_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, cycles);
                 break;
-            case ADD_A_IXH:
+            case ADD_A_IXH_UNDOC:
                 add_A_ixy_h_or_l(m_acc_reg, second_byte(ixy_reg), m_flag_reg, cycles);
                 break;
-            case ADD_A_IXL:
+            case ADD_A_IXL_UNDOC:
                 add_A_ixy_h_or_l(m_acc_reg, first_byte(ixy_reg), m_flag_reg, cycles);
+                break;
+            case ADC_A_IXH_UNDOC:
+                adc_A_ixy_h_or_l(m_acc_reg, second_byte(ixy_reg), m_flag_reg, cycles);
+                break;
+            case ADC_A_IXL_UNDOC:
+                adc_A_ixy_h_or_l(m_acc_reg, first_byte(ixy_reg), m_flag_reg, cycles);
                 break;
             case POP_IXY:
                 pop_ixy(ixy_reg, m_sp, m_memory, cycles);
@@ -1216,11 +1222,11 @@ namespace emu::z80 {
     }
 
     void Cpu::r_tick() {
-        m_r_reg = m_r_reg == 127 ? 0 : m_r_reg + 1;
+        m_r_reg = m_r_reg == INT8_MAX ? 0 : m_r_reg + 1;
     }
 
     void Cpu::print_debug(u8 opcode) {
-        if (true) {
+        if (false) {
             std::cout << "pc=" << hexify(m_pc)
                       << ",sp=" << hexify(m_sp)
                       << ",op=" << hexify(opcode)

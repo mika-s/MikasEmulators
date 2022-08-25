@@ -62,9 +62,10 @@ namespace emu::z80 {
                 CHECK_EQ(static_cast<u8>(0 - acc_reg_counter), acc_reg);
                 CHECK_EQ(acc_reg_counter != 0, flag_reg.is_carry_flag_set());
                 CHECK_EQ(acc_reg_counter == 0x80, flag_reg.is_parity_overflow_flag_set());
-                CHECK_EQ(acc_reg > 127, flag_reg.is_sign_flag_set());
+                CHECK_EQ(acc_reg > INT8_MAX, flag_reg.is_sign_flag_set());
                 CHECK_EQ(acc_reg == 0, flag_reg.is_zero_flag_set());
                 CHECK_EQ(true, flag_reg.is_add_subtract_flag_set());
+                // TODO: Test for half carry flag
 //                CHECK_EQ(borrow_from(4, acc_reg_counter, acc_reg, false), flag_reg.is_half_carry_flag_set());
             }
         }

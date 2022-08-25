@@ -55,7 +55,7 @@ namespace emu::i8080 {
 
                     cpi(acc_reg, args, flag_reg, cycles);
 
-                    CHECK_EQ(static_cast<u8>(acc_reg - value) > 127, flag_reg.is_sign_flag_set());
+                    CHECK_EQ(static_cast<u8>(acc_reg - value) > INT8_MAX, flag_reg.is_sign_flag_set());
                     CHECK_EQ(static_cast<u8>(acc_reg - value) == 0, flag_reg.is_zero_flag_set());
                     CHECK_EQ(acc_reg < value, flag_reg.is_carry_flag_set());
                 }

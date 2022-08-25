@@ -142,7 +142,7 @@ namespace emu::z80 {
     }
 
     void Flags::handle_sign_flag(u8 number) {
-        if (number > 127) {
+        if (number > INT8_MAX) {
             set_sign_flag();
         } else {
             clear_sign_flag();
@@ -228,6 +228,14 @@ namespace emu::z80 {
 
     bool Flags::is_half_carry_flag_set() const {
         return m_half_carry;
+    }
+
+    void Flags::toggle_half_carry_flag() {
+        if (is_half_carry_flag_set()) {
+            clear_half_carry_flag();
+        } else {
+            set_half_carry_flag();
+        }
     }
 
     void Flags::set_add_subtract_flag() {

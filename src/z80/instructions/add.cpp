@@ -233,12 +233,12 @@ namespace emu::z80 {
                                 flag_reg.is_half_carry_flag_set()
                         );
 
-                        const bool are_same_sign = (acc_reg_counter <= 127 && value <= 127)
-                                                   || (127 < acc_reg_counter && 127 < value);
-                        const bool are_positive = are_same_sign && acc_reg_counter <= 127;
-                        const bool are_negative = are_same_sign && 127 < acc_reg_counter;
-                        const bool goes_from_positive_to_negative = are_positive && acc_reg > 127;
-                        const bool goes_negative_to_positive = are_negative && acc_reg <= 127;
+                        const bool are_same_sign = (acc_reg_counter <= INT8_MAX && value <= INT8_MAX)
+                                                   || (INT8_MAX < acc_reg_counter && INT8_MAX < value);
+                        const bool are_positive = are_same_sign && acc_reg_counter <= INT8_MAX;
+                        const bool are_negative = are_same_sign && INT8_MAX < acc_reg_counter;
+                        const bool goes_from_positive_to_negative = are_positive && acc_reg > INT8_MAX;
+                        const bool goes_negative_to_positive = are_negative && acc_reg <= INT8_MAX;
                         CHECK_EQ(
                                 goes_from_positive_to_negative || goes_negative_to_positive,
                                 flag_reg.is_parity_overflow_flag_set()

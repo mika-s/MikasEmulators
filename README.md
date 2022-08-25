@@ -160,39 +160,46 @@ An example:
 The keymap is:
 
 <table>
-<tr><th>Gameplay</th><th>Debugging</th></tr>
-<tr><td>
+<tr>
+<th>Gameplay</th><th>Debugging</th>
+</tr>
+<tr>
+<td>
 
-| Key     | Description   |
-| ------- | ------------- |
-| C       | Insert coin   |
-| T       | Tilt          |
-| Enter   | P1 start      |
-| A       | P1 left       |
-| D       | P1 right      |
-| W       | P1 shoot      |
-| R Shift | P2 start      |
-| Left    | P2 left       |
-| Right   | P2 right      |
-| Up      | P2 shoot      |
-| Pause   | Pause/unpause |
-| M       | Mute/unmute   |
+| Key                | Description   |
+| ------------------ | ------------- |
+| <kbd>C</kbd>       | Insert coin   |
+| <kbd>T</kbd>       | Tilt          |
+| <kbd>Enter</kbd>   | P1 start      |
+| <kbd>A</kbd>       | P1 left       |
+| <kbd>D</kbd>       | P1 right      |
+| <kbd>W</kbd>       | P1 shoot      |
+| <kbd>R Shift</kbd> | P2 start      |
+| <kbd>←</kbd>       | P2 left       |
+| <kbd>→</kbd>       | P2 right      |
+| <kbd>↑</kbd>       | P2 shoot      |
+| <kbd>Pause</kbd>   | Pause/unpause |
+| <kbd>M</kbd>       | Mute/unmute   |
 
-</td><td>
+</td>
+<td>
 
-| Key     | Description        |
-| ------- | ------------------ |
-| F7      | Step instruction   |
-| F8      | Step cycle         |
-| F9      | Continue execution |
+| Key            | Description        |
+| -------------- | ------------------ |
+| <kbd>F7</kbd>  | Step instruction   |
+| <kbd>F8</kbd>  | Step cycle         |
+| <kbd>F9</kbd>  | Continue execution |
 
-</td></tr> </table>
+</td>
+</tr>
+</table>
 
 Screenshots:
 
-![Plain Space Invaders](assets/images/8080_SI.png "Plain Space Invaders")
-
-![Space Invaders with debugger](assets/images/8080_SI_debugger.png "Space Invaders with debugger")
+|     |     |
+|:---:|:---:|
+| ![Plain Space Invaders](assets/images/8080_SI.png "Plain Space Invaders") | ![Space Invaders with debugger](assets/images/8080_SI_debugger.png "Space Invaders with debugger") | 
+| *Plain Space Invaders* | *Space Invaders in the debugger GUI* |
 
 #### Inspiration
 

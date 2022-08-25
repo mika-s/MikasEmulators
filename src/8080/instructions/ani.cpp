@@ -110,7 +110,7 @@ namespace emu::i8080 {
 
                     ani(acc_reg, args, flag_reg, cycles);
 
-                    CHECK_EQ(acc_reg > 127, flag_reg.is_sign_flag_set());
+                    CHECK_EQ(acc_reg > INT8_MAX, flag_reg.is_sign_flag_set());
                 }
             }
         }

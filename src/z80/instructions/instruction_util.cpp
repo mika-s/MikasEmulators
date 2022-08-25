@@ -33,21 +33,13 @@ namespace emu::z80 {
 
         reg = to_u16(reg_hi, reg_lo);
         flag_reg.handle_zero_flag(reg);
-//        flag_reg.handle_xy_flags(reg);
     }
 
     void sub_from_register(u8 &reg, u8 value, bool cf, Flags &flag_reg) {
-        const u8 previous = reg;
-        const u8 to_subtract = value + (cf ? 1 : 0);
-        reg -= to_subtract;
-
-        flag_reg.handle_borrow_flag(previous, value, cf);
-        flag_reg.handle_zero_flag(reg);
-        flag_reg.handle_overflow_flag(previous, -value, cf);    // TODO: Fix the overflow flag for sub/sbc
-        flag_reg.handle_sign_flag(reg);
-        flag_reg.handle_half_borrow_flag(previous, value, cf);
+        add_to_register(reg, ~value, !cf, flag_reg);
+        flag_reg.toggle_carry_flag();
+        flag_reg.toggle_half_carry_flag();
         flag_reg.set_add_subtract_flag();
-        flag_reg.handle_xy_flags(reg);
     }
 
     void sub_from_register(u16 &reg, u16 value, bool cf, Flags &flag_reg) {
@@ -57,11 +49,10 @@ namespace emu::z80 {
         u8 value_hi = second_byte(value);
 
         sub_from_register(reg_lo, value_lo, cf, flag_reg);
-        sub_from_register(reg_hi, value_hi, cf, flag_reg);
+        sub_from_register(reg_hi, value_hi, flag_reg.is_carry_flag_set(), flag_reg);
 
         reg = to_u16(reg_hi, reg_lo);
         flag_reg.handle_zero_flag(reg);
-        flag_reg.handle_xy_flags(reg);
     }
 
     void execute_call(u16 &pc, u16 &sp, EmulatorMemory &memory, const NextWord &args) {

@@ -866,8 +866,17 @@ namespace emu::z80 {
             case LD_A_MIXY_P_n:
                 print_ld_r_MixyPn(m_ostream, "A", ixy_reg, get_next_byte());
                 break;
-            case ADD_A_IXH:
+            case ADD_A_IXH_UNDOC:
                 print_add(m_ostream, "A", "IXH");
+                break;
+            case ADD_A_IXL_UNDOC:
+                print_add(m_ostream, "A", "IXL");
+                break;
+            case ADC_A_IXH_UNDOC:
+                print_adc(m_ostream, "A", "IXH");
+                break;
+            case ADC_A_IXL_UNDOC:
+                print_adc(m_ostream, "A", "IXL");
                 break;
             case ADD_A_MIXY_P_n:
                 print_add_MixyPn(m_ostream, "A", ixy_reg, get_next_byte());
