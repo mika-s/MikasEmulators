@@ -13,6 +13,21 @@ namespace emu::z80 {
     using emu::util::byte::is_bit_set;
     using emu::util::byte::set_bit;
 
+    void rlc(u8 &value, Flags &flag_reg) {
+        const bool should_set_carry_flag = is_bit_set(value, msb);
+        value = value << 1;
+        if (should_set_carry_flag) {
+            flag_reg.set_carry_flag();
+            set_bit(value, lsb);
+        } else {
+            flag_reg.clear_carry_flag();
+        }
+
+        flag_reg.clear_half_carry_flag();
+        flag_reg.clear_add_subtract_flag();
+        flag_reg.handle_xy_flags(value);
+    }
+
     /**
      * Rotate accumulator left
      * <ul>
@@ -27,20 +42,78 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void rlca(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles) {
-        const bool should_set_carry_flag = is_bit_set(acc_reg, msb);
-        acc_reg = acc_reg << 1;
-        if (should_set_carry_flag) {
-            flag_reg.set_carry_flag();
-            set_bit(acc_reg, lsb);
-        } else {
-            flag_reg.clear_carry_flag();
-        }
-
-        flag_reg.clear_half_carry_flag();
-        flag_reg.clear_add_subtract_flag();
-        flag_reg.handle_xy_flags(acc_reg);
+        rlc(acc_reg, flag_reg);
 
         cycles = 4;
+    }
+
+    /**
+     * Rotate register left
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 1</li>
+     *   <li>States: 8</li>
+     *   <li>Condition bits affected: carry, half carry, add/subtract</li>
+     * </ul>
+     *
+     * @param reg is the register to rotate, which will be mutated
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void rlc_r(u8 &reg, Flags &flag_reg, unsigned long &cycles) {
+        rlc(reg, flag_reg);
+
+        cycles = 8;
+    }
+
+    /**
+     * Rotate value in memory pointed to by IX or IY plus d left
+     * <ul>
+     *   <li>Size: 4</li>
+     *   <li>Cycles: 1</li>
+     *   <li>States: 23</li>
+     *   <li>Condition bits affected: carry, half carry, add/subtract</li>
+     * </ul>
+     *
+     * @param ixy_reg is the IX or IY register containing the base address
+     * @param args contains address offset
+     * @param memory is the memory
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void rlc_MixyPd(u16 ixy_reg, const NextByte &args, const EmulatorMemory &memory, Flags &flag_reg,
+                    unsigned long &cycles
+    ) {
+        u8 value = memory[ixy_reg + static_cast<i8>(args.farg)];
+        rlc(value, flag_reg);
+
+        cycles = 23;
+    }
+
+    /**
+     * Rotate value in memory pointed to by IX or IY plus d left
+     * <ul>
+     *   <li>Size: 4</li>
+     *   <li>Cycles: 1</li>
+     *   <li>States: 23</li>
+     *   <li>Condition bits affected: carry, half carry, add/subtract</li>
+     * </ul>
+     *
+     * @param reg is the register store the result in, which will be mutated
+     * @param ixy_reg is the IX or IY register containing the base address
+     * @param args contains address offset
+     * @param memory is the memory
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void rlc_MixyPd_r(u8 &reg, u16 ixy_reg, const NextByte &args, const EmulatorMemory &memory, Flags &flag_reg,
+                    unsigned long &cycles
+    ) {
+        u8 value = memory[ixy_reg + static_cast<i8>(args.farg)];
+        rlc(value, flag_reg);
+        reg = value;
+
+        cycles = 23;
     }
 
     void print_rlca(std::ostream &ostream) {
@@ -50,6 +123,18 @@ namespace emu::z80 {
     void print_rlc(std::ostream &ostream, const std::string &reg) {
         ostream << "RLC "
                 << reg;
+    }
+
+    void print_rlc_MixyPn(std::ostream &ostream, const std::string &ixy_reg, const NextByte &args) {
+        const i8 signed_value = static_cast<i8>(args.farg);
+        const std::string plus_or_minus = (signed_value >= 0) ? "+" : "";
+
+        ostream << "RLC "
+                << "("
+                << ixy_reg
+                << plus_or_minus
+                << +signed_value
+                << ")";
     }
 
     void print_rlc_MixyPn_r(std::ostream &ostream, const std::string &ixy_reg, const NextByte &args,

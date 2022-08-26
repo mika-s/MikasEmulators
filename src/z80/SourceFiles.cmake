@@ -10,10 +10,12 @@ set(SOURCES_Z80_CPP
         src/z80/instructions/adc.cpp
         src/z80/instructions/add.cpp
         src/z80/instructions/and.cpp
+        src/z80/instructions/bit.cpp
         src/z80/instructions/call.cpp
         src/z80/instructions/ccf.cpp
         src/z80/instructions/cp.cpp
         src/z80/instructions/cpd.cpp
+        src/z80/instructions/cpdr.cpp
         src/z80/instructions/cpi.cpp
         src/z80/instructions/cpl.cpp
         src/z80/instructions/daa.cpp

@@ -140,7 +140,11 @@ namespace emu::z80 {
         std::vector<OutObserver *> m_out_observers;
         std::vector<InObserver *> m_in_observers;
 
+        void next_bits_instruction(u8 bits_opcode, unsigned long cycles);
+
         void next_ixy_instruction(u8 ixy_opcode, u16 &ixy_reg, unsigned long cycles);
+
+        void next_ixy_bits_instruction(u8 ixy_bits_opcode, u16 &ixy_reg, unsigned long cycles);
 
         void next_extd_instruction(u8 extd_opcode, unsigned long cycles);
 

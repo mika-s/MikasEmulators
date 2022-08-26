@@ -12,14 +12,15 @@ namespace emu::z80 {
     using emu::util::byte::to_u16;
 
     /**
-     * Compare
+     * Compare repeated
      * <ul>
      *   <li>Size: 2</li>
-     *   <li>Cycles: 4</li>
-     *   <li>States: 16</li>
+     *   <li>Cycles: 4 or 5</li>
+     *   <li>States: 16 or 21</li>
      *   <li>Condition bits affected: half carry, zero, sign, parity/overflow add/subtract</li>
      * </ul>
      *
+     * @param pc is the program counter, which will be mutated
      * @param b_reg is the B register, which will be mutated
      * @param c_reg is the C register, which will be mutated
      * @param h_reg is the H register, which will be mutated
@@ -29,8 +30,8 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void cpd(u8 &b_reg, u8 &c_reg, u8 &h_reg, u8 &l_reg, u8 acc_reg, const EmulatorMemory &memory,
-             Flags &flag_reg, unsigned long &cycles) {
+    void cpdr(u16 &pc, u8 &b_reg, u8 &c_reg, u8 &h_reg, u8 &l_reg, u8 acc_reg, const EmulatorMemory &memory,
+              Flags &flag_reg, unsigned long &cycles) {
 
         const u8 value = memory[to_u16(h_reg, l_reg)];
         const u8 result = acc_reg - value;
@@ -69,10 +70,15 @@ namespace emu::z80 {
             flag_reg.set_parity_overflow_flag();
         }
 
-        cycles = 16;
+        if (bc == 0 || result == 0) {
+            cycles = 16;
+        } else {
+            cycles = 21;
+            pc -= 2;
+        }
     }
 
-    void print_cpd(std::ostream &ostream) {
-        ostream << "CPD";
+    void print_cpdr(std::ostream &ostream) {
+        ostream << "CPDR";
     }
 }

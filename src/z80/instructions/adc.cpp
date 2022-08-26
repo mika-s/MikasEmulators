@@ -65,6 +65,30 @@ namespace emu::z80 {
     }
 
     /**
+     * Add value pointed to by IX or IY plus d to accumulator with carry
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 19</li>
+     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+     * </ul>
+     *
+     * @param acc_reg is the accumulator register, which will be mutated
+     * @param ixy_reg is the IX or IY register containing the base address
+     * @param args contains address offset
+     * @param memory is the memory
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void adc_A_MixyPd(u8 &acc_reg, u16 ixy_reg, const NextByte &args, const EmulatorMemory &memory, Flags &flag_reg,
+                      unsigned long &cycles
+    ) {
+        adc(acc_reg, memory[ixy_reg + static_cast<i8>(args.farg)], flag_reg);
+
+        cycles = 19;
+    }
+
+    /**
      * Add immediate to accumulator with carry
      * <ul>
      *   <li>Size: 2</li>
@@ -142,6 +166,21 @@ namespace emu::z80 {
                 << reg
                 << ", "
                 << hexify_wo_0x(args.farg);
+    }
+
+    void print_adc_MixyPn(std::ostream &ostream, const std::string &reg, const std::string &ixy_reg,
+                          const NextByte &args
+    ) {
+        const i8 signed_value = static_cast<i8>(args.farg);
+        const std::string plus_or_minus = (signed_value >= 0) ? "+" : "";
+
+        ostream << "ADC "
+                << reg
+                << ",("
+                << ixy_reg
+                << plus_or_minus
+                << +signed_value
+                << ")";
     }
 
     TEST_CASE("Z80: ADC (8-bit)") {

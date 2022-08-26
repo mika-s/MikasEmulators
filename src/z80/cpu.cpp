@@ -19,33 +19,20 @@ namespace emu::z80 {
             const u16 initial_pc
     ) :
             m_is_stopped(true),
-            m_iff1(false),
-            m_iff2(false),
+            m_iff1(false), m_iff2(false),
             m_is_interrupted(false),
             m_instruction_from_interruptor(0),
-            m_memory(memory),
-            m_memory_size(memory.size()),
-            m_opcode(0),
-            m_sp(0xffff),
-            m_pc(initial_pc),
-            m_acc_reg(0xff),
-            m_acc_p_reg(0),
-            m_b_reg(0),
-            m_b_p_reg(0),
-            m_c_reg(0),
-            m_c_p_reg(0),
-            m_d_reg(0),
-            m_d_p_reg(0),
-            m_e_reg(0),
-            m_e_p_reg(0),
-            m_h_reg(0),
-            m_h_p_reg(0),
-            m_l_reg(0),
-            m_l_p_reg(0),
-            m_ix_reg(0),
-            m_iy_reg(0),
-            m_i_reg(0),
-            m_r_reg(0) {
+            m_memory(memory), m_memory_size(memory.size()),
+            m_opcode(0), m_sp(0xffff), m_pc(initial_pc),
+            m_acc_reg(0xff), m_acc_p_reg(0),
+            m_b_reg(0), m_b_p_reg(0),
+            m_c_reg(0), m_c_p_reg(0),
+            m_d_reg(0), m_d_p_reg(0),
+            m_e_reg(0), m_e_p_reg(0),
+            m_h_reg(0), m_h_p_reg(0),
+            m_l_reg(0), m_l_p_reg(0),
+            m_ix_reg(0), m_iy_reg(0),
+            m_i_reg(0), m_r_reg(0) {
         m_io_in.reserve(number_of_io_ports);
         m_io_out.reserve(number_of_io_ports);
         for (unsigned int i = 0; i < number_of_io_ports; ++i) {
@@ -95,29 +82,20 @@ namespace emu::z80 {
     void Cpu::reset_state() {
         m_acc_reg = 0xff;
         m_acc_p_reg = 0;
-        m_b_reg = 0;
-        m_b_p_reg = 0;
-        m_c_reg = 0;
-        m_c_p_reg = 0;
-        m_d_reg = 0;
-        m_d_p_reg = 0;
-        m_e_reg = 0;
-        m_e_p_reg = 0;
-        m_h_reg = 0;
-        m_h_p_reg = 0;
-        m_l_reg = 0;
-        m_l_p_reg = 0;
-        m_ix_reg = 0;
-        m_iy_reg = 0;
-        m_i_reg = 0;
-        m_r_reg = 0;
+        m_b_reg = m_b_p_reg = 0;
+        m_c_reg = m_c_p_reg = 0;
+        m_d_reg = m_d_p_reg = 0;
+        m_e_reg = m_e_p_reg = 0;
+        m_h_reg = m_h_p_reg = 0;
+        m_l_reg = m_l_p_reg = 0;
+        m_ix_reg = m_iy_reg = 0;
+        m_i_reg = m_r_reg = 0;
         m_flag_reg.from_u8(0xff);
         m_flag_p_reg.from_u8(0x00);
         m_pc = 0;
         m_sp = 0xffff;
         m_is_stopped = true;
-        m_iff1 = false;
-        m_iff2 = false;
+        m_iff1 = m_iff2 = false;
         m_is_interrupted = false;
         m_instruction_from_interruptor = 0;
     }
@@ -147,8 +125,7 @@ namespace emu::z80 {
         unsigned long cycles = 0;
 
         if (m_iff1 && m_is_interrupted) {
-            m_iff1 = false;
-            m_iff2 = false;
+            m_iff1 = m_iff2 = false;
             m_is_interrupted = false;
             m_opcode = m_instruction_from_interruptor;
         } else {
@@ -770,7 +747,7 @@ namespace emu::z80 {
                 jp_z(m_pc, get_next_word(), m_flag_reg, cycles);
                 break;
             case BITS:
-                unused_3(m_opcode, m_pc, cycles);
+                next_bits_instruction(get_next_byte().farg, cycles);
                 break;
             case CALL_Z:
                 call_z(m_pc, m_sp, m_memory, get_next_word(), m_flag_reg, cycles);
@@ -944,6 +921,229 @@ namespace emu::z80 {
         return cycles;
     }
 
+    void Cpu::next_bits_instruction(u8 bits_opcode, unsigned long cycles) {
+        print_debug(bits_opcode);
+        r_tick();
+
+        switch (bits_opcode) {
+            case RLC_B:
+                rlc_r(m_b_reg, m_flag_reg, cycles);
+                break;
+            case RLC_C:
+                rlc_r(m_c_reg, m_flag_reg, cycles);
+                break;
+            case RLC_D:
+                rlc_r(m_d_reg, m_flag_reg, cycles);
+                break;
+            case RLC_E:
+                rlc_r(m_e_reg, m_flag_reg, cycles);
+                break;
+            case RLC_H:
+                rlc_r(m_h_reg, m_flag_reg, cycles);
+                break;
+            case RLC_L:
+                rlc_r(m_l_reg, m_flag_reg, cycles);
+                break;
+            case RLC_A:
+                rlc_r(m_acc_reg, m_flag_reg, cycles);
+                break;
+            case BIT_0_B:
+                bit_r(0, m_b_reg, m_flag_reg, cycles);
+                break;
+            case BIT_0_C:
+                bit_r(0, m_c_reg, m_flag_reg, cycles);
+                break;
+            case BIT_0_D:
+                bit_r(0, m_d_reg, m_flag_reg, cycles);
+                break;
+            case BIT_0_E:
+                bit_r(0, m_e_reg, m_flag_reg, cycles);
+                break;
+            case BIT_0_H:
+                bit_r(0, m_h_reg, m_flag_reg, cycles);
+                break;
+            case BIT_0_L:
+                bit_r(0, m_l_reg, m_flag_reg, cycles);
+                break;
+            case BIT_0_MHL:
+                bit_MHL(0, address_in_HL(), m_memory, m_flag_reg, cycles);
+                break;
+            case BIT_0_A:
+                bit_r(0, m_acc_reg, m_flag_reg, cycles);
+                break;
+            case BIT_1_B:
+                bit_r(1, m_b_reg, m_flag_reg, cycles);
+                break;
+            case BIT_1_C:
+                bit_r(1, m_c_reg, m_flag_reg, cycles);
+                break;
+            case BIT_1_D:
+                bit_r(1, m_d_reg, m_flag_reg, cycles);
+                break;
+            case BIT_1_E:
+                bit_r(1, m_e_reg, m_flag_reg, cycles);
+                break;
+            case BIT_1_H:
+                bit_r(1, m_h_reg, m_flag_reg, cycles);
+                break;
+            case BIT_1_L:
+                bit_r(1, m_l_reg, m_flag_reg, cycles);
+                break;
+            case BIT_1_MHL:
+                bit_MHL(1, address_in_HL(), m_memory, m_flag_reg, cycles);
+                break;
+            case BIT_1_A:
+                bit_r(1, m_acc_reg, m_flag_reg, cycles);
+                break;
+            case BIT_2_B:
+                bit_r(2, m_b_reg, m_flag_reg, cycles);
+                break;
+            case BIT_2_C:
+                bit_r(2, m_c_reg, m_flag_reg, cycles);
+                break;
+            case BIT_2_D:
+                bit_r(2, m_d_reg, m_flag_reg, cycles);
+                break;
+            case BIT_2_E:
+                bit_r(2, m_e_reg, m_flag_reg, cycles);
+                break;
+            case BIT_2_H:
+                bit_r(2, m_h_reg, m_flag_reg, cycles);
+                break;
+            case BIT_2_L:
+                bit_r(2, m_l_reg, m_flag_reg, cycles);
+                break;
+            case BIT_2_MHL:
+                bit_MHL(2, address_in_HL(), m_memory, m_flag_reg, cycles);
+                break;
+            case BIT_2_A:
+                bit_r(2, m_acc_reg, m_flag_reg, cycles);
+                break;
+            case BIT_3_B:
+                bit_r(3, m_b_reg, m_flag_reg, cycles);
+                break;
+            case BIT_3_C:
+                bit_r(3, m_c_reg, m_flag_reg, cycles);
+                break;
+            case BIT_3_D:
+                bit_r(3, m_d_reg, m_flag_reg, cycles);
+                break;
+            case BIT_3_E:
+                bit_r(3, m_e_reg, m_flag_reg, cycles);
+                break;
+            case BIT_3_H:
+                bit_r(3, m_h_reg, m_flag_reg, cycles);
+                break;
+            case BIT_3_L:
+                bit_r(3, m_l_reg, m_flag_reg, cycles);
+                break;
+            case BIT_3_MHL:
+                bit_MHL(3, address_in_HL(), m_memory, m_flag_reg, cycles);
+                break;
+            case BIT_3_A:
+                bit_r(3, m_acc_reg, m_flag_reg, cycles);
+                break;
+            case BIT_4_B:
+                bit_r(4, m_b_reg, m_flag_reg, cycles);
+                break;
+            case BIT_4_C:
+                bit_r(4, m_c_reg, m_flag_reg, cycles);
+                break;
+            case BIT_4_D:
+                bit_r(4, m_d_reg, m_flag_reg, cycles);
+                break;
+            case BIT_4_E:
+                bit_r(4, m_e_reg, m_flag_reg, cycles);
+                break;
+            case BIT_4_H:
+                bit_r(4, m_h_reg, m_flag_reg, cycles);
+                break;
+            case BIT_4_L:
+                bit_r(4, m_l_reg, m_flag_reg, cycles);
+                break;
+            case BIT_4_MHL:
+                bit_MHL(4, address_in_HL(), m_memory, m_flag_reg, cycles);
+                break;
+            case BIT_4_A:
+                bit_r(4, m_acc_reg, m_flag_reg, cycles);
+                break;
+            case BIT_5_B:
+                bit_r(5, m_b_reg, m_flag_reg, cycles);
+                break;
+            case BIT_5_C:
+                bit_r(5, m_c_reg, m_flag_reg, cycles);
+                break;
+            case BIT_5_D:
+                bit_r(5, m_d_reg, m_flag_reg, cycles);
+                break;
+            case BIT_5_E:
+                bit_r(5, m_e_reg, m_flag_reg, cycles);
+                break;
+            case BIT_5_H:
+                bit_r(5, m_h_reg, m_flag_reg, cycles);
+                break;
+            case BIT_5_L:
+                bit_r(5, m_l_reg, m_flag_reg, cycles);
+                break;
+            case BIT_5_MHL:
+                bit_MHL(5, address_in_HL(), m_memory, m_flag_reg, cycles);
+                break;
+            case BIT_5_A:
+                bit_r(5, m_acc_reg, m_flag_reg, cycles);
+                break;
+            case BIT_6_B:
+                bit_r(6, m_b_reg, m_flag_reg, cycles);
+                break;
+            case BIT_6_C:
+                bit_r(6, m_c_reg, m_flag_reg, cycles);
+                break;
+            case BIT_6_D:
+                bit_r(6, m_d_reg, m_flag_reg, cycles);
+                break;
+            case BIT_6_E:
+                bit_r(6, m_e_reg, m_flag_reg, cycles);
+                break;
+            case BIT_6_H:
+                bit_r(6, m_h_reg, m_flag_reg, cycles);
+                break;
+            case BIT_6_L:
+                bit_r(6, m_l_reg, m_flag_reg, cycles);
+                break;
+            case BIT_6_MHL:
+                bit_MHL(6, address_in_HL(), m_memory, m_flag_reg, cycles);
+                break;
+            case BIT_6_A:
+                bit_r(6, m_acc_reg, m_flag_reg, cycles);
+                break;
+            case BIT_7_B:
+                bit_r(7, m_b_reg, m_flag_reg, cycles);
+                break;
+            case BIT_7_C:
+                bit_r(7, m_c_reg, m_flag_reg, cycles);
+                break;
+            case BIT_7_D:
+                bit_r(7, m_d_reg, m_flag_reg, cycles);
+                break;
+            case BIT_7_E:
+                bit_r(7, m_e_reg, m_flag_reg, cycles);
+                break;
+            case BIT_7_H:
+                bit_r(7, m_h_reg, m_flag_reg, cycles);
+                break;
+            case BIT_7_L:
+                bit_r(7, m_l_reg, m_flag_reg, cycles);
+                break;
+            case BIT_7_MHL:
+                bit_MHL(7, address_in_HL(), m_memory, m_flag_reg, cycles);
+                break;
+            case BIT_7_A:
+                bit_r(7, m_acc_reg, m_flag_reg, cycles);
+                break;
+            default:
+                throw UnrecognizedOpcodeException(bits_opcode, "Bits instructions");
+        }
+    }
+
     void Cpu::next_ixy_instruction(u8 ixy_opcode, u16 &ixy_reg, unsigned long cycles) {
         print_debug(ixy_opcode);
         r_tick();
@@ -973,7 +1173,7 @@ namespace emu::z80 {
             case DEC_IXY:
                 dec_ixy(ixy_reg, cycles);
                 break;
-            case ADD_IX_SP:
+            case ADD_IXY_SP:
                 add_ixy_pp(ixy_reg, m_sp, m_flag_reg, cycles);
                 break;
             case LD_B_MIXY_P_n:
@@ -997,17 +1197,80 @@ namespace emu::z80 {
             case LD_A_MIXY_P_n:
                 ld_r_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, cycles);
                 break;
-            case ADD_A_IXH_UNDOC:
+            case ADD_A_IXYH_UNDOC:
                 add_A_ixy_h_or_l(m_acc_reg, second_byte(ixy_reg), m_flag_reg, cycles);
                 break;
-            case ADD_A_IXL_UNDOC:
+            case ADD_A_IXYL_UNDOC:
                 add_A_ixy_h_or_l(m_acc_reg, first_byte(ixy_reg), m_flag_reg, cycles);
                 break;
-            case ADC_A_IXH_UNDOC:
+            case ADD_A_MIXY_P_n:
+                add_A_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
+                break;
+            case ADC_A_MIXY_P_n:
+                adc_A_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
+                break;
+            case ADC_A_IXYH_UNDOC:
                 adc_A_ixy_h_or_l(m_acc_reg, second_byte(ixy_reg), m_flag_reg, cycles);
                 break;
-            case ADC_A_IXL_UNDOC:
+            case ADC_A_IXYL_UNDOC:
                 adc_A_ixy_h_or_l(m_acc_reg, first_byte(ixy_reg), m_flag_reg, cycles);
+                break;
+            case SUB_IXYH_UNDOC1:
+                sub_r(m_acc_reg, second_byte(ixy_reg), m_flag_reg, cycles);
+                break;
+            case SUB_IXYL_UNDOC1:
+                sub_r(m_acc_reg, first_byte(ixy_reg), m_flag_reg, cycles);
+                break;
+            case SUB_MIXY_P_n:
+                sub_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
+                break;
+            case SBC_A_IXYH_UNDOC:
+                sbc_A_ixy_h_or_l(m_acc_reg, second_byte(ixy_reg), m_flag_reg, cycles);
+                break;
+            case SBC_A_IXYL_UNDOC:
+                sbc_A_ixy_h_or_l(m_acc_reg, first_byte(ixy_reg), m_flag_reg, cycles);
+                break;
+            case SBC_A_MIXY_P_n:
+                sbc_A_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
+                break;
+            case AND_IXYH_UNDOC1:
+                and_r(m_acc_reg, second_byte(ixy_reg), m_flag_reg, cycles);
+                break;
+            case AND_IXYL_UNDOC1:
+                and_r(m_acc_reg, first_byte(ixy_reg), m_flag_reg, cycles);
+                break;
+            case AND_MIXY_P_n:
+                and_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
+                break;
+            case XOR_IXYH_UNDOC1:
+                xor_r(m_acc_reg, second_byte(ixy_reg), m_flag_reg, cycles);
+                break;
+            case XOR_IXYL_UNDOC1:
+                xor_r(m_acc_reg, first_byte(ixy_reg), m_flag_reg, cycles);
+                break;
+            case OR_IXYH_UNDOC1:
+                or_r(m_acc_reg, second_byte(ixy_reg), m_flag_reg, cycles);
+                break;
+            case OR_IXYL_UNDOC1:
+                or_r(m_acc_reg, first_byte(ixy_reg), m_flag_reg, cycles);
+                break;
+            case OR_MIXY_P_n:
+                or_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
+                break;
+            case XOR_MIXY_P_n:
+                xor_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
+                break;
+            case CP_IXYH_UNDOC1:
+                cp_r(m_acc_reg, second_byte(ixy_reg), m_flag_reg, cycles);
+                break;
+            case CP_IXYL_UNDOC1:
+                cp_r(m_acc_reg, first_byte(ixy_reg), m_flag_reg, cycles);
+                break;
+            case CP_MIXY_P_n:
+                cp_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
+                break;
+            case IXY_BITS:
+                next_ixy_bits_instruction(get_next_byte().farg, ixy_reg, cycles);
                 break;
             case POP_IXY:
                 pop_ixy(ixy_reg, m_sp, m_memory, cycles);
@@ -1021,11 +1284,47 @@ namespace emu::z80 {
             case JP_MIXY:
                 jp_ixy(m_pc, ixy_reg, cycles);
                 break;
-            case LD_SP_IX:
-                ld_sp_ixy(m_sp, m_ix_reg, cycles);
+            case LD_SP_IXY:
+                ld_sp_ixy(m_sp, ixy_reg, cycles);
                 break;
             default:
                 throw UnrecognizedOpcodeException(ixy_opcode, "IX/IY instructions");
+        }
+    }
+
+    void Cpu::next_ixy_bits_instruction(u8 ixy_bits_opcode, u16 &ixy_reg, unsigned long cycles) {
+        print_debug(ixy_bits_opcode);
+        r_tick();
+
+        switch (ixy_bits_opcode) {
+            case RLC_MIXY_P_n_B_UNDOC1:
+                rlc_MixyPd_r(m_b_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
+                break;
+            case RLC_MIXY_P_n_C_UNDOC1:
+                rlc_MixyPd_r(m_c_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
+                break;
+            case RLC_MIXY_P_n_D_UNDOC1:
+                rlc_MixyPd_r(m_d_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
+                break;
+            case RLC_MIXY_P_n_E_UNDOC1:
+                rlc_MixyPd_r(m_e_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
+                break;
+            case RLC_MIXY_P_n_H_UNDOC1:
+                rlc_MixyPd_r(m_h_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
+                break;
+            case RLC_MIXY_P_n_L_UNDOC1:
+                rlc_MixyPd_r(m_l_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
+                break;
+//            case RL_MIXY_P_n_B_UNDOC1:
+//                break;
+            case RLC_MIXY_P_n:
+                rlc_MixyPd(ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
+                break;
+            case RLC_MIXY_P_n_A_UNDOC1:
+                rlc_MixyPd_r(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
+                break;
+            default:
+                throw UnrecognizedOpcodeException(ixy_bits_opcode, "IX/IY bits instructions");
         }
     }
 
@@ -1079,9 +1378,16 @@ namespace emu::z80 {
                 break;
             case LDI:
                 throw UnrecognizedOpcodeException(extd_opcode, "EXTD instructions");
+            case CPD:
+                cpd(m_b_reg, m_c_reg, m_h_reg, m_l_reg, m_acc_reg, m_memory, m_flag_reg, cycles);
+                break;
             case LDIR:
                 ldir(m_pc, m_b_reg, m_c_reg, m_d_reg, m_e_reg,
                      m_h_reg, m_l_reg, m_acc_reg, m_memory, m_flag_reg, cycles);
+                break;
+            case CPDR:
+                cpdr(m_pc, m_b_reg, m_c_reg, m_h_reg, m_l_reg,
+                     m_acc_reg, m_memory, m_flag_reg, cycles);
                 break;
             default:
                 throw UnrecognizedOpcodeException(extd_opcode, "EXTD instructions");
