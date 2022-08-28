@@ -25,11 +25,11 @@ namespace emu::i8080 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void rrc(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles) {
-        const bool should_set_carry_flag = is_bit_set(acc_reg, LOW_BIT);
+        const bool should_set_carry_flag = is_bit_set(acc_reg, lsb);
         acc_reg = acc_reg >> 1;
         if (should_set_carry_flag) {
             flag_reg.set_carry_flag();
-            set_bit(acc_reg, HIGH_BIT);
+            set_bit(acc_reg, msb);
         } else {
             flag_reg.clear_carry_flag();
         }
@@ -49,13 +49,13 @@ namespace emu::i8080 {
             for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
                 Flags flag_reg;
                 acc_reg = acc_reg_counter;
-                const bool cy = emu::util::byte::is_bit_set(acc_reg, LOW_BIT);
+                const bool cy = is_bit_set(acc_reg, lsb);
 
                 rrc(acc_reg, flag_reg, cycles);
 
                 u8 expected = acc_reg_counter >> 1u;
                 if (cy) {
-                    emu::util::byte::set_bit(expected, HIGH_BIT);
+                    set_bit(expected, msb);
                 }
 
                 CHECK_EQ(expected, acc_reg);

@@ -4,15 +4,15 @@
 #include <vector>
 #include "8080/emulator_memory.h"
 #include "8080/flags.h"
-#include "crosscutting/misc/next_word.h"
 #include "crosscutting/typedefs.h"
-
-#define LOW_BIT 0
-#define HIGH_BIT 7
+#include "crosscutting/misc/next_word.h"
 
 namespace emu::i8080 {
 
     using emu::misc::NextWord;
+
+    static constexpr unsigned int lsb = 0;
+    static constexpr unsigned int msb = 7;
 
     void add_to_register(u8 &acc_reg, u8 value, bool cf, Flags &flag_reg);
 

@@ -9,508 +9,510 @@
 #include "crosscutting/misc/next_word.h"
 #include "crosscutting/typedefs.h"
 
+// @formatter:off
+
 // Main opcodes:
-#define NOP           0x00
-#define LD_BC_nn      0x01
-#define LD_MBC_A      0x02
-#define INC_BC        0x03
-#define INC_B         0x04
-#define DEC_B         0x05
-#define LD_B_n        0x06
-#define RLCA          0x07
-#define EX_AF_AFP     0x08
-#define ADD_HL_BC     0x09
-#define LD_A_MBC      0x0A
-#define DEC_BC        0x0B
-#define INC_C         0x0C
-#define DEC_C         0x0D
-#define LD_C_n        0x0E
-#define RRCA          0x0F
-#define DJNZ          0x10
-#define LD_DE_nn      0x11
-#define LD_MDE_A      0x12
-#define INC_DE        0x13
-#define INC_D         0x14
-#define DEC_D         0x15
-#define LD_D_n        0x16
-#define RLA           0x17
-#define JR_e          0x18
-#define ADD_HL_DE     0x19
-#define LD_A_MDE      0x1A
-#define DEC_DE        0x1B
-#define INC_E         0x1C
-#define DEC_E         0x1D
-#define LD_E_n        0x1E
-#define RRA           0x1F
-#define JR_NZ_e       0x20
-#define LD_HL_nn      0x21
-#define LD_Mnn_HL     0x22
-#define INC_HL        0x23
-#define INC_H         0x24
-#define DEC_H         0x25
-#define LD_H_n        0x26
-#define DAA           0x27
-#define JR_Z_e        0x28
-#define ADD_HL_HL     0x29
-#define LD_HL_Mnn     0x2A
-#define DEC_HL        0x2B
-#define INC_L         0x2C
-#define DEC_L         0x2D
-#define LD_L_n        0x2E
-#define CPL           0x2F
-#define JR_NC_e       0x30
-#define LD_SP_nn      0x31
-#define LD_Mnn_A      0x32
-#define INC_SP        0x33
-#define INC_MHL       0x34
-#define DEC_MHL       0x35
-#define LD_MHL_n      0x36
-#define SCF           0x37
-#define JR_C_e        0x38
-#define ADD_HL_SP     0x39
-#define LD_A_Mnn      0x3A
-#define DEC_SP        0x3B
-#define INC_A         0x3C
-#define DEC_A         0x3D
-#define LD_A_n        0x3E
-#define CCF           0x3F
-#define LD_B_B        0x40
-#define LD_B_C        0x41
-#define LD_B_D        0x42
-#define LD_B_E        0x43
-#define LD_B_H        0x44
-#define LD_B_L        0x45
-#define LD_B_MHL      0x46
-#define LD_B_A        0x47
-#define LD_C_B        0x48
-#define LD_C_C        0x49
-#define LD_C_D        0x4A
-#define LD_C_E        0x4B
-#define LD_C_H        0x4C
-#define LD_C_L        0x4D
-#define LD_C_MHL      0x4E
-#define LD_C_A        0x4F
-#define LD_D_B        0x50
-#define LD_D_C        0x51
-#define LD_D_D        0x52
-#define LD_D_E        0x53
-#define LD_D_H        0x54
-#define LD_D_L        0x55
-#define LD_D_MHL      0x56
-#define LD_D_A        0x57
-#define LD_E_B        0x58
-#define LD_E_C        0x59
-#define LD_E_D        0x5A
-#define LD_E_E        0x5B
-#define LD_E_H        0x5C
-#define LD_E_L        0x5D
-#define LD_E_MHL      0x5E
-#define LD_E_A        0x5F
-#define LD_H_B        0x60
-#define LD_H_C        0x61
-#define LD_H_D        0x62
-#define LD_H_E        0x63
-#define LD_H_H        0x64
-#define LD_H_L        0x65
-#define LD_H_MHL      0x66
-#define LD_H_A        0x67
-#define LD_L_B        0x68
-#define LD_L_C        0x69
-#define LD_L_D        0x6A
-#define LD_L_E        0x6B
-#define LD_L_H        0x6C
-#define LD_L_L        0x6D
-#define LD_L_MHL      0x6E
-#define LD_L_A        0x6F
-#define LD_MHL_B      0x70
-#define LD_MHL_C      0x71
-#define LD_MHL_D      0x72
-#define LD_MHL_E      0x73
-#define LD_MHL_H      0x74
-#define LD_MHL_L      0x75
-#define HALT          0x76
-#define LD_MHL_A      0x77
-#define LD_A_B        0x78
-#define LD_A_C        0x79
-#define LD_A_D        0x7A
-#define LD_A_E        0x7B
-#define LD_A_H        0x7C
-#define LD_A_L        0x7D
-#define LD_A_MHL      0x7E
-#define LD_A_A        0x7F
-#define ADD_A_B       0x80
-#define ADD_A_C       0x81
-#define ADD_A_D       0x82
-#define ADD_A_E       0x83
-#define ADD_A_H       0x84
-#define ADD_A_L       0x85
-#define ADD_A_MHL     0x86
-#define ADD_A_A       0x87
-#define ADC_A_B       0x88
-#define ADC_A_C       0x89
-#define ADC_A_D       0x8A
-#define ADC_A_E       0x8B
-#define ADC_A_H       0x8C
-#define ADC_A_L       0x8D
-#define ADC_A_MHL     0x8E
-#define ADC_A_A       0x8F
-#define SUB_B         0x90
-#define SUB_C         0x91
-#define SUB_D         0x92
-#define SUB_E         0x93
-#define SUB_H         0x94
-#define SUB_L         0x95
-#define SUB_MHL       0x96
-#define SUB_A         0x97
-#define SBC_A_B       0x98
-#define SBC_A_C       0x99
-#define SBC_A_D       0x9A
-#define SBC_A_E       0x9B
-#define SBC_A_H       0x9C
-#define SBC_A_L       0x9D
-#define SBC_A_MHL     0x9E
-#define SBC_A_A       0x9F
-#define AND_B         0xA0
-#define AND_C         0xA1
-#define AND_D         0xA2
-#define AND_E         0xA3
-#define AND_H         0xA4
-#define AND_L         0xA5
-#define AND_MHL       0xA6
-#define AND_A         0xA7
-#define XOR_B         0xA8
-#define XOR_C         0xA9
-#define XOR_D         0xAA
-#define XOR_E         0xAB
-#define XOR_H         0xAC
-#define XOR_L         0xAD
-#define XOR_MHL       0xAE
-#define XOR_A         0xAF
-#define OR_B          0xB0
-#define OR_C          0xB1
-#define OR_D          0xB2
-#define OR_E          0xB3
-#define OR_H          0xB4
-#define OR_L          0xB5
-#define OR_MHL        0xB6
-#define OR_A          0xB7
-#define CP_B          0xB8
-#define CP_C          0xB9
-#define CP_D          0xBA
-#define CP_E          0xBB
-#define CP_H          0xBC
-#define CP_L          0xBD
-#define CP_MHL        0xBE
-#define CP_A          0xBF
-#define RET_NZ        0xC0
-#define POP_BC        0xC1
-#define JP_NZ         0xC2
-#define JP            0xC3
-#define CALL_NZ       0xC4
-#define PUSH_BC       0xC5
-#define ADD_A_n       0xC6
-#define RST_0         0xC7
-#define RET_Z         0xC8
-#define RET           0xC9
-#define JP_Z          0xCA
-#define BITS          0xCB
-#define CALL_Z        0xCC
-#define CALL          0xCD
-#define ADC_A_n       0xCE
-#define RST_1         0xCF
-#define RET_NC        0xD0
-#define POP_DE        0xD1
-#define JP_NC         0xD2
-#define OUT           0xD3
-#define CALL_NC       0xD4
-#define PUSH_DE       0xD5
-#define SUB_n         0xD6
-#define RST_2         0xD7
-#define RET_C         0xD8
-#define EXX           0xD9
-#define JP_C          0xDA
-#define IN            0xDB
-#define CALL_C        0xDC
-#define IX            0xDD
-#define SBC_A_n       0xDE
-#define RST_3         0xDF
-#define RET_PO        0xE0
-#define POP_HL        0xE1
-#define JP_PO         0xE2
-#define EX_MSP_HL     0xE3
-#define CALL_PO       0xE4
-#define PUSH_HL       0xE5
-#define AND_n         0xE6
-#define RST_4         0xE7
-#define RET_PE        0xE8
-#define JP_MHL        0xE9
-#define JP_PE         0xEA
-#define EX_DE_HL      0xEB
-#define CALL_PE       0xEC
-#define EXTD          0xED
-#define XOR_n         0xEE
-#define RST_5         0xEF
-#define RET_P         0xF0
-#define POP_AF        0xF1
-#define JP_P          0xF2
-#define DI            0xF3
-#define CALL_P        0xF4
-#define PUSH_AF       0xF5
-#define OR_n          0xF6
-#define RST_6         0xF7
-#define RET_M         0xF8
-#define LD_SP_HL      0xF9
-#define JP_M          0xFA
-#define EI            0xFB
-#define CALL_M        0xFC
-#define IY            0xFD
-#define CP_n          0xFE
-#define RST_7         0xFF
+constexpr unsigned int NOP           = 0x00;
+constexpr unsigned int LD_BC_nn      = 0x01;
+constexpr unsigned int LD_MBC_A      = 0x02;
+constexpr unsigned int INC_BC        = 0x03;
+constexpr unsigned int INC_B         = 0x04;
+constexpr unsigned int DEC_B         = 0x05;
+constexpr unsigned int LD_B_n        = 0x06;
+constexpr unsigned int RLCA          = 0x07;
+constexpr unsigned int EX_AF_AFP     = 0x08;
+constexpr unsigned int ADD_HL_BC     = 0x09;
+constexpr unsigned int LD_A_MBC      = 0x0A;
+constexpr unsigned int DEC_BC        = 0x0B;
+constexpr unsigned int INC_C         = 0x0C;
+constexpr unsigned int DEC_C         = 0x0D;
+constexpr unsigned int LD_C_n        = 0x0E;
+constexpr unsigned int RRCA          = 0x0F;
+constexpr unsigned int DJNZ          = 0x10;
+constexpr unsigned int LD_DE_nn      = 0x11;
+constexpr unsigned int LD_MDE_A      = 0x12;
+constexpr unsigned int INC_DE        = 0x13;
+constexpr unsigned int INC_D         = 0x14;
+constexpr unsigned int DEC_D         = 0x15;
+constexpr unsigned int LD_D_n        = 0x16;
+constexpr unsigned int RLA           = 0x17;
+constexpr unsigned int JR_e          = 0x18;
+constexpr unsigned int ADD_HL_DE     = 0x19;
+constexpr unsigned int LD_A_MDE      = 0x1A;
+constexpr unsigned int DEC_DE        = 0x1B;
+constexpr unsigned int INC_E         = 0x1C;
+constexpr unsigned int DEC_E         = 0x1D;
+constexpr unsigned int LD_E_n        = 0x1E;
+constexpr unsigned int RRA           = 0x1F;
+constexpr unsigned int JR_NZ_e       = 0x20;
+constexpr unsigned int LD_HL_nn      = 0x21;
+constexpr unsigned int LD_Mnn_HL     = 0x22;
+constexpr unsigned int INC_HL        = 0x23;
+constexpr unsigned int INC_H         = 0x24;
+constexpr unsigned int DEC_H         = 0x25;
+constexpr unsigned int LD_H_n        = 0x26;
+constexpr unsigned int DAA           = 0x27;
+constexpr unsigned int JR_Z_e        = 0x28;
+constexpr unsigned int ADD_HL_HL     = 0x29;
+constexpr unsigned int LD_HL_Mnn     = 0x2A;
+constexpr unsigned int DEC_HL        = 0x2B;
+constexpr unsigned int INC_L         = 0x2C;
+constexpr unsigned int DEC_L         = 0x2D;
+constexpr unsigned int LD_L_n        = 0x2E;
+constexpr unsigned int CPL           = 0x2F;
+constexpr unsigned int JR_NC_e       = 0x30;
+constexpr unsigned int LD_SP_nn      = 0x31;
+constexpr unsigned int LD_Mnn_A      = 0x32;
+constexpr unsigned int INC_SP        = 0x33;
+constexpr unsigned int INC_MHL       = 0x34;
+constexpr unsigned int DEC_MHL       = 0x35;
+constexpr unsigned int LD_MHL_n      = 0x36;
+constexpr unsigned int SCF           = 0x37;
+constexpr unsigned int JR_C_e        = 0x38;
+constexpr unsigned int ADD_HL_SP     = 0x39;
+constexpr unsigned int LD_A_Mnn      = 0x3A;
+constexpr unsigned int DEC_SP        = 0x3B;
+constexpr unsigned int INC_A         = 0x3C;
+constexpr unsigned int DEC_A         = 0x3D;
+constexpr unsigned int LD_A_n        = 0x3E;
+constexpr unsigned int CCF           = 0x3F;
+constexpr unsigned int LD_B_B        = 0x40;
+constexpr unsigned int LD_B_C        = 0x41;
+constexpr unsigned int LD_B_D        = 0x42;
+constexpr unsigned int LD_B_E        = 0x43;
+constexpr unsigned int LD_B_H        = 0x44;
+constexpr unsigned int LD_B_L        = 0x45;
+constexpr unsigned int LD_B_MHL      = 0x46;
+constexpr unsigned int LD_B_A        = 0x47;
+constexpr unsigned int LD_C_B        = 0x48;
+constexpr unsigned int LD_C_C        = 0x49;
+constexpr unsigned int LD_C_D        = 0x4A;
+constexpr unsigned int LD_C_E        = 0x4B;
+constexpr unsigned int LD_C_H        = 0x4C;
+constexpr unsigned int LD_C_L        = 0x4D;
+constexpr unsigned int LD_C_MHL      = 0x4E;
+constexpr unsigned int LD_C_A        = 0x4F;
+constexpr unsigned int LD_D_B        = 0x50;
+constexpr unsigned int LD_D_C        = 0x51;
+constexpr unsigned int LD_D_D        = 0x52;
+constexpr unsigned int LD_D_E        = 0x53;
+constexpr unsigned int LD_D_H        = 0x54;
+constexpr unsigned int LD_D_L        = 0x55;
+constexpr unsigned int LD_D_MHL      = 0x56;
+constexpr unsigned int LD_D_A        = 0x57;
+constexpr unsigned int LD_E_B        = 0x58;
+constexpr unsigned int LD_E_C        = 0x59;
+constexpr unsigned int LD_E_D        = 0x5A;
+constexpr unsigned int LD_E_E        = 0x5B;
+constexpr unsigned int LD_E_H        = 0x5C;
+constexpr unsigned int LD_E_L        = 0x5D;
+constexpr unsigned int LD_E_MHL      = 0x5E;
+constexpr unsigned int LD_E_A        = 0x5F;
+constexpr unsigned int LD_H_B        = 0x60;
+constexpr unsigned int LD_H_C        = 0x61;
+constexpr unsigned int LD_H_D        = 0x62;
+constexpr unsigned int LD_H_E        = 0x63;
+constexpr unsigned int LD_H_H        = 0x64;
+constexpr unsigned int LD_H_L        = 0x65;
+constexpr unsigned int LD_H_MHL      = 0x66;
+constexpr unsigned int LD_H_A        = 0x67;
+constexpr unsigned int LD_L_B        = 0x68;
+constexpr unsigned int LD_L_C        = 0x69;
+constexpr unsigned int LD_L_D        = 0x6A;
+constexpr unsigned int LD_L_E        = 0x6B;
+constexpr unsigned int LD_L_H        = 0x6C;
+constexpr unsigned int LD_L_L        = 0x6D;
+constexpr unsigned int LD_L_MHL      = 0x6E;
+constexpr unsigned int LD_L_A        = 0x6F;
+constexpr unsigned int LD_MHL_B      = 0x70;
+constexpr unsigned int LD_MHL_C      = 0x71;
+constexpr unsigned int LD_MHL_D      = 0x72;
+constexpr unsigned int LD_MHL_E      = 0x73;
+constexpr unsigned int LD_MHL_H      = 0x74;
+constexpr unsigned int LD_MHL_L      = 0x75;
+constexpr unsigned int HALT          = 0x76;
+constexpr unsigned int LD_MHL_A      = 0x77;
+constexpr unsigned int LD_A_B        = 0x78;
+constexpr unsigned int LD_A_C        = 0x79;
+constexpr unsigned int LD_A_D        = 0x7A;
+constexpr unsigned int LD_A_E        = 0x7B;
+constexpr unsigned int LD_A_H        = 0x7C;
+constexpr unsigned int LD_A_L        = 0x7D;
+constexpr unsigned int LD_A_MHL      = 0x7E;
+constexpr unsigned int LD_A_A        = 0x7F;
+constexpr unsigned int ADD_A_B       = 0x80;
+constexpr unsigned int ADD_A_C       = 0x81;
+constexpr unsigned int ADD_A_D       = 0x82;
+constexpr unsigned int ADD_A_E       = 0x83;
+constexpr unsigned int ADD_A_H       = 0x84;
+constexpr unsigned int ADD_A_L       = 0x85;
+constexpr unsigned int ADD_A_MHL     = 0x86;
+constexpr unsigned int ADD_A_A       = 0x87;
+constexpr unsigned int ADC_A_B       = 0x88;
+constexpr unsigned int ADC_A_C       = 0x89;
+constexpr unsigned int ADC_A_D       = 0x8A;
+constexpr unsigned int ADC_A_E       = 0x8B;
+constexpr unsigned int ADC_A_H       = 0x8C;
+constexpr unsigned int ADC_A_L       = 0x8D;
+constexpr unsigned int ADC_A_MHL     = 0x8E;
+constexpr unsigned int ADC_A_A       = 0x8F;
+constexpr unsigned int SUB_B         = 0x90;
+constexpr unsigned int SUB_C         = 0x91;
+constexpr unsigned int SUB_D         = 0x92;
+constexpr unsigned int SUB_E         = 0x93;
+constexpr unsigned int SUB_H         = 0x94;
+constexpr unsigned int SUB_L         = 0x95;
+constexpr unsigned int SUB_MHL       = 0x96;
+constexpr unsigned int SUB_A         = 0x97;
+constexpr unsigned int SBC_A_B       = 0x98;
+constexpr unsigned int SBC_A_C       = 0x99;
+constexpr unsigned int SBC_A_D       = 0x9A;
+constexpr unsigned int SBC_A_E       = 0x9B;
+constexpr unsigned int SBC_A_H       = 0x9C;
+constexpr unsigned int SBC_A_L       = 0x9D;
+constexpr unsigned int SBC_A_MHL     = 0x9E;
+constexpr unsigned int SBC_A_A       = 0x9F;
+constexpr unsigned int AND_B         = 0xA0;
+constexpr unsigned int AND_C         = 0xA1;
+constexpr unsigned int AND_D         = 0xA2;
+constexpr unsigned int AND_E         = 0xA3;
+constexpr unsigned int AND_H         = 0xA4;
+constexpr unsigned int AND_L         = 0xA5;
+constexpr unsigned int AND_MHL       = 0xA6;
+constexpr unsigned int AND_A         = 0xA7;
+constexpr unsigned int XOR_B         = 0xA8;
+constexpr unsigned int XOR_C         = 0xA9;
+constexpr unsigned int XOR_D         = 0xAA;
+constexpr unsigned int XOR_E         = 0xAB;
+constexpr unsigned int XOR_H         = 0xAC;
+constexpr unsigned int XOR_L         = 0xAD;
+constexpr unsigned int XOR_MHL       = 0xAE;
+constexpr unsigned int XOR_A         = 0xAF;
+constexpr unsigned int OR_B          = 0xB0;
+constexpr unsigned int OR_C          = 0xB1;
+constexpr unsigned int OR_D          = 0xB2;
+constexpr unsigned int OR_E          = 0xB3;
+constexpr unsigned int OR_H          = 0xB4;
+constexpr unsigned int OR_L          = 0xB5;
+constexpr unsigned int OR_MHL        = 0xB6;
+constexpr unsigned int OR_A          = 0xB7;
+constexpr unsigned int CP_B          = 0xB8;
+constexpr unsigned int CP_C          = 0xB9;
+constexpr unsigned int CP_D          = 0xBA;
+constexpr unsigned int CP_E          = 0xBB;
+constexpr unsigned int CP_H          = 0xBC;
+constexpr unsigned int CP_L          = 0xBD;
+constexpr unsigned int CP_MHL        = 0xBE;
+constexpr unsigned int CP_A          = 0xBF;
+constexpr unsigned int RET_NZ        = 0xC0;
+constexpr unsigned int POP_BC        = 0xC1;
+constexpr unsigned int JP_NZ         = 0xC2;
+constexpr unsigned int JP            = 0xC3;
+constexpr unsigned int CALL_NZ       = 0xC4;
+constexpr unsigned int PUSH_BC       = 0xC5;
+constexpr unsigned int ADD_A_n       = 0xC6;
+constexpr unsigned int RST_0         = 0xC7;
+constexpr unsigned int RET_Z         = 0xC8;
+constexpr unsigned int RET           = 0xC9;
+constexpr unsigned int JP_Z          = 0xCA;
+constexpr unsigned int BITS          = 0xCB;
+constexpr unsigned int CALL_Z        = 0xCC;
+constexpr unsigned int CALL          = 0xCD;
+constexpr unsigned int ADC_A_n       = 0xCE;
+constexpr unsigned int RST_1         = 0xCF;
+constexpr unsigned int RET_NC        = 0xD0;
+constexpr unsigned int POP_DE        = 0xD1;
+constexpr unsigned int JP_NC         = 0xD2;
+constexpr unsigned int OUT           = 0xD3;
+constexpr unsigned int CALL_NC       = 0xD4;
+constexpr unsigned int PUSH_DE       = 0xD5;
+constexpr unsigned int SUB_n         = 0xD6;
+constexpr unsigned int RST_2         = 0xD7;
+constexpr unsigned int RET_C         = 0xD8;
+constexpr unsigned int EXX           = 0xD9;
+constexpr unsigned int JP_C          = 0xDA;
+constexpr unsigned int IN            = 0xDB;
+constexpr unsigned int CALL_C        = 0xDC;
+constexpr unsigned int IX            = 0xDD;
+constexpr unsigned int SBC_A_n       = 0xDE;
+constexpr unsigned int RST_3         = 0xDF;
+constexpr unsigned int RET_PO        = 0xE0;
+constexpr unsigned int POP_HL        = 0xE1;
+constexpr unsigned int JP_PO         = 0xE2;
+constexpr unsigned int EX_MSP_HL     = 0xE3;
+constexpr unsigned int CALL_PO       = 0xE4;
+constexpr unsigned int PUSH_HL       = 0xE5;
+constexpr unsigned int AND_n         = 0xE6;
+constexpr unsigned int RST_4         = 0xE7;
+constexpr unsigned int RET_PE        = 0xE8;
+constexpr unsigned int JP_MHL        = 0xE9;
+constexpr unsigned int JP_PE         = 0xEA;
+constexpr unsigned int EX_DE_HL      = 0xEB;
+constexpr unsigned int CALL_PE       = 0xEC;
+constexpr unsigned int EXTD          = 0xED;
+constexpr unsigned int XOR_n         = 0xEE;
+constexpr unsigned int RST_5         = 0xEF;
+constexpr unsigned int RET_P         = 0xF0;
+constexpr unsigned int POP_AF        = 0xF1;
+constexpr unsigned int JP_P          = 0xF2;
+constexpr unsigned int DI            = 0xF3;
+constexpr unsigned int CALL_P        = 0xF4;
+constexpr unsigned int PUSH_AF       = 0xF5;
+constexpr unsigned int OR_n          = 0xF6;
+constexpr unsigned int RST_6         = 0xF7;
+constexpr unsigned int RET_M         = 0xF8;
+constexpr unsigned int LD_SP_HL      = 0xF9;
+constexpr unsigned int JP_M          = 0xFA;
+constexpr unsigned int EI            = 0xFB;
+constexpr unsigned int CALL_M        = 0xFC;
+constexpr unsigned int IY            = 0xFD;
+constexpr unsigned int CP_n          = 0xFE;
+constexpr unsigned int RST_7         = 0xFF;
 
 // BITS opcodes:
 
-#define RLC_B            0x00
-#define RLC_C            0x01
-#define RLC_D            0x02
-#define RLC_E            0x03
-#define RLC_H            0x04
-#define RLC_L            0x05
-#define RLC_A            0x07
-#define BIT_0_B          0x40
-#define BIT_0_C          0x41
-#define BIT_0_D          0x42
-#define BIT_0_E          0x43
-#define BIT_0_H          0x44
-#define BIT_0_L          0x45
-#define BIT_0_MHL        0x46
-#define BIT_0_A          0x47
-#define BIT_1_B          0x48
-#define BIT_1_C          0x49
-#define BIT_1_D          0x4A
-#define BIT_1_E          0x4B
-#define BIT_1_H          0x4C
-#define BIT_1_L          0x4D
-#define BIT_1_MHL        0x4E
-#define BIT_1_A          0x4F
-#define BIT_2_B          0x50
-#define BIT_2_C          0x51
-#define BIT_2_D          0x52
-#define BIT_2_E          0x53
-#define BIT_2_H          0x54
-#define BIT_2_L          0x55
-#define BIT_2_MHL        0x56
-#define BIT_2_A          0x57
-#define BIT_3_B          0x58
-#define BIT_3_C          0x59
-#define BIT_3_D          0x5A
-#define BIT_3_E          0x5B
-#define BIT_3_H          0x5C
-#define BIT_3_L          0x5D
-#define BIT_3_MHL        0x5E
-#define BIT_3_A          0x5F
-#define BIT_4_B          0x60
-#define BIT_4_C          0x61
-#define BIT_4_D          0x62
-#define BIT_4_E          0x63
-#define BIT_4_H          0x64
-#define BIT_4_L          0x65
-#define BIT_4_MHL        0x66
-#define BIT_4_A          0x67
-#define BIT_5_B          0x68
-#define BIT_5_C          0x69
-#define BIT_5_D          0x6A
-#define BIT_5_E          0x6B
-#define BIT_5_H          0x6C
-#define BIT_5_L          0x6D
-#define BIT_5_MHL        0x6E
-#define BIT_5_A          0x6F
-#define BIT_6_B          0x70
-#define BIT_6_C          0x71
-#define BIT_6_D          0x72
-#define BIT_6_E          0x73
-#define BIT_6_H          0x74
-#define BIT_6_L          0x75
-#define BIT_6_MHL        0x76
-#define BIT_6_A          0x77
-#define BIT_7_B          0x78
-#define BIT_7_C          0x79
-#define BIT_7_D          0x7A
-#define BIT_7_E          0x7B
-#define BIT_7_H          0x7C
-#define BIT_7_L          0x7D
-#define BIT_7_MHL        0x7E
-#define BIT_7_A          0x7F
+constexpr unsigned int RLC_B            = 0x00;
+constexpr unsigned int RLC_C            = 0x01;
+constexpr unsigned int RLC_D            = 0x02;
+constexpr unsigned int RLC_E            = 0x03;
+constexpr unsigned int RLC_H            = 0x04;
+constexpr unsigned int RLC_L            = 0x05;
+constexpr unsigned int RLC_A            = 0x07;
+constexpr unsigned int BIT_0_B          = 0x40;
+constexpr unsigned int BIT_0_C          = 0x41;
+constexpr unsigned int BIT_0_D          = 0x42;
+constexpr unsigned int BIT_0_E          = 0x43;
+constexpr unsigned int BIT_0_H          = 0x44;
+constexpr unsigned int BIT_0_L          = 0x45;
+constexpr unsigned int BIT_0_MHL        = 0x46;
+constexpr unsigned int BIT_0_A          = 0x47;
+constexpr unsigned int BIT_1_B          = 0x48;
+constexpr unsigned int BIT_1_C          = 0x49;
+constexpr unsigned int BIT_1_D          = 0x4A;
+constexpr unsigned int BIT_1_E          = 0x4B;
+constexpr unsigned int BIT_1_H          = 0x4C;
+constexpr unsigned int BIT_1_L          = 0x4D;
+constexpr unsigned int BIT_1_MHL        = 0x4E;
+constexpr unsigned int BIT_1_A          = 0x4F;
+constexpr unsigned int BIT_2_B          = 0x50;
+constexpr unsigned int BIT_2_C          = 0x51;
+constexpr unsigned int BIT_2_D          = 0x52;
+constexpr unsigned int BIT_2_E          = 0x53;
+constexpr unsigned int BIT_2_H          = 0x54;
+constexpr unsigned int BIT_2_L          = 0x55;
+constexpr unsigned int BIT_2_MHL        = 0x56;
+constexpr unsigned int BIT_2_A          = 0x57;
+constexpr unsigned int BIT_3_B          = 0x58;
+constexpr unsigned int BIT_3_C          = 0x59;
+constexpr unsigned int BIT_3_D          = 0x5A;
+constexpr unsigned int BIT_3_E          = 0x5B;
+constexpr unsigned int BIT_3_H          = 0x5C;
+constexpr unsigned int BIT_3_L          = 0x5D;
+constexpr unsigned int BIT_3_MHL        = 0x5E;
+constexpr unsigned int BIT_3_A          = 0x5F;
+constexpr unsigned int BIT_4_B          = 0x60;
+constexpr unsigned int BIT_4_C          = 0x61;
+constexpr unsigned int BIT_4_D          = 0x62;
+constexpr unsigned int BIT_4_E          = 0x63;
+constexpr unsigned int BIT_4_H          = 0x64;
+constexpr unsigned int BIT_4_L          = 0x65;
+constexpr unsigned int BIT_4_MHL        = 0x66;
+constexpr unsigned int BIT_4_A          = 0x67;
+constexpr unsigned int BIT_5_B          = 0x68;
+constexpr unsigned int BIT_5_C          = 0x69;
+constexpr unsigned int BIT_5_D          = 0x6A;
+constexpr unsigned int BIT_5_E          = 0x6B;
+constexpr unsigned int BIT_5_H          = 0x6C;
+constexpr unsigned int BIT_5_L          = 0x6D;
+constexpr unsigned int BIT_5_MHL        = 0x6E;
+constexpr unsigned int BIT_5_A          = 0x6F;
+constexpr unsigned int BIT_6_B          = 0x70;
+constexpr unsigned int BIT_6_C          = 0x71;
+constexpr unsigned int BIT_6_D          = 0x72;
+constexpr unsigned int BIT_6_E          = 0x73;
+constexpr unsigned int BIT_6_H          = 0x74;
+constexpr unsigned int BIT_6_L          = 0x75;
+constexpr unsigned int BIT_6_MHL        = 0x76;
+constexpr unsigned int BIT_6_A          = 0x77;
+constexpr unsigned int BIT_7_B          = 0x78;
+constexpr unsigned int BIT_7_C          = 0x79;
+constexpr unsigned int BIT_7_D          = 0x7A;
+constexpr unsigned int BIT_7_E          = 0x7B;
+constexpr unsigned int BIT_7_H          = 0x7C;
+constexpr unsigned int BIT_7_L          = 0x7D;
+constexpr unsigned int BIT_7_MHL        = 0x7E;
+constexpr unsigned int BIT_7_A          = 0x7F;
 
 // IX/IY opcodes:
 
-#define ADD_IXY_BC          0x09
-#define ADD_IXY_DE          0x19
-#define LD_IXY_nn           0x21
-#define LD_Mnn_IXY          0x22
-#define INC_IXY             0x23
-#define INC_IXH_UNDOC1      0x24
-#define DEC_IXH_UNDOC1      0x25
-#define LD_IXYH_n_UNDOC     0x26
-#define ADD_IXY_IXY         0x29
-#define LD_IXY_Mnn          0x2A
-#define DEC_IXY             0x2B
-#define INC_IXL_UNDOC1      0x2C
-#define DEC_IXL_UNDOC1      0x2D
-#define LD_IXYL_n_UNDOC     0x2E
-#define INC_MIXY_P_n        0x34
-#define DEC_MIXY_P_n        0x35
-#define LD_MIXY_P_n_d       0x36
-#define ADD_IXY_SP          0x39
-#define LD_B_B_UNDOC        0x40
-#define LD_B_C_UNDOC        0x41
-#define LD_B_D_UNDOC        0x42
-#define LD_B_E_UNDOC        0x43
-#define LD_B_IXYH_UNDOC     0x44
-#define LD_B_IXYL_UNDOC     0x45
-#define LD_B_MIXY_P_n       0x46
-#define LD_B_A_UNDOC        0x47
-#define LD_C_B_UNDOC        0x48
-#define LD_C_C_UNDOC        0x49
-#define LD_C_D_UNDOC        0x4A
-#define LD_C_E_UNDOC        0x4B
-#define LD_C_IXYH_UNDOC     0x4C
-#define LD_C_IXYL_UNDOC     0x4D
-#define LD_C_MIXY_P_n       0x4E
-#define LD_C_A_UNDOC        0x4F
-#define LD_D_B_UNDOC        0x50
-#define LD_D_C_UNDOC        0x51
-#define LD_D_D_UNDOC        0x52
-#define LD_D_E_UNDOC        0x53
-#define LD_D_IXYH_UNDOC     0x54
-#define LD_D_IXYL_UNDOC     0x55
-#define LD_D_MIXY_P_n       0x56
-#define LD_D_A_UNDOC        0x57
-#define LD_E_B_UNDOC        0x58
-#define LD_E_C_UNDOC        0x59
-#define LD_E_D_UNDOC        0x5A
-#define LD_E_E_UNDOC        0x5B
-#define LD_E_IXYH_UNDOC     0x5C
-#define LD_E_IXYL_UNDOC     0x5D
-#define LD_E_MIXY_P_n       0x5E
-#define LD_E_A_UNDOC        0x5F
-#define LD_IXYH_B_UNDOC     0x60
-#define LD_IXYH_C_UNDOC     0x61
-#define LD_IXYH_D_UNDOC     0x62
-#define LD_IXYH_E_UNDOC     0x63
-#define LD_IXYH_IXYH_UNDOC  0x64
-#define LD_IXYH_IXYL_UNDOC  0x65
-#define LD_H_MIXY_P_n       0x66
-#define LD_IXYH_A_UNDOC     0x67
-#define LD_IXYL_B_UNDOC     0x68
-#define LD_IXYL_C_UNDOC     0x69
-#define LD_IXYL_D_UNDOC     0x6A
-#define LD_IXYL_E_UNDOC     0x6B
-#define LD_IXYL_IXYH_UNDOC  0x6C
-#define LD_IXYL_IXYL_UNDOC  0x6D
-#define LD_L_MIXY_P_n       0x6E
-#define LD_IXYL_A_UNDOC     0x6F
-#define LD_MIXY_P_n_B       0x70
-#define LD_MIXY_P_n_C       0x71
-#define LD_MIXY_P_n_D       0x72
-#define LD_MIXY_P_n_E       0x73
-#define LD_MIXY_P_n_H       0x74
-#define LD_MIXY_P_n_L       0x75
-#define LD_MIXY_P_n_A       0x77
-#define LD_A_B_UNDOC        0x78
-#define LD_A_C_UNDOC        0x79
-#define LD_A_D_UNDOC        0x7A
-#define LD_A_E_UNDOC        0x7B
-#define LD_A_IXYH_UNDOC     0x7C
-#define LD_A_IXYL_UNDOC     0x7D
-#define LD_A_MIXY_P_n       0x7E
-#define LD_A_A_UNDOC        0x7F
-#define ADD_A_IXYH_UNDOC    0x84
-#define ADD_A_IXYL_UNDOC    0x85
-#define ADD_A_MIXY_P_n      0x86
-#define ADC_A_IXYH_UNDOC    0x8C
-#define ADC_A_IXYL_UNDOC    0x8D
-#define ADC_A_MIXY_P_n      0x8E
-#define SUB_IXYH_UNDOC1     0x94
-#define SUB_IXYL_UNDOC1     0x95
-#define SUB_MIXY_P_n        0x96
-#define SBC_A_IXYH_UNDOC    0x9C
-#define SBC_A_IXYL_UNDOC    0x9D
-#define SBC_A_MIXY_P_n      0x9E
-#define AND_IXYL_UNDOC1     0xA4
-#define AND_IXYH_UNDOC1     0xA5
-#define AND_MIXY_P_n        0xA6
-#define XOR_IXYH_UNDOC1     0xAC
-#define XOR_IXYL_UNDOC1     0xAD
-#define XOR_MIXY_P_n        0xAE
-#define OR_IXYL_UNDOC1      0xB4
-#define OR_IXYH_UNDOC1      0xB5
-#define OR_MIXY_P_n         0xB6
-#define CP_IXYH_UNDOC1      0xBC
-#define CP_IXYL_UNDOC1      0xBD
-#define CP_MIXY_P_n         0xBE
-#define IXY_BITS            0xCB
-#define POP_IXY             0xE1
-#define EX_MSP_IX           0xE3
-#define PUSH_IXY            0xE5
-#define JP_MIXY             0xE9
-#define LD_SP_IXY           0xF9
+constexpr unsigned int ADD_IXY_BC          = 0x09;
+constexpr unsigned int ADD_IXY_DE          = 0x19;
+constexpr unsigned int LD_IXY_nn           = 0x21;
+constexpr unsigned int LD_Mnn_IXY          = 0x22;
+constexpr unsigned int INC_IXY             = 0x23;
+constexpr unsigned int INC_IXH_UNDOC1      = 0x24;
+constexpr unsigned int DEC_IXH_UNDOC1      = 0x25;
+constexpr unsigned int LD_IXYH_n_UNDOC     = 0x26;
+constexpr unsigned int ADD_IXY_IXY         = 0x29;
+constexpr unsigned int LD_IXY_Mnn          = 0x2A;
+constexpr unsigned int DEC_IXY             = 0x2B;
+constexpr unsigned int INC_IXL_UNDOC1      = 0x2C;
+constexpr unsigned int DEC_IXL_UNDOC1      = 0x2D;
+constexpr unsigned int LD_IXYL_n_UNDOC     = 0x2E;
+constexpr unsigned int INC_MIXY_P_n        = 0x34;
+constexpr unsigned int DEC_MIXY_P_n        = 0x35;
+constexpr unsigned int LD_MIXY_P_n_d       = 0x36;
+constexpr unsigned int ADD_IXY_SP          = 0x39;
+constexpr unsigned int LD_B_B_UNDOC        = 0x40;
+constexpr unsigned int LD_B_C_UNDOC        = 0x41;
+constexpr unsigned int LD_B_D_UNDOC        = 0x42;
+constexpr unsigned int LD_B_E_UNDOC        = 0x43;
+constexpr unsigned int LD_B_IXYH_UNDOC     = 0x44;
+constexpr unsigned int LD_B_IXYL_UNDOC     = 0x45;
+constexpr unsigned int LD_B_MIXY_P_n       = 0x46;
+constexpr unsigned int LD_B_A_UNDOC        = 0x47;
+constexpr unsigned int LD_C_B_UNDOC        = 0x48;
+constexpr unsigned int LD_C_C_UNDOC        = 0x49;
+constexpr unsigned int LD_C_D_UNDOC        = 0x4A;
+constexpr unsigned int LD_C_E_UNDOC        = 0x4B;
+constexpr unsigned int LD_C_IXYH_UNDOC     = 0x4C;
+constexpr unsigned int LD_C_IXYL_UNDOC     = 0x4D;
+constexpr unsigned int LD_C_MIXY_P_n       = 0x4E;
+constexpr unsigned int LD_C_A_UNDOC        = 0x4F;
+constexpr unsigned int LD_D_B_UNDOC        = 0x50;
+constexpr unsigned int LD_D_C_UNDOC        = 0x51;
+constexpr unsigned int LD_D_D_UNDOC        = 0x52;
+constexpr unsigned int LD_D_E_UNDOC        = 0x53;
+constexpr unsigned int LD_D_IXYH_UNDOC     = 0x54;
+constexpr unsigned int LD_D_IXYL_UNDOC     = 0x55;
+constexpr unsigned int LD_D_MIXY_P_n       = 0x56;
+constexpr unsigned int LD_D_A_UNDOC        = 0x57;
+constexpr unsigned int LD_E_B_UNDOC        = 0x58;
+constexpr unsigned int LD_E_C_UNDOC        = 0x59;
+constexpr unsigned int LD_E_D_UNDOC        = 0x5A;
+constexpr unsigned int LD_E_E_UNDOC        = 0x5B;
+constexpr unsigned int LD_E_IXYH_UNDOC     = 0x5C;
+constexpr unsigned int LD_E_IXYL_UNDOC     = 0x5D;
+constexpr unsigned int LD_E_MIXY_P_n       = 0x5E;
+constexpr unsigned int LD_E_A_UNDOC        = 0x5F;
+constexpr unsigned int LD_IXYH_B_UNDOC     = 0x60;
+constexpr unsigned int LD_IXYH_C_UNDOC     = 0x61;
+constexpr unsigned int LD_IXYH_D_UNDOC     = 0x62;
+constexpr unsigned int LD_IXYH_E_UNDOC     = 0x63;
+constexpr unsigned int LD_IXYH_IXYH_UNDOC  = 0x64;
+constexpr unsigned int LD_IXYH_IXYL_UNDOC  = 0x65;
+constexpr unsigned int LD_H_MIXY_P_n       = 0x66;
+constexpr unsigned int LD_IXYH_A_UNDOC     = 0x67;
+constexpr unsigned int LD_IXYL_B_UNDOC     = 0x68;
+constexpr unsigned int LD_IXYL_C_UNDOC     = 0x69;
+constexpr unsigned int LD_IXYL_D_UNDOC     = 0x6A;
+constexpr unsigned int LD_IXYL_E_UNDOC     = 0x6B;
+constexpr unsigned int LD_IXYL_IXYH_UNDOC  = 0x6C;
+constexpr unsigned int LD_IXYL_IXYL_UNDOC  = 0x6D;
+constexpr unsigned int LD_L_MIXY_P_n       = 0x6E;
+constexpr unsigned int LD_IXYL_A_UNDOC     = 0x6F;
+constexpr unsigned int LD_MIXY_P_n_B       = 0x70;
+constexpr unsigned int LD_MIXY_P_n_C       = 0x71;
+constexpr unsigned int LD_MIXY_P_n_D       = 0x72;
+constexpr unsigned int LD_MIXY_P_n_E       = 0x73;
+constexpr unsigned int LD_MIXY_P_n_H       = 0x74;
+constexpr unsigned int LD_MIXY_P_n_L       = 0x75;
+constexpr unsigned int LD_MIXY_P_n_A       = 0x77;
+constexpr unsigned int LD_A_B_UNDOC        = 0x78;
+constexpr unsigned int LD_A_C_UNDOC        = 0x79;
+constexpr unsigned int LD_A_D_UNDOC        = 0x7A;
+constexpr unsigned int LD_A_E_UNDOC        = 0x7B;
+constexpr unsigned int LD_A_IXYH_UNDOC     = 0x7C;
+constexpr unsigned int LD_A_IXYL_UNDOC     = 0x7D;
+constexpr unsigned int LD_A_MIXY_P_n       = 0x7E;
+constexpr unsigned int LD_A_A_UNDOC        = 0x7F;
+constexpr unsigned int ADD_A_IXYH_UNDOC    = 0x84;
+constexpr unsigned int ADD_A_IXYL_UNDOC    = 0x85;
+constexpr unsigned int ADD_A_MIXY_P_n      = 0x86;
+constexpr unsigned int ADC_A_IXYH_UNDOC    = 0x8C;
+constexpr unsigned int ADC_A_IXYL_UNDOC    = 0x8D;
+constexpr unsigned int ADC_A_MIXY_P_n      = 0x8E;
+constexpr unsigned int SUB_IXYH_UNDOC1     = 0x94;
+constexpr unsigned int SUB_IXYL_UNDOC1     = 0x95;
+constexpr unsigned int SUB_MIXY_P_n        = 0x96;
+constexpr unsigned int SBC_A_IXYH_UNDOC    = 0x9C;
+constexpr unsigned int SBC_A_IXYL_UNDOC    = 0x9D;
+constexpr unsigned int SBC_A_MIXY_P_n      = 0x9E;
+constexpr unsigned int AND_IXYL_UNDOC1     = 0xA4;
+constexpr unsigned int AND_IXYH_UNDOC1     = 0xA5;
+constexpr unsigned int AND_MIXY_P_n        = 0xA6;
+constexpr unsigned int XOR_IXYH_UNDOC1     = 0xAC;
+constexpr unsigned int XOR_IXYL_UNDOC1     = 0xAD;
+constexpr unsigned int XOR_MIXY_P_n        = 0xAE;
+constexpr unsigned int OR_IXYL_UNDOC1      = 0xB4;
+constexpr unsigned int OR_IXYH_UNDOC1      = 0xB5;
+constexpr unsigned int OR_MIXY_P_n         = 0xB6;
+constexpr unsigned int CP_IXYH_UNDOC1      = 0xBC;
+constexpr unsigned int CP_IXYL_UNDOC1      = 0xBD;
+constexpr unsigned int CP_MIXY_P_n         = 0xBE;
+constexpr unsigned int IXY_BITS            = 0xCB;
+constexpr unsigned int POP_IXY             = 0xE1;
+constexpr unsigned int EX_MSP_IX           = 0xE3;
+constexpr unsigned int PUSH_IXY            = 0xE5;
+constexpr unsigned int JP_MIXY             = 0xE9;
+constexpr unsigned int LD_SP_IXY           = 0xF9;
 
 // IXY BITS opcodes
 
-#define RLC_MIXY_P_n_B_UNDOC1 0x00
-#define RLC_MIXY_P_n_C_UNDOC1 0x01
-#define RLC_MIXY_P_n_D_UNDOC1 0x02
-#define RLC_MIXY_P_n_E_UNDOC1 0x03
-#define RLC_MIXY_P_n_H_UNDOC1 0x04
-#define RLC_MIXY_P_n_L_UNDOC1 0x05
-#define RLC_MIXY_P_n          0x06
-#define RLC_MIXY_P_n_A_UNDOC1 0x07
-#define RL_MIXY_P_n_B_UNDOC1  0x10
+constexpr unsigned int RLC_MIXY_P_n_B_UNDOC1 = 0x00;
+constexpr unsigned int RLC_MIXY_P_n_C_UNDOC1 = 0x01;
+constexpr unsigned int RLC_MIXY_P_n_D_UNDOC1 = 0x02;
+constexpr unsigned int RLC_MIXY_P_n_E_UNDOC1 = 0x03;
+constexpr unsigned int RLC_MIXY_P_n_H_UNDOC1 = 0x04;
+constexpr unsigned int RLC_MIXY_P_n_L_UNDOC1 = 0x05;
+constexpr unsigned int RLC_MIXY_P_n          = 0x06;
+constexpr unsigned int RLC_MIXY_P_n_A_UNDOC1 = 0x07;
+constexpr unsigned int RL_MIXY_P_n_B_UNDOC1  = 0x10;
 
 // EXTD opcodes:
 
-#define SBC_HL_BC       0x42
-#define LD_Mnn_BC       0x43
-#define NEG             0x44
-#define IM_0_1          0x46
-#define ADC_HL_BC       0x4A
-#define LD_BC_Mnn       0x4B
-#define NEG_UNDOC1      0x4C
-#define SBC_HL_DE       0x52
-#define LD_Mnn_DE       0x53
-#define NEG_UNDOC2      0x54
-#define IM_1_1          0x56
-#define NEG_UNDOC3      0x5C
-#define ADC_HL_DE       0x5A
-#define LD_DE_Mnn       0x5B
-#define SBC_HL_HL       0x62
-#define LD_Mnn_HL_UNDOC 0x63
-#define NEG_UNDOC4      0x64
-#define IM_0_2          0x66
-#define RRD             0x67
-#define ADC_HL_HL       0x6A
-#define LD_HL_Mnn_UNDOC 0x6B
-#define NEG_UNDOC5      0x6C
-#define RLD             0x6F
-#define SBC_HL_SP       0x72
-#define LD_Mnn_SP       0x73
-#define NEG_UNDOC6      0x74
-#define IM_1_2          0x76
-#define ADC_HL_SP       0x7A
-#define LD_SP_Mnn       0x7B
-#define NEG_UNDOC7      0x7C
-#define LDI             0xA0
-#define CPI             0xA1
-#define LDD             0xA8
-#define CPD             0xA9
-#define LDIR            0xB0
-#define CPIR            0xB1
-#define LDDR            0xB8
-#define CPDR            0xB9
+constexpr unsigned int SBC_HL_BC       = 0x42;
+constexpr unsigned int LD_Mnn_BC       = 0x43;
+constexpr unsigned int NEG             = 0x44;
+constexpr unsigned int IM_0_1          = 0x46;
+constexpr unsigned int ADC_HL_BC       = 0x4A;
+constexpr unsigned int LD_BC_Mnn       = 0x4B;
+constexpr unsigned int NEG_UNDOC1      = 0x4C;
+constexpr unsigned int SBC_HL_DE       = 0x52;
+constexpr unsigned int LD_Mnn_DE       = 0x53;
+constexpr unsigned int NEG_UNDOC2      = 0x54;
+constexpr unsigned int IM_1_1          = 0x56;
+constexpr unsigned int NEG_UNDOC3      = 0x5C;
+constexpr unsigned int ADC_HL_DE       = 0x5A;
+constexpr unsigned int LD_DE_Mnn       = 0x5B;
+constexpr unsigned int SBC_HL_HL       = 0x62;
+constexpr unsigned int LD_Mnn_HL_UNDOC = 0x63;
+constexpr unsigned int NEG_UNDOC4      = 0x64;
+constexpr unsigned int IM_0_2          = 0x66;
+constexpr unsigned int RRD             = 0x67;
+constexpr unsigned int ADC_HL_HL       = 0x6A;
+constexpr unsigned int LD_HL_Mnn_UNDOC = 0x6B;
+constexpr unsigned int NEG_UNDOC5      = 0x6C;
+constexpr unsigned int RLD             = 0x6F;
+constexpr unsigned int SBC_HL_SP       = 0x72;
+constexpr unsigned int LD_Mnn_SP       = 0x73;
+constexpr unsigned int NEG_UNDOC6      = 0x74;
+constexpr unsigned int IM_1_2          = 0x76;
+constexpr unsigned int ADC_HL_SP       = 0x7A;
+constexpr unsigned int LD_SP_Mnn       = 0x7B;
+constexpr unsigned int NEG_UNDOC7      = 0x7C;
+constexpr unsigned int LDI             = 0xA0;
+constexpr unsigned int CPI             = 0xA1;
+constexpr unsigned int LDD             = 0xA8;
+constexpr unsigned int CPD             = 0xA9;
+constexpr unsigned int LDIR            = 0xB0;
+constexpr unsigned int CPIR            = 0xB1;
+constexpr unsigned int LDDR            = 0xB8;
+constexpr unsigned int CPDR            = 0xB9;
 
 // BITS opcodes:
 
-// @formatter:off
+
 namespace emu::z80 {
 
     using emu::misc::NextByte;

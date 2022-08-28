@@ -25,10 +25,10 @@ namespace emu::i8080 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void rar(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles) {
-        const bool should_set_carry_flag = is_bit_set(acc_reg, LOW_BIT);
+        const bool should_set_carry_flag = is_bit_set(acc_reg, lsb);
         acc_reg = acc_reg >> 1;
         if (flag_reg.is_carry_flag_set()) {
-            set_bit(acc_reg, HIGH_BIT);
+            set_bit(acc_reg, msb);
         }
         if (should_set_carry_flag) {
             flag_reg.set_carry_flag();

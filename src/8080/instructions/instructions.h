@@ -9,264 +9,265 @@
 #include "crosscutting/misc/next_byte.h"
 #include "crosscutting/misc/next_word.h"
 
-#define NOP           0x00
-#define LXI_B         0x01
-#define STAX_B        0x02
-#define INX_B         0x03
-#define INR_B         0x04
-#define DCR_B         0x05
-#define MVI_B         0x06
-#define RLC_B         0x07
-#define UNUSED_NOP_1  0x08
-#define DAD_B         0x09
-#define LDAX_B        0x0A
-#define DCX_B         0x0B
-#define INR_C         0x0C
-#define DCR_C         0x0D
-#define MVI_C         0x0E
-#define RRC           0x0F
-#define UNUSED_NOP_2  0x10
-#define LXI_D         0x11
-#define STAX_D        0x12
-#define INX_D         0x13
-#define INR_D         0x14
-#define DCR_D         0x15
-#define MVI_D         0x16
-#define RAL           0x17
-#define UNUSED_NOP_3  0x18
-#define DAD_D         0x19
-#define LDAX_D        0x1A
-#define DCX_D         0x1B
-#define INR_E         0x1C
-#define DCR_E         0x1D
-#define MVI_E         0x1E
-#define RAR           0x1F
-#define UNUSED_NOP_4  0x20
-#define LXI_H         0x21
-#define SHLD          0x22
-#define INX_H         0x23
-#define INR_H         0x24
-#define DCR_H         0x25
-#define MVI_H         0x26
-#define DAA           0x27
-#define UNUSED_NOP_5  0x28
-#define DAD_H         0x29
-#define LHLD          0x2A
-#define DCX_H         0x2B
-#define INR_L         0x2C
-#define DCR_L         0x2D
-#define MVI_L         0x2E
-#define CMA           0x2F
-#define UNUSED_NOP_6  0x30
-#define LXI_SP        0x31
-#define STA           0x32
-#define INX_SP        0x33
-#define INR_M         0x34
-#define DCR_M         0x35
-#define MVI_M         0x36
-#define STC           0x37
-#define UNUSED_NOP_7  0x38
-#define DAD_SP        0x39
-#define LDA           0x3A
-#define DCX_SP        0x3B
-#define INR_A         0x3C
-#define DCR_A         0x3D
-#define MVI_A         0x3E
-#define CMC           0x3F
-#define MOV_B_B       0x40
-#define MOV_B_C       0x41
-#define MOV_B_D       0x42
-#define MOV_B_E       0x43
-#define MOV_B_H       0x44
-#define MOV_B_L       0x45
-#define MOV_B_M       0x46
-#define MOV_B_A       0x47
-#define MOV_C_B       0x48
-#define MOV_C_C       0x49
-#define MOV_C_D       0x4A
-#define MOV_C_E       0x4B
-#define MOV_C_H       0x4C
-#define MOV_C_L       0x4D
-#define MOV_C_M       0x4E
-#define MOV_C_A       0x4F
-#define MOV_D_B       0x50
-#define MOV_D_C       0x51
-#define MOV_D_D       0x52
-#define MOV_D_E       0x53
-#define MOV_D_H       0x54
-#define MOV_D_L       0x55
-#define MOV_D_M       0x56
-#define MOV_D_A       0x57
-#define MOV_E_B       0x58
-#define MOV_E_C       0x59
-#define MOV_E_D       0x5A
-#define MOV_E_E       0x5B
-#define MOV_E_H       0x5C
-#define MOV_E_L       0x5D
-#define MOV_E_M       0x5E
-#define MOV_E_A       0x5F
-#define MOV_H_B       0x60
-#define MOV_H_C       0x61
-#define MOV_H_D       0x62
-#define MOV_H_E       0x63
-#define MOV_H_H       0x64
-#define MOV_H_L       0x65
-#define MOV_H_M       0x66
-#define MOV_H_A       0x67
-#define MOV_L_B       0x68
-#define MOV_L_C       0x69
-#define MOV_L_D       0x6A
-#define MOV_L_E       0x6B
-#define MOV_L_H       0x6C
-#define MOV_L_L       0x6D
-#define MOV_L_M       0x6E
-#define MOV_L_A       0x6F
-#define MOV_M_B       0x70
-#define MOV_M_C       0x71
-#define MOV_M_D       0x72
-#define MOV_M_E       0x73
-#define MOV_M_H       0x74
-#define MOV_M_L       0x75
-#define HLT           0x76
-#define MOV_M_A       0x77
-#define MOV_A_B       0x78
-#define MOV_A_C       0x79
-#define MOV_A_D       0x7A
-#define MOV_A_E       0x7B
-#define MOV_A_H       0x7C
-#define MOV_A_L       0x7D
-#define MOV_A_M       0x7E
-#define MOV_A_A       0x7F
-#define ADD_B         0x80
-#define ADD_C         0x81
-#define ADD_D         0x82
-#define ADD_E         0x83
-#define ADD_H         0x84
-#define ADD_L         0x85
-#define ADD_M         0x86
-#define ADD_A         0x87
-#define ADC_B         0x88
-#define ADC_C         0x89
-#define ADC_D         0x8A
-#define ADC_E         0x8B
-#define ADC_H         0x8C
-#define ADC_L         0x8D
-#define ADC_M         0x8E
-#define ADC_A         0x8F
-#define SUB_B         0x90
-#define SUB_C         0x91
-#define SUB_D         0x92
-#define SUB_E         0x93
-#define SUB_H         0x94
-#define SUB_L         0x95
-#define SUB_M         0x96
-#define SUB_A         0x97
-#define SBB_B         0x98
-#define SBB_C         0x99
-#define SBB_D         0x9A
-#define SBB_E         0x9B
-#define SBB_H         0x9C
-#define SBB_L         0x9D
-#define SBB_M         0x9E
-#define SBB_A         0x9F
-#define ANA_B         0xA0
-#define ANA_C         0xA1
-#define ANA_D         0xA2
-#define ANA_E         0xA3
-#define ANA_H         0xA4
-#define ANA_L         0xA5
-#define ANA_M         0xA6
-#define ANA_A         0xA7
-#define XRA_B         0xA8
-#define XRA_C         0xA9
-#define XRA_D         0xAA
-#define XRA_E         0xAB
-#define XRA_H         0xAC
-#define XRA_L         0xAD
-#define XRA_M         0xAE
-#define XRA_A         0xAF
-#define ORA_B         0xB0
-#define ORA_C         0xB1
-#define ORA_D         0xB2
-#define ORA_E         0xB3
-#define ORA_H         0xB4
-#define ORA_L         0xB5
-#define ORA_M         0xB6
-#define ORA_A         0xB7
-#define CMP_B         0xB8
-#define CMP_C         0xB9
-#define CMP_D         0xBA
-#define CMP_E         0xBB
-#define CMP_H         0xBC
-#define CMP_L         0xBD
-#define CMP_M         0xBE
-#define CMP_A         0xBF
-#define RNZ           0xC0
-#define POP_B         0xC1
-#define JNZ           0xC2
-#define JMP           0xC3
-#define CNZ           0xC4
-#define PUSH_B        0xC5
-#define ADI           0xC6
-#define RST_0         0xC7
-#define RZ            0xC8
-#define RET           0xC9
-#define JZ            0xCA
-#define UNUSED_JMP_1  0xCB
-#define CZ            0xCC
-#define CALL          0xCD
-#define ACI           0xCE
-#define RST_1         0xCF
-#define RNC           0xD0
-#define POP_D         0xD1
-#define JNC           0xD2
-#define OUT           0xD3
-#define CNC           0xD4
-#define PUSH_D        0xD5
-#define SUI           0xD6
-#define RST_2         0xD7
-#define RC            0xD8
-#define UNUSED_RET_1  0xD9
-#define JC            0xDA
-#define IN            0xDB
-#define CC            0xDC
-#define UNUSED_CALL_1 0xDD
-#define SBI           0xDE
-#define RST_3         0xDF
-#define RPO           0xE0
-#define POP_H         0xE1
-#define JPO           0xE2
-#define XTHL          0xE3
-#define CPO           0xE4
-#define PUSH_H        0xE5
-#define ANI           0xE6
-#define RST_4         0xE7
-#define RPE           0xE8
-#define PCHL          0xE9
-#define JPE           0xEA
-#define XCHG          0xEB
-#define CPE           0xEC
-#define UNUSED_CALL_2 0xED
-#define XRI           0xEE
-#define RST_5         0xEF
-#define RP            0xF0
-#define POP_PSW       0xF1
-#define JP            0xF2
-#define DI            0xF3
-#define CP            0xF4
-#define PUSH_PSW      0xF5
-#define ORI           0xF6
-#define RST_6         0xF7
-#define RM            0xF8
-#define SPHL          0xF9
-#define JM            0xFA
-#define EI            0xFB
-#define CM            0xFC
-#define UNUSED_CALL_3 0xFD
-#define CPI           0xFE
-#define RST_7         0xFF
-
 // @formatter:off
+
+constexpr unsigned int NOP           = 0x00;
+constexpr unsigned int LXI_B         = 0x01;
+constexpr unsigned int STAX_B        = 0x02;
+constexpr unsigned int INX_B         = 0x03;
+constexpr unsigned int INR_B         = 0x04;
+constexpr unsigned int DCR_B         = 0x05;
+constexpr unsigned int MVI_B         = 0x06;
+constexpr unsigned int RLC_B         = 0x07;
+constexpr unsigned int UNUSED_NOP_1  = 0x08;
+constexpr unsigned int DAD_B         = 0x09;
+constexpr unsigned int LDAX_B        = 0x0A;
+constexpr unsigned int DCX_B         = 0x0B;
+constexpr unsigned int INR_C         = 0x0C;
+constexpr unsigned int DCR_C         = 0x0D;
+constexpr unsigned int MVI_C         = 0x0E;
+constexpr unsigned int RRC           = 0x0F;
+constexpr unsigned int UNUSED_NOP_2  = 0x10;
+constexpr unsigned int LXI_D         = 0x11;
+constexpr unsigned int STAX_D        = 0x12;
+constexpr unsigned int INX_D         = 0x13;
+constexpr unsigned int INR_D         = 0x14;
+constexpr unsigned int DCR_D         = 0x15;
+constexpr unsigned int MVI_D         = 0x16;
+constexpr unsigned int RAL           = 0x17;
+constexpr unsigned int UNUSED_NOP_3  = 0x18;
+constexpr unsigned int DAD_D         = 0x19;
+constexpr unsigned int LDAX_D        = 0x1A;
+constexpr unsigned int DCX_D         = 0x1B;
+constexpr unsigned int INR_E         = 0x1C;
+constexpr unsigned int DCR_E         = 0x1D;
+constexpr unsigned int MVI_E         = 0x1E;
+constexpr unsigned int RAR           = 0x1F;
+constexpr unsigned int UNUSED_NOP_4  = 0x20;
+constexpr unsigned int LXI_H         = 0x21;
+constexpr unsigned int SHLD          = 0x22;
+constexpr unsigned int INX_H         = 0x23;
+constexpr unsigned int INR_H         = 0x24;
+constexpr unsigned int DCR_H         = 0x25;
+constexpr unsigned int MVI_H         = 0x26;
+constexpr unsigned int DAA           = 0x27;
+constexpr unsigned int UNUSED_NOP_5  = 0x28;
+constexpr unsigned int DAD_H         = 0x29;
+constexpr unsigned int LHLD          = 0x2A;
+constexpr unsigned int DCX_H         = 0x2B;
+constexpr unsigned int INR_L         = 0x2C;
+constexpr unsigned int DCR_L         = 0x2D;
+constexpr unsigned int MVI_L         = 0x2E;
+constexpr unsigned int CMA           = 0x2F;
+constexpr unsigned int UNUSED_NOP_6  = 0x30;
+constexpr unsigned int LXI_SP        = 0x31;
+constexpr unsigned int STA           = 0x32;
+constexpr unsigned int INX_SP        = 0x33;
+constexpr unsigned int INR_M         = 0x34;
+constexpr unsigned int DCR_M         = 0x35;
+constexpr unsigned int MVI_M         = 0x36;
+constexpr unsigned int STC           = 0x37;
+constexpr unsigned int UNUSED_NOP_7  = 0x38;
+constexpr unsigned int DAD_SP        = 0x39;
+constexpr unsigned int LDA           = 0x3A;
+constexpr unsigned int DCX_SP        = 0x3B;
+constexpr unsigned int INR_A         = 0x3C;
+constexpr unsigned int DCR_A         = 0x3D;
+constexpr unsigned int MVI_A         = 0x3E;
+constexpr unsigned int CMC           = 0x3F;
+constexpr unsigned int MOV_B_B       = 0x40;
+constexpr unsigned int MOV_B_C       = 0x41;
+constexpr unsigned int MOV_B_D       = 0x42;
+constexpr unsigned int MOV_B_E       = 0x43;
+constexpr unsigned int MOV_B_H       = 0x44;
+constexpr unsigned int MOV_B_L       = 0x45;
+constexpr unsigned int MOV_B_M       = 0x46;
+constexpr unsigned int MOV_B_A       = 0x47;
+constexpr unsigned int MOV_C_B       = 0x48;
+constexpr unsigned int MOV_C_C       = 0x49;
+constexpr unsigned int MOV_C_D       = 0x4A;
+constexpr unsigned int MOV_C_E       = 0x4B;
+constexpr unsigned int MOV_C_H       = 0x4C;
+constexpr unsigned int MOV_C_L       = 0x4D;
+constexpr unsigned int MOV_C_M       = 0x4E;
+constexpr unsigned int MOV_C_A       = 0x4F;
+constexpr unsigned int MOV_D_B       = 0x50;
+constexpr unsigned int MOV_D_C       = 0x51;
+constexpr unsigned int MOV_D_D       = 0x52;
+constexpr unsigned int MOV_D_E       = 0x53;
+constexpr unsigned int MOV_D_H       = 0x54;
+constexpr unsigned int MOV_D_L       = 0x55;
+constexpr unsigned int MOV_D_M       = 0x56;
+constexpr unsigned int MOV_D_A       = 0x57;
+constexpr unsigned int MOV_E_B       = 0x58;
+constexpr unsigned int MOV_E_C       = 0x59;
+constexpr unsigned int MOV_E_D       = 0x5A;
+constexpr unsigned int MOV_E_E       = 0x5B;
+constexpr unsigned int MOV_E_H       = 0x5C;
+constexpr unsigned int MOV_E_L       = 0x5D;
+constexpr unsigned int MOV_E_M       = 0x5E;
+constexpr unsigned int MOV_E_A       = 0x5F;
+constexpr unsigned int MOV_H_B       = 0x60;
+constexpr unsigned int MOV_H_C       = 0x61;
+constexpr unsigned int MOV_H_D       = 0x62;
+constexpr unsigned int MOV_H_E       = 0x63;
+constexpr unsigned int MOV_H_H       = 0x64;
+constexpr unsigned int MOV_H_L       = 0x65;
+constexpr unsigned int MOV_H_M       = 0x66;
+constexpr unsigned int MOV_H_A       = 0x67;
+constexpr unsigned int MOV_L_B       = 0x68;
+constexpr unsigned int MOV_L_C       = 0x69;
+constexpr unsigned int MOV_L_D       = 0x6A;
+constexpr unsigned int MOV_L_E       = 0x6B;
+constexpr unsigned int MOV_L_H       = 0x6C;
+constexpr unsigned int MOV_L_L       = 0x6D;
+constexpr unsigned int MOV_L_M       = 0x6E;
+constexpr unsigned int MOV_L_A       = 0x6F;
+constexpr unsigned int MOV_M_B       = 0x70;
+constexpr unsigned int MOV_M_C       = 0x71;
+constexpr unsigned int MOV_M_D       = 0x72;
+constexpr unsigned int MOV_M_E       = 0x73;
+constexpr unsigned int MOV_M_H       = 0x74;
+constexpr unsigned int MOV_M_L       = 0x75;
+constexpr unsigned int HLT           = 0x76;
+constexpr unsigned int MOV_M_A       = 0x77;
+constexpr unsigned int MOV_A_B       = 0x78;
+constexpr unsigned int MOV_A_C       = 0x79;
+constexpr unsigned int MOV_A_D       = 0x7A;
+constexpr unsigned int MOV_A_E       = 0x7B;
+constexpr unsigned int MOV_A_H       = 0x7C;
+constexpr unsigned int MOV_A_L       = 0x7D;
+constexpr unsigned int MOV_A_M       = 0x7E;
+constexpr unsigned int MOV_A_A       = 0x7F;
+constexpr unsigned int ADD_B         = 0x80;
+constexpr unsigned int ADD_C         = 0x81;
+constexpr unsigned int ADD_D         = 0x82;
+constexpr unsigned int ADD_E         = 0x83;
+constexpr unsigned int ADD_H         = 0x84;
+constexpr unsigned int ADD_L         = 0x85;
+constexpr unsigned int ADD_M         = 0x86;
+constexpr unsigned int ADD_A         = 0x87;
+constexpr unsigned int ADC_B         = 0x88;
+constexpr unsigned int ADC_C         = 0x89;
+constexpr unsigned int ADC_D         = 0x8A;
+constexpr unsigned int ADC_E         = 0x8B;
+constexpr unsigned int ADC_H         = 0x8C;
+constexpr unsigned int ADC_L         = 0x8D;
+constexpr unsigned int ADC_M         = 0x8E;
+constexpr unsigned int ADC_A         = 0x8F;
+constexpr unsigned int SUB_B         = 0x90;
+constexpr unsigned int SUB_C         = 0x91;
+constexpr unsigned int SUB_D         = 0x92;
+constexpr unsigned int SUB_E         = 0x93;
+constexpr unsigned int SUB_H         = 0x94;
+constexpr unsigned int SUB_L         = 0x95;
+constexpr unsigned int SUB_M         = 0x96;
+constexpr unsigned int SUB_A         = 0x97;
+constexpr unsigned int SBB_B         = 0x98;
+constexpr unsigned int SBB_C         = 0x99;
+constexpr unsigned int SBB_D         = 0x9A;
+constexpr unsigned int SBB_E         = 0x9B;
+constexpr unsigned int SBB_H         = 0x9C;
+constexpr unsigned int SBB_L         = 0x9D;
+constexpr unsigned int SBB_M         = 0x9E;
+constexpr unsigned int SBB_A         = 0x9F;
+constexpr unsigned int ANA_B         = 0xA0;
+constexpr unsigned int ANA_C         = 0xA1;
+constexpr unsigned int ANA_D         = 0xA2;
+constexpr unsigned int ANA_E         = 0xA3;
+constexpr unsigned int ANA_H         = 0xA4;
+constexpr unsigned int ANA_L         = 0xA5;
+constexpr unsigned int ANA_M         = 0xA6;
+constexpr unsigned int ANA_A         = 0xA7;
+constexpr unsigned int XRA_B         = 0xA8;
+constexpr unsigned int XRA_C         = 0xA9;
+constexpr unsigned int XRA_D         = 0xAA;
+constexpr unsigned int XRA_E         = 0xAB;
+constexpr unsigned int XRA_H         = 0xAC;
+constexpr unsigned int XRA_L         = 0xAD;
+constexpr unsigned int XRA_M         = 0xAE;
+constexpr unsigned int XRA_A         = 0xAF;
+constexpr unsigned int ORA_B         = 0xB0;
+constexpr unsigned int ORA_C         = 0xB1;
+constexpr unsigned int ORA_D         = 0xB2;
+constexpr unsigned int ORA_E         = 0xB3;
+constexpr unsigned int ORA_H         = 0xB4;
+constexpr unsigned int ORA_L         = 0xB5;
+constexpr unsigned int ORA_M         = 0xB6;
+constexpr unsigned int ORA_A         = 0xB7;
+constexpr unsigned int CMP_B         = 0xB8;
+constexpr unsigned int CMP_C         = 0xB9;
+constexpr unsigned int CMP_D         = 0xBA;
+constexpr unsigned int CMP_E         = 0xBB;
+constexpr unsigned int CMP_H         = 0xBC;
+constexpr unsigned int CMP_L         = 0xBD;
+constexpr unsigned int CMP_M         = 0xBE;
+constexpr unsigned int CMP_A         = 0xBF;
+constexpr unsigned int RNZ           = 0xC0;
+constexpr unsigned int POP_B         = 0xC1;
+constexpr unsigned int JNZ           = 0xC2;
+constexpr unsigned int JMP           = 0xC3;
+constexpr unsigned int CNZ           = 0xC4;
+constexpr unsigned int PUSH_B        = 0xC5;
+constexpr unsigned int ADI           = 0xC6;
+constexpr unsigned int RST_0         = 0xC7;
+constexpr unsigned int RZ            = 0xC8;
+constexpr unsigned int RET           = 0xC9;
+constexpr unsigned int JZ            = 0xCA;
+constexpr unsigned int UNUSED_JMP_1  = 0xCB;
+constexpr unsigned int CZ            = 0xCC;
+constexpr unsigned int CALL          = 0xCD;
+constexpr unsigned int ACI           = 0xCE;
+constexpr unsigned int RST_1         = 0xCF;
+constexpr unsigned int RNC           = 0xD0;
+constexpr unsigned int POP_D         = 0xD1;
+constexpr unsigned int JNC           = 0xD2;
+constexpr unsigned int OUT           = 0xD3;
+constexpr unsigned int CNC           = 0xD4;
+constexpr unsigned int PUSH_D        = 0xD5;
+constexpr unsigned int SUI           = 0xD6;
+constexpr unsigned int RST_2         = 0xD7;
+constexpr unsigned int RC            = 0xD8;
+constexpr unsigned int UNUSED_RET_1  = 0xD9;
+constexpr unsigned int JC            = 0xDA;
+constexpr unsigned int IN            = 0xDB;
+constexpr unsigned int CC            = 0xDC;
+constexpr unsigned int UNUSED_CALL_1 = 0xDD;
+constexpr unsigned int SBI           = 0xDE;
+constexpr unsigned int RST_3         = 0xDF;
+constexpr unsigned int RPO           = 0xE0;
+constexpr unsigned int POP_H         = 0xE1;
+constexpr unsigned int JPO           = 0xE2;
+constexpr unsigned int XTHL          = 0xE3;
+constexpr unsigned int CPO           = 0xE4;
+constexpr unsigned int PUSH_H        = 0xE5;
+constexpr unsigned int ANI           = 0xE6;
+constexpr unsigned int RST_4         = 0xE7;
+constexpr unsigned int RPE           = 0xE8;
+constexpr unsigned int PCHL          = 0xE9;
+constexpr unsigned int JPE           = 0xEA;
+constexpr unsigned int XCHG          = 0xEB;
+constexpr unsigned int CPE           = 0xEC;
+constexpr unsigned int UNUSED_CALL_2 = 0xED;
+constexpr unsigned int XRI           = 0xEE;
+constexpr unsigned int RST_5         = 0xEF;
+constexpr unsigned int RP            = 0xF0;
+constexpr unsigned int POP_PSW       = 0xF1;
+constexpr unsigned int JP            = 0xF2;
+constexpr unsigned int DI            = 0xF3;
+constexpr unsigned int CP            = 0xF4;
+constexpr unsigned int PUSH_PSW      = 0xF5;
+constexpr unsigned int ORI           = 0xF6;
+constexpr unsigned int RST_6         = 0xF7;
+constexpr unsigned int RM            = 0xF8;
+constexpr unsigned int SPHL          = 0xF9;
+constexpr unsigned int JM            = 0xFA;
+constexpr unsigned int EI            = 0xFB;
+constexpr unsigned int CM            = 0xFC;
+constexpr unsigned int UNUSED_CALL_3 = 0xFD;
+constexpr unsigned int CPI           = 0xFE;
+constexpr unsigned int RST_7         = 0xFF;
+
 namespace emu::i8080 {
 
     using emu::misc::NextByte;
