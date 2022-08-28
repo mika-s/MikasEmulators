@@ -122,6 +122,75 @@ namespace emu::z80 {
         cycles = 10;
     }
 
+    /**
+     * Increment IXH/IYH
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 6</li>
+     *   <li>States: 8</li>
+     *   <li>Condition bits affected: half carry, zero, sign, parity/overflow, add/subtract</li>
+     * </ul>
+     *
+     * @param ixy_reg is the IX or IY register
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void inc_ixyh(u16 &ixy_reg, Flags &flag_reg, unsigned long &cycles) {
+        u8 ixyh = second_byte(ixy_reg);
+        const u8 ixyl = first_byte(ixy_reg);
+
+        inc(ixyh, flag_reg);
+
+        ixy_reg = to_u16(ixyh, ixyl);
+
+        cycles = 8;
+    }
+
+    /**
+     * Increment IXL/IYL
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 6</li>
+     *   <li>States: 8</li>
+     *   <li>Condition bits affected: half carry, zero, sign, parity/overflow, add/subtract</li>
+     * </ul>
+     *
+     * @param ixy_reg is the IX or IY register
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void inc_ixyl(u16 &ixy_reg, Flags &flag_reg, unsigned long &cycles) {
+        const u8 ixyh = second_byte(ixy_reg);
+        u8 ixyl = first_byte(ixy_reg);
+
+        inc(ixyl, flag_reg);
+
+        ixy_reg = to_u16(ixyh, ixyl);
+
+        cycles = 8;
+    }
+
+    /**
+     * Increment value in memory pointed to by IX or IY plus d
+     * <ul>
+     *   <li>Size: 3</li>
+     *   <li>Cycles: 6</li>
+     *   <li>States: 23</li>
+     *   <li>Condition bits affected: half carry, zero, sign, parity/overflow, add/subtract</li>
+     * </ul>
+     *
+     * @param ixy_reg is the IX or IY register containing the base address
+     * @param args contains address offset
+     * @param memory is the memory, which will be mutated
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void inc_MixyPd(u16 ixy_reg, const NextByte &args, EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles) {
+        inc(memory[ixy_reg + static_cast<i8>(args.farg)], flag_reg);
+
+        cycles = 23;
+    }
+
     void print_inc(std::ostream &ostream, const std::string &reg) {
         ostream << "INC "
                 << reg;

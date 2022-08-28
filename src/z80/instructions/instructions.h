@@ -343,55 +343,117 @@
 
 // IX/IY opcodes:
 
-#define ADD_IXY_BC       0x09
-#define ADD_IXY_DE       0x19
-#define LD_IXY_nn        0x21
-#define LD_Mnn_IXY       0x22
-#define INC_IXY          0x23
-#define INC_IXH_UNDOC1   0x24
-#define ADD_IXY_IXY      0x29
-#define LD_IXY_Mnn       0x2A
-#define DEC_IXY          0x2B
-#define INC_IXL_UNDOC1   0x2C
-#define INC_MIXY_P_n     0x34
-#define ADD_IXY_SP       0x39
-#define LD_B_MIXY_P_n    0x46
-#define LD_C_MIXY_P_n    0x4E
-#define LD_D_MIXY_P_n    0x56
-#define LD_E_MIXY_P_n    0x5E
-#define LD_H_MIXY_P_n    0x66
-#define LD_L_MIXY_P_n    0x6E
-#define LD_A_MIXY_P_n    0x7E
-#define ADD_A_IXYH_UNDOC 0x84
-#define ADD_A_IXYL_UNDOC 0x85
-#define ADD_A_MIXY_P_n   0x86
-#define ADC_A_IXYH_UNDOC 0x8C
-#define ADC_A_IXYL_UNDOC 0x8D
-#define ADC_A_MIXY_P_n   0x8E
-#define SUB_IXYH_UNDOC1  0x94
-#define SUB_IXYL_UNDOC1  0x95
-#define SUB_MIXY_P_n     0x96
-#define SBC_A_IXYH_UNDOC 0x9C
-#define SBC_A_IXYL_UNDOC 0x9D
-#define SBC_A_MIXY_P_n   0x9E
-#define AND_IXYL_UNDOC1  0xA4
-#define AND_IXYH_UNDOC1  0xA5
-#define AND_MIXY_P_n     0xA6
-#define XOR_IXYH_UNDOC1  0xAC
-#define XOR_IXYL_UNDOC1  0xAD
-#define XOR_MIXY_P_n     0xAE
-#define OR_IXYL_UNDOC1   0xB4
-#define OR_IXYH_UNDOC1   0xB5
-#define OR_MIXY_P_n      0xB6
-#define CP_IXYH_UNDOC1   0xBC
-#define CP_IXYL_UNDOC1   0xBD
-#define CP_MIXY_P_n      0xBE
-#define IXY_BITS         0xCB
-#define POP_IXY          0xE1
-#define EX_MSP_IX        0xE3
-#define PUSH_IXY         0xE5
-#define JP_MIXY          0xE9
-#define LD_SP_IXY        0xF9
+#define ADD_IXY_BC          0x09
+#define ADD_IXY_DE          0x19
+#define LD_IXY_nn           0x21
+#define LD_Mnn_IXY          0x22
+#define INC_IXY             0x23
+#define INC_IXH_UNDOC1      0x24
+#define DEC_IXH_UNDOC1      0x25
+#define LD_IXYH_n_UNDOC     0x26
+#define ADD_IXY_IXY         0x29
+#define LD_IXY_Mnn          0x2A
+#define DEC_IXY             0x2B
+#define INC_IXL_UNDOC1      0x2C
+#define DEC_IXL_UNDOC1      0x2D
+#define LD_IXYL_n_UNDOC     0x2E
+#define INC_MIXY_P_n        0x34
+#define DEC_MIXY_P_n        0x35
+#define LD_MIXY_P_n_d       0x36
+#define ADD_IXY_SP          0x39
+#define LD_B_B_UNDOC        0x40
+#define LD_B_C_UNDOC        0x41
+#define LD_B_D_UNDOC        0x42
+#define LD_B_E_UNDOC        0x43
+#define LD_B_IXYH_UNDOC     0x44
+#define LD_B_IXYL_UNDOC     0x45
+#define LD_B_MIXY_P_n       0x46
+#define LD_B_A_UNDOC        0x47
+#define LD_C_B_UNDOC        0x48
+#define LD_C_C_UNDOC        0x49
+#define LD_C_D_UNDOC        0x4A
+#define LD_C_E_UNDOC        0x4B
+#define LD_C_IXYH_UNDOC     0x4C
+#define LD_C_IXYL_UNDOC     0x4D
+#define LD_C_MIXY_P_n       0x4E
+#define LD_C_A_UNDOC        0x4F
+#define LD_D_B_UNDOC        0x50
+#define LD_D_C_UNDOC        0x51
+#define LD_D_D_UNDOC        0x52
+#define LD_D_E_UNDOC        0x53
+#define LD_D_IXYH_UNDOC     0x54
+#define LD_D_IXYL_UNDOC     0x55
+#define LD_D_MIXY_P_n       0x56
+#define LD_D_A_UNDOC        0x57
+#define LD_E_B_UNDOC        0x58
+#define LD_E_C_UNDOC        0x59
+#define LD_E_D_UNDOC        0x5A
+#define LD_E_E_UNDOC        0x5B
+#define LD_E_IXYH_UNDOC     0x5C
+#define LD_E_IXYL_UNDOC     0x5D
+#define LD_E_MIXY_P_n       0x5E
+#define LD_E_A_UNDOC        0x5F
+#define LD_IXYH_B_UNDOC     0x60
+#define LD_IXYH_C_UNDOC     0x61
+#define LD_IXYH_D_UNDOC     0x62
+#define LD_IXYH_E_UNDOC     0x63
+#define LD_IXYH_IXYH_UNDOC  0x64
+#define LD_IXYH_IXYL_UNDOC  0x65
+#define LD_H_MIXY_P_n       0x66
+#define LD_IXYH_A_UNDOC     0x67
+#define LD_IXYL_B_UNDOC     0x68
+#define LD_IXYL_C_UNDOC     0x69
+#define LD_IXYL_D_UNDOC     0x6A
+#define LD_IXYL_E_UNDOC     0x6B
+#define LD_IXYL_IXYH_UNDOC  0x6C
+#define LD_IXYL_IXYL_UNDOC  0x6D
+#define LD_L_MIXY_P_n       0x6E
+#define LD_IXYL_A_UNDOC     0x6F
+#define LD_MIXY_P_n_B       0x70
+#define LD_MIXY_P_n_C       0x71
+#define LD_MIXY_P_n_D       0x72
+#define LD_MIXY_P_n_E       0x73
+#define LD_MIXY_P_n_H       0x74
+#define LD_MIXY_P_n_L       0x75
+#define LD_MIXY_P_n_A       0x77
+#define LD_A_B_UNDOC        0x78
+#define LD_A_C_UNDOC        0x79
+#define LD_A_D_UNDOC        0x7A
+#define LD_A_E_UNDOC        0x7B
+#define LD_A_IXYH_UNDOC     0x7C
+#define LD_A_IXYL_UNDOC     0x7D
+#define LD_A_MIXY_P_n       0x7E
+#define LD_A_A_UNDOC        0x7F
+#define ADD_A_IXYH_UNDOC    0x84
+#define ADD_A_IXYL_UNDOC    0x85
+#define ADD_A_MIXY_P_n      0x86
+#define ADC_A_IXYH_UNDOC    0x8C
+#define ADC_A_IXYL_UNDOC    0x8D
+#define ADC_A_MIXY_P_n      0x8E
+#define SUB_IXYH_UNDOC1     0x94
+#define SUB_IXYL_UNDOC1     0x95
+#define SUB_MIXY_P_n        0x96
+#define SBC_A_IXYH_UNDOC    0x9C
+#define SBC_A_IXYL_UNDOC    0x9D
+#define SBC_A_MIXY_P_n      0x9E
+#define AND_IXYL_UNDOC1     0xA4
+#define AND_IXYH_UNDOC1     0xA5
+#define AND_MIXY_P_n        0xA6
+#define XOR_IXYH_UNDOC1     0xAC
+#define XOR_IXYL_UNDOC1     0xAD
+#define XOR_MIXY_P_n        0xAE
+#define OR_IXYL_UNDOC1      0xB4
+#define OR_IXYH_UNDOC1      0xB5
+#define OR_MIXY_P_n         0xB6
+#define CP_IXYH_UNDOC1      0xBC
+#define CP_IXYL_UNDOC1      0xBD
+#define CP_MIXY_P_n         0xBE
+#define IXY_BITS            0xCB
+#define POP_IXY             0xE1
+#define EX_MSP_IX           0xE3
+#define PUSH_IXY            0xE5
+#define JP_MIXY             0xE9
+#define LD_SP_IXY           0xF9
 
 // IXY BITS opcodes
 
@@ -407,36 +469,44 @@
 
 // EXTD opcodes:
 
-#define SBC_HL_BC     0x42
-#define LD_Mnn_BC     0x43
-#define NEG           0x44
-#define IM_0_1        0x46
-#define ADC_HL_BC     0x4A
-#define LD_BC_Mnn     0x4B
-#define NEG_UNDOC1    0x4C
-#define SBC_HL_DE     0x52
-#define NEG_UNDOC2    0x54
-#define IM_1_1        0x56
-#define NEG_UNDOC3    0x5C
-#define ADC_HL_DE     0x5A
-#define SBC_HL_HL     0x62
-#define NEG_UNDOC4    0x64
-#define IM_0_2        0x66
-#define RRD           0x67
-#define ADC_HL_HL     0x6A
-#define NEG_UNDOC5    0x6C
-#define SBC_HL_SP     0x72
-#define LD_Mnn_sp     0x73
-#define NEG_UNDOC6    0x74
-#define IM_1_2        0x76
-#define ADC_HL_SP     0x7A
-#define LD_sp_Mnn     0x7B
-#define NEG_UNDOC7    0x7C
-#define LDI           0xA0
-#define CPI           0xA1
-#define CPD           0xA9
-#define LDIR          0xB0
-#define CPDR          0xB9
+#define SBC_HL_BC       0x42
+#define LD_Mnn_BC       0x43
+#define NEG             0x44
+#define IM_0_1          0x46
+#define ADC_HL_BC       0x4A
+#define LD_BC_Mnn       0x4B
+#define NEG_UNDOC1      0x4C
+#define SBC_HL_DE       0x52
+#define LD_Mnn_DE       0x53
+#define NEG_UNDOC2      0x54
+#define IM_1_1          0x56
+#define NEG_UNDOC3      0x5C
+#define ADC_HL_DE       0x5A
+#define LD_DE_Mnn       0x5B
+#define SBC_HL_HL       0x62
+#define LD_Mnn_HL_UNDOC 0x63
+#define NEG_UNDOC4      0x64
+#define IM_0_2          0x66
+#define RRD             0x67
+#define ADC_HL_HL       0x6A
+#define LD_HL_Mnn_UNDOC 0x6B
+#define NEG_UNDOC5      0x6C
+#define RLD             0x6F
+#define SBC_HL_SP       0x72
+#define LD_Mnn_SP       0x73
+#define NEG_UNDOC6      0x74
+#define IM_1_2          0x76
+#define ADC_HL_SP       0x7A
+#define LD_SP_Mnn       0x7B
+#define NEG_UNDOC7      0x7C
+#define LDI             0xA0
+#define CPI             0xA1
+#define LDD             0xA8
+#define CPD             0xA9
+#define LDIR            0xB0
+#define CPIR            0xB1
+#define LDDR            0xB8
+#define CPDR            0xB9
 
 // BITS opcodes:
 
@@ -477,6 +547,8 @@ namespace emu::z80 {
     void ccf(Flags &flag_reg, unsigned long &cycles);
     void cpd(u8 &b_reg, u8 &c_reg, u8 &h_reg, u8 &l_reg, u8 acc_reg, const EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles);
     void cpdr(u16 &pc, u8 &b_reg, u8 &c_reg, u8 &h_reg, u8 &l_reg, u8 acc_reg, const EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles);
+    void cpi(u8 &b_reg, u8 &c_reg, u8 &h_reg, u8 &l_reg, u8 acc_reg, const EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles);
+    void cpir(u16 &pc, u8 &b_reg, u8 &c_reg, u8 &h_reg, u8 &l_reg, u8 acc_reg, const EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles);
     void cp_r(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
     void cp_n(u8 &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles);
     void cp_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
@@ -488,6 +560,9 @@ namespace emu::z80 {
     void dec_sp(u16 &sp, unsigned long &cycles);
     void dec_MHL(u8 &value_in_hl, Flags &flag_reg, unsigned long &cycles);
     void dec_ixy(u16 &ix_or_iy, unsigned long &cycles);
+    void dec_ixyh(u16 &ixy_reg, Flags &flag_reg, unsigned long &cycles);
+    void dec_ixyl(u16 &ixy_reg, Flags &flag_reg, unsigned long &cycles);
+    void dec_MixyPd(u16 ixy_reg, const NextByte &args, EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles);
     void di(bool &iff1, bool &iff2, unsigned long &cycles);
     void djnz(u8 &b_reg, u16 &pc, const NextByte &args, unsigned long &cycles);
     void ei(bool &iff1, bool &iff2, unsigned long &cycles);
@@ -503,6 +578,9 @@ namespace emu::z80 {
     void inc_MHL(u8 &value_in_hl, Flags &flag_reg, unsigned long &cycles);
     void inc_sp(u16 &sp, unsigned long &cycles);
     void inc_ixy(u16 &ixy_reg, unsigned long &cycles);
+    void inc_ixyh(u16 &ixy_reg, Flags &flag_reg, unsigned long &cycles);
+    void inc_ixyl(u16 &ixy_reg, Flags &flag_reg, unsigned long &cycles);
+    void inc_MixyPd(u16 ixy_reg, const NextByte &args, EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles);
     void jp(u16 &pc, const NextWord &args, unsigned long &cycles);
     void jp_c(u16 &pc, const NextWord &args, const Flags &flag_reg, unsigned long &cycles);
     void jp_hl(u16 &pc, u16 address, unsigned long &cycles);
@@ -522,19 +600,27 @@ namespace emu::z80 {
     void ldax(u8 &acc_reg, u8 reg1, u8 reg2, const EmulatorMemory &memory, unsigned long &cycles);
     void ld_r_n(u8 &reg, const NextByte &args, unsigned long &cycles);
     void ld_r_r(u8 &to, u8 value, unsigned long &cycles);
+    void ld_r_r_undoc(u8 &to, u8 value, unsigned long &cycles);
     void ld_r_MHL(u8 &reg, u8 value, unsigned long &cycles);
     void ld_A_Mss(u8 &to, u8 value, unsigned long &cycles);
     void ld_A_Mnn(u8 &reg, const EmulatorMemory &memory, const NextWord &args, unsigned long &cycles);
     void ld_HL_Mnn(u8 &reg1, u8 &reg2, const EmulatorMemory &memory, const NextWord &args, unsigned long &cycles);
     void ld_dd_nn(u8 &reg1, u8 &reg2, const NextWord &args, unsigned long &cycles);
     void ld_ixy_nn(u16 &ixy_reg, const NextWord &args, unsigned long &cycles);
+    void ld_dd_Mnn(u8 &reg1, u8 &reg2, const NextByte &args, const EmulatorMemory &memory, unsigned long &cycles);
     void ld_ixy_Mnn(u16 &ixy_reg, const NextByte &args, const EmulatorMemory &memory, unsigned long &cycles);
+    void ld_ixyh_n(u16 &ixy_reg, const NextByte &args, unsigned long &cycles);
+    void ld_ixyl_n(u16 &ixy_reg, const NextByte &args, unsigned long &cycles);
+    void ld_ixyh_r_undoc(u16 &ixy_reg, u8 value, unsigned long &cycles);
+    void ld_ixyl_r_undoc(u16 &ixy_reg, u8 value, unsigned long &cycles);
     void ld_r_MixyPd(u8 &reg, u16 ixy_reg, const NextByte &args, const EmulatorMemory &memory, unsigned long &cycles);
     void ld_MHL_n(u8 &reg, const NextByte &args, unsigned long &cycles);
     void ld_MHL_r(u8 &to, u8 value, unsigned long &cycles);
+    void ld_MixyPd_n(u16 ixy_reg, const NextWord &args, EmulatorMemory &memory, unsigned long &cycles);
+    void ld_MixyPd_r(u16 ixy_reg, const NextByte &args, EmulatorMemory &memory, u8 reg, unsigned long &cycles);
     void ld_Mnn_A(u8 &acc_reg, EmulatorMemory &memory, const NextWord &args, unsigned long &cycles);
     void ld_Mnn_HL(u8 l_reg, u8 h_reg, EmulatorMemory &memory, const NextWord &args, unsigned long &cycles);
-    void ld_Mnn_dd(u8 l_reg, u8 h_reg, EmulatorMemory &memory, const NextWord &args, unsigned long &cycles);
+    void ld_Mnn_dd(u8 reg1, u8 reg2, EmulatorMemory &memory, const NextWord &args, unsigned long &cycles);
     void ld_Mnn_sp(u16 sp, EmulatorMemory &memory, const NextWord &args, unsigned long &cycles);
     void ld_Mnn_ixy(const NextByte &args, EmulatorMemory &memory, u16 ixy_reg, unsigned long &cycles);
     void ld_Mss_A(u8 &to, u8 acc_reg, unsigned long &cycles);
@@ -542,6 +628,9 @@ namespace emu::z80 {
     void ld_sp_nn(u16 &sp, const NextWord &args, unsigned long &cycles);
     void ld_sp_hl(u16 &sp, u16 address, unsigned long &cycles);
     void ld_sp_ixy(u16 &sp, u16 ixy, unsigned long &cycles);
+    void ldd(u8 &b_reg, u8 &c_reg, u8 &d_reg, u8 &e_reg, u8 &h_reg, u8 &l_reg, u8 acc_reg, EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles);
+    void lddr(u16 &pc, u8 &b_reg, u8 &c_reg, u8 &d_reg, u8 &e_reg, u8 &h_reg, u8 &l_reg, u8 acc_reg, EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles);
+    void ldi(u8 &b_reg, u8 &c_reg, u8 &d_reg, u8 &e_reg, u8 &h_reg, u8 &l_reg, u8 acc_reg, EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles);
     void ldir(u16 &pc, u8 &b_reg, u8 &c_reg, u8 &d_reg, u8 &e_reg, u8 &h_reg, u8 &l_reg, u8 acc_reg, EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles);
     void neg(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles);
     void nop(unsigned long &cycles);
@@ -570,6 +659,7 @@ namespace emu::z80 {
     void rlc_r(u8 &reg, Flags &flag_reg, unsigned long &cycles);
     void rlc_MixyPd(u16 ixy_reg, const NextByte &args, const EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles);
     void rlc_MixyPd_r(u8 &reg, u16 ixy_reg, const NextByte &args, const EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles);
+    void rld(u8 &acc_reg, u8 &value, Flags &flag_reg, unsigned long &cycles);
     void rra(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles);
     void rrca(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles);
     void rrd(u8 &acc_reg, u8 &value, Flags &flag_reg, unsigned long &cycles);
@@ -592,8 +682,6 @@ namespace emu::z80 {
     void sub_n(u8 &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles);
     void sub_r(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
     void sub_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
-    void unused_1(u8 opcode, unsigned long &cycles);
-    void unused_3(u8 opcode, u16 &pc, unsigned long &cycles);
     void xor_n(u8 &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles);
     void xor_r(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
     void xor_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
@@ -618,11 +706,13 @@ namespace emu::z80 {
     void print_cpd(std::ostream &ostream);
     void print_cpdr(std::ostream &ostream);
     void print_cpi(std::ostream &ostream);
+    void print_cpir(std::ostream &ostream);
     void print_cpl(std::ostream &ostream);
     void print_daa(std::ostream &ostream);
     void print_di(std::ostream &ostream);
     void print_djnz(std::ostream &ostream, const NextByte &args);
     void print_dec(std::ostream &ostream, const std::string &reg);
+    void print_dec_MixyPn(std::ostream &ostream, const std::string &ixy_reg, const NextByte &args);
     void print_ei(std::ostream &ostream);
     void print_ex(std::ostream &ostream, const std::string& reg, const std::string& comp_reg);
     void print_exx(std::ostream &ostream);
@@ -642,6 +732,8 @@ namespace emu::z80 {
     void print_ld_dd_nn(std::ostream &ostream, const std::string &reg, const NextWord &args);
     void print_ld_Mnn_dd(std::ostream &ostream, const NextWord &args, const std::string &src);
     void print_ld_r_MixyPn(std::ostream &ostream, const std::string &dest, const std::string &ixy_reg, const NextByte &args);
+    void print_ldd(std::ostream &ostream);
+    void print_lddr(std::ostream &ostream);
     void print_ldi(std::ostream &ostream);
     void print_ldir(std::ostream &ostream);
     void print_neg(std::ostream &ostream);
@@ -661,6 +753,7 @@ namespace emu::z80 {
     void print_rlc_MixyPn(std::ostream &ostream, const std::string &ixy_reg, const NextByte &args);
     void print_rlc_MixyPn_r(std::ostream &ostream, const std::string &ixy_reg, const NextByte &args, const std::string &reg);
     void print_rlca(std::ostream &ostream);
+    void print_rld(std::ostream &ostream);
     void print_rst(std::ostream &ostream, int number);
     void print_rr(std::ostream &ostream, const std::string &reg);
     void print_rra(std::ostream &ostream);
@@ -674,10 +767,8 @@ namespace emu::z80 {
     void print_sub(std::ostream &ostream, const std::string &reg);
     void print_sub(std::ostream &ostream, const NextByte &args);
     void print_sub_MixyPn(std::ostream &ostream, const std::string &ixy_reg, const NextByte &args);
-    void print_unused_nop(std::ostream &ostream);
     void print_unused_jmp(std::ostream &ostream, const NextWord &args);
     void print_unused_ret(std::ostream &ostream);
-    void print_unused_call(std::ostream &ostream, const NextWord &args);
     void print_xor_r(std::ostream &ostream, const std::string &reg);
     void print_xor_n(std::ostream &ostream, const NextByte &args);
     void print_xor_MixyPn(std::ostream &ostream, const std::string &ixy_reg, const NextByte &args);

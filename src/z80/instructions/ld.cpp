@@ -40,6 +40,73 @@ namespace emu::z80 {
     }
 
     /**
+     * Move from register to register (undocumented instructions)
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 8</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param to is the register or memory location to move value to
+     * @param value is the value to move into to
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void ld_r_r_undoc(u8 &to, u8 value, unsigned long &cycles) {
+        ld(to, value);
+
+        cycles = 8;
+    }
+
+    /**
+     * Move from register to IXH or IYH (undocumented instructions)
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 8</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param to is the register or memory location to move value to
+     * @param value is the value to move into to
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void ld_ixyh_r_undoc(u16 &ixy_reg, u8 value, unsigned long &cycles) {
+        u8 ixyh = second_byte(ixy_reg);
+        const u8 ixyl = first_byte(ixy_reg);
+
+        ld(ixyh, value);
+
+        ixy_reg = to_u16(ixyh, ixyl);
+
+        cycles = 8;
+    }
+
+    /**
+     * Move from register to IXL or IYL (undocumented instructions)
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 8</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param to is the register or memory location to move value to
+     * @param value is the value to move into to
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void ld_ixyl_r_undoc(u16 &ixy_reg, u8 value, unsigned long &cycles) {
+        const u8 ixyh = second_byte(ixy_reg);
+        u8 ixyl = first_byte(ixy_reg);
+
+        ld(ixyl, value);
+
+        ixy_reg = to_u16(ixyh, ixyl);
+
+        cycles = 8;
+    }
+
+    /**
      * Move immediate
      * <ul>
      *   <li>Size: 2</li>
@@ -259,6 +326,54 @@ namespace emu::z80 {
     }
 
     /**
+     * Move immediate into IXH/IYH
+     * <ul>
+     *   <li>Size: 3</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 11</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param ixy_reg is the IX or IY register to load into, which will be mutated
+     * @param args contains value to load into the register
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void ld_ixyh_n(u16 &ixy_reg, const NextByte &args, unsigned long &cycles) {
+        u8 hi = second_byte(ixy_reg);
+        const u8 lo = first_byte(ixy_reg);
+
+        ld(hi, args.farg);
+
+        ixy_reg = to_u16(hi, lo);
+
+        cycles = 11;
+    }
+
+    /**
+     * Move immediate into IXH/IYH
+     * <ul>
+     *   <li>Size: 3</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 11</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param ixy_reg is the IX or IY register to load into, which will be mutated
+     * @param args contains value to load into the register
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void ld_ixyl_n(u16 &ixy_reg, const NextByte &args, unsigned long &cycles) {
+        const u8 hi = second_byte(ixy_reg);
+        u8 lo = first_byte(ixy_reg);
+
+        ld(lo, args.farg);
+
+        ixy_reg = to_u16(hi, lo);
+
+        cycles = 11;
+    }
+
+    /**
      * Load memory location with IX or IY
      * <ul>
      *   <li>Size: 4</li>
@@ -276,6 +391,28 @@ namespace emu::z80 {
     void ld_Mnn_ixy(const NextByte &args, EmulatorMemory &memory, u16 ixy_reg, unsigned long &cycles) {
         memory[args.farg] = first_byte(ixy_reg);
         memory[args.farg + 1] = second_byte(ixy_reg);
+
+        cycles = 20;
+    }
+
+    /**
+     * Load register pair with memory location
+     * <ul>
+     *   <li>Size: 4</li>
+     *   <li>Cycles: 6</li>
+     *   <li>States: 20</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param hi_reg is the high-order portion of the register pair to load into, which will be mutated
+     * @param lo_reg is the low-order portion of the register pair to load into, which will be mutated
+     * @param args contains the address to load from
+     * @param memory is the memory, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void ld_dd_Mnn(u8 &hi_reg, u8 &lo_reg, const NextByte &args, const EmulatorMemory &memory, unsigned long &cycles) {
+        hi_reg = memory[args.farg + 1];
+        lo_reg = memory[args.farg];
 
         cycles = 20;
     }
@@ -472,6 +609,47 @@ namespace emu::z80 {
         sp = to_u16(hi, lo);
 
         cycles = 20;
+    }
+
+    /**
+     * Load value in memory pointed to by IX or IY plus d with immediate value
+     * <ul>
+     *   <li>Size: 3</li>
+     *   <li>Cycles: 5</li>
+     *   <li>States: 19</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param ixy_reg is the IX or IY register containing the base address
+     * @param args contains address offset and the immediate value
+     * @param memory is the memory, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void ld_MixyPd_n(u16 ixy_reg, const NextWord &args, EmulatorMemory &memory, unsigned long &cycles) {
+        ld(memory[ixy_reg + static_cast<i8>(args.farg)], args.sarg);
+
+        cycles = 19;
+    }
+
+    /**
+     * Load value in memory pointed to by IX or IY plus d with value in register
+     * <ul>
+     *   <li>Size: 3</li>
+     *   <li>Cycles: 5</li>
+     *   <li>States: 19</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param ixy_reg is the IX or IY register containing the base address
+     * @param args contains address offset
+     * @param memory is the memory, which will be mutated
+     * @param reg contains the value to load into memory
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void ld_MixyPd_r(u16 ixy_reg, const NextByte &args, EmulatorMemory &memory, u8 reg, unsigned long &cycles) {
+        ld(memory[ixy_reg + static_cast<i8>(args.farg)], reg);
+
+        cycles = 19;
     }
 
     void print_ld(std::ostream &ostream, const std::string &dest, const std::string &src) {

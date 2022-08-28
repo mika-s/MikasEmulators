@@ -17,6 +17,7 @@ set(SOURCES_Z80_CPP
         src/z80/instructions/cpd.cpp
         src/z80/instructions/cpdr.cpp
         src/z80/instructions/cpi.cpp
+        src/z80/instructions/cpir.cpp
         src/z80/instructions/cpl.cpp
         src/z80/instructions/daa.cpp
         src/z80/instructions/dec.cpp
@@ -33,6 +34,8 @@ set(SOURCES_Z80_CPP
         src/z80/instructions/jp.cpp
         src/z80/instructions/jr.cpp
         src/z80/instructions/ld.cpp
+        src/z80/instructions/ldd.cpp
+        src/z80/instructions/lddr.cpp
         src/z80/instructions/ldi.cpp
         src/z80/instructions/ldir.cpp
         src/z80/instructions/neg.cpp
@@ -44,6 +47,7 @@ set(SOURCES_Z80_CPP
         src/z80/instructions/ret.cpp
         src/z80/instructions/rl.cpp
         src/z80/instructions/rlc.cpp
+        src/z80/instructions/rld.cpp
         src/z80/instructions/rr.cpp
         src/z80/instructions/rrd.cpp
         src/z80/instructions/rrc.cpp

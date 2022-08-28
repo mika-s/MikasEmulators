@@ -842,6 +842,9 @@ namespace emu::z80 {
             case INC_MIXY_P_n:
                 print_inc_MixyPn(m_ostream, ixy_reg, get_next_byte());
                 break;
+            case DEC_MIXY_P_n:
+                print_dec_MixyPn(m_ostream, ixy_reg, get_next_byte());
+                break;
             case ADD_IXY_SP:
                 print_add(m_ostream, ixy_reg, "SP");
                 break;
@@ -1020,10 +1023,13 @@ namespace emu::z80 {
             case RRD:
                 print_rrd(m_ostream);
                 break;
-            case LD_Mnn_sp:
+            case RLD:
+                print_rld(m_ostream);
+                break;
+            case LD_Mnn_SP:
                 print_ld_Mnn_dd(m_ostream, get_next_word(), "SP");
                 break;
-            case LD_sp_Mnn:
+            case LD_SP_Mnn:
                 print_ld(m_ostream, "SP", get_next_word());
                 break;
             case 0x84:
@@ -1040,6 +1046,9 @@ namespace emu::z80 {
                 break;
             case LDIR:
                 print_ldir(m_ostream);
+                break;
+            case CPIR:
+                print_cpir(m_ostream);
                 break;
             case CPDR:
                 print_cpdr(m_ostream);

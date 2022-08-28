@@ -12,7 +12,7 @@ namespace emu::z80 {
     using emu::util::byte::to_u16;
 
     /**
-     * Load and increment
+     * Load and decrement
      * <ul>
      *   <li>Size: 2</li>
      *   <li>Cycles: 4</li>
@@ -20,7 +20,6 @@ namespace emu::z80 {
      *   <li>Condition bits affected: half carry, parity/overflow, add/subtract</li>
      * </ul>
      *
-     * @param pc is the program counter, which will be mutated
      * @param b_reg is the B register, which will be mutated
      * @param c_reg is the C register, which will be mutated
      * @param d_reg is the D register, which will be mutated
@@ -31,7 +30,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ldi(u8 &b_reg, u8 &c_reg, u8 &d_reg, u8 &e_reg, u8 &h_reg, u8 &l_reg, u8 acc_reg,
+    void ldd(u8 &b_reg, u8 &c_reg, u8 &d_reg, u8 &e_reg, u8 &h_reg, u8 &l_reg, u8 acc_reg,
              EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles) {
         u16 de = to_u16(d_reg, e_reg);
         u16 hl = to_u16(h_reg, l_reg);
@@ -49,11 +48,11 @@ namespace emu::z80 {
             flag_reg.clear_x_flag();
         }
 
-        ++de;
+        --de;
         d_reg = second_byte(de);
         e_reg = first_byte(de);
 
-        ++hl;
+        --hl;
         h_reg = second_byte(hl);
         l_reg = first_byte(hl);
 
@@ -68,7 +67,7 @@ namespace emu::z80 {
         cycles = 16;
     }
 
-    void print_ldi(std::ostream &ostream) {
-        ostream << "LDI";
+    void print_ldd(std::ostream &ostream) {
+        ostream << "LDD";
     }
 }

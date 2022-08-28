@@ -1164,6 +1164,15 @@ namespace emu::z80 {
             case INC_IXY:
                 inc_ixy(ixy_reg, cycles);
                 break;
+            case INC_IXH_UNDOC1:
+                inc_ixyh(ixy_reg, m_flag_reg, cycles);
+                break;
+            case DEC_IXH_UNDOC1:
+                dec_ixyh(ixy_reg, m_flag_reg, cycles);
+                break;
+            case LD_IXYH_n_UNDOC:
+                ld_ixyh_n(ixy_reg, get_next_byte(), cycles);
+                break;
             case ADD_IXY_IXY:
                 add_ixy_pp(ixy_reg, ixy_reg, m_flag_reg, cycles);
                 break;
@@ -1173,29 +1182,215 @@ namespace emu::z80 {
             case DEC_IXY:
                 dec_ixy(ixy_reg, cycles);
                 break;
+            case INC_IXL_UNDOC1:
+                inc_ixyl(ixy_reg, m_flag_reg, cycles);
+                break;
+            case DEC_IXL_UNDOC1:
+                dec_ixyl(ixy_reg, m_flag_reg, cycles);
+                break;
+            case LD_IXYL_n_UNDOC:
+                ld_ixyl_n(ixy_reg, get_next_byte(), cycles);
+                break;
+            case INC_MIXY_P_n:
+                inc_MixyPd(ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
+                break;
+            case DEC_MIXY_P_n:
+                dec_MixyPd(ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
+                break;
+            case LD_MIXY_P_n_d:
+                ld_MixyPd_n(ixy_reg, get_next_word(), m_memory, cycles);
+                break;
             case ADD_IXY_SP:
                 add_ixy_pp(ixy_reg, m_sp, m_flag_reg, cycles);
+                break;
+            case LD_B_B_UNDOC:
+                ld_r_r_undoc(m_b_reg, m_b_reg, cycles);
+                break;
+            case LD_B_C_UNDOC:
+                ld_r_r_undoc(m_b_reg, m_c_reg, cycles);
+                break;
+            case LD_B_D_UNDOC:
+                ld_r_r_undoc(m_b_reg, m_d_reg, cycles);
+                break;
+            case LD_B_E_UNDOC:
+                ld_r_r_undoc(m_b_reg, m_e_reg, cycles);
+                break;
+            case LD_B_IXYH_UNDOC:
+                ld_r_r_undoc(m_b_reg, second_byte(ixy_reg), cycles);
+                break;
+            case LD_B_IXYL_UNDOC:
+                ld_r_r_undoc(m_b_reg, first_byte(ixy_reg), cycles);
                 break;
             case LD_B_MIXY_P_n:
                 ld_r_MixyPd(m_b_reg, ixy_reg, get_next_byte(), m_memory, cycles);
                 break;
+            case LD_B_A_UNDOC:
+                ld_r_r_undoc(m_b_reg, m_acc_reg, cycles);
+                break;
+            case LD_C_B_UNDOC:
+                ld_r_r_undoc(m_c_reg, m_b_reg, cycles);
+                break;
+            case LD_C_C_UNDOC:
+                ld_r_r_undoc(m_c_reg, m_c_reg, cycles);
+                break;
+            case LD_C_D_UNDOC:
+                ld_r_r_undoc(m_c_reg, m_d_reg, cycles);
+                break;
+            case LD_C_E_UNDOC:
+                ld_r_r_undoc(m_c_reg, m_e_reg, cycles);
+                break;
+            case LD_C_IXYH_UNDOC:
+                ld_r_r_undoc(m_c_reg, second_byte(ixy_reg), cycles);
+                break;
+            case LD_C_IXYL_UNDOC:
+                ld_r_r_undoc(m_c_reg, first_byte(ixy_reg), cycles);
+                break;
             case LD_C_MIXY_P_n:
                 ld_r_MixyPd(m_c_reg, ixy_reg, get_next_byte(), m_memory, cycles);
+                break;
+            case LD_C_A_UNDOC:
+                ld_r_r_undoc(m_c_reg, m_acc_reg, cycles);
+                break;
+            case LD_D_B_UNDOC:
+                ld_r_r_undoc(m_d_reg, m_b_reg, cycles);
+                break;
+            case LD_D_C_UNDOC:
+                ld_r_r_undoc(m_d_reg, m_c_reg, cycles);
+                break;
+            case LD_D_D_UNDOC:
+                ld_r_r_undoc(m_d_reg, m_d_reg, cycles);
+                break;
+            case LD_D_E_UNDOC:
+                ld_r_r_undoc(m_d_reg, m_e_reg, cycles);
+                break;
+            case LD_D_IXYH_UNDOC:
+                ld_r_r_undoc(m_d_reg, second_byte(ixy_reg), cycles);
+                break;
+            case LD_D_IXYL_UNDOC:
+                ld_r_r_undoc(m_d_reg, first_byte(ixy_reg), cycles);
                 break;
             case LD_D_MIXY_P_n:
                 ld_r_MixyPd(m_d_reg, ixy_reg, get_next_byte(), m_memory, cycles);
                 break;
+            case LD_D_A_UNDOC:
+                ld_r_r_undoc(m_d_reg, m_acc_reg, cycles);
+                break;
+            case LD_E_B_UNDOC:
+                ld_r_r_undoc(m_e_reg, m_b_reg, cycles);
+                break;
+            case LD_E_C_UNDOC:
+                ld_r_r_undoc(m_e_reg, m_c_reg, cycles);
+                break;
+            case LD_E_D_UNDOC:
+                ld_r_r_undoc(m_e_reg, m_d_reg, cycles);
+                break;
+            case LD_E_E_UNDOC:
+                ld_r_r_undoc(m_e_reg, m_e_reg, cycles);
+                break;
+            case LD_E_IXYH_UNDOC:
+                ld_r_r_undoc(m_e_reg, second_byte(ixy_reg), cycles);
+                break;
+            case LD_E_IXYL_UNDOC:
+                ld_r_r_undoc(m_e_reg, first_byte(ixy_reg), cycles);
+                break;
             case LD_E_MIXY_P_n:
                 ld_r_MixyPd(m_e_reg, ixy_reg, get_next_byte(), m_memory, cycles);
+                break;
+            case LD_E_A_UNDOC:
+                ld_r_r_undoc(m_e_reg, m_acc_reg, cycles);
+                break;
+            case LD_IXYH_B_UNDOC:
+                ld_ixyh_r_undoc(ixy_reg, m_b_reg, cycles);
+                break;
+            case LD_IXYH_C_UNDOC:
+                ld_ixyh_r_undoc(ixy_reg, m_c_reg, cycles);
+                break;
+            case LD_IXYH_D_UNDOC:
+                ld_ixyh_r_undoc(ixy_reg, m_d_reg, cycles);
+                break;
+            case LD_IXYH_E_UNDOC:
+                ld_ixyh_r_undoc(ixy_reg, m_e_reg, cycles);
+                break;
+            case LD_IXYH_IXYH_UNDOC:
+                ld_ixyh_r_undoc(ixy_reg, second_byte(ixy_reg), cycles);
+                break;
+            case LD_IXYH_IXYL_UNDOC:
+                ld_ixyh_r_undoc(ixy_reg, first_byte(ixy_reg), cycles);
                 break;
             case LD_H_MIXY_P_n:
                 ld_r_MixyPd(m_h_reg, ixy_reg, get_next_byte(), m_memory, cycles);
                 break;
+            case LD_IXYH_A_UNDOC:
+                ld_ixyh_r_undoc(ixy_reg, m_acc_reg, cycles);
+                break;
+            case LD_IXYL_B_UNDOC:
+                ld_ixyl_r_undoc(ixy_reg, m_b_reg, cycles);
+                break;
+            case LD_IXYL_C_UNDOC:
+                ld_ixyl_r_undoc(ixy_reg, m_c_reg, cycles);
+                break;
+            case LD_IXYL_D_UNDOC:
+                ld_ixyl_r_undoc(ixy_reg, m_d_reg, cycles);
+                break;
+            case LD_IXYL_E_UNDOC:
+                ld_ixyl_r_undoc(ixy_reg, m_e_reg, cycles);
+                break;
+            case LD_IXYL_IXYH_UNDOC:
+                ld_ixyl_r_undoc(ixy_reg, second_byte(ixy_reg), cycles);
+                break;
+            case LD_IXYL_IXYL_UNDOC:
+                ld_ixyl_r_undoc(ixy_reg, first_byte(ixy_reg), cycles);
+                break;
             case LD_L_MIXY_P_n:
                 ld_r_MixyPd(m_l_reg, ixy_reg, get_next_byte(), m_memory, cycles);
                 break;
+            case LD_IXYL_A_UNDOC:
+                ld_ixyl_r_undoc(ixy_reg, m_acc_reg, cycles);
+                break;
+            case LD_MIXY_P_n_B:
+                ld_MixyPd_r(ixy_reg, get_next_byte(), m_memory, m_b_reg, cycles);
+                break;
+            case LD_MIXY_P_n_C:
+                ld_MixyPd_r(ixy_reg, get_next_byte(), m_memory, m_c_reg, cycles);
+                break;
+            case LD_MIXY_P_n_D:
+                ld_MixyPd_r(ixy_reg, get_next_byte(), m_memory, m_d_reg, cycles);
+                break;
+            case LD_MIXY_P_n_E:
+                ld_MixyPd_r(ixy_reg, get_next_byte(), m_memory, m_e_reg, cycles);
+                break;
+            case LD_MIXY_P_n_H:
+                ld_MixyPd_r(ixy_reg, get_next_byte(), m_memory, m_h_reg, cycles);
+                break;
+            case LD_MIXY_P_n_L:
+                ld_MixyPd_r(ixy_reg, get_next_byte(), m_memory, m_l_reg, cycles);
+                break;
+            case LD_MIXY_P_n_A:
+                ld_MixyPd_r(ixy_reg, get_next_byte(), m_memory, m_acc_reg, cycles);
+                break;
+            case LD_A_B_UNDOC:
+                ld_r_r_undoc(m_acc_reg, m_b_reg, cycles);
+                break;
+            case LD_A_C_UNDOC:
+                ld_r_r_undoc(m_acc_reg, m_c_reg, cycles);
+                break;
+            case LD_A_D_UNDOC:
+                ld_r_r_undoc(m_acc_reg, m_d_reg, cycles);
+                break;
+            case LD_A_E_UNDOC:
+                ld_r_r_undoc(m_acc_reg, m_e_reg, cycles);
+                break;
+            case LD_A_IXYH_UNDOC:
+                ld_r_r_undoc(m_acc_reg, second_byte(ixy_reg), cycles);
+                break;
+            case LD_A_IXYL_UNDOC:
+                ld_r_r_undoc(m_acc_reg, first_byte(ixy_reg), cycles);
+                break;
             case LD_A_MIXY_P_n:
                 ld_r_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, cycles);
+                break;
+            case LD_A_A_UNDOC:
+                ld_r_r_undoc(m_acc_reg, m_acc_reg, cycles);
                 break;
             case ADD_A_IXYH_UNDOC:
                 add_A_ixy_h_or_l(m_acc_reg, second_byte(ixy_reg), m_flag_reg, cycles);
@@ -1336,8 +1531,8 @@ namespace emu::z80 {
             case SBC_HL_BC:
                 sbc_HL_ss(m_h_reg, m_l_reg, to_u16(m_b_reg, m_c_reg), m_flag_reg, cycles);
                 break;
-            case SBC_HL_DE:
-                sbc_HL_ss(m_h_reg, m_l_reg, to_u16(m_d_reg, m_e_reg), m_flag_reg, cycles);
+            case LD_Mnn_BC:
+                ld_Mnn_dd(m_b_reg, m_c_reg, m_memory, get_next_word(), cycles);
                 break;
             case NEG_UNDOC1:
             case NEG_UNDOC2:
@@ -1352,38 +1547,76 @@ namespace emu::z80 {
             case ADC_HL_BC:
                 adc_hl_ss(m_h_reg, m_l_reg, to_u16(m_b_reg, m_c_reg), m_flag_reg, cycles);
                 break;
+            case LD_BC_Mnn:
+                ld_dd_Mnn(m_b_reg, m_c_reg, get_next_byte(), m_memory, cycles);
+                break;
+            case SBC_HL_DE:
+                sbc_HL_ss(m_h_reg, m_l_reg, to_u16(m_d_reg, m_e_reg), m_flag_reg, cycles);
+                break;
+            case LD_Mnn_DE:
+                ld_Mnn_dd(m_d_reg, m_e_reg, m_memory, get_next_word(), cycles);
+                break;
             case ADC_HL_DE:
                 adc_hl_ss(m_h_reg, m_l_reg, to_u16(m_d_reg, m_e_reg), m_flag_reg, cycles);
+                break;
+            case LD_DE_Mnn:
+                ld_dd_Mnn(m_d_reg, m_e_reg, get_next_byte(), m_memory, cycles);
                 break;
             case SBC_HL_HL:
                 sbc_HL_ss(m_h_reg, m_l_reg, to_u16(m_h_reg, m_l_reg), m_flag_reg, cycles);
                 break;
+            case LD_Mnn_HL_UNDOC:
+                ld_Mnn_dd(m_h_reg, m_l_reg, m_memory, get_next_word(), cycles);
+                break;
             case RRD:
                 rrd(m_acc_reg, m_memory[address_in_HL()], m_flag_reg, cycles);
+                break;
+            case RLD:
+                rld(m_acc_reg, m_memory[address_in_HL()], m_flag_reg, cycles);
                 break;
             case ADC_HL_HL:
                 adc_hl_ss(m_h_reg, m_l_reg, to_u16(m_h_reg, m_l_reg), m_flag_reg, cycles);
                 break;
+            case LD_HL_Mnn_UNDOC:
+                ld_dd_Mnn(m_h_reg, m_l_reg, get_next_byte(), m_memory, cycles);
+                break;
             case SBC_HL_SP:
                 sbc_HL_ss(m_h_reg, m_l_reg, m_sp, m_flag_reg, cycles);
                 break;
-            case LD_Mnn_sp:
+            case LD_Mnn_SP:
                 ld_Mnn_sp(m_sp, m_memory, get_next_word(), cycles);
                 break;
             case ADC_HL_SP:
                 adc_hl_ss(m_h_reg, m_l_reg, m_sp, m_flag_reg, cycles);
                 break;
-            case LD_sp_Mnn:
+            case LD_SP_Mnn:
                 ld_sp_Mnn(m_sp, m_memory, get_next_word(), cycles);
                 break;
             case LDI:
-                throw UnrecognizedOpcodeException(extd_opcode, "EXTD instructions");
+                ldi(m_b_reg, m_c_reg, m_d_reg, m_e_reg, m_h_reg, m_l_reg, m_acc_reg,
+                    m_memory, m_flag_reg, cycles);
+                break;
+            case CPI:
+                cpi(m_b_reg, m_c_reg, m_h_reg, m_l_reg, m_acc_reg, m_memory, m_flag_reg, cycles);
+                break;
+            case LDD:
+                ldd(m_b_reg, m_c_reg, m_d_reg, m_e_reg, m_h_reg, m_l_reg, m_acc_reg,
+                    m_memory, m_flag_reg, cycles);
+                break;
             case CPD:
                 cpd(m_b_reg, m_c_reg, m_h_reg, m_l_reg, m_acc_reg, m_memory, m_flag_reg, cycles);
                 break;
             case LDIR:
                 ldir(m_pc, m_b_reg, m_c_reg, m_d_reg, m_e_reg,
                      m_h_reg, m_l_reg, m_acc_reg, m_memory, m_flag_reg, cycles);
+                break;
+            case CPIR:
+                cpir(m_pc, m_b_reg, m_c_reg, m_h_reg, m_l_reg,
+                     m_acc_reg, m_memory, m_flag_reg, cycles);
+                break;
+            case LDDR:
+                lddr(m_pc, m_b_reg, m_c_reg, m_d_reg, m_e_reg, m_h_reg, m_l_reg, m_acc_reg,
+                     m_memory, m_flag_reg, cycles);
                 break;
             case CPDR:
                 cpdr(m_pc, m_b_reg, m_c_reg, m_h_reg, m_l_reg,

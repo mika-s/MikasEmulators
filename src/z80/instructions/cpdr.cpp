@@ -12,7 +12,7 @@ namespace emu::z80 {
     using emu::util::byte::to_u16;
 
     /**
-     * Compare repeated
+     * Compare repeated (decrement HL)
      * <ul>
      *   <li>Size: 2</li>
      *   <li>Cycles: 4 or 5</li>

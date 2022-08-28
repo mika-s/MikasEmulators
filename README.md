@@ -26,8 +26,8 @@ notice.
 - [SDL2](https://www.libsdl.org/) (and SDL2_image)
 - [Dear Imgui](https://github.com/ocornut/imgui) (included)
 - [OpenGL](https://www.opengl.org/)
-- [cmake](https://cmake.org/) 3.17 or better
-- [doctest](https://github.com/doctest/doctest)
+- [cmake](https://cmake.org/) 3.17 or later
+- [doctest](https://github.com/doctest/doctest) (included)
 - [fmt](https://fmt.dev/)
 
 ## Building
