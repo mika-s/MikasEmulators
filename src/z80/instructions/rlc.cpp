@@ -67,6 +67,25 @@ namespace emu::z80 {
     }
 
     /**
+     * Rotate the value in memory at HL's address left
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 4</li>
+     *   <li>States: 15</li>
+     *   <li>Condition bits affected: carry, half carry, add/subtract</li>
+     * </ul>
+     *
+     * @param value_in_hl is the value in memory at HL's address, which will be mutated
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void rlc_MHL(u8 &value_in_hl, Flags &flag_reg, unsigned long &cycles) {
+        rlc(value_in_hl, flag_reg);
+
+        cycles = 15;
+    }
+
+    /**
      * Rotate value in memory pointed to by IX or IY plus d left
      * <ul>
      *   <li>Size: 4</li>

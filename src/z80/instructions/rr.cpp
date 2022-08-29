@@ -11,6 +11,23 @@ namespace emu::z80 {
     using emu::util::byte::is_bit_set;
     using emu::util::byte::set_bit;
 
+    void rr(u8 &value, Flags &flag_reg) {
+        const bool should_set_carry_flag = is_bit_set(value, lsb);
+        value = value >> 1;
+        if (flag_reg.is_carry_flag_set()) {
+            set_bit(value, msb);
+        }
+        if (should_set_carry_flag) {
+            flag_reg.set_carry_flag();
+        } else {
+            flag_reg.clear_carry_flag();
+        }
+
+        flag_reg.clear_half_carry_flag();
+        flag_reg.clear_add_subtract_flag();
+        flag_reg.handle_xy_flags(value);
+    }
+
     /**
      * Rotate right through carry
      * <ul>
@@ -25,22 +42,47 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void rra(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles) {
-        const bool should_set_carry_flag = is_bit_set(acc_reg, lsb);
-        acc_reg = acc_reg >> 1;
-        if (flag_reg.is_carry_flag_set()) {
-            set_bit(acc_reg, msb);
-        }
-        if (should_set_carry_flag) {
-            flag_reg.set_carry_flag();
-        } else {
-            flag_reg.clear_carry_flag();
-        }
-
-        flag_reg.clear_half_carry_flag();
-        flag_reg.clear_add_subtract_flag();
-        flag_reg.handle_xy_flags(acc_reg);
+        rr(acc_reg, flag_reg);
 
         cycles = 4;
+    }
+
+    /**
+     * Rotate register right through carry
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 1</li>
+     *   <li>States: 8</li>
+     *   <li>Condition bits affected: carry, half carry, add/subtract</li>
+     * </ul>
+     *
+     * @param reg is the register to rotate, which will be mutated
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void rr_r(u8 &reg, Flags &flag_reg, unsigned long &cycles) {
+        rr(reg, flag_reg);
+
+        cycles = 8;
+    }
+
+    /**
+     * Rotate the value in memory at HL's address right through carry
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 4</li>
+     *   <li>States: 15</li>
+     *   <li>Condition bits affected: carry, half carry, add/subtract</li>
+     * </ul>
+     *
+     * @param value_in_hl is the value in memory at HL's address, which will be mutated
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void rr_MHL(u8 &value_in_hl, Flags &flag_reg, unsigned long &cycles) {
+        rr(value_in_hl, flag_reg);
+
+        cycles = 15;
     }
 
     void print_rra(std::ostream &ostream) {

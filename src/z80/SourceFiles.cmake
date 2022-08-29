@@ -44,6 +44,7 @@ set(SOURCES_Z80_CPP
         src/z80/instructions/out.cpp
         src/z80/instructions/pop.cpp
         src/z80/instructions/push.cpp
+        src/z80/instructions/res.cpp
         src/z80/instructions/ret.cpp
         src/z80/instructions/rl.cpp
         src/z80/instructions/rlc.cpp
@@ -54,6 +55,11 @@ set(SOURCES_Z80_CPP
         src/z80/instructions/rst.cpp
         src/z80/instructions/sbc.cpp
         src/z80/instructions/scf.cpp
+        src/z80/instructions/set.cpp
+        src/z80/instructions/sla.cpp
+        src/z80/instructions/sll.cpp
+        src/z80/instructions/sra.cpp
+        src/z80/instructions/srl.cpp
         src/z80/instructions/sub.cpp
         src/z80/instructions/unused.cpp
         src/z80/instructions/xor.cpp

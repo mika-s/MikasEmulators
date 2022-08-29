@@ -944,8 +944,179 @@ namespace emu::z80 {
             case RLC_L:
                 rlc_r(m_l_reg, m_flag_reg, cycles);
                 break;
+            case RLC_MHL:
+                rlc_MHL(m_memory[address_in_HL()], m_flag_reg, cycles);
+                break;
             case RLC_A:
                 rlc_r(m_acc_reg, m_flag_reg, cycles);
+                break;
+            case RRC_B:
+                rrc_r(m_b_reg, m_flag_reg, cycles);
+                break;
+            case RRC_C:
+                rrc_r(m_c_reg, m_flag_reg, cycles);
+                break;
+            case RRC_D:
+                rrc_r(m_d_reg, m_flag_reg, cycles);
+                break;
+            case RRC_E:
+                rrc_r(m_e_reg, m_flag_reg, cycles);
+                break;
+            case RRC_H:
+                rrc_r(m_h_reg, m_flag_reg, cycles);
+                break;
+            case RRC_L:
+                rrc_r(m_l_reg, m_flag_reg, cycles);
+                break;
+            case RRC_MHL:
+                rrc_MHL(m_memory[address_in_HL()], m_flag_reg, cycles);
+                break;
+            case RRC_A:
+                rrc_r(m_acc_reg, m_flag_reg, cycles);
+                break;
+            case RL_B:
+                rl_r(m_b_reg, m_flag_reg, cycles);
+                break;
+            case RL_C:
+                rl_r(m_c_reg, m_flag_reg, cycles);
+                break;
+            case RL_D:
+                rl_r(m_d_reg, m_flag_reg, cycles);
+                break;
+            case RL_E:
+                rl_r(m_e_reg, m_flag_reg, cycles);
+                break;
+            case RL_H:
+                rl_r(m_h_reg, m_flag_reg, cycles);
+                break;
+            case RL_L:
+                rl_r(m_l_reg, m_flag_reg, cycles);
+                break;
+            case RL_MHL:
+                rl_MHL(m_memory[address_in_HL()], m_flag_reg, cycles);
+                break;
+            case RL_A:
+                rl_r(m_acc_reg, m_flag_reg, cycles);
+                break;
+            case RR_B:
+                rr_r(m_b_reg, m_flag_reg, cycles);
+                break;
+            case RR_C:
+                rr_r(m_c_reg, m_flag_reg, cycles);
+                break;
+            case RR_D:
+                rr_r(m_d_reg, m_flag_reg, cycles);
+                break;
+            case RR_E:
+                rr_r(m_e_reg, m_flag_reg, cycles);
+                break;
+            case RR_H:
+                rr_r(m_h_reg, m_flag_reg, cycles);
+                break;
+            case RR_L:
+                rr_r(m_l_reg, m_flag_reg, cycles);
+                break;
+            case RR_MHL:
+                rr_MHL(m_memory[address_in_HL()], m_flag_reg, cycles);
+                break;
+            case RR_A:
+                rr_r(m_acc_reg, m_flag_reg, cycles);
+                break;
+            case SLA_B:
+                sla_r(m_b_reg, m_flag_reg, cycles);
+                break;
+            case SLA_C:
+                sla_r(m_c_reg, m_flag_reg, cycles);
+                break;
+            case SLA_D:
+                sla_r(m_d_reg, m_flag_reg, cycles);
+                break;
+            case SLA_E:
+                sla_r(m_e_reg, m_flag_reg, cycles);
+                break;
+            case SLA_H:
+                sla_r(m_h_reg, m_flag_reg, cycles);
+                break;
+            case SLA_L:
+                sla_r(m_l_reg, m_flag_reg, cycles);
+                break;
+            case SLA_MHL:
+                sla_MHL(m_memory[address_in_HL()], m_flag_reg, cycles);
+                break;
+            case SLA_A:
+                sla_r(m_acc_reg, m_flag_reg, cycles);
+                break;
+            case SRA_B:
+                sra_r(m_b_reg, m_flag_reg, cycles);
+                break;
+            case SRA_C:
+                sra_r(m_c_reg, m_flag_reg, cycles);
+                break;
+            case SRA_D:
+                sra_r(m_d_reg, m_flag_reg, cycles);
+                break;
+            case SRA_E:
+                sra_r(m_e_reg, m_flag_reg, cycles);
+                break;
+            case SRA_H:
+                sra_r(m_h_reg, m_flag_reg, cycles);
+                break;
+            case SRA_L:
+                sra_r(m_l_reg, m_flag_reg, cycles);
+                break;
+            case SRA_MHL:
+                sra_MHL(m_memory[address_in_HL()], m_flag_reg, cycles);
+                break;
+            case SRA_A:
+                sra_r(m_acc_reg, m_flag_reg, cycles);
+                break;
+            case SLL_B:
+                sll_r(m_b_reg, m_flag_reg, cycles);
+                break;
+            case SLL_C:
+                sll_r(m_c_reg, m_flag_reg, cycles);
+                break;
+            case SLL_D:
+                sll_r(m_d_reg, m_flag_reg, cycles);
+                break;
+            case SLL_E:
+                sll_r(m_e_reg, m_flag_reg, cycles);
+                break;
+            case SLL_H:
+                sll_r(m_h_reg, m_flag_reg, cycles);
+                break;
+            case SLL_L:
+                sll_r(m_l_reg, m_flag_reg, cycles);
+                break;
+            case SLL_MHL:
+                sll_MHL(m_memory[address_in_HL()], m_flag_reg, cycles);
+                break;
+            case SLL_A:
+                sll_r(m_acc_reg, m_flag_reg, cycles);
+                break;
+            case SRL_B:
+                srl_r(m_b_reg, m_flag_reg, cycles);
+                break;
+            case SRL_C:
+                srl_r(m_c_reg, m_flag_reg, cycles);
+                break;
+            case SRL_D:
+                srl_r(m_d_reg, m_flag_reg, cycles);
+                break;
+            case SRL_E:
+                srl_r(m_e_reg, m_flag_reg, cycles);
+                break;
+            case SRL_H:
+                srl_r(m_h_reg, m_flag_reg, cycles);
+                break;
+            case SRL_L:
+                srl_r(m_l_reg, m_flag_reg, cycles);
+                break;
+            case SRL_MHL:
+                srl_MHL(m_memory[address_in_HL()], m_flag_reg, cycles);
+                break;
+            case SRL_A:
+                srl_r(m_acc_reg, m_flag_reg, cycles);
                 break;
             case BIT_0_B:
                 bit_r(0, m_b_reg, m_flag_reg, cycles);
@@ -1138,6 +1309,390 @@ namespace emu::z80 {
                 break;
             case BIT_7_A:
                 bit_r(7, m_acc_reg, m_flag_reg, cycles);
+                break;
+            case RES_0_B:
+                res_r(0, m_b_reg, cycles);
+                break;
+            case RES_0_C:
+                res_r(0, m_c_reg, cycles);
+                break;
+            case RES_0_D:
+                res_r(0, m_d_reg, cycles);
+                break;
+            case RES_0_E:
+                res_r(0, m_e_reg, cycles);
+                break;
+            case RES_0_H:
+                res_r(0, m_h_reg, cycles);
+                break;
+            case RES_0_L:
+                res_r(0, m_l_reg, cycles);
+                break;
+            case RES_0_MHL:
+                res_MHL(0, address_in_HL(), m_memory, cycles);
+                break;
+            case RES_0_A:
+                res_r(0, m_acc_reg, cycles);
+                break;
+            case RES_1_B:
+                res_r(1, m_b_reg, cycles);
+                break;
+            case RES_1_C:
+                res_r(1, m_c_reg, cycles);
+                break;
+            case RES_1_D:
+                res_r(1, m_d_reg, cycles);
+                break;
+            case RES_1_E:
+                res_r(1, m_e_reg, cycles);
+                break;
+            case RES_1_H:
+                res_r(1, m_h_reg, cycles);
+                break;
+            case RES_1_L:
+                res_r(1, m_l_reg, cycles);
+                break;
+            case RES_1_MHL:
+                res_MHL(1, address_in_HL(), m_memory, cycles);
+                break;
+            case RES_1_A:
+                res_r(1, m_acc_reg, cycles);
+                break;
+            case RES_2_B:
+                res_r(2, m_b_reg, cycles);
+                break;
+            case RES_2_C:
+                res_r(2, m_c_reg, cycles);
+                break;
+            case RES_2_D:
+                res_r(2, m_d_reg, cycles);
+                break;
+            case RES_2_E:
+                res_r(2, m_e_reg, cycles);
+                break;
+            case RES_2_H:
+                res_r(2, m_h_reg, cycles);
+                break;
+            case RES_2_L:
+                res_r(2, m_l_reg, cycles);
+                break;
+            case RES_2_MHL:
+                res_MHL(2, address_in_HL(), m_memory, cycles);
+                break;
+            case RES_2_A:
+                res_r(2, m_acc_reg, cycles);
+                break;
+            case RES_3_B:
+                res_r(3, m_b_reg, cycles);
+                break;
+            case RES_3_C:
+                res_r(3, m_c_reg, cycles);
+                break;
+            case RES_3_D:
+                res_r(3, m_d_reg, cycles);
+                break;
+            case RES_3_E:
+                res_r(3, m_e_reg, cycles);
+                break;
+            case RES_3_H:
+                res_r(3, m_h_reg, cycles);
+                break;
+            case RES_3_L:
+                res_r(3, m_l_reg, cycles);
+                break;
+            case RES_3_MHL:
+                res_MHL(3, address_in_HL(), m_memory, cycles);
+                break;
+            case RES_3_A:
+                res_r(3, m_acc_reg, cycles);
+                break;
+            case RES_4_B:
+                res_r(4, m_b_reg, cycles);
+                break;
+            case RES_4_C:
+                res_r(4, m_c_reg, cycles);
+                break;
+            case RES_4_D:
+                res_r(4, m_d_reg, cycles);
+                break;
+            case RES_4_E:
+                res_r(4, m_e_reg, cycles);
+                break;
+            case RES_4_H:
+                res_r(4, m_h_reg, cycles);
+                break;
+            case RES_4_L:
+                res_r(4, m_l_reg, cycles);
+                break;
+            case RES_4_MHL:
+                res_MHL(4, address_in_HL(), m_memory, cycles);
+                break;
+            case RES_4_A:
+                res_r(4, m_acc_reg, cycles);
+                break;
+            case RES_5_B:
+                res_r(5, m_b_reg, cycles);
+                break;
+            case RES_5_C:
+                res_r(5, m_c_reg, cycles);
+                break;
+            case RES_5_D:
+                res_r(5, m_d_reg, cycles);
+                break;
+            case RES_5_E:
+                res_r(5, m_e_reg, cycles);
+                break;
+            case RES_5_H:
+                res_r(5, m_h_reg, cycles);
+                break;
+            case RES_5_L:
+                res_r(5, m_l_reg, cycles);
+                break;
+            case RES_5_MHL:
+                res_MHL(5, address_in_HL(), m_memory, cycles);
+                break;
+            case RES_5_A:
+                res_r(5, m_acc_reg, cycles);
+                break;
+            case RES_6_B:
+                res_r(6, m_b_reg, cycles);
+                break;
+            case RES_6_C:
+                res_r(6, m_c_reg, cycles);
+                break;
+            case RES_6_D:
+                res_r(6, m_d_reg, cycles);
+                break;
+            case RES_6_E:
+                res_r(6, m_e_reg, cycles);
+                break;
+            case RES_6_H:
+                res_r(6, m_h_reg, cycles);
+                break;
+            case RES_6_L:
+                res_r(6, m_l_reg, cycles);
+                break;
+            case RES_6_MHL:
+                res_MHL(6, address_in_HL(), m_memory, cycles);
+                break;
+            case RES_6_A:
+                res_r(6, m_acc_reg, cycles);
+                break;
+            case RES_7_B:
+                res_r(7, m_b_reg, cycles);
+                break;
+            case RES_7_C:
+                res_r(7, m_c_reg, cycles);
+                break;
+            case RES_7_D:
+                res_r(7, m_d_reg, cycles);
+                break;
+            case RES_7_E:
+                res_r(7, m_e_reg, cycles);
+                break;
+            case RES_7_H:
+                res_r(7, m_h_reg, cycles);
+                break;
+            case RES_7_L:
+                res_r(7, m_l_reg, cycles);
+                break;
+            case RES_7_MHL:
+                res_MHL(7, address_in_HL(), m_memory, cycles);
+                break;
+            case RES_7_A:
+                res_r(7, m_acc_reg, cycles);
+                break;
+            case SET_0_B:
+                set_r(0, m_b_reg, cycles);
+                break;
+            case SET_0_C:
+                set_r(0, m_c_reg, cycles);
+                break;
+            case SET_0_D:
+                set_r(0, m_d_reg, cycles);
+                break;
+            case SET_0_E:
+                set_r(0, m_e_reg, cycles);
+                break;
+            case SET_0_H:
+                set_r(0, m_h_reg, cycles);
+                break;
+            case SET_0_L:
+                set_r(0, m_l_reg, cycles);
+                break;
+            case SET_0_MHL:
+                set_MHL(0, address_in_HL(), m_memory, cycles);
+                break;
+            case SET_0_A:
+                set_r(0, m_acc_reg, cycles);
+                break;
+            case SET_1_B:
+                set_r(1, m_b_reg, cycles);
+                break;
+            case SET_1_C:
+                set_r(1, m_c_reg, cycles);
+                break;
+            case SET_1_D:
+                set_r(1, m_d_reg, cycles);
+                break;
+            case SET_1_E:
+                set_r(1, m_e_reg, cycles);
+                break;
+            case SET_1_H:
+                set_r(1, m_h_reg, cycles);
+                break;
+            case SET_1_L:
+                set_r(1, m_l_reg, cycles);
+                break;
+            case SET_1_MHL:
+                set_MHL(1, address_in_HL(), m_memory, cycles);
+                break;
+            case SET_1_A:
+                set_r(1, m_acc_reg, cycles);
+                break;
+            case SET_2_B:
+                set_r(2, m_b_reg, cycles);
+                break;
+            case SET_2_C:
+                set_r(2, m_c_reg, cycles);
+                break;
+            case SET_2_D:
+                set_r(2, m_d_reg, cycles);
+                break;
+            case SET_2_E:
+                set_r(2, m_e_reg, cycles);
+                break;
+            case SET_2_H:
+                set_r(2, m_h_reg, cycles);
+                break;
+            case SET_2_L:
+                set_r(2, m_l_reg, cycles);
+                break;
+            case SET_2_MHL:
+                set_MHL(2, address_in_HL(), m_memory, cycles);
+                break;
+            case SET_2_A:
+                set_r(2, m_acc_reg, cycles);
+                break;
+            case SET_3_B:
+                set_r(3, m_b_reg, cycles);
+                break;
+            case SET_3_C:
+                set_r(3, m_c_reg, cycles);
+                break;
+            case SET_3_D:
+                set_r(3, m_d_reg, cycles);
+                break;
+            case SET_3_E:
+                set_r(3, m_e_reg, cycles);
+                break;
+            case SET_3_H:
+                set_r(3, m_h_reg, cycles);
+                break;
+            case SET_3_L:
+                set_r(3, m_l_reg, cycles);
+                break;
+            case SET_3_MHL:
+                set_MHL(3, address_in_HL(), m_memory, cycles);
+                break;
+            case SET_3_A:
+                set_r(3, m_acc_reg, cycles);
+                break;
+            case SET_4_B:
+                set_r(4, m_b_reg, cycles);
+                break;
+            case SET_4_C:
+                set_r(4, m_c_reg, cycles);
+                break;
+            case SET_4_D:
+                set_r(4, m_d_reg, cycles);
+                break;
+            case SET_4_E:
+                set_r(4, m_e_reg, cycles);
+                break;
+            case SET_4_H:
+                set_r(4, m_h_reg, cycles);
+                break;
+            case SET_4_L:
+                set_r(4, m_l_reg, cycles);
+                break;
+            case SET_4_MHL:
+                set_MHL(4, address_in_HL(), m_memory, cycles);
+                break;
+            case SET_4_A:
+                set_r(4, m_acc_reg, cycles);
+                break;
+            case SET_5_B:
+                set_r(5, m_b_reg, cycles);
+                break;
+            case SET_5_C:
+                set_r(5, m_c_reg, cycles);
+                break;
+            case SET_5_D:
+                set_r(5, m_d_reg, cycles);
+                break;
+            case SET_5_E:
+                set_r(5, m_e_reg, cycles);
+                break;
+            case SET_5_H:
+                set_r(5, m_h_reg, cycles);
+                break;
+            case SET_5_L:
+                set_r(5, m_l_reg, cycles);
+                break;
+            case SET_5_MHL:
+                set_MHL(5, address_in_HL(), m_memory, cycles);
+                break;
+            case SET_5_A:
+                set_r(5, m_acc_reg, cycles);
+                break;
+            case SET_6_B:
+                set_r(6, m_b_reg, cycles);
+                break;
+            case SET_6_C:
+                set_r(6, m_c_reg, cycles);
+                break;
+            case SET_6_D:
+                set_r(6, m_d_reg, cycles);
+                break;
+            case SET_6_E:
+                set_r(6, m_e_reg, cycles);
+                break;
+            case SET_6_H:
+                set_r(6, m_h_reg, cycles);
+                break;
+            case SET_6_L:
+                set_r(6, m_l_reg, cycles);
+                break;
+            case SET_6_MHL:
+                set_MHL(6, address_in_HL(), m_memory, cycles);
+                break;
+            case SET_6_A:
+                set_r(6, m_acc_reg, cycles);
+                break;
+            case SET_7_B:
+                set_r(7, m_b_reg, cycles);
+                break;
+            case SET_7_C:
+                set_r(7, m_c_reg, cycles);
+                break;
+            case SET_7_D:
+                set_r(7, m_d_reg, cycles);
+                break;
+            case SET_7_E:
+                set_r(7, m_e_reg, cycles);
+                break;
+            case SET_7_H:
+                set_r(7, m_h_reg, cycles);
+                break;
+            case SET_7_L:
+                set_r(7, m_l_reg, cycles);
+                break;
+            case SET_7_MHL:
+                set_MHL(7, address_in_HL(), m_memory, cycles);
+                break;
+            case SET_7_A:
+                set_r(7, m_acc_reg, cycles);
                 break;
             default:
                 throw UnrecognizedOpcodeException(bits_opcode, "Bits instructions");
