@@ -240,7 +240,7 @@ namespace emu::z80 {
                 ld_dd_nn(m_h_reg, m_l_reg, get_next_word(), cycles);
                 break;
             case LD_Mnn_HL:
-                ld_Mnn_HL(m_l_reg, m_h_reg, m_memory, get_next_word(), cycles);
+                ld_Mnn_HL(m_h_reg, m_l_reg, m_memory, get_next_word(), cycles);
                 break;
             case INC_HL:
                 inc_ss(m_h_reg, m_l_reg, cycles);
@@ -1714,7 +1714,7 @@ namespace emu::z80 {
                 ld_ixy_nn(ixy_reg, get_next_word(), cycles);
                 break;
             case LD_Mnn_IXY:
-                ld_Mnn_ixy(get_next_byte(), memory(), ixy_reg, cycles);
+                ld_Mnn_ixy(ixy_reg, get_next_byte(), memory(), cycles);
                 break;
             case INC_IXY:
                 inc_ixy(ixy_reg, cycles);

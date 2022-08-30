@@ -21,7 +21,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Move from register to register
+     * Load from register to register
      * <ul>
      *   <li>Size: 1</li>
      *   <li>Cycles: 1</li>
@@ -40,7 +40,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Move from register to register (undocumented instructions)
+     * Load from register to register (undocumented instructions)
      * <ul>
      *   <li>Size: 2</li>
      *   <li>Cycles: 2</li>
@@ -59,7 +59,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Move from register to IXH or IYH (undocumented instructions)
+     * Load from register to IXH or IYH (undocumented instructions)
      * <ul>
      *   <li>Size: 2</li>
      *   <li>Cycles: 2</li>
@@ -83,7 +83,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Move from register to IXL or IYL (undocumented instructions)
+     * Load from register to IXL or IYL (undocumented instructions)
      * <ul>
      *   <li>Size: 2</li>
      *   <li>Cycles: 2</li>
@@ -107,7 +107,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Move immediate
+     * Load immediate into register
      * <ul>
      *   <li>Size: 2</li>
      *   <li>Cycles: 2</li>
@@ -126,7 +126,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Move memory in HL's address to register
+     * Load value in memory at HL's address into register
      * <ul>
      *   <li>Size: 2</li>
      *   <li>Cycles: 2</li>
@@ -145,7 +145,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Move register to memory in HL's address
+     * Load register into memory at HL's address
      * <ul>
      *   <li>Size: 2</li>
      *   <li>Cycles: 2</li>
@@ -164,7 +164,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Move immediate to memory in HL's address
+     * Load immediate value into memory in HL's address
      * <ul>
      *   <li>Size: 2</li>
      *   <li>Cycles: 3</li>
@@ -184,7 +184,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Move from memory to register
+     * Load from memory into register
      * <ul>
      *   <li>Size: 1</li>
      *   <li>Cycles: 2</li>
@@ -223,7 +223,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Move register to memory in HL's address
+     * Load register into memory at HL's address
      * <ul>
      *   <li>Size: 2</li>
      *   <li>Cycles: 2</li>
@@ -242,7 +242,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Move memory in address nn to accumulator
+     * Load memory at address nn into the accumulator
      * <ul>
      *   <li>Size: 3</li>
      *   <li>Cycles: 4</li>
@@ -286,7 +286,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Load register pair immediate
+     * Load register pair with immediate value
      * <ul>
      *   <li>Size: 3</li>
      *   <li>Cycles: 3</li>
@@ -307,7 +307,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Load IX or IY immediate
+     * Load IX or IY with immediate value
      * <ul>
      *   <li>Size: 4</li>
      *   <li>Cycles: 4</li>
@@ -326,7 +326,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Move immediate into IXH/IYH
+     * Load immediate value into IXH/IYH
      * <ul>
      *   <li>Size: 3</li>
      *   <li>Cycles: 2</li>
@@ -350,7 +350,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Move immediate into IXH/IYH
+     * Load immediate value into IXH/IYH
      * <ul>
      *   <li>Size: 3</li>
      *   <li>Cycles: 2</li>
@@ -374,29 +374,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Load memory location with IX or IY
-     * <ul>
-     *   <li>Size: 4</li>
-     *   <li>Cycles: 6</li>
-     *   <li>States: 20</li>
-     *   <li>Condition bits affected: none</li>
-     * </ul>
-     *
-     * @param args contains the address to load into
-     * @param ixy_reg is the IX or IY register to load into, which will be mutated
-     * @param args contains address
-     * @param memory is the memory, which will be mutated
-     * @param cycles is the number of cycles variable, which will be mutated
-     */
-    void ld_Mnn_ixy(const NextByte &args, EmulatorMemory &memory, u16 ixy_reg, unsigned long &cycles) {
-        memory[args.farg] = first_byte(ixy_reg);
-        memory[args.farg + 1] = second_byte(ixy_reg);
-
-        cycles = 20;
-    }
-
-    /**
-     * Load register pair with memory location
+     * Load register pair with the value at a memory location
      * <ul>
      *   <li>Size: 4</li>
      *   <li>Cycles: 6</li>
@@ -418,7 +396,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Load IX or IY with memory location
+     * Load IX or IY with the value at a memory location
      * <ul>
      *   <li>Size: 4</li>
      *   <li>Cycles: 6</li>
@@ -478,7 +456,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Move content of HL register to SP
+     * Load content of the HL register pair into SP
      * <ul>
      *   <li>Size: 1</li>
      *   <li>Cycles: 1</li>
@@ -497,7 +475,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Move content of IX/IY register to SP
+     * Load content of the IX/IY register into SP
      * <ul>
      *   <li>Size: 2</li>
      *   <li>Cycles: 2</li>
@@ -516,7 +494,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Store H and L direct
+     * Load HL into memory
      * <ul>
      *   <li>Size: 3</li>
      *   <li>Cycles: 5</li>
@@ -530,18 +508,18 @@ namespace emu::z80 {
      * @param args contains the argument with the address to call
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_Mnn_HL(u8 l_reg, u8 h_reg, EmulatorMemory &memory, const NextWord &args, unsigned long &cycles) {
+    void ld_Mnn_HL(u8 h_reg, u8 l_reg, EmulatorMemory &memory, const NextWord &args, unsigned long &cycles) {
         const u16 l_address = to_u16(args.sarg, args.farg);
         const u16 h_address = l_address + 1;
 
-        memory[l_address] = l_reg;
         memory[h_address] = h_reg;
+        memory[l_address] = l_reg;
 
         cycles = 16;
     }
 
     /**
-     * Store reg1 and reg2 direct
+     * Load register pair into memory
      * <ul>
      *   <li>Size: 3</li>
      *   <li>Cycles: 6</li>
@@ -549,24 +527,24 @@ namespace emu::z80 {
      *   <li>Condition bits affected: none</li>
      * </ul>
      *
-     * @param reg1 is the first register to store
-     * @param reg2 is the second register to store
+     * @param hi_reg is the high-order portion of the register pair
+     * @param lo_reg is the low-order portion of the register pair
      * @param memory is the memory, which will be mutated
      * @param args contains the argument with the address to call
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_Mnn_dd(u8 reg1, u8 reg2, EmulatorMemory &memory, const NextWord &args, unsigned long &cycles) {
-        const u16 first_address = to_u16(args.sarg, args.farg);
-        const u16 second_address = first_address + 1;
+    void ld_Mnn_dd(u8 hi_reg, u8 lo_reg, EmulatorMemory &memory, const NextWord &args, unsigned long &cycles) {
+        const u16 lo_address = to_u16(args.sarg, args.farg);
+        const u16 hi_address = lo_address + 1;
 
-        memory[first_address] = reg1;
-        memory[second_address] = reg2;
+        memory[hi_address] = hi_reg;
+        memory[lo_address] = lo_reg;
 
         cycles = 20;
     }
 
     /**
-     * Store SP direct
+     * Load SP into memory
      * <ul>
      *   <li>Size: 4</li>
      *   <li>Cycles: 6</li>
@@ -580,7 +558,29 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void ld_Mnn_sp(u16 sp, EmulatorMemory &memory, const NextWord &args, unsigned long &cycles) {
-        ld_Mnn_dd(first_byte(sp), second_byte(sp), memory, args, cycles);
+        ld_Mnn_dd(second_byte(sp), first_byte(sp), memory, args, cycles);
+
+        cycles = 20;
+    }
+
+    /**
+     * Load a memory location with IX or IY
+     * <ul>
+     *   <li>Size: 4</li>
+     *   <li>Cycles: 6</li>
+     *   <li>States: 20</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param args contains the address to load into
+     * @param ixy_reg is the IX or IY register to load into, which will be mutated
+     * @param args contains address
+     * @param memory is the memory, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void ld_Mnn_ixy(u16 ixy_reg, const NextByte &args, EmulatorMemory &memory, unsigned long &cycles) {
+        memory[args.farg] = first_byte(ixy_reg);
+        memory[args.farg + 1] = second_byte(ixy_reg);
 
         cycles = 20;
     }
