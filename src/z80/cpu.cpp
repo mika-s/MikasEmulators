@@ -1732,7 +1732,7 @@ namespace emu::z80 {
                 add_ixy_pp(ixy_reg, ixy_reg, m_flag_reg, cycles);
                 break;
             case LD_IXY_Mnn:
-                ld_ixy_Mnn(ixy_reg, get_next_byte(), memory(), cycles);
+                ld_ixy_Mnn(ixy_reg, get_next_word(), memory(), cycles);
                 break;
             case DEC_IXY:
                 dec_ixy(ixy_reg, cycles);
@@ -2151,7 +2151,7 @@ namespace emu::z80 {
                 adc_hl_ss(m_h_reg, m_l_reg, to_u16(m_b_reg, m_c_reg), m_flag_reg, cycles);
                 break;
             case LD_BC_Mnn:
-                ld_dd_Mnn(m_b_reg, m_c_reg, get_next_byte(), m_memory, cycles);
+                ld_dd_Mnn(m_b_reg, m_c_reg, get_next_word(), m_memory, cycles);
                 break;
             case SBC_HL_DE:
                 sbc_HL_ss(m_h_reg, m_l_reg, to_u16(m_d_reg, m_e_reg), m_flag_reg, cycles);
@@ -2163,7 +2163,7 @@ namespace emu::z80 {
                 adc_hl_ss(m_h_reg, m_l_reg, to_u16(m_d_reg, m_e_reg), m_flag_reg, cycles);
                 break;
             case LD_DE_Mnn:
-                ld_dd_Mnn(m_d_reg, m_e_reg, get_next_byte(), m_memory, cycles);
+                ld_dd_Mnn(m_d_reg, m_e_reg, get_next_word(), m_memory, cycles);
                 break;
             case SBC_HL_HL:
                 sbc_HL_ss(m_h_reg, m_l_reg, to_u16(m_h_reg, m_l_reg), m_flag_reg, cycles);
@@ -2181,7 +2181,7 @@ namespace emu::z80 {
                 adc_hl_ss(m_h_reg, m_l_reg, to_u16(m_h_reg, m_l_reg), m_flag_reg, cycles);
                 break;
             case LD_HL_Mnn_UNDOC:
-                ld_dd_Mnn(m_h_reg, m_l_reg, get_next_byte(), m_memory, cycles);
+                ld_dd_Mnn(m_h_reg, m_l_reg, get_next_word(), m_memory, cycles);
                 break;
             case SBC_HL_SP:
                 sbc_HL_ss(m_h_reg, m_l_reg, m_sp, m_flag_reg, cycles);

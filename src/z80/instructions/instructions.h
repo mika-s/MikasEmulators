@@ -807,8 +807,8 @@ namespace emu::z80 {
     void ld_HL_Mnn(u8 &reg1, u8 &reg2, const EmulatorMemory &memory, const NextWord &args, unsigned long &cycles);
     void ld_dd_nn(u8 &reg1, u8 &reg2, const NextWord &args, unsigned long &cycles);
     void ld_ixy_nn(u16 &ixy_reg, const NextWord &args, unsigned long &cycles);
-    void ld_dd_Mnn(u8 &reg1, u8 &reg2, const NextByte &args, const EmulatorMemory &memory, unsigned long &cycles);
-    void ld_ixy_Mnn(u16 &ixy_reg, const NextByte &args, const EmulatorMemory &memory, unsigned long &cycles);
+    void ld_dd_Mnn(u8 &reg1, u8 &reg2, const NextWord &args, const EmulatorMemory &memory, unsigned long &cycles);
+    void ld_ixy_Mnn(u16 &ixy_reg, const NextWord &args, const EmulatorMemory &memory, unsigned long &cycles);
     void ld_ixyh_n(u16 &ixy_reg, const NextByte &args, unsigned long &cycles);
     void ld_ixyl_n(u16 &ixy_reg, const NextByte &args, unsigned long &cycles);
     void ld_ixyh_r_undoc(u16 &ixy_reg, u8 value, unsigned long &cycles);

@@ -388,9 +388,10 @@ namespace emu::z80 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_dd_Mnn(u8 &hi_reg, u8 &lo_reg, const NextByte &args, const EmulatorMemory &memory, unsigned long &cycles) {
-        hi_reg = memory[args.farg + 1];
-        lo_reg = memory[args.farg];
+    void ld_dd_Mnn(u8 &hi_reg, u8 &lo_reg, const NextWord &args, const EmulatorMemory &memory, unsigned long &cycles) {
+        const u16 address = to_u16(args.sarg, args.farg);
+        hi_reg = memory[address + 1];
+        lo_reg = memory[address];
 
         cycles = 20;
     }
@@ -409,8 +410,9 @@ namespace emu::z80 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_ixy_Mnn(u16 &ixy_reg, const NextByte &args, const EmulatorMemory &memory, unsigned long &cycles) {
-        ixy_reg = to_u16(memory[args.farg + 1], memory[args.farg]);
+    void ld_ixy_Mnn(u16 &ixy_reg, const NextWord &args, const EmulatorMemory &memory, unsigned long &cycles) {
+        const u16 address = to_u16(args.sarg, args.farg);
+        ixy_reg = to_u16(memory[address + 1], memory[address]);
 
         cycles = 20;
     }
