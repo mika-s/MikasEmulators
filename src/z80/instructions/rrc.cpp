@@ -29,7 +29,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Rotate accumulator right
+     * Rotate right circular (accumulator)
      * <ul>
      *   <li>Size: 1</li>
      *   <li>Cycles: 1</li>
@@ -48,7 +48,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Rotate register left
+     * Rotate right circular (register)
      * <ul>
      *   <li>Size: 2</li>
      *   <li>Cycles: 1</li>
@@ -67,7 +67,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Rotate the value in memory at HL's address left
+     * Rotate right circular (the value in memory at HL's address)
      * <ul>
      *   <li>Size: 2</li>
      *   <li>Cycles: 4</li>
@@ -86,7 +86,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Rotate value in memory pointed to by IX or IY plus d left
+     * Rotate right circular (value in memory pointed to by IX or IY plus d)
      * <ul>
      *   <li>Size: 4</li>
      *   <li>Cycles: 1</li>
@@ -110,7 +110,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Rotate value in memory pointed to by IX or IY plus d left
+     * Rotate right circular (value in memory pointed to by IX or IY plus d)
      * <ul>
      *   <li>Size: 4</li>
      *   <li>Cycles: 1</li>

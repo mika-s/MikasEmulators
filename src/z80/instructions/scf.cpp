@@ -4,7 +4,7 @@
 
 namespace emu::z80 {
     /**
-     * Set carry
+     * Set carry flag
      * <ul>
      *   <li>Size: 1</li>
      *   <li>Cycles: 1</li>

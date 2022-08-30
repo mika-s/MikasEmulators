@@ -26,7 +26,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Shift register left
+     * Shift left arithmetic (register)
      * <ul>
      *   <li>Size: 2</li>
      *   <li>Cycles: 1</li>
@@ -45,7 +45,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Shift the value in memory at HL's address left
+     * Shift left arithmetic (the value in memory at HL's address)
      * <ul>
      *   <li>Size: 2</li>
      *   <li>Cycles: 4</li>
@@ -64,7 +64,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Shift value in memory pointed to by IX or IY plus d left
+     * Shift left arithmetic (value in memory pointed to by IX or IY plus d)
      * <ul>
      *   <li>Size: 4</li>
      *   <li>Cycles: 1</li>
@@ -88,7 +88,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Shift value in memory pointed to by IX or IY plus d left
+     * Shift left arithmetic (value in memory pointed to by IX or IY plus d)
      * <ul>
      *   <li>Size: 4</li>
      *   <li>Cycles: 1</li>

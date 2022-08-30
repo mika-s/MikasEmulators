@@ -29,7 +29,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Rotate right through carry
+     * Rotate right through carry (accumulator)
      * <ul>
      *   <li>Size: 1</li>
      *   <li>Cycles: 1</li>
@@ -48,7 +48,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Rotate register right through carry
+     * Rotate right through carry (register)
      * <ul>
      *   <li>Size: 2</li>
      *   <li>Cycles: 1</li>
@@ -67,7 +67,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Rotate the value in memory at HL's address right through carry
+     * Rotate right through carry (value in memory at HL's address)
      * <ul>
      *   <li>Size: 2</li>
      *   <li>Cycles: 4</li>

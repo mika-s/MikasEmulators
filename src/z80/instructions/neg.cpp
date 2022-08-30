@@ -1,6 +1,7 @@
 #include <iostream>
 #include "doctest.h"
 #include "z80/flags.h"
+#include "z80/instructions/instruction_util.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
 
@@ -9,7 +10,7 @@ namespace emu::z80 {
     using emu::util::byte::borrow_from;
 
     /**
-     * Enable interrupts
+     * Negate
      * <ul>
      *   <li>Size: 2</li>
      *   <li>Cycles: 2</li>
@@ -22,25 +23,9 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void neg(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles) {
-        const u8 previous = acc_reg;
-        acc_reg = 0 - acc_reg;
-
-        if (previous != 0) {
-            flag_reg.set_carry_flag();
-        } else {
-            flag_reg.clear_carry_flag();
-        }
-
-        if (previous == 0x80) {
-            flag_reg.set_parity_overflow_flag();
-        } else {
-            flag_reg.clear_parity_overflow_flag();
-        }
-
-        flag_reg.handle_sign_flag(acc_reg);
-        flag_reg.handle_zero_flag(acc_reg);
-        flag_reg.set_add_subtract_flag();
-        flag_reg.handle_half_borrow_flag(previous, acc_reg, false); // TODO: Fix
+        u8 result = 0;
+        sub_from_register(result, acc_reg, false, flag_reg);
+        acc_reg = result;
 
         cycles = 8;
     }
@@ -65,8 +50,10 @@ namespace emu::z80 {
                 CHECK_EQ(acc_reg > INT8_MAX, flag_reg.is_sign_flag_set());
                 CHECK_EQ(acc_reg == 0, flag_reg.is_zero_flag_set());
                 CHECK_EQ(true, flag_reg.is_add_subtract_flag_set());
-                // TODO: Test for half carry flag
-//                CHECK_EQ(borrow_from(4, acc_reg_counter, acc_reg, false), flag_reg.is_half_carry_flag_set());
+                CHECK_EQ(
+                        (((0 & 0xf) - (acc_reg_counter & 0xf)) & 0x10) > 0,
+                        flag_reg.is_half_carry_flag_set()
+                );
             }
         }
 
