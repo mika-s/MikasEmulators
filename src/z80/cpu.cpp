@@ -2073,6 +2073,54 @@ namespace emu::z80 {
             case RLC_MIXY_P_n_A_UNDOC1:
                 rlc_MixyPd_r(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
                 break;
+            case RES_0_MIXY_P_n:
+                res_MixyPd(0, ixy_reg, get_next_byte(), m_memory, cycles);
+                break;
+            case RES_1_MIXY_P_n:
+                res_MixyPd(1, ixy_reg, get_next_byte(), m_memory, cycles);
+                break;
+            case RES_2_MIXY_P_n:
+                res_MixyPd(2, ixy_reg, get_next_byte(), m_memory, cycles);
+                break;
+            case RES_3_MIXY_P_n:
+                res_MixyPd(3, ixy_reg, get_next_byte(), m_memory, cycles);
+                break;
+            case RES_4_MIXY_P_n:
+                res_MixyPd(4, ixy_reg, get_next_byte(), m_memory, cycles);
+                break;
+            case RES_5_MIXY_P_n:
+                res_MixyPd(5, ixy_reg, get_next_byte(), m_memory, cycles);
+                break;
+            case RES_6_MIXY_P_n:
+                res_MixyPd(6, ixy_reg, get_next_byte(), m_memory, cycles);
+                break;
+            case RES_7_MIXY_P_n:
+                res_MixyPd(7, ixy_reg, get_next_byte(), m_memory, cycles);
+                break;
+            case SET_0_MIXY_P_n:
+                set_MixyPd(0, ixy_reg, get_next_byte(), m_memory, cycles);
+                break;
+            case SET_1_MIXY_P_n:
+                set_MixyPd(1, ixy_reg, get_next_byte(), m_memory, cycles);
+                break;
+            case SET_2_MIXY_P_n:
+                set_MixyPd(2, ixy_reg, get_next_byte(), m_memory, cycles);
+                break;
+            case SET_3_MIXY_P_n:
+                set_MixyPd(3, ixy_reg, get_next_byte(), m_memory, cycles);
+                break;
+            case SET_4_MIXY_P_n:
+                set_MixyPd(4, ixy_reg, get_next_byte(), m_memory, cycles);
+                break;
+            case SET_5_MIXY_P_n:
+                set_MixyPd(5, ixy_reg, get_next_byte(), m_memory, cycles);
+                break;
+            case SET_6_MIXY_P_n:
+                set_MixyPd(6, ixy_reg, get_next_byte(), m_memory, cycles);
+                break;
+            case SET_7_MIXY_P_n:
+                set_MixyPd(7, ixy_reg, get_next_byte(), m_memory, cycles);
+                break;
             default:
                 throw UnrecognizedOpcodeException(ixy_bits_opcode, "IX/IY bits instructions");
         }

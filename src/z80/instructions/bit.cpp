@@ -2,6 +2,7 @@
 #include "doctest.h"
 #include "z80/emulator_memory.h"
 #include "z80/flags.h"
+#include "z80/instructions/instruction_util.h"
 #include "crosscutting/util/byte_util.h"
 
 namespace emu::z80 {
@@ -11,7 +12,7 @@ namespace emu::z80 {
     void bit(unsigned int bit_number, u8 reg, Flags &flag_reg) {
         const bool is_set = is_bit_set(reg, bit_number);
 
-        if (bit_number == 7 && is_set) {
+        if (bit_number == msb && is_set) {
             flag_reg.set_sign_flag();
         } else {
             flag_reg.clear_sign_flag();
@@ -38,8 +39,9 @@ namespace emu::z80 {
      *   <li>Condition bits affected: half carry, sign, zero, parity/overflow, x, y, add/subtract</li>
      * </ul>
      *
-     * @param bit_number is the accumulator register, which will be mutated
-     * @param reg is the flag register
+     * @param bit_number is the bit number to test
+     * @param reg is the register to test a bit in
+     * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void bit_r(unsigned int bit_number, u8 reg, Flags &flag_reg, unsigned long &cycles) {
@@ -71,8 +73,10 @@ namespace emu::z80 {
      *   <li>Condition bits affected: half carry, sign, zero, parity/overflow, x, y, add/subtract</li>
      * </ul>
      *
-     * @param bit_number is the accumulator register, which will be mutated
-     * @param reg is the flag register, which will be mutated
+     * @param bit_number is the bit number to test
+     * @param hl_reg is the HL register pair
+     * @param memory is the memory
+     * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void bit_MHL(unsigned int bit_number, u16 hl_reg, const EmulatorMemory &memory, Flags &flag_reg,

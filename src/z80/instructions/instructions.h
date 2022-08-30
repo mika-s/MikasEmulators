@@ -653,6 +653,22 @@ constexpr unsigned int RLC_MIXY_P_n_L_UNDOC1 = 0x05;
 constexpr unsigned int RLC_MIXY_P_n          = 0x06;
 constexpr unsigned int RLC_MIXY_P_n_A_UNDOC1 = 0x07;
 constexpr unsigned int RL_MIXY_P_n_B_UNDOC1  = 0x10;
+constexpr unsigned int RES_0_MIXY_P_n        = 0x86;
+constexpr unsigned int RES_1_MIXY_P_n        = 0x8E;
+constexpr unsigned int RES_2_MIXY_P_n        = 0x96;
+constexpr unsigned int RES_3_MIXY_P_n        = 0x9E;
+constexpr unsigned int RES_4_MIXY_P_n        = 0xA6;
+constexpr unsigned int RES_5_MIXY_P_n        = 0xAE;
+constexpr unsigned int RES_6_MIXY_P_n        = 0xB6;
+constexpr unsigned int RES_7_MIXY_P_n        = 0xBE;
+constexpr unsigned int SET_0_MIXY_P_n        = 0xC6;
+constexpr unsigned int SET_1_MIXY_P_n        = 0xCE;
+constexpr unsigned int SET_2_MIXY_P_n        = 0xD6;
+constexpr unsigned int SET_3_MIXY_P_n        = 0xDE;
+constexpr unsigned int SET_4_MIXY_P_n        = 0xE6;
+constexpr unsigned int SET_5_MIXY_P_n        = 0xEE;
+constexpr unsigned int SET_6_MIXY_P_n        = 0xF6;
+constexpr unsigned int SET_7_MIXY_P_n        = 0xFE;
 
 // EXTD opcodes:
 
@@ -829,8 +845,9 @@ namespace emu::z80 {
     void push_qq(u8 reg1, u8 reg2, u16 &sp, EmulatorMemory &memory, unsigned long &cycles);
     void push_af(const Flags &flag_reg, u8 acc_reg, u16 &sp, EmulatorMemory &memory, unsigned long &cycles);
     void push_ixy(u16 ixy_reg, u16 &sp, EmulatorMemory &memory, unsigned long &cycles);
-    void res_r(unsigned int bit_number, u8 reg, unsigned long &cycles);
+    void res_r(unsigned int bit_number, u8 &reg, unsigned long &cycles);
     void res_MHL(unsigned int bit_number, u16 hl_reg, EmulatorMemory &memory, unsigned long &cycles);
+    void res_MixyPd(unsigned int bit_number, u16 ixy_reg, const NextByte &args, EmulatorMemory &memory, unsigned long &cycles);
     void ret(u16 &pc, u16 &sp, const EmulatorMemory &memory, unsigned long &cycles);
     void ret_c(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, unsigned long &cycles);
     void ret_m(u16 &pc, u16 &sp, EmulatorMemory &memory, const Flags &flag_reg, unsigned long &cycles);
@@ -873,8 +890,9 @@ namespace emu::z80 {
     void sbc_A_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
     void sbc_HL_ss(u8 &h_reg, u8 &l_reg, u16 value, Flags &flag_reg, unsigned long &cycles);
     void scf(Flags &flag_reg, unsigned long &cycles);
-    void set_r(unsigned int bit_number, u8 reg, unsigned long &cycles);
+    void set_r(unsigned int bit_number, u8 &reg, unsigned long &cycles);
     void set_MHL(unsigned int bit_number, u16 hl_reg, EmulatorMemory &memory, unsigned long &cycles);
+    void set_MixyPd(unsigned int bit_number, u16 ixy_reg, const NextByte &args, EmulatorMemory &memory, unsigned long &cycles);
     void sla_r(u8 &reg, Flags &flag_reg, unsigned long &cycles);
     void sla_MHL(u8 &value_in_hl, Flags &flag_reg, unsigned long &cycles);
     void sla_MixyPd(u16 ixy_reg, const NextByte &args, const EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles);
