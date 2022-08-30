@@ -1714,7 +1714,7 @@ namespace emu::z80 {
                 ld_ixy_nn(ixy_reg, get_next_word(), cycles);
                 break;
             case LD_Mnn_IXY:
-                ld_Mnn_ixy(ixy_reg, get_next_byte(), memory(), cycles);
+                ld_Mnn_ixy(ixy_reg, get_next_word(), memory(), cycles);
                 break;
             case INC_IXY:
                 inc_ixy(ixy_reg, cycles);

@@ -822,7 +822,7 @@ namespace emu::z80 {
     void ld_Mnn_HL(u8 h_reg, u8 l_reg, EmulatorMemory &memory, const NextWord &args, unsigned long &cycles);
     void ld_Mnn_dd(u8 hi_reg, u8 lo_reg, EmulatorMemory &memory, const NextWord &args, unsigned long &cycles);
     void ld_Mnn_sp(u16 sp, EmulatorMemory &memory, const NextWord &args, unsigned long &cycles);
-    void ld_Mnn_ixy(u16 ixy_reg, const NextByte &args, EmulatorMemory &memory, unsigned long &cycles);
+    void ld_Mnn_ixy(u16 ixy_reg, const NextWord &args, EmulatorMemory &memory, unsigned long &cycles);
     void ld_Mss_A(u8 &to, u8 acc_reg, unsigned long &cycles);
     void ld_sp_Mnn(u16 &sp, EmulatorMemory memory, const NextWord &args, unsigned long &cycles);
     void ld_sp_nn(u16 &sp, const NextWord &args, unsigned long &cycles);

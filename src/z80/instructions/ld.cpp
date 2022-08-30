@@ -559,8 +559,6 @@ namespace emu::z80 {
      */
     void ld_Mnn_sp(u16 sp, EmulatorMemory &memory, const NextWord &args, unsigned long &cycles) {
         ld_Mnn_dd(second_byte(sp), first_byte(sp), memory, args, cycles);
-
-        cycles = 20;
     }
 
     /**
@@ -572,17 +570,13 @@ namespace emu::z80 {
      *   <li>Condition bits affected: none</li>
      * </ul>
      *
-     * @param args contains the address to load into
      * @param ixy_reg is the IX or IY register to load into, which will be mutated
-     * @param args contains address
+     * @param args contains the address to load into
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_Mnn_ixy(u16 ixy_reg, const NextByte &args, EmulatorMemory &memory, unsigned long &cycles) {
-        memory[args.farg] = first_byte(ixy_reg);
-        memory[args.farg + 1] = second_byte(ixy_reg);
-
-        cycles = 20;
+    void ld_Mnn_ixy(u16 ixy_reg, const NextWord &args, EmulatorMemory &memory, unsigned long &cycles) {
+        ld_Mnn_dd(second_byte(ixy_reg), first_byte(ixy_reg), memory, args, cycles);
     }
 
     /**
