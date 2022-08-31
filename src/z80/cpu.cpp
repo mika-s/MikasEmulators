@@ -132,7 +132,7 @@ namespace emu::z80 {
             m_opcode = get_next_byte().farg;
         }
 
-        print_debug(m_opcode);
+//        print_debug(m_opcode);
 
         r_tick();
 
@@ -922,7 +922,7 @@ namespace emu::z80 {
     }
 
     void Cpu::next_bits_instruction(u8 bits_opcode, unsigned long cycles) {
-        print_debug(bits_opcode);
+//        print_debug(bits_opcode);
         r_tick();
 
         switch (bits_opcode) {
@@ -1700,7 +1700,7 @@ namespace emu::z80 {
     }
 
     void Cpu::next_ixy_instruction(u8 ixy_opcode, u16 &ixy_reg, unsigned long cycles) {
-        print_debug(ixy_opcode);
+//        print_debug(ixy_opcode);
         r_tick();
 
         switch (ixy_opcode) {
@@ -1719,10 +1719,10 @@ namespace emu::z80 {
             case INC_IXY:
                 inc_ixy(ixy_reg, cycles);
                 break;
-            case INC_IXH_UNDOC1:
+            case INC_IXH_UNDOC:
                 inc_ixyh(ixy_reg, m_flag_reg, cycles);
                 break;
-            case DEC_IXH_UNDOC1:
+            case DEC_IXH_UNDOC:
                 dec_ixyh(ixy_reg, m_flag_reg, cycles);
                 break;
             case LD_IXYH_n_UNDOC:
@@ -1737,10 +1737,10 @@ namespace emu::z80 {
             case DEC_IXY:
                 dec_ixy(ixy_reg, cycles);
                 break;
-            case INC_IXL_UNDOC1:
+            case INC_IXL_UNDOC:
                 inc_ixyl(ixy_reg, m_flag_reg, cycles);
                 break;
-            case DEC_IXL_UNDOC1:
+            case DEC_IXL_UNDOC:
                 dec_ixyl(ixy_reg, m_flag_reg, cycles);
                 break;
             case LD_IXYL_n_UNDOC:
@@ -1965,10 +1965,10 @@ namespace emu::z80 {
             case ADC_A_IXYL_UNDOC:
                 adc_A_ixy_h_or_l(m_acc_reg, first_byte(ixy_reg), m_flag_reg, cycles);
                 break;
-            case SUB_IXYH_UNDOC1:
+            case SUB_IXYH_UNDOC:
                 sub_r(m_acc_reg, second_byte(ixy_reg), m_flag_reg, cycles);
                 break;
-            case SUB_IXYL_UNDOC1:
+            case SUB_IXYL_UNDOC:
                 sub_r(m_acc_reg, first_byte(ixy_reg), m_flag_reg, cycles);
                 break;
             case SUB_MIXY_P_n:
@@ -1983,25 +1983,25 @@ namespace emu::z80 {
             case SBC_A_MIXY_P_n:
                 sbc_A_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
                 break;
-            case AND_IXYH_UNDOC1:
+            case AND_IXYH_UNDOC:
                 and_r(m_acc_reg, second_byte(ixy_reg), m_flag_reg, cycles);
                 break;
-            case AND_IXYL_UNDOC1:
+            case AND_IXYL_UNDOC:
                 and_r(m_acc_reg, first_byte(ixy_reg), m_flag_reg, cycles);
                 break;
             case AND_MIXY_P_n:
                 and_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
                 break;
-            case XOR_IXYH_UNDOC1:
+            case XOR_IXYH_UNDOC:
                 xor_r(m_acc_reg, second_byte(ixy_reg), m_flag_reg, cycles);
                 break;
-            case XOR_IXYL_UNDOC1:
+            case XOR_IXYL_UNDOC:
                 xor_r(m_acc_reg, first_byte(ixy_reg), m_flag_reg, cycles);
                 break;
-            case OR_IXYH_UNDOC1:
+            case OR_IXYH_UNDOC:
                 or_r(m_acc_reg, second_byte(ixy_reg), m_flag_reg, cycles);
                 break;
-            case OR_IXYL_UNDOC1:
+            case OR_IXYL_UNDOC:
                 or_r(m_acc_reg, first_byte(ixy_reg), m_flag_reg, cycles);
                 break;
             case OR_MIXY_P_n:
@@ -2010,10 +2010,10 @@ namespace emu::z80 {
             case XOR_MIXY_P_n:
                 xor_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
                 break;
-            case CP_IXYH_UNDOC1:
+            case CP_IXYH_UNDOC:
                 cp_r(m_acc_reg, second_byte(ixy_reg), m_flag_reg, cycles);
                 break;
-            case CP_IXYL_UNDOC1:
+            case CP_IXYL_UNDOC:
                 cp_r(m_acc_reg, first_byte(ixy_reg), m_flag_reg, cycles);
                 break;
             case CP_MIXY_P_n:
@@ -2043,7 +2043,7 @@ namespace emu::z80 {
     }
 
     void Cpu::next_ixy_bits_instruction(u8 ixy_bits_opcode, u16 &ixy_reg, unsigned long cycles) {
-        print_debug(ixy_bits_opcode);
+//        print_debug(ixy_bits_opcode);
         r_tick();
 
         switch (ixy_bits_opcode) {
@@ -2127,7 +2127,7 @@ namespace emu::z80 {
     }
 
     void Cpu::next_extd_instruction(u8 extd_opcode, unsigned long cycles) {
-        print_debug(extd_opcode);
+//        print_debug(extd_opcode);
         r_tick();
 
         switch (extd_opcode) {
@@ -2368,7 +2368,7 @@ namespace emu::z80 {
     }
 
     void Cpu::print_debug(u8 opcode) {
-        if (false) {
+        if (true) {
             std::cout << "pc=" << hexify(m_pc)
                       << ",sp=" << hexify(m_sp)
                       << ",op=" << hexify(opcode)

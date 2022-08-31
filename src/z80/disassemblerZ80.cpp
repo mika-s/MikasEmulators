@@ -821,8 +821,11 @@ namespace emu::z80 {
             case INC_IXY:
                 print_inc(m_ostream, ixy_reg);
                 break;
-            case INC_IXH_UNDOC1:
+            case INC_IXH_UNDOC:
                 print_inc(m_ostream, ixy_reg + "H");
+                break;
+            case DEC_IXH_UNDOC:
+                print_dec(m_ostream, ixy_reg + "H");
                 break;
             case ADD_IXY_IXY:
                 print_add(m_ostream, ixy_reg, ixy_reg);
@@ -833,8 +836,11 @@ namespace emu::z80 {
             case DEC_IXY:
                 print_dec(m_ostream, ixy_reg);
                 break;
-            case INC_IXL_UNDOC1:
+            case INC_IXL_UNDOC:
                 print_inc(m_ostream, ixy_reg + "L");
+                break;
+            case DEC_IXL_UNDOC:
+                print_dec(m_ostream, ixy_reg + "L");
                 break;
             case 0x32:
                 std::cout << "0x32 (data)";
@@ -887,10 +893,10 @@ namespace emu::z80 {
             case ADC_A_MIXY_P_n:
                 print_adc_MixyPn(m_ostream, "A", ixy_reg, get_next_byte());
                 break;
-            case SUB_IXYH_UNDOC1:
+            case SUB_IXYH_UNDOC:
                 print_sub(m_ostream, ixy_reg + "H");
                 break;
-            case SUB_IXYL_UNDOC1:
+            case SUB_IXYL_UNDOC:
                 print_sub(m_ostream, ixy_reg + "L");
                 break;
             case SUB_MIXY_P_n:
@@ -905,25 +911,25 @@ namespace emu::z80 {
             case SBC_A_MIXY_P_n:
                 print_sbc_MixyPn(m_ostream, "A", ixy_reg, get_next_byte());
                 break;
-            case AND_IXYH_UNDOC1:
+            case AND_IXYH_UNDOC:
                 print_and_r(m_ostream, ixy_reg + "H");
                 break;
-            case AND_IXYL_UNDOC1:
+            case AND_IXYL_UNDOC:
                 print_and_r(m_ostream, ixy_reg + "L");
                 break;
             case AND_MIXY_P_n:
                 print_and_MixyPn(m_ostream, ixy_reg, get_next_byte());
                 break;
-            case XOR_IXYH_UNDOC1:
+            case XOR_IXYH_UNDOC:
                 print_xor_r(m_ostream, ixy_reg + "H");
                 break;
-            case XOR_IXYL_UNDOC1:
+            case XOR_IXYL_UNDOC:
                 print_xor_r(m_ostream, ixy_reg + "L");
                 break;
-            case OR_IXYH_UNDOC1:
+            case OR_IXYH_UNDOC:
                 print_or_r(m_ostream, ixy_reg + "H");
                 break;
-            case OR_IXYL_UNDOC1:
+            case OR_IXYL_UNDOC:
                 print_or_r(m_ostream, ixy_reg + "L");
                 break;
             case OR_MIXY_P_n:
@@ -932,10 +938,10 @@ namespace emu::z80 {
             case XOR_MIXY_P_n:
                 print_xor_MixyPn(m_ostream, ixy_reg, get_next_byte());
                 break;
-            case CP_IXYH_UNDOC1:
+            case CP_IXYH_UNDOC:
                 print_cp(m_ostream, ixy_reg + "H");
                 break;
-            case CP_IXYL_UNDOC1:
+            case CP_IXYL_UNDOC:
                 print_cp(m_ostream, ixy_reg + "L");
                 break;
             case CP_MIXY_P_n:
