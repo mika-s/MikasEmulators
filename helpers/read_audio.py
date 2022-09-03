@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 Normalizes and prints out the content of a wav file,
 so audio can be stored in header files.

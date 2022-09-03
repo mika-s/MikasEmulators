@@ -192,12 +192,7 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void add_ixy_pp(u16 &ixy_reg, u16 value_to_add, Flags &flag_reg, unsigned long &cycles) {
-        const u16 previous = ixy_reg;
-        ixy_reg = previous + value_to_add;
-
-        flag_reg.handle_carry_flag(previous, value_to_add);
-        flag_reg.handle_half_carry_flag(previous, value_to_add, false);
-        flag_reg.clear_add_subtract_flag();
+        add(ixy_reg, value_to_add, flag_reg);
 
         cycles = 15;
     }

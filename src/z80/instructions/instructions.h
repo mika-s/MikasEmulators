@@ -530,6 +530,9 @@ constexpr unsigned int SET_7_A          = 0xFF;
 
 // IX/IY opcodes:
 
+constexpr unsigned int INC_B_UNDOC         = 0x04;
+constexpr unsigned int DEC_B_UNDOC         = 0x05;
+constexpr unsigned int LD_B_n_UNDOC        = 0x06;
 constexpr unsigned int ADD_IXY_BC          = 0x09;
 constexpr unsigned int ADD_IXY_DE          = 0x19;
 constexpr unsigned int LD_IXY_nn           = 0x21;

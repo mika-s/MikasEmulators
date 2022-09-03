@@ -132,7 +132,7 @@ namespace emu::z80 {
             m_opcode = get_next_byte().farg;
         }
 
-//        print_debug(m_opcode);
+        print_debug(m_opcode);
 
         r_tick();
 
@@ -922,7 +922,7 @@ namespace emu::z80 {
     }
 
     void Cpu::next_bits_instruction(u8 bits_opcode, unsigned long cycles) {
-//        print_debug(bits_opcode);
+        print_debug(bits_opcode);
         r_tick();
 
         switch (bits_opcode) {
@@ -1700,10 +1700,14 @@ namespace emu::z80 {
     }
 
     void Cpu::next_ixy_instruction(u8 ixy_opcode, u16 &ixy_reg, unsigned long cycles) {
-//        print_debug(ixy_opcode);
+        print_debug(ixy_opcode);
         r_tick();
 
         switch (ixy_opcode) {
+            case INC_B_UNDOC:
+            case DEC_B_UNDOC:
+            case LD_B_n_UNDOC:
+                throw UnrecognizedOpcodeException(ixy_opcode, "IX/IY instructions");
             case ADD_IXY_BC:
                 add_ixy_pp(ixy_reg, to_u16(m_b_reg, m_c_reg), m_flag_reg, cycles);
                 break;
@@ -2043,7 +2047,7 @@ namespace emu::z80 {
     }
 
     void Cpu::next_ixy_bits_instruction(u8 ixy_bits_opcode, u16 &ixy_reg, unsigned long cycles) {
-//        print_debug(ixy_bits_opcode);
+        print_debug(ixy_bits_opcode);
         r_tick();
 
         switch (ixy_bits_opcode) {
@@ -2127,7 +2131,7 @@ namespace emu::z80 {
     }
 
     void Cpu::next_extd_instruction(u8 extd_opcode, unsigned long cycles) {
-//        print_debug(extd_opcode);
+        print_debug(extd_opcode);
         r_tick();
 
         switch (extd_opcode) {
@@ -2404,7 +2408,8 @@ namespace emu::z80 {
                       //                  << ",n'=" << m_flag_p_reg.is_add_subtract_flag_set()
                       //                  << ",z'=" << m_flag_p_reg.is_zero_flag_set()
                       //                  << ",s'=" << m_flag_p_reg.is_sign_flag_set()
-                      << "\n";
+                      << "\n"
+                      << std::flush;
         }
     }
 }
