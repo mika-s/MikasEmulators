@@ -144,7 +144,7 @@ namespace emu::z80 {
 
         void next_ixy_instruction(u8 ixy_opcode, u16 &ixy_reg, unsigned long cycles);
 
-        void next_ixy_bits_instruction(u8 ixy_bits_opcode, u16 &ixy_reg, unsigned long cycles);
+        void next_ixy_bits_instruction(NextWord args, u16 &ixy_reg, unsigned long cycles);
 
         void next_extd_instruction(u8 extd_opcode, unsigned long cycles);
 

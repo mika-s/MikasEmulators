@@ -639,7 +639,7 @@ namespace emu::z80 {
                 print_jp(m_ostream, get_next_word(), "Z");
                 break;
             case BITS:
-                print_unused_jmp(m_ostream, get_next_word());
+                print_next_bits_instruction(get_next_byte().farg);
                 break;
             case CALL_Z:
                 print_call(m_ostream, get_next_word(), "Z");
@@ -802,6 +802,181 @@ namespace emu::z80 {
         }
 
         m_ostream << "\n";
+    }
+
+    void DisassemblerZ80::print_next_bits_instruction(u8 bits_opcode) {
+        switch (bits_opcode) {
+            case RLC_B:
+                print_rlc(m_ostream, "B");
+                break;
+            case RLC_C:
+                print_rlc(m_ostream, "C");
+                break;
+            case RLC_D:
+                print_rlc(m_ostream, "D");
+                break;
+            case RLC_H:
+                print_rlc(m_ostream, "H");
+                break;
+            case RLC_L:
+                print_rlc(m_ostream, "L");
+                break;
+            case RLC_MHL:
+                print_rlc(m_ostream, "(HL)");
+                break;
+            case RLC_A:
+                print_rlc(m_ostream, "A");
+                break;
+            case RRC_B:
+                print_rrc(m_ostream, "B");
+                break;
+            case RRC_C:
+                print_rrc(m_ostream, "C");
+                break;
+            case RRC_D:
+                print_rrc(m_ostream, "D");
+                break;
+            case RRC_H:
+                print_rrc(m_ostream, "H");
+                break;
+            case RRC_L:
+                print_rrc(m_ostream, "L");
+                break;
+            case RRC_MHL:
+                print_rrc(m_ostream, "(HL)");
+                break;
+            case RRC_A:
+                print_rrc(m_ostream, "A");
+                break;
+            case RL_B:
+                print_rl(m_ostream, "B");
+                break;
+            case RL_C:
+                print_rl(m_ostream, "C");
+                break;
+            case RL_D:
+                print_rl(m_ostream, "D");
+                break;
+            case RL_H:
+                print_rl(m_ostream, "H");
+                break;
+            case RL_L:
+                print_rl(m_ostream, "L");
+                break;
+            case RL_MHL:
+                print_rl(m_ostream, "(HL)");
+                break;
+            case RL_A:
+                print_rl(m_ostream, "A");
+                break;
+            case RR_B:
+                print_rr(m_ostream, "B");
+                break;
+            case RR_C:
+                print_rr(m_ostream, "C");
+                break;
+            case RR_D:
+                print_rr(m_ostream, "D");
+                break;
+            case RR_H:
+                print_rr(m_ostream, "H");
+                break;
+            case RR_L:
+                print_rr(m_ostream, "L");
+                break;
+            case RR_MHL:
+                print_rr(m_ostream, "(HL)");
+                break;
+            case RR_A:
+                print_rr(m_ostream, "A");
+                break;
+            case SLA_B:
+                print_sla(m_ostream, "B");
+                break;
+            case SLA_C:
+                print_sla(m_ostream, "C");
+                break;
+            case SLA_D:
+                print_sla(m_ostream, "D");
+                break;
+            case SLA_H:
+                print_sla(m_ostream, "H");
+                break;
+            case SLA_L:
+                print_sla(m_ostream, "L");
+                break;
+            case SLA_MHL:
+                print_sla(m_ostream, "(HL)");
+                break;
+            case SLA_A:
+                print_sla(m_ostream, "A");
+                break;
+            case SRA_B:
+                print_sra(m_ostream, "B");
+                break;
+            case SRA_C:
+                print_sra(m_ostream, "C");
+                break;
+            case SRA_D:
+                print_sra(m_ostream, "D");
+                break;
+            case SRA_H:
+                print_sra(m_ostream, "H");
+                break;
+            case SRA_L:
+                print_sra(m_ostream, "L");
+                break;
+            case SRA_MHL:
+                print_sra(m_ostream, "(HL)");
+                break;
+            case SRA_A:
+                print_sra(m_ostream, "A");
+                break;
+            case SLL_B:
+                print_sll(m_ostream, "B");
+                break;
+            case SLL_C:
+                print_sll(m_ostream, "C");
+                break;
+            case SLL_D:
+                print_sll(m_ostream, "D");
+                break;
+            case SLL_H:
+                print_sll(m_ostream, "H");
+                break;
+            case SLL_L:
+                print_sll(m_ostream, "L");
+                break;
+            case SLL_MHL:
+                print_sll(m_ostream, "(HL)");
+                break;
+            case SLL_A:
+                print_sll(m_ostream, "A");
+                break;
+            case SRL_B:
+                print_srl(m_ostream, "B");
+                break;
+            case SRL_C:
+                print_srl(m_ostream, "C");
+                break;
+            case SRL_D:
+                print_srl(m_ostream, "D");
+                break;
+            case SRL_H:
+                print_srl(m_ostream, "H");
+                break;
+            case SRL_L:
+                print_srl(m_ostream, "L");
+                break;
+            case SRL_MHL:
+                print_srl(m_ostream, "(HL)");
+                break;
+            case SRL_A:
+                print_srl(m_ostream, "A");
+                break;
+            default:
+                throw UnrecognizedOpcodeException(bits_opcode, "Bits instructions");
+        }
     }
 
     void DisassemblerZ80::print_next_ixy_instruction(u8 ixy_opcode, const std::string &ixy_reg) {
@@ -970,8 +1145,8 @@ namespace emu::z80 {
         }
     }
 
-    void DisassemblerZ80::print_next_ixy_bits_instruction(u8 bits_opcode, const std::string &ixy_reg) {
-        switch (bits_opcode) {
+    void DisassemblerZ80::print_next_ixy_bits_instruction(u8 ixy_bits_opcode, const std::string &ixy_reg) {
+        switch (ixy_bits_opcode) {
             case RLC_MIXY_P_n_B_UNDOC1:
                 print_rlc_MixyPn_r(m_ostream, ixy_reg, get_next_byte(), "B");
                 break;
@@ -982,7 +1157,7 @@ namespace emu::z80 {
                 print_rlc_MixyPn(m_ostream, ixy_reg, get_next_byte());
                 break;
             default:
-                throw UnrecognizedOpcodeException(bits_opcode, "BITS instructions");
+                throw UnrecognizedOpcodeException(ixy_bits_opcode, "IX/IY bits instructions");
         }
     }
 

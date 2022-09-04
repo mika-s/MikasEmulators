@@ -31,7 +31,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Test bit of register
+     * Test bit (register)
      * <ul>
      *   <li>Size: 2</li>
      *   <li>Cycles: 2</li>
@@ -65,7 +65,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Test bit of memory location pointed to by HL
+     * Test bit (value in memory pointed to by HL)
      * <ul>
      *   <li>Size: 2</li>
      *   <li>Cycles: 3</li>
@@ -87,6 +87,29 @@ namespace emu::z80 {
         // TODO: Handle X and Y flags
 
         cycles = 12;
+    }
+
+    /**
+     * Test bit (value in memory pointed to by IX or IY plus d)
+     * <ul>
+     *   <li>Size: 4</li>
+     *   <li>Cycles: 6</li>
+     *   <li>States: 20</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param bit_number is the bit number to reset
+     * @param ixy_reg is the IX or IY register containing the base address
+     * @param d contains address offset
+     * @param memory is the memory, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void bit_MixyPd(unsigned int bit_number, u16 ixy_reg, u8 d, const EmulatorMemory &memory, Flags &flag_reg,
+                    unsigned long &cycles
+    ) {
+        bit(bit_number, memory[ixy_reg + static_cast<i8>(d)], flag_reg);
+
+        cycles = 20;
     }
 
     void print_bit(std::ostream &ostream, unsigned int bit_number, const std::string &src) {

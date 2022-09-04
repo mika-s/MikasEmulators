@@ -850,10 +850,10 @@ namespace emu::z80 {
         NextWord args = {.farg = 0x2, .sarg = 0x0};
 
         SUBCASE("should load memory with H and L registers") {
-            ld_Mnn_HL(l_reg, h_reg, memory, args, cycles);
+            ld_Mnn_HL(h_reg, l_reg, memory, args, cycles);
 
-            CHECK_EQ(l_reg, memory[0x02]);
             CHECK_EQ(h_reg, memory[0x03]);
+            CHECK_EQ(l_reg, memory[0x02]);
         }
 
         SUBCASE("should use 16 cycles") {

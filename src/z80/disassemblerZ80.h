@@ -27,6 +27,8 @@ namespace emu::z80 {
 
         void print_next_instruction();
 
+        void print_next_bits_instruction(u8 bits_opcode);
+
         void print_next_ixy_instruction(u8 ixy_opcode, const std::string &ixy_reg);
 
         void print_next_ixy_bits_instruction(u8 bits_opcode, const std::string &ixy_reg);

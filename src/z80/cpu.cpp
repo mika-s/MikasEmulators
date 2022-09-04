@@ -2024,7 +2024,7 @@ namespace emu::z80 {
                 cp_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
                 break;
             case IXY_BITS:
-                next_ixy_bits_instruction(get_next_byte().farg, ixy_reg, cycles);
+                next_ixy_bits_instruction(get_next_word(), ixy_reg, cycles);
                 break;
             case POP_IXY:
                 pop_ixy(ixy_reg, m_sp, m_memory, cycles);
@@ -2046,84 +2046,131 @@ namespace emu::z80 {
         }
     }
 
-    void Cpu::next_ixy_bits_instruction(u8 ixy_bits_opcode, u16 &ixy_reg, unsigned long cycles) {
+    void Cpu::next_ixy_bits_instruction(NextWord args, u16 &ixy_reg, unsigned long cycles) {
+        u8 d = args.farg;
+        u8 ixy_bits_opcode = args.sarg;
         print_debug(ixy_bits_opcode);
         r_tick();
 
         switch (ixy_bits_opcode) {
             case RLC_MIXY_P_n_B_UNDOC1:
-                rlc_MixyPd_r(m_b_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
+                rlc_MixyPd_r(m_b_reg, ixy_reg, d, m_memory, m_flag_reg, cycles);
                 break;
             case RLC_MIXY_P_n_C_UNDOC1:
-                rlc_MixyPd_r(m_c_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
+                rlc_MixyPd_r(m_c_reg, ixy_reg, d, m_memory, m_flag_reg, cycles);
                 break;
             case RLC_MIXY_P_n_D_UNDOC1:
-                rlc_MixyPd_r(m_d_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
+                rlc_MixyPd_r(m_d_reg, ixy_reg, d, m_memory, m_flag_reg, cycles);
                 break;
             case RLC_MIXY_P_n_E_UNDOC1:
-                rlc_MixyPd_r(m_e_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
+                rlc_MixyPd_r(m_e_reg, ixy_reg, d, m_memory, m_flag_reg, cycles);
                 break;
             case RLC_MIXY_P_n_H_UNDOC1:
-                rlc_MixyPd_r(m_h_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
+                rlc_MixyPd_r(m_h_reg, ixy_reg, d, m_memory, m_flag_reg, cycles);
                 break;
             case RLC_MIXY_P_n_L_UNDOC1:
-                rlc_MixyPd_r(m_l_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
+                rlc_MixyPd_r(m_l_reg, ixy_reg, d, m_memory, m_flag_reg, cycles);
                 break;
 //            case RL_MIXY_P_n_B_UNDOC1:
 //                break;
             case RLC_MIXY_P_n:
-                rlc_MixyPd(ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
+                rlc_MixyPd(ixy_reg, d, m_memory, m_flag_reg, cycles);
                 break;
             case RLC_MIXY_P_n_A_UNDOC1:
-                rlc_MixyPd_r(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
+                rlc_MixyPd_r(m_acc_reg, ixy_reg, d, m_memory, m_flag_reg, cycles);
+                break;
+            case RRC_MIXY_P_n:
+                rrc_MixyPd(ixy_reg, d, m_memory, m_flag_reg, cycles);
+                break;
+            case RL_MIXY_P_n:
+                rl_MixyPd(ixy_reg, d, m_memory, m_flag_reg, cycles);
+                break;
+            case RR_MIXY_P_n:
+                rr_MixyPd(ixy_reg, d, m_memory, m_flag_reg, cycles);
+                break;
+            case SLA_MIXY_P_n:
+                sla_MixyPd(ixy_reg, d, m_memory, m_flag_reg, cycles);
+                break;
+            case SRA_MIXY_P_n:
+                sra_MixyPd(ixy_reg, d, m_memory, m_flag_reg, cycles);
+                break;
+            case SLL_MIXY_P_n:
+                sll_MixyPd(ixy_reg, d, m_memory, m_flag_reg, cycles);
+                break;
+            case SRL_MIXY_P_n:
+                srl_MixyPd(ixy_reg, d, m_memory, m_flag_reg, cycles);
+                break;
+            case BIT_0_MIXY_P_n:
+                bit_MixyPd(0, ixy_reg, d, m_memory, m_flag_reg, cycles);
+                break;
+            case BIT_1_MIXY_P_n:
+                bit_MixyPd(1, ixy_reg, d, m_memory, m_flag_reg, cycles);
+                break;
+            case BIT_2_MIXY_P_n:
+                bit_MixyPd(2, ixy_reg, d, m_memory, m_flag_reg, cycles);
+                break;
+            case BIT_3_MIXY_P_n:
+                bit_MixyPd(3, ixy_reg, d, m_memory, m_flag_reg, cycles);
+                break;
+            case BIT_4_MIXY_P_n:
+                bit_MixyPd(4, ixy_reg, d, m_memory, m_flag_reg, cycles);
+                break;
+            case BIT_5_MIXY_P_n:
+                bit_MixyPd(5, ixy_reg, d, m_memory, m_flag_reg, cycles);
+                break;
+            case BIT_6_MIXY_P_n:
+                bit_MixyPd(6, ixy_reg, d, m_memory, m_flag_reg, cycles);
+                break;
+            case BIT_7_MIXY_P_n:
+                bit_MixyPd(7, ixy_reg, d, m_memory, m_flag_reg, cycles);
                 break;
             case RES_0_MIXY_P_n:
-                res_MixyPd(0, ixy_reg, get_next_byte(), m_memory, cycles);
+                res_MixyPd(0, ixy_reg, d, m_memory, cycles);
                 break;
             case RES_1_MIXY_P_n:
-                res_MixyPd(1, ixy_reg, get_next_byte(), m_memory, cycles);
+                res_MixyPd(1, ixy_reg, d, m_memory, cycles);
                 break;
             case RES_2_MIXY_P_n:
-                res_MixyPd(2, ixy_reg, get_next_byte(), m_memory, cycles);
+                res_MixyPd(2, ixy_reg, d, m_memory, cycles);
                 break;
             case RES_3_MIXY_P_n:
-                res_MixyPd(3, ixy_reg, get_next_byte(), m_memory, cycles);
+                res_MixyPd(3, ixy_reg, d, m_memory, cycles);
                 break;
             case RES_4_MIXY_P_n:
-                res_MixyPd(4, ixy_reg, get_next_byte(), m_memory, cycles);
+                res_MixyPd(4, ixy_reg, d, m_memory, cycles);
                 break;
             case RES_5_MIXY_P_n:
-                res_MixyPd(5, ixy_reg, get_next_byte(), m_memory, cycles);
+                res_MixyPd(5, ixy_reg, d, m_memory, cycles);
                 break;
             case RES_6_MIXY_P_n:
-                res_MixyPd(6, ixy_reg, get_next_byte(), m_memory, cycles);
+                res_MixyPd(6, ixy_reg, d, m_memory, cycles);
                 break;
             case RES_7_MIXY_P_n:
-                res_MixyPd(7, ixy_reg, get_next_byte(), m_memory, cycles);
+                res_MixyPd(7, ixy_reg, d, m_memory, cycles);
                 break;
             case SET_0_MIXY_P_n:
-                set_MixyPd(0, ixy_reg, get_next_byte(), m_memory, cycles);
+                set_MixyPd(0, ixy_reg, d, m_memory, cycles);
                 break;
             case SET_1_MIXY_P_n:
-                set_MixyPd(1, ixy_reg, get_next_byte(), m_memory, cycles);
+                set_MixyPd(1, ixy_reg, d, m_memory, cycles);
                 break;
             case SET_2_MIXY_P_n:
-                set_MixyPd(2, ixy_reg, get_next_byte(), m_memory, cycles);
+                set_MixyPd(2, ixy_reg, d, m_memory, cycles);
                 break;
             case SET_3_MIXY_P_n:
-                set_MixyPd(3, ixy_reg, get_next_byte(), m_memory, cycles);
+                set_MixyPd(3, ixy_reg, d, m_memory, cycles);
                 break;
             case SET_4_MIXY_P_n:
-                set_MixyPd(4, ixy_reg, get_next_byte(), m_memory, cycles);
+                set_MixyPd(4, ixy_reg, d, m_memory, cycles);
                 break;
             case SET_5_MIXY_P_n:
-                set_MixyPd(5, ixy_reg, get_next_byte(), m_memory, cycles);
+                set_MixyPd(5, ixy_reg, d, m_memory, cycles);
                 break;
             case SET_6_MIXY_P_n:
-                set_MixyPd(6, ixy_reg, get_next_byte(), m_memory, cycles);
+                set_MixyPd(6, ixy_reg, d, m_memory, cycles);
                 break;
             case SET_7_MIXY_P_n:
-                set_MixyPd(7, ixy_reg, get_next_byte(), m_memory, cycles);
+                set_MixyPd(7, ixy_reg, d, m_memory, cycles);
                 break;
             default:
                 throw UnrecognizedOpcodeException(ixy_bits_opcode, "IX/IY bits instructions");
@@ -2372,7 +2419,7 @@ namespace emu::z80 {
     }
 
     void Cpu::print_debug(u8 opcode) {
-        if (true) {
+        if (false) {
             std::cout << "pc=" << hexify(m_pc)
                       << ",sp=" << hexify(m_sp)
                       << ",op=" << hexify(opcode)

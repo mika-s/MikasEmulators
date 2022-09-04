@@ -60,14 +60,14 @@ namespace emu::z80 {
      *
      * @param bit_number is the bit number to reset
      * @param ixy_reg is the IX or IY register containing the base address
-     * @param args contains address offset
+     * @param d contains address offset
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void res_MixyPd(unsigned int bit_number, u16 ixy_reg, const NextByte &args, EmulatorMemory &memory,
+    void res_MixyPd(unsigned int bit_number, u16 ixy_reg, u8 d, EmulatorMemory &memory,
                     unsigned long &cycles
     ) {
-        unset_bit(memory[ixy_reg + static_cast<i8>(args.farg)], bit_number);
+        unset_bit(memory[ixy_reg + static_cast<i8>(d)], bit_number);
 
         cycles = 23;
     }
