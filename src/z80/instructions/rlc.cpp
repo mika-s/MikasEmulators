@@ -51,9 +51,9 @@ namespace emu::z80 {
      * Rotate left circular (register)
      * <ul>
      *   <li>Size: 2</li>
-     *   <li>Cycles: 1</li>
+     *   <li>Cycles: 2</li>
      *   <li>States: 8</li>
-     *   <li>Condition bits affected: carry, half carry, add/subtract</li>
+     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
      * </ul>
      *
      * @param reg is the register to rotate, which will be mutated
@@ -62,6 +62,10 @@ namespace emu::z80 {
      */
     void rlc_r(u8 &reg, Flags &flag_reg, unsigned long &cycles) {
         rlc(reg, flag_reg);
+
+        flag_reg.handle_zero_flag(reg);
+        flag_reg.handle_sign_flag(reg);
+        flag_reg.handle_parity_flag(reg);
 
         cycles = 8;
     }
@@ -72,7 +76,7 @@ namespace emu::z80 {
      *   <li>Size: 2</li>
      *   <li>Cycles: 4</li>
      *   <li>States: 15</li>
-     *   <li>Condition bits affected: carry, half carry, add/subtract</li>
+     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
      * </ul>
      *
      * @param value_in_hl is the value in memory at HL's address, which will be mutated
@@ -81,6 +85,10 @@ namespace emu::z80 {
      */
     void rlc_MHL(u8 &value_in_hl, Flags &flag_reg, unsigned long &cycles) {
         rlc(value_in_hl, flag_reg);
+
+        flag_reg.handle_zero_flag(value_in_hl);
+        flag_reg.handle_sign_flag(value_in_hl);
+        flag_reg.handle_parity_flag(value_in_hl);
 
         cycles = 15;
     }
@@ -91,7 +99,7 @@ namespace emu::z80 {
      *   <li>Size: 4</li>
      *   <li>Cycles: 1</li>
      *   <li>States: 23</li>
-     *   <li>Condition bits affected: carry, half carry, add/subtract</li>
+     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
      * </ul>
      *
      * @param ixy_reg is the IX or IY register containing the base address
@@ -105,6 +113,10 @@ namespace emu::z80 {
     ) {
         u8 value = memory[ixy_reg + static_cast<i8>(d)];
         rlc(value, flag_reg);
+
+        flag_reg.handle_zero_flag(value);
+        flag_reg.handle_sign_flag(value);
+        flag_reg.handle_parity_flag(value);
 
         cycles = 23;
     }

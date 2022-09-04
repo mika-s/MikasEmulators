@@ -10,17 +10,25 @@ namespace emu::z80 {
 
     using emu::misc::NextByte;
     using emu::util::byte::is_bit_set;
+    using emu::util::byte::set_bit;
 
     void sra(u8 &value, Flags &flag_reg) {
         const bool should_set_carry_flag = is_bit_set(value, lsb);
+        const bool is_previous_sign_bit_set = is_bit_set(value, msb);
         value = value >> 1;
         if (should_set_carry_flag) {
             flag_reg.set_carry_flag();
         } else {
             flag_reg.clear_carry_flag();
         }
+        if (is_previous_sign_bit_set) {
+            set_bit(value, msb);
+        }
 
         flag_reg.clear_half_carry_flag();
+        flag_reg.handle_zero_flag(value);
+        flag_reg.handle_sign_flag(value);
+        flag_reg.handle_parity_flag(value);
         flag_reg.clear_add_subtract_flag();
         flag_reg.handle_xy_flags(value);
     }
@@ -29,9 +37,9 @@ namespace emu::z80 {
      * Shift right arithmetic (register)
      * <ul>
      *   <li>Size: 2</li>
-     *   <li>Cycles: 1</li>
+     *   <li>Cycles: 2</li>
      *   <li>States: 8</li>
-     *   <li>Condition bits affected: carry, half carry, add/subtract</li>
+     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
      * </ul>
      *
      * @param reg is the register to rotate, which will be mutated
@@ -50,7 +58,7 @@ namespace emu::z80 {
      *   <li>Size: 2</li>
      *   <li>Cycles: 4</li>
      *   <li>States: 15</li>
-     *   <li>Condition bits affected: carry, half carry, add/subtract</li>
+     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
      * </ul>
      *
      * @param value_in_hl is the value in memory at HL's address, which will be mutated
@@ -67,9 +75,9 @@ namespace emu::z80 {
      * Shift right arithmetic (value in memory pointed to by IX or IY plus d)
      * <ul>
      *   <li>Size: 4</li>
-     *   <li>Cycles: 1</li>
+     *   <li>Cycles: 6</li>
      *   <li>States: 23</li>
-     *   <li>Condition bits affected: carry, half carry, add/subtract</li>
+     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
      * </ul>
      *
      * @param ixy_reg is the IX or IY register containing the base address
@@ -91,9 +99,9 @@ namespace emu::z80 {
      * Shift right arithmetic (value in memory pointed to by IX or IY plus d)
      * <ul>
      *   <li>Size: 4</li>
-     *   <li>Cycles: 1</li>
+     *   <li>Cycles: 6</li>
      *   <li>States: 23</li>
-     *   <li>Condition bits affected: carry, half carry, add/subtract</li>
+     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
      * </ul>
      *
      * @param reg is the register store the result in, which will be mutated

@@ -35,6 +35,10 @@ It will quit and show the last 20 executed instructions if a diff was found
 between them. For test binaries such as zexdoc it could take hundred of millions
 of instructions before a diff is found.
 
+If one or both of the emulators run to completion, i.e. no diffs are found, the
+script will exit with exceptions etc. This is because it loses connection to the
+emulator and there's no soft shutdown.
+
 Tested on Python 3.8.8 only. Will need at least Python 3. Also only tested on Linux.
 """
 
