@@ -270,7 +270,6 @@ constexpr unsigned int CP_n          = 0xFE;
 constexpr unsigned int RST_7         = 0xFF;
 
 // BITS opcodes:
-
 constexpr unsigned int RLC_B            = 0x00;
 constexpr unsigned int RLC_C            = 0x01;
 constexpr unsigned int RLC_D            = 0x02;
@@ -533,7 +532,13 @@ constexpr unsigned int INC_B_UNDOC         = 0x04;
 constexpr unsigned int DEC_B_UNDOC         = 0x05;
 constexpr unsigned int LD_B_n_UNDOC        = 0x06;
 constexpr unsigned int ADD_IXY_BC          = 0x09;
+constexpr unsigned int INC_C_UNDOC         = 0x0C;
+constexpr unsigned int DEC_C_UNDOC         = 0x0D;
+constexpr unsigned int INC_D_UNDOC         = 0x14;
+constexpr unsigned int DEC_D_UNDOC         = 0x15;
 constexpr unsigned int ADD_IXY_DE          = 0x19;
+constexpr unsigned int INC_E_UNDOC         = 0x1C;
+constexpr unsigned int DEC_E_UNDOC         = 0x1D;
 constexpr unsigned int LD_IXY_nn           = 0x21;
 constexpr unsigned int LD_Mnn_IXY          = 0x22;
 constexpr unsigned int INC_IXY             = 0x23;
@@ -550,6 +555,8 @@ constexpr unsigned int INC_MIXY_P_n        = 0x34;
 constexpr unsigned int DEC_MIXY_P_n        = 0x35;
 constexpr unsigned int LD_MIXY_P_n_d       = 0x36;
 constexpr unsigned int ADD_IXY_SP          = 0x39;
+constexpr unsigned int INC_A_UNDOC         = 0x3C;
+constexpr unsigned int DEC_A_UNDOC         = 0x3D;
 constexpr unsigned int LD_B_B_UNDOC        = 0x40;
 constexpr unsigned int LD_B_C_UNDOC        = 0x41;
 constexpr unsigned int LD_B_D_UNDOC        = 0x42;
@@ -772,6 +779,7 @@ namespace emu::z80 {
     void cpl(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles);
     void daa(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles);
     void dec_r(u8 &reg, Flags &flag_reg, unsigned long &cycles);
+    void dec_r_undoc(u8 &reg, Flags &flag_reg, unsigned long &cycles);
     void dec_ss(u8 &reg1, u8 &reg2, unsigned long &cycles);
     void dec_sp(u16 &sp, unsigned long &cycles);
     void dec_MHL(u8 &value_in_hl, Flags &flag_reg, unsigned long &cycles);
@@ -790,6 +798,7 @@ namespace emu::z80 {
     void halt(bool &stopped, unsigned long &cycles);
     void in_A_Mn(u8 &acc_reg, const NextByte &args, std::vector<u8> io, unsigned long &cycles);
     void inc_r(u8 &reg, Flags &flag_reg, unsigned long &cycles);
+    void inc_r_undoc(u8 &reg, Flags &flag_reg, unsigned long &cycles);
     void inc_ss(u8 &reg1, u8 &reg2, unsigned long &cycles);
     void inc_MHL(u8 &value_in_hl, Flags &flag_reg, unsigned long &cycles);
     void inc_sp(u16 &sp, unsigned long &cycles);
@@ -820,7 +829,7 @@ namespace emu::z80 {
     void ld_r_MHL(u8 &reg, u8 value, unsigned long &cycles);
     void ld_A_Mss(u8 &to, u8 value, unsigned long &cycles);
     void ld_A_Mnn(u8 &reg, const EmulatorMemory &memory, const NextWord &args, unsigned long &cycles);
-    void ld_HL_Mnn(u8 &reg1, u8 &reg2, const EmulatorMemory &memory, const NextWord &args, unsigned long &cycles);
+    void ld_HL_Mnn(u8 &h_reg, u8 &l_reg, const EmulatorMemory &memory, const NextWord &args, unsigned long &cycles);
     void ld_dd_nn(u8 &reg1, u8 &reg2, const NextWord &args, unsigned long &cycles);
     void ld_ixy_nn(u16 &ixy_reg, const NextWord &args, unsigned long &cycles);
     void ld_dd_Mnn(u8 &reg1, u8 &reg2, const NextWord &args, const EmulatorMemory &memory, unsigned long &cycles);

@@ -272,15 +272,16 @@ namespace emu::z80 {
      *   <li>Condition bits affected: none</li>
      * </ul>
      *
-     * @param l_reg is the L register, which will be mutated
      * @param h_reg is the H register, which will be mutated
+     * @param l_reg is the L register, which will be mutated
      * @param memory is the memory
      * @param args contains the argument with the address to the wanted value in memory
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_HL_Mnn(u8 &l_reg, u8 &h_reg, const EmulatorMemory &memory, const NextWord &args, unsigned long &cycles) {
-        l_reg = memory[to_u16(args.sarg, args.farg)];
-        h_reg = memory[to_u16(args.sarg, args.farg) + 1];
+    void ld_HL_Mnn(u8 &h_reg, u8 &l_reg, const EmulatorMemory &memory, const NextWord &args, unsigned long &cycles) {
+        const u16 address = to_u16(args.sarg, args.farg);
+        h_reg = memory[address + 1];
+        l_reg = memory[address];
 
         cycles = 16;
     }
@@ -797,7 +798,7 @@ namespace emu::z80 {
         NextWord args = {.farg = 0x04, .sarg = 0};
 
         SUBCASE("should load HL from memory using the address in args") {
-            ld_HL_Mnn(l_reg, h_reg, memory, args, cycles);
+            ld_HL_Mnn(h_reg, l_reg, memory, args, cycles);
 
             CHECK_EQ(memory[0x04], l_reg);
             CHECK_EQ(memory[0x05], h_reg);
@@ -806,7 +807,7 @@ namespace emu::z80 {
         SUBCASE("should use 16 cycles") {
             cycles = 0;
 
-            ld_HL_Mnn(l_reg, h_reg, memory, args, cycles);
+            ld_HL_Mnn(h_reg, l_reg, memory, args, cycles);
 
             CHECK_EQ(16, cycles);
         }

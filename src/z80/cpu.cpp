@@ -264,7 +264,7 @@ namespace emu::z80 {
                 add_HL_ss(m_h_reg, m_l_reg, to_u16(m_h_reg, m_l_reg), m_flag_reg, cycles);
                 break;
             case LD_HL_Mnn:
-                ld_HL_Mnn(m_l_reg, m_h_reg, m_memory, get_next_word(), cycles);
+                ld_HL_Mnn(m_h_reg, m_l_reg, m_memory, get_next_word(), cycles);
                 break;
             case DEC_HL:
                 dec_ss(m_h_reg, m_l_reg, cycles);
@@ -1705,14 +1705,36 @@ namespace emu::z80 {
 
         switch (ixy_opcode) {
             case INC_B_UNDOC:
+                inc_r_undoc(m_b_reg, m_flag_reg, cycles);
+                break;
             case DEC_B_UNDOC:
+                dec_r_undoc(m_b_reg, m_flag_reg, cycles);
+                break;
             case LD_B_n_UNDOC:
                 throw UnrecognizedOpcodeException(ixy_opcode, "IX/IY instructions");
             case ADD_IXY_BC:
                 add_ixy_pp(ixy_reg, to_u16(m_b_reg, m_c_reg), m_flag_reg, cycles);
                 break;
+            case INC_C_UNDOC:
+                inc_r_undoc(m_c_reg, m_flag_reg, cycles);
+                break;
+            case DEC_C_UNDOC:
+                dec_r_undoc(m_c_reg, m_flag_reg, cycles);
+                break;
+            case INC_D_UNDOC:
+                inc_r_undoc(m_d_reg, m_flag_reg, cycles);
+                break;
+            case DEC_D_UNDOC:
+                dec_r_undoc(m_d_reg, m_flag_reg, cycles);
+                break;
             case ADD_IXY_DE:
                 add_ixy_pp(ixy_reg, to_u16(m_d_reg, m_e_reg), m_flag_reg, cycles);
+                break;
+            case INC_E_UNDOC:
+                inc_r_undoc(m_e_reg, m_flag_reg, cycles);
+                break;
+            case DEC_E_UNDOC:
+                dec_r_undoc(m_e_reg, m_flag_reg, cycles);
                 break;
             case LD_IXY_nn:
                 ld_ixy_nn(ixy_reg, get_next_word(), cycles);
@@ -1761,6 +1783,12 @@ namespace emu::z80 {
                 break;
             case ADD_IXY_SP:
                 add_ixy_pp(ixy_reg, m_sp, m_flag_reg, cycles);
+                break;
+            case INC_A_UNDOC:
+                inc_r_undoc(m_acc_reg, m_flag_reg, cycles);
+                break;
+            case DEC_A_UNDOC:
+                dec_r_undoc(m_acc_reg, m_flag_reg, cycles);
                 break;
             case LD_B_B_UNDOC:
                 ld_r_r_undoc(m_b_reg, m_b_reg, cycles);
@@ -2050,7 +2078,6 @@ namespace emu::z80 {
         u8 d = args.farg;
         u8 ixy_bits_opcode = args.sarg;
         print_debug(ixy_bits_opcode);
-        r_tick();
 
         switch (ixy_bits_opcode) {
             case RLC_MIXY_P_n_B_UNDOC1:
@@ -2419,7 +2446,7 @@ namespace emu::z80 {
     }
 
     void Cpu::print_debug(u8 opcode) {
-        if (true) {
+        if (false) {
             std::cout << "pc=" << hexify(m_pc)
                       << ",sp=" << hexify(m_sp)
                       << ",op=" << hexify(opcode)

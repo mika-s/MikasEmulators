@@ -45,6 +45,25 @@ namespace emu::z80 {
     }
 
     /**
+     * Increment register (undocumented)
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 8</li>
+     *   <li>Condition bits affected: half carry, zero, sign, parity/overflow, add/subtract</li>
+     * </ul>
+     *
+     * @param reg is the register to increment, which will be mutated
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void inc_r_undoc(u8 &reg, Flags &flag_reg, unsigned long &cycles) {
+        inc(reg, flag_reg);
+
+        cycles = 8;
+    }
+
+    /**
      * Increment the memory in HL's address
      * <ul>
      *   <li>Size: 1</li>
