@@ -529,7 +529,6 @@ constexpr unsigned int SET_7_MHL        = 0xFE;
 constexpr unsigned int SET_7_A          = 0xFF;
 
 // IX/IY opcodes:
-
 constexpr unsigned int INC_B_UNDOC         = 0x04;
 constexpr unsigned int DEC_B_UNDOC         = 0x05;
 constexpr unsigned int LD_B_n_UNDOC        = 0x06;
@@ -646,7 +645,6 @@ constexpr unsigned int JP_MIXY             = 0xE9;
 constexpr unsigned int LD_SP_IXY           = 0xF9;
 
 // IXY BITS opcodes
-
 constexpr unsigned int RLC_MIXY_P_n_B_UNDOC1 = 0x00;
 constexpr unsigned int RLC_MIXY_P_n_C_UNDOC1 = 0x01;
 constexpr unsigned int RLC_MIXY_P_n_D_UNDOC1 = 0x02;
@@ -689,7 +687,6 @@ constexpr unsigned int SET_6_MIXY_P_n        = 0xF6;
 constexpr unsigned int SET_7_MIXY_P_n        = 0xFE;
 
 // EXTD opcodes:
-
 constexpr unsigned int SBC_HL_BC       = 0x42;
 constexpr unsigned int LD_Mnn_BC       = 0x43;
 constexpr unsigned int NEG             = 0x44;
@@ -763,7 +760,7 @@ namespace emu::z80 {
     void call_pe(u16 &pc, u16 &sp, EmulatorMemory &memory, const NextWord &args, const Flags &flag_reg, unsigned long &cycles);
     void call_po(u16 &pc, u16 &sp, EmulatorMemory &memory, const NextWord &args, const Flags &flag_reg, unsigned long &cycles);
     void call_z(u16 &pc, u16 &sp, EmulatorMemory &memory, const NextWord &args, const Flags &flag_reg, unsigned long &cycles);
-    void ccf(Flags &flag_reg, unsigned long &cycles);
+    void ccf(Flags &flag_reg, u8 acc_reg, unsigned long &cycles);
     void cpd(u8 &b_reg, u8 &c_reg, u8 &h_reg, u8 &l_reg, u8 acc_reg, const EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles);
     void cpdr(u16 &pc, u8 &b_reg, u8 &c_reg, u8 &h_reg, u8 &l_reg, u8 acc_reg, const EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles);
     void cpi(u8 &b_reg, u8 &c_reg, u8 &h_reg, u8 &l_reg, u8 acc_reg, const EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles);
@@ -910,7 +907,7 @@ namespace emu::z80 {
     void sbc_A_r(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
     void sbc_A_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
     void sbc_HL_ss(u8 &h_reg, u8 &l_reg, u16 value, Flags &flag_reg, unsigned long &cycles);
-    void scf(Flags &flag_reg, unsigned long &cycles);
+    void scf(Flags &flag_reg, u8 acc_reg, unsigned long &cycles);
     void set_r(unsigned int bit_number, u8 &reg, unsigned long &cycles);
     void set_MHL(unsigned int bit_number, u16 hl_reg, EmulatorMemory &memory, unsigned long &cycles);
     void set_MixyPd(unsigned int bit_number, u16 ixy_reg, u8 d, EmulatorMemory &memory, unsigned long &cycles);
@@ -949,6 +946,7 @@ namespace emu::z80 {
     void print_and_n(std::ostream &ostream, const NextByte &args);
     void print_add_MixyPn(std::ostream &ostream, const std::string &reg, const std::string &ixy_reg, const NextByte &args);
     void print_bit(std::ostream &ostream, unsigned int bit_number, const std::string &src);
+    void print_bit_MixyPn(std::ostream &ostream, unsigned int bit_number, const std::string &ixy_reg, u8 d);
     void print_call(std::ostream &ostream, const NextWord &args);
     void print_call(std::ostream &ostream, const NextWord &args, const std::string &condition);
     void print_ccf(std::ostream &ostream);
@@ -996,30 +994,41 @@ namespace emu::z80 {
     void print_pop(std::ostream &ostream, const std::string &reg);
     void print_push(std::ostream &ostream, const std::string &reg);
     void print_out(std::ostream &ostream, const NextByte &args);
+    void print_res(std::ostream &ostream, unsigned int bit_number, const std::string &src);
+    void print_res_MixyPn(std::ostream &ostream, unsigned int bit_number, const std::string &ixy_reg, u8 d);
     void print_ret(std::ostream &ostream);
     void print_ret(std::ostream &ostream, const std::string& condition);
     void print_rla(std::ostream &ostream);
     void print_rl(std::ostream &ostream, const std::string &reg);
-    void print_rl_MixyPn_r(std::ostream &ostream, const std::string &ixy_reg, const NextByte &args, const std::string &reg);
+    void print_rl_MixyPn(std::ostream &ostream, const std::string &ixy_reg, u8 d);
+    void print_rl_MixyPn_r(std::ostream &ostream, const std::string &ixy_reg, u8 d, const std::string &reg);
     void print_rlc(std::ostream &ostream, const std::string &reg);
-    void print_rlc_MixyPn(std::ostream &ostream, const std::string &ixy_reg, const NextByte &args);
-    void print_rlc_MixyPn_r(std::ostream &ostream, const std::string &ixy_reg, const NextByte &args, const std::string &reg);
+    void print_rlc_MixyPn(std::ostream &ostream, const std::string &ixy_reg, u8 d);
+    void print_rlc_MixyPn_r(std::ostream &ostream, const std::string &ixy_reg, u8 d, const std::string &reg);
     void print_rlca(std::ostream &ostream);
     void print_rld(std::ostream &ostream);
     void print_rst(std::ostream &ostream, int number);
     void print_rr(std::ostream &ostream, const std::string &reg);
+    void print_rr_MixyPn(std::ostream &ostream, const std::string &ixy_reg, u8 d);
     void print_rra(std::ostream &ostream);
     void print_rrc(std::ostream &ostream, const std::string &reg);
+    void print_rrc_MixyPn(std::ostream &ostream, const std::string &ixy_reg, u8 d);
     void print_rrca(std::ostream &ostream);
     void print_rrd(std::ostream &ostream);
     void print_sbc(std::ostream &ostream, const std::string &dest, const std::string &src);
     void print_sbc(std::ostream &ostream, const std::string &reg, const NextByte &args);
     void print_sbc_MixyPn(std::ostream &ostream, const std::string &reg, const std::string &ixy_reg, const NextByte &args);
     void print_scf(std::ostream &ostream);
+    void print_set(std::ostream &ostream, unsigned int bit_number, const std::string &src);
+    void print_set_MixyPn(std::ostream &ostream, unsigned int bit_number, const std::string &ixy_reg, u8 d);
     void print_sla(std::ostream &ostream, const std::string &reg);
+    void print_sla_MixyPn(std::ostream &ostream, unsigned int bit_number, const std::string &ixy_reg, u8 d);
     void print_sra(std::ostream &ostream, const std::string &reg);
+    void print_sra_MixyPn(std::ostream &ostream, unsigned int bit_number, const std::string &ixy_reg, u8 d);
     void print_sll(std::ostream &ostream, const std::string &reg);
+    void print_sll_MixyPn(std::ostream &ostream, unsigned int bit_number, const std::string &ixy_reg, u8 d);
     void print_srl(std::ostream &ostream, const std::string &reg);
+    void print_srl_MixyPn(std::ostream &ostream, unsigned int bit_number, const std::string &ixy_reg, u8 d);
     void print_sub(std::ostream &ostream, const std::string &reg);
     void print_sub(std::ostream &ostream, const NextByte &args);
     void print_sub_MixyPn(std::ostream &ostream, const std::string &ixy_reg, const NextByte &args);

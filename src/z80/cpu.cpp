@@ -303,7 +303,7 @@ namespace emu::z80 {
                 ld_MHL_n(m_memory[address_in_HL()], get_next_byte(), cycles);
                 break;
             case SCF:
-                scf(m_flag_reg, cycles);
+                scf(m_flag_reg, m_acc_reg, cycles);
                 break;
             case JR_C_e:
                 jr_c(m_pc, get_next_byte(), m_flag_reg, cycles);
@@ -327,7 +327,7 @@ namespace emu::z80 {
                 ld_r_n(m_acc_reg, get_next_byte(), cycles);
                 break;
             case CCF:
-                ccf(m_flag_reg, cycles);
+                ccf(m_flag_reg, m_acc_reg, cycles);
                 break;
             case LD_B_B:
                 ld_r_r(m_b_reg, m_b_reg, cycles);
@@ -2419,7 +2419,7 @@ namespace emu::z80 {
     }
 
     void Cpu::print_debug(u8 opcode) {
-        if (false) {
+        if (true) {
             std::cout << "pc=" << hexify(m_pc)
                       << ",sp=" << hexify(m_sp)
                       << ",op=" << hexify(opcode)

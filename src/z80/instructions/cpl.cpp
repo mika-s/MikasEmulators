@@ -3,8 +3,12 @@
 #include "doctest.h"
 #include "z80/flags.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/util/byte_util.h"
 
 namespace emu::z80 {
+
+    using emu::util::byte::is_bit_set;
+
     /**
      * Complement accumulator
      * <ul>
@@ -24,6 +28,18 @@ namespace emu::z80 {
         flag_reg.set_half_carry_flag();
         flag_reg.set_add_subtract_flag();
 
+        if (is_bit_set(acc_reg, 5)) {
+            flag_reg.set_y_flag();
+        } else {
+            flag_reg.clear_y_flag();
+        }
+
+        if (is_bit_set(acc_reg, 3)) {
+            flag_reg.set_x_flag();
+        } else {
+            flag_reg.clear_x_flag();
+        }
+
         cycles = 4;
     }
 
@@ -32,7 +48,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: CPL") {
-        SUBCASE("should complement the accumulator and always set half carry and add/subtract") {
+        SUBCASE("should complement the accumulator and always set half carry and add/subtract flags") {
             unsigned long cycles = 0;
             u8 acc_reg = 0;
             Flags flag_reg;

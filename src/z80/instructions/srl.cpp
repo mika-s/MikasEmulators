@@ -119,4 +119,17 @@ namespace emu::z80 {
         ostream << "SRL "
                 << reg;
     }
+
+    void print_srl_MixyPn(std::ostream &ostream, unsigned int bit_number, const std::string &ixy_reg, u8 d) {
+        const i8 signed_value = static_cast<i8>(d);
+        const std::string plus_or_minus = (signed_value >= 0) ? "+" : "";
+
+        ostream << "SRL "
+                << bit_number
+                << ", ("
+                << ixy_reg
+                << plus_or_minus
+                << +signed_value
+                << ")";
+    }
 }

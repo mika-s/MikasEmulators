@@ -144,8 +144,8 @@ namespace emu::z80 {
                 << reg;
     }
 
-    void print_rlc_MixyPn(std::ostream &ostream, const std::string &ixy_reg, const NextByte &args) {
-        const i8 signed_value = static_cast<i8>(args.farg);
+    void print_rlc_MixyPn(std::ostream &ostream, const std::string &ixy_reg, u8 d) {
+        const i8 signed_value = static_cast<i8>(d);
         const std::string plus_or_minus = (signed_value >= 0) ? "+" : "";
 
         ostream << "RLC "
@@ -156,9 +156,9 @@ namespace emu::z80 {
                 << ")";
     }
 
-    void print_rlc_MixyPn_r(std::ostream &ostream, const std::string &ixy_reg, const NextByte &args,
+    void print_rlc_MixyPn_r(std::ostream &ostream, const std::string &ixy_reg, u8 d,
                             const std::string &reg) {
-        const i8 signed_value = static_cast<i8>(args.farg);
+        const i8 signed_value = static_cast<i8>(d);
         const std::string plus_or_minus = (signed_value >= 0) ? "+" : "";
 
         ostream << "RLC "

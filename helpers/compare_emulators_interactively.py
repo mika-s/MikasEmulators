@@ -35,7 +35,7 @@ It will quit and show the last 20 executed instructions if a diff was found
 between them. For test binaries such as zexdoc it could take hundred of millions
 of instructions before a diff is found.
 
-Tested on Python 3.8.8 only. Will need at least Python 3.
+Tested on Python 3.8.8 only. Will need at least Python 3. Also only tested on Linux.
 """
 
 import asyncio
@@ -93,6 +93,17 @@ async def get_to_first_line(emu_process: asyncio.subprocess.Process):
         binary_line = await emu_process.stdout.readuntil(b"\n")
 
 
+def print_arrow_at_first_diff(sut_line, ref_line, offset):
+    diff_pos = 0
+    for pos in range(0, len(sut_line)):
+        if sut_line[pos] == ref_line[pos]:
+            diff_pos += 1
+        else:
+            break
+
+    print(' ' * (diff_pos + offset) + '^')
+
+
 async def compare_emulator_outputs(sut, sut_line, ref, ref_line):
     sut.stdin.write(new_instruction_character)
     ref.stdin.write(new_instruction_character)
@@ -123,15 +134,15 @@ async def compare_emulator_outputs(sut, sut_line, ref, ref_line):
             print(f"At line number: {line_number:,}")
 
     print("********** FOUND DIFFERENCE IN THE EMULATORS **********")
-    print("SUT:")
-    print(sut_line)
-    print("REF:")
-    print(ref_line)
-
-    print(f"Line number: {line_number}")
-    print("Queue:")
+    print(f"Line number: {line_number}\n\n")
+    print(f"Last {queue_length} instructions before the diff:\n")
     for line in queue:
         print(line)
+
+    print()
+    print(f"SUT: {sut_line}")
+    print(f"REF: {ref_line}")
+    print_arrow_at_first_diff(sut_line, ref_line, 5)
 
 
 async def main():

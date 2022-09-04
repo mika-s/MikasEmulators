@@ -118,4 +118,17 @@ namespace emu::z80 {
                 << ", "
                 << src;
     }
+
+    void print_bit_MixyPn(std::ostream &ostream, unsigned int bit_number, const std::string &ixy_reg, u8 d) {
+        const i8 signed_value = static_cast<i8>(d);
+        const std::string plus_or_minus = (signed_value >= 0) ? "+" : "";
+
+        ostream << "BIT "
+                << bit_number
+                << ", ("
+                << ixy_reg
+                << plus_or_minus
+                << +signed_value
+                << ")";
+    }
 }

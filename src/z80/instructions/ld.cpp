@@ -666,7 +666,7 @@ namespace emu::z80 {
         ostream << "LD "
                 << dest
                 << ",("
-                << hexify_wo_0x(to_u16(args.farg, args.sarg))
+                << hexify_wo_0x(to_u16(args.sarg, args.farg))
                 << ")";
     }
 

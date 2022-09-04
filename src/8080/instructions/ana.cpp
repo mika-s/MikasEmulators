@@ -7,6 +7,9 @@
 #include "crosscutting/util/byte_util.h"
 
 namespace emu::i8080 {
+
+    using emu::util::byte::is_bit_set;
+
     /**
      * Logical and with accumulator
      * <ul>
@@ -156,7 +159,7 @@ namespace emu::i8080 {
 
                     ana(acc_reg, value, flag_reg, cycles);
 
-                    CHECK_EQ(emu::util::byte::is_bit_set(acc_reg_counter | value, 3), flag_reg.is_aux_carry_flag_set());
+                    CHECK_EQ(is_bit_set(acc_reg_counter | value, 3), flag_reg.is_aux_carry_flag_set());
                 }
             }
         }

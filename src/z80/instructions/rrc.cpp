@@ -144,6 +144,18 @@ namespace emu::z80 {
                 << reg;
     }
 
+    void print_rrc_MixyPn(std::ostream &ostream, const std::string &ixy_reg, u8 d) {
+        const i8 signed_value = static_cast<i8>(d);
+        const std::string plus_or_minus = (signed_value >= 0) ? "+" : "";
+
+        ostream << "RRC "
+                << "("
+                << ixy_reg
+                << plus_or_minus
+                << +signed_value
+                << ")";
+    }
+
     TEST_CASE("Z80: RRCA") {
         unsigned long cycles = 0;
         u8 acc_reg = 0;

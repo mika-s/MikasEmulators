@@ -120,9 +120,20 @@ namespace emu::z80 {
                 << reg;
     }
 
-    void print_rl_MixyPn_r(std::ostream &ostream, const std::string &ixy_reg, const NextByte &args,
-                            const std::string &reg) {
-        const i8 signed_value = static_cast<i8>(args.farg);
+    void print_rl_MixyPn(std::ostream &ostream, const std::string &ixy_reg, u8 d) {
+        const i8 signed_value = static_cast<i8>(d);
+        const std::string plus_or_minus = (signed_value >= 0) ? "+" : "";
+
+        ostream << "RL "
+                << "("
+                << ixy_reg
+                << plus_or_minus
+                << +signed_value
+                << ")";
+    }
+
+    void print_rl_MixyPn_r(std::ostream &ostream, const std::string &ixy_reg, u8 d, const std::string &reg) {
+        const i8 signed_value = static_cast<i8>(d);
         const std::string plus_or_minus = (signed_value >= 0) ? "+" : "";
 
         ostream << "RL "

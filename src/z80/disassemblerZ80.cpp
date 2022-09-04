@@ -974,6 +974,582 @@ namespace emu::z80 {
             case SRL_A:
                 print_srl(m_ostream, "A");
                 break;
+            case BIT_0_B:
+                print_bit(m_ostream, 0, "B");
+                break;
+            case BIT_0_C:
+                print_bit(m_ostream, 0, "C");
+                break;
+            case BIT_0_D:
+                print_bit(m_ostream, 0, "D");
+                break;
+            case BIT_0_E:
+                print_bit(m_ostream, 0, "E");
+                break;
+            case BIT_0_H:
+                print_bit(m_ostream, 0, "H");
+                break;
+            case BIT_0_L:
+                print_bit(m_ostream, 0, "L");
+                break;
+            case BIT_0_MHL:
+                print_bit(m_ostream, 0, "(HL)");
+                break;
+            case BIT_0_A:
+                print_bit(m_ostream, 0, "A");
+                break;
+            case BIT_1_B:
+                print_bit(m_ostream, 1, "B");
+                break;
+            case BIT_1_C:
+                print_bit(m_ostream, 1, "C");
+                break;
+            case BIT_1_D:
+                print_bit(m_ostream, 1, "D");
+                break;
+            case BIT_1_E:
+                print_bit(m_ostream, 1, "E");
+                break;
+            case BIT_1_H:
+                print_bit(m_ostream, 1, "H");
+                break;
+            case BIT_1_L:
+                print_bit(m_ostream, 1, "L");
+                break;
+            case BIT_1_MHL:
+                print_bit(m_ostream, 1, "(HL)");
+                break;
+            case BIT_1_A:
+                print_bit(m_ostream, 1, "A");
+                break;
+            case BIT_2_B:
+                print_bit(m_ostream, 2, "B");
+                break;
+            case BIT_2_C:
+                print_bit(m_ostream, 2, "C");
+                break;
+            case BIT_2_D:
+                print_bit(m_ostream, 2, "D");
+                break;
+            case BIT_2_E:
+                print_bit(m_ostream, 2, "E");
+                break;
+            case BIT_2_H:
+                print_bit(m_ostream, 2, "H");
+                break;
+            case BIT_2_L:
+                print_bit(m_ostream, 2, "L");
+                break;
+            case BIT_2_MHL:
+                print_bit(m_ostream, 2, "(HL)");
+                break;
+            case BIT_2_A:
+                print_bit(m_ostream, 2, "A");
+                break;
+            case BIT_3_B:
+                print_bit(m_ostream, 3, "B");
+                break;
+            case BIT_3_C:
+                print_bit(m_ostream, 3, "C");
+                break;
+            case BIT_3_D:
+                print_bit(m_ostream, 3, "D");
+                break;
+            case BIT_3_E:
+                print_bit(m_ostream, 3, "E");
+                break;
+            case BIT_3_H:
+                print_bit(m_ostream, 3, "H");
+                break;
+            case BIT_3_L:
+                print_bit(m_ostream, 3, "L");
+                break;
+            case BIT_3_MHL:
+                print_bit(m_ostream, 3, "(HL)");
+                break;
+            case BIT_3_A:
+                print_bit(m_ostream, 3, "A");
+                break;
+            case BIT_4_B:
+                print_bit(m_ostream, 4, "B");
+                break;
+            case BIT_4_C:
+                print_bit(m_ostream, 4, "C");
+                break;
+            case BIT_4_D:
+                print_bit(m_ostream, 4, "D");
+                break;
+            case BIT_4_E:
+                print_bit(m_ostream, 4, "E");
+                break;
+            case BIT_4_H:
+                print_bit(m_ostream, 4, "H");
+                break;
+            case BIT_4_L:
+                print_bit(m_ostream, 4, "L");
+                break;
+            case BIT_4_MHL:
+                print_bit(m_ostream, 4, "(HL)");
+                break;
+            case BIT_4_A:
+                print_bit(m_ostream, 4, "A");
+                break;
+            case BIT_5_B:
+                print_bit(m_ostream, 5, "B");
+                break;
+            case BIT_5_C:
+                print_bit(m_ostream, 5, "C");
+                break;
+            case BIT_5_D:
+                print_bit(m_ostream, 5, "D");
+                break;
+            case BIT_5_E:
+                print_bit(m_ostream, 5, "E");
+                break;
+            case BIT_5_H:
+                print_bit(m_ostream, 5, "H");
+                break;
+            case BIT_5_L:
+                print_bit(m_ostream, 5, "L");
+                break;
+            case BIT_5_MHL:
+                print_bit(m_ostream, 5, "(HL)");
+                break;
+            case BIT_5_A:
+                print_bit(m_ostream, 5, "A");
+                break;
+            case BIT_6_B:
+                print_bit(m_ostream, 6, "B");
+                break;
+            case BIT_6_C:
+                print_bit(m_ostream, 6, "C");
+                break;
+            case BIT_6_D:
+                print_bit(m_ostream, 6, "D");
+                break;
+            case BIT_6_E:
+                print_bit(m_ostream, 6, "E");
+                break;
+            case BIT_6_H:
+                print_bit(m_ostream, 6, "H");
+                break;
+            case BIT_6_L:
+                print_bit(m_ostream, 6, "L");
+                break;
+            case BIT_6_MHL:
+                print_bit(m_ostream, 6, "(HL)");
+                break;
+            case BIT_6_A:
+                print_bit(m_ostream, 6, "A");
+                break;
+            case BIT_7_B:
+                print_bit(m_ostream, 7, "B");
+                break;
+            case BIT_7_C:
+                print_bit(m_ostream, 7, "C");
+                break;
+            case BIT_7_D:
+                print_bit(m_ostream, 7, "D");
+                break;
+            case BIT_7_E:
+                print_bit(m_ostream, 7, "E");
+                break;
+            case BIT_7_H:
+                print_bit(m_ostream, 7, "H");
+                break;
+            case BIT_7_L:
+                print_bit(m_ostream, 7, "L");
+                break;
+            case BIT_7_MHL:
+                print_bit(m_ostream, 7, "(HL)");
+                break;
+            case BIT_7_A:
+                print_bit(m_ostream, 7, "A");
+                break;
+            case RES_0_B:
+                print_res(m_ostream, 0, "B");
+                break;
+            case RES_0_C:
+                print_res(m_ostream, 0, "C");
+                break;
+            case RES_0_D:
+                print_res(m_ostream, 0, "D");
+                break;
+            case RES_0_E:
+                print_res(m_ostream, 0, "E");
+                break;
+            case RES_0_H:
+                print_res(m_ostream, 0, "H");
+                break;
+            case RES_0_L:
+                print_res(m_ostream, 0, "L");
+                break;
+            case RES_0_MHL:
+                print_res(m_ostream, 0, "(HL)");
+                break;
+            case RES_0_A:
+                print_res(m_ostream, 0, "A");
+                break;
+            case RES_1_B:
+                print_res(m_ostream, 1, "B");
+                break;
+            case RES_1_C:
+                print_res(m_ostream, 1, "C");
+                break;
+            case RES_1_D:
+                print_res(m_ostream, 1, "D");
+                break;
+            case RES_1_E:
+                print_res(m_ostream, 1, "E");
+                break;
+            case RES_1_H:
+                print_res(m_ostream, 1, "H");
+                break;
+            case RES_1_L:
+                print_res(m_ostream, 1, "L");
+                break;
+            case RES_1_MHL:
+                print_res(m_ostream, 1, "(HL)");
+                break;
+            case RES_1_A:
+                print_res(m_ostream, 1, "A");
+                break;
+            case RES_2_B:
+                print_res(m_ostream, 2, "B");
+                break;
+            case RES_2_C:
+                print_res(m_ostream, 2, "C");
+                break;
+            case RES_2_D:
+                print_res(m_ostream, 2, "D");
+                break;
+            case RES_2_E:
+                print_res(m_ostream, 2, "E");
+                break;
+            case RES_2_H:
+                print_res(m_ostream, 2, "H");
+                break;
+            case RES_2_L:
+                print_res(m_ostream, 2, "L");
+                break;
+            case RES_2_MHL:
+                print_res(m_ostream, 2, "(HL)");
+                break;
+            case RES_2_A:
+                print_res(m_ostream, 2, "A");
+                break;
+            case RES_3_B:
+                print_res(m_ostream, 3, "B");
+                break;
+            case RES_3_C:
+                print_res(m_ostream, 3, "C");
+                break;
+            case RES_3_D:
+                print_res(m_ostream, 3, "D");
+                break;
+            case RES_3_E:
+                print_res(m_ostream, 3, "E");
+                break;
+            case RES_3_H:
+                print_res(m_ostream, 3, "H");
+                break;
+            case RES_3_L:
+                print_res(m_ostream, 3, "L");
+                break;
+            case RES_3_MHL:
+                print_res(m_ostream, 3, "(HL)");
+                break;
+            case RES_3_A:
+                print_res(m_ostream, 3, "A");
+                break;
+            case RES_4_B:
+                print_res(m_ostream, 4, "B");
+                break;
+            case RES_4_C:
+                print_res(m_ostream, 4, "C");
+                break;
+            case RES_4_D:
+                print_res(m_ostream, 4, "D");
+                break;
+            case RES_4_E:
+                print_res(m_ostream, 4, "E");
+                break;
+            case RES_4_H:
+                print_res(m_ostream, 4, "H");
+                break;
+            case RES_4_L:
+                print_res(m_ostream, 4, "L");
+                break;
+            case RES_4_MHL:
+                print_res(m_ostream, 4, "(HL)");
+                break;
+            case RES_4_A:
+                print_res(m_ostream, 4, "A");
+                break;
+            case RES_5_B:
+                print_res(m_ostream, 5, "B");
+                break;
+            case RES_5_C:
+                print_res(m_ostream, 5, "C");
+                break;
+            case RES_5_D:
+                print_res(m_ostream, 5, "D");
+                break;
+            case RES_5_E:
+                print_res(m_ostream, 5, "E");
+                break;
+            case RES_5_H:
+                print_res(m_ostream, 5, "H");
+                break;
+            case RES_5_L:
+                print_res(m_ostream, 5, "L");
+                break;
+            case RES_5_MHL:
+                print_res(m_ostream, 5, "(HL)");
+                break;
+            case RES_5_A:
+                print_res(m_ostream, 5, "A");
+                break;
+            case RES_6_B:
+                print_res(m_ostream, 6, "B");
+                break;
+            case RES_6_C:
+                print_res(m_ostream, 6, "C");
+                break;
+            case RES_6_D:
+                print_res(m_ostream, 6, "D");
+                break;
+            case RES_6_E:
+                print_res(m_ostream, 6, "E");
+                break;
+            case RES_6_H:
+                print_res(m_ostream, 6, "H");
+                break;
+            case RES_6_L:
+                print_res(m_ostream, 6, "L");
+                break;
+            case RES_6_MHL:
+                print_res(m_ostream, 6, "(HL)");
+                break;
+            case RES_6_A:
+                print_res(m_ostream, 6, "A");
+                break;
+            case RES_7_B:
+                print_res(m_ostream, 7, "B");
+                break;
+            case RES_7_C:
+                print_res(m_ostream, 7, "C");
+                break;
+            case RES_7_D:
+                print_res(m_ostream, 7, "D");
+                break;
+            case RES_7_E:
+                print_res(m_ostream, 7, "E");
+                break;
+            case RES_7_H:
+                print_res(m_ostream, 7, "H");
+                break;
+            case RES_7_L:
+                print_res(m_ostream, 7, "L");
+                break;
+            case RES_7_MHL:
+                print_res(m_ostream, 7, "(HL)");
+                break;
+            case RES_7_A:
+                print_res(m_ostream, 7, "A");
+                break;
+            case SET_0_B:
+                print_set(m_ostream, 0, "B");
+                break;
+            case SET_0_C:
+                print_set(m_ostream, 0, "C");
+                break;
+            case SET_0_D:
+                print_set(m_ostream, 0, "D");
+                break;
+            case SET_0_E:
+                print_set(m_ostream, 0, "E");
+                break;
+            case SET_0_H:
+                print_set(m_ostream, 0, "H");
+                break;
+            case SET_0_L:
+                print_set(m_ostream, 0, "L");
+                break;
+            case SET_0_MHL:
+                print_set(m_ostream, 0, "(HL)");
+                break;
+            case SET_0_A:
+                print_set(m_ostream, 0, "A");
+                break;
+            case SET_1_B:
+                print_set(m_ostream, 1, "B");
+                break;
+            case SET_1_C:
+                print_set(m_ostream, 1, "C");
+                break;
+            case SET_1_D:
+                print_set(m_ostream, 1, "D");
+                break;
+            case SET_1_E:
+                print_set(m_ostream, 1, "E");
+                break;
+            case SET_1_H:
+                print_set(m_ostream, 1, "H");
+                break;
+            case SET_1_L:
+                print_set(m_ostream, 1, "L");
+                break;
+            case SET_1_MHL:
+                print_set(m_ostream, 1, "(HL)");
+                break;
+            case SET_1_A:
+                print_set(m_ostream, 1, "A");
+                break;
+            case SET_2_B:
+                print_set(m_ostream, 2, "B");
+                break;
+            case SET_2_C:
+                print_set(m_ostream, 2, "C");
+                break;
+            case SET_2_D:
+                print_set(m_ostream, 2, "D");
+                break;
+            case SET_2_E:
+                print_set(m_ostream, 2, "E");
+                break;
+            case SET_2_H:
+                print_set(m_ostream, 2, "H");
+                break;
+            case SET_2_L:
+                print_set(m_ostream, 2, "L");
+                break;
+            case SET_2_MHL:
+                print_set(m_ostream, 2, "(HL)");
+                break;
+            case SET_2_A:
+                print_set(m_ostream, 2, "A");
+                break;
+            case SET_3_B:
+                print_set(m_ostream, 3, "B");
+                break;
+            case SET_3_C:
+                print_set(m_ostream, 3, "C");
+                break;
+            case SET_3_D:
+                print_set(m_ostream, 3, "D");
+                break;
+            case SET_3_E:
+                print_set(m_ostream, 3, "E");
+                break;
+            case SET_3_H:
+                print_set(m_ostream, 3, "H");
+                break;
+            case SET_3_L:
+                print_set(m_ostream, 3, "L");
+                break;
+            case SET_3_MHL:
+                print_set(m_ostream, 3, "(HL)");
+                break;
+            case SET_3_A:
+                print_set(m_ostream, 3, "A");
+                break;
+            case SET_4_B:
+                print_set(m_ostream, 4, "B");
+                break;
+            case SET_4_C:
+                print_set(m_ostream, 4, "C");
+                break;
+            case SET_4_D:
+                print_set(m_ostream, 4, "D");
+                break;
+            case SET_4_E:
+                print_set(m_ostream, 4, "E");
+                break;
+            case SET_4_H:
+                print_set(m_ostream, 4, "H");
+                break;
+            case SET_4_L:
+                print_set(m_ostream, 4, "L");
+                break;
+            case SET_4_MHL:
+                print_set(m_ostream, 4, "(HL)");
+                break;
+            case SET_4_A:
+                print_set(m_ostream, 4, "A");
+                break;
+            case SET_5_B:
+                print_set(m_ostream, 5, "B");
+                break;
+            case SET_5_C:
+                print_set(m_ostream, 5, "C");
+                break;
+            case SET_5_D:
+                print_set(m_ostream, 5, "D");
+                break;
+            case SET_5_E:
+                print_set(m_ostream, 5, "E");
+                break;
+            case SET_5_H:
+                print_set(m_ostream, 5, "H");
+                break;
+            case SET_5_L:
+                print_set(m_ostream, 5, "L");
+                break;
+            case SET_5_MHL:
+                print_set(m_ostream, 5, "(HL)");
+                break;
+            case SET_5_A:
+                print_set(m_ostream, 5, "A");
+                break;
+            case SET_6_B:
+                print_set(m_ostream, 6, "B");
+                break;
+            case SET_6_C:
+                print_set(m_ostream, 6, "C");
+                break;
+            case SET_6_D:
+                print_set(m_ostream, 6, "D");
+                break;
+            case SET_6_E:
+                print_set(m_ostream, 6, "E");
+                break;
+            case SET_6_H:
+                print_set(m_ostream, 6, "H");
+                break;
+            case SET_6_L:
+                print_set(m_ostream, 6, "L");
+                break;
+            case SET_6_MHL:
+                print_set(m_ostream, 6, "(HL)");
+                break;
+            case SET_6_A:
+                print_set(m_ostream, 6, "A");
+                break;
+            case SET_7_B:
+                print_set(m_ostream, 7, "B");
+                break;
+            case SET_7_C:
+                print_set(m_ostream, 7, "C");
+                break;
+            case SET_7_D:
+                print_set(m_ostream, 7, "D");
+                break;
+            case SET_7_E:
+                print_set(m_ostream, 7, "E");
+                break;
+            case SET_7_H:
+                print_set(m_ostream, 7, "H");
+                break;
+            case SET_7_L:
+                print_set(m_ostream, 7, "L");
+                break;
+            case SET_7_MHL:
+                print_set(m_ostream, 7, "(HL)");
+                break;
+            case SET_7_A:
+                print_set(m_ostream, 7, "A");
+                break;
             default:
                 throw UnrecognizedOpcodeException(bits_opcode, "Bits instructions");
         }
@@ -1123,7 +1699,7 @@ namespace emu::z80 {
                 print_cp_MixyPn(m_ostream, ixy_reg, get_next_byte());
                 break;
             case IXY_BITS:
-                print_next_ixy_bits_instruction(get_next_byte().farg, ixy_reg);
+                print_next_ixy_bits_instruction(get_next_word(), ixy_reg);
                 break;
             case POP_IXY:
                 print_pop(m_ostream, ixy_reg);
@@ -1145,16 +1721,132 @@ namespace emu::z80 {
         }
     }
 
-    void DisassemblerZ80::print_next_ixy_bits_instruction(u8 ixy_bits_opcode, const std::string &ixy_reg) {
+    void DisassemblerZ80::print_next_ixy_bits_instruction(NextWord args, const std::string &ixy_reg) {
+        u8 d = args.farg;
+        u8 ixy_bits_opcode = args.sarg;
+
         switch (ixy_bits_opcode) {
             case RLC_MIXY_P_n_B_UNDOC1:
-                print_rlc_MixyPn_r(m_ostream, ixy_reg, get_next_byte(), "B");
+                print_rlc_MixyPn_r(m_ostream, ixy_reg, d, "B");
+                break;
+            case RLC_MIXY_P_n_C_UNDOC1:
+                print_rlc_MixyPn_r(m_ostream, ixy_reg, d, "C");
+                break;
+            case RLC_MIXY_P_n_D_UNDOC1:
+                print_rlc_MixyPn_r(m_ostream, ixy_reg, d, "D");
+                break;
+            case RLC_MIXY_P_n_E_UNDOC1:
+                print_rlc_MixyPn_r(m_ostream, ixy_reg, d, "E");
+                break;
+            case RLC_MIXY_P_n_H_UNDOC1:
+                print_rlc_MixyPn_r(m_ostream, ixy_reg, d, "H");
+                break;
+            case RLC_MIXY_P_n_L_UNDOC1:
+                print_rlc_MixyPn_r(m_ostream, ixy_reg, d, "L");
+                break;
+//            case RL_MIXY_P_n_B_UNDOC1:
+//                break;
+            case RLC_MIXY_P_n:
+                print_rlc_MixyPn(m_ostream, ixy_reg, d);
+                break;
+            case RLC_MIXY_P_n_A_UNDOC1:
+                print_rlc_MixyPn_r(m_ostream, ixy_reg, d, "A");
+                break;
+            case RRC_MIXY_P_n:
+                print_rrc_MixyPn(m_ostream, ixy_reg, d);
                 break;
             case RL_MIXY_P_n_B_UNDOC1:
-                print_rl_MixyPn_r(m_ostream, ixy_reg, get_next_byte(), "B");
+                print_rl_MixyPn_r(m_ostream, ixy_reg, d, "B");
                 break;
-            case RLC_MIXY_P_n:
-                print_rlc_MixyPn(m_ostream, ixy_reg, get_next_byte());
+            case RL_MIXY_P_n:
+                print_rl_MixyPn(m_ostream, ixy_reg, d);
+                break;
+            case RR_MIXY_P_n:
+                print_rr_MixyPn(m_ostream, ixy_reg, d);
+                break;
+            case SLA_MIXY_P_n:
+                print_sla_MixyPn(m_ostream, 0, ixy_reg, d);
+                break;
+            case SRA_MIXY_P_n:
+                print_sra_MixyPn(m_ostream, 0, ixy_reg, d);
+                break;
+            case SLL_MIXY_P_n:
+                print_sll_MixyPn(m_ostream, 0, ixy_reg, d);
+                break;
+            case SRL_MIXY_P_n:
+                print_srl_MixyPn(m_ostream, 0, ixy_reg, d);
+                break;
+            case BIT_0_MIXY_P_n:
+                print_bit_MixyPn(m_ostream, 0, ixy_reg, d);
+                break;
+            case BIT_1_MIXY_P_n:
+                print_bit_MixyPn(m_ostream, 1, ixy_reg, d);
+                break;
+            case BIT_2_MIXY_P_n:
+                print_bit_MixyPn(m_ostream, 2, ixy_reg, d);
+                break;
+            case BIT_3_MIXY_P_n:
+                print_bit_MixyPn(m_ostream, 3, ixy_reg, d);
+                break;
+            case BIT_4_MIXY_P_n:
+                print_bit_MixyPn(m_ostream, 4, ixy_reg, d);
+                break;
+            case BIT_5_MIXY_P_n:
+                print_bit_MixyPn(m_ostream, 5, ixy_reg, d);
+                break;
+            case BIT_6_MIXY_P_n:
+                print_bit_MixyPn(m_ostream, 6, ixy_reg, d);
+                break;
+            case BIT_7_MIXY_P_n:
+                print_bit_MixyPn(m_ostream, 7, ixy_reg, d);
+                break;
+            case RES_0_MIXY_P_n:
+                print_res_MixyPn(m_ostream, 0, ixy_reg, d);
+                break;
+            case RES_1_MIXY_P_n:
+                print_res_MixyPn(m_ostream, 1, ixy_reg, d);
+                break;
+            case RES_2_MIXY_P_n:
+                print_res_MixyPn(m_ostream, 2, ixy_reg, d);
+                break;
+            case RES_3_MIXY_P_n:
+                print_res_MixyPn(m_ostream, 3, ixy_reg, d);
+                break;
+            case RES_4_MIXY_P_n:
+                print_res_MixyPn(m_ostream, 4, ixy_reg, d);
+                break;
+            case RES_5_MIXY_P_n:
+                print_res_MixyPn(m_ostream, 5, ixy_reg, d);
+                break;
+            case RES_6_MIXY_P_n:
+                print_res_MixyPn(m_ostream, 6, ixy_reg, d);
+                break;
+            case RES_7_MIXY_P_n:
+                print_res_MixyPn(m_ostream, 7, ixy_reg, d);
+                break;
+            case SET_0_MIXY_P_n:
+                print_set_MixyPn(m_ostream, 0, ixy_reg, d);
+                break;
+            case SET_1_MIXY_P_n:
+                print_set_MixyPn(m_ostream, 1, ixy_reg, d);
+                break;
+            case SET_2_MIXY_P_n:
+                print_set_MixyPn(m_ostream, 2, ixy_reg, d);
+                break;
+            case SET_3_MIXY_P_n:
+                print_set_MixyPn(m_ostream, 3, ixy_reg, d);
+                break;
+            case SET_4_MIXY_P_n:
+                print_set_MixyPn(m_ostream, 4, ixy_reg, d);
+                break;
+            case SET_5_MIXY_P_n:
+                print_set_MixyPn(m_ostream, 5, ixy_reg, d);
+                break;
+            case SET_6_MIXY_P_n:
+                print_set_MixyPn(m_ostream, 6, ixy_reg, d);
+                break;
+            case SET_7_MIXY_P_n:
+                print_set_MixyPn(m_ostream, 7, ixy_reg, d);
                 break;
             default:
                 throw UnrecognizedOpcodeException(ixy_bits_opcode, "IX/IY bits instructions");
