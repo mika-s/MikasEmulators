@@ -1,3 +1,4 @@
+#include <cassert>
 #include <iostream>
 #include "doctest.h"
 #include "z80/emulator_memory.h"
@@ -24,6 +25,8 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void res_r(unsigned int bit_number, u8 &reg, unsigned long &cycles) {
+        assert(bit_number < 8);
+
         unset_bit(reg, bit_number);
 
         cycles = 8;
@@ -44,6 +47,8 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void res_MHL(unsigned int bit_number, u16 hl_reg, EmulatorMemory &memory, unsigned long &cycles) {
+        assert(bit_number < 8);
+
         unset_bit(memory[hl_reg], bit_number);
 
         cycles = 15;
@@ -67,12 +72,16 @@ namespace emu::z80 {
     void res_MixyPd(unsigned int bit_number, u16 ixy_reg, u8 d, EmulatorMemory &memory,
                     unsigned long &cycles
     ) {
+        assert(bit_number < 8);
+
         unset_bit(memory[ixy_reg + static_cast<i8>(d)], bit_number);
 
         cycles = 23;
     }
 
     void print_res(std::ostream &ostream, unsigned int bit_number, const std::string &src) {
+        assert(bit_number < 8);
+
         ostream << "RES "
                 << bit_number
                 << ", "
@@ -80,6 +89,8 @@ namespace emu::z80 {
     }
 
     void print_res_MixyPn(std::ostream &ostream, unsigned int bit_number, const std::string &ixy_reg, u8 d) {
+        assert(bit_number < 8);
+
         const i8 signed_value = static_cast<i8>(d);
         const std::string plus_or_minus = (signed_value >= 0) ? "+" : "";
 

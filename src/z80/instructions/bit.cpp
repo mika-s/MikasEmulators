@@ -1,3 +1,4 @@
+#include <cassert>
 #include <iostream>
 #include "doctest.h"
 #include "z80/emulator_memory.h"
@@ -10,6 +11,8 @@ namespace emu::z80 {
     using emu::util::byte::is_bit_set;
 
     void bit(unsigned int bit_number, u8 reg, Flags &flag_reg) {
+        assert(bit_number < 8);
+
         const bool is_set = is_bit_set(reg, bit_number);
 
         if (bit_number == msb && is_set) {
@@ -36,7 +39,7 @@ namespace emu::z80 {
      *   <li>Size: 2</li>
      *   <li>Cycles: 2</li>
      *   <li>States: 8</li>
-     *   <li>Condition bits affected: half carry, sign, zero, parity/overflow, x, y, add/subtract</li>
+     *   <li>Condition bits affected: half carry, sign, zero, parity/overflow, add/subtract</li>
      * </ul>
      *
      * @param bit_number is the bit number to test
@@ -45,17 +48,19 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void bit_r(unsigned int bit_number, u8 reg, Flags &flag_reg, unsigned long &cycles) {
+        assert(bit_number < 8);
+
         bit(bit_number, reg, flag_reg);
 
-        const bool is_set = is_bit_set(reg, bit_number);
+//        const bool is_set = is_bit_set(reg, bit_number);
 
-        if (bit_number == 5 && is_set) {
+        if (is_bit_set(reg, 5)) { // "bit_number == 5 && is_set" in the undoc docs
             flag_reg.set_y_flag();
         } else {
             flag_reg.clear_y_flag();
         }
 
-        if (bit_number == 3 && is_set) {
+        if (is_bit_set(reg, 3)) { // "bit_number == 3 && is_set" in the undoc docs
             flag_reg.set_x_flag();
         } else {
             flag_reg.clear_x_flag();
@@ -70,7 +75,7 @@ namespace emu::z80 {
      *   <li>Size: 2</li>
      *   <li>Cycles: 3</li>
      *   <li>States: 12</li>
-     *   <li>Condition bits affected: half carry, sign, zero, parity/overflow, x, y, add/subtract</li>
+     *   <li>Condition bits affected: half carry, sign, zero, parity/overflow, add/subtract</li>
      * </ul>
      *
      * @param bit_number is the bit number to test
@@ -82,9 +87,13 @@ namespace emu::z80 {
     void bit_MHL(unsigned int bit_number, u16 hl_reg, const EmulatorMemory &memory, Flags &flag_reg,
                  unsigned long &cycles
     ) {
+        assert(bit_number < 8);
+
         bit(bit_number, memory[hl_reg], flag_reg);
 
         // TODO: Handle X and Y flags
+
+        // TODO: memptr
 
         cycles = 12;
     }
@@ -107,12 +116,18 @@ namespace emu::z80 {
     void bit_MixyPd(unsigned int bit_number, u16 ixy_reg, u8 d, const EmulatorMemory &memory, Flags &flag_reg,
                     unsigned long &cycles
     ) {
+        assert(bit_number < 8);
+
         bit(bit_number, memory[ixy_reg + static_cast<i8>(d)], flag_reg);
+
+        // TODO: memptr
 
         cycles = 20;
     }
 
     void print_bit(std::ostream &ostream, unsigned int bit_number, const std::string &src) {
+        assert(bit_number < 8);
+
         ostream << "BIT "
                 << bit_number
                 << ", "
@@ -120,6 +135,8 @@ namespace emu::z80 {
     }
 
     void print_bit_MixyPn(std::ostream &ostream, unsigned int bit_number, const std::string &ixy_reg, u8 d) {
+        assert(bit_number < 8);
+
         const i8 signed_value = static_cast<i8>(d);
         const std::string plus_or_minus = (signed_value >= 0) ? "+" : "";
 
