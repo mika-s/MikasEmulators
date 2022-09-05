@@ -3,8 +3,12 @@
 #include "z80/flags.h"
 #include "z80/instructions/instruction_util.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/util/byte_util.h"
 
 namespace emu::z80 {
+
+    using emu::util::byte::is_bit_set;
+
     /**
      * Decimal adjust accumulator
      * <ul>
@@ -23,31 +27,37 @@ namespace emu::z80 {
         const u8 upper_nibble = acc_reg >> 4;
 
         bool carry = flag_reg.is_carry_flag_set();
-        u8 value_to_add = 0;
+        u8 value_to_add_or_subtract = 0;
 
         if (lower_nibble > 9 || flag_reg.is_half_carry_flag_set()) {
-            value_to_add = 6;
+            value_to_add_or_subtract = 6;
         }
 
         if (upper_nibble > 9 || carry || (lower_nibble > 9 && upper_nibble > 8)) {
-            value_to_add += 6 << 4;
+            value_to_add_or_subtract += 6 << 4;
             carry = true;
         }
 
-        const bool old_add_subtract_flag = flag_reg.is_add_subtract_flag_set();
+        const bool add_subtract_flag = flag_reg.is_add_subtract_flag_set();
 
-        add_to_register(acc_reg, value_to_add, false, flag_reg);
-
-        if (old_add_subtract_flag) {
-            flag_reg.set_add_subtract_flag();
+        if (add_subtract_flag) {
+            sub_from_register(acc_reg, value_to_add_or_subtract, false, flag_reg);
         } else {
-            flag_reg.clear_add_subtract_flag();
+            add_to_register(acc_reg, value_to_add_or_subtract, false, flag_reg);
         }
+
+        flag_reg.handle_parity_flag(acc_reg);
 
         if (carry) {
             flag_reg.set_carry_flag();
         } else {
             flag_reg.clear_carry_flag();
+        }
+
+        if (add_subtract_flag) {
+            flag_reg.set_add_subtract_flag();
+        } else {
+            flag_reg.clear_add_subtract_flag();
         }
 
         cycles = 4;
