@@ -79,14 +79,12 @@ namespace emu::z80 {
      *
      * @param ixy_reg is the IX or IY register containing the base address
      * @param d is the address offset
-     * @param memory is the memory
+     * @param memory is the memory, which will be mutated
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void sll_MixyPd(u16 ixy_reg, u8 d, const EmulatorMemory &memory, Flags &flag_reg,
-                    unsigned long &cycles
-    ) {
-        u8 value = memory[ixy_reg + static_cast<i8>(d)];
+    void sll_MixyPd(u16 ixy_reg, u8 d, EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles) {
+        u8 &value = memory[ixy_reg + static_cast<i8>(d)];
         sll(value, flag_reg);
 
         cycles = 23;
@@ -104,14 +102,12 @@ namespace emu::z80 {
      * @param reg is the register store the result in, which will be mutated
      * @param ixy_reg is the IX or IY register containing the base address
      * @param d is the address offset
-     * @param memory is the memory
+     * @param memory is the memory, which will be mutated
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void sll_MixyPd_r(u8 &reg, u16 ixy_reg, u8 d, const EmulatorMemory &memory, Flags &flag_reg,
-                      unsigned long &cycles
-    ) {
-        u8 value = memory[ixy_reg + static_cast<i8>(d)];
+    void sll_MixyPd_r(u8 &reg, u16 ixy_reg, u8 d, EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles) {
+        u8 &value = memory[ixy_reg + static_cast<i8>(d)];
         sll(value, flag_reg);
         reg = value;
 
