@@ -1,7 +1,7 @@
 # Emulators
 
 This is my collection of emulators, written in C++. As of now, it only emulates Intel 8080, with the game Space
-Invaders.
+Invaders. A Z80 emulator is currently being worked on.
 
 The project is licensed under [The MIT License](LICENSE.md), with the test roms and libraries as exceptions. They have
 their own licenses. See the source code of each test rom or in the library folders to see their license or copyright
@@ -234,12 +234,100 @@ Passes the following test binaries:
 Preliminary tests complete
 ```
 
+- `zexall.cim`:
+
+```
+Z80all instruction exerciser
+<adc,sbc> hl,<bc,de,hl,sp>....  OK
+add hl,<bc,de,hl,sp>..........  OK
+add ix,<bc,de,ix,sp>..........  OK
+add iy,<bc,de,iy,sp>..........  OK
+aluop a,nn....................  OK
+aluop a,<b,c,d,e,h,l,(hl),a>..  OK
+aluop a,<ixh,ixl,iyh,iyl>.....  OK
+aluop a,(<ix,iy>+1)...........  OK
+bit n,(<ix,iy>+1).............  OK
+bit n,<b,c,d,e,h,l,(hl),a>....  OK
+cpd<r>........................  OK
+cpi<r>........................  OK
+<daa,cpl,scf,ccf>.............  OK
+<inc,dec> a...................  OK
+<inc,dec> b...................  OK
+<inc,dec> bc..................  OK
+<inc,dec> c...................  OK
+<inc,dec> d...................  OK
+<inc,dec> de..................  OK
+<inc,dec> e...................  OK
+<inc,dec> h...................  OK
+<inc,dec> hl..................  OK
+<inc,dec> ix..................  OK
+<inc,dec> iy..................  OK
+<inc,dec> l...................  OK
+<inc,dec> (hl)................  OK
+<inc,dec> sp..................  OK
+<inc,dec> (<ix,iy>+1).........  OK
+<inc,dec> ixh.................  OK
+<inc,dec> ixl.................  OK
+<inc,dec> iyh.................  OK
+<inc,dec> iyl.................  OK
+ld <bc,de>,(nnnn).............  OK
+ld hl,(nnnn)..................  OK
+ld sp,(nnnn)..................  OK
+ld <ix,iy>,(nnnn).............  OK
+ld (nnnn),<bc,de>.............  OK
+ld (nnnn),hl..................  OK
+ld (nnnn),sp..................  OK
+ld (nnnn),<ix,iy>.............  OK
+ld <bc,de,hl,sp>,nnnn.........  OK
+ld <ix,iy>,nnnn...............  OK
+ld a,<(bc),(de)>..............  OK
+ld <b,c,d,e,h,l,(hl),a>,nn....  OK
+ld (<ix,iy>+1),nn.............  OK
+ld <b,c,d,e>,(<ix,iy>+1)......  OK
+ld <h,l>,(<ix,iy>+1)..........  OK
+ld a,(<ix,iy>+1)..............  OK
+ld <ixh,ixl,iyh,iyl>,nn.......  OK
+ld <bcdehla>,<bcdehla>........  OK
+ld <bcdexya>,<bcdexya>........  OK
+ld a,(nnnn) / ld (nnnn),a.....  OK
+ldd<r> (1)....................  OK
+ldd<r> (2)....................  OK
+ldi<r> (1)....................  OK
+ldi<r> (2)....................  OK
+neg...........................  OK
+<rrd,rld>.....................  OK
+<rlca,rrca,rla,rra>...........  OK
+shf/rot (<ix,iy>+1)...........  OK
+shf/rot <b,c,d,e,h,l,(hl),a>..  OK
+<set,res> n,<bcdehl(hl)a>.....  OK
+<set,res> n,(<ix,iy>+1).......  OK
+ld (<ix,iy>+1),<b,c,d,e>......  OK
+ld (<ix,iy>+1),<h,l>..........  OK
+ld (<ix,iy>+1),a..............  OK
+ld (<bc,de>),a................  OK
+Tests complete
+```
+
+The CP/M test binaries can be run like this:
+
+```sh
+cd cmake-build-debug/
+./emulator Z80 run prelim
+./emulator Z80 run zexdoc
+./emulator Z80 run zexall
+```
+
 #### Pacman
 
 #### Inspiration
 
-I looked at the following emulators while developing my 8080 emulator:
+I looked at the following emulators and resources while developing my Z80 emulator:
 
 - [Superzazu's Z80 emulator](https://github.com/superzazu/z80): Used as a reference emulator while looking for errors.
+- [Opcode table](https://clrhome.org/table/)
+- [The Undocumented Z80 Documented by Sean Young](docs/z80/z80-documented-v0.91.pdf):
+  Describes the undocumented opcodes
+- [MEMPTR, esoteric register of the ZiLOG Z80 CPU](docs/z80/z80.memptr.eng.txt): Describes the behavior of the
+  undocumented MEMPTR register.
 
 #### Todo

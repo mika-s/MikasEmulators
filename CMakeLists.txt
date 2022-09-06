@@ -43,24 +43,4 @@ target_compile_options(${PROJECT_NAME} PRIVATE -Werror -Wall -Wextra -O3)
 
 # ------------------------ Copy files to working directory
 
-if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/roms/8080/invaders.e")
-    configure_file(roms/8080/invaders.e invaders.e COPYONLY)
-endif ()
-if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/roms/8080/invaders.f")
-    configure_file(roms/8080/invaders.f invaders.f COPYONLY)
-endif ()
-if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/roms/8080/invaders.g")
-    configure_file(roms/8080/invaders.g invaders.g COPYONLY)
-endif ()
-if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/roms/8080/invaders.h")
-    configure_file(roms/8080/invaders.h invaders.h COPYONLY)
-endif ()
-
-configure_file(roms/8080/TST8080.COM TST8080.COM COPYONLY)
-configure_file(roms/8080/8080PRE.COM 8080PRE.COM COPYONLY)
-configure_file(roms/8080/8080EXM.COM 8080EXM.COM COPYONLY)
-configure_file(roms/8080/CPUTEST.COM CPUTEST.COM COPYONLY)
-
-configure_file(roms/z80/prelim.com prelim.com COPYONLY)
-configure_file(roms/z80/zexall.cim zexall.cim COPYONLY)
-configure_file(roms/z80/zexdoc.cim zexdoc.cim COPYONLY)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/roms DESTINATION ${CMAKE_BINARY_DIR})

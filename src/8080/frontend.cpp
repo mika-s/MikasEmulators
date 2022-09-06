@@ -114,13 +114,13 @@ namespace emu::i8080 {
                 );
             }
         } else if (program == "TST8080") {
-            return std::make_unique<CpmApplication>("TST8080.COM");
+            return std::make_unique<CpmApplication>("roms/8080/TST8080.COM");
         } else if (program == "8080PRE") {
-            return std::make_unique<CpmApplication>("8080PRE.COM");
+            return std::make_unique<CpmApplication>("roms/8080/8080PRE.COM");
         } else if (program == "8080EXM") {
-            return std::make_unique<CpmApplication>("8080EXM.COM");
+            return std::make_unique<CpmApplication>("roms/8080/8080EXM.COM");
         } else if (program == "CPUTEST") {
-            return std::make_unique<CpmApplication>("CPUTEST.COM");
+            return std::make_unique<CpmApplication>("roms/8080/CPUTEST.COM");
         } else {
             throw InvalidProgramArgumentsException("Illegal program argument when choosing emulator");
         }

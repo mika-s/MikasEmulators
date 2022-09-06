@@ -1,4 +1,5 @@
 cmake-build-debug
 .idea/
 helpers/ref_emulator_dir
-roms/8080/invaders.*
+roms/8080/space_invaders/
+roms/z80/pacman/

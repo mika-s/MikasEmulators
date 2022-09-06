@@ -92,11 +92,11 @@ namespace emu::z80 {
         if (program == "pacman") {
             throw InvalidProgramArgumentsException("pacman not implemented yet");
         } else if (program == "prelim") {
-            return std::make_unique<CpmApplication>("prelim.com");
+            return std::make_unique<CpmApplication>("roms/z80/prelim.com");
         } else if (program == "zexall") {
-            return std::make_unique<CpmApplication>("zexall.cim");
+            return std::make_unique<CpmApplication>("roms/z80/zexall.cim");
         } else if (program == "zexdoc") {
-            return std::make_unique<CpmApplication>("zexdoc.cim");
+            return std::make_unique<CpmApplication>("roms/z80/zexdoc.cim");
         } else {
             throw InvalidProgramArgumentsException("Illegal program argument when choosing emulator");
         }
