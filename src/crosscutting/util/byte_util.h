@@ -13,9 +13,9 @@ namespace emu::util::byte {
 
     u16 to_u16(u8 farg, u8 sarg);
 
-    u8 first_byte(u16 number);
+    u8 low_byte(u16 number);
 
-    u8 second_byte(u16 number);
+    u8 high_byte(u16 number);
 
     bool carried_out_of(unsigned int bit_position, u16 a, u16 b, bool cf);
 

@@ -167,7 +167,7 @@ The keymap is:
 <td>
 
 | Key                | Description   |
-| ------------------ | ------------- |
+|--------------------|---------------|
 | <kbd>C</kbd>       | Insert coin   |
 | <kbd>T</kbd>       | Tilt          |
 | <kbd>Enter</kbd>   | P1 start      |
@@ -184,11 +184,11 @@ The keymap is:
 </td>
 <td>
 
-| Key            | Description        |
-| -------------- | ------------------ |
-| <kbd>F7</kbd>  | Step instruction   |
-| <kbd>F8</kbd>  | Step cycle         |
-| <kbd>F9</kbd>  | Continue execution |
+| Key           | Description        |
+|---------------|--------------------|
+| <kbd>F7</kbd> | Step instruction   |
+| <kbd>F8</kbd> | Step cycle         |
+| <kbd>F9</kbd> | Continue execution |
 
 </td>
 </tr>
@@ -196,10 +196,10 @@ The keymap is:
 
 Screenshots:
 
-|     |     |
-|:---:|:---:|
+|                                                                           |                                                                                                    |
+|:-------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------:|
 | ![Plain Space Invaders](assets/images/8080_SI.png "Plain Space Invaders") | ![Space Invaders with debugger](assets/images/8080_SI_debugger.png "Space Invaders with debugger") | 
-| *Plain Space Invaders* | *Space Invaders in the debugger GUI* |
+|                          *Plain Space Invaders*                           |                                *Space Invaders in the debugger GUI*                                |
 
 #### Inspiration
 

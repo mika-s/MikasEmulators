@@ -11,8 +11,8 @@
 namespace emu::z80 {
 
     using emu::misc::NextByte;
-    using emu::util::byte::first_byte;
-    using emu::util::byte::second_byte;
+    using emu::util::byte::low_byte;
+    using emu::util::byte::high_byte;
     using emu::util::byte::to_u16;
     using emu::util::string::hexify_wo_0x;
 
@@ -148,8 +148,8 @@ namespace emu::z80 {
 
         adc(hl, value, flag_reg);
 
-        h_reg = second_byte(hl);
-        l_reg = first_byte(hl);
+        h_reg = high_byte(hl);
+        l_reg = low_byte(hl);
 
         cycles = 15;
     }

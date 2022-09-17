@@ -17,8 +17,7 @@ namespace emu::z80 {
     class Frontend {
     public:
         static void run(
-                int argc,
-                char *argv[],
+                std::vector<std::string> args,
                 const std::unordered_map<std::string, std::vector<std::string>>& options
         );
 

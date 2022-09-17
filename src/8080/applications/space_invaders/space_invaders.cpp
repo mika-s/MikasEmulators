@@ -24,12 +24,13 @@ namespace emu::i8080::applications::space_invaders {
     }
 
     void SpaceInvaders::load_file() {
-        m_memory.add(read_file_into_vector("invaders.h")); // $0000-$07ff: invaders.h
-        m_memory.add(read_file_into_vector("invaders.g")); // $0800-$0fff: invaders.g
-        m_memory.add(read_file_into_vector("invaders.f")); // $1000-$17ff: invaders.f
-        m_memory.add(read_file_into_vector("invaders.e")); // $1800-$1fff: invaders.e
-        m_memory.add(create_work_ram());                   // $2000-$23ff: work RAM
-        m_memory.add(create_vram());                       // $2400-$3fff: video RAM
+        const std::string directory = "roms/8080/space_invaders/";
+        m_memory.add(read_file_into_vector(directory + "invaders.h")); // $0000-$07ff: invaders.h
+        m_memory.add(read_file_into_vector(directory + "invaders.g")); // $0800-$0fff: invaders.g
+        m_memory.add(read_file_into_vector(directory + "invaders.f")); // $1000-$17ff: invaders.f
+        m_memory.add(read_file_into_vector(directory + "invaders.e")); // $1800-$1fff: invaders.e
+        m_memory.add(create_work_ram());                                     // $2000-$23ff: work RAM
+        m_memory.add(create_vram());                                         // $2400-$3fff: video RAM
     }
 
     std::vector<u8> SpaceInvaders::create_work_ram() {

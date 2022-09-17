@@ -33,36 +33,40 @@ void print_usage(const std::string &program_name) {
     std::cout << "       Example: ./" << program_name << " Z80 run pacman\n";
 }
 
-std::unordered_map<std::string, std::vector<std::string>> find_options(int argc, char *argv[]) {
+std::unordered_map<std::string, std::vector<std::string>> find_options(std::vector<std::string> args) {
     const std::string dipswitch_flag = "-d";
     const std::string gui_flag = "-g";
 
     std::unordered_map<std::string, std::vector<std::string>> options;
 
-    for (int arg_idx = 0; arg_idx < argc; ++arg_idx) {
-        if (std::string(argv[arg_idx]) == dipswitch_flag) {
-            if (arg_idx == argc - 1) {
-                throw InvalidProgramArgumentsException(dipswitch_flag + " flag at the end of the line, without a value.");
+    for (std::size_t arg_idx = 0; arg_idx < args.size(); ++arg_idx) {
+        if (args[arg_idx] == dipswitch_flag) {
+            if (arg_idx == args.size() - 1) {
+                throw InvalidProgramArgumentsException(
+                        dipswitch_flag + " flag at the end of the line, without a value."
+                );
             }
 
             if (options.count(dipswitch_flag) == 0) {
                 std::vector<std::string> vec;
-                vec.emplace_back(argv[arg_idx + 1]);
+                vec.emplace_back(args[arg_idx + 1]);
                 options[dipswitch_flag] = vec;
             } else {
-                options[dipswitch_flag].push_back(argv[arg_idx + 1]);
+                options[dipswitch_flag].push_back(args[arg_idx + 1]);
             }
-        } else if (std::string(argv[arg_idx]) == gui_flag) {
-            if (arg_idx == argc - 1) {
-                throw InvalidProgramArgumentsException(gui_flag + " flag at the end of the line, without a value.");
+        } else if (args[arg_idx] == gui_flag) {
+            if (arg_idx == args.size() - 1) {
+                throw InvalidProgramArgumentsException(
+                        gui_flag + " flag at the end of the line, without a value."
+                );
             }
 
             if (options.count(gui_flag) == 0) {
                 std::vector<std::string> vec;
-                vec.emplace_back(argv[arg_idx + 1]);
+                vec.emplace_back(args[arg_idx + 1]);
                 options[gui_flag] = vec;
             } else {
-                options[gui_flag].push_back(argv[arg_idx + 1]);
+                options[gui_flag].push_back(args[arg_idx + 1]);
             }
         }
     }
@@ -70,18 +74,30 @@ std::unordered_map<std::string, std::vector<std::string>> find_options(int argc,
     return options;
 }
 
+// NOLINTNEXTLINE(modernize-avoid-c-arrays)
+std::vector<std::string> argv_to_vector(int argc, char *argv[]) {
+    std::vector<std::string> args;
+
+    for (int i = 0; i < argc; ++i) {
+        args.emplace_back(argv[i]);
+    }
+
+    return args;
+}
+
 int main(int argc, char *argv[]) {
+    std::vector<std::string> args = argv_to_vector(argc, argv);
     const std::string short_name = find_short_executable_name(argv[0]);
 
     try {
         if (argc > 1) {
-            const std::string cpu(argv[1]);
-            std::unordered_map<std::string, std::vector<std::string>> options = find_options(argc, argv);
+            std::unordered_map<std::string, std::vector<std::string>> options = find_options(args);
+            const std::string cpu = args[1];
 
             if (cpu == "8080") {
-                emu::i8080::Frontend::run(argc, argv, options);
+                emu::i8080::Frontend::run(args, options);
             } else if (cpu == "Z80") {
-                emu::z80::Frontend::run(argc, argv, options);
+                emu::z80::Frontend::run(args, options);
             } else {
                 throw InvalidProgramArgumentsException("Unknown CPU");
             }

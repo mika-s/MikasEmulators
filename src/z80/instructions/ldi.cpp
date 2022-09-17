@@ -6,8 +6,8 @@
 
 namespace emu::z80 {
 
-    using emu::util::byte::first_byte;
-    using emu::util::byte::second_byte;
+    using emu::util::byte::low_byte;
+    using emu::util::byte::high_byte;
     using emu::util::byte::is_bit_set;
     using emu::util::byte::to_u16;
 
@@ -51,17 +51,17 @@ namespace emu::z80 {
         }
 
         ++de;
-        d_reg = second_byte(de);
-        e_reg = first_byte(de);
+        d_reg = high_byte(de);
+        e_reg = low_byte(de);
 
         ++hl;
-        h_reg = second_byte(hl);
-        l_reg = first_byte(hl);
+        h_reg = high_byte(hl);
+        l_reg = low_byte(hl);
 
         u16 bc = to_u16(b_reg, c_reg);
         --bc;
-        b_reg = second_byte(bc);
-        c_reg = first_byte(bc);
+        b_reg = high_byte(bc);
+        c_reg = low_byte(bc);
 
         flag_reg.clear_half_carry_flag();
         flag_reg.clear_add_subtract_flag();

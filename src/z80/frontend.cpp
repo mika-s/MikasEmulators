@@ -15,22 +15,22 @@ namespace emu::z80 {
     using emu::exceptions::InvalidProgramArgumentsException;
 
     void Frontend::run(
-            int argc, char *argv[],
-            const std::unordered_map<std::string, std::vector<std::string>>& options
+            std::vector<std::string> args,
+            const std::unordered_map<std::string, std::vector<std::string>> &options
     ) {
-        if (argc > 2) {
-            const std::string mode(argv[2]);
+        if (args.size() > 2) {
+            const std::string mode = args[2];
 
             if (mode == "disassemble") {
-                if (argc == 4) {
-                    const std::string file_path(argv[3]);
+                if (args.size() == 4) {
+                    const std::string file_path = args[3];
                     disassemble(file_path);
                 } else {
                     throw InvalidProgramArgumentsException("Wrong number of arguments to disassemble mode.");
                 }
             } else if (mode == "run") {
-                if (argc >= 4) {
-                    const std::string program(argv[3]);
+                if (args.size() >= 4) {
+                    const std::string program = args[3];
 
                     if (is_supporting(program)) {
                         const Settings settings = find_pacman_settings(options);

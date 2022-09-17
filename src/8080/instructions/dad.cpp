@@ -7,8 +7,8 @@
 
 namespace emu::i8080 {
 
-    using emu::util::byte::first_byte;
-    using emu::util::byte::second_byte;
+    using emu::util::byte::low_byte;
+    using emu::util::byte::high_byte;
     using emu::util::byte::to_u16;
 
     /**
@@ -29,8 +29,8 @@ namespace emu::i8080 {
     void dad(u8 &h_reg, u8 &l_reg, u16 value_to_add, Flags &flag_reg, unsigned long &cycles) {
         const u16 previous = to_u16(h_reg, l_reg);
         const u16 next = previous + value_to_add;
-        h_reg = second_byte(next);
-        l_reg = first_byte(next);
+        h_reg = high_byte(next);
+        l_reg = low_byte(next);
 
         flag_reg.handle_carry_flag_dad(previous, value_to_add);
 
@@ -50,8 +50,8 @@ namespace emu::i8080 {
                 for (u16 value_to_add = 0; value_to_add < UINT16_MAX; ++value_to_add) {
                     Flags flag_reg;
 
-                    u8 h_reg = second_byte(hl_counter);
-                    u8 l_reg = first_byte(hl_counter);
+                    u8 h_reg = high_byte(hl_counter);
+                    u8 l_reg = low_byte(hl_counter);
 
                     dad(h_reg, l_reg, value_to_add, flag_reg, cycles);
 

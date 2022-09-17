@@ -20,26 +20,26 @@ namespace emu::util::byte {
     }
 
     /**
-     * Gets the first byte of an uint16_t.
+     * Gets the low byte of an uint16_t.
      * <br/><br/>
-     * E.g. the number 0x1234 has 0x34 as first byte.
+     * E.g. the number 0x1234 has 0x34 as low byte.
      *
-     * @param number is the uint16_t number to get the first byte of
-     * @return the first byte
+     * @param number is the uint16_t number to get the low byte of
+     * @return the low byte
      */
-    u8 first_byte(u16 number) {
+    u8 low_byte(u16 number) {
         return (number >> (8 * 0)) & 0xff;
     }
 
     /**
-     * Gets the second byte of an uint16_t.
+     * Gets the high byte of an uint16_t.
      * <br/><br/>
-     * E.g. the number 0x1234 has 0x12 as second byte.
+     * E.g. the number 0x1234 has 0x12 as high byte.
      *
-     * @param number is the uint16_t number to get the second byte of
-     * @return the second byte
+     * @param number is the uint16_t number to get the high byte of
+     * @return the high byte
      */
-    u8 second_byte(u16 number) {
+    u8 high_byte(u16 number) {
         return (number >> (8 * 1)) & 0xff;
     }
 
@@ -113,30 +113,30 @@ namespace emu::util::byte {
             }
         }
 
-        SUBCASE("should return the first byte of an uint16_t") {
-            CHECK_EQ(0x23, first_byte(0x0023));
-            CHECK_EQ(0xed, first_byte(0xffed));
-            CHECK_EQ(0x61, first_byte(0xab61));
-            CHECK_EQ(0x90, first_byte(0x3290));
-            CHECK_EQ(0xbc, first_byte(0xa5bc));
-            CHECK_EQ(0x2f, first_byte(0x8e2f));
-            CHECK_EQ(0x16, first_byte(0x5d16));
-            CHECK_EQ(0x77, first_byte(0xaa77));
-            CHECK_EQ(0xcd, first_byte(0x12cd));
-            CHECK_EQ(0x75, first_byte(0x7675));
+        SUBCASE("should return the low byte of an uint16_t") {
+            CHECK_EQ(0x23, low_byte(0x0023));
+            CHECK_EQ(0xed, low_byte(0xffed));
+            CHECK_EQ(0x61, low_byte(0xab61));
+            CHECK_EQ(0x90, low_byte(0x3290));
+            CHECK_EQ(0xbc, low_byte(0xa5bc));
+            CHECK_EQ(0x2f, low_byte(0x8e2f));
+            CHECK_EQ(0x16, low_byte(0x5d16));
+            CHECK_EQ(0x77, low_byte(0xaa77));
+            CHECK_EQ(0xcd, low_byte(0x12cd));
+            CHECK_EQ(0x75, low_byte(0x7675));
         }
 
-        SUBCASE("should return the second byte of an uint16_t") {
-            CHECK_EQ(0x00, second_byte(0x0023));
-            CHECK_EQ(0xff, second_byte(0xffed));
-            CHECK_EQ(0xab, second_byte(0xab61));
-            CHECK_EQ(0x32, second_byte(0x3290));
-            CHECK_EQ(0xa5, second_byte(0xa5bc));
-            CHECK_EQ(0x8e, second_byte(0x8e2f));
-            CHECK_EQ(0x5d, second_byte(0x5d16));
-            CHECK_EQ(0xaa, second_byte(0xaa77));
-            CHECK_EQ(0x12, second_byte(0x12cd));
-            CHECK_EQ(0x76, second_byte(0x7675));
+        SUBCASE("should return the high byte of an uint16_t") {
+            CHECK_EQ(0x00, high_byte(0x0023));
+            CHECK_EQ(0xff, high_byte(0xffed));
+            CHECK_EQ(0xab, high_byte(0xab61));
+            CHECK_EQ(0x32, high_byte(0x3290));
+            CHECK_EQ(0xa5, high_byte(0xa5bc));
+            CHECK_EQ(0x8e, high_byte(0x8e2f));
+            CHECK_EQ(0x5d, high_byte(0x5d16));
+            CHECK_EQ(0xaa, high_byte(0xaa77));
+            CHECK_EQ(0x12, high_byte(0x12cd));
+            CHECK_EQ(0x76, high_byte(0x7675));
         }
     }
 }

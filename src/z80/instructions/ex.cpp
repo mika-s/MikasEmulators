@@ -7,8 +7,8 @@
 
 namespace emu::z80 {
 
-    using emu::util::byte::first_byte;
-    using emu::util::byte::second_byte;
+    using emu::util::byte::low_byte;
+    using emu::util::byte::high_byte;
     using emu::util::byte::to_u16;
 
     /**
@@ -39,8 +39,8 @@ namespace emu::z80 {
     void ex_msp_dd(u16 sp, EmulatorMemory &memory, u16 &reg) {
         const u16 previous_reg = reg;
         reg = to_u16(memory[sp + 1], memory[sp]);
-        memory[sp] = first_byte(previous_reg);
-        memory[sp + 1] = second_byte(previous_reg);
+        memory[sp] = low_byte(previous_reg);
+        memory[sp + 1] = high_byte(previous_reg);
     }
 
     /**
@@ -61,8 +61,8 @@ namespace emu::z80 {
     void ex_msp_hl(u16 sp, EmulatorMemory &memory, u8 &h_reg, u8 &l_reg, unsigned long &cycles) {
         u16 hl = to_u16(h_reg, l_reg);
         ex_msp_dd(sp, memory, hl);
-        h_reg = second_byte(hl);
-        l_reg = first_byte(hl);
+        h_reg = high_byte(hl);
+        l_reg = low_byte(hl);
 
         cycles = 19;
     }

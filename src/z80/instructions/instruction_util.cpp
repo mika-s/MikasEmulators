@@ -4,8 +4,8 @@
 namespace emu::z80 {
 
     using emu::misc::NextWord;
-    using emu::util::byte::first_byte;
-    using emu::util::byte::second_byte;
+    using emu::util::byte::low_byte;
+    using emu::util::byte::high_byte;
     using emu::util::byte::to_u16;
 
     void add_to_register(u8 &reg, u8 value, bool cf, Flags &flag_reg) {
@@ -23,10 +23,10 @@ namespace emu::z80 {
     }
 
     void add_to_register(u16 &reg, u16 value, bool cf, Flags &flag_reg) {
-        u8 reg_lo = first_byte(reg);
-        u8 reg_hi = second_byte(reg);
-        u8 value_lo = first_byte(value);
-        u8 value_hi = second_byte(value);
+        u8 reg_lo = low_byte(reg);
+        u8 reg_hi = high_byte(reg);
+        u8 value_lo = low_byte(value);
+        u8 value_hi = high_byte(value);
 
         add_to_register(reg_lo, value_lo, cf, flag_reg);
         add_to_register(reg_hi, value_hi, flag_reg.is_carry_flag_set(), flag_reg);
@@ -43,10 +43,10 @@ namespace emu::z80 {
     }
 
     void sub_from_register(u16 &reg, u16 value, bool cf, Flags &flag_reg) {
-        u8 reg_lo = first_byte(reg);
-        u8 reg_hi = second_byte(reg);
-        u8 value_lo = first_byte(value);
-        u8 value_hi = second_byte(value);
+        u8 reg_lo = low_byte(reg);
+        u8 reg_hi = high_byte(reg);
+        u8 value_lo = low_byte(value);
+        u8 value_hi = high_byte(value);
 
         sub_from_register(reg_lo, value_lo, cf, flag_reg);
         sub_from_register(reg_hi, value_hi, flag_reg.is_carry_flag_set(), flag_reg);
@@ -60,8 +60,8 @@ namespace emu::z80 {
     }
 
     void execute_call(u16 &pc, u16 &sp, EmulatorMemory &memory, u8 farg, u8 sarg) {
-        memory[--sp] = second_byte(pc);
-        memory[--sp] = first_byte(pc);
+        memory[--sp] = high_byte(pc);
+        memory[--sp] = low_byte(pc);
 
         pc = to_u16(sarg, farg);
     }

@@ -11,8 +11,8 @@ namespace emu::z80 {
 
     using emu::misc::NextByte;
     using emu::misc::NextWord;
-    using emu::util::byte::first_byte;
-    using emu::util::byte::second_byte;
+    using emu::util::byte::low_byte;
+    using emu::util::byte::high_byte;
     using emu::util::byte::to_u16;
     using emu::util::string::hexify_wo_0x;
 
@@ -72,8 +72,8 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void ld_ixyh_r_undoc(u16 &ixy_reg, u8 value, unsigned long &cycles) {
-        u8 ixyh = second_byte(ixy_reg);
-        const u8 ixyl = first_byte(ixy_reg);
+        u8 ixyh = high_byte(ixy_reg);
+        const u8 ixyl = low_byte(ixy_reg);
 
         ld(ixyh, value);
 
@@ -96,8 +96,8 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void ld_ixyl_r_undoc(u16 &ixy_reg, u8 value, unsigned long &cycles) {
-        const u8 ixyh = second_byte(ixy_reg);
-        u8 ixyl = first_byte(ixy_reg);
+        const u8 ixyh = high_byte(ixy_reg);
+        u8 ixyl = low_byte(ixy_reg);
 
         ld(ixyl, value);
 
@@ -359,8 +359,8 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void ld_ixyh_n(u16 &ixy_reg, const NextByte &args, unsigned long &cycles) {
-        u8 hi = second_byte(ixy_reg);
-        const u8 lo = first_byte(ixy_reg);
+        u8 hi = high_byte(ixy_reg);
+        const u8 lo = low_byte(ixy_reg);
 
         ld(hi, args.farg);
 
@@ -383,8 +383,8 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void ld_ixyl_n(u16 &ixy_reg, const NextByte &args, unsigned long &cycles) {
-        const u8 hi = second_byte(ixy_reg);
-        u8 lo = first_byte(ixy_reg);
+        const u8 hi = high_byte(ixy_reg);
+        u8 lo = low_byte(ixy_reg);
 
         ld(lo, args.farg);
 
@@ -580,7 +580,7 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void ld_Mnn_sp(u16 sp, EmulatorMemory &memory, const NextWord &args, unsigned long &cycles) {
-        ld_Mnn_dd(second_byte(sp), first_byte(sp), memory, args, cycles);
+        ld_Mnn_dd(high_byte(sp), low_byte(sp), memory, args, cycles);
     }
 
     /**
@@ -598,7 +598,7 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void ld_Mnn_ixy(u16 ixy_reg, const NextWord &args, EmulatorMemory &memory, unsigned long &cycles) {
-        ld_Mnn_dd(second_byte(ixy_reg), first_byte(ixy_reg), memory, args, cycles);
+        ld_Mnn_dd(high_byte(ixy_reg), low_byte(ixy_reg), memory, args, cycles);
     }
 
     /**

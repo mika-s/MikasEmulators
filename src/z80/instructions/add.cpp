@@ -11,8 +11,8 @@
 namespace emu::z80 {
 
     using emu::misc::NextByte;
-    using emu::util::byte::first_byte;
-    using emu::util::byte::second_byte;
+    using emu::util::byte::low_byte;
+    using emu::util::byte::high_byte;
     using emu::util::byte::to_u16;
     using emu::util::string::hexify_wo_0x;
 
@@ -171,8 +171,8 @@ namespace emu::z80 {
 
         add(hl, value, flag_reg);
 
-        h_reg = second_byte(hl);
-        l_reg = first_byte(hl);
+        h_reg = high_byte(hl);
+        l_reg = low_byte(hl);
 
         cycles = 11;
     }
@@ -341,8 +341,8 @@ namespace emu::z80 {
                 for (u16 value_to_add = 0; value_to_add < UINT16_MAX; ++value_to_add) {
                     Flags flag_reg;
 
-                    u8 h_reg = second_byte(hl_counter);
-                    u8 l_reg = first_byte(hl_counter);
+                    u8 h_reg = high_byte(hl_counter);
+                    u8 l_reg = low_byte(hl_counter);
 
                     add_HL_ss(h_reg, l_reg, value_to_add, flag_reg, cycles);
 

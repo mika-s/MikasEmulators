@@ -9,8 +9,8 @@
 namespace emu::z80 {
 
     using emu::misc::NextByte;
-    using emu::util::byte::first_byte;
-    using emu::util::byte::second_byte;
+    using emu::util::byte::low_byte;
+    using emu::util::byte::high_byte;
     using emu::util::byte::to_u16;
 
     void inc(u8 &reg, Flags &flag_reg) {
@@ -99,8 +99,8 @@ namespace emu::z80 {
         u16 val = to_u16(reg1, reg2);
         ++val;
 
-        reg2 = first_byte(val);
-        reg1 = second_byte(val);
+        reg2 = low_byte(val);
+        reg1 = high_byte(val);
 
         cycles = 6;
     }
@@ -155,8 +155,8 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void inc_ixyh(u16 &ixy_reg, Flags &flag_reg, unsigned long &cycles) {
-        u8 ixyh = second_byte(ixy_reg);
-        const u8 ixyl = first_byte(ixy_reg);
+        u8 ixyh = high_byte(ixy_reg);
+        const u8 ixyl = low_byte(ixy_reg);
 
         inc(ixyh, flag_reg);
 
@@ -179,8 +179,8 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void inc_ixyl(u16 &ixy_reg, Flags &flag_reg, unsigned long &cycles) {
-        const u8 ixyh = second_byte(ixy_reg);
-        u8 ixyl = first_byte(ixy_reg);
+        const u8 ixyh = high_byte(ixy_reg);
+        u8 ixyl = low_byte(ixy_reg);
 
         inc(ixyl, flag_reg);
 

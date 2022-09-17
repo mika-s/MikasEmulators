@@ -6,8 +6,8 @@
 
 namespace emu::i8080 {
 
-    using emu::util::byte::first_byte;
-    using emu::util::byte::second_byte;
+    using emu::util::byte::low_byte;
+    using emu::util::byte::high_byte;
     using emu::util::byte::to_u16;
 
     /**
@@ -27,8 +27,8 @@ namespace emu::i8080 {
         u16 val = to_u16(reg1, reg2);
         --val;
 
-        reg2 = first_byte(val);
-        reg1 = second_byte(val);
+        reg2 = low_byte(val);
+        reg1 = high_byte(val);
 
         cycles = 5;
     }

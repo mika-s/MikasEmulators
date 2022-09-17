@@ -7,8 +7,8 @@
 
 namespace emu::z80 {
 
-    using emu::util::byte::first_byte;
-    using emu::util::byte::second_byte;
+    using emu::util::byte::low_byte;
+    using emu::util::byte::high_byte;
 
     /**
      * Push register pair onto the stack
@@ -69,8 +69,8 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void push_ixy(u16 ixy_reg, u16 &sp, EmulatorMemory &memory, unsigned long &cycles) {
-        memory[--sp] = second_byte(ixy_reg);
-        memory[--sp] = first_byte(ixy_reg);
+        memory[--sp] = high_byte(ixy_reg);
+        memory[--sp] = low_byte(ixy_reg);
 
         cycles = 15;
     }

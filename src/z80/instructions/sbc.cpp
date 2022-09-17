@@ -11,8 +11,8 @@
 namespace emu::z80 {
 
     using emu::misc::NextByte;
-    using emu::util::byte::first_byte;
-    using emu::util::byte::second_byte;
+    using emu::util::byte::low_byte;
+    using emu::util::byte::high_byte;
     using emu::util::byte::to_u16;
     using emu::util::string::hexify_wo_0x;
 
@@ -142,8 +142,8 @@ namespace emu::z80 {
     void sbc_HL_ss(u8 &h_reg, u8 &l_reg, u16 value, Flags &flag_reg, unsigned long &cycles) {
         u16 hl = to_u16(h_reg, l_reg);
         sub_from_register(hl, value, flag_reg.is_carry_flag_set(), flag_reg);
-        h_reg = second_byte(hl);
-        l_reg = first_byte(hl);
+        h_reg = high_byte(hl);
+        l_reg = low_byte(hl);
 
         cycles = 15;
     }
@@ -238,8 +238,8 @@ namespace emu::z80 {
             for (u16 hl_counter = 0; hl_counter < UINT8_MAX; ++hl_counter) {   // Too many cases with UINT16_MAX
                 for (u16 value = 0; value < UINT8_MAX; ++value) {
                     Flags flag_reg;
-                    h_reg = second_byte(hl_counter);
-                    l_reg = first_byte(hl_counter);
+                    h_reg = high_byte(hl_counter);
+                    l_reg = low_byte(hl_counter);
 
                     sbc_HL_ss(h_reg, l_reg, value, flag_reg, cycles);
 
@@ -254,8 +254,8 @@ namespace emu::z80 {
                  hl_counter < static_cast<u16>(UINT16_MAX / 2 + min_max); ++hl_counter) {
                 for (u16 value = 0; value < UINT8_MAX; ++value) {
                     Flags flag_reg;
-                    h_reg = second_byte(hl_counter);
-                    l_reg = first_byte(hl_counter);
+                    h_reg = high_byte(hl_counter);
+                    l_reg = low_byte(hl_counter);
 
                     sbc_HL_ss(h_reg, l_reg, value, flag_reg, cycles);
 
@@ -271,8 +271,8 @@ namespace emu::z80 {
                  hl_counter < static_cast<u16>(UINT16_MAX / 2 + min_max); ++hl_counter) {
                 for (u16 value = 0; value < UINT8_MAX; ++value) {
                     Flags flag_reg;
-                    h_reg = second_byte(hl_counter);
-                    l_reg = first_byte(hl_counter);
+                    h_reg = high_byte(hl_counter);
+                    l_reg = low_byte(hl_counter);
 
                     sbc_HL_ss(h_reg, l_reg, value, flag_reg, cycles);
 

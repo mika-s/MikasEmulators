@@ -6,8 +6,8 @@
 
 namespace emu::z80 {
 
-    using emu::util::byte::first_byte;
-    using emu::util::byte::second_byte;
+    using emu::util::byte::low_byte;
+    using emu::util::byte::high_byte;
     using emu::util::byte::is_bit_set;
     using emu::util::byte::to_u16;
 
@@ -55,13 +55,13 @@ namespace emu::z80 {
 
         u16 hl = to_u16(h_reg, l_reg);
         hl--;
-        h_reg = second_byte(hl);
-        l_reg = first_byte(hl);
+        h_reg = high_byte(hl);
+        l_reg = low_byte(hl);
 
         u16 bc = to_u16(b_reg, c_reg);
         bc--;
-        b_reg = second_byte(bc);
-        c_reg = first_byte(bc);
+        b_reg = high_byte(bc);
+        c_reg = low_byte(bc);
 
         if (bc == 0) {
             flag_reg.clear_parity_overflow_flag();
