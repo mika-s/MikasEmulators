@@ -53,7 +53,7 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void sub_MixyPd(u8 &acc_reg, u16 ixy_reg, const NextByte &args, const EmulatorMemory &memory, Flags &flag_reg,
-                      unsigned long &cycles
+                    unsigned long &cycles
     ) {
         sub(acc_reg, memory[ixy_reg + static_cast<i8>(args.farg)], flag_reg);
 
@@ -103,6 +103,12 @@ namespace emu::z80 {
     void print_sub(std::ostream &ostream, const std::string &reg) {
         ostream << "SUB "
                 << reg;
+    }
+
+    void print_sub_undocumented(std::ostream &ostream, const std::string &reg) {
+        ostream << "SUB "
+                << reg
+                << "*";
     }
 
     void print_sub(std::ostream &ostream, const NextByte &args) {

@@ -35,6 +35,23 @@ namespace emu::z80 {
                 << hexify_wo_0x(args.farg);
     }
 
+    void print_out_Mr_r(std::ostream &ostream, const std::string& dest, const std::string& src) {
+        ostream << "OUT "
+                << "("
+                << dest
+                << "),"
+                << src;
+    }
+
+    void print_out_Mr_r_undocumented(std::ostream &ostream, const std::string& dest, const std::string& src) {
+        ostream << "OUT "
+                << "("
+                << dest
+                << "),"
+                << src
+                << "*";
+    }
+
     TEST_CASE("Z80: OUT (n), A") {
         unsigned long cycles = 0;
         std::vector<u8> io = {0, 2, 4, 6, 8, 10};

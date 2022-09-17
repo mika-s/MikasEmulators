@@ -1,4 +1,3 @@
-#include <stdexcept>
 #include "doctest.h"
 #include "z80/emulator_memory.h"
 

@@ -113,6 +113,12 @@ namespace emu::z80 {
                 << reg;
     }
 
+    void print_xor_r_undocumented(std::ostream &ostream, const std::string &reg) {
+        ostream << "XOR "
+                << reg
+                << "*";
+    }
+
     void print_xor_n(std::ostream &ostream, const NextByte &args) {
         ostream << "XOR "
                 << hexify_wo_0x(args.farg);

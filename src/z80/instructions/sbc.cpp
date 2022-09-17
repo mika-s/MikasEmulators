@@ -155,6 +155,14 @@ namespace emu::z80 {
                 << src;
     }
 
+    void print_sbc_undocumented(std::ostream &ostream, const std::string &dest, const std::string &src) {
+        ostream << "SBC "
+                << dest
+                << ", "
+                << src
+                << "*";
+    }
+
     void print_sbc(std::ostream &ostream, const std::string &reg, const NextByte &args) {
         ostream << "SBC "
                 << reg

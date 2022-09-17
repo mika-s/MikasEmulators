@@ -7,6 +7,7 @@
 namespace emu::z80 {
 
     using emu::exceptions::UnrecognizedOpcodeException;
+    using emu::util::string::hexify;
     using emu::util::string::hexify_wo_0x;
 
     DisassemblerZ80::DisassemblerZ80(EmulatorMemory &memory, std::ostream &ostream)
@@ -1557,11 +1558,47 @@ namespace emu::z80 {
 
     void DisassemblerZ80::print_next_ixy_instruction(u8 ixy_opcode, const std::string &ixy_reg) {
         switch (ixy_opcode) {
+            case INC_B_UNDOC:
+                print_inc_undocumented(m_ostream, "B");
+                break;
+            case DEC_B_UNDOC:
+                print_dec_undocumented(m_ostream, "B");
+                break;
+            case LD_B_n_UNDOC:
+                print_ld_undocumented(m_ostream, "B", get_next_byte());
+                break;
             case ADD_IXY_BC:
                 print_add(m_ostream, ixy_reg, "BC");
                 break;
+            case INC_C_UNDOC:
+                print_inc_undocumented(m_ostream, "C");
+                break;
+            case DEC_C_UNDOC:
+                print_dec_undocumented(m_ostream, "C");
+                break;
+            case LD_C_n_UNDOC:
+                print_ld_undocumented(m_ostream, "C", get_next_byte());
+                break;
+            case INC_D_UNDOC:
+                print_inc_undocumented(m_ostream, "D");
+                break;
+            case DEC_D_UNDOC:
+                print_dec_undocumented(m_ostream, "D");
+                break;
+            case LD_D_n_UNDOC:
+                print_ld_undocumented(m_ostream, "D", get_next_byte());
+                break;
             case ADD_IXY_DE:
                 print_add(m_ostream, ixy_reg, "DE");
+                break;
+            case INC_E_UNDOC:
+                print_inc_undocumented(m_ostream, "E");
+                break;
+            case DEC_E_UNDOC:
+                print_dec_undocumented(m_ostream, "E");
+                break;
+            case LD_E_n_UNDOC:
+                print_ld_undocumented(m_ostream, "E", get_next_byte());
                 break;
             case LD_IXY_nn:
                 print_ld_dd_nn(m_ostream, ixy_reg, get_next_word());
@@ -1573,10 +1610,13 @@ namespace emu::z80 {
                 print_inc(m_ostream, ixy_reg);
                 break;
             case INC_IXH_UNDOC:
-                print_inc(m_ostream, ixy_reg + "H");
+                print_inc_undocumented(m_ostream, ixy_reg + "H");
                 break;
             case DEC_IXH_UNDOC:
-                print_dec(m_ostream, ixy_reg + "H");
+                print_dec_undocumented(m_ostream, ixy_reg + "H");
+                break;
+            case LD_IXYH_n_UNDOC:
+                print_ld_undocumented(m_ostream, ixy_reg + "H", get_next_byte());
                 break;
             case ADD_IXY_IXY:
                 print_add(m_ostream, ixy_reg, ixy_reg);
@@ -1588,13 +1628,13 @@ namespace emu::z80 {
                 print_dec(m_ostream, ixy_reg);
                 break;
             case INC_IXL_UNDOC:
-                print_inc(m_ostream, ixy_reg + "L");
+                print_inc_undocumented(m_ostream, ixy_reg + "L");
                 break;
             case DEC_IXL_UNDOC:
-                print_dec(m_ostream, ixy_reg + "L");
+                print_dec_undocumented(m_ostream, ixy_reg + "L");
                 break;
-            case 0x32:
-                std::cout << "0x32 (data)";
+            case LD_IXYL_n_UNDOC:
+                print_ld_undocumented(m_ostream, ixy_reg + "L", get_next_byte());
                 break;
             case INC_MIXY_P_n:
                 print_inc_MixyPn(m_ostream, ixy_reg, get_next_byte());
@@ -1602,20 +1642,116 @@ namespace emu::z80 {
             case DEC_MIXY_P_n:
                 print_dec_MixyPn(m_ostream, ixy_reg, get_next_byte());
                 break;
+            case LD_MIXY_P_n_d:
+                print_ld_MixyPd_n(m_ostream, ixy_reg, get_next_word());
+                break;
             case ADD_IXY_SP:
                 print_add(m_ostream, ixy_reg, "SP");
+                break;
+            case INC_A_UNDOC:
+                print_inc_undocumented(m_ostream, "A");
+                break;
+            case DEC_A_UNDOC:
+                print_dec_undocumented(m_ostream, "A");
+                break;
+            case LD_A_n_UNDOC:
+                print_ld_undocumented(m_ostream, "A", get_next_byte());
+                break;
+            case LD_B_B_UNDOC:
+                print_ld_undocumented(m_ostream, "B", "B");
+                break;
+            case LD_B_C_UNDOC:
+                print_ld_undocumented(m_ostream, "B", "C");
+                break;
+            case LD_B_D_UNDOC:
+                print_ld_undocumented(m_ostream, "B", "D");
+                break;
+            case LD_B_E_UNDOC:
+                print_ld_undocumented(m_ostream, "B", "E");
+                break;
+            case LD_B_IXYH_UNDOC:
+                print_ld_undocumented(m_ostream, "B", ixy_reg + "H");
+                break;
+            case LD_B_IXYL_UNDOC:
+                print_ld_undocumented(m_ostream, "B", ixy_reg + "L");
                 break;
             case LD_B_MIXY_P_n:
                 print_ld_r_MixyPn(m_ostream, "B", ixy_reg, get_next_byte());
                 break;
+            case LD_B_A_UNDOC:
+                print_ld_undocumented(m_ostream, "B", "A");
+                break;
+            case LD_C_B_UNDOC:
+                print_ld_undocumented(m_ostream, "C", "B");
+                break;
+            case LD_C_C_UNDOC:
+                print_ld_undocumented(m_ostream, "C", "C");
+                break;
+            case LD_C_D_UNDOC:
+                print_ld_undocumented(m_ostream, "C", "D");
+                break;
+            case LD_C_E_UNDOC:
+                print_ld_undocumented(m_ostream, "C", "E");
+                break;
+            case LD_C_IXYH_UNDOC:
+                print_ld_undocumented(m_ostream, "C", ixy_reg + "H");
+                break;
+            case LD_C_IXYL_UNDOC:
+                print_ld_undocumented(m_ostream, "C", ixy_reg + "L");
+                break;
             case LD_C_MIXY_P_n:
                 print_ld_r_MixyPn(m_ostream, "C", ixy_reg, get_next_byte());
+                break;
+            case LD_C_A_UNDOC:
+                print_ld_undocumented(m_ostream, "C", "A");
+                break;
+            case LD_D_B_UNDOC:
+                print_ld_undocumented(m_ostream, "D", "B");
+                break;
+            case LD_D_C_UNDOC:
+                print_ld_undocumented(m_ostream, "D", "C");
+                break;
+            case LD_D_D_UNDOC:
+                print_ld_undocumented(m_ostream, "D", "D");
+                break;
+            case LD_D_E_UNDOC:
+                print_ld_undocumented(m_ostream, "D", "E");
+                break;
+            case LD_D_IXYH_UNDOC:
+                print_ld_undocumented(m_ostream, "D", ixy_reg + "H");
+                break;
+            case LD_D_IXYL_UNDOC:
+                print_ld_undocumented(m_ostream, "D", ixy_reg + "L");
                 break;
             case LD_D_MIXY_P_n:
                 print_ld_r_MixyPn(m_ostream, "D", ixy_reg, get_next_byte());
                 break;
+            case LD_D_A_UNDOC:
+                print_ld_undocumented(m_ostream, "D", "A");
+                break;
+            case LD_E_B_UNDOC:
+                print_ld_undocumented(m_ostream, "E", "B");
+                break;
+            case LD_E_C_UNDOC:
+                print_ld_undocumented(m_ostream, "E", "C");
+                break;
+            case LD_E_D_UNDOC:
+                print_ld_undocumented(m_ostream, "E", "D");
+                break;
+            case LD_E_E_UNDOC:
+                print_ld_undocumented(m_ostream, "E", "E");
+                break;
+            case LD_E_IXYH_UNDOC:
+                print_ld_undocumented(m_ostream, "E", ixy_reg + "H");
+                break;
+            case LD_E_IXYL_UNDOC:
+                print_ld_undocumented(m_ostream, "E", ixy_reg + "L");
+                break;
             case LD_E_MIXY_P_n:
                 print_ld_r_MixyPn(m_ostream, "E", ixy_reg, get_next_byte());
+                break;
+            case LD_E_A_UNDOC:
+                print_ld_undocumented(m_ostream, "E", "A");
                 break;
             case LD_H_MIXY_P_n:
                 print_ld_r_MixyPn(m_ostream, "H", ixy_reg, get_next_byte());
@@ -1623,8 +1759,65 @@ namespace emu::z80 {
             case LD_L_MIXY_P_n:
                 print_ld_r_MixyPn(m_ostream, "L", ixy_reg, get_next_byte());
                 break;
+            case LD_IXYL_A_UNDOC:
+                print_ld_undocumented(m_ostream, ixy_reg + "L", "A");
+                break;
+            case LD_MIXY_P_n_B:
+                print_ld_MixyPd_r(m_ostream, ixy_reg, get_next_byte(), "B");
+                break;
+            case LD_MIXY_P_n_C:
+                print_ld_MixyPd_r(m_ostream, ixy_reg, get_next_byte(), "C");
+                break;
+            case LD_MIXY_P_n_D:
+                print_ld_MixyPd_r(m_ostream, ixy_reg, get_next_byte(), "D");
+                break;
+            case LD_MIXY_P_n_E:
+                print_ld_MixyPd_r(m_ostream, ixy_reg, get_next_byte(), "E");
+                break;
+            case LD_MIXY_P_n_H:
+                print_ld_MixyPd_r(m_ostream, ixy_reg, get_next_byte(), "H");
+                break;
+            case LD_MIXY_P_n_L:
+                print_ld_MixyPd_r(m_ostream, ixy_reg, get_next_byte(), "L");
+                break;
+            case LD_MIXY_P_n_A:
+                print_ld_MixyPd_r(m_ostream, ixy_reg, get_next_byte(), "A");
+                break;
+            case LD_A_B_UNDOC:
+                print_ld_undocumented(m_ostream, "A", "B");
+                break;
+            case LD_A_C_UNDOC:
+                print_ld_undocumented(m_ostream, "A", "C");
+                break;
+            case LD_A_D_UNDOC:
+                print_ld_undocumented(m_ostream, "A", "D");
+                break;
+            case LD_A_E_UNDOC:
+                print_ld_undocumented(m_ostream, "A", "E");
+                break;
+            case LD_A_IXYH_UNDOC:
+                print_ld_undocumented(m_ostream, "A", ixy_reg + "H");
+                break;
+            case LD_A_IXYL_UNDOC:
+                print_ld_undocumented(m_ostream, "A", ixy_reg + "L");
+                break;
             case LD_A_MIXY_P_n:
                 print_ld_r_MixyPn(m_ostream, "A", ixy_reg, get_next_byte());
+                break;
+            case LD_A_A_UNDOC:
+                print_ld_undocumented(m_ostream, "A", "A");
+                break;
+            case ADD_A_B_UNDOC:
+                print_add_undocumented(m_ostream, "A", "B");
+                break;
+            case ADD_A_C_UNDOC:
+                print_add_undocumented(m_ostream, "A", "C");
+                break;
+            case ADD_A_D_UNDOC:
+                print_add_undocumented(m_ostream, "A", "D");
+                break;
+            case ADD_A_E_UNDOC:
+                print_add_undocumented(m_ostream, "A", "E");
                 break;
             case ADD_A_IXYH_UNDOC:
                 print_add(m_ostream, "A", ixy_reg + "H");
@@ -1632,17 +1825,47 @@ namespace emu::z80 {
             case ADD_A_IXYL_UNDOC:
                 print_add(m_ostream, "A", ixy_reg + "L");
                 break;
+            case ADD_A_MIXY_P_n:
+                print_add_MixyPn(m_ostream, "A", ixy_reg, get_next_byte());
+                break;
+            case ADD_A_A_UNDOC:
+                print_add_undocumented(m_ostream, "A", "A");
+                break;
+            case ADC_A_B_UNDOC:
+                print_adc_undocumented(m_ostream, "A", "B");
+                break;
+            case ADC_A_C_UNDOC:
+                print_adc_undocumented(m_ostream, "A", "C");
+                break;
+            case ADC_A_D_UNDOC:
+                print_adc_undocumented(m_ostream, "A", "D");
+                break;
+            case ADC_A_E_UNDOC:
+                print_adc_undocumented(m_ostream, "A", "E");
+                break;
             case ADC_A_IXYH_UNDOC:
                 print_adc(m_ostream, "A", ixy_reg + "H");
                 break;
             case ADC_A_IXYL_UNDOC:
                 print_adc(m_ostream, "A", ixy_reg + "L");
                 break;
-            case ADD_A_MIXY_P_n:
-                print_add_MixyPn(m_ostream, "A", ixy_reg, get_next_byte());
-                break;
             case ADC_A_MIXY_P_n:
                 print_adc_MixyPn(m_ostream, "A", ixy_reg, get_next_byte());
+                break;
+            case ADC_A_A_UNDOC:
+                print_adc_undocumented(m_ostream, "A", "A");
+                break;
+            case SUB_B_UNDOC:
+                print_sub_undocumented(m_ostream, "B");
+                break;
+            case SUB_C_UNDOC:
+                print_sub_undocumented(m_ostream, "C");
+                break;
+            case SUB_D_UNDOC:
+                print_sub_undocumented(m_ostream, "D");
+                break;
+            case SUB_E_UNDOC:
+                print_sub_undocumented(m_ostream, "E");
                 break;
             case SUB_IXYH_UNDOC:
                 print_sub(m_ostream, ixy_reg + "H");
@@ -1653,6 +1876,21 @@ namespace emu::z80 {
             case SUB_MIXY_P_n:
                 print_sub_MixyPn(m_ostream, ixy_reg, get_next_byte());
                 break;
+            case SUB_A_UNDOC:
+                print_sub_undocumented(m_ostream, "E");
+                break;
+            case SBC_A_B_UNDOC:
+                print_sbc_undocumented(m_ostream, "A", "B");
+                break;
+            case SBC_A_C_UNDOC:
+                print_sbc_undocumented(m_ostream, "A", "C");
+                break;
+            case SBC_A_D_UNDOC:
+                print_sbc_undocumented(m_ostream, "A", "D");
+                break;
+            case SBC_A_E_UNDOC:
+                print_sbc_undocumented(m_ostream, "A", "E");
+                break;
             case SBC_A_IXYH_UNDOC:
                 print_sbc(m_ostream, "A", ixy_reg + "H");
                 break;
@@ -1661,6 +1899,21 @@ namespace emu::z80 {
                 break;
             case SBC_A_MIXY_P_n:
                 print_sbc_MixyPn(m_ostream, "A", ixy_reg, get_next_byte());
+                break;
+            case SBC_A_A_UNDOC:
+                print_sbc_undocumented(m_ostream, "A", "A");
+                break;
+            case AND_B_UNDOC:
+                print_and_r_undocumented(m_ostream, "B");
+                break;
+            case AND_C_UNDOC:
+                print_and_r_undocumented(m_ostream, "C");
+                break;
+            case AND_D_UNDOC:
+                print_and_r_undocumented(m_ostream, "D");
+                break;
+            case AND_E_UNDOC:
+                print_and_r_undocumented(m_ostream, "E");
                 break;
             case AND_IXYH_UNDOC:
                 print_and_r(m_ostream, ixy_reg + "H");
@@ -1671,11 +1924,44 @@ namespace emu::z80 {
             case AND_MIXY_P_n:
                 print_and_MixyPn(m_ostream, ixy_reg, get_next_byte());
                 break;
+            case AND_A_UNDOC:
+                print_and_r_undocumented(m_ostream, "A");
+                break;
+            case XOR_B_UNDOC:
+                print_xor_r_undocumented(m_ostream, "B");
+                break;
+            case XOR_C_UNDOC:
+                print_xor_r_undocumented(m_ostream, "C");
+                break;
+            case XOR_D_UNDOC:
+                print_xor_r_undocumented(m_ostream, "D");
+                break;
+            case XOR_E_UNDOC:
+                print_xor_r_undocumented(m_ostream, "E");
+                break;
             case XOR_IXYH_UNDOC:
                 print_xor_r(m_ostream, ixy_reg + "H");
                 break;
             case XOR_IXYL_UNDOC:
                 print_xor_r(m_ostream, ixy_reg + "L");
+                break;
+            case XOR_MIXY_P_n:
+                print_xor_MixyPn(m_ostream, ixy_reg, get_next_byte());
+                break;
+            case XOR_A_UNDOC:
+                print_xor_r_undocumented(m_ostream, "A");
+                break;
+            case OR_B_UNDOC:
+                print_or_r_undocumented(m_ostream, "B");
+                break;
+            case OR_C_UNDOC:
+                print_or_r_undocumented(m_ostream, "C");
+                break;
+            case OR_D_UNDOC:
+                print_or_r_undocumented(m_ostream, "D");
+                break;
+            case OR_E_UNDOC:
+                print_or_r_undocumented(m_ostream, "E");
                 break;
             case OR_IXYH_UNDOC:
                 print_or_r(m_ostream, ixy_reg + "H");
@@ -1686,8 +1972,20 @@ namespace emu::z80 {
             case OR_MIXY_P_n:
                 print_or_MixyPn(m_ostream, ixy_reg, get_next_byte());
                 break;
-            case XOR_MIXY_P_n:
-                print_xor_MixyPn(m_ostream, ixy_reg, get_next_byte());
+            case OR_A_UNDOC:
+                print_or_r_undocumented(m_ostream, "A");
+                break;
+            case CP_B_UNDOC:
+                print_cp_undocumented(m_ostream, "B");
+                break;
+            case CP_C_UNDOC:
+                print_cp_undocumented(m_ostream, "C");
+                break;
+            case CP_D_UNDOC:
+                print_cp_undocumented(m_ostream, "D");
+                break;
+            case CP_E_UNDOC:
+                print_cp_undocumented(m_ostream, "E");
                 break;
             case CP_IXYH_UNDOC:
                 print_cp(m_ostream, ixy_reg + "H");
@@ -1697,6 +1995,9 @@ namespace emu::z80 {
                 break;
             case CP_MIXY_P_n:
                 print_cp_MixyPn(m_ostream, ixy_reg, get_next_byte());
+                break;
+            case CP_A_UNDOC:
+                print_cp_undocumented(m_ostream, "A");
                 break;
             case IXY_BITS:
                 print_next_ixy_bits_instruction(get_next_word(), ixy_reg);
@@ -1717,7 +2018,8 @@ namespace emu::z80 {
                 print_ld(m_ostream, "SP", ixy_reg);
                 break;
             default:
-                throw UnrecognizedOpcodeException(ixy_opcode, "IX/IY instructions");
+                std::cout << hexify(ixy_opcode) << " (data)";
+                break;
         }
     }
 
@@ -1855,6 +2157,12 @@ namespace emu::z80 {
 
     void DisassemblerZ80::print_next_extd_instruction(u8 extd_opcode) {
         switch (extd_opcode) {
+            case IN_B_MC:
+                print_in_r_Mr(m_ostream, "B", "C");
+                break;
+            case OUT_MC_B:
+                print_out_Mr_r(m_ostream, "C", "B");
+                break;
             case SBC_HL_BC:
                 print_sbc(m_ostream, "HL", "BC");
                 break;
@@ -1870,9 +2178,18 @@ namespace emu::z80 {
             case NEG:
                 print_neg(m_ostream);
                 break;
+            case RETN:
+                print_retn(m_ostream);
+                break;
             case IM_0_1:
             case IM_0_2:
                 print_im(m_ostream, 0);
+                break;
+            case IN_C_MC:
+                print_in_r_Mr(m_ostream, "C", "C");
+                break;
+            case OUT_MC_C:
+                print_out_Mr_r(m_ostream, "C", "C");
                 break;
             case ADC_HL_BC:
                 print_adc(m_ostream, "HL", "BC");
@@ -1880,11 +2197,41 @@ namespace emu::z80 {
             case LD_BC_Mnn:
                 print_ld(m_ostream, "BC", get_next_word());
                 break;
+            case RETI:
+                print_reti(m_ostream);
+                break;
+            case LD_R_A:
+                print_ld(m_ostream, "R", "A");
+                break;
+            case IN_D_MC:
+                print_in_r_Mr(m_ostream, "D", "C");
+                break;
+            case OUT_MC_D:
+                print_out_Mr_r(m_ostream, "C", "D");
+                break;
             case SBC_HL_DE:
                 print_sbc(m_ostream, "HL", "DE");
                 break;
+            case LD_Mnn_DE:
+                print_ld_Mnn_dd(m_ostream, get_next_word(), "DE");
+                break;
+            case IM_2:
+                print_im(m_ostream, 2);
+                break;
+            case LD_A_R:
+                print_ld(m_ostream, "A", "R");
+                break;
+            case IN_H_MC:
+                print_in_r_Mr(m_ostream, "H", "C");
+                break;
+            case OUT_MC_H:
+                print_out_Mr_r(m_ostream, "C", "H");
+                break;
             case SBC_HL_HL:
                 print_sbc(m_ostream, "HL", "HL");
+                break;
+            case LD_Mnn_HL_UNDOC:
+                print_ld_Mnn_dd_undocumented(m_ostream, get_next_word(), "HL");
                 break;
             case SBC_HL_SP:
                 print_sbc(m_ostream, "HL", "SP");
@@ -1893,20 +2240,59 @@ namespace emu::z80 {
             case IM_1_2:
                 print_im(m_ostream, 1);
                 break;
+            case LD_A_I:
+                print_ld(m_ostream, "A", "I");
+                break;
+            case IN_A_MC:
+                print_in_r_Mr(m_ostream, "A", "C");
+                break;
+            case OUT_MC_A:
+                print_out_Mr_r(m_ostream, "C", "A");
+                break;
+            case IN_E_MC:
+                print_in_r_Mr(m_ostream, "E", "C");
+                break;
+            case OUT_MC_E:
+                print_out_Mr_r(m_ostream, "C", "E");
+                break;
+            case ADC_HL_DE:
+                print_adc(m_ostream, "HL", "DE");
+                break;
+            case LD_DE_Mnn:
+                print_ld_dd_Mnn(m_ostream, "DE", get_next_word());
+                break;
             case RRD:
                 print_rrd(m_ostream);
+                break;
+            case IN_L_MC:
+                print_in_r_Mr(m_ostream, "L", "C");
+                break;
+            case OUT_MC_L:
+                print_out_Mr_r(m_ostream, "C", "L");
+                break;
+            case ADC_HL_HL:
+                print_adc(m_ostream, "HL", "HL");
+                break;
+            case LD_HL_Mnn_UNDOC:
+                print_ld_dd_Mnn_undocumented(m_ostream, "HL", get_next_word());
                 break;
             case RLD:
                 print_rld(m_ostream);
                 break;
+            case IN_MC:
+                print_in_undocumented(m_ostream, "(C)");
+                break;
+            case OUT_MC_0:
+                print_out_Mr_r_undocumented(m_ostream, "C", "0");
+                break;
             case LD_Mnn_SP:
                 print_ld_Mnn_dd(m_ostream, get_next_word(), "SP");
                 break;
+            case ADC_HL_SP:
+                print_adc(m_ostream, "HL", "SP");
+                break;
             case LD_SP_Mnn:
                 print_ld(m_ostream, "SP", get_next_word());
-                break;
-            case 0x84:
-                std::cout << "0x84 (data)";
                 break;
             case LDI:
                 print_ldi(m_ostream);
@@ -1914,8 +2300,20 @@ namespace emu::z80 {
             case CPI:
                 print_cpi(m_ostream);
                 break;
+            case INI:
+                print_ini(m_ostream);
+                break;
+            case OUTI:
+                print_outi(m_ostream);
+                break;
+            case LDD:
+                print_ldd(m_ostream);
+                break;
             case CPD:
                 print_cpd(m_ostream);
+                break;
+            case IND:
+                print_ind(m_ostream);
                 break;
             case LDIR:
                 print_ldir(m_ostream);
@@ -1923,17 +2321,27 @@ namespace emu::z80 {
             case CPIR:
                 print_cpir(m_ostream);
                 break;
+            case INIR:
+                print_inir(m_ostream);
+                break;
+            case OTIR:
+                print_otir(m_ostream);
+                break;
+            case LDDR:
+                print_lddr(m_ostream);
+                break;
             case CPDR:
                 print_cpdr(m_ostream);
                 break;
-            case 0xc9:
-                std::cout << "0xc9 (data)";
+            case INDR:
+                print_indr(m_ostream);
                 break;
-            case 0xf5:
-                std::cout << "0xf5 (data)";
+            case OTDR:
+                print_otdr(m_ostream);
                 break;
             default:
-                throw UnrecognizedOpcodeException(extd_opcode, "EXTD instructions");
+                std::cout << hexify(extd_opcode) << " (data)";
+                break;
         }
     }
 

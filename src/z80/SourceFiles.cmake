@@ -30,6 +30,10 @@ set(SOURCES_Z80_CPP
         src/z80/instructions/im.cpp
         src/z80/instructions/in.cpp
         src/z80/instructions/inc.cpp
+        src/z80/instructions/ind.cpp
+        src/z80/instructions/indr.cpp
+        src/z80/instructions/ini.cpp
+        src/z80/instructions/inir.cpp
         src/z80/instructions/instruction_util.cpp
         src/z80/instructions/jp.cpp
         src/z80/instructions/jr.cpp
@@ -42,10 +46,16 @@ set(SOURCES_Z80_CPP
         src/z80/instructions/nop.cpp
         src/z80/instructions/or.cpp
         src/z80/instructions/out.cpp
+        src/z80/instructions/outd.cpp
+        src/z80/instructions/outi.cpp
+        src/z80/instructions/otdr.cpp
+        src/z80/instructions/otir.cpp
         src/z80/instructions/pop.cpp
         src/z80/instructions/push.cpp
         src/z80/instructions/res.cpp
         src/z80/instructions/ret.cpp
+        src/z80/instructions/reti.cpp
+        src/z80/instructions/retn.cpp
         src/z80/instructions/rl.cpp
         src/z80/instructions/rlc.cpp
         src/z80/instructions/rld.cpp

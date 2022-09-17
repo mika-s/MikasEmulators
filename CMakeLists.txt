@@ -39,7 +39,10 @@ target_include_directories(${PROJECT_NAME} PRIVATE
         libs/imgui
         src
         )
-target_compile_options(${PROJECT_NAME} PRIVATE -Werror -Wall -Wextra -O3)
+target_compile_options(${PROJECT_NAME} PRIVATE -Werror -Wall -Wextra)
+
+set(CMAKE_CXX_FLAGS_RELEASE "-Werror -Wall -Wextra -O3")
+set(CMAKE_CXX_FLAGS_DEBUG "-Werror -Wall -Wextra")
 
 # ------------------------ Copy files to working directory
 

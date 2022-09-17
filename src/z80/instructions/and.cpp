@@ -114,7 +114,7 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void and_MixyPd(u8 &acc_reg, u16 ixy_reg, const NextByte &args, const EmulatorMemory &memory, Flags &flag_reg,
-                      unsigned long &cycles
+                    unsigned long &cycles
     ) {
         and_(acc_reg, memory[ixy_reg + static_cast<i8>(args.farg)], flag_reg);
 
@@ -124,6 +124,12 @@ namespace emu::z80 {
     void print_and_r(std::ostream &ostream, const std::string &reg) {
         ostream << "AND "
                 << reg;
+    }
+
+    void print_and_r_undocumented(std::ostream &ostream, const std::string &reg) {
+        ostream << "AND "
+                << reg
+                << "*";
     }
 
     void print_and_n(std::ostream &ostream, const NextByte &args) {

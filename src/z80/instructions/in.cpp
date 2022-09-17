@@ -1,4 +1,3 @@
-#include <stdexcept>
 #include <vector>
 #include <iostream>
 #include "doctest.h"
@@ -34,6 +33,20 @@ namespace emu::z80 {
     void print_in(std::ostream &ostream, const NextByte &args) {
         ostream << "IN "
                 << hexify_wo_0x(args.farg);
+    }
+
+    void print_in_undocumented(std::ostream &ostream, const std::string& dest) {
+        ostream << "IN "
+                << dest
+                << "*";
+    }
+
+    void print_in_r_Mr(std::ostream &ostream, const std::string& dest, const std::string& src) {
+        ostream << "IN "
+                << dest
+                << ", ("
+                << src
+                << ")";
     }
 
     TEST_CASE("Z80: IN A, [n]") {

@@ -126,6 +126,25 @@ namespace emu::z80 {
     }
 
     /**
+     * Load immediate into register (undocumented)
+     * <ul>
+     *   <li>Size: 3</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 11</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param to is the register to load into, which will be mutated
+     * @param args contains value to load into the register
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void ld_r_n_undocumented(u8 &to, const NextByte &args, unsigned long &cycles) {
+        ld(to, args.farg);
+
+        cycles = 11;
+    }
+
+    /**
      * Load value in memory at HL's address into register
      * <ul>
      *   <li>Size: 2</li>
@@ -656,11 +675,27 @@ namespace emu::z80 {
                 << src;
     }
 
+    void print_ld_undocumented(std::ostream &ostream, const std::string &dest, const std::string &src) {
+        ostream << "LD "
+                << dest
+                << ","
+                << src
+                << "*";
+    }
+
     void print_ld(std::ostream &ostream, const std::string &dest, const NextByte &args) {
         ostream << "LD "
                 << dest
                 << ","
                 << hexify_wo_0x(args.farg);
+    }
+
+    void print_ld_undocumented(std::ostream &ostream, const std::string &dest, const NextByte &args) {
+        ostream << "LD "
+                << dest
+                << ","
+                << hexify_wo_0x(args.farg)
+                << "*";
     }
 
     void print_ld(std::ostream &ostream, const std::string &dest, const NextWord &args) {
@@ -687,8 +722,67 @@ namespace emu::z80 {
                 << src;
     }
 
+    void print_ld_Mnn_dd_undocumented(std::ostream &ostream, const NextWord &args, const std::string &src) {
+        ostream << "LD ("
+                << hexify_wo_0x(args.sarg)
+                << hexify_wo_0x(args.farg)
+                << "),"
+                << src
+                << "*";
+    }
+
+    void print_ld_dd_Mnn(std::ostream &ostream, const std::string &dest, const NextWord &args) {
+        ostream << "LD "
+                << dest
+                << ","
+                << ",("
+                << hexify_wo_0x(args.sarg)
+                << hexify_wo_0x(args.farg)
+                << ")";
+    }
+
+    void print_ld_dd_Mnn_undocumented(std::ostream &ostream, const std::string &dest, const NextWord &args) {
+        ostream << "LD "
+                << dest
+                << ","
+                << ",("
+                << hexify_wo_0x(args.sarg)
+                << hexify_wo_0x(args.farg)
+                << ")"
+                << "*";
+    }
+
+    void print_ld_MixyPd_n(std::ostream &ostream, const std::string &ixy_reg, const NextWord &args) {
+        const i8 signed_value = static_cast<i8>(args.farg);
+        const std::string plus_or_minus = (signed_value >= 0) ? "+" : "";
+
+        ostream << "LD "
+                << "("
+                << ixy_reg
+                << plus_or_minus
+                << +signed_value
+                << "),"
+                << hexify_wo_0x(args.sarg);
+    }
+
+    void print_ld_MixyPd_r(std::ostream &ostream, const std::string &ixy_reg, const NextByte &args,
+                           const std::string &reg
+    ) {
+        const i8 signed_value = static_cast<i8>(args.farg);
+        const std::string plus_or_minus = (signed_value >= 0) ? "+" : "";
+
+        ostream << "LD "
+                << "("
+                << ixy_reg
+                << plus_or_minus
+                << +signed_value
+                << "),"
+                << reg;
+    }
+
     void print_ld_r_MixyPn(std::ostream &ostream, const std::string &dest, const std::string &ixy_reg,
-                           const NextByte &args) {
+                           const NextByte &args
+    ) {
         const i8 signed_value = static_cast<i8>(args.farg);
         const std::string plus_or_minus = (signed_value >= 0) ? "+" : "";
 

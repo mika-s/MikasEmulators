@@ -1,4 +1,3 @@
-#include <stdexcept>
 #include "doctest.h"
 #include "8080/emulator_memory.h"
 

@@ -1711,7 +1711,8 @@ namespace emu::z80 {
                 dec_r_undoc(m_b_reg, m_flag_reg, cycles);
                 break;
             case LD_B_n_UNDOC:
-                throw UnrecognizedOpcodeException(ixy_opcode, "IX/IY instructions");
+                ld_r_n_undocumented(m_b_reg, get_next_byte(), cycles);
+                break;
             case ADD_IXY_BC:
                 add_ixy_pp(ixy_reg, to_u16(m_b_reg, m_c_reg), m_flag_reg, cycles);
                 break;
@@ -1721,11 +1722,17 @@ namespace emu::z80 {
             case DEC_C_UNDOC:
                 dec_r_undoc(m_c_reg, m_flag_reg, cycles);
                 break;
+            case LD_C_n_UNDOC:
+                ld_r_n_undocumented(m_c_reg, get_next_byte(), cycles);
+                break;
             case INC_D_UNDOC:
                 inc_r_undoc(m_d_reg, m_flag_reg, cycles);
                 break;
             case DEC_D_UNDOC:
                 dec_r_undoc(m_d_reg, m_flag_reg, cycles);
+                break;
+            case LD_D_n_UNDOC:
+                ld_r_n_undocumented(m_d_reg, get_next_byte(), cycles);
                 break;
             case ADD_IXY_DE:
                 add_ixy_pp(ixy_reg, to_u16(m_d_reg, m_e_reg), m_flag_reg, cycles);
@@ -1735,6 +1742,9 @@ namespace emu::z80 {
                 break;
             case DEC_E_UNDOC:
                 dec_r_undoc(m_e_reg, m_flag_reg, cycles);
+                break;
+            case LD_E_n_UNDOC:
+                ld_r_n_undocumented(m_e_reg, get_next_byte(), cycles);
                 break;
             case LD_IXY_nn:
                 ld_ixy_nn(ixy_reg, get_next_word(), cycles);
@@ -1789,6 +1799,9 @@ namespace emu::z80 {
                 break;
             case DEC_A_UNDOC:
                 dec_r_undoc(m_acc_reg, m_flag_reg, cycles);
+                break;
+            case LD_A_n_UNDOC:
+                ld_r_n_undocumented(m_acc_reg, get_next_byte(), cycles);
                 break;
             case LD_B_B_UNDOC:
                 ld_r_r_undoc(m_b_reg, m_b_reg, cycles);
@@ -2280,6 +2293,9 @@ namespace emu::z80 {
             case CPI:
                 cpi(m_b_reg, m_c_reg, m_h_reg, m_l_reg, m_acc_reg, m_memory, m_flag_reg, cycles);
                 break;
+            case INI:
+                ini(m_b_reg, m_c_reg, m_h_reg, m_l_reg, m_memory, m_flag_reg, m_io_in, cycles);
+                break;
             case LDD:
                 ldd(m_b_reg, m_c_reg, m_d_reg, m_e_reg, m_h_reg, m_l_reg, m_acc_reg,
                     m_memory, m_flag_reg, cycles);
@@ -2294,6 +2310,10 @@ namespace emu::z80 {
             case CPIR:
                 cpir(m_pc, m_b_reg, m_c_reg, m_h_reg, m_l_reg,
                      m_acc_reg, m_memory, m_flag_reg, cycles);
+                break;
+            case INIR:
+                inir(m_pc, m_b_reg, m_c_reg, m_h_reg, m_l_reg, m_memory, m_flag_reg,
+                     m_io_in, cycles);
                 break;
             case LDDR:
                 lddr(m_pc, m_b_reg, m_c_reg, m_d_reg, m_e_reg, m_h_reg, m_l_reg, m_acc_reg,

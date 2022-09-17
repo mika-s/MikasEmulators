@@ -217,6 +217,12 @@ namespace emu::z80 {
                 << reg;
     }
 
+    void print_dec_undocumented(std::ostream &ostream, const std::string &reg) {
+        ostream << "DEC "
+                << reg
+                << "*";
+    }
+
     void print_dec_MixyPn(std::ostream &ostream, const std::string &ixy_reg, const NextByte &args) {
         const i8 signed_value = static_cast<i8>(args.farg);
         const std::string plus_or_minus = (signed_value >= 0) ? "+" : "";

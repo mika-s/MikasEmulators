@@ -161,6 +161,14 @@ namespace emu::z80 {
                 << src;
     }
 
+    void print_adc_undocumented(std::ostream &ostream, const std::string &dest, const std::string &src) {
+        ostream << "ADC "
+                << dest
+                << ", "
+                << src
+                << "*";
+    }
+
     void print_adc(std::ostream &ostream, const std::string &reg, const NextByte &args) {
         ostream << "ADC "
                 << reg

@@ -204,6 +204,14 @@ namespace emu::z80 {
                 << src;
     }
 
+    void print_add_undocumented(std::ostream &ostream, const std::string &dest, const std::string &src) {
+        ostream << "ADD "
+                << dest
+                << ", "
+                << src
+                << "*";
+    }
+
     void print_add_r_n(std::ostream &ostream, const std::string &reg, const NextByte &args) {
         ostream << "ADD "
                 << reg

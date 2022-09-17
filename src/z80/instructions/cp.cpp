@@ -118,7 +118,14 @@ namespace emu::z80 {
     }
 
     void print_cp(std::ostream &ostream, const std::string &reg) {
-        ostream << "CP " << reg;
+        ostream << "CP "
+                << reg;
+    }
+
+    void print_cp_undocumented(std::ostream &ostream, const std::string &reg) {
+        ostream << "CP "
+                << reg
+                << "*";
     }
 
     void print_cp(std::ostream &ostream, const NextByte &args) {

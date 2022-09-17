@@ -113,7 +113,7 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void or_MixyPd(u8 &acc_reg, u16 ixy_reg, const NextByte &args, const EmulatorMemory &memory, Flags &flag_reg,
-                      unsigned long &cycles
+                   unsigned long &cycles
     ) {
         or_(acc_reg, memory[ixy_reg + static_cast<i8>(args.farg)], flag_reg);
 
@@ -123,6 +123,12 @@ namespace emu::z80 {
     void print_or_r(std::ostream &ostream, const std::string &reg) {
         ostream << "OR "
                 << reg;
+    }
+
+    void print_or_r_undocumented(std::ostream &ostream, const std::string &reg) {
+        ostream << "OR "
+                << reg
+                << "*";
     }
 
     void print_or_n(std::ostream &ostream, const NextByte &args) {
