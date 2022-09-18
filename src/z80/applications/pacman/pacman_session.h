@@ -1,50 +1,49 @@
-#ifndef MIKA_EMULATORS_8080_APPLICATIONS_SPACE_INVADERS_SPACE_INVADERS_SESSION_H
-#define MIKA_EMULATORS_8080_APPLICATIONS_SPACE_INVADERS_SPACE_INVADERS_SESSION_H
+#ifndef MIKA_EMULATORS_Z80_APPLICATIONS_PACMAN_PACMAN_SESSION_H
+#define MIKA_EMULATORS_Z80_APPLICATIONS_PACMAN_PACMAN_SESSION_H
 
 #include <memory>
 #include <SDL.h>
 #include <vector>
 #include <unordered_map>
-#include "8080/cpu.h"
-#include "8080/debug_container.h"
-#include "8080/run_status.h"
-#include "8080/shift_register.h"
-#include "8080/applications/space_invaders/audio.h"
-#include "8080/applications/space_invaders/cpu_io.h"
-#include "8080/applications/space_invaders/gui.h"
-#include "8080/applications/space_invaders/interfaces/input.h"
-#include "8080/applications/space_invaders/interfaces/io_observer.h"
-#include "8080/instructions/instructions.h"
-#include "8080/interfaces/emulator8080.h"
-#include "8080/interfaces/gui_observer.h"
-#include "8080/interfaces/in_observer.h"
-#include "8080/interfaces/out_observer.h"
-#include "8080/interfaces/session.h"
+#include "z80/cpu.h"
+#include "z80/debug_container.h"
+#include "z80/run_status.h"
+#include "z80/applications/pacman/cpu_io.h"
+#include "z80/applications/pacman/gui.h"
+#include "z80/applications/pacman/interfaces/input.h"
+#include "z80/applications/pacman/interfaces/io_observer.h"
+#include "z80/interfaces/emulatorZ80.h"
+#include "z80/interfaces/gui_observer.h"
+#include "z80/interfaces/in_observer.h"
+#include "z80/interfaces/out_observer.h"
+#include "z80/interfaces/session.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/debugging/debugger.h"
 #include "crosscutting/logging/log_observer.h"
 #include "crosscutting/logging/logger.h"
 
-namespace emu::i8080::applications::space_invaders {
+namespace emu::z80::applications::pacman {
 
     using emu::debugger::Debugger;
     using emu::logging::Logger;
 
-    class SpaceInvadersSession
+    class PacmanSession
             : public Session,
               public GuiObserver,
               public OutObserver,
               public InObserver,
               public IoObserver {
     public:
-        SpaceInvadersSession(
+        PacmanSession(
                 const Settings &settings,
                 std::shared_ptr<Gui> gui,
                 std::shared_ptr<Input> input,
-                EmulatorMemory memory
+                EmulatorMemory memory,
+                EmulatorMemory tile_rom,
+                EmulatorMemory sprite_rom
         );
 
-        ~SpaceInvadersSession() override;
+        ~PacmanSession() override;
 
         void run() override;
 
@@ -73,9 +72,10 @@ namespace emu::i8080::applications::space_invaders {
         std::shared_ptr<Gui> m_gui;
         std::shared_ptr<Input> m_input;
         std::unique_ptr<Cpu> m_cpu;
-        Audio m_audio;
 
         EmulatorMemory m_memory;
+        EmulatorMemory m_tile_rom;
+        EmulatorMemory m_sprite_rom;
 
         std::shared_ptr<Logger> m_logger;
         std::shared_ptr<Debugger> m_debugger;
@@ -102,8 +102,8 @@ namespace emu::i8080::applications::space_invaders {
         static constexpr int out_port_watchdog = 6;
         // IO - end
 
-        static constexpr unsigned int rst_1_i8080 = 0xCF;
-        static constexpr unsigned int rst_2_i8080 = 0xD7;
+        static constexpr unsigned int rst_1_z80 = 0xCF;
+        static constexpr unsigned int rst_2_z80 = 0xD7;
 
         void running(u64 &last_tick, unsigned long &cycles);
 
@@ -125,4 +125,4 @@ namespace emu::i8080::applications::space_invaders {
     };
 }
 
-#endif //MIKA_EMULATORS_8080_APPLICATIONS_SPACE_INVADERS_SPACE_INVADERS_SESSION_H
+#endif //MIKA_EMULATORS_Z80_APPLICATIONS_PACMAN_PACMAN_SESSION_H

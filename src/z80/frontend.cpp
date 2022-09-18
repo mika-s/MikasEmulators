@@ -7,6 +7,11 @@
 #include "frontend.h"
 #include "z80/disassemblerZ80.h"
 #include "z80/applications/cpm/cpm_application.h"
+#include "z80/applications/pacman/pacman.h"
+#include "z80/applications/pacman/input_imgui.h"
+#include "z80/applications/pacman/input_sdl.h"
+#include "z80/applications/pacman/gui_imgui.h"
+#include "z80/applications/pacman/gui_sdl.h"
 #include "crosscutting/exceptions/invalid_program_arguments_exception.h"
 #include "crosscutting/util/file_util.h"
 
@@ -84,13 +89,31 @@ namespace emu::z80 {
 
     std::unique_ptr<EmulatorZ80> Frontend::choose_emulator(
             const std::string &program,
-            [[maybe_unused]] const Settings &settings,
-            [[maybe_unused]] GuiType gui_type
+            const Settings &settings,
+            GuiType gui_type
     ) {
         using applications::cpm::CpmApplication;
+        using applications::pacman::InputSdl;
+        using applications::pacman::InputImgui;
+        using applications::pacman::GuiSdl;
+        using applications::pacman::GuiImgui;
+        using applications::pacman::Pacman;
+
 
         if (program == "pacman") {
-            throw InvalidProgramArgumentsException("pacman not implemented yet");
+            if (gui_type == GuiType::DEBUGGING) {
+                return std::make_unique<Pacman>(
+                        settings,
+                        std::make_shared<GuiImgui>(),
+                        std::make_shared<InputImgui>()
+                );
+            } else {
+                return std::make_unique<Pacman>(
+                        settings,
+                        std::make_shared<GuiSdl>(),
+                        std::make_shared<InputSdl>()
+                );
+            }
         } else if (program == "prelim") {
             return std::make_unique<CpmApplication>("roms/z80/prelim.com");
         } else if (program == "zexall") {
@@ -118,54 +141,91 @@ namespace emu::z80 {
     Settings Frontend::find_pacman_settings(
             std::unordered_map<std::string, std::vector<std::string>> options
     ) {
-        using applications::pacman::BonusLifeAt;
-        using applications::pacman::CoinInfo;
         using applications::pacman::NumberOfLives;
+        using applications::pacman::BonusLifeAt;
+        using applications::pacman::CoinsPerGame;
+        using applications::pacman::Difficulty;
+        using applications::pacman::GhostNames;
 
         Settings settings{};
         settings.m_number_of_lives = NumberOfLives::Three;
-        settings.m_bonus_life_at = BonusLifeAt::_1500;
-        settings.m_coin_info = CoinInfo::On;
+        settings.m_bonus_life_at = BonusLifeAt::_15000;
+        settings.m_coins_per_game = CoinsPerGame::OnePerGame;
+        settings.m_difficulty = Difficulty::Normal;
+        settings.m_ghost_names = GhostNames::Normal;
 
         for (auto &opt: options["-d"]) {
             switch (opt[0]) {
                 case 'n':
-                    if (opt == "n=3") {
+                    if (opt == "n=1") {
+                        settings.m_number_of_lives = NumberOfLives::One;
+                    } else if (opt == "n=2") {
+                        settings.m_number_of_lives = NumberOfLives::Two;
+                    } else if (opt == "n=3") {
                         settings.m_number_of_lives = NumberOfLives::Three;
-                    } else if (opt == "n=4") {
-                        settings.m_number_of_lives = NumberOfLives::Four;
                     } else if (opt == "n=5") {
                         settings.m_number_of_lives = NumberOfLives::Five;
-                    } else if (opt == "n=6") {
-                        settings.m_number_of_lives = NumberOfLives::Six;
                     } else {
                         std::stringstream ss;
                         ss << "Invalid number of lives passed to the -d option: " << opt
-                           << R"(. Should be "-d n=3", ..., "-d n=6".)";
+                           << R"(. Should be "-d n=1", "-d n=2", "-d n=3" or "-d n=5".)";
                         throw InvalidProgramArgumentsException(ss.str());
                     }
                     break;
                 case 'b':
-                    if (opt == "b=1500") {
-                        settings.m_bonus_life_at = BonusLifeAt::_1500;
-                    } else if (opt == "b=1000") {
-                        settings.m_bonus_life_at = BonusLifeAt::_1000;
+                    if (opt == "b=10000") {
+                        settings.m_bonus_life_at = BonusLifeAt::_10000;
+                    } else if (opt == "b=15000") {
+                        settings.m_bonus_life_at = BonusLifeAt::_15000;
+                    } else if (opt == "b=20000") {
+                        settings.m_bonus_life_at = BonusLifeAt::_20000;
+                    } else if (opt == "b=None") {
+                        settings.m_bonus_life_at = BonusLifeAt::None;
                     } else {
                         std::stringstream ss;
                         ss << "Invalid bonus life at passed to the -d option: " << opt
-                           << R"(. Should be "-d b=1500" or "-d b=1000".)";
+                           << R"(. Should be "-d b=10000", "-d b=15000", "-d b=20000" or "-d b=None".)";
                         throw InvalidProgramArgumentsException(ss.str());
                     }
                     break;
                 case 'c':
-                    if (opt == "c=on") {
-                        settings.m_coin_info = CoinInfo::On;
-                    } else if (opt == "c=off") {
-                        settings.m_coin_info = CoinInfo::Off;
+                    if (opt == "c=opg") {
+                        settings.m_coins_per_game = CoinsPerGame::OnePerGame;
+                    } else if (opt == "c=optg") {
+                        settings.m_coins_per_game = CoinsPerGame::OnePerTwoGames;
+                    } else if (opt == "c=tpg") {
+                        settings.m_coins_per_game = CoinsPerGame::TwoCoinsPerGame;
+                    } else if (opt == "c=free") {
+                        settings.m_coins_per_game = CoinsPerGame::FreePlay;
                     } else {
                         std::stringstream ss;
-                        ss << "Invalid coin info passed to the -d option: " << opt
-                           << R"(. Should be "-d c=on" or "-d c=off".)";
+                        ss << "Invalid number of coins per game passed to the -d option: " << opt
+                           << R"(. Should be "-d c=opg" (one per game), "-d c=optg" (one per two games), )"
+                           << R"("-d c=tpg" (two per game) or "-d c=free".)";
+                        throw InvalidProgramArgumentsException(ss.str());
+                    }
+                    break;
+                case 'd':
+                    if (opt == "d=normal") {
+                        settings.m_difficulty = Difficulty::Normal;
+                    } else if (opt == "d=hard") {
+                        settings.m_difficulty = Difficulty::Hard;
+                    } else {
+                        std::stringstream ss;
+                        ss << "Invalid difficulty passed to the -d option: " << opt
+                           << R"(. Should be "-d d=normal" or "-d d=hard".)";
+                        throw InvalidProgramArgumentsException(ss.str());
+                    }
+                    break;
+                case 'g':
+                    if (opt == "g=normal") {
+                        settings.m_ghost_names = GhostNames::Normal;
+                    } else if (opt == "g=alternate") {
+                        settings.m_ghost_names = GhostNames::Alternate;
+                    } else {
+                        std::stringstream ss;
+                        ss << "Invalid ghost names passed to the -d option: " << opt
+                           << R"(. Should be "-d g=normal" or "-d g=alternate".)";
                         throw InvalidProgramArgumentsException(ss.str());
                     }
                     break;

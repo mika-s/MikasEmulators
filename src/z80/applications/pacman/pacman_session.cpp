@@ -1,17 +1,19 @@
 #include <iostream>
 #include <utility>
 #include <SDL_timer.h>
-#include "space_invaders_session.h"
-#include "8080/disassembler8080.h"
+#include "pacman_session.h"
+#include "z80/disassemblerZ80.h"
 #include "crosscutting/util/string_util.h"
 
-namespace emu::i8080::applications::space_invaders {
+namespace emu::z80::applications::pacman {
 
-    SpaceInvadersSession::SpaceInvadersSession(
+    PacmanSession::PacmanSession(
             const Settings &settings,
             std::shared_ptr<Gui> gui,
             std::shared_ptr<Input> input,
-            EmulatorMemory memory
+            EmulatorMemory memory,
+            EmulatorMemory tile_rom,
+            EmulatorMemory sprite_rom
     )
             : m_is_in_debug_mode(false),
               m_is_stepping_instruction(false),
@@ -22,6 +24,8 @@ namespace emu::i8080::applications::space_invaders {
               m_gui(std::move(gui)),
               m_input(std::move(input)),
               m_memory(std::move(memory)),
+              m_tile_rom(std::move(tile_rom)),
+              m_sprite_rom(std::move(sprite_rom)),
               m_logger(std::make_shared<Logger>()),
               m_debugger(std::make_shared<Debugger>()) {
         setup_cpu();
@@ -32,14 +36,14 @@ namespace emu::i8080::applications::space_invaders {
         m_input->add_io_observer(*this);
     }
 
-    SpaceInvadersSession::~SpaceInvadersSession() {
+    PacmanSession::~PacmanSession() {
         m_gui->remove_gui_observer(this);
         m_input->remove_io_observer(this);
         m_cpu->remove_in_observer(this);
         m_cpu->remove_out_observer(this);
     }
 
-    void SpaceInvadersSession::run() {
+    void PacmanSession::run() {
         if (m_run_status == FINISHED) {
             throw std::invalid_argument("Programming error: the session has finished and cannot be run one more time");
         }
@@ -63,7 +67,7 @@ namespace emu::i8080::applications::space_invaders {
         m_run_status = FINISHED;
     }
 
-    void SpaceInvadersSession::running(u64 &last_tick, unsigned long &cycles) {
+    void PacmanSession::running(u64 &last_tick, unsigned long &cycles) {
         m_outputs_during_cycle.clear();
 
         if (SDL_GetTicks64() - last_tick >= tick_limit) {
@@ -80,7 +84,7 @@ namespace emu::i8080::applications::space_invaders {
             }
 
             if (m_cpu->is_inta()) {
-                m_cpu->interrupt(rst_1_i8080);
+                m_cpu->interrupt(rst_1_z80);
             }
 
             cycles = 0;
@@ -97,12 +101,12 @@ namespace emu::i8080::applications::space_invaders {
             m_gui->update_screen(this->vram(), m_run_status);
 
             if (m_cpu->is_inta()) {
-                m_cpu->interrupt(rst_2_i8080);
+                m_cpu->interrupt(rst_2_z80);
             }
         }
     }
 
-    void SpaceInvadersSession::pausing(u64 &last_tick) {
+    void PacmanSession::pausing(u64 &last_tick) {
         if (SDL_GetTicks64() - last_tick >= tick_limit) {
             last_tick = SDL_GetTicks();
             m_input->read(m_run_status, m_cpu_io);
@@ -110,7 +114,7 @@ namespace emu::i8080::applications::space_invaders {
         }
     }
 
-    void SpaceInvadersSession::stepping([[maybe_unused]] u64 &last_tick, unsigned long &cycles) {
+    void PacmanSession::stepping([[maybe_unused]] u64 &last_tick, unsigned long &cycles) {
         m_outputs_during_cycle.clear();
 
         await_input_and_update_debug();
@@ -130,7 +134,7 @@ namespace emu::i8080::applications::space_invaders {
         }
 
         if (m_cpu->is_inta()) {
-            m_cpu->interrupt(rst_1_i8080);
+            m_cpu->interrupt(rst_1_z80);
         }
 
         cycles = 0;
@@ -148,7 +152,7 @@ namespace emu::i8080::applications::space_invaders {
         m_gui->update_screen(this->vram(), m_run_status);
 
         if (m_cpu->is_inta()) {
-            m_cpu->interrupt(rst_2_i8080);
+            m_cpu->interrupt(rst_2_z80);
         }
 
         m_is_stepping_cycle = false;
@@ -158,7 +162,7 @@ namespace emu::i8080::applications::space_invaders {
         }
     }
 
-    void SpaceInvadersSession::await_input_and_update_debug() {
+    void PacmanSession::await_input_and_update_debug() {
         while (!m_is_stepping_instruction && !m_is_stepping_cycle && !m_is_continuing_execution) {
             m_input->read_debug_only(m_run_status);
             if (m_run_status == NOT_RUNNING) {
@@ -171,15 +175,15 @@ namespace emu::i8080::applications::space_invaders {
         m_is_stepping_instruction = false;
     }
 
-    void SpaceInvadersSession::pause() {
+    void PacmanSession::pause() {
         m_run_status = PAUSED;
     }
 
-    void SpaceInvadersSession::stop() {
+    void PacmanSession::stop() {
         m_run_status = FINISHED;
     }
 
-    void SpaceInvadersSession::setup_cpu() {
+    void PacmanSession::setup_cpu() {
         const u16 initial_pc = 0;
 
         m_cpu = std::make_unique<Cpu>(m_memory, initial_pc);
@@ -188,7 +192,7 @@ namespace emu::i8080::applications::space_invaders {
         m_cpu->add_in_observer(*this);
     }
 
-    void SpaceInvadersSession::setup_debugging() {
+    void PacmanSession::setup_debugging() {
         m_debug_container.add_register(RegisterDebugContainer("A", [&]() { return m_cpu->a(); }));
         m_debug_container.add_register(RegisterDebugContainer("B", [&]() { return m_cpu->b(); }));
         m_debug_container.add_register(RegisterDebugContainer("C", [&]() { return m_cpu->c(); }));
@@ -261,15 +265,15 @@ namespace emu::i8080::applications::space_invaders {
         m_gui->attach_logger(m_logger);
     }
 
-    void SpaceInvadersSession::run_status_changed(emu::i8080::RunStatus new_status) {
+    void PacmanSession::run_status_changed(RunStatus new_status) {
         m_run_status = new_status;
     }
 
-    void SpaceInvadersSession::debug_mode_changed(bool is_in_debug_mode) {
+    void PacmanSession::debug_mode_changed(bool is_in_debug_mode) {
         m_is_in_debug_mode = is_in_debug_mode;
     }
 
-    void SpaceInvadersSession::in_requested(u8 port) {
+    void PacmanSession::in_requested(u8 port) {
         switch (port) {
             case in_port_unused:
                 m_cpu->input(in_port_unused, m_cpu_io.m_in_port0);
@@ -280,15 +284,15 @@ namespace emu::i8080::applications::space_invaders {
             case in_port_2:
                 m_cpu->input(in_port_2, m_cpu_io.m_in_port2);
                 break;
-            case in_port_read_shift:
-                m_cpu->input(in_port_read_shift, m_cpu_io.m_shift_register.read());
-                break;
+//            case in_port_read_shift:
+//                m_cpu->input(in_port_read_shift, m_cpu_io.m_shift_register.read());
+//                break;
             default:
                 throw std::runtime_error("Illegal input port for Space Invaders");
         }
     }
 
-    void SpaceInvadersSession::out_changed(u8 port) {
+    void PacmanSession::out_changed(u8 port) {
         if (!m_outputs_during_cycle.contains(port)) {
             m_outputs_during_cycle[port] = m_cpu->a();
         } else {
@@ -296,17 +300,17 @@ namespace emu::i8080::applications::space_invaders {
         }
 
         switch (port) {
-            case out_port_shift_offset:
-                m_cpu_io.m_shift_register.change_offset(m_cpu->a());
-                break;
+//            case out_port_shift_offset:
+//                m_cpu_io.m_shift_register.change_offset(m_cpu->a());
+//                break;
             case out_port_sound_1:
-                m_audio.play_sound_port_1(m_cpu->a());
+//                m_audio.play_sound_port_1(m_cpu->a());
                 break;
             case out_port_do_shift:
-                m_cpu_io.m_shift_register.shift(m_cpu->a());
+//                m_cpu_io.m_shift_register.shift(m_cpu->a());
                 break;
             case out_port_sound_2:
-                m_audio.play_sound_port_2(m_cpu->a());
+//                m_audio.play_sound_port_2(m_cpu->a());
                 break;
             case out_port_watchdog:
                 break;
@@ -315,7 +319,7 @@ namespace emu::i8080::applications::space_invaders {
         }
     }
 
-    void SpaceInvadersSession::io_changed(IoRequest request) {
+    void PacmanSession::io_changed(IoRequest request) {
         switch (request) {
             case STEP_INSTRUCTION:
                 if (m_is_in_debug_mode) {
@@ -333,27 +337,27 @@ namespace emu::i8080::applications::space_invaders {
                 }
                 break;
             case TOGGLE_MUTE:
-                m_audio.toggle_mute();
+//                m_audio.toggle_mute();
                 break;
             default:
                 throw std::runtime_error("Unhandled IoRequest in io_changed");
         }
     }
 
-    std::vector<u8> SpaceInvadersSession::vram() {
+    std::vector<u8> PacmanSession::vram() {
         return {m_memory.begin() + 0x2400, m_memory.begin() + 0x3fff};
     }
 
-    std::vector<u8> SpaceInvadersSession::memory() {
+    std::vector<u8> PacmanSession::memory() {
         return {m_memory.begin(), m_memory.begin() + 0x3fff + 1};
     }
 
 
-    std::vector<std::string> SpaceInvadersSession::disassemble_program() {
+    std::vector<std::string> PacmanSession::disassemble_program() {
         EmulatorMemory sliced_for_disassembly = m_memory.slice(0, 0x2000);
 
         std::stringstream ss;
-        Disassembler8080 disassembler(sliced_for_disassembly, ss);
+        DisassemblerZ80 disassembler(sliced_for_disassembly, ss);
         disassembler.disassemble();
 
         std::vector<std::string> disassembled_program = emu::util::string::split(ss, "\n");

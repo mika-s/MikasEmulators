@@ -1,6 +1,13 @@
 set(SOURCES_Z80_CPP
         src/z80/applications/cpm/cpm_application.cpp
         src/z80/applications/cpm/cpm_application_session.cpp
+        src/z80/applications/pacman/cpu_io.cpp
+        src/z80/applications/pacman/gui_imgui.cpp
+        src/z80/applications/pacman/gui_sdl.cpp
+        src/z80/applications/pacman/input_imgui.cpp
+        src/z80/applications/pacman/input_sdl.cpp
+        src/z80/applications/pacman/pacman.cpp
+        src/z80/applications/pacman/pacman_session.cpp
         src/z80/cpu.cpp
         src/z80/debug_container.cpp
         src/z80/disassemblerZ80.cpp
@@ -78,7 +85,18 @@ set(SOURCES_Z80_CPP
 set(SOURCES_Z80_H
         src/z80/applications/cpm/cpm_application.h
         src/z80/applications/cpm/cpm_application_session.h
+        src/z80/applications/pacman/cpu_io.h
+        src/z80/applications/pacman/gui.h
+        src/z80/applications/pacman/gui_imgui.h
+        src/z80/applications/pacman/gui_sdl.h
+        src/z80/applications/pacman/input_imgui.h
+        src/z80/applications/pacman/input_sdl.h
+        src/z80/applications/pacman/io_request.h
+        src/z80/applications/pacman/pacman.h
+        src/z80/applications/pacman/pacman_session.h
         src/z80/applications/pacman/settings.h
+        src/z80/applications/pacman/interfaces/input.h
+        src/z80/applications/pacman/interfaces/io_observer.h
         src/z80/cpu.h
         src/z80/debug_container.h
         src/z80/disassemblerZ80.h

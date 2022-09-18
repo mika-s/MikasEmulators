@@ -3,25 +3,33 @@
 
 namespace emu::z80::applications::pacman {
 
-    // Taken from Space Invaders... Not implemented properly yet.
-
-    enum NumberOfLives {
-        Three = 0, Four = 1, Five = 2, Six = 3
+    enum class NumberOfLives {
+        One = 0, Two = 1, Three = 2, Five = 3
     };
 
-    enum BonusLifeAt {
-        _1000 = 1, _1500 = 0
+    enum class BonusLifeAt {
+        _10000 = 0, _15000 = 1, _20000 = 2, None = 3
     };
 
-    enum CoinInfo {
-        On = 0, Off = 1
+    enum class CoinsPerGame {
+        FreePlay = 0, OnePerGame = 1, OnePerTwoGames = 2, TwoCoinsPerGame = 3
+    };
+
+    enum class Difficulty {
+        Hard = 0, Normal = 1
+    };
+
+    enum class GhostNames {
+        Alternate = 0, Normal = 1
     };
 
     class Settings {
     public:
         NumberOfLives m_number_of_lives;
         BonusLifeAt m_bonus_life_at;
-        CoinInfo m_coin_info;
+        CoinsPerGame m_coins_per_game;
+        Difficulty m_difficulty;
+        GhostNames m_ghost_names;
     };
 }
 

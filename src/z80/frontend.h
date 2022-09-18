@@ -4,7 +4,7 @@
 #include <vector>
 #include <memory>
 #include "z80/cpu.h"
-//#include "z80/applications/space_invaders/space_invaders.h"
+#include "z80/applications/pacman/pacman.h"
 #include "z80/applications/pacman/settings.h"
 #include "z80/interfaces/emulatorZ80.h"
 #include "crosscutting/gui/gui_type.h"
