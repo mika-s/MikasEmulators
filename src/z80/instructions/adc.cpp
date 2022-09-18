@@ -45,50 +45,6 @@ namespace emu::z80 {
     }
 
     /**
-     * Add from IX or IY high or low to accumulator with carry
-     * <ul>
-     *   <li>Size: 2</li>
-     *   <li>Cycles: 2</li>
-     *   <li>States: 8</li>
-     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
-     * </ul>
-     *
-     * @param acc_reg is the accumulator register, which will be mutated
-     * @param value is the value to add_A_r to the accumulator register
-     * @param flag_reg is the flag register, which will be mutated
-     * @param cycles is the number of cycles variable, which will be mutated
-     */
-    void adc_A_ixy_h_or_l(u8 &acc_reg, u8 ixy_reg_h_or_l, Flags &flag_reg, unsigned long &cycles) {
-        adc(acc_reg, ixy_reg_h_or_l, flag_reg);
-
-        cycles = 8;
-    }
-
-    /**
-     * Add value pointed to by IX or IY plus d to accumulator with carry
-     * <ul>
-     *   <li>Size: 2</li>
-     *   <li>Cycles: 2</li>
-     *   <li>States: 19</li>
-     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
-     * </ul>
-     *
-     * @param acc_reg is the accumulator register, which will be mutated
-     * @param ixy_reg is the IX or IY register containing the base address
-     * @param args contains address offset
-     * @param memory is the memory
-     * @param flag_reg is the flag register, which will be mutated
-     * @param cycles is the number of cycles variable, which will be mutated
-     */
-    void adc_A_MixyPd(u8 &acc_reg, u16 ixy_reg, const NextByte &args, const EmulatorMemory &memory, Flags &flag_reg,
-                      unsigned long &cycles
-    ) {
-        adc(acc_reg, memory[ixy_reg + static_cast<i8>(args.farg)], flag_reg);
-
-        cycles = 19;
-    }
-
-    /**
      * Add immediate to accumulator with carry
      * <ul>
      *   <li>Size: 2</li>
@@ -109,7 +65,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Add memory in HL's address to accumulator with carry
+     * Add value in memory at HL's address to accumulator with carry
      * <ul>
      *   <li>Size: 1</li>
      *   <li>Cycles: 2</li>
@@ -126,6 +82,30 @@ namespace emu::z80 {
         adc(acc_reg, value, flag_reg);
 
         cycles = 7;
+    }
+
+    /**
+     * Add value in memory pointed to by IX or IY plus d to accumulator with carry
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 5</li>
+     *   <li>States: 19</li>
+     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+     * </ul>
+     *
+     * @param acc_reg is the accumulator register, which will be mutated
+     * @param ixy_reg is the IX or IY register containing the base address
+     * @param args contains address offset
+     * @param memory is the memory
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void adc_A_MixyPd(u8 &acc_reg, u16 ixy_reg, const NextByte &args, const EmulatorMemory &memory, Flags &flag_reg,
+                      unsigned long &cycles
+    ) {
+        adc(acc_reg, memory[ixy_reg + static_cast<i8>(args.farg)], flag_reg);
+
+        cycles = 19;
     }
 
     /**
@@ -154,14 +134,38 @@ namespace emu::z80 {
         cycles = 15;
     }
 
-    void print_adc(std::ostream &ostream, const std::string &dest, const std::string &src) {
+    /************************************ FUNCTIONS FOR UNDOCUMENTED INSTRUCTIONS *************************************/
+
+    /**
+     * Add from IX or IY high or low to accumulator with carry (undocumented)
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 8</li>
+     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+     * </ul>
+     *
+     * @param acc_reg is the accumulator register, which will be mutated
+     * @param value is the value to add_A_r to the accumulator register
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void adc_A_ixy_h_or_l(u8 &acc_reg, u8 ixy_reg_h_or_l, Flags &flag_reg, unsigned long &cycles) {
+        adc(acc_reg, ixy_reg_h_or_l, flag_reg);
+
+        cycles = 8;
+    }
+
+    /******************************** END OF FUNCTIONS FOR UNDOCUMENTED INSTRUCTIONS **********************************/
+
+    void print_adc_r_s(std::ostream &ostream, const std::string &dest, const std::string &src) {
         ostream << "ADC "
                 << dest
                 << ", "
                 << src;
     }
 
-    void print_adc_undocumented(std::ostream &ostream, const std::string &dest, const std::string &src) {
+    void print_adc_r_s_undocumented(std::ostream &ostream, const std::string &dest, const std::string &src) {
         ostream << "ADC "
                 << dest
                 << ", "
@@ -169,7 +173,7 @@ namespace emu::z80 {
                 << "*";
     }
 
-    void print_adc(std::ostream &ostream, const std::string &reg, const NextByte &args) {
+    void print_adc_r_n(std::ostream &ostream, const std::string &reg, const NextByte &args) {
         ostream << "ADC "
                 << reg
                 << ", "

@@ -6,6 +6,7 @@
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
 #include "z80/emulator_memory.h"
+#include "z80/flags.h"
 
 namespace emu::z80 {
 
@@ -48,7 +49,7 @@ namespace emu::z80 {
      *   <li>Condition bits affected: none</li>
      * </ul>
      *
-     * @param to is the register or memory location to move value to
+     * @param to is the register or memory location to move value to, which will be mutated
      * @param value is the value to move into to
      * @param cycles is the number of cycles variable, which will be mutated
      */
@@ -57,6 +58,7 @@ namespace emu::z80 {
 
         cycles = 8;
     }
+
 
     /**
      * Load from register to IXH or IYH (undocumented instructions)
@@ -67,7 +69,7 @@ namespace emu::z80 {
      *   <li>Condition bits affected: none</li>
      * </ul>
      *
-     * @param to is the register or memory location to move value to
+     * @param ixy_reg is the IX or IY register, which will be mutated
      * @param value is the value to move into to
      * @param cycles is the number of cycles variable, which will be mutated
      */
@@ -91,7 +93,7 @@ namespace emu::z80 {
      *   <li>Condition bits affected: none</li>
      * </ul>
      *
-     * @param to is the register or memory location to move value to
+     * @param ixy_reg is the IX or IY register, which will be mutated
      * @param value is the value to move into to
      * @param cycles is the number of cycles variable, which will be mutated
      */
@@ -203,6 +205,38 @@ namespace emu::z80 {
     }
 
     /**
+     * Load from the interrupt vector register, I, into the accumulator
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 9</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param acc_reg is the accumulator, which will be mutated
+     * @param i_reg is the interrupt vector register, I
+     * @param flag_reg is the flag register, which will be mutated
+     * @param iff2 is the second interrupt flag
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void ld_A_I(u8 &acc_reg, u8 i_reg, Flags &flag_reg, bool iff2, unsigned long &cycles) {
+        ld(acc_reg, i_reg);
+
+        flag_reg.handle_sign_flag(i_reg);
+        flag_reg.handle_zero_flag(i_reg);
+        flag_reg.clear_half_carry_flag();
+        flag_reg.clear_add_subtract_flag();
+
+        if (iff2) {
+            flag_reg.set_parity_overflow_flag();
+        } else {
+            flag_reg.clear_parity_overflow_flag();
+        }
+
+        cycles = 9;
+    }
+
+    /**
      * Load from memory into register
      * <ul>
      *   <li>Size: 1</li>
@@ -239,6 +273,25 @@ namespace emu::z80 {
         acc_reg = memory[to_u16(args.sarg, args.farg)];
 
         cycles = 13;
+    }
+
+    /**
+     * Load from the the accumulator, into the interrupt vector register, I
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 9</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param i_reg is the interrupt vector register, I, which will be mutated
+     * @param acc_reg is the accumulator
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void ld_I_A(u8 &i_reg, u8 acc_reg, unsigned long &cycles) {
+        ld(i_reg, acc_reg);
+
+        cycles = 9;
     }
 
     /**

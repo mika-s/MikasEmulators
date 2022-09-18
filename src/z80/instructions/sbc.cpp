@@ -41,50 +41,6 @@ namespace emu::z80 {
     }
 
     /**
-     * Add from IX or IY high or low to accumulator with carry
-     * <ul>
-     *   <li>Size: 2</li>
-     *   <li>Cycles: 2</li>
-     *   <li>States: 8</li>
-     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
-     * </ul>
-     *
-     * @param acc_reg is the accumulator register, which will be mutated
-     * @param value is the value to add_A_r to the accumulator register
-     * @param flag_reg is the flag register, which will be mutated
-     * @param cycles is the number of cycles variable, which will be mutated
-     */
-    void sbc_A_ixy_h_or_l(u8 &acc_reg, u8 ixy_reg_h_or_l, Flags &flag_reg, unsigned long &cycles) {
-        sbc(acc_reg, ixy_reg_h_or_l, flag_reg);
-
-        cycles = 8;
-    }
-
-    /**
-     * Subtract value pointed to by IX or IY plus d from accumulator with carry
-     * <ul>
-     *   <li>Size: 3</li>
-     *   <li>Cycles: 2</li>
-     *   <li>States: 19</li>
-     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
-     * </ul>
-     *
-     * @param acc_reg is the accumulator register, which will be mutated
-     * @param ixy_reg is the IX or IY register containing the base address
-     * @param args contains address offset
-     * @param memory is the memory
-     * @param flag_reg is the flag register, which will be mutated
-     * @param cycles is the number of cycles variable, which will be mutated
-     */
-    void sbc_A_MixyPd(u8 &acc_reg, u16 ixy_reg, const NextByte &args, const EmulatorMemory &memory, Flags &flag_reg,
-                      unsigned long &cycles
-    ) {
-        sbc(acc_reg, memory[ixy_reg + static_cast<i8>(args.farg)], flag_reg);
-
-        cycles = 19;
-    }
-
-    /**
      * Subtract immediate with carry
      * <ul>
      *   <li>Size: 1</li>
@@ -125,6 +81,30 @@ namespace emu::z80 {
     }
 
     /**
+     * Subtract value pointed to by IX or IY plus d from accumulator with carry
+     * <ul>
+     *   <li>Size: 3</li>
+     *   <li>Cycles: 5</li>
+     *   <li>States: 19</li>
+     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+     * </ul>
+     *
+     * @param acc_reg is the accumulator register, which will be mutated
+     * @param ixy_reg is the IX or IY register containing the base address
+     * @param args contains address offset
+     * @param memory is the memory
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void sbc_A_MixyPd(u8 &acc_reg, u16 ixy_reg, const NextByte &args, const EmulatorMemory &memory, Flags &flag_reg,
+                      unsigned long &cycles
+    ) {
+        sbc(acc_reg, memory[ixy_reg + static_cast<i8>(args.farg)], flag_reg);
+
+        cycles = 19;
+    }
+
+    /**
      * Subtract register pair from HL with carry
      * <ul>
      *   <li>Size: 2</li>
@@ -141,21 +121,47 @@ namespace emu::z80 {
      */
     void sbc_HL_ss(u8 &h_reg, u8 &l_reg, u16 value, Flags &flag_reg, unsigned long &cycles) {
         u16 hl = to_u16(h_reg, l_reg);
+
         sub_from_register(hl, value, flag_reg.is_carry_flag_set(), flag_reg);
+
         h_reg = high_byte(hl);
         l_reg = low_byte(hl);
 
         cycles = 15;
     }
 
-    void print_sbc(std::ostream &ostream, const std::string &dest, const std::string &src) {
+    /************************************ FUNCTIONS FOR UNDOCUMENTED INSTRUCTIONS *************************************/
+
+    /**
+     * Add from IX or IY high or low to accumulator with carry
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 8</li>
+     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+     * </ul>
+     *
+     * @param acc_reg is the accumulator register, which will be mutated
+     * @param value is the value to add_A_r to the accumulator register
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void sbc_A_ixy_h_or_l(u8 &acc_reg, u8 ixy_reg_h_or_l, Flags &flag_reg, unsigned long &cycles) {
+        sbc(acc_reg, ixy_reg_h_or_l, flag_reg);
+
+        cycles = 8;
+    }
+
+    /******************************** END OF FUNCTIONS FOR UNDOCUMENTED INSTRUCTIONS **********************************/
+
+    void print_sbc_r_s(std::ostream &ostream, const std::string &dest, const std::string &src) {
         ostream << "SBC "
                 << dest
                 << ", "
                 << src;
     }
 
-    void print_sbc_undocumented(std::ostream &ostream, const std::string &dest, const std::string &src) {
+    void print_sbc_r_s_undocumented(std::ostream &ostream, const std::string &dest, const std::string &src) {
         ostream << "SBC "
                 << dest
                 << ", "
@@ -163,7 +169,7 @@ namespace emu::z80 {
                 << "*";
     }
 
-    void print_sbc(std::ostream &ostream, const std::string &reg, const NextByte &args) {
+    void print_sbc_r_n(std::ostream &ostream, const std::string &reg, const NextByte &args) {
         ostream << "SBC "
                 << reg
                 << ", "

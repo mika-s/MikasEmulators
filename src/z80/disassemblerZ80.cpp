@@ -439,28 +439,28 @@ namespace emu::z80 {
                 print_add(m_ostream, "A", "A");
                 break;
             case ADC_A_B:
-                print_adc(m_ostream, "A", "B");
+                print_adc_r_s(m_ostream, "A", "B");
                 break;
             case ADC_A_C:
-                print_adc(m_ostream, "A", "C");
+                print_adc_r_s(m_ostream, "A", "C");
                 break;
             case ADC_A_D:
-                print_adc(m_ostream, "A", "D");
+                print_adc_r_s(m_ostream, "A", "D");
                 break;
             case ADC_A_E:
-                print_adc(m_ostream, "A", "E");
+                print_adc_r_s(m_ostream, "A", "E");
                 break;
             case ADC_A_H:
-                print_adc(m_ostream, "A", "H");
+                print_adc_r_s(m_ostream, "A", "H");
                 break;
             case ADC_A_L:
-                print_adc(m_ostream, "A", "L");
+                print_adc_r_s(m_ostream, "A", "L");
                 break;
             case ADC_A_MHL:
-                print_adc(m_ostream, "A", "(HL)");
+                print_adc_r_s(m_ostream, "A", "(HL)");
                 break;
             case ADC_A_A:
-                print_adc(m_ostream, "A", "A");
+                print_adc_r_s(m_ostream, "A", "A");
                 break;
             case SUB_B:
                 print_sub(m_ostream, "B");
@@ -487,28 +487,28 @@ namespace emu::z80 {
                 print_sub(m_ostream, "A");
                 break;
             case SBC_A_B:
-                print_sbc(m_ostream, "A", "B");
+                print_sbc_r_s(m_ostream, "A", "B");
                 break;
             case SBC_A_C:
-                print_sbc(m_ostream, "A", "C");
+                print_sbc_r_s(m_ostream, "A", "C");
                 break;
             case SBC_A_D:
-                print_sbc(m_ostream, "A", "D");
+                print_sbc_r_s(m_ostream, "A", "D");
                 break;
             case SBC_A_E:
-                print_sbc(m_ostream, "A", "E");
+                print_sbc_r_s(m_ostream, "A", "E");
                 break;
             case SBC_A_H:
-                print_sbc(m_ostream, "A", "H");
+                print_sbc_r_s(m_ostream, "A", "H");
                 break;
             case SBC_A_L:
-                print_sbc(m_ostream, "A", "L");
+                print_sbc_r_s(m_ostream, "A", "L");
                 break;
             case SBC_A_MHL:
-                print_sbc(m_ostream, "A", "(HL)");
+                print_sbc_r_s(m_ostream, "A", "(HL)");
                 break;
             case SBC_A_A:
-                print_sbc(m_ostream, "A", "A");
+                print_sbc_r_s(m_ostream, "A", "A");
                 break;
             case AND_B:
                 print_and_r(m_ostream, "B");
@@ -613,13 +613,13 @@ namespace emu::z80 {
                 print_pop(m_ostream, "BC");
                 break;
             case JP_NZ:
-                print_jp(m_ostream, get_next_word(), "NZ");
+                print_jp_cc_nn(m_ostream, get_next_word(), "NZ");
                 break;
             case JP:
-                print_jp(m_ostream, get_next_word());
+                print_jp_nn(m_ostream, get_next_word());
                 break;
             case CALL_NZ:
-                print_call(m_ostream, get_next_word(), "NZ");
+                print_call_cc_nn(m_ostream, get_next_word(), "NZ");
                 break;
             case PUSH_BC:
                 print_push(m_ostream, "BC");
@@ -637,19 +637,19 @@ namespace emu::z80 {
                 print_ret(m_ostream);
                 break;
             case JP_Z:
-                print_jp(m_ostream, get_next_word(), "Z");
+                print_jp_cc_nn(m_ostream, get_next_word(), "Z");
                 break;
             case BITS:
                 print_next_bits_instruction(get_next_byte().farg);
                 break;
             case CALL_Z:
-                print_call(m_ostream, get_next_word(), "Z");
+                print_call_cc_nn(m_ostream, get_next_word(), "Z");
                 break;
             case CALL:
-                print_call(m_ostream, get_next_word());
+                print_call_nn(m_ostream, get_next_word());
                 break;
             case ADC_A_n:
-                print_adc(m_ostream, "A", get_next_byte());
+                print_adc_r_n(m_ostream, "A", get_next_byte());
                 break;
             case RST_1:
                 print_rst(m_ostream, 1);
@@ -661,13 +661,13 @@ namespace emu::z80 {
                 print_pop(m_ostream, "DE");
                 break;
             case JP_NC:
-                print_jp(m_ostream, get_next_word(), "NC");
+                print_jp_cc_nn(m_ostream, get_next_word(), "NC");
                 break;
             case OUT:
                 print_out(m_ostream, get_next_byte());
                 break;
             case CALL_NC:
-                print_call(m_ostream, get_next_word(), "NC");
+                print_call_cc_nn(m_ostream, get_next_word(), "NC");
                 break;
             case PUSH_DE:
                 print_push(m_ostream, "DE");
@@ -685,19 +685,19 @@ namespace emu::z80 {
                 print_exx(m_ostream);
                 break;
             case JP_C:
-                print_jp(m_ostream, get_next_word(), "C");
+                print_jp_cc_nn(m_ostream, get_next_word(), "C");
                 break;
             case IN:
                 print_in(m_ostream, get_next_byte());
                 break;
             case CALL_C:
-                print_call(m_ostream, get_next_word(), "C");
+                print_call_cc_nn(m_ostream, get_next_word(), "C");
                 break;
             case IX:
                 print_next_ixy_instruction(get_next_byte().farg, "IX");
                 break;
             case SBC_A_n:
-                print_sbc(m_ostream, "A", get_next_byte());
+                print_sbc_r_n(m_ostream, "A", get_next_byte());
                 break;
             case RST_3:
                 print_rst(m_ostream, 3);
@@ -709,13 +709,13 @@ namespace emu::z80 {
                 print_pop(m_ostream, "HL");
                 break;
             case JP_PO:
-                print_jp(m_ostream, get_next_word(), "PO");
+                print_jp_cc_nn(m_ostream, get_next_word(), "PO");
                 break;
             case EX_MSP_HL:
                 print_ex(m_ostream, "(SP)", "HL");
                 break;
             case CALL_PO:
-                print_call(m_ostream, get_next_word(), "PO");
+                print_call_cc_nn(m_ostream, get_next_word(), "PO");
                 break;
             case PUSH_HL:
                 print_push(m_ostream, "HL");
@@ -730,16 +730,16 @@ namespace emu::z80 {
                 print_ret(m_ostream, "PE");
                 break;
             case JP_MHL:
-                print_jp(m_ostream, "(HL)");
+                print_jp_Mss(m_ostream, "HL");
                 break;
             case JP_PE:
-                print_jp(m_ostream, get_next_word(), "PE");
+                print_jp_cc_nn(m_ostream, get_next_word(), "PE");
                 break;
             case EX_DE_HL:
                 print_ex(m_ostream, "DE", "HL");
                 break;
             case CALL_PE:
-                print_call(m_ostream, get_next_word(), "PE");
+                print_call_cc_nn(m_ostream, get_next_word(), "PE");
                 break;
             case EXTD:
                 print_next_extd_instruction(get_next_byte().farg);
@@ -757,13 +757,13 @@ namespace emu::z80 {
                 print_pop(m_ostream, "AF");
                 break;
             case JP_P:
-                print_jp(m_ostream, get_next_word(), "P");
+                print_jp_cc_nn(m_ostream, get_next_word(), "P");
                 break;
             case DI:
                 print_di(m_ostream);
                 break;
             case CALL_P:
-                print_call(m_ostream, get_next_word(), "P");
+                print_call_cc_nn(m_ostream, get_next_word(), "P");
                 break;
             case PUSH_AF:
                 print_push(m_ostream, "AF");
@@ -781,13 +781,13 @@ namespace emu::z80 {
                 print_ld(m_ostream, "SP", "HL");
                 break;
             case JP_M:
-                print_jp(m_ostream, get_next_word(), "M");
+                print_jp_cc_nn(m_ostream, get_next_word(), "M");
                 break;
             case EI:
                 print_ei(m_ostream);
                 break;
             case CALL_M:
-                print_call(m_ostream, get_next_word(), "M");
+                print_call_cc_nn(m_ostream, get_next_word(), "M");
                 break;
             case IY:
                 print_next_ixy_instruction(get_next_byte().farg, "IY");
@@ -1832,28 +1832,28 @@ namespace emu::z80 {
                 print_add_undocumented(m_ostream, "A", "A");
                 break;
             case ADC_A_B_UNDOC:
-                print_adc_undocumented(m_ostream, "A", "B");
+                print_adc_r_s_undocumented(m_ostream, "A", "B");
                 break;
             case ADC_A_C_UNDOC:
-                print_adc_undocumented(m_ostream, "A", "C");
+                print_adc_r_s_undocumented(m_ostream, "A", "C");
                 break;
             case ADC_A_D_UNDOC:
-                print_adc_undocumented(m_ostream, "A", "D");
+                print_adc_r_s_undocumented(m_ostream, "A", "D");
                 break;
             case ADC_A_E_UNDOC:
-                print_adc_undocumented(m_ostream, "A", "E");
+                print_adc_r_s_undocumented(m_ostream, "A", "E");
                 break;
             case ADC_A_IXYH_UNDOC:
-                print_adc(m_ostream, "A", ixy_reg + "H");
+                print_adc_r_s_undocumented(m_ostream, "A", ixy_reg + "H");
                 break;
             case ADC_A_IXYL_UNDOC:
-                print_adc(m_ostream, "A", ixy_reg + "L");
+                print_adc_r_s(m_ostream, "A", ixy_reg + "L");
                 break;
             case ADC_A_MIXY_P_n:
                 print_adc_MixyPn(m_ostream, "A", ixy_reg, get_next_byte());
                 break;
             case ADC_A_A_UNDOC:
-                print_adc_undocumented(m_ostream, "A", "A");
+                print_adc_r_s_undocumented(m_ostream, "A", "A");
                 break;
             case SUB_B_UNDOC:
                 print_sub_undocumented(m_ostream, "B");
@@ -1880,28 +1880,28 @@ namespace emu::z80 {
                 print_sub_undocumented(m_ostream, "E");
                 break;
             case SBC_A_B_UNDOC:
-                print_sbc_undocumented(m_ostream, "A", "B");
+                print_sbc_r_s_undocumented(m_ostream, "A", "B");
                 break;
             case SBC_A_C_UNDOC:
-                print_sbc_undocumented(m_ostream, "A", "C");
+                print_sbc_r_s_undocumented(m_ostream, "A", "C");
                 break;
             case SBC_A_D_UNDOC:
-                print_sbc_undocumented(m_ostream, "A", "D");
+                print_sbc_r_s_undocumented(m_ostream, "A", "D");
                 break;
             case SBC_A_E_UNDOC:
-                print_sbc_undocumented(m_ostream, "A", "E");
+                print_sbc_r_s_undocumented(m_ostream, "A", "E");
                 break;
             case SBC_A_IXYH_UNDOC:
-                print_sbc(m_ostream, "A", ixy_reg + "H");
+                print_sbc_r_s(m_ostream, "A", ixy_reg + "H");
                 break;
             case SBC_A_IXYL_UNDOC:
-                print_sbc(m_ostream, "A", ixy_reg + "L");
+                print_sbc_r_s(m_ostream, "A", ixy_reg + "L");
                 break;
             case SBC_A_MIXY_P_n:
                 print_sbc_MixyPn(m_ostream, "A", ixy_reg, get_next_byte());
                 break;
             case SBC_A_A_UNDOC:
-                print_sbc_undocumented(m_ostream, "A", "A");
+                print_sbc_r_s_undocumented(m_ostream, "A", "A");
                 break;
             case AND_B_UNDOC:
                 print_and_r_undocumented(m_ostream, "B");
@@ -2012,7 +2012,7 @@ namespace emu::z80 {
                 print_push(m_ostream, ixy_reg);
                 break;
             case JP_MIXY:
-                print_jp(m_ostream, "(" + ixy_reg + ")");
+                print_jp_Mss(m_ostream, ixy_reg);
                 break;
             case LD_SP_IXY:
                 print_ld(m_ostream, "SP", ixy_reg);
@@ -2164,7 +2164,7 @@ namespace emu::z80 {
                 print_out_Mr_r(m_ostream, "C", "B");
                 break;
             case SBC_HL_BC:
-                print_sbc(m_ostream, "HL", "BC");
+                print_sbc_r_s(m_ostream, "HL", "BC");
                 break;
             case LD_Mnn_BC:
                 print_ld_Mnn_dd(m_ostream, get_next_word(), "BC");
@@ -2181,6 +2181,9 @@ namespace emu::z80 {
             case RETN:
                 print_retn(m_ostream);
                 break;
+            case LD_I_A:
+                print_ld(m_ostream, "I", "A");
+                break;
             case IM_0_1:
             case IM_0_2:
                 print_im(m_ostream, 0);
@@ -2192,7 +2195,7 @@ namespace emu::z80 {
                 print_out_Mr_r(m_ostream, "C", "C");
                 break;
             case ADC_HL_BC:
-                print_adc(m_ostream, "HL", "BC");
+                print_adc_r_s(m_ostream, "HL", "BC");
                 break;
             case LD_BC_Mnn:
                 print_ld(m_ostream, "BC", get_next_word());
@@ -2210,7 +2213,7 @@ namespace emu::z80 {
                 print_out_Mr_r(m_ostream, "C", "D");
                 break;
             case SBC_HL_DE:
-                print_sbc(m_ostream, "HL", "DE");
+                print_sbc_r_s(m_ostream, "HL", "DE");
                 break;
             case LD_Mnn_DE:
                 print_ld_Mnn_dd(m_ostream, get_next_word(), "DE");
@@ -2228,13 +2231,13 @@ namespace emu::z80 {
                 print_out_Mr_r(m_ostream, "C", "H");
                 break;
             case SBC_HL_HL:
-                print_sbc(m_ostream, "HL", "HL");
+                print_sbc_r_s(m_ostream, "HL", "HL");
                 break;
             case LD_Mnn_HL_UNDOC:
                 print_ld_Mnn_dd_undocumented(m_ostream, get_next_word(), "HL");
                 break;
             case SBC_HL_SP:
-                print_sbc(m_ostream, "HL", "SP");
+                print_sbc_r_s(m_ostream, "HL", "SP");
                 break;
             case IM_1_1:
             case IM_1_2:
@@ -2256,7 +2259,7 @@ namespace emu::z80 {
                 print_out_Mr_r(m_ostream, "C", "E");
                 break;
             case ADC_HL_DE:
-                print_adc(m_ostream, "HL", "DE");
+                print_adc_r_s(m_ostream, "HL", "DE");
                 break;
             case LD_DE_Mnn:
                 print_ld_dd_Mnn(m_ostream, "DE", get_next_word());
@@ -2271,7 +2274,7 @@ namespace emu::z80 {
                 print_out_Mr_r(m_ostream, "C", "L");
                 break;
             case ADC_HL_HL:
-                print_adc(m_ostream, "HL", "HL");
+                print_adc_r_s(m_ostream, "HL", "HL");
                 break;
             case LD_HL_Mnn_UNDOC:
                 print_ld_dd_Mnn_undocumented(m_ostream, "HL", get_next_word());
@@ -2289,7 +2292,7 @@ namespace emu::z80 {
                 print_ld_Mnn_dd(m_ostream, get_next_word(), "SP");
                 break;
             case ADC_HL_SP:
-                print_adc(m_ostream, "HL", "SP");
+                print_adc_r_s(m_ostream, "HL", "SP");
                 break;
             case LD_SP_Mnn:
                 print_ld(m_ostream, "SP", get_next_word());
@@ -2314,6 +2317,9 @@ namespace emu::z80 {
                 break;
             case IND:
                 print_ind(m_ostream);
+                break;
+            case OUTD:
+                print_outd(m_ostream);
                 break;
             case LDIR:
                 print_ldir(m_ostream);

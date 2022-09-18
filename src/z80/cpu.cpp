@@ -921,7 +921,7 @@ namespace emu::z80 {
         return cycles;
     }
 
-    void Cpu::next_bits_instruction(u8 bits_opcode, unsigned long cycles) {
+    void Cpu::next_bits_instruction(u8 bits_opcode, unsigned long &cycles) {
         print_debug(bits_opcode);
         r_tick();
 
@@ -1699,7 +1699,7 @@ namespace emu::z80 {
         }
     }
 
-    void Cpu::next_ixy_instruction(u8 ixy_opcode, u16 &ixy_reg, unsigned long cycles) {
+    void Cpu::next_ixy_instruction(u8 ixy_opcode, u16 &ixy_reg, unsigned long &cycles) {
         print_debug(ixy_opcode);
         r_tick();
 
@@ -2087,7 +2087,7 @@ namespace emu::z80 {
         }
     }
 
-    void Cpu::next_ixy_bits_instruction(NextWord args, u16 &ixy_reg, unsigned long cycles) {
+    void Cpu::next_ixy_bits_instruction(NextWord args, u16 &ixy_reg, unsigned long &cycles) {
         u8 d = args.farg;
         u8 ixy_bits_opcode = args.sarg;
         print_debug(ixy_bits_opcode);
@@ -2217,7 +2217,7 @@ namespace emu::z80 {
         }
     }
 
-    void Cpu::next_extd_instruction(u8 extd_opcode, unsigned long cycles) {
+    void Cpu::next_extd_instruction(u8 extd_opcode, unsigned long &cycles) {
         print_debug(extd_opcode);
         r_tick();
 
@@ -2238,6 +2238,9 @@ namespace emu::z80 {
             case NEG:
                 neg(m_acc_reg, m_flag_reg, cycles);
                 break;
+            case LD_I_A:
+                ld_I_A(m_i_reg, m_acc_reg, cycles);
+                break;
             case ADC_HL_BC:
                 adc_hl_ss(m_h_reg, m_l_reg, to_u16(m_b_reg, m_c_reg), m_flag_reg, cycles);
                 break;
@@ -2249,6 +2252,9 @@ namespace emu::z80 {
                 break;
             case LD_Mnn_DE:
                 ld_Mnn_dd(m_d_reg, m_e_reg, m_memory, get_next_word(), cycles);
+                break;
+            case LD_A_I:
+                ld_A_I(m_acc_reg, m_i_reg, m_flag_reg, m_iff2, cycles);
                 break;
             case ADC_HL_DE:
                 adc_hl_ss(m_h_reg, m_l_reg, to_u16(m_d_reg, m_e_reg), m_flag_reg, cycles);
@@ -2291,17 +2297,32 @@ namespace emu::z80 {
                     m_memory, m_flag_reg, cycles);
                 break;
             case CPI:
-                cpi(m_b_reg, m_c_reg, m_h_reg, m_l_reg, m_acc_reg, m_memory, m_flag_reg, cycles);
+                cpi(m_b_reg, m_c_reg, m_h_reg, m_l_reg, m_acc_reg,
+                    m_memory, m_flag_reg, cycles);
                 break;
             case INI:
-                ini(m_b_reg, m_c_reg, m_h_reg, m_l_reg, m_memory, m_flag_reg, m_io_in, cycles);
+                ini(m_b_reg, m_c_reg, m_h_reg, m_l_reg, m_memory, m_flag_reg,
+                    m_io_in, cycles);
+                break;
+            case OUTI:
+                outi(m_b_reg, m_c_reg, m_h_reg, m_l_reg, m_memory, m_flag_reg,
+                     m_io_out, cycles);
                 break;
             case LDD:
                 ldd(m_b_reg, m_c_reg, m_d_reg, m_e_reg, m_h_reg, m_l_reg, m_acc_reg,
                     m_memory, m_flag_reg, cycles);
                 break;
             case CPD:
-                cpd(m_b_reg, m_c_reg, m_h_reg, m_l_reg, m_acc_reg, m_memory, m_flag_reg, cycles);
+                cpd(m_b_reg, m_c_reg, m_h_reg, m_l_reg, m_acc_reg, m_memory,
+                    m_flag_reg, cycles);
+                break;
+            case IND:
+                ind(m_b_reg, m_c_reg, m_h_reg, m_l_reg, m_memory, m_flag_reg,
+                    m_io_in, cycles);
+                break;
+            case OUTD:
+                outd(m_b_reg, m_c_reg, m_h_reg, m_l_reg, m_memory, m_flag_reg,
+                     m_io_out, cycles);
                 break;
             case LDIR:
                 ldir(m_pc, m_b_reg, m_c_reg, m_d_reg, m_e_reg,
@@ -2315,13 +2336,25 @@ namespace emu::z80 {
                 inir(m_pc, m_b_reg, m_c_reg, m_h_reg, m_l_reg, m_memory, m_flag_reg,
                      m_io_in, cycles);
                 break;
+            case OTIR:
+                otir(m_pc, m_b_reg, m_c_reg, m_h_reg, m_l_reg, m_memory, m_flag_reg,
+                     m_io_out, cycles);
+                break;
             case LDDR:
-                lddr(m_pc, m_b_reg, m_c_reg, m_d_reg, m_e_reg, m_h_reg, m_l_reg, m_acc_reg,
-                     m_memory, m_flag_reg, cycles);
+                lddr(m_pc, m_b_reg, m_c_reg, m_d_reg, m_e_reg, m_h_reg, m_l_reg,
+                     m_acc_reg, m_memory, m_flag_reg, cycles);
                 break;
             case CPDR:
                 cpdr(m_pc, m_b_reg, m_c_reg, m_h_reg, m_l_reg,
                      m_acc_reg, m_memory, m_flag_reg, cycles);
+                break;
+            case INDR:
+                indr(m_pc, m_b_reg, m_c_reg, m_h_reg, m_l_reg, m_memory, m_flag_reg,
+                     m_io_in, cycles);
+                break;
+            case OTDR:
+                otdr(m_pc, m_b_reg, m_c_reg, m_h_reg, m_l_reg, m_memory, m_flag_reg,
+                     m_io_out, cycles);
                 break;
             default:
                 throw UnrecognizedOpcodeException(extd_opcode, "EXTD instructions");

@@ -32,32 +32,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Jump if carry
-     * <ul>
-     *   <li>Size: 3</li>
-     *   <li>Cycles: 2 or 3</li>
-     *   <li>States: 7 or 12</li>
-     *   <li>Condition bits affected: none</li>
-     * </ul>
-     *
-     * @param pc is the program counter, which will be mutated
-     * @param args contains the argument with the address to jump to
-     * @param flag_reg is the flag register
-     * @param cycles is the number of cycles variable, which will be mutated
-     */
-    void jp_c(u16 &pc, const NextWord &args, const Flags &flag_reg, unsigned long &cycles) {
-        cycles = 0;
-
-        if (flag_reg.is_carry_flag_set()) {
-            cycles = 5;
-            pc = to_u16(args.sarg, args.farg);
-        }
-
-        cycles += 7;
-    }
-
-    /**
-     * Jump if no carry
+     * Jump if not zero
      * <ul>
      *   <li>Size: 3</li>
      *   <li>Cycles: 3</li>
@@ -70,15 +45,12 @@ namespace emu::z80 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void jp_nc(u16 &pc, const NextWord &args, const Flags &flag_reg, unsigned long &cycles) {
-        cycles = 0;
-
-        if (!flag_reg.is_carry_flag_set()) {
-            cycles = 5;
+    void jp_nz(u16 &pc, const NextWord &args, const Flags &flag_reg, unsigned long &cycles) {
+        if (!flag_reg.is_zero_flag_set()) {
             pc = to_u16(args.sarg, args.farg);
         }
 
-        cycles += 7;
+        cycles = 10;
     }
 
     /**
@@ -96,18 +68,15 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void jp_z(u16 &pc, const NextWord &args, const Flags &flag_reg, unsigned long &cycles) {
-        cycles = 0;
-
         if (flag_reg.is_zero_flag_set()) {
-            cycles = 5;
             pc = to_u16(args.sarg, args.farg);
         }
 
-        cycles += 7;
+        cycles = 10;
     }
 
     /**
-     * Jump if not zero
+     * Jump if no carry
      * <ul>
      *   <li>Size: 3</li>
      *   <li>Cycles: 3</li>
@@ -120,23 +89,20 @@ namespace emu::z80 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void jp_nz(u16 &pc, const NextWord &args, const Flags &flag_reg, unsigned long &cycles) {
-        cycles = 0;
-
-        if (!flag_reg.is_zero_flag_set()) {
-            cycles = 5;
+    void jp_nc(u16 &pc, const NextWord &args, const Flags &flag_reg, unsigned long &cycles) {
+        if (!flag_reg.is_carry_flag_set()) {
             pc = to_u16(args.sarg, args.farg);
         }
 
-        cycles += 7;
+        cycles = 10;
     }
 
     /**
-     * Jump if minus
+     * Jump if carry
      * <ul>
      *   <li>Size: 3</li>
-     *   <li>Cycles: 3</li>
-     *   <li>States: 10</li>
+     *   <li>Cycles: 2 or 3</li>
+     *   <li>States: 7 or 12</li>
      *   <li>Condition bits affected: none</li>
      * </ul>
      *
@@ -145,65 +111,12 @@ namespace emu::z80 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void jp_m(u16 &pc, const NextWord &args, const Flags &flag_reg, unsigned long &cycles) {
-        cycles = 0;
-
-        if (flag_reg.is_sign_flag_set()) {
-            cycles = 5;
+    void jp_c(u16 &pc, const NextWord &args, const Flags &flag_reg, unsigned long &cycles) {
+        if (flag_reg.is_carry_flag_set()) {
             pc = to_u16(args.sarg, args.farg);
         }
 
-        cycles += 7;
-    }
-
-    /**
-     * Jump if positive
-     * <ul>
-     *   <li>Size: 3</li>
-     *   <li>Cycles: 3</li>
-     *   <li>States: 10</li>
-     *   <li>Condition bits affected: none</li>
-     * </ul>
-     *
-     * @param pc is the program counter, which will be mutated
-     * @param args contains the argument with the address to jump to
-     * @param flag_reg is the flag register
-     * @param cycles is the number of cycles variable, which will be mutated
-     */
-    void jp_p(u16 &pc, const NextWord &args, const Flags &flag_reg, unsigned long &cycles) {
-        cycles = 0;
-
-        if (!flag_reg.is_sign_flag_set()) {
-            cycles = 5;
-            pc = to_u16(args.sarg, args.farg);
-        }
-
-        cycles += 7;
-    }
-
-    /**
-     * Jump if parity even
-     * <ul>
-     *   <li>Size: 3</li>
-     *   <li>Cycles: 3</li>
-     *   <li>States: 10</li>
-     *   <li>Condition bits affected: none</li>
-     * </ul>
-     *
-     * @param pc is the program counter, which will be mutated
-     * @param args contains the argument with the address to jump to
-     * @param flag_reg is the flag register
-     * @param cycles is the number of cycles variable, which will be mutated
-     */
-    void jp_pe(u16 &pc, const NextWord &args, const Flags &flag_reg, unsigned long &cycles) {
-        cycles = 0;
-
-        if (flag_reg.is_parity_overflow_flag_set()) {
-            cycles = 5;
-            pc = to_u16(args.sarg, args.farg);
-        }
-
-        cycles += 7;
+        cycles = 10;
     }
 
     /**
@@ -221,14 +134,77 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void jp_po(u16 &pc, const NextWord &args, const Flags &flag_reg, unsigned long &cycles) {
-        cycles = 0;
-
         if (!flag_reg.is_parity_overflow_flag_set()) {
-            cycles = 5;
             pc = to_u16(args.sarg, args.farg);
         }
 
-        cycles += 7;
+        cycles = 10;
+    }
+
+    /**
+     * Jump if parity even
+     * <ul>
+     *   <li>Size: 3</li>
+     *   <li>Cycles: 3</li>
+     *   <li>States: 10</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param pc is the program counter, which will be mutated
+     * @param args contains the argument with the address to jump to
+     * @param flag_reg is the flag register
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void jp_pe(u16 &pc, const NextWord &args, const Flags &flag_reg, unsigned long &cycles) {
+        if (flag_reg.is_parity_overflow_flag_set()) {
+            pc = to_u16(args.sarg, args.farg);
+        }
+
+        cycles = 10;
+    }
+
+    /**
+     * Jump if positive
+     * <ul>
+     *   <li>Size: 3</li>
+     *   <li>Cycles: 3</li>
+     *   <li>States: 10</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param pc is the program counter, which will be mutated
+     * @param args contains the argument with the address to jump to
+     * @param flag_reg is the flag register
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void jp_p(u16 &pc, const NextWord &args, const Flags &flag_reg, unsigned long &cycles) {
+        if (!flag_reg.is_sign_flag_set()) {
+            pc = to_u16(args.sarg, args.farg);
+        }
+
+        cycles = 10;
+    }
+
+    /**
+     * Jump if minus
+     * <ul>
+     *   <li>Size: 3</li>
+     *   <li>Cycles: 3</li>
+     *   <li>States: 10</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param pc is the program counter, which will be mutated
+     * @param args contains the argument with the address to jump to
+     * @param flag_reg is the flag register
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void jp_m(u16 &pc, const NextWord &args, const Flags &flag_reg, unsigned long &cycles) {
+        if (flag_reg.is_sign_flag_set()) {
+            pc = to_u16(args.sarg, args.farg);
+        }
+
+        cycles = 10;
     }
 
     /**
@@ -269,23 +245,25 @@ namespace emu::z80 {
         cycles = 8;
     }
 
-    void print_jp(std::ostream &ostream, const NextWord &args) {
+    void print_jp_nn(std::ostream &ostream, const NextWord &args) {
         ostream << "JP "
                 << hexify_wo_0x(args.sarg)
                 << hexify_wo_0x(args.farg);
     }
 
-    void print_jp(std::ostream &ostream, const std::string &condition) {
-        ostream << "JP "
-                << condition;
-    }
-
-    void print_jp(std::ostream &ostream, const NextWord &args, const std::string &condition) {
+    void print_jp_cc_nn(std::ostream &ostream, const NextWord &args, const std::string &condition) {
         ostream << "JP "
                 << condition
                 << ","
                 << hexify_wo_0x(args.sarg)
                 << hexify_wo_0x(args.farg);
+    }
+
+    void print_jp_Mss(std::ostream &ostream, const std::string &reg) {
+        ostream << "JP "
+                << "("
+                << reg
+                << ")";
     }
 
     TEST_CASE("Z80: JP") {
