@@ -2011,10 +2011,10 @@ namespace emu::z80 {
                 adc_A_ixy_h_or_l(m_acc_reg, low_byte(ixy_reg), m_flag_reg, cycles);
                 break;
             case SUB_IXYH_UNDOC:
-                sub_r(m_acc_reg, high_byte(ixy_reg), m_flag_reg, cycles);
+                sub_ixy_h_or_l(m_acc_reg, high_byte(ixy_reg), m_flag_reg, cycles);
                 break;
             case SUB_IXYL_UNDOC:
-                sub_r(m_acc_reg, low_byte(ixy_reg), m_flag_reg, cycles);
+                sub_ixy_h_or_l(m_acc_reg, low_byte(ixy_reg), m_flag_reg, cycles);
                 break;
             case SUB_MIXY_P_n:
                 sub_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
@@ -2029,25 +2029,25 @@ namespace emu::z80 {
                 sbc_A_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
                 break;
             case AND_IXYH_UNDOC:
-                and_r(m_acc_reg, high_byte(ixy_reg), m_flag_reg, cycles);
+                and_ixy_h_or_l(m_acc_reg, high_byte(ixy_reg), m_flag_reg, cycles);
                 break;
             case AND_IXYL_UNDOC:
-                and_r(m_acc_reg, low_byte(ixy_reg), m_flag_reg, cycles);
+                and_ixy_h_or_l(m_acc_reg, low_byte(ixy_reg), m_flag_reg, cycles);
                 break;
             case AND_MIXY_P_n:
                 and_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
                 break;
             case XOR_IXYH_UNDOC:
-                xor_r(m_acc_reg, high_byte(ixy_reg), m_flag_reg, cycles);
+                xor_ixy_h_or_l(m_acc_reg, high_byte(ixy_reg), m_flag_reg, cycles);
                 break;
             case XOR_IXYL_UNDOC:
-                xor_r(m_acc_reg, low_byte(ixy_reg), m_flag_reg, cycles);
+                xor_ixy_h_or_l(m_acc_reg, low_byte(ixy_reg), m_flag_reg, cycles);
                 break;
             case OR_IXYH_UNDOC:
-                or_r(m_acc_reg, high_byte(ixy_reg), m_flag_reg, cycles);
+                or_ixy_h_or_l(m_acc_reg, high_byte(ixy_reg), m_flag_reg, cycles);
                 break;
             case OR_IXYL_UNDOC:
-                or_r(m_acc_reg, low_byte(ixy_reg), m_flag_reg, cycles);
+                or_ixy_h_or_l(m_acc_reg, low_byte(ixy_reg), m_flag_reg, cycles);
                 break;
             case OR_MIXY_P_n:
                 or_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
@@ -2056,10 +2056,10 @@ namespace emu::z80 {
                 xor_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
                 break;
             case CP_IXYH_UNDOC:
-                cp_r(m_acc_reg, high_byte(ixy_reg), m_flag_reg, cycles);
+                cp_ixy_h_or_l(m_acc_reg, high_byte(ixy_reg), m_flag_reg, cycles);
                 break;
             case CP_IXYL_UNDOC:
-                cp_r(m_acc_reg, low_byte(ixy_reg), m_flag_reg, cycles);
+                cp_ixy_h_or_l(m_acc_reg, low_byte(ixy_reg), m_flag_reg, cycles);
                 break;
             case CP_MIXY_P_n:
                 cp_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);

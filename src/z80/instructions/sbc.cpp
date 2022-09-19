@@ -133,7 +133,7 @@ namespace emu::z80 {
     /************************************ FUNCTIONS FOR UNDOCUMENTED INSTRUCTIONS *************************************/
 
     /**
-     * Add from IX or IY high or low to accumulator with carry
+     * Subtract IX or IY high or low from accumulator with carry (undocumented)
      * <ul>
      *   <li>Size: 2</li>
      *   <li>Cycles: 2</li>
@@ -142,7 +142,7 @@ namespace emu::z80 {
      * </ul>
      *
      * @param acc_reg is the accumulator register, which will be mutated
-     * @param value is the value to add_A_r to the accumulator register
+     * @param value is the value to subtract from the accumulator register
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */

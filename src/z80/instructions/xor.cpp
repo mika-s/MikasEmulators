@@ -108,6 +108,30 @@ namespace emu::z80 {
         cycles = 19;
     }
 
+    /************************************ FUNCTIONS FOR UNDOCUMENTED INSTRUCTIONS *************************************/
+
+    /**
+     * Exclusive or IX or IY high or low with accumulator (undocumented)
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 8</li>
+     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+     * </ul>
+     *
+     * @param acc_reg is the accumulator register, which will be mutated
+     * @param value contains the argument that should be exclusive ored with the accumulator
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void xor_ixy_h_or_l(u8 &acc_reg, u8 ixy_reg_h_or_l, Flags &flag_reg, unsigned long &cycles) {
+        xor_(acc_reg, ixy_reg_h_or_l, flag_reg);
+
+        cycles = 8;
+    }
+
+    /******************************** END OF FUNCTIONS FOR UNDOCUMENTED INSTRUCTIONS **********************************/
+
     void print_xor_r(std::ostream &ostream, const std::string &reg) {
         ostream << "XOR "
                 << reg;

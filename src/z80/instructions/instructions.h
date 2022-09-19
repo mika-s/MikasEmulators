@@ -830,6 +830,7 @@ namespace emu::z80 {
     void and_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
     void and_n(u8 &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles);
     void and_r(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
+    void and_ixy_h_or_l(u8 &acc_reg, u8 ixy_reg_h_or_l, Flags &flag_reg, unsigned long &cycles);
     void bit_r(unsigned int bit_number, u8 reg, Flags &flag_reg, unsigned long &cycles);
     void bit_MHL(unsigned int bit_number, u16 hl_reg, const EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles);
     void bit_MixyPd(unsigned int bit_number, u16 ixy_reg, u8 d, const EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles);
@@ -851,6 +852,7 @@ namespace emu::z80 {
     void cp_n(u8 &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles);
     void cp_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
     void cp_MixyPd(u8 &acc_reg, u16 ixy_reg, const NextByte &args, const EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles);
+    void cp_ixy_h_or_l(u8 &acc_reg, u8 ixy_reg_h_or_l, Flags &flag_reg, unsigned long &cycles);
     void cpl(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles);
     void daa(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles);
     void dec_r(u8 &reg, Flags &flag_reg, unsigned long &cycles);
@@ -944,6 +946,7 @@ namespace emu::z80 {
     void or_n(u8 &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles);
     void or_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
     void or_MixyPd(u8 &acc_reg, u16 ixy_reg, const NextByte &args, const EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles);
+    void or_ixy_h_or_l(u8 &acc_reg, u8 ixy_reg_h_or_l, Flags &flag_reg, unsigned long &cycles);
     void out_Mn_A(u8 acc_reg, const NextByte &args, std::vector<u8> &io, unsigned long &cycles);
     void outd(u8 &b_reg, u8 c_reg, u8 &h_reg, u8 &l_reg, EmulatorMemory &memory, Flags &flag_reg, std::vector<u8> io, unsigned long &cycles);
     void otdr(u16 &pc, u8 &b_reg, u8 c_reg, u8 &h_reg, u8 &l_reg, EmulatorMemory &memory, Flags &flag_reg, std::vector<u8> io, unsigned long &cycles);
@@ -1022,6 +1025,7 @@ namespace emu::z80 {
     void srl_MixyPd(u16 ixy_reg, u8 d, EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles);
     void srl_MixyPd_r(u8 &reg, u16 ixy_reg, u8 d, EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles);
     void sub_MixyPd(u8 &acc_reg, u16 ixy_reg, const NextByte &args, const EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles);
+    void sub_ixy_h_or_l(u8 &acc_reg, u8 ixy_reg_h_or_l, Flags &flag_reg, unsigned long &cycles);
     void sub_n(u8 &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles);
     void sub_r(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
     void sub_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
@@ -1029,6 +1033,7 @@ namespace emu::z80 {
     void xor_r(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
     void xor_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
     void xor_MixyPd(u8 &acc_reg, u16 ixy_reg, const NextByte &args, const EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles);
+    void xor_ixy_h_or_l(u8 &acc_reg, u8 ixy_reg_h_or_l, Flags &flag_reg, unsigned long &cycles);
 
     void print_adc_r_s(std::ostream &ostream, const std::string &dest, const std::string &src);
     void print_adc_r_s_undocumented(std::ostream &ostream, const std::string &dest, const std::string &src);

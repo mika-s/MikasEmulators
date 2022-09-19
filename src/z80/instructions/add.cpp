@@ -56,7 +56,7 @@ namespace emu::z80 {
      * </ul>
      *
      * @param acc_reg is the accumulator register, which will be mutated
-     * @param value is the value to add_A_r to the accumulator register
+     * @param value is the value to add to the accumulator register
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
@@ -76,7 +76,7 @@ namespace emu::z80 {
      * </ul>
      *
      * @param acc_reg is the accumulator register, which will be mutated
-     * @param value is the value to add_A_r to the accumulator register
+     * @param value is the value to add to the accumulator register
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
@@ -140,7 +140,7 @@ namespace emu::z80 {
      * </ul>
      *
      * @param acc_reg is the accumulator register, which will be mutated
-     * @param value is the value to add_A_r to the accumulator register
+     * @param value is the value to add to the accumulator register
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      * @param is_memory_involved is true if memory is involved, either written or read

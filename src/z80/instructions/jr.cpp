@@ -22,7 +22,7 @@ namespace emu::z80 {
      * </ul>
      *
      * @param pc is the program counter, which will be mutated
-     * @param args contains the argument with the value to add_A_r to PC
+     * @param args contains the argument with the value to add to PC
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void jr(u16 &pc, const NextByte &args, unsigned long &cycles) {
@@ -41,7 +41,7 @@ namespace emu::z80 {
      * </ul>
      *
      * @param pc is the program counter, which will be mutated
-     * @param args contains the argument with the value to add_A_r to PC
+     * @param args contains the argument with the value to add to PC
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
@@ -66,7 +66,7 @@ namespace emu::z80 {
      * </ul>
      *
      * @param pc is the program counter, which will be mutated
-     * @param args contains the argument with the value to add_A_r to PC
+     * @param args contains the argument with the value to add to PC
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
@@ -91,7 +91,7 @@ namespace emu::z80 {
      * </ul>
      *
      * @param pc is the program counter, which will be mutated
-     * @param args contains the argument with the value to add_A_r to PC
+     * @param args contains the argument with the value to add to PC
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
@@ -116,7 +116,7 @@ namespace emu::z80 {
      * </ul>
      *
      * @param pc is the program counter, which will be mutated
-     * @param args contains the argument with the value to add_A_r to PC
+     * @param args contains the argument with the value to add to PC
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */

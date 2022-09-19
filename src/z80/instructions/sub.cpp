@@ -100,6 +100,30 @@ namespace emu::z80 {
         cycles = 7;
     }
 
+    /************************************ FUNCTIONS FOR UNDOCUMENTED INSTRUCTIONS *************************************/
+
+    /**
+     * Subtract IX or IY high or low from accumulator (undocumented)
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 8</li>
+     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+     * </ul>
+     *
+     * @param acc_reg is the accumulator register, which will be mutated
+     * @param value is the value to subtract from the accumulator register
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void sub_ixy_h_or_l(u8 &acc_reg, u8 ixy_reg_h_or_l, Flags &flag_reg, unsigned long &cycles) {
+        sub(acc_reg, ixy_reg_h_or_l, flag_reg);
+
+        cycles = 8;
+    }
+
+    /******************************** END OF FUNCTIONS FOR UNDOCUMENTED INSTRUCTIONS **********************************/
+
     void print_sub(std::ostream &ostream, const std::string &reg) {
         ostream << "SUB "
                 << reg;

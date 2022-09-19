@@ -117,6 +117,30 @@ namespace emu::z80 {
         cycles = 19;
     }
 
+    /************************************ FUNCTIONS FOR UNDOCUMENTED INSTRUCTIONS *************************************/
+
+    /**
+     * Compare IX or IY high or low with accumulator (undocumented)
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 8</li>
+     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+     * </ul>
+     *
+     * @param acc_reg is the accumulator register, which will be mutated
+     * @param value is the value to compare with the accumulator register
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void cp_ixy_h_or_l(u8 &acc_reg, u8 ixy_reg_h_or_l, Flags &flag_reg, unsigned long &cycles) {
+        cp(acc_reg, ixy_reg_h_or_l, flag_reg);
+
+        cycles = 8;
+    }
+
+    /******************************** END OF FUNCTIONS FOR UNDOCUMENTED INSTRUCTIONS **********************************/
+
     void print_cp(std::ostream &ostream, const std::string &reg) {
         ostream << "CP "
                 << reg;
