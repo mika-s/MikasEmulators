@@ -286,27 +286,27 @@ namespace emu::z80 {
         }
     }
 
-    TEST_CASE("Z80: JP C") {
+    TEST_CASE("Z80: JP NZ") {
         unsigned long cycles = 0;
 
-        SUBCASE("should jump when the carry flag is set") {
+        SUBCASE("should jump when zero flag is set") {
             u16 pc = 0;
             NextWord args = {.farg = 0x11, .sarg = 0x22};
             Flags flag_reg;
-            flag_reg.set_carry_flag();
+            flag_reg.clear_zero_flag();
 
-            jp_c(pc, args, flag_reg, cycles);
+            jp_nz(pc, args, flag_reg, cycles);
 
             CHECK_EQ(to_u16(args.sarg, args.farg), pc);
         }
 
-        SUBCASE("should not jump when the carry flag is unset") {
+        SUBCASE("should not jump when zero flag is set") {
             u16 pc = 0;
             NextWord args = {.farg = 0x11, .sarg = 0x22};
             Flags flag_reg;
-            flag_reg.clear_carry_flag();
+            flag_reg.set_zero_flag();
 
-            jp_c(pc, args, flag_reg, cycles);
+            jp_nz(pc, args, flag_reg, cycles);
 
             CHECK_EQ(0, pc);
         }
@@ -315,74 +315,9 @@ namespace emu::z80 {
             u16 pc = 0;
             NextWord args = {.farg = 0x11, .sarg = 0x22};
             Flags flag_reg;
-            flag_reg.set_carry_flag();
+            flag_reg.clear_zero_flag();
 
-            jp_c(pc, args, flag_reg, cycles);
-
-            CHECK_EQ(false, flag_reg.is_zero_flag_set());
-            CHECK_EQ(true, flag_reg.is_carry_flag_set());
-            CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
-            CHECK_EQ(false, flag_reg.is_sign_flag_set());
-            CHECK_EQ(false, flag_reg.is_parity_overflow_flag_set());
-        }
-
-        SUBCASE("should use 7 cycles when the carry flag is unset") {
-            cycles = 0;
-            u16 pc = 0;
-            NextWord args = {.farg = 0x11, .sarg = 0x22};
-            Flags flag_reg;
-            flag_reg.clear_carry_flag();
-
-            jp_c(pc, args, flag_reg, cycles);
-
-            CHECK_EQ(7, cycles);
-        }
-
-        SUBCASE("should use 12 cycles when the carry flag is set") {
-            cycles = 0;
-            u16 pc = 0;
-            NextWord args = {.farg = 0x11, .sarg = 0x22};
-            Flags flag_reg;
-            flag_reg.set_carry_flag();
-
-            jp_c(pc, args, flag_reg, cycles);
-
-            CHECK_EQ(12, cycles);
-        }
-    }
-
-    TEST_CASE("Z80: JP NC") {
-        unsigned long cycles = 0;
-
-        SUBCASE("should jump when the carry flag is unset") {
-            u16 pc = 0;
-            NextWord args = {.farg = 0x11, .sarg = 0x22};
-            Flags flag_reg;
-            flag_reg.clear_carry_flag();
-
-            jp_nc(pc, args, flag_reg, cycles);
-
-            CHECK_EQ(to_u16(args.sarg, args.farg), pc);
-        }
-
-        SUBCASE("should not jump when the carry flag is set") {
-            u16 pc = 0;
-            NextWord args = {.farg = 0x11, .sarg = 0x22};
-            Flags flag_reg;
-            flag_reg.set_carry_flag();
-
-            jp_nc(pc, args, flag_reg, cycles);
-
-            CHECK_EQ(0, pc);
-        }
-
-        SUBCASE("should not affect any flags") {
-            u16 pc = 0;
-            NextWord args = {.farg = 0x11, .sarg = 0x22};
-            Flags flag_reg;
-            flag_reg.clear_carry_flag();
-
-            jp_nc(pc, args, flag_reg, cycles);
+            jp_nz(pc, args, flag_reg, cycles);
 
             CHECK_EQ(false, flag_reg.is_zero_flag_set());
             CHECK_EQ(false, flag_reg.is_carry_flag_set());
@@ -391,28 +326,22 @@ namespace emu::z80 {
             CHECK_EQ(false, flag_reg.is_parity_overflow_flag_set());
         }
 
-        SUBCASE("should use 7 cycles when the carry flag is set") {
+        SUBCASE("should use 10 cycles") {
             cycles = 0;
             u16 pc = 0;
             NextWord args = {.farg = 0x11, .sarg = 0x22};
             Flags flag_reg;
-            flag_reg.set_carry_flag();
+            flag_reg.set_zero_flag();
 
-            jp_nc(pc, args, flag_reg, cycles);
+            jp_nz(pc, args, flag_reg, cycles);
 
-            CHECK_EQ(7, cycles);
-        }
+            CHECK_EQ(10, cycles);
 
-        SUBCASE("should use 12 cycles when the carry flag is unset") {
-            cycles = 0;
-            u16 pc = 0;
-            NextWord args = {.farg = 0x11, .sarg = 0x22};
-            Flags flag_reg;
-            flag_reg.clear_carry_flag();
+            flag_reg.clear_zero_flag();
 
-            jp_nc(pc, args, flag_reg, cycles);
+            jp_nz(pc, args, flag_reg, cycles);
 
-            CHECK_EQ(12, cycles);
+            CHECK_EQ(10, cycles);
         }
     }
 
@@ -456,288 +385,140 @@ namespace emu::z80 {
             CHECK_EQ(false, flag_reg.is_parity_overflow_flag_set());
         }
 
-        SUBCASE("should use 7 cycles when the zero flag is unset") {
+        SUBCASE("should use 10 cycles") {
+            cycles = 0;
+            u16 pc = 0;
+            NextWord args = {.farg = 0x11, .sarg = 0x22};
+            Flags flag_reg;
+            flag_reg.clear_zero_flag();
+
+            jp_z(pc, args, flag_reg, cycles);
+
+            CHECK_EQ(10, cycles);
+
+            flag_reg.set_zero_flag();
+
+            jp_z(pc, args, flag_reg, cycles);
+
+            CHECK_EQ(10, cycles);
+        }
+    }
+
+    TEST_CASE("Z80: JP NC") {
+        unsigned long cycles = 0;
+
+        SUBCASE("should jump when the carry flag is unset") {
+            u16 pc = 0;
+            NextWord args = {.farg = 0x11, .sarg = 0x22};
+            Flags flag_reg;
+            flag_reg.clear_carry_flag();
+
+            jp_nc(pc, args, flag_reg, cycles);
+
+            CHECK_EQ(to_u16(args.sarg, args.farg), pc);
+        }
+
+        SUBCASE("should not jump when the carry flag is set") {
+            u16 pc = 0;
+            NextWord args = {.farg = 0x11, .sarg = 0x22};
+            Flags flag_reg;
+            flag_reg.set_carry_flag();
+
+            jp_nc(pc, args, flag_reg, cycles);
+
+            CHECK_EQ(0, pc);
+        }
+
+        SUBCASE("should not affect any flags") {
+            u16 pc = 0;
+            NextWord args = {.farg = 0x11, .sarg = 0x22};
+            Flags flag_reg;
+            flag_reg.clear_carry_flag();
+
+            jp_nc(pc, args, flag_reg, cycles);
+
+            CHECK_EQ(false, flag_reg.is_zero_flag_set());
+            CHECK_EQ(false, flag_reg.is_carry_flag_set());
+            CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
+            CHECK_EQ(false, flag_reg.is_sign_flag_set());
+            CHECK_EQ(false, flag_reg.is_parity_overflow_flag_set());
+        }
+
+        SUBCASE("should use 10 cycles") {
+            cycles = 0;
+            u16 pc = 0;
+            NextWord args = {.farg = 0x11, .sarg = 0x22};
+            Flags flag_reg;
+            flag_reg.set_carry_flag();
+
+            jp_nc(pc, args, flag_reg, cycles);
+
+            CHECK_EQ(10, cycles);
+
+            flag_reg.clear_carry_flag();
+
+            jp_nc(pc, args, flag_reg, cycles);
+
+            CHECK_EQ(10, cycles);
+        }
+    }
+
+    TEST_CASE("Z80: JP C") {
+        unsigned long cycles = 0;
+
+        SUBCASE("should jump when the carry flag is set") {
+            u16 pc = 0;
+            NextWord args = {.farg = 0x11, .sarg = 0x22};
+            Flags flag_reg;
+            flag_reg.set_carry_flag();
+
+            jp_c(pc, args, flag_reg, cycles);
+
+            CHECK_EQ(to_u16(args.sarg, args.farg), pc);
+        }
+
+        SUBCASE("should not jump when the carry flag is unset") {
+            u16 pc = 0;
+            NextWord args = {.farg = 0x11, .sarg = 0x22};
+            Flags flag_reg;
+            flag_reg.clear_carry_flag();
+
+            jp_c(pc, args, flag_reg, cycles);
+
+            CHECK_EQ(0, pc);
+        }
+
+        SUBCASE("should not affect any flags") {
+            u16 pc = 0;
+            NextWord args = {.farg = 0x11, .sarg = 0x22};
+            Flags flag_reg;
+            flag_reg.set_carry_flag();
+
+            jp_c(pc, args, flag_reg, cycles);
+
+            CHECK_EQ(false, flag_reg.is_zero_flag_set());
+            CHECK_EQ(true, flag_reg.is_carry_flag_set());
+            CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
+            CHECK_EQ(false, flag_reg.is_sign_flag_set());
+            CHECK_EQ(false, flag_reg.is_parity_overflow_flag_set());
+        }
+
+        SUBCASE("should use 10 cycles") {
             cycles = 0;
             u16 pc = 0;
             NextWord args = {.farg = 0x11, .sarg = 0x22};
             Flags flag_reg;
             flag_reg.clear_carry_flag();
 
-            jp_z(pc, args, flag_reg, cycles);
+            jp_c(pc, args, flag_reg, cycles);
 
-            CHECK_EQ(7, cycles);
-        }
+            CHECK_EQ(10, cycles);
 
-        SUBCASE("should use 12 cycles when the zero flag is set") {
-            cycles = 0;
-            u16 pc = 0;
-            NextWord args = {.farg = 0x11, .sarg = 0x22};
-            Flags flag_reg;
-            flag_reg.set_zero_flag();
+            flag_reg.set_carry_flag();
 
-            jp_z(pc, args, flag_reg, cycles);
+            jp_c(pc, args, flag_reg, cycles);
 
-            CHECK_EQ(12, cycles);
-        }
-    }
-
-    TEST_CASE("Z80: JP NZ") {
-        unsigned long cycles = 0;
-
-        SUBCASE("should jump when zero flag is set") {
-            u16 pc = 0;
-            NextWord args = {.farg = 0x11, .sarg = 0x22};
-            Flags flag_reg;
-            flag_reg.clear_zero_flag();
-
-            jp_nz(pc, args, flag_reg, cycles);
-
-            CHECK_EQ(to_u16(args.sarg, args.farg), pc);
-        }
-
-        SUBCASE("should not jump when zero flag is set") {
-            u16 pc = 0;
-            NextWord args = {.farg = 0x11, .sarg = 0x22};
-            Flags flag_reg;
-            flag_reg.set_zero_flag();
-
-            jp_nz(pc, args, flag_reg, cycles);
-
-            CHECK_EQ(0, pc);
-        }
-
-        SUBCASE("should not affect any flags") {
-            u16 pc = 0;
-            NextWord args = {.farg = 0x11, .sarg = 0x22};
-            Flags flag_reg;
-            flag_reg.clear_zero_flag();
-
-            jp_nz(pc, args, flag_reg, cycles);
-
-            CHECK_EQ(false, flag_reg.is_zero_flag_set());
-            CHECK_EQ(false, flag_reg.is_carry_flag_set());
-            CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
-            CHECK_EQ(false, flag_reg.is_sign_flag_set());
-            CHECK_EQ(false, flag_reg.is_parity_overflow_flag_set());
-        }
-
-        SUBCASE("should use 7 cycles when the zero flag is set") {
-            cycles = 0;
-            u16 pc = 0;
-            NextWord args = {.farg = 0x11, .sarg = 0x22};
-            Flags flag_reg;
-            flag_reg.set_zero_flag();
-
-            jp_nz(pc, args, flag_reg, cycles);
-
-            CHECK_EQ(7, cycles);
-        }
-
-        SUBCASE("should use 12 cycles when the zero flag is unset") {
-            cycles = 0;
-            u16 pc = 0;
-            NextWord args = {.farg = 0x11, .sarg = 0x22};
-            Flags flag_reg;
-            flag_reg.clear_zero_flag();
-
-            jp_nz(pc, args, flag_reg, cycles);
-
-            CHECK_EQ(12, cycles);
-        }
-    }
-
-    TEST_CASE("Z80: JP M") {
-        unsigned long cycles = 0;
-
-        SUBCASE("should jump when the sign flag is set") {
-            u16 pc = 0;
-            NextWord args = {.farg = 0x11, .sarg = 0x22};
-            Flags flag_reg;
-            flag_reg.set_sign_flag();     // Negative if the sign flag is true.
-
-            jp_m(pc, args, flag_reg, cycles);
-
-            CHECK_EQ(to_u16(args.sarg, args.farg), pc);
-        }
-
-        SUBCASE("should not jump when the sign flag is unset") {
-            u16 pc = 0;
-            NextWord args = {.farg = 0x11, .sarg = 0x22};
-            Flags flag_reg;
-            flag_reg.clear_sign_flag();
-
-            jp_m(pc, args, flag_reg, cycles);
-
-            CHECK_EQ(0, pc);
-        }
-
-        SUBCASE("should not affect any flags") {
-            u16 pc = 0;
-            NextWord args = {.farg = 0x11, .sarg = 0x22};
-            Flags flag_reg;
-            flag_reg.set_sign_flag();
-
-            jp_m(pc, args, flag_reg, cycles);
-
-            CHECK_EQ(false, flag_reg.is_zero_flag_set());
-            CHECK_EQ(false, flag_reg.is_carry_flag_set());
-            CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
-            CHECK_EQ(true, flag_reg.is_sign_flag_set());
-            CHECK_EQ(false, flag_reg.is_parity_overflow_flag_set());
-        }
-
-        SUBCASE("should use 7 cycles when the sign flag is unset") {
-            cycles = 0;
-            u16 pc = 0;
-            NextWord args = {.farg = 0x11, .sarg = 0x22};
-            Flags flag_reg;
-            flag_reg.clear_sign_flag();
-
-            jp_m(pc, args, flag_reg, cycles);
-
-            CHECK_EQ(7, cycles);
-        }
-
-        SUBCASE("should use 12 cycles when the sign flag is set") {
-            cycles = 0;
-            u16 pc = 0;
-            NextWord args = {.farg = 0x11, .sarg = 0x22};
-            Flags flag_reg;
-            flag_reg.set_sign_flag();
-
-            jp_m(pc, args, flag_reg, cycles);
-
-            CHECK_EQ(12, cycles);
-        }
-    }
-
-    TEST_CASE("Z80: JP P") {
-        unsigned long cycles = 0;
-
-        SUBCASE("should jump when the sign flag is unset") {
-            u16 pc = 0;
-            NextWord args = {.farg = 0x11, .sarg = 0x22};
-            Flags flag_reg;
-            flag_reg.clear_sign_flag();     // Positive if the sign flag is false.
-
-            jp_p(pc, args, flag_reg, cycles);
-
-            CHECK_EQ(0x2211, pc);
-        }
-
-        SUBCASE("should not jump when the sign flag is set") {
-            u16 pc = 0;
-            NextWord args = {.farg = 0x11, .sarg = 0x22};
-            Flags flag_reg;
-            flag_reg.set_sign_flag();
-
-            jp_p(pc, args, flag_reg, cycles);
-
-            CHECK_EQ(0, pc);
-        }
-
-        SUBCASE("should not affect any flags") {
-            u16 pc = 0;
-            NextWord args = {.farg = 0x11, .sarg = 0x22};
-            Flags flag_reg;
-            flag_reg.clear_sign_flag();
-
-            jp_p(pc, args, flag_reg, cycles);
-
-            CHECK_EQ(false, flag_reg.is_zero_flag_set());
-            CHECK_EQ(false, flag_reg.is_carry_flag_set());
-            CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
-            CHECK_EQ(false, flag_reg.is_sign_flag_set());
-            CHECK_EQ(false, flag_reg.is_parity_overflow_flag_set());
-        }
-
-        SUBCASE("should use 7 cycles if the sign flag is set") {
-            cycles = 0;
-            u16 pc = 0;
-            NextWord args = {.farg = 0x11, .sarg = 0x22};
-            Flags flag_reg;
-            flag_reg.set_sign_flag();
-
-            jp_p(pc, args, flag_reg, cycles);
-
-            CHECK_EQ(7, cycles);
-        }
-
-        SUBCASE("should use 12 cycles if the sign flag is unset") {
-            cycles = 0;
-            u16 pc = 0;
-            NextWord args = {.farg = 0x11, .sarg = 0x22};
-            Flags flag_reg;
-            flag_reg.clear_sign_flag();
-
-            jp_p(pc, args, flag_reg, cycles);
-
-            CHECK_EQ(12, cycles);
-        }
-    }
-
-    TEST_CASE("Z80: JP PE") {
-        unsigned long cycles = 0;
-
-        SUBCASE("should jump when the parity flag is set") {
-            u16 pc = 0;
-            NextWord args = {.farg = 0x11, .sarg = 0x22};
-            Flags flag_reg;
-            flag_reg.set_parity_overflow_flag();   // Parity is even when the parity flag is true.
-
-            jp_pe(pc, args, flag_reg, cycles);
-
-            CHECK_EQ(to_u16(args.sarg, args.farg), pc);
-        }
-
-        SUBCASE("should not jump when the parity flag is unset") {
-            u16 pc = 0;
-            NextWord args = {.farg = 0x11, .sarg = 0x22};
-            Flags flag_reg;
-            flag_reg.clear_parity_overflow_flag();
-
-            jp_pe(pc, args, flag_reg, cycles);
-
-            CHECK_EQ(0, pc);
-        }
-
-        SUBCASE("should not affect any flags") {
-            u16 pc = 0;
-            NextWord args = {.farg = 0x11, .sarg = 0x22};
-            Flags flag_reg;
-            flag_reg.set_parity_overflow_flag();
-
-            jp_pe(pc, args, flag_reg, cycles);
-
-            CHECK_EQ(false, flag_reg.is_zero_flag_set());
-            CHECK_EQ(false, flag_reg.is_carry_flag_set());
-            CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
-            CHECK_EQ(false, flag_reg.is_sign_flag_set());
-            CHECK_EQ(true, flag_reg.is_parity_overflow_flag_set());
-        }
-
-        SUBCASE("should use 12 cycles when the parity/overflow flag is unset") {
-            cycles = 0;
-            u16 pc = 0;
-            NextWord args = {.farg = 0x11, .sarg = 0x22};
-            Flags flag_reg;
-            flag_reg.clear_parity_overflow_flag();
-
-            jp_pe(pc, args, flag_reg, cycles);
-
-            CHECK_EQ(7, cycles);
-        }
-
-        SUBCASE("should use 12 cycles when the parity/overflow flag is set") {
-            cycles = 0;
-            u16 pc = 0;
-            NextWord args = {.farg = 0x11, .sarg = 0x22};
-            Flags flag_reg;
-            flag_reg.set_parity_overflow_flag();
-
-            jp_pe(pc, args, flag_reg, cycles);
-
-            CHECK_EQ(12, cycles);
+            CHECK_EQ(10, cycles);
         }
     }
 
@@ -781,7 +562,7 @@ namespace emu::z80 {
             CHECK_EQ(false, flag_reg.is_parity_overflow_flag_set());
         }
 
-        SUBCASE("should use 7 cycles when the parity flag is set") {
+        SUBCASE("should use 10 cycles") {
             cycles = 0;
             u16 pc = 0;
             NextWord args = {.farg = 0x11, .sarg = 0x22};
@@ -790,19 +571,190 @@ namespace emu::z80 {
 
             jp_po(pc, args, flag_reg, cycles);
 
-            CHECK_EQ(7, cycles);
+            CHECK_EQ(10, cycles);
+
+            flag_reg.clear_parity_overflow_flag();
+
+            jp_po(pc, args, flag_reg, cycles);
+
+            CHECK_EQ(10, cycles);
+        }
+    }
+
+    TEST_CASE("Z80: JP PE") {
+        unsigned long cycles = 0;
+
+        SUBCASE("should jump when the parity flag is set") {
+            u16 pc = 0;
+            NextWord args = {.farg = 0x11, .sarg = 0x22};
+            Flags flag_reg;
+            flag_reg.set_parity_overflow_flag();   // Parity is even when the parity flag is true.
+
+            jp_pe(pc, args, flag_reg, cycles);
+
+            CHECK_EQ(to_u16(args.sarg, args.farg), pc);
         }
 
-        SUBCASE("should use 12 cycles when the parity flag is unset") {
+        SUBCASE("should not jump when the parity flag is unset") {
+            u16 pc = 0;
+            NextWord args = {.farg = 0x11, .sarg = 0x22};
+            Flags flag_reg;
+            flag_reg.clear_parity_overflow_flag();
+
+            jp_pe(pc, args, flag_reg, cycles);
+
+            CHECK_EQ(0, pc);
+        }
+
+        SUBCASE("should not affect any flags") {
+            u16 pc = 0;
+            NextWord args = {.farg = 0x11, .sarg = 0x22};
+            Flags flag_reg;
+            flag_reg.set_parity_overflow_flag();
+
+            jp_pe(pc, args, flag_reg, cycles);
+
+            CHECK_EQ(false, flag_reg.is_zero_flag_set());
+            CHECK_EQ(false, flag_reg.is_carry_flag_set());
+            CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
+            CHECK_EQ(false, flag_reg.is_sign_flag_set());
+            CHECK_EQ(true, flag_reg.is_parity_overflow_flag_set());
+        }
+
+        SUBCASE("should use 10 cycles") {
             cycles = 0;
             u16 pc = 0;
             NextWord args = {.farg = 0x11, .sarg = 0x22};
             Flags flag_reg;
             flag_reg.clear_parity_overflow_flag();
 
-            jp_po(pc, args, flag_reg, cycles);
+            jp_pe(pc, args, flag_reg, cycles);
 
-            CHECK_EQ(12, cycles);
+            CHECK_EQ(10, cycles);
+
+            flag_reg.set_parity_overflow_flag();
+
+            jp_pe(pc, args, flag_reg, cycles);
+
+            CHECK_EQ(10, cycles);
+        }
+    }
+
+    TEST_CASE("Z80: JP P") {
+        unsigned long cycles = 0;
+
+        SUBCASE("should jump when the sign flag is unset") {
+            u16 pc = 0;
+            NextWord args = {.farg = 0x11, .sarg = 0x22};
+            Flags flag_reg;
+            flag_reg.clear_sign_flag();     // Positive if the sign flag is false.
+
+            jp_p(pc, args, flag_reg, cycles);
+
+            CHECK_EQ(0x2211, pc);
+        }
+
+        SUBCASE("should not jump when the sign flag is set") {
+            u16 pc = 0;
+            NextWord args = {.farg = 0x11, .sarg = 0x22};
+            Flags flag_reg;
+            flag_reg.set_sign_flag();
+
+            jp_p(pc, args, flag_reg, cycles);
+
+            CHECK_EQ(0, pc);
+        }
+
+        SUBCASE("should not affect any flags") {
+            u16 pc = 0;
+            NextWord args = {.farg = 0x11, .sarg = 0x22};
+            Flags flag_reg;
+            flag_reg.clear_sign_flag();
+
+            jp_p(pc, args, flag_reg, cycles);
+
+            CHECK_EQ(false, flag_reg.is_zero_flag_set());
+            CHECK_EQ(false, flag_reg.is_carry_flag_set());
+            CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
+            CHECK_EQ(false, flag_reg.is_sign_flag_set());
+            CHECK_EQ(false, flag_reg.is_parity_overflow_flag_set());
+        }
+
+        SUBCASE("should use 10 cycles if the sign flag is set") {
+            cycles = 0;
+            u16 pc = 0;
+            NextWord args = {.farg = 0x11, .sarg = 0x22};
+            Flags flag_reg;
+            flag_reg.set_sign_flag();
+
+            jp_p(pc, args, flag_reg, cycles);
+
+            CHECK_EQ(10, cycles);
+
+            flag_reg.clear_sign_flag();
+
+            jp_p(pc, args, flag_reg, cycles);
+
+            CHECK_EQ(10, cycles);
+        }
+    }
+
+    TEST_CASE("Z80: JP M") {
+        unsigned long cycles = 0;
+
+        SUBCASE("should jump when the sign flag is set") {
+            u16 pc = 0;
+            NextWord args = {.farg = 0x11, .sarg = 0x22};
+            Flags flag_reg;
+            flag_reg.set_sign_flag();     // Negative if the sign flag is true.
+
+            jp_m(pc, args, flag_reg, cycles);
+
+            CHECK_EQ(to_u16(args.sarg, args.farg), pc);
+        }
+
+        SUBCASE("should not jump when the sign flag is unset") {
+            u16 pc = 0;
+            NextWord args = {.farg = 0x11, .sarg = 0x22};
+            Flags flag_reg;
+            flag_reg.clear_sign_flag();
+
+            jp_m(pc, args, flag_reg, cycles);
+
+            CHECK_EQ(0, pc);
+        }
+
+        SUBCASE("should not affect any flags") {
+            u16 pc = 0;
+            NextWord args = {.farg = 0x11, .sarg = 0x22};
+            Flags flag_reg;
+            flag_reg.set_sign_flag();
+
+            jp_m(pc, args, flag_reg, cycles);
+
+            CHECK_EQ(false, flag_reg.is_zero_flag_set());
+            CHECK_EQ(false, flag_reg.is_carry_flag_set());
+            CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
+            CHECK_EQ(true, flag_reg.is_sign_flag_set());
+            CHECK_EQ(false, flag_reg.is_parity_overflow_flag_set());
+        }
+
+        SUBCASE("should use 10 cycles") {
+            cycles = 0;
+            u16 pc = 0;
+            NextWord args = {.farg = 0x11, .sarg = 0x22};
+            Flags flag_reg;
+            flag_reg.clear_sign_flag();
+
+            jp_m(pc, args, flag_reg, cycles);
+
+            CHECK_EQ(10, cycles);
+
+            flag_reg.set_sign_flag();
+
+            jp_m(pc, args, flag_reg, cycles);
+
+            CHECK_EQ(10, cycles);
         }
     }
 

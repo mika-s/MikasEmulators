@@ -21,6 +21,7 @@ namespace emu::z80 {
             m_is_stopped(true),
             m_iff1(false), m_iff2(false),
             m_is_interrupted(false),
+            m_is_nmi_interrupted(false),
             m_instruction_from_interruptor(0),
             m_memory(memory), m_memory_size(memory.size()),
             m_opcode(0), m_sp(0xffff), m_pc(initial_pc),
@@ -32,7 +33,8 @@ namespace emu::z80 {
             m_h_reg(0), m_h_p_reg(0),
             m_l_reg(0), m_l_p_reg(0),
             m_ix_reg(0), m_iy_reg(0),
-            m_i_reg(0), m_r_reg(0) {
+            m_i_reg(0), m_r_reg(0),
+            m_interrupt_mode(InterruptMode::ZERO) {
         m_io_in.reserve(number_of_io_ports);
         m_io_out.reserve(number_of_io_ports);
         for (unsigned int i = 0; i < number_of_io_ports; ++i) {
@@ -97,7 +99,9 @@ namespace emu::z80 {
         m_is_stopped = true;
         m_iff1 = m_iff2 = false;
         m_is_interrupted = false;
+        m_is_nmi_interrupted = false;
         m_instruction_from_interruptor = 0;
+        m_interrupt_mode = InterruptMode::ZERO;
     }
 
     void Cpu::start() {
@@ -113,6 +117,10 @@ namespace emu::z80 {
         m_instruction_from_interruptor = instruction_to_perform;
     }
 
+    void Cpu::nmi_interrupt() {
+        m_is_nmi_interrupted = true;
+    }
+
     bool Cpu::is_inta() const {
         return m_iff1;
     }
@@ -124,13 +132,15 @@ namespace emu::z80 {
     unsigned long Cpu::next_instruction() {
         unsigned long cycles = 0;
 
-        if (m_iff1 && m_is_interrupted) {
-            m_iff1 = m_iff2 = false;
-            m_is_interrupted = false;
-            m_opcode = m_instruction_from_interruptor;
-        } else {
-            m_opcode = get_next_byte().farg;
+        if (m_is_nmi_interrupted) {
+            return handle_nonmaskable_interrupt(cycles);
+        } else if (m_iff1 && m_is_interrupted && m_interrupt_mode == InterruptMode::ZERO) {
+            cycles += handle_maskable_interrupt_0(cycles);
+        } else if (m_iff1 && m_is_interrupted) {
+            return handle_maskable_interrupt_1_2(cycles);
         }
+
+        m_opcode = get_next_byte().farg;
 
         print_debug(m_opcode);
 
@@ -2238,6 +2248,13 @@ namespace emu::z80 {
             case NEG:
                 neg(m_acc_reg, m_flag_reg, cycles);
                 break;
+            case RETN:
+                retn(m_pc, m_sp, m_memory, m_iff1, m_iff2, cycles);
+                break;
+            case IM_0_1:
+            case IM_0_2:
+                im(m_interrupt_mode, InterruptMode::ZERO, cycles);
+                break;
             case LD_I_A:
                 ld_I_A(m_i_reg, m_acc_reg, cycles);
                 break;
@@ -2247,11 +2264,21 @@ namespace emu::z80 {
             case LD_BC_Mnn:
                 ld_dd_Mnn(m_b_reg, m_c_reg, get_next_word(), m_memory, cycles);
                 break;
+            case RETI:
+                reti(m_pc, m_sp, m_memory, cycles);
+                break;
+            case LD_R_A:
+                ld_R_A(m_r_reg, m_acc_reg, cycles);
+                break;
             case SBC_HL_DE:
                 sbc_HL_ss(m_h_reg, m_l_reg, to_u16(m_d_reg, m_e_reg), m_flag_reg, cycles);
                 break;
             case LD_Mnn_DE:
                 ld_Mnn_dd(m_d_reg, m_e_reg, m_memory, get_next_word(), cycles);
+                break;
+            case IM_1_1:
+            case IM_1_2:
+                im(m_interrupt_mode, InterruptMode::ONE, cycles);
                 break;
             case LD_A_I:
                 ld_A_I(m_acc_reg, m_i_reg, m_flag_reg, m_iff2, cycles);
@@ -2261,6 +2288,12 @@ namespace emu::z80 {
                 break;
             case LD_DE_Mnn:
                 ld_dd_Mnn(m_d_reg, m_e_reg, get_next_word(), m_memory, cycles);
+                break;
+            case IM_2:
+                im(m_interrupt_mode, InterruptMode::TWO, cycles);
+                break;
+            case LD_A_R:
+                ld_A_R(m_acc_reg, m_r_reg, m_flag_reg, m_iff2, cycles);
                 break;
             case SBC_HL_HL:
                 sbc_HL_ss(m_h_reg, m_l_reg, to_u16(m_h_reg, m_l_reg), m_flag_reg, cycles);
@@ -2359,6 +2392,52 @@ namespace emu::z80 {
             default:
                 throw UnrecognizedOpcodeException(extd_opcode, "EXTD instructions");
         }
+    }
+
+    unsigned long Cpu::handle_nonmaskable_interrupt(unsigned long cycles) {
+        m_iff1 = false;
+        m_is_nmi_interrupted = false;
+
+        r_tick();
+
+        nmi(m_pc, m_sp, m_memory, cycles);
+
+        return cycles;
+    }
+
+    unsigned long Cpu::handle_maskable_interrupt_0(unsigned long cycles) {
+        m_iff1 = m_iff2 = false;
+        m_is_interrupted = false;
+
+        r_tick();
+
+        m_opcode = m_instruction_from_interruptor;
+        cycles = 13;
+
+        return cycles;
+    }
+
+    unsigned long Cpu::handle_maskable_interrupt_1_2(unsigned long cycles) {
+        m_iff1 = m_iff2 = false;
+        m_is_interrupted = false;
+
+        r_tick();
+
+        switch (m_interrupt_mode) {
+            case InterruptMode::ZERO:
+                throw std::invalid_argument("Programming error: Should handle this mode somewhere else.");
+            case InterruptMode::ONE:
+                rst_7(m_pc, m_sp, m_memory, cycles);
+                cycles = 13;
+                break;
+            case InterruptMode::TWO:
+                call(m_pc, m_sp, m_memory, {.farg = m_i_reg, .sarg = m_instruction_from_interruptor},
+                     cycles);
+                cycles = 19;
+                break;
+        }
+
+        return cycles;
     }
 
     NextByte Cpu::get_next_byte() {

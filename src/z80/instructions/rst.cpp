@@ -160,6 +160,22 @@ namespace emu::z80 {
         rst(pc, 0x38, sp, memory, cycles);
     }
 
+    /**
+     * NMI
+     * <ul>
+     *   <li>States: 11</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param pc is the program counter, which will be mutated
+     * @param sp is the stack pointer, which will be mutated
+     * @param memory is the memory, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void nmi(u16 &pc, u16 &sp, EmulatorMemory &memory, unsigned long &cycles) {
+        rst(pc, 0x66, sp, memory, cycles);
+    }
+
     void print_rst(std::ostream &ostream, int number) {
         ostream << "RST "
                 << number;

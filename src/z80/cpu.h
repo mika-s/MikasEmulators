@@ -5,6 +5,7 @@
 #include <vector>
 #include "z80/flags.h"
 #include "z80/emulator_memory.h"
+#include "z80/interrupt_mode.h"
 #include "z80/interfaces/in_observer.h"
 #include "z80/interfaces/out_observer.h"
 #include "crosscutting/typedefs.h"
@@ -95,6 +96,8 @@ namespace emu::z80 {
 
         void interrupt(u8 supplied_instruction_from_interruptor);
 
+        void nmi_interrupt();
+
         void input(int port, u8 value);
 
     private:
@@ -105,6 +108,7 @@ namespace emu::z80 {
         bool m_iff1;
         bool m_iff2;
         bool m_is_interrupted;
+        bool m_is_nmi_interrupted;
         u8 m_instruction_from_interruptor;
 
         EmulatorMemory &m_memory;
@@ -136,6 +140,7 @@ namespace emu::z80 {
         u8 m_r_reg;
         Flags m_flag_reg;
         Flags m_flag_p_reg;
+        InterruptMode m_interrupt_mode;
 
         std::vector<OutObserver *> m_out_observers;
         std::vector<InObserver *> m_in_observers;
@@ -147,6 +152,12 @@ namespace emu::z80 {
         void next_ixy_bits_instruction(NextWord args, u16 &ixy_reg, unsigned long &cycles);
 
         void next_extd_instruction(u8 extd_opcode, unsigned long &cycles);
+
+        unsigned long handle_nonmaskable_interrupt(unsigned long cycles);
+
+        unsigned long handle_maskable_interrupt_0(unsigned long cycles);
+
+        unsigned long handle_maskable_interrupt_1_2(unsigned long cycles);
 
         NextByte get_next_byte();
 

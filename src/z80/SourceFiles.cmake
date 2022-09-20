@@ -103,6 +103,7 @@ set(SOURCES_Z80_H
         src/z80/emulator_memory.h
         src/z80/flags.h
         src/z80/frontend.h
+        src/z80/interrupt_mode.h
         src/z80/run_status.h
         src/z80/instructions/instruction_util.h
         src/z80/instructions/instructions.h

@@ -345,7 +345,7 @@ namespace emu::z80::applications::pacman {
     }
 
     std::vector<u8> PacmanSession::vram() {
-        return {m_memory.begin() + 0x2400, m_memory.begin() + 0x3fff};
+        return {m_memory.begin() + 0x4000, m_memory.begin() + 0x4fff};
     }
 
     std::vector<u8> PacmanSession::memory() {
@@ -354,7 +354,7 @@ namespace emu::z80::applications::pacman {
 
 
     std::vector<std::string> PacmanSession::disassemble_program() {
-        EmulatorMemory sliced_for_disassembly = m_memory.slice(0, 0x2000);
+        EmulatorMemory sliced_for_disassembly = m_memory.slice(0, 0x3fff);
 
         std::stringstream ss;
         DisassemblerZ80 disassembler(sliced_for_disassembly, ss);

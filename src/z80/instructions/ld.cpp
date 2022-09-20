@@ -276,7 +276,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Load from the the accumulator, into the interrupt vector register, I
+     * Load from the accumulator, into the interrupt vector register, I
      * <ul>
      *   <li>Size: 2</li>
      *   <li>Cycles: 2</li>
@@ -290,6 +290,57 @@ namespace emu::z80 {
      */
     void ld_I_A(u8 &i_reg, u8 acc_reg, unsigned long &cycles) {
         ld(i_reg, acc_reg);
+
+        cycles = 9;
+    }
+
+    /**
+     * Load from the R register, into the accumulator
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 9</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param r_reg is the R register, which will be mutated
+     * @param acc_reg is the accumulator
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void ld_R_A(u8 &r_reg, u8 acc_reg, unsigned long &cycles) {
+        ld(r_reg, acc_reg);
+
+        cycles = 9;
+    }
+
+    /**
+     * Load from the R register, into the accumulator
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 9</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param acc_reg is the accumulator, which will be mutated
+     * @param r_reg is the R register
+     * @param flag_reg is the flag register, which will be mutated
+     * @param iff2 is the second interrupt flag
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void ld_A_R(u8 &acc_reg, u8 r_reg, Flags &flag_reg, bool iff2, unsigned long &cycles) {
+        ld(acc_reg, r_reg);
+
+        flag_reg.handle_sign_flag(r_reg);
+        flag_reg.handle_zero_flag(r_reg);
+        flag_reg.clear_half_carry_flag();
+        flag_reg.clear_add_subtract_flag();
+
+        if (iff2) {
+            flag_reg.set_parity_overflow_flag();
+        } else {
+            flag_reg.clear_parity_overflow_flag();
+        }
 
         cycles = 9;
     }

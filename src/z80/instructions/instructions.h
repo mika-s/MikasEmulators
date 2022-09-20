@@ -5,6 +5,7 @@
 #include <string>
 #include "z80/emulator_memory.h"
 #include "z80/flags.h"
+#include "z80/interrupt_mode.h"
 #include "crosscutting/misc/next_byte.h"
 #include "crosscutting/misc/next_word.h"
 #include "crosscutting/typedefs.h"
@@ -873,6 +874,7 @@ namespace emu::z80 {
     void ex_msp_ixy(u16 sp, EmulatorMemory &memory, u16 &ixy_reg, unsigned long &cycles);
     void exx(u8 &b_reg, u8 &c_reg, u8 &b_p_reg, u8 &c_p_reg, u8 &d_reg, u8 &e_reg, u8 &d_p_reg, u8 &e_p_reg, u8 &h_reg, u8 &l_reg, u8 &h_p_reg, u8 &l_p_reg, unsigned long &cycles);
     void halt(bool &stopped, unsigned long &cycles);
+    void im(InterruptMode &interrupt_mode, InterruptMode value, unsigned long &cycles);
     void in_A_Mn(u8 &acc_reg, const NextByte &args, std::vector<u8> io, unsigned long &cycles);
     void inc_r(u8 &reg, Flags &flag_reg, unsigned long &cycles);
     void inc_r_undoc(u8 &reg, Flags &flag_reg, unsigned long &cycles);
@@ -912,6 +914,8 @@ namespace emu::z80 {
     void ld_A_Mss(u8 &to, u8 value, unsigned long &cycles);
     void ld_A_Mnn(u8 &reg, const EmulatorMemory &memory, const NextWord &args, unsigned long &cycles);
     void ld_I_A(u8 &i_reg, u8 acc_reg, unsigned long &cycles);
+    void ld_R_A(u8 &r_reg, u8 acc_reg, unsigned long &cycles);
+    void ld_A_R(u8 &acc_reg, u8 r_reg, Flags &flag_reg, bool iff2, unsigned long &cycles);
     void ld_HL_Mnn(u8 &h_reg, u8 &l_reg, const EmulatorMemory &memory, const NextWord &args, unsigned long &cycles);
     void ld_dd_nn(u8 &reg1, u8 &reg2, const NextWord &args, unsigned long &cycles);
     void ld_ixy_nn(u16 &ixy_reg, const NextWord &args, unsigned long &cycles);
@@ -941,6 +945,7 @@ namespace emu::z80 {
     void ldi(u8 &b_reg, u8 &c_reg, u8 &d_reg, u8 &e_reg, u8 &h_reg, u8 &l_reg, u8 acc_reg, EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles);
     void ldir(u16 &pc, u8 &b_reg, u8 &c_reg, u8 &d_reg, u8 &e_reg, u8 &h_reg, u8 &l_reg, u8 acc_reg, EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles);
     void neg(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles);
+    void nmi(u16 &pc, u16 &sp, EmulatorMemory &memory, unsigned long &cycles);
     void nop(unsigned long &cycles);
     void or_r(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles);
     void or_n(u8 &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles);
@@ -970,6 +975,8 @@ namespace emu::z80 {
     void ret_pe(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, unsigned long &cycles);
     void ret_po(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, unsigned long &cycles);
     void ret_z(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, unsigned long &cycles);
+    void reti(u16 &pc, u16 &sp, const EmulatorMemory &memory, unsigned long &cycles);
+    void retn(u16 &pc, u16 &sp, const EmulatorMemory &memory, bool &iff1, bool iff2, unsigned long &cycles);
     void rla(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles);
     void rl_r(u8 &reg, Flags &flag_reg, unsigned long &cycles);
     void rl_MHL(u8 &value_in_hl, Flags &flag_reg, unsigned long &cycles);
