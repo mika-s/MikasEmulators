@@ -13,7 +13,7 @@ namespace emu::debugger {
         std::string line();
 
     private:
-        u16 m_address;
+        [[maybe_unused]] u16 m_address;
         std::string m_line;
     };
 }
