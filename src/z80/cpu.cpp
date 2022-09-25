@@ -18,7 +18,7 @@ namespace emu::z80 {
             EmulatorMemory &memory,
             const u16 initial_pc
     ) :
-            m_is_stopped(true),
+            m_is_halted(false),
             m_iff1(false), m_iff2(false),
             m_is_interrupted(false),
             m_is_nmi_interrupted(false),
@@ -78,7 +78,7 @@ namespace emu::z80 {
     }
 
     bool Cpu::can_run_next_instruction() const {
-        return m_pc < m_memory_size && !m_is_stopped;
+        return m_pc < m_memory_size;
     }
 
     void Cpu::reset_state() {
@@ -96,7 +96,7 @@ namespace emu::z80 {
         m_flag_p_reg.from_u8(0x00);
         m_pc = 0;
         m_sp = 0xffff;
-        m_is_stopped = true;
+        m_is_halted = false;
         m_iff1 = m_iff2 = false;
         m_is_interrupted = false;
         m_is_nmi_interrupted = false;
@@ -105,11 +105,11 @@ namespace emu::z80 {
     }
 
     void Cpu::start() {
-        m_is_stopped = false;
+        m_is_halted = false;
     }
 
     void Cpu::stop() {
-        m_is_stopped = true;
+        m_is_halted = true;
     }
 
     void Cpu::interrupt(u8 instruction_to_perform) {
@@ -138,6 +138,8 @@ namespace emu::z80 {
             cycles += handle_maskable_interrupt_0(cycles);
         } else if (m_iff1 && m_is_interrupted) {
             return handle_maskable_interrupt_1_2(cycles);
+        } else if (m_is_halted) {
+            return 4;   // TODO: What is the proper value while NOPing during halt?
         }
 
         m_opcode = get_next_byte().farg;
@@ -502,7 +504,7 @@ namespace emu::z80 {
                 ld_MHL_r(m_memory[address_in_HL()], m_l_reg, cycles);
                 break;
             case HALT:
-                halt(m_is_stopped, cycles);
+                halt(m_is_halted, cycles);
                 break;
             case LD_MHL_A:
                 ld_MHL_r(m_memory[address_in_HL()], m_acc_reg, cycles);
@@ -2397,6 +2399,7 @@ namespace emu::z80 {
     unsigned long Cpu::handle_nonmaskable_interrupt(unsigned long cycles) {
         m_iff1 = false;
         m_is_nmi_interrupted = false;
+        m_is_halted = false;
 
         r_tick();
 
@@ -2408,6 +2411,7 @@ namespace emu::z80 {
     unsigned long Cpu::handle_maskable_interrupt_0(unsigned long cycles) {
         m_iff1 = m_iff2 = false;
         m_is_interrupted = false;
+        m_is_halted = false;
 
         r_tick();
 
@@ -2420,6 +2424,7 @@ namespace emu::z80 {
     unsigned long Cpu::handle_maskable_interrupt_1_2(unsigned long cycles) {
         m_iff1 = m_iff2 = false;
         m_is_interrupted = false;
+        m_is_halted = false;
 
         r_tick();
 
@@ -2431,8 +2436,10 @@ namespace emu::z80 {
                 cycles = 13;
                 break;
             case InterruptMode::TWO:
-                call(m_pc, m_sp, m_memory, {.farg = m_i_reg, .sarg = m_instruction_from_interruptor},
-                     cycles);
+                const u16 address_of_interrupt_vector = to_u16(m_i_reg, m_instruction_from_interruptor);
+                const u8 farg = m_memory[address_of_interrupt_vector];
+                const u8 sarg = m_memory[address_of_interrupt_vector + 1];
+                call(m_pc, m_sp, m_memory, {.farg = farg, .sarg = sarg}, cycles);
                 cycles = 19;
                 break;
         }
@@ -2559,6 +2566,10 @@ namespace emu::z80 {
 
     bool Cpu::is_interrupted() const {
         return m_is_interrupted;
+    }
+
+    InterruptMode Cpu::interrupt_mode() const {
+        return m_interrupt_mode;
     }
 
     void Cpu::notify_out_observers(u8 port) {

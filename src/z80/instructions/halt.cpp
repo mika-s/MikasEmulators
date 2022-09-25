@@ -11,11 +11,11 @@ namespace emu::z80 {
      *   <li>Condition bits affected: none</li>
      * </ul>
      *
-     * @param stopped is the stopped status variable
+     * @param is_halted is the halted status variable, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void halt(bool &stopped, unsigned long &cycles) {
-        stopped = true;
+    void halt(bool &is_halted, unsigned long &cycles) {
+        is_halted = true;
 
         cycles = 4;
     }

@@ -10,7 +10,6 @@ set(SOURCES_8080_CPP
         src/8080/applications/space_invaders/space_invaders.cpp
         src/8080/applications/space_invaders/space_invaders_session.cpp
         src/8080/cpu.cpp
-        src/8080/debug_container.cpp
         src/8080/disassembler8080.cpp
         src/8080/emulator_memory.cpp
         src/8080/flags.cpp
@@ -116,7 +115,6 @@ set(SOURCES_8080_H
         src/8080/applications/space_invaders/interfaces/input.h
         src/8080/applications/space_invaders/interfaces/io_observer.h
         src/8080/cpu.h
-        src/8080/debug_container.h
         src/8080/disassembler8080.h
         src/8080/emulator_memory.h
         src/8080/flags.h

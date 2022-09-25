@@ -6,10 +6,9 @@
 #include <vector>
 #include <unordered_map>
 #include "z80/cpu.h"
-#include "z80/debug_container.h"
 #include "z80/run_status.h"
-#include "z80/applications/pacman/cpu_io.h"
-#include "z80/applications/pacman/gui.h"
+#include "z80/applications/pacman/memory_mapped_io.h"
+#include "z80/applications/pacman/gui/gui.h"
 #include "z80/applications/pacman/interfaces/input.h"
 #include "z80/applications/pacman/interfaces/io_observer.h"
 #include "z80/interfaces/emulatorZ80.h"
@@ -19,11 +18,13 @@
 #include "z80/interfaces/session.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/debugging/debugger.h"
+#include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/logging/log_observer.h"
 #include "crosscutting/logging/logger.h"
 
 namespace emu::z80::applications::pacman {
 
+    using emu::debugger::DebugContainer;
     using emu::debugger::Debugger;
     using emu::logging::Logger;
 
@@ -35,12 +36,10 @@ namespace emu::z80::applications::pacman {
               public IoObserver {
     public:
         PacmanSession(
-                const Settings &settings,
                 std::shared_ptr<Gui> gui,
                 std::shared_ptr<Input> input,
-                EmulatorMemory memory,
-                EmulatorMemory tile_rom,
-                EmulatorMemory sprite_rom
+                std::shared_ptr<MemoryMappedIo> memory_mapped_io,
+                EmulatorMemory &memory
         );
 
         ~PacmanSession() override;
@@ -68,14 +67,14 @@ namespace emu::z80::applications::pacman {
         bool m_is_continuing_execution;
         RunStatus m_run_status;
 
-        CpuIo m_cpu_io;
+        u8 m_vblank_interrupt_return;
+
+        std::shared_ptr<MemoryMappedIo> m_memory_mapped_io;
         std::shared_ptr<Gui> m_gui;
         std::shared_ptr<Input> m_input;
         std::unique_ptr<Cpu> m_cpu;
 
-        EmulatorMemory m_memory;
-        EmulatorMemory m_tile_rom;
-        EmulatorMemory m_sprite_rom;
+        EmulatorMemory &m_memory;
 
         std::shared_ptr<Logger> m_logger;
         std::shared_ptr<Debugger> m_debugger;
@@ -90,20 +89,8 @@ namespace emu::z80::applications::pacman {
         // Game loop - end
 
         // IO - begin
-        static constexpr int in_port_unused = 0;
-        static constexpr int in_port_1 = 1;
-        static constexpr int in_port_2 = 2;
-        static constexpr int in_port_read_shift = 3;
-
-        static constexpr int out_port_shift_offset = 2;
-        static constexpr int out_port_sound_1 = 3;
-        static constexpr int out_port_do_shift = 4;
-        static constexpr int out_port_sound_2 = 5;
-        static constexpr int out_port_watchdog = 6;
+        static constexpr int out_port_vblank_interrupt_return = 0;
         // IO - end
-
-        static constexpr unsigned int rst_1_z80 = 0xCF;
-        static constexpr unsigned int rst_2_z80 = 0xD7;
 
         void running(u64 &last_tick, unsigned long &cycles);
 
@@ -117,7 +104,11 @@ namespace emu::z80::applications::pacman {
 
         void setup_debugging();
 
-        std::vector<u8> vram();
+        std::vector<u8> tile_ram();
+
+        std::vector<u8> sprite_ram();
+
+        std::vector<u8> palette_ram();
 
         std::vector<u8> memory();
 

@@ -1,12 +1,12 @@
-#ifndef MIKA_EMULATORS_Z80_DEBUG_CONTAINER_H
-#define MIKA_EMULATORS_Z80_DEBUG_CONTAINER_H
+#ifndef MIKA_EMULATORS_CROSSCUTTING_DEBUGGING_DEBUG_CONTAINER_H
+#define MIKA_EMULATORS_CROSSCUTTING_DEBUGGING_DEBUG_CONTAINER_H
 
 #include <functional>
 #include <string>
 #include <vector>
 #include "crosscutting/typedefs.h"
 
-namespace emu::z80 {
+namespace emu::debugger {
 
     class RegisterDebugContainer {
     public:
@@ -137,6 +137,12 @@ namespace emu::z80 {
 
         [[nodiscard]] bool is_interrupted_set() const;
 
+        void add_interrupt_mode(const std::function<std::string()> &value_retriever);
+
+        [[nodiscard]] std::string interrupt_mode() const;
+
+        [[nodiscard]] bool is_interrupt_mode_set() const;
+
         void add_disassembled_program(std::vector<std::string> disassembled_program);
 
         std::vector<std::string> disassembled_program();
@@ -164,9 +170,12 @@ namespace emu::z80 {
         std::function<bool()> m_is_interrupted_retriever;
         bool m_is_interrupted_set;
 
+        std::function<std::string()> m_interrupt_mode_retriever;
+        bool m_is_interrupt_mode_set;
+
         std::vector<std::string> m_disassembled_program;
         bool m_is_disassembled_program_set;
     };
 }
 
-#endif //MIKA_EMULATORS_Z80_DEBUG_CONTAINER_H
+#endif //MIKA_EMULATORS_CROSSCUTTING_DEBUGGING_DEBUG_CONTAINER_H

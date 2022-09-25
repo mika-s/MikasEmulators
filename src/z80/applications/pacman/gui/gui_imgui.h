@@ -1,5 +1,5 @@
-#ifndef MIKA_EMULATORS_Z80_APPLICATIONS_PACMAN_GUI_IMGUI_H
-#define MIKA_EMULATORS_Z80_APPLICATIONS_PACMAN_GUI_IMGUI_H
+#ifndef MIKA_EMULATORS_Z80_APPLICATIONS_PACMAN_GUI_GUI_IMGUI_H
+#define MIKA_EMULATORS_Z80_APPLICATIONS_PACMAN_GUI_GUI_IMGUI_H
 
 #include <cstdint>
 #include <memory>
@@ -7,10 +7,10 @@
 #include <SDL_video.h>
 #include <SDL_render.h>
 #include "gui.h"
-#include "z80/debug_container.h"
 #include "z80/run_status.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/debugging/debugger.h"
+#include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/gui/cpu_info.h"
 #include "crosscutting/gui/debug_log.h"
 #include "crosscutting/gui/disassembly_window.h"
@@ -38,7 +38,12 @@ namespace emu::z80::applications::pacman {
 
         void remove_gui_observer(GuiObserver *observer) override;
 
-        void update_screen(const std::vector<u8> &vram, RunStatus run_status) override;
+        void update_screen(
+                const std::vector<u8> &tile_ram,
+                const std::vector<u8> &sprite_ram,
+                const std::vector<u8> &palette_ram,
+                RunStatus run_status
+        ) override;
 
         void update_debug_only() override;
 
@@ -97,4 +102,4 @@ namespace emu::z80::applications::pacman {
     };
 }
 
-#endif //MIKA_EMULATORS_Z80_APPLICATIONS_PACMAN_GUI_IMGUI_H
+#endif //MIKA_EMULATORS_Z80_APPLICATIONS_PACMAN_GUI_GUI_IMGUI_H

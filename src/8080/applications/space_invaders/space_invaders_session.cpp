@@ -7,6 +7,11 @@
 
 namespace emu::i8080::applications::space_invaders {
 
+    using emu::debugger::FlagRegisterDebugContainer;
+    using emu::debugger::IoDebugContainer;
+    using emu::debugger::MemoryDebugContainer;
+    using emu::debugger::RegisterDebugContainer;
+
     SpaceInvadersSession::SpaceInvadersSession(
             const Settings &settings,
             std::shared_ptr<Gui> gui,
@@ -341,7 +346,7 @@ namespace emu::i8080::applications::space_invaders {
     }
 
     std::vector<u8> SpaceInvadersSession::vram() {
-        return {m_memory.begin() + 0x2400, m_memory.begin() + 0x3fff};
+        return {m_memory.begin() + 0x2400, m_memory.begin() + 0x3fff};  // TODO: Maybe off by one
     }
 
     std::vector<u8> SpaceInvadersSession::memory() {

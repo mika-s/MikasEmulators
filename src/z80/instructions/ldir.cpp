@@ -28,6 +28,7 @@ namespace emu::z80 {
      * @param h_reg is the H register, which will be mutated
      * @param l_reg is the L register, which will be mutated
      * @param acc_reg is the accumulator, for use in setting XF and YF
+     * @param memory is the memory, which will be mutated
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
@@ -106,7 +107,7 @@ namespace emu::z80 {
         SUBCASE("should always reset the half carry flag") {
             u16 pc = 0;
             EmulatorMemory memory;
-            memory.add({0x23, 0x56, 0x3a, 0x99, 0x3f, 0xaa});
+            memory.add({0x23, 0x56, 0x3a, 0x99, 0x3f, 0xaa, 0x52, 0x11, 0xcd});
             u8 b_reg = 0, c_reg = 1;
             u8 d_reg = 0, e_reg = 4;
             u8 h_reg = 0, l_reg = 0;
@@ -139,7 +140,7 @@ namespace emu::z80 {
         SUBCASE("should always reset the add/subtract flag") {
             u16 pc = 0;
             EmulatorMemory memory;
-            memory.add({0x23, 0x56, 0x3a, 0x99, 0x3f, 0xaa});
+            memory.add({0x23, 0x56, 0x3a, 0x99, 0x3f, 0xaa, 0x52, 0x11, 0xcd});
             u8 b_reg = 0, c_reg = 1;
             u8 d_reg = 0, e_reg = 4;
             u8 h_reg = 0, l_reg = 0;
@@ -172,7 +173,7 @@ namespace emu::z80 {
         SUBCASE("should set the parity/overflow flag while BC is greater than 0, and reset it when it reaches 0") {
             u16 pc = 0;
             EmulatorMemory memory;
-            memory.add({0x23, 0x56, 0x3a, 0x99, 0x3f, 0xaa});
+            memory.add({0x23, 0x56, 0x3a, 0x99, 0x3f, 0xaa, 0x52, 0x11, 0xcd});
             u8 b_reg = 0, c_reg = 3;
             u8 d_reg = 0, e_reg = 4;
             u8 h_reg = 0, l_reg = 0;

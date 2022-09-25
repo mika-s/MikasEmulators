@@ -3,13 +3,14 @@
 
 #include <string>
 #include <vector>
-#include "8080/debug_container.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/debugging/debugger.h"
+#include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/logging/logger.h"
 
 namespace emu::gui {
 
+    using emu::debugger::DebugContainer;
     using emu::debugger::Debugger;
     using emu::logging::Logger;
 
@@ -19,7 +20,7 @@ namespace emu::gui {
 
         void attach_debugger(std::shared_ptr<Debugger> debugger);
 
-        void attach_debug_container(i8080::DebugContainer &debug_container);
+        void attach_debug_container(DebugContainer &debug_container);
 
         void attach_logger(std::shared_ptr<Logger> logger);
 
@@ -30,7 +31,7 @@ namespace emu::gui {
         static constexpr int address_base = 16;
 
         std::shared_ptr<Debugger> m_debugger;
-        i8080::DebugContainer m_debug_container;
+        DebugContainer m_debug_container;
         std::vector<std::string> m_content;
         std::shared_ptr<Logger> m_logger;
 

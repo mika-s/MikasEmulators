@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <iostream>
 #include <SDL.h>
 #include "imgui_impl_sdl.h"
 #include "input_sdl.h"
@@ -27,28 +28,7 @@ namespace emu::z80::applications::pacman {
         }
     }
 
-    /*
-     Ports:
-        Read 1
-        BIT	0	coin (0 when active)
-            1	P2 start button
-            2	P1 start button
-            3	?
-            4	P1 shoot button
-            5	P1 joystick left
-            6	P1 joystick right
-            7	?
-
-        Read 2
-        BIT	0,1	dipswitch number of lives (0:3,1:4,2:5,3:6)
-            2	tilt 'button'
-            3	dipswitch bonus life at 1:1000,0:1500
-            4	P2 shoot button
-            5	P2 joystick left
-            6	P2 joystick right
-            7	dipswitch coin info 1:off,0:on
-    */
-    void InputSdl::read(RunStatus &run_status, CpuIo &cpu_io) {
+    void InputSdl::read(RunStatus &run_status, std::shared_ptr<MemoryMappedIo> memory_mapped_io) {
         SDL_Event read_input_event;
 
         while (SDL_PollEvent(&read_input_event) != 0) {
@@ -59,37 +39,48 @@ namespace emu::z80::applications::pacman {
                 case SDL_KEYUP:
                     switch (read_input_event.key.keysym.scancode) {
                         case insert_coin:
-                            unset_bit(cpu_io.m_in_port1, 0);
+                            memory_mapped_io->write_in0(5, true);
+                            std::cout << "KEY UP: Insert coin\n";
                             break;
                         case p1_start:
-                            unset_bit(cpu_io.m_in_port1, 2);
+                            memory_mapped_io->write_in1(5, true);
+                            std::cout << "KEY UP: P1 start\n";
                             break;
                         case p1_up:
-                            unset_bit(cpu_io.m_in_port1, 4);
+                            memory_mapped_io->write_in0(1, true);
+                            std::cout << "KEY UP: P1 up\n";
                             break;
                         case p1_down:
-                            unset_bit(cpu_io.m_in_port1, 4);
+                            memory_mapped_io->write_in0(4, true);
+                            std::cout << "KEY UP: P1 down\n";
                             break;
                         case p1_left:
-                            unset_bit(cpu_io.m_in_port1, 5);
+                            memory_mapped_io->write_in0(2, true);
+                            std::cout << "KEY UP: P1 left\n";
                             break;
                         case p1_right:
-                            unset_bit(cpu_io.m_in_port1, 6);
+                            memory_mapped_io->write_in0(3, true);
+                            std::cout << "KEY UP: P1 right\n";
                             break;
                         case p2_start:
-                            unset_bit(cpu_io.m_in_port1, 1);
+                            memory_mapped_io->write_in1(6, true);
+                            std::cout << "KEY UP: P2 start\n";
                             break;
                         case p2_up:
-                            unset_bit(cpu_io.m_in_port2, 4);
+                            memory_mapped_io->write_in1(1, true);
+                            std::cout << "KEY UP: P2 up\n";
                             break;
                         case p2_down:
-                            unset_bit(cpu_io.m_in_port2, 4);
+                            memory_mapped_io->write_in1(4, true);
+                            std::cout << "KEY UP: P2 down\n";
                             break;
                         case p2_left:
-                            unset_bit(cpu_io.m_in_port2, 5);
+                            memory_mapped_io->write_in1(2, true);
+                            std::cout << "KEY UP: P2 left\n";
                             break;
                         case p2_right:
-                            unset_bit(cpu_io.m_in_port2, 6);
+                            memory_mapped_io->write_in1(3, true);
+                            std::cout << "KEY UP: P2 right\n";
                             break;
                         default:
                             break;
@@ -99,6 +90,7 @@ namespace emu::z80::applications::pacman {
                     switch (read_input_event.key.keysym.scancode) {
                         case mute:
                             notify_io_observers(IoRequest::TOGGLE_MUTE);
+                            std::cout << "KEY DOWN: Mute\n";
                             break;
                         case pause:
                             if (run_status == RunStatus::PAUSED) {
@@ -106,39 +98,51 @@ namespace emu::z80::applications::pacman {
                             } else if (run_status == RunStatus::RUNNING) {
                                 run_status = RunStatus::PAUSED;
                             }
+                            std::cout << "KEY DOWN: Pause\n";
                             break;
                         case insert_coin:
-                            set_bit(cpu_io.m_in_port1, 0);
+                            memory_mapped_io->write_in0(5, false);
+                            std::cout << "KEY DOWN: Insert coin\n";
                             break;
                         case p1_start:
-                            set_bit(cpu_io.m_in_port1, 2);
+                            memory_mapped_io->write_in1(5, false);
+                            std::cout << "KEY DOWN: P1 start\n";
                             break;
                         case p1_up:
-                            set_bit(cpu_io.m_in_port1, 4);
+                            memory_mapped_io->write_in0(1, false);
+                            std::cout << "KEY DOWN: P1 up\n";
                             break;
                         case p1_down:
-                            set_bit(cpu_io.m_in_port1, 4);
+                            memory_mapped_io->write_in0(4, false);
+                            std::cout << "KEY DOWN: P1 down\n";
                             break;
                         case p1_left:
-                            set_bit(cpu_io.m_in_port1, 5);
+                            memory_mapped_io->write_in0(2, false);
+                            std::cout << "KEY DOWN: P1 left\n";
                             break;
                         case p1_right:
-                            set_bit(cpu_io.m_in_port1, 6);
+                            memory_mapped_io->write_in0(3, false);
+                            std::cout << "KEY DOWN: P1 right\n";
                             break;
                         case p2_start:
-                            set_bit(cpu_io.m_in_port1, 1);
+                            memory_mapped_io->write_in1(6, false);
+                            std::cout << "KEY DOWN: P2 start\n";
                             break;
                         case p2_up:
-                            set_bit(cpu_io.m_in_port2, 4);
+                            memory_mapped_io->write_in1(1, false);
+                            std::cout << "KEY DOWN: P2 up\n";
                             break;
                         case p2_down:
-                            set_bit(cpu_io.m_in_port2, 4);
+                            memory_mapped_io->write_in1(4, false);
+                            std::cout << "KEY DOWN: P2 down\n";
                             break;
                         case p2_left:
-                            set_bit(cpu_io.m_in_port2, 5);
+                            memory_mapped_io->write_in1(2, false);
+                            std::cout << "KEY DOWN: P2 left\n";
                             break;
                         case p2_right:
-                            set_bit(cpu_io.m_in_port2, 6);
+                            memory_mapped_io->write_in1(3, false);
+                            std::cout << "KEY DOWN: P2 right\n";
                             break;
                         default:
                             break;

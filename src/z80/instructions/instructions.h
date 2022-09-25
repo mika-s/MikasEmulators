@@ -873,7 +873,7 @@ namespace emu::z80 {
     void ex_msp_hl(u16 sp, EmulatorMemory &memory, u8 &h_reg, u8 &l_reg, unsigned long &cycles);
     void ex_msp_ixy(u16 sp, EmulatorMemory &memory, u16 &ixy_reg, unsigned long &cycles);
     void exx(u8 &b_reg, u8 &c_reg, u8 &b_p_reg, u8 &c_p_reg, u8 &d_reg, u8 &e_reg, u8 &d_p_reg, u8 &e_p_reg, u8 &h_reg, u8 &l_reg, u8 &h_p_reg, u8 &l_p_reg, unsigned long &cycles);
-    void halt(bool &stopped, unsigned long &cycles);
+    void halt(bool &is_halted, unsigned long &cycles);
     void im(InterruptMode &interrupt_mode, InterruptMode value, unsigned long &cycles);
     void in_A_Mn(u8 &acc_reg, const NextByte &args, std::vector<u8> io, unsigned long &cycles);
     void inc_r(u8 &reg, Flags &flag_reg, unsigned long &cycles);

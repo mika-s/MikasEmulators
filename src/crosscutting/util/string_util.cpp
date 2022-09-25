@@ -21,25 +21,36 @@ namespace emu::util::string {
     std::string hexify_wo_0x(u8 val) {
         std::stringstream ss;
         ss << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(val);
-        std::string returnVal = ss.str();
+        std::string return_val = ss.str();
 
-        return returnVal;
+        return return_val;
+    }
+
+    std::string hexify_wo_0x(i8 val) {
+        if (val >= 0) {
+            return hexify_wo_0x(static_cast<u8>(val));
+        } else {
+            u8 uval = abs(val);
+            std::stringstream ss;
+            ss << "-" << hexify_wo_0x(uval);
+            return ss.str();
+        }
     }
 
     std::string hexify_wo_0x(u16 val) {
         std::stringstream ss;
         ss << std::setfill('0') << std::setw(4) << std::hex << static_cast<int>(val);
-        std::string returnVal = ss.str();
+        std::string return_val = ss.str();
 
-        return returnVal;
+        return return_val;
     }
 
     std::string hexify_wo_0x(unsigned int val, int width) {
         std::stringstream ss;
         ss << std::setfill('0') << std::setw(width) << std::hex << static_cast<int>(val);
-        std::string returnVal = ss.str();
+        std::string return_val = ss.str();
 
-        return returnVal;
+        return return_val;
     }
 
     std::string find_short_executable_name(char *long_program_name) {
@@ -56,7 +67,7 @@ namespace emu::util::string {
         return name;
     }
 
-    std::vector<std::string> split(const std::stringstream &ss, const std::string& delimiter) {
+    std::vector<std::string> split(const std::stringstream &ss, const std::string &delimiter) {
         std::vector<std::string> split_string;
         std::string s = ss.str();
         std::string token;

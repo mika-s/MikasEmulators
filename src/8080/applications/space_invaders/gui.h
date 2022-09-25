@@ -1,16 +1,18 @@
 #ifndef MIKA_EMULATORS_8080_APPLICATIONS_SPACE_INVADERS_GUI_H
 #define MIKA_EMULATORS_8080_APPLICATIONS_SPACE_INVADERS_GUI_H
 
-#include "8080/debug_container.h"
 #include "8080/interfaces/gui_observer.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/debugging/debugger.h"
+#include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/logging/logger.h"
 #include "crosscutting/util/byte_util.h"
 
 namespace emu::i8080::applications::space_invaders {
 
     using emu::util::byte::is_bit_set;
+    using emu::util::byte::to_u32;
+    using emu::debugger::DebugContainer;
     using emu::debugger::Debugger;
     using emu::logging::Logger;
 
@@ -42,7 +44,7 @@ namespace emu::i8080::applications::space_invaders {
         static constexpr int scaled_height = static_cast<int>(scale * static_cast<float>(height));
 
         static std::vector<u32> create_framebuffer(const std::vector<u8> &vram) {
-            u8 screen[height][width][colors];
+            u8 screen[height][width][colors];   // TODO: std::array
 
             for (int i = 0; i < height * width / bits_in_byte; i++) {
                 const int y = i * bits_in_byte / height;
@@ -66,7 +68,7 @@ namespace emu::i8080::applications::space_invaders {
                             } else {
                                 g = 255;
                             }
-                        } else if (16 <= px && px <= 72) {
+                        } else if (px <= 72) {
                             g = 255;
                         } else if (192 <= px && px < 224) {
                             r = 255;
@@ -94,7 +96,7 @@ namespace emu::i8080::applications::space_invaders {
                     u8 r = width_idx[0];
                     u8 g = width_idx[1];
                     u8 b = width_idx[2];
-                    output.push_back(0xff000000 | b << 16 | g << 8 | r);
+                    output.push_back(to_u32(0xff, b, g, r));
                 }
             }
 

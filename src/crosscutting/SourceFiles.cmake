@@ -2,6 +2,7 @@ set(SOURCES_CROSSCUTTING_CPP
         src/main.cpp
         src/crosscutting/debugging/breakpoint.cpp
         src/crosscutting/debugging/debugger.cpp
+        src/crosscutting/debugging/debug_container.cpp
         src/crosscutting/exceptions/invalid_program_arguments_exception.cpp
         src/crosscutting/exceptions/unrecognized_opcode_exception.cpp
         src/crosscutting/gui/cpu_info.cpp
@@ -19,6 +20,7 @@ set(SOURCES_CROSSCUTTING_H
         src/crosscutting/typedefs.h
         src/crosscutting/debugging/breakpoint.h
         src/crosscutting/debugging/debugger.h
+        src/crosscutting/debugging/debug_container.h
         src/crosscutting/exceptions/invalid_program_arguments_exception.h
         src/crosscutting/exceptions/unrecognized_opcode_exception.h
         src/crosscutting/gui/cpu_info.h

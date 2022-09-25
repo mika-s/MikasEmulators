@@ -4,9 +4,9 @@
 #include <cstdint>
 #include <memory>
 #include "z80/emulator_memory.h"
-#include "z80/applications/pacman/gui.h"
 #include "z80/applications/pacman/settings.h"
 #include "z80/applications/pacman/pacman_session.h"
+#include "z80/applications/pacman/gui/gui.h"
 #include "z80/applications/pacman/interfaces/input.h"
 #include "z80/interfaces/emulatorZ80.h"
 #include "crosscutting/typedefs.h"
@@ -25,9 +25,14 @@ namespace emu::z80::applications::pacman {
 
     private:
         Settings m_settings;
+
         EmulatorMemory m_memory;
+        EmulatorMemory m_color_rom;
+        EmulatorMemory m_palette_rom;
         EmulatorMemory m_tile_rom;
         EmulatorMemory m_sprite_rom;
+        std::shared_ptr<MemoryMappedIo> m_memory_mapped_io;
+
         std::shared_ptr<Gui> m_gui;
         std::shared_ptr<Input> m_input;
 
@@ -42,6 +47,8 @@ namespace emu::z80::applications::pacman {
         static std::vector<u8> create_sprite_ram();
 
         static std::vector<u8> create_memory_mapped_io();
+
+        static std::vector<u8> fill_remaining(size_t memory_size);
     };
 }
 

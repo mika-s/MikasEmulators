@@ -4,7 +4,7 @@
 #include <SDL_scancode.h>
 #include <vector>
 #include "z80/run_status.h"
-#include "z80/applications/pacman/cpu_io.h"
+#include "z80/applications/pacman/memory_mapped_io.h"
 #include "z80/applications/pacman/io_request.h"
 #include "z80/applications/pacman/interfaces/input.h"
 #include "z80/applications/pacman/interfaces/io_observer.h"
@@ -13,7 +13,7 @@ namespace emu::z80::applications::pacman {
 
     class InputSdl : public Input {
     public:
-        void read(RunStatus &run_status, CpuIo &cpu_io) override;
+        void read(RunStatus &run_status, std::shared_ptr<MemoryMappedIo> memory_mapped_io) override;
 
         void read_debug_only(RunStatus &run_status) override;
 

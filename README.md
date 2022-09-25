@@ -324,6 +324,8 @@ cd cmake-build-debug/
 I looked at the following emulators and resources while developing my Z80 emulator:
 
 - [Superzazu's Z80 emulator](https://github.com/superzazu/z80): Used as a reference emulator while looking for errors.
+- [Justin-Credible's Pacman emulator](https://github.com/Justin-Credible/pac-man-emulator): Used as a reference when
+  getting the video emulation to work.
 - [Opcode table](https://clrhome.org/table/)
 - [The Undocumented Z80 Documented by Sean Young](docs/z80/z80-documented-v0.91.pdf):
   Describes the undocumented opcodes

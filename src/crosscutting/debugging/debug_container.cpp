@@ -1,6 +1,6 @@
 #include "debug_container.h"
 
-namespace emu::z80 {
+namespace emu::debugger {
 
     RegisterDebugContainer::RegisterDebugContainer(
             std::string name,
@@ -100,6 +100,7 @@ namespace emu::z80 {
               m_is_pc_set(false),
               m_is_sp_set(false),
               m_is_interrupted_set(false),
+              m_is_interrupt_mode_set(false),
               m_is_disassembled_program_set(false) {
     }
 
@@ -187,6 +188,19 @@ namespace emu::z80 {
 
     bool DebugContainer::is_interrupted_set() const {
         return m_is_interrupted_set;
+    }
+
+    void DebugContainer::add_interrupt_mode(const std::function<std::string()> &value_retriever) {
+        m_interrupt_mode_retriever = value_retriever;
+        m_is_interrupt_mode_set = true;
+    }
+
+    std::string DebugContainer::interrupt_mode() const {
+        return m_interrupt_mode_retriever();
+    }
+
+    bool DebugContainer::is_interrupt_mode_set() const {
+        return m_is_interrupt_mode_set;
     }
 
     void DebugContainer::add_disassembled_program(std::vector<std::string> disassembled_program) {

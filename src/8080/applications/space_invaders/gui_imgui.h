@@ -7,10 +7,10 @@
 #include <SDL_video.h>
 #include <SDL_render.h>
 #include "gui.h"
-#include "8080/debug_container.h"
 #include "8080/run_status.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/debugging/debugger.h"
+#include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/gui/cpu_info.h"
 #include "crosscutting/gui/debug_log.h"
 #include "crosscutting/gui/disassembly_window.h"

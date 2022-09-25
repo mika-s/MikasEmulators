@@ -6,12 +6,13 @@
 
 namespace emu::gui {
 
+    using emu::debugger::DebugContainer;
     using emu::util::byte::is_bit_set;
     using emu::util::string::hexify;
 
     IoInfo::IoInfo() = default;
 
-    void IoInfo::attach_debug_container(i8080::DebugContainer &debug_container) {
+    void IoInfo::attach_debug_container(DebugContainer &debug_container) {
         m_debug_container = debug_container;
     }
 

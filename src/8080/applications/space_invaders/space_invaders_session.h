@@ -6,7 +6,6 @@
 #include <vector>
 #include <unordered_map>
 #include "8080/cpu.h"
-#include "8080/debug_container.h"
 #include "8080/run_status.h"
 #include "8080/shift_register.h"
 #include "8080/applications/space_invaders/audio.h"
@@ -22,11 +21,13 @@
 #include "8080/interfaces/session.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/debugging/debugger.h"
+#include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/logging/log_observer.h"
 #include "crosscutting/logging/logger.h"
 
 namespace emu::i8080::applications::space_invaders {
 
+    using emu::debugger::DebugContainer;
     using emu::debugger::Debugger;
     using emu::logging::Logger;
 

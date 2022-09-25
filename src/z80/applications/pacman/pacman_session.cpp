@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 #include <utility>
 #include <SDL_timer.h>
 #include "pacman_session.h"
@@ -7,30 +8,32 @@
 
 namespace emu::z80::applications::pacman {
 
+    using emu::debugger::FlagRegisterDebugContainer;
+    using emu::debugger::IoDebugContainer;
+    using emu::debugger::MemoryDebugContainer;
+    using emu::debugger::RegisterDebugContainer;
+    using emu::util::string::split;
+
     PacmanSession::PacmanSession(
-            const Settings &settings,
             std::shared_ptr<Gui> gui,
             std::shared_ptr<Input> input,
-            EmulatorMemory memory,
-            EmulatorMemory tile_rom,
-            EmulatorMemory sprite_rom
+            std::shared_ptr<MemoryMappedIo> memory_mapped_io,
+            EmulatorMemory &memory
     )
             : m_is_in_debug_mode(false),
               m_is_stepping_instruction(false),
               m_is_stepping_cycle(false),
               m_is_continuing_execution(false),
               m_run_status(NOT_RUNNING),
-              m_cpu_io(CpuIo(0, 0b00001000, 0)),
+              m_vblank_interrupt_return(0),
+              m_memory_mapped_io(std::move(memory_mapped_io)),
               m_gui(std::move(gui)),
               m_input(std::move(input)),
-              m_memory(std::move(memory)),
-              m_tile_rom(std::move(tile_rom)),
-              m_sprite_rom(std::move(sprite_rom)),
+              m_memory(memory),
               m_logger(std::make_shared<Logger>()),
               m_debugger(std::make_shared<Debugger>()) {
         setup_cpu();
         setup_debugging();
-        m_cpu_io.set_dipswitches(settings);
 
         m_gui->add_gui_observer(*this);
         m_input->add_io_observer(*this);
@@ -74,7 +77,7 @@ namespace emu::z80::applications::pacman {
             last_tick = SDL_GetTicks();
 
             cycles = 0;
-            while (cycles < static_cast<long>(cycles_per_tick / 2)) {
+            while (cycles < static_cast<long>(cycles_per_tick)) {
                 cycles += m_cpu->next_instruction();
                 if (m_is_in_debug_mode && m_debugger->has_breakpoint(m_cpu->pc())) {
                     m_logger->info("Breakpoint hit: 0x%04x", m_cpu->pc());
@@ -83,34 +86,32 @@ namespace emu::z80::applications::pacman {
                 }
             }
 
-            if (m_cpu->is_inta()) {
-                m_cpu->interrupt(rst_1_z80);
+            m_input->read(m_run_status, m_memory_mapped_io);
+            m_gui->update_screen(
+                    tile_ram(),
+                    sprite_ram(),
+                    palette_ram(),
+                    m_run_status
+            );
+
+            if (m_memory_mapped_io->is_interrupt_enabled()) {
+                m_cpu->interrupt(m_vblank_interrupt_return);
             }
 
-            cycles = 0;
-            while (cycles < static_cast<long>(cycles_per_tick / 2)) {
-                cycles += m_cpu->next_instruction();
-                if (m_is_in_debug_mode && m_debugger->has_breakpoint(m_cpu->pc())) {
-                    m_logger->info("Breakpoint hit: 0x%04x", m_cpu->pc());
-                    m_run_status = STEPPING;
-                    return;
-                }
-            }
-
-            m_input->read(m_run_status, m_cpu_io);
-            m_gui->update_screen(this->vram(), m_run_status);
-
-            if (m_cpu->is_inta()) {
-                m_cpu->interrupt(rst_2_z80);
-            }
+            m_memory_mapped_io->set_initial_values();
         }
     }
 
     void PacmanSession::pausing(u64 &last_tick) {
         if (SDL_GetTicks64() - last_tick >= tick_limit) {
             last_tick = SDL_GetTicks();
-            m_input->read(m_run_status, m_cpu_io);
-            m_gui->update_screen(this->vram(), m_run_status);
+            m_input->read(m_run_status, m_memory_mapped_io);
+            m_gui->update_screen(
+                    tile_ram(),
+                    sprite_ram(),
+                    palette_ram(),
+                    m_run_status
+            );
         }
     }
 
@@ -123,7 +124,7 @@ namespace emu::z80::applications::pacman {
         }
 
         cycles = 0;
-        while (cycles < static_cast<long>(cycles_per_tick / 2)) {
+        while (cycles < static_cast<long>(cycles_per_tick)) {
             cycles += m_cpu->next_instruction();
             if (!m_is_stepping_cycle && !m_is_continuing_execution) {
                 await_input_and_update_debug();
@@ -133,26 +134,16 @@ namespace emu::z80::applications::pacman {
             }
         }
 
-        if (m_cpu->is_inta()) {
-            m_cpu->interrupt(rst_1_z80);
-        }
+        m_input->read(m_run_status, m_memory_mapped_io);
+        m_gui->update_screen(
+                tile_ram(),
+                sprite_ram(),
+                palette_ram(),
+                m_run_status
+        );
 
-        cycles = 0;
-        while (cycles < static_cast<long>(cycles_per_tick / 2)) {
-            cycles += m_cpu->next_instruction();
-            if (!m_is_stepping_cycle) {
-                await_input_and_update_debug();
-            }
-            if (m_run_status == NOT_RUNNING) {
-                return;
-            }
-        }
-
-        m_input->read(m_run_status, m_cpu_io);
-        m_gui->update_screen(this->vram(), m_run_status);
-
-        if (m_cpu->is_inta()) {
-            m_cpu->interrupt(rst_2_z80);
+        if (m_memory_mapped_io->is_interrupt_enabled()) {
+            m_cpu->interrupt(m_vblank_interrupt_return);
         }
 
         m_is_stepping_cycle = false;
@@ -200,60 +191,40 @@ namespace emu::z80::applications::pacman {
         m_debug_container.add_register(RegisterDebugContainer("E", [&]() { return m_cpu->e(); }));
         m_debug_container.add_register(RegisterDebugContainer("H", [&]() { return m_cpu->h(); }));
         m_debug_container.add_register(RegisterDebugContainer("L", [&]() { return m_cpu->l(); }));
+        m_debug_container.add_register(RegisterDebugContainer("I", [&]() { return m_cpu->i(); }));
+        m_debug_container.add_register(RegisterDebugContainer("R", [&]() { return m_cpu->r(); }));
         m_debug_container.add_pc([&]() { return m_cpu->pc(); });
         m_debug_container.add_sp([&]() { return m_cpu->sp(); });
         m_debug_container.add_is_interrupted([&]() { return m_cpu->is_interrupted(); });
+        m_debug_container.add_interrupt_mode([&]() {
+            switch (m_cpu->interrupt_mode()) {
+                case InterruptMode::ZERO:
+                    return "0";
+                case InterruptMode::ONE:
+                    return "1";
+                case InterruptMode::TWO:
+                    return "2";
+                default:
+                    return "Unknown";
+            }
+        });
         m_debug_container.add_flag_register(FlagRegisterDebugContainer(
                 "F",
                 [&]() { return m_cpu->f(); },
                 {
                         {"s", 7},
                         {"z", 6},
-                        {"u", 5},
-                        {"a", 4},
-                        {"u", 3},
+                        {"y", 5},
+                        {"h", 4},
+                        {"x", 3},
                         {"p", 2},
-                        {"u", 1},
+                        {"n", 1},
                         {"c", 0}
                 }));
         m_debug_container.add_io(IoDebugContainer(
-                "shift (change offset)",
-                [&]() { return m_outputs_during_cycle.contains(out_port_shift_offset); },
-                [&]() { return m_outputs_during_cycle[out_port_shift_offset]; }
-        ));
-        m_debug_container.add_io(IoDebugContainer(
-                "shift (do shift)",
-                [&]() { return m_outputs_during_cycle.contains(out_port_do_shift); },
-                [&]() { return m_outputs_during_cycle[out_port_do_shift]; }
-        ));
-        m_debug_container.add_io(IoDebugContainer(
-                "watchdog",
-                [&]() { return m_outputs_during_cycle.contains(out_port_watchdog); },
-                [&]() { return m_outputs_during_cycle[out_port_watchdog]; }
-        ));
-        m_debug_container.add_io(IoDebugContainer(
-                "out sound 1",
-                [&]() { return m_outputs_during_cycle.contains(out_port_sound_1); },
-                [&]() { return m_outputs_during_cycle[out_port_sound_1]; },
-                {
-                        {"ufo",           0},
-                        {"shot",          1},
-                        {"flash",         2},
-                        {"invader_die",   3},
-                        {"extended_play", 4}
-                }
-        ));
-        m_debug_container.add_io(IoDebugContainer(
-                "out sound 2",
-                [&]() { return m_outputs_during_cycle.contains(out_port_sound_2); },
-                [&]() { return m_outputs_during_cycle[out_port_sound_2]; },
-                {
-                        {"fleet_movement_1", 0},
-                        {"fleet_movement_2", 1},
-                        {"fleet_movement_3", 2},
-                        {"fleet_movement_4", 3},
-                        {"ufo_hit",          4}
-                }
+                "vblank return",
+                [&]() { return m_outputs_during_cycle.contains(out_port_vblank_interrupt_return); },
+                [&]() { return m_outputs_during_cycle[out_port_vblank_interrupt_return]; }
         ));
         m_debug_container.add_memory(MemoryDebugContainer(
                 [&]() { return memory(); }
@@ -275,20 +246,8 @@ namespace emu::z80::applications::pacman {
 
     void PacmanSession::in_requested(u8 port) {
         switch (port) {
-            case in_port_unused:
-                m_cpu->input(in_port_unused, m_cpu_io.m_in_port0);
-                break;
-            case in_port_1:
-                m_cpu->input(in_port_1, m_cpu_io.m_in_port1);
-                break;
-            case in_port_2:
-                m_cpu->input(in_port_2, m_cpu_io.m_in_port2);
-                break;
-//            case in_port_read_shift:
-//                m_cpu->input(in_port_read_shift, m_cpu_io.m_shift_register.read());
-//                break;
             default:
-                throw std::runtime_error("Illegal input port for Space Invaders");
+                throw std::runtime_error("Illegal input port for Pacman");
         }
     }
 
@@ -300,22 +259,11 @@ namespace emu::z80::applications::pacman {
         }
 
         switch (port) {
-//            case out_port_shift_offset:
-//                m_cpu_io.m_shift_register.change_offset(m_cpu->a());
-//                break;
-            case out_port_sound_1:
-//                m_audio.play_sound_port_1(m_cpu->a());
-                break;
-            case out_port_do_shift:
-//                m_cpu_io.m_shift_register.shift(m_cpu->a());
-                break;
-            case out_port_sound_2:
-//                m_audio.play_sound_port_2(m_cpu->a());
-                break;
-            case out_port_watchdog:
+            case out_port_vblank_interrupt_return:
+                m_vblank_interrupt_return = m_cpu->a();
                 break;
             default:
-                throw std::runtime_error("Illegal output port for Space Invaders");
+                throw std::runtime_error("Illegal output port for Pacman");
         }
     }
 
@@ -344,14 +292,21 @@ namespace emu::z80::applications::pacman {
         }
     }
 
-    std::vector<u8> PacmanSession::vram() {
-        return {m_memory.begin() + 0x4000, m_memory.begin() + 0x4fff};
+    std::vector<u8> PacmanSession::tile_ram() {
+        return {m_memory.begin() + 0x4000, m_memory.begin() + 0x43ff + 1};
+    }
+
+    std::vector<u8> PacmanSession::palette_ram() {
+        return {m_memory.begin() + 0x4400, m_memory.begin() + 0x47ff + 1};
+    }
+
+    std::vector<u8> PacmanSession::sprite_ram() {
+        return {m_memory.begin() + 0x4ff0, m_memory.begin() + 0x506f + 1};
     }
 
     std::vector<u8> PacmanSession::memory() {
-        return {m_memory.begin(), m_memory.begin() + 0x3fff + 1};
+        return {m_memory.begin(), m_memory.begin() + 0x50ff + 1};
     }
-
 
     std::vector<std::string> PacmanSession::disassemble_program() {
         EmulatorMemory sliced_for_disassembly = m_memory.slice(0, 0x3fff);
@@ -360,7 +315,7 @@ namespace emu::z80::applications::pacman {
         DisassemblerZ80 disassembler(sliced_for_disassembly, ss);
         disassembler.disassemble();
 
-        std::vector<std::string> disassembled_program = emu::util::string::split(ss, "\n");
+        std::vector<std::string> disassembled_program = split(ss, "\n");
 
         return disassembled_program;
     }

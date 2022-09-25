@@ -36,7 +36,7 @@ namespace emu::z80 {
 
     void print_djnz(std::ostream &ostream, const NextByte &args) {
         ostream << "DJNZ "
-                << hexify_wo_0x(args.farg);
+                << hexify_wo_0x(static_cast<i8>(args.farg));
     }
 
     TEST_CASE("Z80: DJNZ") {

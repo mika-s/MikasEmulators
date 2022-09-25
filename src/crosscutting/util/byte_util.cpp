@@ -19,6 +19,10 @@ namespace emu::util::byte {
         return (farg << 8u) + sarg;
     }
 
+    u32 to_u32(u8 fiarg, u8 sarg, u8 targ, u8 foarg) {
+        return fiarg << 24 | sarg << 16 | targ << 8 | foarg;
+    }
+
     /**
      * Gets the low byte of an uint16_t.
      * <br/><br/>

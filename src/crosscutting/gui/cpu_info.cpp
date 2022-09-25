@@ -10,7 +10,7 @@ namespace emu::gui {
 
     CpuInfo::CpuInfo() = default;
 
-    void CpuInfo::attach_debug_container(i8080::DebugContainer &debug_container) {
+    void CpuInfo::attach_debug_container(DebugContainer &debug_container) {
         m_debug_container = debug_container;
     }
 
@@ -27,7 +27,7 @@ namespace emu::gui {
             const u8 value = reg.value();
 
             ImGui::Text("%s", name.c_str());
-            ImGui::SameLine(100.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+            ImGui::SameLine(margin_title_right, ImGui::GetStyle().ItemInnerSpacing.x);
             ImGui::Text("%s", hexify(value).c_str());
         }
         if (m_debug_container.is_flag_register_set()) {
@@ -36,7 +36,7 @@ namespace emu::gui {
 
             ImGui::Separator();
             ImGui::Text("%s", name.c_str());
-            ImGui::SameLine(100.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+            ImGui::SameLine(margin_title_right, ImGui::GetStyle().ItemInnerSpacing.x);
             ImGui::Text("%s", hexify(value).c_str());
             ImGui::SameLine(200.0f, ImGui::GetStyle().ItemInnerSpacing.x);
 
@@ -53,20 +53,26 @@ namespace emu::gui {
         if (m_debug_container.is_pc_set()) {
             ImGui::Separator();
             ImGui::Text("PC:");
-            ImGui::SameLine(100.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+            ImGui::SameLine(margin_title_right, ImGui::GetStyle().ItemInnerSpacing.x);
             ImGui::Text("%s", hexify(m_debug_container.pc()).c_str());
         }
         if (m_debug_container.is_sp_set()) {
             ImGui::Separator();
             ImGui::Text("SP:");
-            ImGui::SameLine(100.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+            ImGui::SameLine(margin_title_right, ImGui::GetStyle().ItemInnerSpacing.x);
             ImGui::Text("%s", hexify(m_debug_container.sp()).c_str());
         }
         if (m_debug_container.is_interrupted_set()) {
             ImGui::Separator();
             ImGui::Text("Interrupted:");
-            ImGui::SameLine(100.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+            ImGui::SameLine(margin_title_right, ImGui::GetStyle().ItemInnerSpacing.x);
             ImGui::Text("%i", m_debug_container.is_interrupted());
+        }
+        if (m_debug_container.is_interrupt_mode_set()) {
+            ImGui::Separator();
+            ImGui::Text("Interrupt mode:");
+            ImGui::SameLine(margin_title_right, ImGui::GetStyle().ItemInnerSpacing.x);
+            ImGui::Text("%s", m_debug_container.interrupt_mode().c_str());
         }
 
         ImGui::End();

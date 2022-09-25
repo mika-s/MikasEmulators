@@ -94,6 +94,8 @@ namespace emu::z80 {
 
         [[nodiscard]] bool is_interrupted() const;
 
+        [[nodiscard]] InterruptMode interrupt_mode() const;
+
         void interrupt(u8 supplied_instruction_from_interruptor);
 
         void nmi_interrupt();
@@ -103,7 +105,7 @@ namespace emu::z80 {
     private:
         static constexpr unsigned int number_of_io_ports = 256;
 
-        bool m_is_stopped;
+        bool m_is_halted;
 
         bool m_iff1;
         bool m_iff2;

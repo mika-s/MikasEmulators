@@ -4,21 +4,23 @@
 #include <string>
 #include <vector>
 #include "imgui_memory_editor.h"
-#include "8080/debug_container.h"
+#include "crosscutting/debugging/debug_container.h"
 
 namespace emu::gui {
+
+    using emu::debugger::DebugContainer;
 
     class MemoryEditorWindow {
     public:
         MemoryEditorWindow();
 
-        void attach_debug_container(i8080::DebugContainer &debug_container);
+        void attach_debug_container(DebugContainer &debug_container);
 
         void draw(const char *title, bool *p_open);
 
     private:
         MemoryEditor m_memory_editor;
-        i8080::DebugContainer m_debug_container;
+        DebugContainer m_debug_container;
     };
 }
 

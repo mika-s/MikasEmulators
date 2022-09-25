@@ -91,8 +91,13 @@ namespace emu::z80::applications::pacman {
         }
     }
 
-    void GuiSdl::update_screen(const std::vector<u8> &vram, RunStatus run_status) {
-        std::vector<std::uint32_t> frame_buffer = create_framebuffer(vram);
+    void GuiSdl::update_screen(
+            const std::vector<u8> &tile_ram,
+            const std::vector<u8> &sprite_ram,
+            const std::vector<u8> &palette_ram,
+            RunStatus run_status
+    ) {
+        std::vector<u32> frame_buffer = create_framebuffer(tile_ram, sprite_ram, palette_ram);
 
         void *pixels = nullptr;
         int pitch = 0;

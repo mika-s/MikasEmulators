@@ -9,6 +9,7 @@
 namespace emu::gui {
 
     using emu::debugger::Breakpoint;
+    using emu::debugger::DebugContainer;
     using emu::debugger::Debugger;
     using emu::util::string::hexify;
 
@@ -27,7 +28,7 @@ namespace emu::gui {
         m_debugger = std::move(debugger);
     }
 
-    void DisassemblyWindow::attach_debug_container(i8080::DebugContainer &debug_container) {
+    void DisassemblyWindow::attach_debug_container(DebugContainer &debug_container) {
         m_debug_container = debug_container;
     }
 
@@ -190,7 +191,7 @@ namespace emu::gui {
         }
     }
 
-    u16 DisassemblyWindow::address_from_disassembly_line(std::string line) {
+    u16 DisassemblyWindow::address_from_disassembly_line(std::string line) {    // TODO: Terrible performance
         const std::string delimiter = "\t";
         size_t pos;
         std::string token;

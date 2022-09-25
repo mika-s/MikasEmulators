@@ -8,7 +8,7 @@ namespace emu::gui {
 
     MemoryEditorWindow::MemoryEditorWindow() = default;
 
-    void MemoryEditorWindow::attach_debug_container(i8080::DebugContainer &debug_container) {
+    void MemoryEditorWindow::attach_debug_container(DebugContainer &debug_container) {
         m_debug_container = debug_container;
     }
 

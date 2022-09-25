@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "doctest.h"
 #include "z80/emulator_memory.h"
 
@@ -57,6 +58,23 @@ namespace emu::z80 {
 
     std::vector<u8>::const_iterator EmulatorMemory::end() const {
         return m_memory.end();
+    }
+
+    void EmulatorMemory::add_memory_observer(MemoryObserver &observer) {
+        m_memory_observers.push_back(&observer);
+    }
+
+    void EmulatorMemory::remove_memory_observer(MemoryObserver *observer) {
+        m_memory_observers.erase(
+                std::remove(m_memory_observers.begin(), m_memory_observers.end(), observer),
+                m_memory_observers.end()
+        );
+    }
+
+    void EmulatorMemory::notify_memory_observers_about_memory_update(u16 address) {
+        for (MemoryObserver *observer: m_memory_observers) {
+            observer->memory_changed(address);
+        }
     }
 
     TEST_CASE("Z80: EmulatorMemory") {

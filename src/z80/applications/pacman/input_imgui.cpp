@@ -27,28 +27,7 @@ namespace emu::z80::applications::pacman {
         }
     }
 
-    /*
-     Ports:
-        Read 1
-        BIT	0	coin (0 when active)
-            1	P2 start button
-            2	P1 start button
-            3	?
-            4	P1 shoot button
-            5	P1 joystick left
-            6	P1 joystick right
-            7	?
-
-        Read 2
-        BIT	0,1	dipswitch number of lives (0:3,1:4,2:5,3:6)
-            2	tilt 'button'
-            3	dipswitch bonus life at 1:1000,0:1500
-            4	P2 shoot button
-            5	P2 joystick left
-            6	P2 joystick right
-            7	dipswitch coin info 1:off,0:on
-    */
-    void InputImgui::read(RunStatus &run_status, CpuIo &cpu_io) {
+    void InputImgui::read(RunStatus &run_status, std::shared_ptr<MemoryMappedIo> memory_mapped_io) {
         SDL_Event read_input_event;
 
         while (SDL_PollEvent(&read_input_event) != 0) {
@@ -64,37 +43,37 @@ namespace emu::z80::applications::pacman {
                     case SDL_KEYUP:
                         switch (read_input_event.key.keysym.scancode) {
                             case insert_coin:
-                                unset_bit(cpu_io.m_in_port1, 0);
+                                memory_mapped_io->write_in0(5, true);
                                 break;
                             case p1_start:
-                                unset_bit(cpu_io.m_in_port1, 2);
+                                memory_mapped_io->write_in1(5, true);
                                 break;
                             case p1_up:
-                                unset_bit(cpu_io.m_in_port1, 4);
+                                memory_mapped_io->write_in0(1, true);
                                 break;
                             case p1_down:
-                                unset_bit(cpu_io.m_in_port1, 4);
+                                memory_mapped_io->write_in0(4, true);
                                 break;
                             case p1_left:
-                                unset_bit(cpu_io.m_in_port1, 5);
+                                memory_mapped_io->write_in0(2, true);
                                 break;
                             case p1_right:
-                                unset_bit(cpu_io.m_in_port1, 6);
+                                memory_mapped_io->write_in0(3, true);
                                 break;
                             case p2_start:
-                                unset_bit(cpu_io.m_in_port1, 1);
+                                memory_mapped_io->write_in1(6, true);
                                 break;
                             case p2_up:
-                                unset_bit(cpu_io.m_in_port2, 4);
+                                memory_mapped_io->write_in1(1, true);
                                 break;
                             case p2_down:
-                                unset_bit(cpu_io.m_in_port2, 4);
+                                memory_mapped_io->write_in1(4, true);
                                 break;
                             case p2_left:
-                                unset_bit(cpu_io.m_in_port2, 5);
+                                memory_mapped_io->write_in1(2, true);
                                 break;
                             case p2_right:
-                                unset_bit(cpu_io.m_in_port2, 6);
+                                memory_mapped_io->write_in1(3, true);
                                 break;
                             default:
                                 break;
@@ -113,37 +92,37 @@ namespace emu::z80::applications::pacman {
                                 }
                                 break;
                             case insert_coin:
-                                set_bit(cpu_io.m_in_port1, 0);
+                                memory_mapped_io->write_in0(5, false);
                                 break;
                             case p1_start:
-                                set_bit(cpu_io.m_in_port1, 2);
+                                memory_mapped_io->write_in1(5, false);
                                 break;
                             case p1_up:
-                                set_bit(cpu_io.m_in_port1, 4);
+                                memory_mapped_io->write_in0(1, false);
                                 break;
                             case p1_down:
-                                set_bit(cpu_io.m_in_port1, 4);
+                                memory_mapped_io->write_in0(4, false);
                                 break;
                             case p1_left:
-                                set_bit(cpu_io.m_in_port1, 5);
+                                memory_mapped_io->write_in0(2, false);
                                 break;
                             case p1_right:
-                                set_bit(cpu_io.m_in_port1, 6);
+                                memory_mapped_io->write_in0(3, false);
                                 break;
                             case p2_start:
-                                set_bit(cpu_io.m_in_port1, 1);
+                                memory_mapped_io->write_in1(6, false);
                                 break;
                             case p2_up:
-                                set_bit(cpu_io.m_in_port2, 4);
+                                memory_mapped_io->write_in1(1, false);
                                 break;
                             case p2_down:
-                                set_bit(cpu_io.m_in_port2, 4);
+                                memory_mapped_io->write_in1(4, false);
                                 break;
                             case p2_left:
-                                set_bit(cpu_io.m_in_port2, 5);
+                                memory_mapped_io->write_in1(2, false);
                                 break;
                             case p2_right:
-                                set_bit(cpu_io.m_in_port2, 6);
+                                memory_mapped_io->write_in1(3, false);
                                 break;
                             default:
                                 break;

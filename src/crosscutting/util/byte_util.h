@@ -13,6 +13,8 @@ namespace emu::util::byte {
 
     u16 to_u16(u8 farg, u8 sarg);
 
+    u32 to_u32(u8 fiarg, u8 sarg, u8 targ, u8 foarg);
+
     u8 low_byte(u16 number);
 
     u8 high_byte(u16 number);

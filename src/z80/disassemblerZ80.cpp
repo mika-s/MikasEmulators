@@ -816,6 +816,9 @@ namespace emu::z80 {
             case RLC_D:
                 print_rlc(m_ostream, "D");
                 break;
+            case RLC_E:
+                print_rlc(m_ostream, "E");
+                break;
             case RLC_H:
                 print_rlc(m_ostream, "H");
                 break;
@@ -836,6 +839,9 @@ namespace emu::z80 {
                 break;
             case RRC_D:
                 print_rrc(m_ostream, "D");
+                break;
+            case RRC_E:
+                print_rrc(m_ostream, "E");
                 break;
             case RRC_H:
                 print_rrc(m_ostream, "H");
@@ -858,6 +864,9 @@ namespace emu::z80 {
             case RL_D:
                 print_rl(m_ostream, "D");
                 break;
+            case RL_E:
+                print_rl(m_ostream, "E");
+                break;
             case RL_H:
                 print_rl(m_ostream, "H");
                 break;
@@ -878,6 +887,9 @@ namespace emu::z80 {
                 break;
             case RR_D:
                 print_rr(m_ostream, "D");
+                break;
+            case RR_E:
+                print_rr(m_ostream, "E");
                 break;
             case RR_H:
                 print_rr(m_ostream, "H");
@@ -900,6 +912,9 @@ namespace emu::z80 {
             case SLA_D:
                 print_sla(m_ostream, "D");
                 break;
+            case SLA_E:
+                print_sla(m_ostream, "E");
+                break;
             case SLA_H:
                 print_sla(m_ostream, "H");
                 break;
@@ -920,6 +935,9 @@ namespace emu::z80 {
                 break;
             case SRA_D:
                 print_sra(m_ostream, "D");
+                break;
+            case SRA_E:
+                print_sra(m_ostream, "E");
                 break;
             case SRA_H:
                 print_sra(m_ostream, "H");
@@ -942,6 +960,9 @@ namespace emu::z80 {
             case SLL_D:
                 print_sll(m_ostream, "D");
                 break;
+            case SLL_E:
+                print_sll(m_ostream, "E");
+                break;
             case SLL_H:
                 print_sll(m_ostream, "H");
                 break;
@@ -962,6 +983,9 @@ namespace emu::z80 {
                 break;
             case SRL_D:
                 print_srl(m_ostream, "D");
+                break;
+            case SRL_E:
+                print_srl(m_ostream, "E");
                 break;
             case SRL_H:
                 print_srl(m_ostream, "H");
@@ -1552,7 +1576,8 @@ namespace emu::z80 {
                 print_set(m_ostream, 7, "A");
                 break;
             default:
-                throw UnrecognizedOpcodeException(bits_opcode, "Bits instructions");
+                m_ostream << hexify(bits_opcode) << " (data)";
+                break;
         }
     }
 
@@ -2018,7 +2043,7 @@ namespace emu::z80 {
                 print_ld(m_ostream, "SP", ixy_reg);
                 break;
             default:
-                std::cout << hexify(ixy_opcode) << " (data)";
+                m_ostream << hexify(ixy_opcode) << " (data)";
                 break;
         }
     }
@@ -2346,7 +2371,7 @@ namespace emu::z80 {
                 print_otdr(m_ostream);
                 break;
             default:
-                std::cout << hexify(extd_opcode) << " (data)";
+                m_ostream << hexify(extd_opcode) << " (data)";
                 break;
         }
     }

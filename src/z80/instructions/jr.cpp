@@ -26,7 +26,7 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void jr(u16 &pc, const NextByte &args, unsigned long &cycles) {
-        pc += args.farg;
+        pc += static_cast<i8>(args.farg);
 
         cycles = 12;
     }
@@ -50,7 +50,7 @@ namespace emu::z80 {
 
         if (flag_reg.is_carry_flag_set()) {
             cycles = 5;
-            pc += args.farg;
+            pc += static_cast<i8>(args.farg);
         }
 
         cycles += 7;
@@ -75,7 +75,7 @@ namespace emu::z80 {
 
         if (!flag_reg.is_carry_flag_set()) {
             cycles = 5;
-            pc += args.farg;
+            pc += static_cast<i8>(args.farg);
         }
 
         cycles += 7;
@@ -100,7 +100,7 @@ namespace emu::z80 {
 
         if (flag_reg.is_zero_flag_set()) {
             cycles = 5;
-            pc += args.farg;
+            pc += static_cast<i8>(args.farg);
         }
 
         cycles += 7;
@@ -125,7 +125,7 @@ namespace emu::z80 {
 
         if (!flag_reg.is_zero_flag_set()) {
             cycles = 5;
-            pc += args.farg;
+            pc += static_cast<i8>(args.farg);
         }
 
         cycles += 7;
@@ -133,14 +133,14 @@ namespace emu::z80 {
 
     void print_jr(std::ostream &ostream, const NextByte &args) {
         ostream << "JR "
-                << hexify_wo_0x(args.farg);
+                << hexify_wo_0x(static_cast<i8>(args.farg));
     }
 
     void print_jr(std::ostream &ostream, const std::string &condition, const NextByte &args) {
         ostream << "JR "
                 << condition
                 << ", "
-                << hexify_wo_0x(args.farg);
+                << hexify_wo_0x(static_cast<i8>(args.farg));
     }
     
     TEST_CASE("Z80: JR") {

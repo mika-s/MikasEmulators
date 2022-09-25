@@ -92,7 +92,7 @@ namespace emu::i8080::applications::space_invaders {
     }
 
     void GuiSdl::update_screen(const std::vector<u8> &vram, RunStatus run_status) {
-        std::vector<std::uint32_t> frame_buffer = create_framebuffer(vram);
+        std::vector<u32> frame_buffer = create_framebuffer(vram);
 
         void *pixels = nullptr;
         int pitch = 0;

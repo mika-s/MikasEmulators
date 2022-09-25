@@ -70,11 +70,11 @@ namespace emu::z80::applications::pacman {
         m_disassembly.attach_debugger(debugger);
     }
 
-    void GuiImgui::attach_debug_container([[maybe_unused]] DebugContainer &debug_container) {
-//        m_cpu_info.attach_debug_container(debug_container);
-//        m_io_info.attach_debug_container(debug_container);    // TODO: Make generic debug container for i8080 and z80
-//        m_disassembly.attach_debug_container(debug_container);
-//        m_memory_editor.attach_debug_container(debug_container);
+    void GuiImgui::attach_debug_container(DebugContainer &debug_container) {
+        m_cpu_info.attach_debug_container(debug_container);
+        m_io_info.attach_debug_container(debug_container);
+        m_disassembly.attach_debug_container(debug_container);
+        m_memory_editor.attach_debug_container(debug_container);
     }
 
     void GuiImgui::attach_logger(std::shared_ptr<Logger> logger) {
@@ -160,8 +160,13 @@ namespace emu::z80::applications::pacman {
         glGenTextures(1, &m_screen_texture);
     }
 
-    void GuiImgui::update_screen(const std::vector<u8> &vram, RunStatus run_status) {
-        std::vector<u32> frame_buffer = create_framebuffer(vram);
+    void GuiImgui::update_screen(
+            const std::vector<u8> &tile_ram,
+            const std::vector<u8> &sprite_ram,
+            const std::vector<u8> &palette_ram,
+            RunStatus run_status
+    ) {
+        std::vector<u32> frame_buffer = create_framebuffer(tile_ram, sprite_ram, palette_ram);
 
         glBindTexture(GL_TEXTURE_2D, m_screen_texture);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
