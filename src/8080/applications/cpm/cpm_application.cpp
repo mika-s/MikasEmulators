@@ -22,7 +22,7 @@ namespace emu::i8080::applications::cpm {
 
         const std::vector<u8> initial_offset = create_initial_offset();
         const std::vector<u8> rom = read_file_into_vector(file);
-        const std::vector<u8> work_ram = create_work_ram(UINT16_MAX - initial_offset.size() - rom.size());
+        const std::vector<u8> work_ram = create_work_ram(UINT16_MAX - initial_offset.size() - rom.size() + 1);
 
         m_memory.add(initial_offset);
         m_memory.add(rom);

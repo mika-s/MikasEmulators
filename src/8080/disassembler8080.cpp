@@ -6,6 +6,8 @@
 
 namespace emu::i8080 {
 
+    using emu::util::string::hexify_wo_0x;
+
     Disassembler8080::Disassembler8080(EmulatorMemory &memory, std::ostream& ostream)
             : m_memory(memory),
               m_memory_size(memory.size()),
@@ -21,7 +23,7 @@ namespace emu::i8080 {
     }
 
     void Disassembler8080::print_next_instruction() {
-        m_ostream << emu::util::string::hexify_wo_0x(m_pc, 4) << "\t\t";
+        m_ostream << hexify_wo_0x(m_pc, 4) << "\t\t";
 
         m_opcode = get_next_byte().farg;
 

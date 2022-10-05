@@ -11,6 +11,7 @@ namespace emu::i8080::applications::space_invaders {
     using emu::debugger::IoDebugContainer;
     using emu::debugger::MemoryDebugContainer;
     using emu::debugger::RegisterDebugContainer;
+    using emu::util::string::split;
 
     SpaceInvadersSession::SpaceInvadersSession(
             const Settings &settings,
@@ -346,7 +347,7 @@ namespace emu::i8080::applications::space_invaders {
     }
 
     std::vector<u8> SpaceInvadersSession::vram() {
-        return {m_memory.begin() + 0x2400, m_memory.begin() + 0x3fff};  // TODO: Maybe off by one
+        return {m_memory.begin() + 0x2400, m_memory.begin() + 0x3fff + 1};
     }
 
     std::vector<u8> SpaceInvadersSession::memory() {
@@ -361,7 +362,7 @@ namespace emu::i8080::applications::space_invaders {
         Disassembler8080 disassembler(sliced_for_disassembly, ss);
         disassembler.disassemble();
 
-        std::vector<std::string> disassembled_program = emu::util::string::split(ss, "\n");
+        std::vector<std::string> disassembled_program = split(ss, "\n");
 
         std::vector<DisassembledLine> lines;
         std::transform(disassembled_program.begin(), disassembled_program.end(), std::back_inserter(lines),
