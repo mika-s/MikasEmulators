@@ -20,11 +20,9 @@ namespace emu::i8080 {
             m_inte(false),
             m_is_interrupted(false),
             m_instruction_from_interruptor(0),
-            m_memory(memory),
-            m_memory_size(memory.size()),
-            m_opcode(0),
-            m_sp(0),
-            m_pc(initial_pc),
+            m_memory(memory), m_memory_size(memory.size()),
+            m_io_in(number_of_io_ports), m_io_out(number_of_io_ports),
+            m_opcode(0), m_sp(0), m_pc(initial_pc),
             m_acc_reg(0),
             m_b_reg(0),
             m_c_reg(0),
@@ -32,22 +30,11 @@ namespace emu::i8080 {
             m_e_reg(0),
             m_h_reg(0),
             m_l_reg(0) {
-        m_io_in.reserve(number_of_io_ports);
-        m_io_out.reserve(number_of_io_ports);
-        for (unsigned int i = 0; i < number_of_io_ports; ++i) {
-            m_io_in.push_back(0);
-            m_io_out.push_back(0);
-        }
     }
 
     Cpu::~Cpu() {
-        for (auto observer: m_out_observers) {
-            remove_out_observer(observer);
-        }
-
-        for (auto observer: m_in_observers) {
-            remove_in_observer(observer);
-        }
+        m_out_observers.clear();
+        m_in_observers.clear();
     }
 
     void Cpu::add_out_observer(OutObserver &observer) {
@@ -91,6 +78,8 @@ namespace emu::i8080 {
         m_inte = false;
         m_is_interrupted = false;
         m_instruction_from_interruptor = 0;
+        std::fill(m_io_in.begin(), m_io_in.end(), 0);
+        std::fill(m_io_out.begin(), m_io_out.end(), 0);
     }
 
     void Cpu::start() {

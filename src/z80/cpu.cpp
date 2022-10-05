@@ -24,6 +24,7 @@ namespace emu::z80 {
             m_is_nmi_interrupted(false),
             m_instruction_from_interruptor(0),
             m_memory(memory), m_memory_size(memory.size()),
+            m_io_in(number_of_io_ports), m_io_out(number_of_io_ports),
             m_opcode(0), m_sp(0xffff), m_pc(initial_pc),
             m_acc_reg(0xff), m_acc_p_reg(0),
             m_b_reg(0), m_b_p_reg(0),
@@ -35,24 +36,13 @@ namespace emu::z80 {
             m_ix_reg(0), m_iy_reg(0),
             m_i_reg(0), m_r_reg(0),
             m_interrupt_mode(InterruptMode::ZERO) {
-        m_io_in.reserve(number_of_io_ports);
-        m_io_out.reserve(number_of_io_ports);
-        for (unsigned int i = 0; i < number_of_io_ports; ++i) {
-            m_io_in.push_back(0);
-            m_io_out.push_back(0);
-        }
         m_flag_reg.from_u8(0xff);
         m_flag_p_reg.from_u8(0x00);
     }
 
     Cpu::~Cpu() {
-        for (auto observer: m_out_observers) {
-            remove_out_observer(observer);
-        }
-
-        for (auto observer: m_in_observers) {
-            remove_in_observer(observer);
-        }
+        m_out_observers.clear();
+        m_in_observers.clear();
     }
 
     void Cpu::add_out_observer(OutObserver &observer) {
@@ -102,6 +92,8 @@ namespace emu::z80 {
         m_is_nmi_interrupted = false;
         m_instruction_from_interruptor = 0;
         m_interrupt_mode = InterruptMode::ZERO;
+        std::fill(m_io_in.begin(), m_io_in.end(), 0);
+        std::fill(m_io_out.begin(), m_io_out.end(), 0);
     }
 
     void Cpu::start() {
