@@ -4,6 +4,7 @@
 #include <functional>
 #include <string>
 #include <vector>
+#include "disassembled_line.h"
 #include "crosscutting/typedefs.h"
 
 namespace emu::debugger {
@@ -143,9 +144,9 @@ namespace emu::debugger {
 
         [[nodiscard]] bool is_interrupt_mode_set() const;
 
-        void add_disassembled_program(std::vector<std::string> disassembled_program);
+        void add_disassembled_program(std::vector<DisassembledLine> disassembled_program);
 
-        std::vector<std::string> disassembled_program();
+        std::vector<DisassembledLine> disassembled_program();
 
         [[nodiscard]] bool is_disassembled_program_set() const;
 
@@ -173,7 +174,7 @@ namespace emu::debugger {
         std::function<std::string()> m_interrupt_mode_retriever;
         bool m_is_interrupt_mode_set;
 
-        std::vector<std::string> m_disassembled_program;
+        std::vector<DisassembledLine> m_disassembled_program;
         bool m_is_disassembled_program_set;
     };
 }

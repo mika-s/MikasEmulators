@@ -308,7 +308,7 @@ namespace emu::z80::applications::pacman {
         return {m_memory.begin(), m_memory.begin() + 0x50ff + 1};
     }
 
-    std::vector<std::string> PacmanSession::disassemble_program() {
+    std::vector<DisassembledLine> PacmanSession::disassemble_program() {
         EmulatorMemory sliced_for_disassembly = m_memory.slice(0, 0x3fff);
 
         std::stringstream ss;
@@ -317,6 +317,10 @@ namespace emu::z80::applications::pacman {
 
         std::vector<std::string> disassembled_program = split(ss, "\n");
 
-        return disassembled_program;
+        std::vector<DisassembledLine> lines;
+        std::transform(disassembled_program.begin(), disassembled_program.end(), std::back_inserter(lines),
+                       [](const std::string &line) { return DisassembledLine(line); });
+
+        return lines;
     }
 }

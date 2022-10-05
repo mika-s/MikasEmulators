@@ -22,6 +22,7 @@
 #include "crosscutting/typedefs.h"
 #include "crosscutting/debugging/debugger.h"
 #include "crosscutting/debugging/debug_container.h"
+#include "crosscutting/debugging/disassembled_line.h"
 #include "crosscutting/logging/log_observer.h"
 #include "crosscutting/logging/logger.h"
 
@@ -29,6 +30,7 @@ namespace emu::i8080::applications::space_invaders {
 
     using emu::debugger::DebugContainer;
     using emu::debugger::Debugger;
+    using emu::debugger::DisassembledLine;
     using emu::logging::Logger;
 
     class SpaceInvadersSession
@@ -122,7 +124,7 @@ namespace emu::i8080::applications::space_invaders {
 
         std::vector<u8> memory();
 
-        std::vector<std::string> disassemble_program();
+        std::vector<DisassembledLine> disassemble_program();
     };
 }
 

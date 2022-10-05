@@ -52,8 +52,6 @@ namespace emu::gui {
         void draw_buttons();
 
         void draw_addresses();
-
-        static u16 address_from_disassembly_line(std::string line);
     };
 }
 

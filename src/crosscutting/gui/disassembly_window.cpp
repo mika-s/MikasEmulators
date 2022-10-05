@@ -1,4 +1,3 @@
-#include <stdexcept>
 #include <memory>
 #include "imgui.h"
 #include "disassembly_window.h"
@@ -142,16 +141,17 @@ namespace emu::gui {
     }
 
     void DisassemblyWindow::draw_addresses() {
-        const u16 pc = m_debug_container.pc();
-
         if (m_debug_container.is_disassembled_program_set()) {
+            const u16 pc = m_debug_container.pc();
+
             ImGui::BeginChild("disassembled_code_child",
                               ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y),
                               false,
                               ImGuiWindowFlags_HorizontalScrollbar);
 
             for (auto &line: m_debug_container.disassembled_program()) {
-                const u16 address = address_from_disassembly_line(line);
+                const u16 address = line.address();
+                const std::string full_line = line.full_line();
                 const bool is_currently_looking_at_pc = address == pc;
 
                 if (m_is_following_pc && is_currently_looking_at_pc) {
@@ -160,23 +160,24 @@ namespace emu::gui {
                     const bool is_scrolling_due_to_goto_pc = m_is_going_to_pc && is_currently_looking_at_pc;
                     const bool is_scrolling_due_to_given_address = m_is_going_to_address && address == m_address_to_goto;
                     const bool is_scrolling_due_to_goto_bp = m_is_going_to_breakpoint && address == m_bp_address_to_goto;
-                    if (is_scrolling_due_to_goto_pc || is_scrolling_due_to_given_address || is_scrolling_due_to_goto_bp) {
+                    if (is_scrolling_due_to_goto_pc || is_scrolling_due_to_given_address ||
+                        is_scrolling_due_to_goto_bp) {
                         ImGui::SetScrollHereY(0.25f);
                     }
                 }
 
                 if (is_currently_looking_at_pc) {
-                    ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(0,255,0,255));
+                    ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(0, 255, 0, 255));
                 }
 
                 const bool is_breakpoint = m_debugger->has_breakpoint(address);
-                if (ImGui::Selectable(line.c_str(), is_breakpoint, ImGuiSelectableFlags_AllowDoubleClick)) {
+                if (ImGui::Selectable(full_line.c_str(), is_breakpoint, ImGuiSelectableFlags_AllowDoubleClick)) {
                     if (ImGui::IsMouseDoubleClicked(0)) {
                         if (is_breakpoint) {
                             m_debugger->remove_breakpoint(address);
                             m_logger->info("Removing breakpoint: 0x%04x", address);
                         } else {
-                            m_debugger->add_breakpoint(address, Breakpoint(address, line));
+                            m_debugger->add_breakpoint(address, Breakpoint(line));
                             m_logger->info("Adding breakpoint: 0x%04x", address);
                         }
                     }
@@ -189,23 +190,5 @@ namespace emu::gui {
 
             ImGui::EndChild();
         }
-    }
-
-    u16 DisassemblyWindow::address_from_disassembly_line(std::string line) {    // TODO: Terrible performance
-        const std::string delimiter = "\t";
-        size_t pos;
-        std::string token;
-        std::vector<std::string> split;
-        while ((pos = line.find(delimiter)) != std::string::npos) {
-            token = line.substr(0, pos);
-            split.push_back(token);
-            line.erase(0, pos + delimiter.length());
-        }
-
-        if (split.empty()) {
-            throw std::runtime_error("Programming error: no elements in split disassembler line");
-        }
-
-        return static_cast<u16>(std::stoi(split[0], nullptr, address_base));
     }
 }

@@ -203,12 +203,12 @@ namespace emu::debugger {
         return m_is_interrupt_mode_set;
     }
 
-    void DebugContainer::add_disassembled_program(std::vector<std::string> disassembled_program) {
+    void DebugContainer::add_disassembled_program(std::vector<DisassembledLine> disassembled_program) {
         m_disassembled_program = std::move(disassembled_program);
         m_is_disassembled_program_set = true;
     }
 
-    std::vector<std::string> DebugContainer::disassembled_program() {
+    std::vector<DisassembledLine> DebugContainer::disassembled_program() {
         return m_disassembled_program;
     }
 

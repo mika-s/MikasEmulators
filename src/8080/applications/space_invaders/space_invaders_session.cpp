@@ -354,7 +354,7 @@ namespace emu::i8080::applications::space_invaders {
     }
 
 
-    std::vector<std::string> SpaceInvadersSession::disassemble_program() {
+    std::vector<DisassembledLine> SpaceInvadersSession::disassemble_program() {
         EmulatorMemory sliced_for_disassembly = m_memory.slice(0, 0x2000);
 
         std::stringstream ss;
@@ -363,6 +363,10 @@ namespace emu::i8080::applications::space_invaders {
 
         std::vector<std::string> disassembled_program = emu::util::string::split(ss, "\n");
 
-        return disassembled_program;
+        std::vector<DisassembledLine> lines;
+        std::transform(disassembled_program.begin(), disassembled_program.end(), std::back_inserter(lines),
+                       [](const std::string &line) { return DisassembledLine(line); });
+
+        return lines;
     }
 }

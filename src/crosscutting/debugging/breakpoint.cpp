@@ -7,6 +7,9 @@ namespace emu::debugger {
               m_line(std::move(line)) {
     }
 
+    Breakpoint::Breakpoint(DisassembledLine line) : Breakpoint(line.address(), line.full_line()) {
+    }
+
     std::string Breakpoint::line() {
         return m_line;
     }

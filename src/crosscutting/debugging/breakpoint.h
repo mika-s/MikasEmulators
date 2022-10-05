@@ -2,6 +2,7 @@
 #define MIKA_EMULATORS_CROSSCUTTING_DEBUGGING_BREAKPOINT_H
 
 #include <string>
+#include "disassembled_line.h"
 #include "crosscutting/typedefs.h"
 
 namespace emu::debugger {
@@ -9,6 +10,8 @@ namespace emu::debugger {
     class Breakpoint {
     public:
         Breakpoint(u16 address, std::string line);
+
+        explicit Breakpoint(DisassembledLine line);
 
         std::string line();
 

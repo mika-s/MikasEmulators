@@ -19,6 +19,7 @@
 #include "crosscutting/typedefs.h"
 #include "crosscutting/debugging/debugger.h"
 #include "crosscutting/debugging/debug_container.h"
+#include "crosscutting/debugging/disassembled_line.h"
 #include "crosscutting/logging/log_observer.h"
 #include "crosscutting/logging/logger.h"
 
@@ -26,6 +27,7 @@ namespace emu::z80::applications::pacman {
 
     using emu::debugger::DebugContainer;
     using emu::debugger::Debugger;
+    using emu::debugger::DisassembledLine;
     using emu::logging::Logger;
 
     class PacmanSession
@@ -112,7 +114,7 @@ namespace emu::z80::applications::pacman {
 
         std::vector<u8> memory();
 
-        std::vector<std::string> disassemble_program();
+        std::vector<DisassembledLine> disassemble_program();
     };
 }
 
