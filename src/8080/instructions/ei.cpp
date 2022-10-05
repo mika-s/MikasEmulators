@@ -1,5 +1,6 @@
 #include <iostream>
 #include "doctest.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::i8080 {
     /**
@@ -14,7 +15,7 @@ namespace emu::i8080 {
      * @param inte is the interrupt bit, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ei(bool &inte, unsigned long &cycles) {
+    void ei(bool &inte, cyc &cycles) {
         inte = true;
 
         cycles = 4;
@@ -25,7 +26,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: EI") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should enable interrupts") {
             bool inte = false;

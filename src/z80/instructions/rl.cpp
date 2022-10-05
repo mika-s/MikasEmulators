@@ -43,7 +43,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void rla(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles) {
+    void rla(u8 &acc_reg, Flags &flag_reg, cyc &cycles) {
         rl(acc_reg, flag_reg);
 
         cycles = 4;
@@ -62,7 +62,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void rl_r(u8 &reg, Flags &flag_reg, unsigned long &cycles) {
+    void rl_r(u8 &reg, Flags &flag_reg, cyc &cycles) {
         rl(reg, flag_reg);
 
         flag_reg.handle_zero_flag(reg);
@@ -85,7 +85,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void rl_MHL(u8 &value_in_hl, Flags &flag_reg, unsigned long &cycles) {
+    void rl_MHL(u8 &value_in_hl, Flags &flag_reg, cyc &cycles) {
         rl(value_in_hl, flag_reg);
 
         flag_reg.handle_zero_flag(value_in_hl);
@@ -110,7 +110,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void rl_MixyPd(u16 ixy_reg, u8 d, EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles) {
+    void rl_MixyPd(u16 ixy_reg, u8 d, EmulatorMemory &memory, Flags &flag_reg, cyc &cycles) {
         u8 &value = memory[ixy_reg + static_cast<i8>(d)];
         rl(value, flag_reg);
 
@@ -156,7 +156,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: RLA") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u8 acc_reg = 0;
 
         SUBCASE("should rotate the accumulator left") {

@@ -27,7 +27,7 @@ namespace emu::i8080 {
      * @param args contains the argument with the address to the wanted value in memory
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void lhld(u8 &l_reg, u8 &h_reg, const EmulatorMemory &memory, const NextWord &args, unsigned long &cycles) {
+    void lhld(u8 &l_reg, u8 &h_reg, const EmulatorMemory &memory, const NextWord &args, cyc &cycles) {
         l_reg = memory[to_u16(args.sarg, args.farg)];
         h_reg = memory[to_u16(args.sarg, args.farg) + 1];
 
@@ -41,7 +41,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: LHLD") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u8 l_reg = 0xe;
         u8 h_reg = 0x42;
         EmulatorMemory memory;

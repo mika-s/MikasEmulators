@@ -38,7 +38,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void adc_A_r(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles) {
+    void adc_A_r(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles) {
         adc(acc_reg, value, flag_reg);
 
         cycles = 4;
@@ -58,7 +58,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void adc_A_n(u8 &acc_reg, NextByte args, Flags &flag_reg, unsigned long &cycles) {
+    void adc_A_n(u8 &acc_reg, NextByte args, Flags &flag_reg, cyc &cycles) {
         adc(acc_reg, args.farg, flag_reg);
 
         cycles = 7;
@@ -78,7 +78,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void adc_A_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles) {
+    void adc_A_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles) {
         adc(acc_reg, value, flag_reg);
 
         cycles = 7;
@@ -101,7 +101,7 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void adc_A_MixyPd(u8 &acc_reg, u16 ixy_reg, const NextByte &args, const EmulatorMemory &memory, Flags &flag_reg,
-                      unsigned long &cycles
+                      cyc &cycles
     ) {
         adc(acc_reg, memory[ixy_reg + static_cast<i8>(args.farg)], flag_reg);
 
@@ -123,7 +123,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void adc_hl_ss(u8 &h_reg, u8 &l_reg, u16 value, Flags &flag_reg, unsigned long &cycles) {
+    void adc_hl_ss(u8 &h_reg, u8 &l_reg, u16 value, Flags &flag_reg, cyc &cycles) {
         u16 hl = to_u16(h_reg, l_reg);
 
         adc(hl, value, flag_reg);
@@ -150,7 +150,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void adc_A_ixy_h_or_l(u8 &acc_reg, u8 ixy_reg_h_or_l, Flags &flag_reg, unsigned long &cycles) {
+    void adc_A_ixy_h_or_l(u8 &acc_reg, u8 ixy_reg_h_or_l, Flags &flag_reg, cyc &cycles) {
         adc(acc_reg, ixy_reg_h_or_l, flag_reg);
 
         cycles = 8;
@@ -261,7 +261,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: ADC A, r") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u8 acc_reg = 0;
 
         SUBCASE("should use 4 cycles") {
@@ -275,7 +275,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: ADC A, n") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u8 acc_reg = 0;
 
         SUBCASE("should use 7 cycles") {
@@ -290,7 +290,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: ADC A, [HL]") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u8 acc_reg = 0;
 
         SUBCASE("should use 7 cycles") {

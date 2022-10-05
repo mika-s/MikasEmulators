@@ -83,7 +83,6 @@ set(SOURCES_Z80_CPP
         src/z80/instructions/sra.cpp
         src/z80/instructions/srl.cpp
         src/z80/instructions/sub.cpp
-        src/z80/instructions/unused.cpp
         src/z80/instructions/xor.cpp
         )
 

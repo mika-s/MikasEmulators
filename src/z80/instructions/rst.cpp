@@ -10,7 +10,7 @@ namespace emu::z80 {
     using emu::util::byte::low_byte;
     using emu::util::byte::high_byte;
 
-    void rst(u16 &pc, u16 new_pc, u16 &sp, EmulatorMemory &memory, unsigned long &cycles) {
+    void rst(u16 &pc, u16 new_pc, u16 &sp, EmulatorMemory &memory, cyc &cycles) {
         execute_call(pc, sp, memory, low_byte(new_pc), high_byte(new_pc));
 
         cycles = 11;
@@ -30,7 +30,7 @@ namespace emu::z80 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void rst_0(u16 &pc, u16 &sp, EmulatorMemory &memory, unsigned long &cycles) {
+    void rst_0(u16 &pc, u16 &sp, EmulatorMemory &memory, cyc &cycles) {
         rst(pc, 0x00, sp, memory, cycles);
     }
 
@@ -48,7 +48,7 @@ namespace emu::z80 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void rst_1(u16 &pc, u16 &sp, EmulatorMemory &memory, unsigned long &cycles) {
+    void rst_1(u16 &pc, u16 &sp, EmulatorMemory &memory, cyc &cycles) {
         rst(pc, 0x08, sp, memory, cycles);
     }
 
@@ -66,7 +66,7 @@ namespace emu::z80 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void rst_2(u16 &pc, u16 &sp, EmulatorMemory &memory, unsigned long &cycles) {
+    void rst_2(u16 &pc, u16 &sp, EmulatorMemory &memory, cyc &cycles) {
         rst(pc, 0x10, sp, memory, cycles);
     }
 
@@ -84,7 +84,7 @@ namespace emu::z80 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void rst_3(u16 &pc, u16 &sp, EmulatorMemory &memory, unsigned long &cycles) {
+    void rst_3(u16 &pc, u16 &sp, EmulatorMemory &memory, cyc &cycles) {
         rst(pc, 0x18, sp, memory, cycles);
     }
 
@@ -102,7 +102,7 @@ namespace emu::z80 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void rst_4(u16 &pc, u16 &sp, EmulatorMemory &memory, unsigned long &cycles) {
+    void rst_4(u16 &pc, u16 &sp, EmulatorMemory &memory, cyc &cycles) {
         rst(pc, 0x20, sp, memory, cycles);
     }
 
@@ -120,7 +120,7 @@ namespace emu::z80 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void rst_5(u16 &pc, u16 &sp, EmulatorMemory &memory, unsigned long &cycles) {
+    void rst_5(u16 &pc, u16 &sp, EmulatorMemory &memory, cyc &cycles) {
         rst(pc, 0x28, sp, memory, cycles);
     }
 
@@ -138,7 +138,7 @@ namespace emu::z80 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void rst_6(u16 &pc, u16 &sp, EmulatorMemory &memory, unsigned long &cycles) {
+    void rst_6(u16 &pc, u16 &sp, EmulatorMemory &memory, cyc &cycles) {
         rst(pc, 0x30, sp, memory, cycles);
     }
 
@@ -156,7 +156,7 @@ namespace emu::z80 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void rst_7(u16 &pc, u16 &sp, EmulatorMemory &memory, unsigned long &cycles) {
+    void rst_7(u16 &pc, u16 &sp, EmulatorMemory &memory, cyc &cycles) {
         rst(pc, 0x38, sp, memory, cycles);
     }
 
@@ -172,7 +172,7 @@ namespace emu::z80 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void nmi(u16 &pc, u16 &sp, EmulatorMemory &memory, unsigned long &cycles) {
+    void nmi(u16 &pc, u16 &sp, EmulatorMemory &memory, cyc &cycles) {
         rst(pc, 0x66, sp, memory, cycles);
     }
 
@@ -183,7 +183,7 @@ namespace emu::z80 {
 
     TEST_CASE("Z80: RST") {
         SUBCASE("should push PC onto the stack and change to the new PC -- 0") {
-            unsigned long cycles = 0;
+            cyc cycles = 0;
 
             u16 pc = 0xac12;
             u16 expected_new_pc = 0x00;
@@ -199,7 +199,7 @@ namespace emu::z80 {
         }
 
         SUBCASE("should push PC onto the stack and change to the new PC -- 1") {
-            unsigned long cycles = 0;
+            cyc cycles = 0;
 
             u16 pc = 0xac12;
             u16 expected_new_pc = 0x08;
@@ -215,7 +215,7 @@ namespace emu::z80 {
         }
 
         SUBCASE("should push PC onto the stack and change to the new PC -- 2") {
-            unsigned long cycles = 0;
+            cyc cycles = 0;
 
             u16 pc = 0xac12;
             u16 expected_new_pc = 0x10;
@@ -231,7 +231,7 @@ namespace emu::z80 {
         }
 
         SUBCASE("should push PC onto the stack and change to the new PC -- 3") {
-            unsigned long cycles = 0;
+            cyc cycles = 0;
 
             u16 pc = 0xac12;
             u16 expected_new_pc = 0x18;
@@ -247,7 +247,7 @@ namespace emu::z80 {
         }
 
         SUBCASE("should push PC onto the stack and change to the new PC -- 4") {
-            unsigned long cycles = 0;
+            cyc cycles = 0;
 
             u16 pc = 0xac12;
             u16 expected_new_pc = 0x20;
@@ -263,7 +263,7 @@ namespace emu::z80 {
         }
 
         SUBCASE("should push PC onto the stack and change to the new PC -- 5") {
-            unsigned long cycles = 0;
+            cyc cycles = 0;
 
             u16 pc = 0xac12;
             u16 expected_new_pc = 0x28;
@@ -279,7 +279,7 @@ namespace emu::z80 {
         }
 
         SUBCASE("should push PC onto the stack and change to the new PC -- 6") {
-            unsigned long cycles = 0;
+            cyc cycles = 0;
 
             u16 pc = 0xac12;
             u16 expected_new_pc = 0x30;
@@ -295,7 +295,7 @@ namespace emu::z80 {
         }
 
         SUBCASE("should push PC onto the stack and change to the new PC -- 7") {
-            unsigned long cycles = 0;
+            cyc cycles = 0;
 
             u16 pc = 0xac12;
             u16 expected_new_pc = 0x38;
@@ -311,7 +311,7 @@ namespace emu::z80 {
         }
 
         SUBCASE("should use 11 cycles when returning") {
-            unsigned long cycles = 0;
+            cyc cycles = 0;
 
             u16 pc = 0;
             u16 sp = 0x03;

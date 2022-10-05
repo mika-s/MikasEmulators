@@ -20,7 +20,7 @@ namespace emu::i8080 {
      * @param address_in_hl is the address stored in the HL registers
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void sphl(u16 &sp, u16 address_in_hl, unsigned long &cycles) {
+    void sphl(u16 &sp, u16 address_in_hl, cyc &cycles) {
         sp = address_in_hl;
 
         cycles = 5;
@@ -31,7 +31,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: SPHL") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u16 sp = 0;
         u8 h_reg = 0x11;
         u8 l_reg = 0x22;

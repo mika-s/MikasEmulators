@@ -47,7 +47,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void cp_r(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles) {
+    void cp_r(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles) {
         cp(acc_reg, value, flag_reg);
 
         cycles = 4;
@@ -67,7 +67,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void cp_n(u8 &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles) {
+    void cp_n(u8 &acc_reg, const NextByte &args, Flags &flag_reg, cyc &cycles) {
         cp(acc_reg, args.farg, flag_reg);
 
         cycles = 7;
@@ -87,7 +87,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void cp_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles) {
+    void cp_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles) {
         cp(acc_reg, value, flag_reg);
 
         cycles = 7;
@@ -110,7 +110,7 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void cp_MixyPd(u8 &acc_reg, u16 ixy_reg, const NextByte &args, const EmulatorMemory &memory, Flags &flag_reg,
-                   unsigned long &cycles
+                   cyc &cycles
     ) {
         cp(acc_reg, memory[ixy_reg + static_cast<i8>(args.farg)], flag_reg);
 
@@ -133,7 +133,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void cp_ixy_h_or_l(u8 &acc_reg, u8 ixy_reg_h_or_l, Flags &flag_reg, unsigned long &cycles) {
+    void cp_ixy_h_or_l(u8 &acc_reg, u8 ixy_reg_h_or_l, Flags &flag_reg, cyc &cycles) {
         cp(acc_reg, ixy_reg_h_or_l, flag_reg);
 
         cycles = 8;
@@ -189,7 +189,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: CP r") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u8 acc_reg = 0;
 
         SUBCASE("should use 7 cycles") {
@@ -203,7 +203,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: CP n") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u8 acc_reg = 0;
 
         SUBCASE("should use 7 cycles") {
@@ -218,7 +218,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: CP [HL]") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u8 acc_reg = 0;
 
         SUBCASE("should use 7 cycles") {

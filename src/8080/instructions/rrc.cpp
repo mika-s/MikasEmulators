@@ -24,7 +24,7 @@ namespace emu::i8080 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void rrc(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles) {
+    void rrc(u8 &acc_reg, Flags &flag_reg, cyc &cycles) {
         const bool should_set_carry_flag = is_bit_set(acc_reg, lsb);
         acc_reg = acc_reg >> 1;
         if (should_set_carry_flag) {
@@ -42,7 +42,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: RRC") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u8 acc_reg = 0;
 
         SUBCASE("should rotate the accumulator right") {

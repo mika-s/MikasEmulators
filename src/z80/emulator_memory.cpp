@@ -7,7 +7,7 @@ namespace emu::z80 {
     void EmulatorMemory::add(const std::vector<u8> &to_add) {
         std::size_t current_size = m_memory.size();
 
-        for (unsigned long i = current_size, j = 0; i < current_size + to_add.size(); ++i, ++j) {
+        for (std::size_t i = current_size, j = 0; i < current_size + to_add.size(); ++i, ++j) {
             m_memory.push_back(to_add[j]);
         }
     }

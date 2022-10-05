@@ -25,7 +25,7 @@ namespace emu::z80 {
      * @param args contains the argument with the value to add to PC
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void jr(u16 &pc, const NextByte &args, unsigned long &cycles) {
+    void jr(u16 &pc, const NextByte &args, cyc &cycles) {
         pc += static_cast<i8>(args.farg);
 
         cycles = 12;
@@ -45,7 +45,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void jr_c(u16 &pc, const NextByte &args, const Flags &flag_reg, unsigned long &cycles) {
+    void jr_c(u16 &pc, const NextByte &args, const Flags &flag_reg, cyc &cycles) {
         cycles = 0;
 
         if (flag_reg.is_carry_flag_set()) {
@@ -70,7 +70,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void jr_nc(u16 &pc, const NextByte &args, const Flags &flag_reg, unsigned long &cycles) {
+    void jr_nc(u16 &pc, const NextByte &args, const Flags &flag_reg, cyc &cycles) {
         cycles = 0;
 
         if (!flag_reg.is_carry_flag_set()) {
@@ -95,7 +95,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void jr_z(u16 &pc, const NextByte &args, const Flags &flag_reg, unsigned long &cycles) {
+    void jr_z(u16 &pc, const NextByte &args, const Flags &flag_reg, cyc &cycles) {
         cycles = 0;
 
         if (flag_reg.is_zero_flag_set()) {
@@ -120,7 +120,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void jr_nz(u16 &pc, const NextByte &args, const Flags &flag_reg, unsigned long &cycles) {
+    void jr_nz(u16 &pc, const NextByte &args, const Flags &flag_reg, cyc &cycles) {
         cycles = 0;
 
         if (!flag_reg.is_zero_flag_set()) {
@@ -144,7 +144,7 @@ namespace emu::z80 {
     }
     
     TEST_CASE("Z80: JR") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u16 pc = 0;
         NextByte args = {.farg = 0x11};
 
@@ -164,7 +164,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: JP C") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should jump relatively when the carry flag is set") {
             u16 pc = 0;
@@ -229,7 +229,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: JR NC") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should jump relatively when the carry flag is unset") {
             u16 pc = 0;
@@ -294,7 +294,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: JR Z") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should jump relatively when the zero flag is set") {
             u16 pc = 0;
@@ -359,7 +359,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: JR NZ") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should jump relatively when zero flag is set") {
             u16 pc = 0;

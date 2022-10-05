@@ -25,7 +25,7 @@ namespace emu::z80 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void push_qq(u8 reg1, u8 reg2, u16 &sp, EmulatorMemory &memory, unsigned long &cycles) {
+    void push_qq(u8 reg1, u8 reg2, u16 &sp, EmulatorMemory &memory, cyc &cycles) {
         memory[--sp] = reg1;
         memory[--sp] = reg2;
 
@@ -47,7 +47,7 @@ namespace emu::z80 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void push_af(const Flags &flag_reg, u8 acc_reg, u16 &sp, EmulatorMemory &memory, unsigned long &cycles) {
+    void push_af(const Flags &flag_reg, u8 acc_reg, u16 &sp, EmulatorMemory &memory, cyc &cycles) {
         memory[--sp] = acc_reg;
         memory[--sp] = flag_reg.to_u8();
 
@@ -68,7 +68,7 @@ namespace emu::z80 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void push_ixy(u16 ixy_reg, u16 &sp, EmulatorMemory &memory, unsigned long &cycles) {
+    void push_ixy(u16 ixy_reg, u16 &sp, EmulatorMemory &memory, cyc &cycles) {
         memory[--sp] = high_byte(ixy_reg);
         memory[--sp] = low_byte(ixy_reg);
 
@@ -81,7 +81,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: PUSH qq") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should push registers onto the stack") {
             u8 reg1 = 0xaa;
@@ -135,7 +135,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: PUSH IX/IY") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should use 15 cycles when pushing IX or IY onto the stack") {
             cycles = 0;

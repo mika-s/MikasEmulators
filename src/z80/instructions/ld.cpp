@@ -34,7 +34,7 @@ namespace emu::z80 {
      * @param value is the value to move into to
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_r_r(u8 &to, u8 value, unsigned long &cycles) {
+    void ld_r_r(u8 &to, u8 value, cyc &cycles) {
         ld(to, value);
 
         cycles = 4;
@@ -53,7 +53,7 @@ namespace emu::z80 {
      * @param value is the value to move into to
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_r_r_undoc(u8 &to, u8 value, unsigned long &cycles) {
+    void ld_r_r_undoc(u8 &to, u8 value, cyc &cycles) {
         ld(to, value);
 
         cycles = 8;
@@ -73,7 +73,7 @@ namespace emu::z80 {
      * @param value is the value to move into to
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_ixyh_r_undoc(u16 &ixy_reg, u8 value, unsigned long &cycles) {
+    void ld_ixyh_r_undoc(u16 &ixy_reg, u8 value, cyc &cycles) {
         u8 ixyh = high_byte(ixy_reg);
         const u8 ixyl = low_byte(ixy_reg);
 
@@ -97,7 +97,7 @@ namespace emu::z80 {
      * @param value is the value to move into to
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_ixyl_r_undoc(u16 &ixy_reg, u8 value, unsigned long &cycles) {
+    void ld_ixyl_r_undoc(u16 &ixy_reg, u8 value, cyc &cycles) {
         const u8 ixyh = high_byte(ixy_reg);
         u8 ixyl = low_byte(ixy_reg);
 
@@ -121,7 +121,7 @@ namespace emu::z80 {
      * @param args contains value to load into the register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_r_n(u8 &to, const NextByte &args, unsigned long &cycles) {
+    void ld_r_n(u8 &to, const NextByte &args, cyc &cycles) {
         ld(to, args.farg);
 
         cycles = 7;
@@ -140,7 +140,7 @@ namespace emu::z80 {
      * @param args contains value to load into the register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_r_n_undocumented(u8 &to, const NextByte &args, unsigned long &cycles) {
+    void ld_r_n_undocumented(u8 &to, const NextByte &args, cyc &cycles) {
         ld(to, args.farg);
 
         cycles = 11;
@@ -159,7 +159,7 @@ namespace emu::z80 {
      * @param value is the value to load into to
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_r_MHL(u8 &to, u8 value, unsigned long &cycles) {
+    void ld_r_MHL(u8 &to, u8 value, cyc &cycles) {
         ld(to, value);
 
         cycles = 7;
@@ -178,7 +178,7 @@ namespace emu::z80 {
      * @param value is the register value to load into to
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_MHL_r(u8 &to, u8 value, unsigned long &cycles) {
+    void ld_MHL_r(u8 &to, u8 value, cyc &cycles) {
         ld(to, value);
 
         cycles = 7;
@@ -198,7 +198,7 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      * @param is_memory_involved is true if memory is involved, either written or read
      */
-    void ld_MHL_n(u8 &reg, const NextByte &args, unsigned long &cycles) {
+    void ld_MHL_n(u8 &reg, const NextByte &args, cyc &cycles) {
         reg = args.farg;
 
         cycles = 10;
@@ -219,7 +219,7 @@ namespace emu::z80 {
      * @param iff2 is the second interrupt flag
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_A_I(u8 &acc_reg, u8 i_reg, Flags &flag_reg, bool iff2, unsigned long &cycles) {
+    void ld_A_I(u8 &acc_reg, u8 i_reg, Flags &flag_reg, bool iff2, cyc &cycles) {
         ld(acc_reg, i_reg);
 
         flag_reg.handle_sign_flag(i_reg);
@@ -249,7 +249,7 @@ namespace emu::z80 {
      * @param value is the value to move into to_reg
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_A_Mss(u8 &to, u8 value, unsigned long &cycles) {
+    void ld_A_Mss(u8 &to, u8 value, cyc &cycles) {
         ld(to, value);
 
         cycles = 7;
@@ -269,7 +269,7 @@ namespace emu::z80 {
      * @param args contains the argument with the address
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_A_Mnn(u8 &acc_reg, const EmulatorMemory &memory, const NextWord &args, unsigned long &cycles) {
+    void ld_A_Mnn(u8 &acc_reg, const EmulatorMemory &memory, const NextWord &args, cyc &cycles) {
         acc_reg = memory[to_u16(args.sarg, args.farg)];
 
         cycles = 13;
@@ -288,7 +288,7 @@ namespace emu::z80 {
      * @param acc_reg is the accumulator
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_I_A(u8 &i_reg, u8 acc_reg, unsigned long &cycles) {
+    void ld_I_A(u8 &i_reg, u8 acc_reg, cyc &cycles) {
         ld(i_reg, acc_reg);
 
         cycles = 9;
@@ -307,7 +307,7 @@ namespace emu::z80 {
      * @param acc_reg is the accumulator
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_R_A(u8 &r_reg, u8 acc_reg, unsigned long &cycles) {
+    void ld_R_A(u8 &r_reg, u8 acc_reg, cyc &cycles) {
         ld(r_reg, acc_reg);
 
         cycles = 9;
@@ -328,7 +328,7 @@ namespace emu::z80 {
      * @param iff2 is the second interrupt flag
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_A_R(u8 &acc_reg, u8 r_reg, Flags &flag_reg, bool iff2, unsigned long &cycles) {
+    void ld_A_R(u8 &acc_reg, u8 r_reg, Flags &flag_reg, bool iff2, cyc &cycles) {
         ld(acc_reg, r_reg);
 
         flag_reg.handle_sign_flag(r_reg);
@@ -358,7 +358,7 @@ namespace emu::z80 {
      * @param acc_reg is the accumulator value to load into to
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_Mss_A(u8 &to, u8 acc_reg, unsigned long &cycles) {
+    void ld_Mss_A(u8 &to, u8 acc_reg, cyc &cycles) {
         ld(to, acc_reg);
 
         cycles = 7;
@@ -378,7 +378,7 @@ namespace emu::z80 {
      * @param args contains the argument with the address in memory to store the accumulator register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_Mnn_A(u8 &acc_reg, EmulatorMemory &memory, const NextWord &args, unsigned long &cycles) {
+    void ld_Mnn_A(u8 &acc_reg, EmulatorMemory &memory, const NextWord &args, cyc &cycles) {
         const u16 address = to_u16(args.sarg, args.farg);
 
         memory[address] = acc_reg;
@@ -401,7 +401,7 @@ namespace emu::z80 {
      * @param args contains the argument with the address to the wanted value in memory
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_HL_Mnn(u8 &h_reg, u8 &l_reg, const EmulatorMemory &memory, const NextWord &args, unsigned long &cycles) {
+    void ld_HL_Mnn(u8 &h_reg, u8 &l_reg, const EmulatorMemory &memory, const NextWord &args, cyc &cycles) {
         const u16 address = to_u16(args.sarg, args.farg);
         h_reg = memory[address + 1];
         l_reg = memory[address];
@@ -423,7 +423,7 @@ namespace emu::z80 {
      * @param args contains value to load into the registers
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_dd_nn(u8 &reg1, u8 &reg2, const NextWord &args, unsigned long &cycles) {
+    void ld_dd_nn(u8 &reg1, u8 &reg2, const NextWord &args, cyc &cycles) {
         reg1 = args.sarg;
         reg2 = args.farg;
 
@@ -443,7 +443,7 @@ namespace emu::z80 {
      * @param args contains value to load into the registers
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_ixy_nn(u16 &ixy_reg, const NextWord &args, unsigned long &cycles) {
+    void ld_ixy_nn(u16 &ixy_reg, const NextWord &args, cyc &cycles) {
         ixy_reg = to_u16(args.sarg, args.farg);
 
         cycles = 14;
@@ -462,7 +462,7 @@ namespace emu::z80 {
      * @param args contains value to load into the register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_ixyh_n(u16 &ixy_reg, const NextByte &args, unsigned long &cycles) {
+    void ld_ixyh_n(u16 &ixy_reg, const NextByte &args, cyc &cycles) {
         u8 hi = high_byte(ixy_reg);
         const u8 lo = low_byte(ixy_reg);
 
@@ -486,7 +486,7 @@ namespace emu::z80 {
      * @param args contains value to load into the register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_ixyl_n(u16 &ixy_reg, const NextByte &args, unsigned long &cycles) {
+    void ld_ixyl_n(u16 &ixy_reg, const NextByte &args, cyc &cycles) {
         const u8 hi = high_byte(ixy_reg);
         u8 lo = low_byte(ixy_reg);
 
@@ -512,7 +512,7 @@ namespace emu::z80 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_dd_Mnn(u8 &hi_reg, u8 &lo_reg, const NextWord &args, const EmulatorMemory &memory, unsigned long &cycles) {
+    void ld_dd_Mnn(u8 &hi_reg, u8 &lo_reg, const NextWord &args, const EmulatorMemory &memory, cyc &cycles) {
         const u16 address = to_u16(args.sarg, args.farg);
         hi_reg = memory[address + 1];
         lo_reg = memory[address];
@@ -534,7 +534,7 @@ namespace emu::z80 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_ixy_Mnn(u16 &ixy_reg, const NextWord &args, const EmulatorMemory &memory, unsigned long &cycles) {
+    void ld_ixy_Mnn(u16 &ixy_reg, const NextWord &args, const EmulatorMemory &memory, cyc &cycles) {
         const u16 address = to_u16(args.sarg, args.farg);
         ixy_reg = to_u16(memory[address + 1], memory[address]);
 
@@ -556,7 +556,7 @@ namespace emu::z80 {
      * @param memory is the memory
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_r_MixyPd(u8 &reg, u16 ixy_reg, const NextByte &args, const EmulatorMemory &memory, unsigned long &cycles) {
+    void ld_r_MixyPd(u8 &reg, u16 ixy_reg, const NextByte &args, const EmulatorMemory &memory, cyc &cycles) {
         reg = memory[ixy_reg + static_cast<i8>(args.farg)];
 
         cycles = 19;
@@ -575,7 +575,7 @@ namespace emu::z80 {
      * @param args contains value to load into the register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_sp_nn(u16 &sp, const NextWord &args, unsigned long &cycles) {
+    void ld_sp_nn(u16 &sp, const NextWord &args, cyc &cycles) {
         sp = to_u16(args.sarg, args.farg);
 
         cycles = 10;
@@ -594,7 +594,7 @@ namespace emu::z80 {
      * @param hl is the value to store in SP
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_sp_hl(u16 &sp, u16 hl, unsigned long &cycles) {
+    void ld_sp_hl(u16 &sp, u16 hl, cyc &cycles) {
         sp = hl;
 
         cycles = 6;
@@ -613,7 +613,7 @@ namespace emu::z80 {
      * @param ixy is the value to store in SP
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_sp_ixy(u16 &sp, u16 ixy, unsigned long &cycles) {
+    void ld_sp_ixy(u16 &sp, u16 ixy, cyc &cycles) {
         sp = ixy;
 
         cycles = 10;
@@ -634,7 +634,7 @@ namespace emu::z80 {
      * @param args contains the argument with the address to call
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_Mnn_HL(u8 h_reg, u8 l_reg, EmulatorMemory &memory, const NextWord &args, unsigned long &cycles) {
+    void ld_Mnn_HL(u8 h_reg, u8 l_reg, EmulatorMemory &memory, const NextWord &args, cyc &cycles) {
         const u16 l_address = to_u16(args.sarg, args.farg);
         const u16 h_address = l_address + 1;
 
@@ -659,7 +659,7 @@ namespace emu::z80 {
      * @param args contains the argument with the address to call
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_Mnn_dd(u8 hi_reg, u8 lo_reg, EmulatorMemory &memory, const NextWord &args, unsigned long &cycles) {
+    void ld_Mnn_dd(u8 hi_reg, u8 lo_reg, EmulatorMemory &memory, const NextWord &args, cyc &cycles) {
         const u16 lo_address = to_u16(args.sarg, args.farg);
         const u16 hi_address = lo_address + 1;
 
@@ -683,7 +683,7 @@ namespace emu::z80 {
      * @param args contains the argument with the address to lookup
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_Mnn_sp(u16 sp, EmulatorMemory &memory, const NextWord &args, unsigned long &cycles) {
+    void ld_Mnn_sp(u16 sp, EmulatorMemory &memory, const NextWord &args, cyc &cycles) {
         ld_Mnn_dd(high_byte(sp), low_byte(sp), memory, args, cycles);
     }
 
@@ -701,7 +701,7 @@ namespace emu::z80 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_Mnn_ixy(u16 ixy_reg, const NextWord &args, EmulatorMemory &memory, unsigned long &cycles) {
+    void ld_Mnn_ixy(u16 ixy_reg, const NextWord &args, EmulatorMemory &memory, cyc &cycles) {
         ld_Mnn_dd(high_byte(ixy_reg), low_byte(ixy_reg), memory, args, cycles);
     }
 
@@ -719,7 +719,7 @@ namespace emu::z80 {
      * @param args contains the argument with the address to lookup
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_sp_Mnn(u16 &sp, EmulatorMemory memory, const NextWord &args, unsigned long &cycles) {
+    void ld_sp_Mnn(u16 &sp, EmulatorMemory memory, const NextWord &args, cyc &cycles) {
         const u16 first_address = to_u16(args.sarg, args.farg);
         const u16 second_address = first_address + 1;
 
@@ -745,7 +745,7 @@ namespace emu::z80 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_MixyPd_n(u16 ixy_reg, const NextWord &args, EmulatorMemory &memory, unsigned long &cycles) {
+    void ld_MixyPd_n(u16 ixy_reg, const NextWord &args, EmulatorMemory &memory, cyc &cycles) {
         ld(memory[ixy_reg + static_cast<i8>(args.farg)], args.sarg);
 
         cycles = 19;
@@ -766,7 +766,7 @@ namespace emu::z80 {
      * @param reg contains the value to load into memory
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_MixyPd_r(u16 ixy_reg, const NextByte &args, EmulatorMemory &memory, u8 reg, unsigned long &cycles) {
+    void ld_MixyPd_r(u16 ixy_reg, const NextByte &args, EmulatorMemory &memory, u8 reg, cyc &cycles) {
         ld(memory[ixy_reg + static_cast<i8>(args.farg)], reg);
 
         cycles = 19;
@@ -919,7 +919,7 @@ namespace emu::z80 {
 
     TEST_CASE("Z80: LD r, r'") {
         SUBCASE("should use 4 cycles") {
-            unsigned long cycles = 0;
+            cyc cycles = 0;
             u8 reg1 = 1;
             u8 reg2 = 2;
 
@@ -931,7 +931,7 @@ namespace emu::z80 {
 
     TEST_CASE("Z80: LD r, n") {
         SUBCASE("should use 7 cycles") {
-            unsigned long cycles = 0;
+            cyc cycles = 0;
             u8 reg = 0;
             NextByte args = {.farg = 0x11};
 
@@ -943,7 +943,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: LD (HL), r") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         EmulatorMemory memory;
         memory.add(std::vector<u8>{0x00, 0x01, 0x02, 0x03, 0xfd, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
         u8 acc_reg = 0;
@@ -966,7 +966,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: LD A, (nn)") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u8 reg = 0xe;
         EmulatorMemory memory;
         memory.add(std::vector<u8>{0x00, 0x01, 0x02, 0x03, 0xfd, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
@@ -988,7 +988,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: LD HL, (nn)") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u8 l_reg = 0xe;
         u8 h_reg = 0x42;
         EmulatorMemory memory;
@@ -1012,7 +1012,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: LD dd, nn") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u16 sp = 0xe;
         u8 reg1 = 0xe;
         u8 reg2 = 0;
@@ -1041,7 +1041,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: LD (nn), HL") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u8 l_reg = 0x22;
         u8 h_reg = 0x11;
         EmulatorMemory memory;
@@ -1065,7 +1065,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: LD (nn), A") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         EmulatorMemory memory;
         memory.add(std::vector<u8>{0x00, 0x01, 0x02, 0x03, 0xfd, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
         u8 acc_reg = 0x45;
@@ -1087,7 +1087,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: LD SP, HL") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u16 sp = 0;
         u8 h_reg = 0x11;
         u8 l_reg = 0x22;
@@ -1108,7 +1108,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: LD SP, (nn)") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u16 sp = 0;
         EmulatorMemory memory;
         memory.add({0x65, 0x78});
@@ -1125,7 +1125,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: LD SP, IX") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u16 sp = 0;
         u16 ix_reg = 0x1122;
 

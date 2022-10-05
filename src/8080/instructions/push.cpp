@@ -20,7 +20,7 @@ namespace emu::i8080 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void push(u8 reg1, u8 reg2, u16 &sp, EmulatorMemory &memory, unsigned long &cycles) {
+    void push(u8 reg1, u8 reg2, u16 &sp, EmulatorMemory &memory, cyc &cycles) {
         memory[--sp] = reg1;
         memory[--sp] = reg2;
 
@@ -42,7 +42,7 @@ namespace emu::i8080 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void push_psw(const Flags &flag_reg, u8 acc_reg, u16 &sp, EmulatorMemory &memory, unsigned long &cycles) {
+    void push_psw(const Flags &flag_reg, u8 acc_reg, u16 &sp, EmulatorMemory &memory, cyc &cycles) {
         memory[--sp] = acc_reg;
         memory[--sp] = flag_reg.to_u8();
 
@@ -55,7 +55,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: PUSH") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should push registers onto the stack") {
             u8 reg1 = 0xaa;

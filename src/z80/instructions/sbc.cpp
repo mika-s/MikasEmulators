@@ -34,7 +34,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void sbc_A_r(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles) {
+    void sbc_A_r(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles) {
         sbc(acc_reg, value, flag_reg);
 
         cycles = 4;
@@ -54,7 +54,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void sbc_A_n(u8 &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles) {
+    void sbc_A_n(u8 &acc_reg, const NextByte &args, Flags &flag_reg, cyc &cycles) {
         sbc(acc_reg, args.farg, flag_reg);
 
         cycles = 7;
@@ -74,7 +74,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void sbc_A_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles) {
+    void sbc_A_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles) {
         sbc(acc_reg, value, flag_reg);
 
         cycles = 7;
@@ -97,7 +97,7 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void sbc_A_MixyPd(u8 &acc_reg, u16 ixy_reg, const NextByte &args, const EmulatorMemory &memory, Flags &flag_reg,
-                      unsigned long &cycles
+                      cyc &cycles
     ) {
         sbc(acc_reg, memory[ixy_reg + static_cast<i8>(args.farg)], flag_reg);
 
@@ -119,7 +119,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void sbc_HL_ss(u8 &h_reg, u8 &l_reg, u16 value, Flags &flag_reg, unsigned long &cycles) {
+    void sbc_HL_ss(u8 &h_reg, u8 &l_reg, u16 value, Flags &flag_reg, cyc &cycles) {
         u16 hl = to_u16(h_reg, l_reg);
 
         sub_from_register(hl, value, flag_reg.is_carry_flag_set(), flag_reg);
@@ -146,7 +146,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void sbc_A_ixy_h_or_l(u8 &acc_reg, u8 ixy_reg_h_or_l, Flags &flag_reg, unsigned long &cycles) {
+    void sbc_A_ixy_h_or_l(u8 &acc_reg, u8 ixy_reg_h_or_l, Flags &flag_reg, cyc &cycles) {
         sbc(acc_reg, ixy_reg_h_or_l, flag_reg);
 
         cycles = 8;
@@ -227,7 +227,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: SBC (word)") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u8 h_reg, l_reg;
 
         SUBCASE("should set the parity/overflow flag") {
@@ -290,7 +290,7 @@ namespace emu::z80 {
 
     TEST_CASE("Z80: SBC A, r") {
         SUBCASE("should use 4 cycles") {
-            unsigned long cycles = 0;
+            cyc cycles = 0;
             Flags flag_reg;
             u8 acc_reg = 0xe;
 
@@ -302,7 +302,7 @@ namespace emu::z80 {
 
     TEST_CASE("Z80: SBC A, n") {
         SUBCASE("should use 7 cycles") {
-            unsigned long cycles = 0;
+            cyc cycles = 0;
             Flags flag_reg;
             u8 acc_reg = 0xe;
             NextByte args = {0x1};
@@ -315,7 +315,7 @@ namespace emu::z80 {
 
     TEST_CASE("Z80: SBC A, (HL)") {
         SUBCASE("should use 7 cycles") {
-            unsigned long cycles = 0;
+            cyc cycles = 0;
             Flags flag_reg;
             u8 acc_reg = 0xe;
             NextByte args = {0x1};
@@ -328,7 +328,7 @@ namespace emu::z80 {
 
     TEST_CASE("Z80: SBC HL, ss") {
         SUBCASE("should use 15 cycles") {
-            unsigned long cycles = 0;
+            cyc cycles = 0;
             Flags flag_reg;
             u8 h_reg = 0xfb;
             u8 l_reg = 0x19;

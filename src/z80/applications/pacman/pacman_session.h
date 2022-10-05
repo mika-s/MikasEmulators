@@ -94,11 +94,11 @@ namespace emu::z80::applications::pacman {
         static constexpr int out_port_vblank_interrupt_return = 0;
         // IO - end
 
-        void running(u64 &last_tick, unsigned long &cycles);
+        void running(cyc &last_tick, cyc &cycles);
 
-        void pausing(u64 &last_tick);
+        void pausing(cyc &last_tick);
 
-        void stepping(u64 &last_tick, unsigned long &cycles);
+        void stepping(cyc &last_tick, cyc &cycles);
 
         void await_input_and_update_debug();
 

@@ -38,7 +38,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void inc_r(u8 &reg, Flags &flag_reg, unsigned long &cycles) {
+    void inc_r(u8 &reg, Flags &flag_reg, cyc &cycles) {
         inc(reg, flag_reg);
 
         cycles = 4;
@@ -57,7 +57,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void inc_r_undoc(u8 &reg, Flags &flag_reg, unsigned long &cycles) {
+    void inc_r_undoc(u8 &reg, Flags &flag_reg, cyc &cycles) {
         inc(reg, flag_reg);
 
         cycles = 8;
@@ -76,7 +76,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void inc_MHL(u8 &value_in_hl, Flags &flag_reg, unsigned long &cycles) {
+    void inc_MHL(u8 &value_in_hl, Flags &flag_reg, cyc &cycles) {
         inc(value_in_hl, flag_reg);
 
         cycles = 11;
@@ -95,7 +95,7 @@ namespace emu::z80 {
      * @param reg2 is the second register in the register pair, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void inc_ss(u8 &reg1, u8 &reg2, unsigned long &cycles) {
+    void inc_ss(u8 &reg1, u8 &reg2, cyc &cycles) {
         u16 val = to_u16(reg1, reg2);
         ++val;
 
@@ -117,7 +117,7 @@ namespace emu::z80 {
      * @param sp is the stack pointer, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void inc_sp(u16 &sp, unsigned long &cycles) {
+    void inc_sp(u16 &sp, cyc &cycles) {
         ++sp;
 
         cycles = 6;
@@ -135,7 +135,7 @@ namespace emu::z80 {
      * @param ixy_reg is the IX or IY register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void inc_ixy(u16 &ixy_reg, unsigned long &cycles) {
+    void inc_ixy(u16 &ixy_reg, cyc &cycles) {
         ++ixy_reg;
 
         cycles = 10;
@@ -154,7 +154,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void inc_ixyh(u16 &ixy_reg, Flags &flag_reg, unsigned long &cycles) {
+    void inc_ixyh(u16 &ixy_reg, Flags &flag_reg, cyc &cycles) {
         u8 ixyh = high_byte(ixy_reg);
         const u8 ixyl = low_byte(ixy_reg);
 
@@ -178,7 +178,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void inc_ixyl(u16 &ixy_reg, Flags &flag_reg, unsigned long &cycles) {
+    void inc_ixyl(u16 &ixy_reg, Flags &flag_reg, cyc &cycles) {
         const u8 ixyh = high_byte(ixy_reg);
         u8 ixyl = low_byte(ixy_reg);
 
@@ -204,7 +204,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void inc_MixyPd(u16 ixy_reg, const NextByte &args, EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles) {
+    void inc_MixyPd(u16 ixy_reg, const NextByte &args, EmulatorMemory &memory, Flags &flag_reg, cyc &cycles) {
         inc(memory[ixy_reg + static_cast<i8>(args.farg)], flag_reg);
 
         cycles = 23;
@@ -351,7 +351,7 @@ namespace emu::z80 {
 
     TEST_CASE("Z80: INC r") {
         SUBCASE("should use 4 cycles") {
-            unsigned long cycles = 0;
+            cyc cycles = 0;
             Flags flag_reg;
             u8 reg = UINT8_MAX;
 
@@ -362,7 +362,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: INC ss") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u8 reg1 = 0;
         u8 reg2 = 0;
         u8 expected_reg1 = 0;
@@ -409,7 +409,7 @@ namespace emu::z80 {
 
     TEST_CASE("Z80: INC (HL)") {
         SUBCASE("should use 11 cycles") {
-            unsigned long cycles = 0;
+            cyc cycles = 0;
             Flags flag_reg;
             u8 reg = UINT8_MAX;
 
@@ -420,7 +420,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: INC IX or INC IY)") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u16 ix = 0;
 
         SUBCASE("should increase IX") {

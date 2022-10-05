@@ -114,8 +114,8 @@ namespace emu::i8080 {
         m_io_in[port] = value;
     }
 
-    unsigned long Cpu::next_instruction() {
-        unsigned long cycles = 0;
+    cyc Cpu::next_instruction() {
+        cyc cycles = 0;
 
         if (m_inte && m_is_interrupted) {
             m_inte = false;

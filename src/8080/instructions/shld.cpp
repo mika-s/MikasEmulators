@@ -27,7 +27,7 @@ namespace emu::i8080 {
      * @param args contains the argument with the address to call
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void shld(u8 l_reg, u8 h_reg, EmulatorMemory &memory, const NextWord &args, unsigned long &cycles) {
+    void shld(u8 l_reg, u8 h_reg, EmulatorMemory &memory, const NextWord &args, cyc &cycles) {
         const u16 l_address = to_u16(args.sarg, args.farg);
         const u16 h_address = l_address + 1;
 
@@ -44,7 +44,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: SHLD") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u8 l_reg = 0x22;
         u8 h_reg = 0x11;
         EmulatorMemory memory;

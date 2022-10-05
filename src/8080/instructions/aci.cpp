@@ -25,7 +25,7 @@ namespace emu::i8080 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void aci(u8 &acc_reg, NextByte args, Flags &flag_reg, unsigned long &cycles) {
+    void aci(u8 &acc_reg, NextByte args, Flags &flag_reg, cyc &cycles) {
         const u8 previous = acc_reg;
         const u8 carry = flag_reg.is_carry_flag_set() ? 1 : 0;
         acc_reg += args.farg + carry;
@@ -45,7 +45,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: ACI") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u8 acc_reg = 0;
 
         SUBCASE("should add given value to the accumulator") {

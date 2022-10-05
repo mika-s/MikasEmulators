@@ -31,7 +31,7 @@ namespace emu::z80 {
             u8 &b_reg, u8 &c_reg, u8 &b_p_reg, u8 &c_p_reg,
             u8 &d_reg, u8 &e_reg, u8 &d_p_reg, u8 &e_p_reg,
             u8 &h_reg, u8 &l_reg, u8 &h_p_reg, u8 &l_p_reg,
-            unsigned long &cycles
+            cyc &cycles
     ) {
         u8 temp = b_reg;
         b_reg = b_p_reg;
@@ -65,7 +65,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: EXX") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should exchange AF with AF'") {
             cycles = 0;

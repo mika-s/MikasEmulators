@@ -28,7 +28,7 @@ namespace emu::z80 {
 
         [[nodiscard]] bool can_run_next_instruction() const;
 
-        unsigned long next_instruction();
+        cyc next_instruction();
 
         void reset_state();
 
@@ -147,19 +147,19 @@ namespace emu::z80 {
         std::vector<OutObserver *> m_out_observers;
         std::vector<InObserver *> m_in_observers;
 
-        void next_bits_instruction(u8 bits_opcode, unsigned long &cycles);
+        void next_bits_instruction(u8 bits_opcode, cyc &cycles);
 
-        void next_ixy_instruction(u8 ixy_opcode, u16 &ixy_reg, unsigned long &cycles);
+        void next_ixy_instruction(u8 ixy_opcode, u16 &ixy_reg, cyc &cycles);
 
-        void next_ixy_bits_instruction(NextWord args, u16 &ixy_reg, unsigned long &cycles);
+        void next_ixy_bits_instruction(NextWord args, u16 &ixy_reg, cyc &cycles);
 
-        void next_extd_instruction(u8 extd_opcode, unsigned long &cycles);
+        void next_extd_instruction(u8 extd_opcode, cyc &cycles);
 
-        unsigned long handle_nonmaskable_interrupt(unsigned long cycles);
+        cyc handle_nonmaskable_interrupt(cyc cycles);
 
-        unsigned long handle_maskable_interrupt_0(unsigned long cycles);
+        cyc handle_maskable_interrupt_0(cyc cycles);
 
-        unsigned long handle_maskable_interrupt_1_2(unsigned long cycles);
+        cyc handle_maskable_interrupt_1_2(cyc cycles);
 
         NextByte get_next_byte();
 

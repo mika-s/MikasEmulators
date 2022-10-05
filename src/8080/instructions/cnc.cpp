@@ -30,7 +30,7 @@ namespace emu::i8080 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void cnc(u16 &pc, u16 &sp, EmulatorMemory &memory, const NextWord &args, const Flags &flag_reg,
-             unsigned long &cycles) {
+             cyc &cycles) {
         cycles = 0;
 
         if (!flag_reg.is_carry_flag_set()) {
@@ -48,7 +48,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: CNC") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should push current PC on the stack and change PC to the address in args when the carry flag is unset") {
             u16 pc = 0x100f;

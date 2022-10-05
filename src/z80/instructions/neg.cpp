@@ -22,7 +22,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void neg(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles) {
+    void neg(u8 &acc_reg, Flags &flag_reg, cyc &cycles) {
         u8 result = 0;
         sub_from_register(result, acc_reg, false, flag_reg);
         acc_reg = result;
@@ -35,7 +35,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: NEG") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should negate the accumulator and set flags correctly") {
             for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {

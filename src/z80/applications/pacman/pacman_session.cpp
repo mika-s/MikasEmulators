@@ -54,8 +54,8 @@ namespace emu::z80::applications::pacman {
         m_cpu->start();
         m_run_status = RUNNING;
 
-        unsigned long cycles;
-        u64 last_tick = SDL_GetTicks64();
+        cyc cycles;
+        cyc last_tick = SDL_GetTicks64();
 
         while (m_run_status == RUNNING || m_run_status == PAUSED || m_run_status == STEPPING) {
             if (m_run_status == RUNNING) {
@@ -70,7 +70,7 @@ namespace emu::z80::applications::pacman {
         m_run_status = FINISHED;
     }
 
-    void PacmanSession::running(u64 &last_tick, unsigned long &cycles) {
+    void PacmanSession::running(cyc &last_tick, cyc &cycles) {
         m_outputs_during_cycle.clear();
 
         if (SDL_GetTicks64() - last_tick >= tick_limit) {
@@ -102,7 +102,7 @@ namespace emu::z80::applications::pacman {
         }
     }
 
-    void PacmanSession::pausing(u64 &last_tick) {
+    void PacmanSession::pausing(cyc &last_tick) {
         if (SDL_GetTicks64() - last_tick >= tick_limit) {
             last_tick = SDL_GetTicks();
             m_input->read(m_run_status, m_memory_mapped_io);
@@ -115,7 +115,7 @@ namespace emu::z80::applications::pacman {
         }
     }
 
-    void PacmanSession::stepping([[maybe_unused]] u64 &last_tick, unsigned long &cycles) {
+    void PacmanSession::stepping([[maybe_unused]] cyc &last_tick, cyc &cycles) {
         m_outputs_during_cycle.clear();
 
         await_input_and_update_debug();

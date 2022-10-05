@@ -25,7 +25,7 @@ namespace emu::i8080 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void cpi(u8 &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles) {
+    void cpi(u8 &acc_reg, const NextByte &args, Flags &flag_reg, cyc &cycles) {
         const u16 new_acc_reg = acc_reg - args.farg;
 
         flag_reg.handle_borrow_flag(acc_reg, args.farg, false);
@@ -43,7 +43,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: CPI") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u8 acc_reg = 0;
 
         SUBCASE("should compare the accumulator with value and set flags") {

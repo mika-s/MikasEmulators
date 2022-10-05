@@ -18,7 +18,7 @@ namespace emu::i8080 {
      * @param sp1 is the second from the top of the stack, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void xthl(u8 &h_reg, u8 &l_reg, u8 &sp0, u8 &sp1, unsigned long &cycles) {
+    void xthl(u8 &h_reg, u8 &l_reg, u8 &sp0, u8 &sp1, cyc &cycles) {
         const u8 h = h_reg;
         const u8 l = l_reg;
         l_reg = sp0;
@@ -34,7 +34,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: XTHL") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should exchange HL with top of the stack") {
             u8 h_reg = 0x11;

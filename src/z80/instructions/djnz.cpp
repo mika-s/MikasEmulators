@@ -23,7 +23,7 @@ namespace emu::z80 {
      * @param args contains the argument with the displacement
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void djnz(u8 &b_reg, u16 &pc, const NextByte &args, unsigned long &cycles) {
+    void djnz(u8 &b_reg, u16 &pc, const NextByte &args, cyc &cycles) {
         cycles = 8;
 
         b_reg--;
@@ -40,7 +40,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: DJNZ") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should decrement register and not do anything else if it's zero") {
             u16 pc = 0x100f;

@@ -1,6 +1,7 @@
 #include <iostream>
 #include "doctest.h"
 #include "z80/interrupt_mode.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::z80 {
 
@@ -17,7 +18,7 @@ namespace emu::z80 {
      * @param value is the value to set the interrupt mode to
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void im(InterruptMode &interrupt_mode, InterruptMode value, unsigned long &cycles) {
+    void im(InterruptMode &interrupt_mode, InterruptMode value, cyc &cycles) {
         interrupt_mode = value;
 
         cycles = 8;
@@ -29,7 +30,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: IM") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         InterruptMode interrupt_mode = InterruptMode::ZERO;
 
         SUBCASE("should use 10 cycles") {

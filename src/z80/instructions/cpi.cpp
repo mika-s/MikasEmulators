@@ -30,7 +30,7 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void cpi(u8 &b_reg, u8 &c_reg, u8 &h_reg, u8 &l_reg, u8 acc_reg, const EmulatorMemory &memory,
-             Flags &flag_reg, unsigned long &cycles) {
+             Flags &flag_reg, cyc &cycles) {
 
         const u8 value = memory[to_u16(h_reg, l_reg)];
         const u8 result = acc_reg - value;

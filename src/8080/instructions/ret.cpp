@@ -19,7 +19,7 @@ namespace emu::i8080 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ret(u16 &pc, u16 &sp, const EmulatorMemory &memory, unsigned long &cycles) {
+    void ret(u16 &pc, u16 &sp, const EmulatorMemory &memory, cyc &cycles) {
         execute_return(pc, sp, memory);
 
         cycles = 10;
@@ -30,7 +30,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: RET") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u16 pc = 0x100f;
         u16 sp = 0;
         EmulatorMemory memory;

@@ -23,7 +23,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ex(u8 &acc_reg, Flags &flag_reg, u8 &acc_p_reg, Flags &flag_p_reg, unsigned long &cycles) {
+    void ex(u8 &acc_reg, Flags &flag_reg, u8 &acc_p_reg, Flags &flag_p_reg, cyc &cycles) {
         const u8 acc_temp = acc_reg;
         acc_reg = acc_p_reg;
         acc_p_reg = acc_temp;
@@ -58,7 +58,7 @@ namespace emu::z80 {
      * @param l_reg is the L register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ex_msp_hl(u16 sp, EmulatorMemory &memory, u8 &h_reg, u8 &l_reg, unsigned long &cycles) {
+    void ex_msp_hl(u16 sp, EmulatorMemory &memory, u8 &h_reg, u8 &l_reg, cyc &cycles) {
         u16 hl = to_u16(h_reg, l_reg);
         ex_msp_dd(sp, memory, hl);
         h_reg = high_byte(hl);
@@ -81,7 +81,7 @@ namespace emu::z80 {
      * @param ixy_reg is the IX or IY register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ex_msp_ixy(u16 sp, EmulatorMemory &memory, u16 &ixy_reg, unsigned long &cycles) {
+    void ex_msp_ixy(u16 sp, EmulatorMemory &memory, u16 &ixy_reg, cyc &cycles) {
         ex_msp_dd(sp, memory, ixy_reg);
 
         cycles = 23;
@@ -102,7 +102,7 @@ namespace emu::z80 {
      * @param e_reg is the E register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ex_de_hl(u8 &h_reg, u8 &l_reg, u8 &d_reg, u8 &e_reg, unsigned long &cycles) {
+    void ex_de_hl(u8 &h_reg, u8 &l_reg, u8 &d_reg, u8 &e_reg, cyc &cycles) {
         const u8 h = h_reg;
         const u8 l = l_reg;
         h_reg = d_reg;
@@ -121,7 +121,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: EX") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should exchange AF with AF'") {
             cycles = 0;
@@ -172,7 +172,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: EX (SP), HL") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should exchange HL with memory at stack pointer") {
             EmulatorMemory memory;
@@ -204,7 +204,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: EX (SP), IX") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should exchange IX with memory at stack pointer") {
             EmulatorMemory memory;
@@ -233,7 +233,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: EX DE, HL") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should exchange HL with DE") {
             u8 h_reg = 0x11;

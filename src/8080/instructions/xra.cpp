@@ -20,7 +20,7 @@ namespace emu::i8080 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void xra(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles) {
+    void xra(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles) {
         xra(acc_reg, value, flag_reg, cycles, false);
     }
 
@@ -39,7 +39,7 @@ namespace emu::i8080 {
      * @param cycles is the number of cycles variable, which will be mutated
      * @param is_memory_involved is true if memory is involved, either written or read
      */
-    void xra(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles, bool is_memory_involved) {
+    void xra(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles, bool is_memory_involved) {
         acc_reg ^= value;
 
         flag_reg.clear_carry_flag();
@@ -66,7 +66,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: XRA") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u8 acc_reg = 0;
 
         SUBCASE("should or the given value with the accumulator") {

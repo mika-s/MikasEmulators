@@ -18,7 +18,7 @@ namespace emu::i8080 {
      * @param e_reg is the E register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void xchg(u8 &h_reg, u8 &l_reg, u8 &d_reg, u8 &e_reg, unsigned long &cycles) {
+    void xchg(u8 &h_reg, u8 &l_reg, u8 &d_reg, u8 &e_reg, cyc &cycles) {
         const u8 h = h_reg;
         const u8 l = l_reg;
         h_reg = d_reg;
@@ -34,7 +34,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: XCHG") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should exchange HL with DE") {
             u8 h_reg = 0x11;

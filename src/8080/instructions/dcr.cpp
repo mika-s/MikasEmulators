@@ -19,7 +19,7 @@ namespace emu::i8080 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void dcr(u8 &reg, Flags &flag_reg, unsigned long &cycles) {
+    void dcr(u8 &reg, Flags &flag_reg, cyc &cycles) {
         dcr(reg, flag_reg, cycles, false);
     }
 
@@ -37,7 +37,7 @@ namespace emu::i8080 {
      * @param cycles is the number of cycles variable, which will be mutated
      * @param is_memory_involved is true if memory is involved, either written or read
      */
-    void dcr(u8 &reg, Flags &flag_reg, unsigned long &cycles, bool is_memory_involved) {
+    void dcr(u8 &reg, Flags &flag_reg, cyc &cycles, bool is_memory_involved) {
         const u8 previous = reg;
         reg--;
 
@@ -59,7 +59,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: DCR") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should decrease register or memory") {
             u8 reg = 10;

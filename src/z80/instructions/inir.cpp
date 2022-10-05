@@ -32,7 +32,7 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void inir(u16 &pc, u8 &b_reg, u8 c_reg, u8 &h_reg, u8 &l_reg, EmulatorMemory &memory, Flags &flag_reg,
-              std::vector<u8> io, unsigned long &cycles
+              std::vector<u8> io, cyc &cycles
     ) {
         u16 hl = to_u16(h_reg, l_reg);
 
@@ -63,7 +63,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: INIR") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u16 pc = 0;
         u8 h_reg = 0;
         u8 l_reg = 0;

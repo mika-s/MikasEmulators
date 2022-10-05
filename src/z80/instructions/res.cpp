@@ -24,7 +24,7 @@ namespace emu::z80 {
      * @param reg is the register to reset a bit in, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void res_r(unsigned int bit_number, u8 &reg, unsigned long &cycles) {
+    void res_r(unsigned int bit_number, u8 &reg, cyc &cycles) {
         assert(bit_number < 8);
 
         unset_bit(reg, bit_number);
@@ -46,7 +46,7 @@ namespace emu::z80 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void res_MHL(unsigned int bit_number, u16 hl_reg, EmulatorMemory &memory, unsigned long &cycles) {
+    void res_MHL(unsigned int bit_number, u16 hl_reg, EmulatorMemory &memory, cyc &cycles) {
         assert(bit_number < 8);
 
         unset_bit(memory[hl_reg], bit_number);
@@ -70,7 +70,7 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void res_MixyPd(unsigned int bit_number, u16 ixy_reg, u8 d, EmulatorMemory &memory,
-                    unsigned long &cycles
+                    cyc &cycles
     ) {
         assert(bit_number < 8);
 

@@ -24,7 +24,7 @@ namespace emu::i8080 {
      * @param args contains the argument with the address to jump to
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void jmp(u16 &pc, const NextWord &args, unsigned long &cycles) {
+    void jmp(u16 &pc, const NextWord &args, cyc &cycles) {
         pc = to_u16(args.sarg, args.farg);
 
         cycles = 10;
@@ -37,7 +37,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: JMP") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u16 pc = 0;
         NextWord args = {.farg = 0x11, .sarg = 0x22};
 

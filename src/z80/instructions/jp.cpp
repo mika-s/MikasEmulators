@@ -25,7 +25,7 @@ namespace emu::z80 {
      * @param args contains the argument with the address to jump to
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void jp(u16 &pc, const NextWord &args, unsigned long &cycles) {
+    void jp(u16 &pc, const NextWord &args, cyc &cycles) {
         pc = to_u16(args.sarg, args.farg);
 
         cycles = 10;
@@ -45,7 +45,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void jp_nz(u16 &pc, const NextWord &args, const Flags &flag_reg, unsigned long &cycles) {
+    void jp_nz(u16 &pc, const NextWord &args, const Flags &flag_reg, cyc &cycles) {
         if (!flag_reg.is_zero_flag_set()) {
             pc = to_u16(args.sarg, args.farg);
         }
@@ -67,7 +67,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void jp_z(u16 &pc, const NextWord &args, const Flags &flag_reg, unsigned long &cycles) {
+    void jp_z(u16 &pc, const NextWord &args, const Flags &flag_reg, cyc &cycles) {
         if (flag_reg.is_zero_flag_set()) {
             pc = to_u16(args.sarg, args.farg);
         }
@@ -89,7 +89,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void jp_nc(u16 &pc, const NextWord &args, const Flags &flag_reg, unsigned long &cycles) {
+    void jp_nc(u16 &pc, const NextWord &args, const Flags &flag_reg, cyc &cycles) {
         if (!flag_reg.is_carry_flag_set()) {
             pc = to_u16(args.sarg, args.farg);
         }
@@ -111,7 +111,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void jp_c(u16 &pc, const NextWord &args, const Flags &flag_reg, unsigned long &cycles) {
+    void jp_c(u16 &pc, const NextWord &args, const Flags &flag_reg, cyc &cycles) {
         if (flag_reg.is_carry_flag_set()) {
             pc = to_u16(args.sarg, args.farg);
         }
@@ -133,7 +133,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void jp_po(u16 &pc, const NextWord &args, const Flags &flag_reg, unsigned long &cycles) {
+    void jp_po(u16 &pc, const NextWord &args, const Flags &flag_reg, cyc &cycles) {
         if (!flag_reg.is_parity_overflow_flag_set()) {
             pc = to_u16(args.sarg, args.farg);
         }
@@ -155,7 +155,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void jp_pe(u16 &pc, const NextWord &args, const Flags &flag_reg, unsigned long &cycles) {
+    void jp_pe(u16 &pc, const NextWord &args, const Flags &flag_reg, cyc &cycles) {
         if (flag_reg.is_parity_overflow_flag_set()) {
             pc = to_u16(args.sarg, args.farg);
         }
@@ -177,7 +177,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void jp_p(u16 &pc, const NextWord &args, const Flags &flag_reg, unsigned long &cycles) {
+    void jp_p(u16 &pc, const NextWord &args, const Flags &flag_reg, cyc &cycles) {
         if (!flag_reg.is_sign_flag_set()) {
             pc = to_u16(args.sarg, args.farg);
         }
@@ -199,7 +199,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void jp_m(u16 &pc, const NextWord &args, const Flags &flag_reg, unsigned long &cycles) {
+    void jp_m(u16 &pc, const NextWord &args, const Flags &flag_reg, cyc &cycles) {
         if (flag_reg.is_sign_flag_set()) {
             pc = to_u16(args.sarg, args.farg);
         }
@@ -220,7 +220,7 @@ namespace emu::z80 {
      * @param address is the address in the HL register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void jp_hl(u16 &pc, u16 address, unsigned long &cycles) {
+    void jp_hl(u16 &pc, u16 address, cyc &cycles) {
         pc = address;
 
         cycles = 4;
@@ -239,7 +239,7 @@ namespace emu::z80 {
      * @param ixy_reg is the IX or IY register with the address to jump to
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void jp_ixy(u16 &pc, u16 ixy_reg, unsigned long &cycles) {
+    void jp_ixy(u16 &pc, u16 ixy_reg, cyc &cycles) {
         pc = ixy_reg;
 
         cycles = 8;
@@ -267,7 +267,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: JP") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u16 pc = 0;
         NextWord args = {.farg = 0x11, .sarg = 0x22};
 
@@ -287,7 +287,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: JP NZ") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should jump when zero flag is set") {
             u16 pc = 0;
@@ -346,7 +346,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: JP Z") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should jump when the zero flag is set") {
             u16 pc = 0;
@@ -405,7 +405,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: JP NC") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should jump when the carry flag is unset") {
             u16 pc = 0;
@@ -464,7 +464,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: JP C") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should jump when the carry flag is set") {
             u16 pc = 0;
@@ -523,7 +523,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: JP PO") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should jump when the Parity flag is unset") {
             u16 pc = 0;
@@ -582,7 +582,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: JP PE") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should jump when the parity flag is set") {
             u16 pc = 0;
@@ -641,7 +641,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: JP P") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should jump when the sign flag is unset") {
             u16 pc = 0;
@@ -700,7 +700,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: JP M") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should jump when the sign flag is set") {
             u16 pc = 0;
@@ -759,7 +759,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: JP (HL)") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u16 pc = 0x1111;
         u16 address = 0x432a;
 
@@ -779,7 +779,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: JP (IX) or JP (IY)") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u16 pc = 0x1111;
         u16 ix = 0x432a;
 

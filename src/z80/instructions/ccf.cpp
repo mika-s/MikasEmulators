@@ -20,7 +20,7 @@ namespace emu::z80 {
      * @param acc_reg is the accumulator, and is used to set the X and Y flags
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ccf(Flags &flag_reg, u8 acc_reg, unsigned long &cycles) {
+    void ccf(Flags &flag_reg, u8 acc_reg, cyc &cycles) {
         bool was_carry_set = flag_reg.is_carry_flag_set();
         flag_reg.toggle_carry_flag();
         flag_reg.clear_add_subtract_flag();
@@ -50,7 +50,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: CCF") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u8 acc_reg = 0;
 
         SUBCASE("should toggle the carry flag, set half carry flag to previous carry flag and always reset add/subtract flag") {

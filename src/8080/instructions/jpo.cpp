@@ -26,7 +26,7 @@ namespace emu::i8080 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void jpo(u16 &pc, const NextWord &args, const Flags &flag_reg, unsigned long &cycles) {
+    void jpo(u16 &pc, const NextWord &args, const Flags &flag_reg, cyc &cycles) {
         if (!flag_reg.is_parity_flag_set()) {
             pc = to_u16(args.sarg, args.farg);
         }
@@ -41,7 +41,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: JPO") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should jump when the Parity flag is unset") {
             u16 pc = 0;

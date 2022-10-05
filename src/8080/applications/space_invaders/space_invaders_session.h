@@ -108,11 +108,11 @@ namespace emu::i8080::applications::space_invaders {
         static constexpr unsigned int rst_1_i8080 = 0xCF;
         static constexpr unsigned int rst_2_i8080 = 0xD7;
 
-        void running(u64 &last_tick, unsigned long &cycles);
+        void running(u64 &last_tick, cyc &cycles);
 
         void pausing(u64 &last_tick);
 
-        void stepping(u64 &last_tick, unsigned long &cycles);
+        void stepping(u64 &last_tick, cyc &cycles);
 
         void await_input_and_update_debug();
 

@@ -17,7 +17,7 @@ namespace emu::i8080 {
      * @param value is the value to move into to_reg
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void mov(u8 &to, u8 value, unsigned long &cycles) {
+    void mov(u8 &to, u8 value, cyc &cycles) {
         mov(to, value, cycles, false);
     }
 
@@ -35,7 +35,7 @@ namespace emu::i8080 {
      * @param cycles is the number of cycles variable, which will be mutated
      * @param is_memory_involved is true if memory is involved, either written or read
      */
-    void mov(u8 &to, u8 value, unsigned long &cycles, bool is_memory_involved) {
+    void mov(u8 &to, u8 value, cyc &cycles, bool is_memory_involved) {
         to = value;
 
         cycles = 5;
@@ -52,7 +52,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: MOV") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should load registers with value") {
             u8 reg1 = 0;

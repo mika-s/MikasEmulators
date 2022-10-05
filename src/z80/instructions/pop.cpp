@@ -24,7 +24,7 @@ namespace emu::z80 {
      * @param memory is the memory
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void pop(u8 &reg1, u8 &reg2, u16 &sp, const EmulatorMemory &memory, unsigned long &cycles) {
+    void pop(u8 &reg1, u8 &reg2, u16 &sp, const EmulatorMemory &memory, cyc &cycles) {
         reg2 = memory[sp++];
         reg1 = memory[sp++];
 
@@ -45,7 +45,7 @@ namespace emu::z80 {
      * @param memory is the memory
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void pop_af(Flags &flag_reg, u8 &acc_reg, u16 &sp, const EmulatorMemory &memory, unsigned long &cycles) {
+    void pop_af(Flags &flag_reg, u8 &acc_reg, u16 &sp, const EmulatorMemory &memory, cyc &cycles) {
         flag_reg.from_u8(memory[sp++]);
         acc_reg = memory[sp++];
 
@@ -66,7 +66,7 @@ namespace emu::z80 {
      * @param memory is the memory
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void pop_ixy(u16 &ix_iy_reg, u16 &sp, const EmulatorMemory &memory, unsigned long &cycles) {
+    void pop_ixy(u16 &ix_iy_reg, u16 &sp, const EmulatorMemory &memory, cyc &cycles) {
         const u8 lo = memory[sp++];
         const u8 hi = memory[sp++];
 
@@ -81,7 +81,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: POP qq") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         EmulatorMemory memory;
         memory.add(std::vector<u8>{0x01, 0x02, 0x03, 0xff, 0x05, 0x06, 0x07, 0x08});
@@ -128,7 +128,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: POP IX/IY") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         EmulatorMemory memory;
         memory.add(std::vector<u8>{0x01, 0x02, 0x03, 0xff, 0x05, 0x06, 0x07, 0x08});

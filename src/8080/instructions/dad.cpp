@@ -26,7 +26,7 @@ namespace emu::i8080 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void dad(u8 &h_reg, u8 &l_reg, u16 value_to_add, Flags &flag_reg, unsigned long &cycles) {
+    void dad(u8 &h_reg, u8 &l_reg, u16 value_to_add, Flags &flag_reg, cyc &cycles) {
         const u16 previous = to_u16(h_reg, l_reg);
         const u16 next = previous + value_to_add;
         h_reg = high_byte(next);
@@ -43,7 +43,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: DAD") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should add the given value to HL") {
             for (u16 hl_counter = 0; hl_counter < 100; ++hl_counter) {

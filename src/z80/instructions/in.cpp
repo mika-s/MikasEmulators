@@ -24,7 +24,7 @@ namespace emu::z80 {
      * @param io is the IO addresses
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void in_A_Mn(u8 &acc_reg, const NextByte &args, std::vector<u8> io, unsigned long &cycles) {
+    void in_A_Mn(u8 &acc_reg, const NextByte &args, std::vector<u8> io, cyc &cycles) {
         acc_reg = io[args.farg];
 
         cycles = 11;
@@ -50,7 +50,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: IN A, [n]") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         std::vector<u8> io = {0, 2, 4, 6, 8, 10};
         NextByte args = {.farg = 0x1};
         u8 acc_reg = 0;

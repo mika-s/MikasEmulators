@@ -22,7 +22,7 @@ namespace emu::z80 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ret(u16 &pc, u16 &sp, const EmulatorMemory &memory, unsigned long &cycles) {
+    void ret(u16 &pc, u16 &sp, const EmulatorMemory &memory, cyc &cycles) {
         execute_return(pc, sp, memory);
 
         cycles = 10;
@@ -43,7 +43,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ret_c(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, unsigned long &cycles) {
+    void ret_c(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, cyc &cycles) {
         cycles = 0;
 
         if (flag_reg.is_carry_flag_set()) {
@@ -70,7 +70,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ret_nc(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, unsigned long &cycles) {
+    void ret_nc(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, cyc &cycles) {
         cycles = 0;
 
         if (!flag_reg.is_carry_flag_set()) {
@@ -97,7 +97,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ret_z(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, unsigned long &cycles) {
+    void ret_z(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, cyc &cycles) {
         cycles = 0;
 
         if (flag_reg.is_zero_flag_set()) {
@@ -124,7 +124,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ret_nz(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, unsigned long &cycles) {
+    void ret_nz(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, cyc &cycles) {
         cycles = 0;
 
         if (!flag_reg.is_zero_flag_set()) {
@@ -151,7 +151,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ret_m(u16 &pc, u16 &sp, EmulatorMemory &memory, const Flags &flag_reg, unsigned long &cycles) {
+    void ret_m(u16 &pc, u16 &sp, EmulatorMemory &memory, const Flags &flag_reg, cyc &cycles) {
         cycles = 0;
 
         if (flag_reg.is_sign_flag_set()) {
@@ -178,7 +178,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ret_p(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, unsigned long &cycles) {
+    void ret_p(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, cyc &cycles) {
         cycles = 0;
 
         if (!flag_reg.is_sign_flag_set()) {
@@ -205,7 +205,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ret_pe(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, unsigned long &cycles) {
+    void ret_pe(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, cyc &cycles) {
         cycles = 0;
 
         if (flag_reg.is_parity_overflow_flag_set()) {
@@ -232,7 +232,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ret_po(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, unsigned long &cycles) {
+    void ret_po(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, cyc &cycles) {
         cycles = 0;
 
         if (!flag_reg.is_parity_overflow_flag_set()) {
@@ -254,7 +254,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: RET") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u16 pc = 0x100f;
         u16 sp = 0;
         EmulatorMemory memory;
@@ -276,7 +276,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: RET C") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should pop PC off the stack when the carry flag is set") {
             u16 pc = 0x100f;
@@ -333,7 +333,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: RET NC") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         EmulatorMemory memory;
         memory.add(std::vector<u8>{0xab, 0x01, 0x02, 0x03, 0x04, 0x05});
 
@@ -386,7 +386,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: RET Z") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         EmulatorMemory memory;
         memory.add(std::vector<u8>{0xab, 0x01, 0x02, 0x03, 0x04, 0x05});
 
@@ -440,7 +440,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: RET NZ") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         EmulatorMemory memory;
         memory.add(std::vector<u8>{0xab, 0x01, 0x02, 0x03, 0x04, 0x05});
 
@@ -491,7 +491,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: RET M") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         EmulatorMemory memory;
         memory.add(std::vector<u8>{0xab, 0x01, 0x02, 0x03, 0x04, 0x05});
 
@@ -542,7 +542,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: RET P") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         EmulatorMemory memory;
         memory.add(std::vector<u8>{0xab, 0x01, 0x02, 0x03, 0x04, 0x05});
 
@@ -593,7 +593,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: RET PE") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         EmulatorMemory memory;
         memory.add(std::vector<u8>{0xab, 0x01, 0x02, 0x03, 0x04, 0x05});
 
@@ -644,7 +644,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: RET PO") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         EmulatorMemory memory;
         memory.add(std::vector<u8>{0xab, 0x01, 0x02, 0x03, 0x04, 0x05});
 

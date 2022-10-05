@@ -52,8 +52,8 @@ namespace emu::i8080::applications::space_invaders {
         m_cpu->start();
         m_run_status = RUNNING;
 
-        unsigned long cycles;
-        u64 last_tick = SDL_GetTicks64();
+        cyc cycles;
+        cyc last_tick = SDL_GetTicks64();
 
         while (m_run_status == RUNNING || m_run_status == PAUSED || m_run_status == STEPPING) {
             if (m_run_status == RUNNING) {
@@ -68,7 +68,7 @@ namespace emu::i8080::applications::space_invaders {
         m_run_status = FINISHED;
     }
 
-    void SpaceInvadersSession::running(u64 &last_tick, unsigned long &cycles) {
+    void SpaceInvadersSession::running(u64 &last_tick, cyc &cycles) {
         m_outputs_during_cycle.clear();
 
         if (SDL_GetTicks64() - last_tick >= tick_limit) {
@@ -115,7 +115,7 @@ namespace emu::i8080::applications::space_invaders {
         }
     }
 
-    void SpaceInvadersSession::stepping([[maybe_unused]] u64 &last_tick, unsigned long &cycles) {
+    void SpaceInvadersSession::stepping([[maybe_unused]] u64 &last_tick, cyc &cycles) {
         m_outputs_during_cycle.clear();
 
         await_input_and_update_debug();

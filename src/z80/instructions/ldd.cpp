@@ -31,7 +31,7 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void ldd(u8 &b_reg, u8 &c_reg, u8 &d_reg, u8 &e_reg, u8 &h_reg, u8 &l_reg, u8 acc_reg,
-             EmulatorMemory &memory, Flags &flag_reg, unsigned long &cycles
+             EmulatorMemory &memory, Flags &flag_reg, cyc &cycles
     ) {
         u16 de = to_u16(d_reg, e_reg);
         u16 hl = to_u16(h_reg, l_reg);

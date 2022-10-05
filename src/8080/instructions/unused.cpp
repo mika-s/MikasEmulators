@@ -14,7 +14,7 @@ namespace emu::i8080 {
      * @param opcode is the opcode of the instruction
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void unused_1(u8 opcode, unsigned long &cycles) {
+    void unused_1(u8 opcode, cyc &cycles) {
         std::cout << "Opcode not supposed to be used: " << hexify(opcode) << "\n";
 
         cycles = 0;
@@ -25,7 +25,7 @@ namespace emu::i8080 {
      * @param opcode is the opcode of the instruction
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void unused_3(u8 opcode, u16 &pc, unsigned long &cycles) {
+    void unused_3(u8 opcode, u16 &pc, cyc &cycles) {
         unused_1(opcode, cycles);
         pc += 2;
     }

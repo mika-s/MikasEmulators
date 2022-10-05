@@ -15,7 +15,7 @@ namespace emu::i8080 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void cmc(Flags &flag_reg, unsigned long &cycles) {
+    void cmc(Flags &flag_reg, cyc &cycles) {
         flag_reg.toggle_carry_flag();
 
         cycles = 4;
@@ -26,7 +26,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: CMC") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should toggle the carry flag") {
             Flags flag_reg;

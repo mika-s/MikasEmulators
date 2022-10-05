@@ -1,5 +1,6 @@
 #include <iostream>
 #include "doctest.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::z80 {
     /**
@@ -14,7 +15,7 @@ namespace emu::z80 {
      * @param is_halted is the halted status variable, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void halt(bool &is_halted, unsigned long &cycles) {
+    void halt(bool &is_halted, cyc &cycles) {
         is_halted = true;
 
         cycles = 4;
@@ -25,7 +26,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: HALT") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should stop the program") {
             bool stopped = false;

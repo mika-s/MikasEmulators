@@ -23,7 +23,7 @@ namespace emu::i8080 {
      * @param reg2 is the second register in the register pair, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void inx(u8 &reg1, u8 &reg2, unsigned long &cycles) {
+    void inx(u8 &reg1, u8 &reg2, cyc &cycles) {
         u16 val = to_u16(reg1, reg2);
         ++val;
 
@@ -45,7 +45,7 @@ namespace emu::i8080 {
      * @param sp is the stack pointer, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void inx_sp(u16 &sp, unsigned long &cycles) {
+    void inx_sp(u16 &sp, cyc &cycles) {
         ++sp;
 
         cycles = 5;
@@ -57,7 +57,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: INX") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u8 reg1 = 0;
         u8 reg2 = 0;
         u8 expected_reg1 = 0;

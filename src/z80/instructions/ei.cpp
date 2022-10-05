@@ -1,5 +1,6 @@
 #include <iostream>
 #include "doctest.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::z80 {
     /**
@@ -15,7 +16,7 @@ namespace emu::z80 {
      * @param iff2 is the alternate interrupt enable flip-flop, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ei(bool &iff1, bool &iff2, unsigned long &cycles) {
+    void ei(bool &iff1, bool &iff2, cyc &cycles) {
         iff1 = true;
         iff2 = true;
 
@@ -27,7 +28,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: EI") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should enable interrupts") {
             bool iff1 = false;

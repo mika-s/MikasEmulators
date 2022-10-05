@@ -25,7 +25,7 @@ namespace emu::i8080 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void xri(u8 &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles) {
+    void xri(u8 &acc_reg, const NextByte &args, Flags &flag_reg, cyc &cycles) {
         acc_reg ^= args.farg;
 
         flag_reg.clear_carry_flag();
@@ -48,7 +48,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: XRI") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u8 acc_reg = 0;
 
         SUBCASE("should xor the given value with the accumulator") {

@@ -24,7 +24,7 @@ namespace emu::i8080 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ana(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles) {
+    void ana(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles) {
         ana(acc_reg, value, flag_reg, cycles, false);
     }
 
@@ -43,7 +43,7 @@ namespace emu::i8080 {
      * @param cycles is the number of cycles variable, which will be mutated
      * @param is_memory_involved is true if memory is involved, either written or read
      */
-    void ana(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles, bool is_memory_involved) {
+    void ana(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles, bool is_memory_involved) {
         const u8 previous = acc_reg;
         acc_reg &= value;
 
@@ -76,7 +76,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: ANA") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u8 acc_reg = 0;
 
         SUBCASE("should and given value with the accumulator") {

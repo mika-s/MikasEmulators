@@ -16,7 +16,7 @@ namespace emu::i8080 {
      * @param acc_reg is the accumulator register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void cma(u8 &acc_reg, unsigned long &cycles) {
+    void cma(u8 &acc_reg, cyc &cycles) {
         acc_reg = ~acc_reg;
 
         cycles = 4;
@@ -27,7 +27,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: CMA") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u8 acc_reg = 0;
 
         SUBCASE("should complement the accumulator") {

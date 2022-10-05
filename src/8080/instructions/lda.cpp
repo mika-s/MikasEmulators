@@ -26,7 +26,7 @@ namespace emu::i8080 {
      * @param args contains the argument with the address
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void lda(u8 &acc_reg, const EmulatorMemory &memory, const NextWord &args, unsigned long &cycles) {
+    void lda(u8 &acc_reg, const EmulatorMemory &memory, const NextWord &args, cyc &cycles) {
         acc_reg = memory[to_u16(args.sarg, args.farg)];
 
         cycles = 13;
@@ -39,7 +39,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: LDA") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u8 acc_reg = 0xe;
         EmulatorMemory memory;
         memory.add(std::vector<u8>{0x00, 0x01, 0x02, 0x03, 0xfd, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});

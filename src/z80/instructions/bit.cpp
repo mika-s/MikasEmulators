@@ -47,7 +47,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void bit_r(unsigned int bit_number, u8 reg, Flags &flag_reg, unsigned long &cycles) {
+    void bit_r(unsigned int bit_number, u8 reg, Flags &flag_reg, cyc &cycles) {
         assert(bit_number < 8);
 
         bit(bit_number, reg, flag_reg);
@@ -85,7 +85,7 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void bit_MHL(unsigned int bit_number, u16 hl_reg, const EmulatorMemory &memory, Flags &flag_reg,
-                 unsigned long &cycles
+                 cyc &cycles
     ) {
         assert(bit_number < 8);
 
@@ -114,7 +114,7 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void bit_MixyPd(unsigned int bit_number, u16 ixy_reg, u8 d, const EmulatorMemory &memory, Flags &flag_reg,
-                    unsigned long &cycles
+                    cyc &cycles
     ) {
         assert(bit_number < 8);
 

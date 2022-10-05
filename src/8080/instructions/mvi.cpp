@@ -23,7 +23,7 @@ namespace emu::i8080 {
      * @param cycles is the number of cycles variable, which will be mutated
      * @param is_memory_involved is true if memory is involved, either written or read
      */
-    void mvi(u8 &reg, const NextByte &args, unsigned long &cycles, bool is_memory_involved) {
+    void mvi(u8 &reg, const NextByte &args, cyc &cycles, bool is_memory_involved) {
         reg = args.farg;
 
         cycles = 7;
@@ -46,7 +46,7 @@ namespace emu::i8080 {
      * @param args contains value to load into the register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void mvi(u8 &reg, const NextByte &args, unsigned long &cycles) {
+    void mvi(u8 &reg, const NextByte &args, cyc &cycles) {
         mvi(reg, args, cycles, false);
     }
 
@@ -57,7 +57,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: MVI") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should load registers with value") {
             u8 reg = 0;

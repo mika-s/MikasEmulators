@@ -1,5 +1,6 @@
 #include <iostream>
 #include "doctest.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::i8080 {
     /**
@@ -12,7 +13,7 @@ namespace emu::i8080 {
      *
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void nop(unsigned long &cycles) {
+    void nop(cyc &cycles) {
         cycles = 4;
     }
 
@@ -21,7 +22,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: NOP") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should use 4 cycles") {
             nop(cycles);

@@ -1,5 +1,6 @@
 #include <iostream>
 #include "doctest.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::i8080 {
     /**
@@ -14,7 +15,7 @@ namespace emu::i8080 {
      * @param stopped is the stopped status variable
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void hlt(bool &stopped, unsigned long &cycles) {
+    void hlt(bool &stopped, cyc &cycles) {
         stopped = true;
 
         cycles = 7;
@@ -25,7 +26,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: HLT") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should stop the program") {
             bool stopped = false;

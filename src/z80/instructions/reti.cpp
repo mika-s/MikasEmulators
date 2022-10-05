@@ -19,7 +19,7 @@ namespace emu::z80 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void reti(u16 &pc, u16 &sp, const EmulatorMemory &memory, unsigned long &cycles) {
+    void reti(u16 &pc, u16 &sp, const EmulatorMemory &memory, cyc &cycles) {
         execute_return(pc, sp, memory);
         // TODO: Signal an I/O device that the interrupt routine is completed.
 

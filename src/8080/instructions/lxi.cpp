@@ -25,7 +25,7 @@ namespace emu::i8080 {
      * @param args contains value to load into the registers
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void lxi(u8 &reg1, u8 &reg2, const NextWord &args, unsigned long &cycles) {
+    void lxi(u8 &reg1, u8 &reg2, const NextWord &args, cyc &cycles) {
         reg1 = args.sarg;
         reg2 = args.farg;
 
@@ -45,7 +45,7 @@ namespace emu::i8080 {
      * @param args contains value to load into the register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void lxi_sp(u16 &sp, const NextWord &args, unsigned long &cycles) {
+    void lxi_sp(u16 &sp, const NextWord &args, cyc &cycles) {
         sp = to_u16(args.sarg, args.farg);
 
         cycles = 10;
@@ -59,7 +59,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: LXI") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         u16 sp = 0xe;
         u8 reg1 = 0xe;
         u8 reg2 = 0;

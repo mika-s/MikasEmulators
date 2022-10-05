@@ -24,7 +24,7 @@ namespace emu::i8080 {
      * @param io is the IO addresses, which might be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void out(u8 acc_reg, const NextByte &args, std::vector<u8> &io, unsigned long &cycles) {
+    void out(u8 acc_reg, const NextByte &args, std::vector<u8> &io, cyc &cycles) {
         io[args.farg] = acc_reg;
 
         cycles = 10;
@@ -36,7 +36,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: OUT") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         std::vector<u8> io = {0, 2, 4, 6, 8, 10};
         NextByte args = {.farg = 0x1};
         u8 acc_reg = 100;

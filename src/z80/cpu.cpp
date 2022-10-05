@@ -129,8 +129,8 @@ namespace emu::z80 {
         m_io_in[port] = value;
     }
 
-    unsigned long Cpu::next_instruction() {
-        unsigned long cycles = 0;
+    cyc Cpu::next_instruction() {
+        cyc cycles = 0;
 
         if (m_is_nmi_interrupted) {
             return handle_nonmaskable_interrupt(cycles);
@@ -933,7 +933,7 @@ namespace emu::z80 {
         return cycles;
     }
 
-    void Cpu::next_bits_instruction(u8 bits_opcode, unsigned long &cycles) {
+    void Cpu::next_bits_instruction(u8 bits_opcode, cyc &cycles) {
         print_debug(bits_opcode);
         r_tick();
 
@@ -1711,7 +1711,7 @@ namespace emu::z80 {
         }
     }
 
-    void Cpu::next_ixy_instruction(u8 ixy_opcode, u16 &ixy_reg, unsigned long &cycles) {
+    void Cpu::next_ixy_instruction(u8 ixy_opcode, u16 &ixy_reg, cyc &cycles) {
         print_debug(ixy_opcode);
         r_tick();
 
@@ -2099,7 +2099,7 @@ namespace emu::z80 {
         }
     }
 
-    void Cpu::next_ixy_bits_instruction(NextWord args, u16 &ixy_reg, unsigned long &cycles) {
+    void Cpu::next_ixy_bits_instruction(NextWord args, u16 &ixy_reg, cyc &cycles) {
         u8 d = args.farg;
         u8 ixy_bits_opcode = args.sarg;
         print_debug(ixy_bits_opcode);
@@ -2229,7 +2229,7 @@ namespace emu::z80 {
         }
     }
 
-    void Cpu::next_extd_instruction(u8 extd_opcode, unsigned long &cycles) {
+    void Cpu::next_extd_instruction(u8 extd_opcode, cyc &cycles) {
         print_debug(extd_opcode);
         r_tick();
 
@@ -2396,7 +2396,7 @@ namespace emu::z80 {
         }
     }
 
-    unsigned long Cpu::handle_nonmaskable_interrupt(unsigned long cycles) {
+    cyc Cpu::handle_nonmaskable_interrupt(cyc cycles) {
         m_iff1 = false;
         m_is_nmi_interrupted = false;
         m_is_halted = false;
@@ -2408,7 +2408,7 @@ namespace emu::z80 {
         return cycles;
     }
 
-    unsigned long Cpu::handle_maskable_interrupt_0(unsigned long cycles) {
+    cyc Cpu::handle_maskable_interrupt_0(cyc cycles) {
         m_iff1 = m_iff2 = false;
         m_is_interrupted = false;
         m_is_halted = false;
@@ -2421,7 +2421,7 @@ namespace emu::z80 {
         return cycles;
     }
 
-    unsigned long Cpu::handle_maskable_interrupt_1_2(unsigned long cycles) {
+    cyc Cpu::handle_maskable_interrupt_1_2(cyc cycles) {
         m_iff1 = m_iff2 = false;
         m_is_interrupted = false;
         m_is_halted = false;

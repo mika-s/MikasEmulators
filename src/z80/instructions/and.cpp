@@ -42,7 +42,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void and_r(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles) {
+    void and_r(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles) {
         and_(acc_reg, value, flag_reg);
 
         cycles = 4;
@@ -66,7 +66,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void and_n(u8 &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles) {
+    void and_n(u8 &acc_reg, const NextByte &args, Flags &flag_reg, cyc &cycles) {
         and_(acc_reg, args.farg, flag_reg);
 
         cycles = 7;
@@ -91,7 +91,7 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      * @param is_memory_involved is true if memory is involved, either written or read
      */
-    void and_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles) {
+    void and_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles) {
         and_(acc_reg, value, flag_reg);
 
         cycles = 7;
@@ -114,7 +114,7 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void and_MixyPd(u8 &acc_reg, u16 ixy_reg, const NextByte &args, const EmulatorMemory &memory, Flags &flag_reg,
-                    unsigned long &cycles
+                    cyc &cycles
     ) {
         and_(acc_reg, memory[ixy_reg + static_cast<i8>(args.farg)], flag_reg);
 
@@ -137,7 +137,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void and_ixy_h_or_l(u8 &acc_reg, u8 ixy_reg_h_or_l, Flags &flag_reg, unsigned long &cycles) {
+    void and_ixy_h_or_l(u8 &acc_reg, u8 ixy_reg_h_or_l, Flags &flag_reg, cyc &cycles) {
         and_(acc_reg, ixy_reg_h_or_l, flag_reg);
 
         cycles = 8;
@@ -217,7 +217,7 @@ namespace emu::z80 {
 
     TEST_CASE("Z80: AND r") {
         SUBCASE("should use 4 cycles") {
-            unsigned long cycles = 0;
+            cyc cycles = 0;
             u8 acc_reg = 0xe;
             u8 value = 0;
             Flags flag_reg;
@@ -230,7 +230,7 @@ namespace emu::z80 {
 
     TEST_CASE("Z80: AND n") {
         SUBCASE("should use 7 cycles") {
-            unsigned long cycles = 0;
+            cyc cycles = 0;
             u8 acc_reg = 0xe;
             NextByte args = {0};
             Flags flag_reg;
@@ -243,7 +243,7 @@ namespace emu::z80 {
 
     TEST_CASE("Z80: AND [HL]") {
         SUBCASE("should use 7 cycles") {
-            unsigned long cycles = 0;
+            cyc cycles = 0;
             u8 acc_reg = 0xe;
             u8 value = 0;
             Flags flag_reg;

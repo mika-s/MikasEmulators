@@ -24,7 +24,7 @@ namespace emu::i8080 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void rnc(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, unsigned long &cycles) {
+    void rnc(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, cyc &cycles) {
         cycles = 0;
 
         if (!flag_reg.is_carry_flag_set()) {
@@ -41,7 +41,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: RNC") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
         EmulatorMemory memory;
         memory.add(std::vector<u8>{0xab, 0x01, 0x02, 0x03, 0x04, 0x05});
 

@@ -22,7 +22,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void cpl(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles) {
+    void cpl(u8 &acc_reg, Flags &flag_reg, cyc &cycles) {
         acc_reg = ~acc_reg;
 
         flag_reg.set_half_carry_flag();
@@ -49,7 +49,7 @@ namespace emu::z80 {
 
     TEST_CASE("Z80: CPL") {
         SUBCASE("should complement the accumulator and always set half carry and add/subtract flags") {
-            unsigned long cycles = 0;
+            cyc cycles = 0;
             u8 acc_reg = 0;
             Flags flag_reg;
 

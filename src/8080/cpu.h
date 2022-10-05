@@ -27,7 +27,7 @@ namespace emu::i8080 {
 
         [[nodiscard]] bool can_run_next_instruction() const;
 
-        unsigned long next_instruction();
+        cyc next_instruction();
 
         void reset_state();
 

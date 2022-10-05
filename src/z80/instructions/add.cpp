@@ -60,7 +60,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void add_A_r(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles) {
+    void add_A_r(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles) {
         add(acc_reg, value, flag_reg);
 
         cycles = 4;
@@ -80,7 +80,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void add_A_ixy_h_or_l(u8 &acc_reg, u8 ixy_reg_h_or_l, Flags &flag_reg, unsigned long &cycles) {
+    void add_A_ixy_h_or_l(u8 &acc_reg, u8 ixy_reg_h_or_l, Flags &flag_reg, cyc &cycles) {
         add(acc_reg, ixy_reg_h_or_l, flag_reg);
 
         cycles = 8;
@@ -103,7 +103,7 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void add_A_MixyPd(u8 &acc_reg, u16 ixy_reg, const NextByte &args, const EmulatorMemory &memory, Flags &flag_reg,
-                      unsigned long &cycles
+                      cyc &cycles
     ) {
         add(acc_reg, memory[ixy_reg + static_cast<i8>(args.farg)], flag_reg);
 
@@ -124,7 +124,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void add_A_n(u8 &acc_reg, const NextByte &args, Flags &flag_reg, unsigned long &cycles) {
+    void add_A_n(u8 &acc_reg, const NextByte &args, Flags &flag_reg, cyc &cycles) {
         add(acc_reg, args.farg, flag_reg);
 
         cycles = 7;
@@ -145,7 +145,7 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      * @param is_memory_involved is true if memory is involved, either written or read
      */
-    void add_A_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, unsigned long &cycles) {
+    void add_A_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles) {
         add(acc_reg, value, flag_reg);
 
         cycles = 7;
@@ -166,7 +166,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void add_HL_ss(u8 &h_reg, u8 &l_reg, u16 value, Flags &flag_reg, unsigned long &cycles) {
+    void add_HL_ss(u8 &h_reg, u8 &l_reg, u16 value, Flags &flag_reg, cyc &cycles) {
         u16 hl = to_u16(h_reg, l_reg);
 
         add(hl, value, flag_reg);
@@ -191,7 +191,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void add_ixy_pp(u16 &ixy_reg, u16 value_to_add, Flags &flag_reg, unsigned long &cycles) {
+    void add_ixy_pp(u16 &ixy_reg, u16 value_to_add, Flags &flag_reg, cyc &cycles) {
         add(ixy_reg, value_to_add, flag_reg);
 
         cycles = 15;
@@ -301,7 +301,7 @@ namespace emu::z80 {
 
     TEST_CASE("Z80: ADD A, r") {
         SUBCASE("should use 4 cycles") {
-            unsigned long cycles = 0;
+            cyc cycles = 0;
             Flags flag_reg;
             u8 acc_reg = 0xe;
 
@@ -312,7 +312,7 @@ namespace emu::z80 {
 
     TEST_CASE("Z80: ADD A, n") {
         SUBCASE("should use 7 cycles") {
-            unsigned long cycles = 0;
+            cyc cycles = 0;
             Flags flag_reg;
             u8 acc_reg = 0xe;
             NextByte args = {0x1};
@@ -324,7 +324,7 @@ namespace emu::z80 {
 
     TEST_CASE("Z80: ADD A, [HL]") {
         SUBCASE("should use 7 cycles") {
-            unsigned long cycles = 0;
+            cyc cycles = 0;
             Flags flag_reg;
             u8 acc_reg = 0xe;
 
@@ -334,7 +334,7 @@ namespace emu::z80 {
     }
 
     TEST_CASE("Z80: ADD HL, ss") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should add the given value to HL") {
             for (u16 hl_counter = 0; hl_counter < 100; ++hl_counter) {

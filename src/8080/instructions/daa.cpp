@@ -18,7 +18,7 @@ namespace emu::i8080 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void daa(u8 &acc_reg, Flags &flag_reg, unsigned long &cycles) {
+    void daa(u8 &acc_reg, Flags &flag_reg, cyc &cycles) {
         const u8 lower_nibble = acc_reg & 0x0f;
         const u8 upper_nibble = acc_reg >> 4;
 
@@ -50,7 +50,7 @@ namespace emu::i8080 {
     }
 
     TEST_CASE("8080: DAA") {
-        unsigned long cycles = 0;
+        cyc cycles = 0;
 
         SUBCASE("should decimal adjust the accumulator") {
             // Example from the 8080 Programmers Manual.
