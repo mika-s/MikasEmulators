@@ -147,7 +147,8 @@ namespace emu::i8080::applications::space_invaders {
         ImGui::CreateContext();
         ImGuiIO &io = ImGui::GetIO();
         (void) io;
-        ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+        io.IniFilename = "space-invaders_imgui.ini";
+        io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
         ImGui::StyleColorsDark();
 
@@ -161,12 +162,12 @@ namespace emu::i8080::applications::space_invaders {
     }
 
     void GuiImgui::update_screen(const std::vector<u8> &vram, RunStatus run_status) {
-        std::vector<u32> frame_buffer = create_framebuffer(vram);
+        std::vector<u32> framebuffer = create_framebuffer(vram);
 
         glBindTexture(GL_TEXTURE_2D, m_screen_texture);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, frame_buffer.data());
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, framebuffer.data());
 
         glBindTexture(GL_TEXTURE_2D, 0);
 
