@@ -17,6 +17,7 @@ namespace emu::gui {
 
     private:
         static constexpr float margin_title_right = 120.0f;
+        static constexpr float margin_main_right = 240.0f;
 
         DebugContainer m_debug_container;
     };

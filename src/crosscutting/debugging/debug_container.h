@@ -13,16 +13,28 @@ namespace emu::debugger {
     public:
         RegisterDebugContainer(
                 std::string name,
-                std::function<u8()> value_retriever
+                std::function<u8()> value_retriever_main
+        );
+
+        RegisterDebugContainer(
+                std::string name,
+                std::function<u8()> value_retriever_main,
+                std::function<u8()> value_retriever_alternate
         );
 
         [[nodiscard]] std::string name() const;
 
-        [[nodiscard]] u8 value() const;
+        [[nodiscard]] u8 main() const;
+
+        [[nodiscard]] u8 alternate() const;
+
+        [[nodiscard]] bool is_alternate_set() const;
 
     private:
         std::string m_name;
-        std::function<u8()> m_value_retriever;
+        std::function<u8()> m_value_retriever_main;
+        std::function<u8()> m_value_retriever_alternate;
+        bool m_is_alternate_set;
     };
 
     class FlagRegisterDebugContainer {
@@ -102,6 +114,8 @@ namespace emu::debugger {
 
         std::vector<RegisterDebugContainer> registers();
 
+        [[nodiscard]] bool has_alternate_registers() const;
+
         void add_flag_register(const FlagRegisterDebugContainer &flag_reg);
 
         [[nodiscard]] FlagRegisterDebugContainer flag_register() const;
@@ -152,6 +166,7 @@ namespace emu::debugger {
 
     private:
         std::vector<RegisterDebugContainer> m_register_retrievers;
+        bool m_has_alternate_registers;
 
         FlagRegisterDebugContainer m_flag_register_retriever;
         bool m_is_flag_register_set;

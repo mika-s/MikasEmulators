@@ -184,13 +184,27 @@ namespace emu::z80::applications::pacman {
     }
 
     void PacmanSession::setup_debugging() {
-        m_debug_container.add_register(RegisterDebugContainer("A", [&]() { return m_cpu->a(); }));
-        m_debug_container.add_register(RegisterDebugContainer("B", [&]() { return m_cpu->b(); }));
-        m_debug_container.add_register(RegisterDebugContainer("C", [&]() { return m_cpu->c(); }));
-        m_debug_container.add_register(RegisterDebugContainer("D", [&]() { return m_cpu->d(); }));
-        m_debug_container.add_register(RegisterDebugContainer("E", [&]() { return m_cpu->e(); }));
-        m_debug_container.add_register(RegisterDebugContainer("H", [&]() { return m_cpu->h(); }));
-        m_debug_container.add_register(RegisterDebugContainer("L", [&]() { return m_cpu->l(); }));
+        m_debug_container.add_register(RegisterDebugContainer("A",
+                                                              [&]() { return m_cpu->a(); },
+                                                              [&]() { return m_cpu->a_p(); }));
+        m_debug_container.add_register(RegisterDebugContainer("B",
+                                                              [&]() { return m_cpu->b(); },
+                                                              [&]() { return m_cpu->b_p(); }));
+        m_debug_container.add_register(RegisterDebugContainer("C",
+                                                              [&]() { return m_cpu->c(); },
+                                                              [&]() { return m_cpu->c_p(); }));
+        m_debug_container.add_register(RegisterDebugContainer("D",
+                                                              [&]() { return m_cpu->d(); },
+                                                              [&]() { return m_cpu->d_p(); }));
+        m_debug_container.add_register(RegisterDebugContainer("E",
+                                                              [&]() { return m_cpu->e(); },
+                                                              [&]() { return m_cpu->e_p(); }));
+        m_debug_container.add_register(RegisterDebugContainer("H",
+                                                              [&]() { return m_cpu->h(); },
+                                                              [&]() { return m_cpu->h_p(); }));
+        m_debug_container.add_register(RegisterDebugContainer("L",
+                                                              [&]() { return m_cpu->l(); },
+                                                              [&]() { return m_cpu->l_p(); }));
         m_debug_container.add_register(RegisterDebugContainer("I", [&]() { return m_cpu->i(); }));
         m_debug_container.add_register(RegisterDebugContainer("R", [&]() { return m_cpu->r(); }));
         m_debug_container.add_pc([&]() { return m_cpu->pc(); });

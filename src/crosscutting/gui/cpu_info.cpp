@@ -22,13 +22,25 @@ namespace emu::gui {
 
         ImGui::Text("Registers:");
         ImGui::Separator();
+        if (m_debug_container.has_alternate_registers()) {
+            ImGui::SameLine(margin_title_right, ImGui::GetStyle().ItemInnerSpacing.x);
+            ImGui::Text("Main");
+            ImGui::SameLine(margin_main_right, ImGui::GetStyle().ItemInnerSpacing.x);
+            ImGui::Text("Alternate");
+        }
         for (const auto &reg : m_debug_container.registers()) {
             const std::string name = reg.name();
-            const u8 value = reg.value();
+            const u8 main = reg.main();
 
             ImGui::Text("%s", name.c_str());
             ImGui::SameLine(margin_title_right, ImGui::GetStyle().ItemInnerSpacing.x);
-            ImGui::Text("%s", hexify(value).c_str());
+            ImGui::Text("%s", hexify(main).c_str());
+
+            if (reg.is_alternate_set()) {
+                const u8 alternate = reg.alternate();
+                ImGui::SameLine(margin_main_right, ImGui::GetStyle().ItemInnerSpacing.x);
+                ImGui::Text("%s", hexify(alternate).c_str());
+            }
         }
         if (m_debug_container.is_flag_register_set()) {
             const std::string name = m_debug_container.flag_register().name();

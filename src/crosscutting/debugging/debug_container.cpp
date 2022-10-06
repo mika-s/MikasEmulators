@@ -4,17 +4,37 @@ namespace emu::debugger {
 
     RegisterDebugContainer::RegisterDebugContainer(
             std::string name,
-            std::function<u8()> value_retriever
+            std::function<u8()> value_retriever_main
     ) : m_name(std::move(name)),
-        m_value_retriever(std::move(value_retriever)) {
+        m_value_retriever_main(std::move(value_retriever_main)),
+        m_value_retriever_alternate([&]() { return 0; }),
+        m_is_alternate_set(false) {
+    }
+
+    RegisterDebugContainer::RegisterDebugContainer(
+            std::string name,
+            std::function<u8()> value_retriever_main,
+            std::function<u8()> value_retriever_alternate
+    ) : m_name(std::move(name)),
+        m_value_retriever_main(std::move(value_retriever_main)),
+        m_value_retriever_alternate(std::move(value_retriever_alternate)),
+        m_is_alternate_set(true) {
     }
 
     std::string RegisterDebugContainer::name() const {
         return m_name;
     }
 
-    u8 RegisterDebugContainer::value() const {
-        return m_value_retriever();
+    u8 RegisterDebugContainer::main() const {
+        return m_value_retriever_main();
+    }
+
+    u8 RegisterDebugContainer::alternate() const {
+        return m_value_retriever_alternate();
+    }
+
+    bool RegisterDebugContainer::is_alternate_set() const {
+        return m_is_alternate_set;
     }
 
     FlagRegisterDebugContainer::FlagRegisterDebugContainer() = default;
@@ -93,7 +113,8 @@ namespace emu::debugger {
     }
 
     DebugContainer::DebugContainer()
-            : m_flag_register_retriever(FlagRegisterDebugContainer()),
+            : m_has_alternate_registers(false),
+              m_flag_register_retriever(FlagRegisterDebugContainer()),
               m_is_flag_register_set(false),
               m_is_io_set(false),
               m_is_memory_set(false),
@@ -106,10 +127,17 @@ namespace emu::debugger {
 
     void DebugContainer::add_register(const RegisterDebugContainer &reg) {
         m_register_retrievers.emplace_back(reg);
+        if (reg.is_alternate_set()) {
+            m_has_alternate_registers = true;
+        }
     }
 
     std::vector<RegisterDebugContainer> DebugContainer::registers() {
         return m_register_retrievers;
+    }
+
+    bool DebugContainer::has_alternate_registers() const {
+        return m_has_alternate_registers;
     }
 
     void DebugContainer::add_flag_register(const FlagRegisterDebugContainer &flag_reg) {
