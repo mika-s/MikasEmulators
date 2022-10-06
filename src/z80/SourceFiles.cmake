@@ -6,8 +6,6 @@ set(SOURCES_Z80_CPP
         src/z80/applications/pacman/memory_mapped_io.cpp
         src/z80/applications/pacman/pacman.cpp
         src/z80/applications/pacman/pacman_session.cpp
-        src/z80/applications/pacman/gui/color.cpp
-        src/z80/applications/pacman/gui/framebuffer.cpp
         src/z80/applications/pacman/gui/gui.cpp
         src/z80/applications/pacman/gui/gui_imgui.cpp
         src/z80/applications/pacman/gui/gui_sdl.cpp
@@ -96,8 +94,6 @@ set(SOURCES_Z80_H
         src/z80/applications/pacman/pacman.h
         src/z80/applications/pacman/pacman_session.h
         src/z80/applications/pacman/settings.h
-        src/z80/applications/pacman/gui/color.h
-        src/z80/applications/pacman/gui/framebuffer.h
         src/z80/applications/pacman/gui/gui.h
         src/z80/applications/pacman/gui/gui_imgui.h
         src/z80/applications/pacman/gui/gui_sdl.h

@@ -1,9 +1,9 @@
-#ifndef MIKA_EMULATORS_Z80_APPLICATIONS_PACMAN_GUI_COLOR_H
-#define MIKA_EMULATORS_Z80_APPLICATIONS_PACMAN_GUI_COLOR_H
+#ifndef MIKA_EMULATORS_CROSSCUTTING_GUI_COLOR_H
+#define MIKA_EMULATORS_CROSSCUTTING_GUI_COLOR_H
 
 #include "crosscutting/typedefs.h"
 
-namespace emu::z80::applications::pacman {
+namespace emu::gui {
     class Color {
     public:
         Color(u8 alpha, u8 red, u8 green, u8 blue);
@@ -22,4 +22,4 @@ namespace emu::z80::applications::pacman {
     };
 }
 
-#endif //MIKA_EMULATORS_Z80_APPLICATIONS_PACMAN_GUI_COLOR_H
+#endif //MIKA_EMULATORS_CROSSCUTTING_GUI_COLOR_H

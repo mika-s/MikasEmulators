@@ -3,11 +3,15 @@
 
 #include <cstddef>
 #include <vector>
-#include "color.h"
-#include "framebuffer.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/gui/color.h"
+#include "crosscutting/gui/framebuffer.h"
 
 namespace emu::z80::applications::pacman {
+
+    using emu::gui::Color;
+    using emu::gui::Framebuffer;
+
     class Sprite {
     public:
         Sprite(size_t height, size_t width);

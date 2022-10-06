@@ -7,8 +7,10 @@ set(SOURCES_CROSSCUTTING_CPP
         src/crosscutting/exceptions/invalid_program_arguments_exception.cpp
         src/crosscutting/exceptions/unrecognized_opcode_exception.cpp
         src/crosscutting/gui/cpu_info.cpp
+        src/crosscutting/gui/color.cpp
         src/crosscutting/gui/debug_log.cpp
         src/crosscutting/gui/disassembly_window.cpp
+        src/crosscutting/gui/framebuffer.cpp
         src/crosscutting/gui/io_info.cpp
         src/crosscutting/gui/memory_editor_window.cpp
         src/crosscutting/logging/logger.cpp
@@ -25,9 +27,11 @@ set(SOURCES_CROSSCUTTING_H
         src/crosscutting/debugging/disassembled_line.h
         src/crosscutting/exceptions/invalid_program_arguments_exception.h
         src/crosscutting/exceptions/unrecognized_opcode_exception.h
+        src/crosscutting/gui/color.h
         src/crosscutting/gui/cpu_info.h
         src/crosscutting/gui/debug_log.h
         src/crosscutting/gui/disassembly_window.h
+        src/crosscutting/gui/framebuffer.h
         src/crosscutting/gui/gui_type.h
         src/crosscutting/gui/io_info.h
         src/crosscutting/gui/memory_editor_window.h

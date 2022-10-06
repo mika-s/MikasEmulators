@@ -5,6 +5,8 @@
 #include "crosscutting/typedefs.h"
 #include "crosscutting/debugging/debugger.h"
 #include "crosscutting/debugging/debug_container.h"
+#include "crosscutting/gui/color.h"
+#include "crosscutting/gui/framebuffer.h"
 #include "crosscutting/logging/logger.h"
 #include "crosscutting/util/byte_util.h"
 
@@ -14,10 +16,16 @@ namespace emu::i8080::applications::space_invaders {
     using emu::util::byte::to_u32;
     using emu::debugger::DebugContainer;
     using emu::debugger::Debugger;
+    using emu::gui::Color;
+    using emu::gui::Framebuffer;
     using emu::logging::Logger;
 
     class Gui {
     public:
+        Gui()
+                : m_framebuffer(Framebuffer(height, width, Color(0xff, 0, 128, 255))) {
+        }
+
         virtual ~Gui() = default;
 
         virtual void add_gui_observer(GuiObserver &observer) = 0;
@@ -43,28 +51,24 @@ namespace emu::i8080::applications::space_invaders {
         static constexpr int scaled_width = static_cast<int>(scale * static_cast<float>(width));
         static constexpr int scaled_height = static_cast<int>(scale * static_cast<float>(height));
 
-        static std::vector<u32> create_framebuffer(const std::vector<u8> &vram) {
-            u8 screen[height][width][colors];   // TODO: std::array
+        Framebuffer m_framebuffer;
 
-            for (int i = 0; i < height * width / bits_in_byte; i++) {
+        std::vector<u32> create_framebuffer(const std::vector<u8> &vram) {
+            for (int i = 0; i < height * width / bits_in_byte; ++i) {
                 const int y = i * bits_in_byte / height;
                 const int base_x = (i * bits_in_byte) % height;
                 const u8 current_byte = vram[i];
 
-                for (u8 bit = 0; bit < bits_in_byte; bit++) {
+                for (u8 bit = 0; bit < bits_in_byte; ++bit) {
                     int px = base_x + bit;
                     int py = y;
                     const bool is_pixel_lit = is_bit_set(current_byte, bit);
-                    u8 r = 0;
-                    u8 g = 0;
-                    u8 b = 0;
+                    u8 r = 0, g = 0, b = 0;
 
                     if (is_pixel_lit) {
                         if (px < 16) {
                             if (py < 16 || 134 < py) {
-                                r = 255;
-                                g = 255;
-                                b = 255;
+                                r = g = b = 255;
                             } else {
                                 g = 255;
                             }
@@ -73,9 +77,7 @@ namespace emu::i8080::applications::space_invaders {
                         } else if (192 <= px && px < 224) {
                             r = 255;
                         } else {
-                            r = 255;
-                            g = 255;
-                            b = 255;
+                            r = g = b = 255;
                         }
                     }
 
@@ -83,24 +85,11 @@ namespace emu::i8080::applications::space_invaders {
                     px = py;
                     py = -temp_x + height - 1;
 
-                    screen[py][px][0] = r;
-                    screen[py][px][1] = g;
-                    screen[py][px][2] = b;
+                    m_framebuffer.set(py, px, Color(0xff, r, g, b));
                 }
             }
 
-            std::vector<u32> output;
-
-            for (auto &height_idx: screen) {
-                for (auto &width_idx: height_idx) {
-                    u8 r = width_idx[0];
-                    u8 g = width_idx[1];
-                    u8 b = width_idx[2];
-                    output.push_back(to_u32(0xff, b, g, r));
-                }
-            }
-
-            return output;
+            return m_framebuffer.to_output_vector();
         }
     };
 }

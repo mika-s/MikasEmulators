@@ -1,10 +1,12 @@
 #ifndef MIKA_EMULATORS_Z80_APPLICATIONS_PACMAN_GUI_PALETTE_H
 #define MIKA_EMULATORS_Z80_APPLICATIONS_PACMAN_GUI_PALETTE_H
 
-#include "color.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/gui/color.h"
 
 namespace emu::z80::applications::pacman {
+
+    using emu::gui::Color;
 
     class Palette {
     public:

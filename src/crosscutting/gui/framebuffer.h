@@ -1,10 +1,10 @@
-#ifndef MIKA_EMULATORS_Z80_APPLICATIONS_PACMAN_GUI_FRAMEBUFFER_H
-#define MIKA_EMULATORS_Z80_APPLICATIONS_PACMAN_GUI_FRAMEBUFFER_H
+#ifndef MIKA_EMULATORS_CROSSCUTTING_GUI_FRAMEBUFFER_H
+#define MIKA_EMULATORS_CROSSCUTTING_GUI_FRAMEBUFFER_H
 
 #include <vector>
 #include "color.h"
 
-namespace emu::z80::applications::pacman {
+namespace emu::gui {
     class Framebuffer {
 
     public:
@@ -17,8 +17,8 @@ namespace emu::z80::applications::pacman {
     private:
         unsigned int m_height;
         unsigned int m_width;
-        std::vector<std::vector<Color>> m_values;
+        std::vector<std::vector<u32>> m_values;
     };
 }
 
-#endif //MIKA_EMULATORS_Z80_APPLICATIONS_PACMAN_GUI_FRAMEBUFFER_H
+#endif //MIKA_EMULATORS_CROSSCUTTING_GUI_FRAMEBUFFER_H

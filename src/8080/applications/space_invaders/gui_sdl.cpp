@@ -92,7 +92,7 @@ namespace emu::i8080::applications::space_invaders {
     }
 
     void GuiSdl::update_screen(const std::vector<u8> &vram, RunStatus run_status) {
-        std::vector<u32> frame_buffer = create_framebuffer(vram);
+        std::vector<u32> framebuffer = create_framebuffer(vram);
 
         void *pixels = nullptr;
         int pitch = 0;
@@ -100,7 +100,7 @@ namespace emu::i8080::applications::space_invaders {
         if (SDL_LockTexture(m_texture, nullptr, &pixels, &pitch) != 0) {
             std::cerr << "error while unlocking SDL texture: " << SDL_GetError() << "\n";
         } else {
-            memcpy(pixels, frame_buffer.data(), pitch * height);
+            memcpy(pixels, framebuffer.data(), pitch * height);
         }
 
         std::string title;

@@ -2,6 +2,10 @@
 
 namespace emu::z80::applications::pacman {
 
+    Gui::Gui()
+            : m_framebuffer(Framebuffer(height, width, Color(0xff, 0, 128, 255))) {
+    }
+
     void Gui::load_color_rom(const std::vector<u8> &color_rom) {
         if (m_has_loaded_color_rom) {
             throw std::runtime_error("Programming error: The color ROM has already been loaded");
@@ -416,9 +420,5 @@ namespace emu::z80::applications::pacman {
         draw_edges(m_framebuffer);
 
         return m_framebuffer.to_output_vector();
-    }
-
-    Gui::Gui()
-            : m_framebuffer(Framebuffer(height, width, Color(0xff, 0, 128, 255))) {
     }
 }

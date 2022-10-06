@@ -1,7 +1,7 @@
 #include "color.h"
 #include "crosscutting/util/byte_util.h"
 
-namespace emu::z80::applications::pacman {
+namespace emu::gui {
 
     Color::Color(u8 alpha, u8 red, u8 green, u8 blue)
             : m_alpha(alpha),
