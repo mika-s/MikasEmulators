@@ -12,11 +12,11 @@ namespace emu::i8080 {
      *   <li>Condition bits affected: none</li>
      * </ul>
      *
-     * @param stopped is the stopped status variable
+     * @param is_halted is the halted status variable, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void hlt(bool &stopped, cyc &cycles) {
-        stopped = true;
+    void hlt(bool &is_halted, cyc &cycles) {
+        is_halted = true;
 
         cycles = 7;
     }
@@ -29,15 +29,15 @@ namespace emu::i8080 {
         cyc cycles = 0;
 
         SUBCASE("should stop the program") {
-            bool stopped = false;
+            bool is_halted = false;
 
-            hlt(stopped, cycles);
+            hlt(is_halted, cycles);
 
-            CHECK_EQ(true, stopped);
+            CHECK_EQ(true, is_halted);
 
-            hlt(stopped, cycles);
+            hlt(is_halted, cycles);
 
-            CHECK_EQ(true, stopped);
+            CHECK_EQ(true, is_halted);
         }
 
         SUBCASE("should use 7 cycles") {

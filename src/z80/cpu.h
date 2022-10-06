@@ -100,7 +100,7 @@ namespace emu::z80 {
 
         void nmi_interrupt();
 
-        void input(int port, u8 value);
+        void input(u8 port, u8 value);
 
     private:
         static constexpr unsigned int number_of_io_ports = 256;

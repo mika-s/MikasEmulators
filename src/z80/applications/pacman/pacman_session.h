@@ -3,8 +3,8 @@
 
 #include <memory>
 #include <SDL.h>
-#include <vector>
 #include <unordered_map>
+#include <vector>
 #include "z80/cpu.h"
 #include "z80/run_status.h"
 #include "z80/applications/pacman/memory_mapped_io.h"

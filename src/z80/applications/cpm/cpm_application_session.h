@@ -29,10 +29,10 @@ namespace emu::z80::applications::cpm {
         void out_changed(u8 port) override;
 
     private:
-        static constexpr int finished_port = 0;
-        static constexpr int output_port = 1;
-        static constexpr int C_WRITE = 2;
-        static constexpr int C_WRITESTR = 9;
+        static constexpr u8 finished_port = 0;
+        static constexpr u8 output_port = 1;
+        static constexpr u8 C_WRITE = 2;
+        static constexpr u8 C_WRITESTR = 9;
 
         std::unique_ptr<Cpu> m_cpu;
         EmulatorMemory m_memory;

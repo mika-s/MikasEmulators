@@ -16,7 +16,7 @@ namespace emu::i8080 {
             EmulatorMemory &memory,
             const u16 initial_pc
     ) :
-            m_is_stopped(true),
+            m_is_halted(false),
             m_inte(false),
             m_is_interrupted(false),
             m_instruction_from_interruptor(0),
@@ -60,7 +60,7 @@ namespace emu::i8080 {
     }
 
     bool Cpu::can_run_next_instruction() const {
-        return m_pc < m_memory_size && !m_is_stopped;
+        return m_pc < m_memory_size;
     }
 
     void Cpu::reset_state() {
@@ -74,7 +74,7 @@ namespace emu::i8080 {
         m_flag_reg.reset();
         m_pc = 0;
         m_sp = 0;
-        m_is_stopped = true;
+        m_is_halted = false;
         m_inte = false;
         m_is_interrupted = false;
         m_instruction_from_interruptor = 0;
@@ -83,11 +83,10 @@ namespace emu::i8080 {
     }
 
     void Cpu::start() {
-        m_is_stopped = false;
     }
 
     void Cpu::stop() {
-        m_is_stopped = true;
+        reset_state();
     }
 
     void Cpu::interrupt(u8 instruction_to_perform) {
@@ -99,7 +98,7 @@ namespace emu::i8080 {
         return m_inte;
     }
 
-    void Cpu::input(int port, u8 value) {
+    void Cpu::input(u8 port, u8 value) {
         m_io_in[port] = value;
     }
 
@@ -109,7 +108,10 @@ namespace emu::i8080 {
         if (m_inte && m_is_interrupted) {
             m_inte = false;
             m_is_interrupted = false;
+            m_is_halted = false;
             m_opcode = m_instruction_from_interruptor;
+        } else if (m_is_halted) {
+            return 4;   // TODO: What is the proper value while NOPing during halt?
         } else {
             m_opcode = get_next_byte().farg;
         }
@@ -470,7 +472,7 @@ namespace emu::i8080 {
                 mov(m_memory[address_in_HL()], m_l_reg, cycles, true);
                 break;
             case HLT:
-                hlt(m_is_stopped, cycles);
+                hlt(m_is_halted, cycles);
                 break;
             case MOV_M_A:
                 mov(m_memory[address_in_HL()], m_acc_reg, cycles, true);

@@ -97,11 +97,10 @@ namespace emu::z80 {
     }
 
     void Cpu::start() {
-        m_is_halted = false;
     }
 
     void Cpu::stop() {
-        m_is_halted = true;
+        reset_state();
     }
 
     void Cpu::interrupt(u8 instruction_to_perform) {
@@ -117,7 +116,7 @@ namespace emu::z80 {
         return m_iff1;
     }
 
-    void Cpu::input(int port, u8 value) {
+    void Cpu::input(u8 port, u8 value) {
         m_io_in[port] = value;
     }
 

@@ -93,16 +93,16 @@ namespace emu::i8080::applications::space_invaders {
         // Game loop - end
 
         // IO - begin
-        static constexpr int in_port_unused = 0;
-        static constexpr int in_port_1 = 1;
-        static constexpr int in_port_2 = 2;
-        static constexpr int in_port_read_shift = 3;
+        static constexpr u8 in_port_unused = 0;
+        static constexpr u8 in_port_1 = 1;
+        static constexpr u8 in_port_2 = 2;
+        static constexpr u8 in_port_read_shift = 3;
 
-        static constexpr int out_port_shift_offset = 2;
-        static constexpr int out_port_sound_1 = 3;
-        static constexpr int out_port_do_shift = 4;
-        static constexpr int out_port_sound_2 = 5;
-        static constexpr int out_port_watchdog = 6;
+        static constexpr u8 out_port_shift_offset = 2;
+        static constexpr u8 out_port_sound_1 = 3;
+        static constexpr u8 out_port_do_shift = 4;
+        static constexpr u8 out_port_sound_2 = 5;
+        static constexpr u8 out_port_watchdog = 6;
         // IO - end
 
         static constexpr unsigned int rst_1_i8080 = 0xCF;

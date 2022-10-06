@@ -71,12 +71,12 @@ namespace emu::i8080 {
 
         void interrupt(u8 supplied_instruction_from_interruptor);
 
-        void input(int port, u8 value);
+        void input(u8 port, u8 value);
 
     private:
         static constexpr unsigned int number_of_io_ports = 256;
 
-        bool m_is_stopped;
+        bool m_is_halted;
 
         bool m_inte;
         bool m_is_interrupted;
