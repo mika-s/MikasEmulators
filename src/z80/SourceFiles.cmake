@@ -1,17 +1,14 @@
 set(SOURCES_Z80_CPP
         src/z80/applications/cpm/cpm_application.cpp
         src/z80/applications/cpm/cpm_application_session.cpp
+        src/z80/applications/pacman/gui.cpp
+        src/z80/applications/pacman/gui_imgui.cpp
+        src/z80/applications/pacman/gui_sdl.cpp
         src/z80/applications/pacman/input_imgui.cpp
         src/z80/applications/pacman/input_sdl.cpp
         src/z80/applications/pacman/memory_mapped_io.cpp
         src/z80/applications/pacman/pacman.cpp
         src/z80/applications/pacman/pacman_session.cpp
-        src/z80/applications/pacman/gui/gui.cpp
-        src/z80/applications/pacman/gui/gui_imgui.cpp
-        src/z80/applications/pacman/gui/gui_sdl.cpp
-        src/z80/applications/pacman/gui/palette.cpp
-        src/z80/applications/pacman/gui/sprite.cpp
-        src/z80/applications/pacman/gui/tile.cpp
         src/z80/cpu.cpp
         src/z80/disassemblerZ80.cpp
         src/z80/emulator_memory.cpp
@@ -87,6 +84,9 @@ set(SOURCES_Z80_CPP
 set(SOURCES_Z80_H
         src/z80/applications/cpm/cpm_application.h
         src/z80/applications/cpm/cpm_application_session.h
+        src/z80/applications/pacman/gui.h
+        src/z80/applications/pacman/gui_imgui.h
+        src/z80/applications/pacman/gui_sdl.h
         src/z80/applications/pacman/input_imgui.h
         src/z80/applications/pacman/input_sdl.h
         src/z80/applications/pacman/io_request.h
@@ -94,12 +94,6 @@ set(SOURCES_Z80_H
         src/z80/applications/pacman/pacman.h
         src/z80/applications/pacman/pacman_session.h
         src/z80/applications/pacman/settings.h
-        src/z80/applications/pacman/gui/gui.h
-        src/z80/applications/pacman/gui/gui_imgui.h
-        src/z80/applications/pacman/gui/gui_sdl.h
-        src/z80/applications/pacman/gui/palette.h
-        src/z80/applications/pacman/gui/sprite.h
-        src/z80/applications/pacman/gui/tile.h
         src/z80/applications/pacman/interfaces/input.h
         src/z80/applications/pacman/interfaces/io_observer.h
         src/z80/cpu.h

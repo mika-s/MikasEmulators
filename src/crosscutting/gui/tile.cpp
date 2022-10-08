@@ -2,7 +2,7 @@
 #include <stdexcept>
 #include "tile.h"
 
-namespace emu::z80::applications::pacman {
+namespace emu::gui {
 
     Tile::Tile(size_t height, size_t width)
             : m_height(height),

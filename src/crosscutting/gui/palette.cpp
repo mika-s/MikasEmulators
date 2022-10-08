@@ -2,7 +2,7 @@
 #include <fmt/format.h>
 #include "palette.h"
 
-namespace emu::z80::applications::pacman {
+namespace emu::gui {
 
     Palette::Palette(Color color1, Color color2, Color color3, Color color4)
             : m_color1(color1),

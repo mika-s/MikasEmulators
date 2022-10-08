@@ -1,16 +1,13 @@
-#ifndef MIKA_EMULATORS_Z80_APPLICATIONS_PACMAN_GUI_SPRITE_H
-#define MIKA_EMULATORS_Z80_APPLICATIONS_PACMAN_GUI_SPRITE_H
+#ifndef MIKA_EMULATORS_CROSSCUTTING_GUI_SPRITE_H
+#define MIKA_EMULATORS_CROSSCUTTING_GUI_SPRITE_H
 
 #include <cstddef>
 #include <vector>
+#include "color.h"
+#include "framebuffer.h"
 #include "crosscutting/typedefs.h"
-#include "crosscutting/gui/color.h"
-#include "crosscutting/gui/framebuffer.h"
 
-namespace emu::z80::applications::pacman {
-
-    using emu::gui::Color;
-    using emu::gui::Framebuffer;
+namespace emu::gui {
 
     class Sprite {
     public:
@@ -48,4 +45,4 @@ namespace emu::z80::applications::pacman {
     };
 }
 
-#endif //MIKA_EMULATORS_Z80_APPLICATIONS_PACMAN_GUI_SPRITE_H
+#endif //MIKA_EMULATORS_CROSSCUTTING_GUI_SPRITE_H

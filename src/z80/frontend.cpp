@@ -8,10 +8,10 @@
 #include "z80/disassemblerZ80.h"
 #include "z80/applications/cpm/cpm_application.h"
 #include "z80/applications/pacman/pacman.h"
+#include "z80/applications/pacman/gui_imgui.h"
+#include "z80/applications/pacman/gui_sdl.h"
 #include "z80/applications/pacman/input_imgui.h"
 #include "z80/applications/pacman/input_sdl.h"
-#include "z80/applications/pacman/gui/gui_imgui.h"
-#include "z80/applications/pacman/gui/gui_sdl.h"
 #include "crosscutting/exceptions/invalid_program_arguments_exception.h"
 #include "crosscutting/util/file_util.h"
 

@@ -1,6 +1,10 @@
+#include <iostream>
 #include "gui.h"
 
 namespace emu::z80::applications::pacman {
+
+    using emu::gui::UninitializedSprite;
+    using emu::gui::UninitializedTile;
 
     Gui::Gui()
             : m_framebuffer(Framebuffer(height, width, Color(0xff, 0, 128, 255))) {

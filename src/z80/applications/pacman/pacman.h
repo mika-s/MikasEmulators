@@ -4,9 +4,9 @@
 #include <cstdint>
 #include <memory>
 #include "z80/emulator_memory.h"
+#include "z80/applications/pacman/gui.h"
 #include "z80/applications/pacman/settings.h"
 #include "z80/applications/pacman/pacman_session.h"
-#include "z80/applications/pacman/gui/gui.h"
 #include "z80/applications/pacman/interfaces/input.h"
 #include "z80/interfaces/emulatorZ80.h"
 #include "crosscutting/typedefs.h"

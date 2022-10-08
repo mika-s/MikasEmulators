@@ -7,8 +7,8 @@
 #include <vector>
 #include "z80/cpu.h"
 #include "z80/run_status.h"
+#include "z80/applications/pacman/gui.h"
 #include "z80/applications/pacman/memory_mapped_io.h"
-#include "z80/applications/pacman/gui/gui.h"
 #include "z80/applications/pacman/interfaces/input.h"
 #include "z80/applications/pacman/interfaces/io_observer.h"
 #include "z80/interfaces/emulatorZ80.h"

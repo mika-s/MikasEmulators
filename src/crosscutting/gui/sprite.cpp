@@ -1,9 +1,9 @@
+#include <algorithm>
 #include <fmt/format.h>
-#include <iostream>
 #include <stdexcept>
 #include "sprite.h"
 
-namespace emu::z80::applications::pacman {
+namespace emu::gui {
 
     Sprite::Sprite(size_t height, size_t width)
             : m_height(height),
@@ -24,11 +24,12 @@ namespace emu::z80::applications::pacman {
     }
 
     void Sprite::flip_horizontal() {
-        std::cout << "Flipping horizontal (NOT IMPLEMENTED)\n";
+        std::for_each(std::begin(m_values), std::end(m_values),
+                      [](auto &i) { std::reverse(std::begin(i), std::end(i)); });
     }
 
     void Sprite::flip_vertical() {
-        std::cout << "Flipping vertical (NOT IMPLEMENTED)\n";
+        std::reverse(std::begin(m_values), std::end(m_values));
     }
 
     void Sprite::map_to_framebuffer(Framebuffer &framebuffer, int origin_row, int origin_col) {

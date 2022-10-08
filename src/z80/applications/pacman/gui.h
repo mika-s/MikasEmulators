@@ -2,15 +2,15 @@
 #define MIKA_EMULATORS_Z80_APPLICATIONS_PACMAN_GUI_GUI_H
 
 #include <memory>
-#include "palette.h"
-#include "sprite.h"
-#include "tile.h"
 #include "z80/interfaces/gui_observer.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/debugging/debugger.h"
 #include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/gui/color.h"
 #include "crosscutting/gui/framebuffer.h"
+#include "crosscutting/gui/palette.h"
+#include "crosscutting/gui/sprite.h"
+#include "crosscutting/gui/tile.h"
 #include "crosscutting/logging/logger.h"
 #include "crosscutting/util/byte_util.h"
 
@@ -22,6 +22,9 @@ namespace emu::z80::applications::pacman {
     using emu::debugger::Debugger;
     using emu::gui::Color;
     using emu::gui::Framebuffer;
+    using emu::gui::Palette;
+    using emu::gui::Sprite;
+    using emu::gui::Tile;
     using emu::logging::Logger;
 
     class Gui {
