@@ -1,8 +1,5 @@
-#include <stdexcept>
-#include <memory>
 #include "imgui.h"
 #include "memory_editor_window.h"
-#include "crosscutting/util/string_util.h"
 
 namespace emu::gui {
 

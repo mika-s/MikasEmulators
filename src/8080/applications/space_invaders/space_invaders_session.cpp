@@ -73,7 +73,7 @@ namespace emu::i8080::applications::space_invaders {
         m_outputs_during_cycle.clear();
 
         if (SDL_GetTicks64() - last_tick >= tick_limit) {
-            last_tick = SDL_GetTicks();
+            last_tick = SDL_GetTicks64();
 
             cycles = 0;
             while (cycles < static_cast<long>(cycles_per_tick / 2)) {
@@ -110,7 +110,7 @@ namespace emu::i8080::applications::space_invaders {
 
     void SpaceInvadersSession::pausing(u64 &last_tick) {
         if (SDL_GetTicks64() - last_tick >= tick_limit) {
-            last_tick = SDL_GetTicks();
+            last_tick = SDL_GetTicks64();
             m_input->read(m_run_status, m_cpu_io);
             m_gui->update_screen(this->vram(), m_run_status);
         }

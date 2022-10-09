@@ -18,9 +18,9 @@ namespace emu::gui {
 
     void Framebuffer::set(unsigned int row, unsigned int col, Color value) {
         if (row > m_height - 1) {
-            throw std::runtime_error(fmt::format("row of %d is too large, height is %d", row, m_height));
+            throw std::runtime_error(fmt::format("row of {} is too large, height is {}", row, m_height));
         } else if (col > m_width - 1) {
-            throw std::runtime_error(fmt::format("col of %d is too large, width is %d", col, m_width));
+            throw std::runtime_error(fmt::format("col of {} is too large, width is {}", col, m_width));
         }
 
         m_values[row][col] = value.to_u32();

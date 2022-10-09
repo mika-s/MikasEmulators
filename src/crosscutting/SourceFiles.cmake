@@ -16,6 +16,7 @@ set(SOURCES_CROSSCUTTING_CPP
         src/crosscutting/gui/palette.cpp
         src/crosscutting/gui/sprite.cpp
         src/crosscutting/gui/tile.cpp
+        src/crosscutting/gui/tilemap_window.cpp
         src/crosscutting/logging/logger.cpp
         src/crosscutting/util/byte_util.cpp
         src/crosscutting/util/file_util.cpp
@@ -41,6 +42,7 @@ set(SOURCES_CROSSCUTTING_H
         src/crosscutting/gui/palette.h
         src/crosscutting/gui/sprite.h
         src/crosscutting/gui/tile.h
+        src/crosscutting/gui/tilemap_window.h
         src/crosscutting/logging/log_observer.h
         src/crosscutting/logging/logger.h
         src/crosscutting/misc/next_byte.h

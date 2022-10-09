@@ -74,7 +74,7 @@ namespace emu::z80::applications::pacman {
         m_outputs_during_cycle.clear();
 
         if (SDL_GetTicks64() - last_tick >= tick_limit) {
-            last_tick = SDL_GetTicks();
+            last_tick = SDL_GetTicks64();
 
             cycles = 0;
             while (cycles < static_cast<long>(cycles_per_tick)) {
@@ -87,12 +87,7 @@ namespace emu::z80::applications::pacman {
             }
 
             m_input->read(m_run_status, m_memory_mapped_io);
-            m_gui->update_screen(
-                    tile_ram(),
-                    sprite_ram(),
-                    palette_ram(),
-                    m_run_status
-            );
+            m_gui->update_screen(tile_ram(), sprite_ram(), palette_ram(), m_run_status);
 
             if (m_memory_mapped_io->is_interrupt_enabled()) {
                 m_cpu->interrupt(m_vblank_interrupt_return);
@@ -104,14 +99,9 @@ namespace emu::z80::applications::pacman {
 
     void PacmanSession::pausing(cyc &last_tick) {
         if (SDL_GetTicks64() - last_tick >= tick_limit) {
-            last_tick = SDL_GetTicks();
+            last_tick = SDL_GetTicks64();
             m_input->read(m_run_status, m_memory_mapped_io);
-            m_gui->update_screen(
-                    tile_ram(),
-                    sprite_ram(),
-                    palette_ram(),
-                    m_run_status
-            );
+            m_gui->update_screen(tile_ram(), sprite_ram(), palette_ram(), m_run_status);
         }
     }
 
@@ -135,12 +125,7 @@ namespace emu::z80::applications::pacman {
         }
 
         m_input->read(m_run_status, m_memory_mapped_io);
-        m_gui->update_screen(
-                tile_ram(),
-                sprite_ram(),
-                palette_ram(),
-                m_run_status
-        );
+        m_gui->update_screen(tile_ram(), sprite_ram(), palette_ram(), m_run_status);
 
         if (m_memory_mapped_io->is_interrupt_enabled()) {
             m_cpu->interrupt(m_vblank_interrupt_return);
@@ -244,6 +229,7 @@ namespace emu::z80::applications::pacman {
                 [&]() { return memory(); }
         ));
         m_debug_container.add_disassembled_program(disassemble_program());
+        m_debug_container.add_tilemap(m_gui->tiles());
 
         m_gui->attach_debugger(m_debugger);
         m_gui->attach_debug_container(m_debug_container);

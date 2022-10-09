@@ -111,6 +111,10 @@ namespace emu::z80::applications::pacman {
         m_has_loaded_sprite_rom = true;
     }
 
+    std::vector<std::vector<std::shared_ptr<Tile>>> Gui::tiles() {
+        return m_tiles;
+    }
+
     std::shared_ptr<Tile> Gui::render_tile(u8 palette_idx, u8 tile_idx) {
         if (palette_idx >= m_number_of_palettes) {
             palette_idx = 0;

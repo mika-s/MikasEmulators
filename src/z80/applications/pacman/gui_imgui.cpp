@@ -25,8 +25,10 @@ namespace emu::z80::applications::pacman {
               m_show_log(true),
               m_show_disassembly(true),
               m_show_memory_editor(true),
+              m_show_tilemap(true),
               m_show_demo(false),
-              m_is_in_debug_mode(false) {
+              m_is_in_debug_mode(false),
+              m_tilemap(1) {
         init();
     }
 
@@ -75,6 +77,7 @@ namespace emu::z80::applications::pacman {
         m_io_info.attach_debug_container(debug_container);
         m_disassembly.attach_debug_container(debug_container);
         m_memory_editor.attach_debug_container(debug_container);
+        m_tilemap.attach_debug_container(debug_container);
     }
 
     void GuiImgui::attach_logger(std::shared_ptr<Logger> logger) {
@@ -159,6 +162,7 @@ namespace emu::z80::applications::pacman {
         glClearColor(background.x, background.y, background.z, background.w);
 
         glGenTextures(1, &m_screen_texture);
+        glGenTextures(1, &m_tile_texture);
     }
 
     void GuiImgui::update_screen(
@@ -173,7 +177,6 @@ namespace emu::z80::applications::pacman {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, framebuffer.data());
-
         glBindTexture(GL_TEXTURE_2D, 0);
 
         render(run_status);
@@ -230,6 +233,7 @@ namespace emu::z80::applications::pacman {
                 ImGui::MenuItem("Log", nullptr, &m_show_log);
                 ImGui::MenuItem("Disassembly", nullptr, &m_show_disassembly);
                 ImGui::MenuItem("Memory editor", nullptr, &m_show_memory_editor);
+                ImGui::MenuItem("Tilemap", nullptr, &m_show_tilemap);
                 ImGui::MenuItem("Demo", nullptr, &m_show_demo);
                 ImGui::EndMenu();
             }
@@ -263,6 +267,9 @@ namespace emu::z80::applications::pacman {
         }
         if (m_show_memory_editor) {
             render_memory_editor_window();
+        }
+        if (m_show_tilemap) {
+            render_tilemap_window();
         }
         if (m_show_demo) {
             ImGui::ShowDemoWindow();
@@ -354,5 +361,9 @@ namespace emu::z80::applications::pacman {
 
     void GuiImgui::render_memory_editor_window() {
         m_memory_editor.draw("Memory editor", &m_show_memory_editor);
+    }
+
+    void GuiImgui::render_tilemap_window() {
+        m_tilemap.draw("Tilemap", m_tile_texture, &m_show_tilemap);
     }
 }

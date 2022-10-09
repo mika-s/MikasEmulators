@@ -2,12 +2,16 @@
 #define MIKA_EMULATORS_CROSSCUTTING_DEBUGGING_DEBUG_CONTAINER_H
 
 #include <functional>
+#include <memory>
 #include <string>
 #include <vector>
 #include "disassembled_line.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/gui/tile.h"
 
 namespace emu::debugger {
+
+    using emu::gui::Tile;
 
     class RegisterDebugContainer {
     public:
@@ -164,6 +168,12 @@ namespace emu::debugger {
 
         [[nodiscard]] bool is_disassembled_program_set() const;
 
+        void add_tilemap(std::vector<std::vector<std::shared_ptr<Tile>>> tiles);
+
+        std::vector<std::vector<std::shared_ptr<Tile>>> tiles();
+
+        [[nodiscard]] bool is_tilemap_set() const;
+
     private:
         std::vector<RegisterDebugContainer> m_register_retrievers;
         bool m_has_alternate_registers;
@@ -191,6 +201,9 @@ namespace emu::debugger {
 
         std::vector<DisassembledLine> m_disassembled_program;
         bool m_is_disassembled_program_set;
+
+        std::vector<std::vector<std::shared_ptr<Tile>>> m_tiles;
+        bool m_is_tilemap_set;
     };
 }
 

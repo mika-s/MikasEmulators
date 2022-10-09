@@ -23,6 +23,8 @@ namespace emu::gui {
 
         void map_to_framebuffer(Framebuffer &framebuffer, unsigned int origin_row, unsigned int origin_col);
 
+        size_t size();
+
     private:
         std::vector<std::vector<Color>> m_values;
         size_t m_height;

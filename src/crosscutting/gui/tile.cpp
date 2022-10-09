@@ -7,6 +7,10 @@ namespace emu::gui {
     Tile::Tile(size_t height, size_t width)
             : m_height(height),
               m_width(width) {
+        if (height != width) {
+            throw std::invalid_argument("Non-square tiles not supported");
+        }
+
         for (unsigned int row = 0; row < height; ++row) {
             m_values.emplace_back(width, Color::black());
         }
@@ -14,9 +18,9 @@ namespace emu::gui {
 
     void Tile::set(size_t row, size_t col, Color value) {
         if (row > m_height - 1) {
-            throw std::runtime_error(fmt::format("row of %d is too large, height is %d", row, m_height));
+            throw std::runtime_error(fmt::format("row of {} is too large, height is {}", row, m_height));
         } else if (col > m_width - 1) {
-            throw std::runtime_error(fmt::format("col of %d is too large, width is %d", col, m_width));
+            throw std::runtime_error(fmt::format("col of {} is too large, width is {}", col, m_width));
         }
 
         m_values[row][col] = value;
@@ -32,6 +36,10 @@ namespace emu::gui {
                 framebuffer.set(origin_row + px_row, origin_col + px_col, get(px_row, px_col));
             }
         }
+    }
+
+    size_t Tile::size() {
+        return m_width;
     }
 
     UninitializedTile::UninitializedTile() : Tile(0, 0) {}

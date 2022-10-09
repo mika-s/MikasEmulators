@@ -122,7 +122,8 @@ namespace emu::debugger {
               m_is_sp_set(false),
               m_is_interrupted_set(false),
               m_is_interrupt_mode_set(false),
-              m_is_disassembled_program_set(false) {
+              m_is_disassembled_program_set(false),
+              m_is_tilemap_set(false) {
     }
 
     void DebugContainer::add_register(const RegisterDebugContainer &reg) {
@@ -242,5 +243,18 @@ namespace emu::debugger {
 
     bool DebugContainer::is_disassembled_program_set() const {
         return m_is_disassembled_program_set;
+    }
+
+    void DebugContainer::add_tilemap(std::vector<std::vector<std::shared_ptr<Tile>>> tiles) {
+        m_tiles = std::move(tiles);
+        m_is_tilemap_set = true;
+    }
+
+    std::vector<std::vector<std::shared_ptr<Tile>>> DebugContainer::tiles() {
+        return m_tiles;
+    }
+
+    bool DebugContainer::is_tilemap_set() const {
+        return m_is_tilemap_set;
     }
 }

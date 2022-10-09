@@ -21,7 +21,7 @@ namespace emu::gui {
         } else if (address == 3) {
             return m_color4;
         } else {
-            throw std::runtime_error(fmt::format("Invalid color index in Palette: %d", address));
+            throw std::runtime_error(fmt::format("Invalid color index in Palette: {}", address));
         }
     }
 }

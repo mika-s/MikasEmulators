@@ -60,6 +60,8 @@ namespace emu::z80::applications::pacman {
 
         void load_sprite_rom(const std::vector<u8> &sprite_rom);
 
+        std::vector<std::vector<std::shared_ptr<Tile>>> tiles();
+
     protected:
 
         static constexpr int tile_size = 8;
