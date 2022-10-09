@@ -23,6 +23,7 @@
 #include "crosscutting/debugging/debugger.h"
 #include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/debugging/disassembled_line.h"
+#include "crosscutting/misc/governor.h"
 #include "crosscutting/logging/log_observer.h"
 #include "crosscutting/logging/logger.h"
 
@@ -32,6 +33,7 @@ namespace emu::i8080::applications::space_invaders {
     using emu::debugger::Debugger;
     using emu::debugger::DisassembledLine;
     using emu::logging::Logger;
+    using emu::misc::Governor;
 
     class SpaceInvadersSession
             : public Session,
@@ -85,6 +87,8 @@ namespace emu::i8080::applications::space_invaders {
         DebugContainer m_debug_container;
         std::unordered_map<u8, u8> m_outputs_during_cycle;
 
+        Governor m_governor;
+
         // Game loop - begin
         static constexpr double fps = 60.0;
         static constexpr long double tick_limit = 1000.0 / fps;
@@ -108,11 +112,11 @@ namespace emu::i8080::applications::space_invaders {
         static constexpr unsigned int rst_1_i8080 = 0xCF;
         static constexpr unsigned int rst_2_i8080 = 0xD7;
 
-        void running(u64 &last_tick, cyc &cycles);
+        void running(cyc &cycles);
 
-        void pausing(u64 &last_tick);
+        void pausing();
 
-        void stepping(u64 &last_tick, cyc &cycles);
+        void stepping(cyc &cycles);
 
         void await_input_and_update_debug();
 

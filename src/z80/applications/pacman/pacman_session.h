@@ -20,6 +20,7 @@
 #include "crosscutting/debugging/debugger.h"
 #include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/debugging/disassembled_line.h"
+#include "crosscutting/misc/governor.h"
 #include "crosscutting/logging/log_observer.h"
 #include "crosscutting/logging/logger.h"
 
@@ -29,6 +30,7 @@ namespace emu::z80::applications::pacman {
     using emu::debugger::Debugger;
     using emu::debugger::DisassembledLine;
     using emu::logging::Logger;
+    using emu::misc::Governor;
 
     class PacmanSession
             : public Session,
@@ -83,6 +85,8 @@ namespace emu::z80::applications::pacman {
         DebugContainer m_debug_container;
         std::unordered_map<u8, u8> m_outputs_during_cycle;
 
+        Governor m_governor;
+
         // Game loop - begin
         static constexpr double fps = 60.0;
         static constexpr long double tick_limit = 1000.0 / fps;
@@ -94,11 +98,11 @@ namespace emu::z80::applications::pacman {
         static constexpr int out_port_vblank_interrupt_return = 0;
         // IO - end
 
-        void running(cyc &last_tick, cyc &cycles);
+        void running(cyc &cycles);
 
-        void pausing(cyc &last_tick);
+        void pausing();
 
-        void stepping(cyc &last_tick, cyc &cycles);
+        void stepping(cyc &cycles);
 
         void await_input_and_update_debug();
 

@@ -18,6 +18,7 @@ set(SOURCES_CROSSCUTTING_CPP
         src/crosscutting/gui/tile.cpp
         src/crosscutting/gui/tilemap_window.cpp
         src/crosscutting/logging/logger.cpp
+        src/crosscutting/misc/governor.cpp
         src/crosscutting/util/byte_util.cpp
         src/crosscutting/util/file_util.cpp
         src/crosscutting/util/string_util.cpp
@@ -45,6 +46,7 @@ set(SOURCES_CROSSCUTTING_H
         src/crosscutting/gui/tilemap_window.h
         src/crosscutting/logging/log_observer.h
         src/crosscutting/logging/logger.h
+        src/crosscutting/misc/governor.h
         src/crosscutting/misc/next_byte.h
         src/crosscutting/misc/next_word.h
         src/crosscutting/util/byte_util.h

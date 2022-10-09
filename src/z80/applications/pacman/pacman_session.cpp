@@ -31,7 +31,8 @@ namespace emu::z80::applications::pacman {
               m_input(std::move(input)),
               m_memory(memory),
               m_logger(std::make_shared<Logger>()),
-              m_debugger(std::make_shared<Debugger>()) {
+              m_debugger(std::make_shared<Debugger>()),
+              m_governor(Governor(1.0, tick_limit, [&]() { return SDL_GetTicks64(); })) {
         setup_cpu();
         setup_debugging();
 
@@ -55,29 +56,26 @@ namespace emu::z80::applications::pacman {
         m_run_status = RUNNING;
 
         cyc cycles;
-        cyc last_tick = SDL_GetTicks64();
 
         while (m_run_status == RUNNING || m_run_status == PAUSED || m_run_status == STEPPING) {
             if (m_run_status == RUNNING) {
-                running(last_tick, cycles);
+                running(cycles);
             } else if (m_run_status == PAUSED) {
-                pausing(last_tick);
+                pausing();
             } else {
-                stepping(last_tick, cycles);
+                stepping(cycles);
             }
         }
 
         m_run_status = FINISHED;
     }
 
-    void PacmanSession::running(cyc &last_tick, cyc &cycles) {
+    void PacmanSession::running(cyc &cycles) {
         m_outputs_during_cycle.clear();
 
-        if (SDL_GetTicks64() - last_tick >= tick_limit) {
-            last_tick = SDL_GetTicks64();
-
+        if (m_governor.is_time_to_update()) {
             cycles = 0;
-            while (cycles < static_cast<long>(cycles_per_tick)) {
+            while (cycles < static_cast<cyc>(cycles_per_tick)) {
                 cycles += m_cpu->next_instruction();
                 if (m_is_in_debug_mode && m_debugger->has_breakpoint(m_cpu->pc())) {
                     m_logger->info("Breakpoint hit: 0x%04x", m_cpu->pc());
@@ -97,15 +95,14 @@ namespace emu::z80::applications::pacman {
         }
     }
 
-    void PacmanSession::pausing(cyc &last_tick) {
-        if (SDL_GetTicks64() - last_tick >= tick_limit) {
-            last_tick = SDL_GetTicks64();
+    void PacmanSession::pausing() {
+        if (m_governor.is_time_to_update()) {
             m_input->read(m_run_status, m_memory_mapped_io);
             m_gui->update_screen(tile_ram(), sprite_ram(), palette_ram(), m_run_status);
         }
     }
 
-    void PacmanSession::stepping([[maybe_unused]] cyc &last_tick, cyc &cycles) {
+    void PacmanSession::stepping(cyc &cycles) {
         m_outputs_during_cycle.clear();
 
         await_input_and_update_debug();
@@ -114,7 +111,7 @@ namespace emu::z80::applications::pacman {
         }
 
         cycles = 0;
-        while (cycles < static_cast<long>(cycles_per_tick)) {
+        while (cycles < static_cast<cyc>(cycles_per_tick)) {
             cycles += m_cpu->next_instruction();
             if (!m_is_stepping_cycle && !m_is_continuing_execution) {
                 await_input_and_update_debug();
