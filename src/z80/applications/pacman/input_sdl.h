@@ -25,7 +25,8 @@ namespace emu::z80::applications::pacman {
         static constexpr SDL_Scancode mute = SDL_SCANCODE_M;
         static constexpr SDL_Scancode pause = SDL_SCANCODE_PAUSE;
 
-        static constexpr SDL_Scancode insert_coin = SDL_SCANCODE_C;
+        static constexpr SDL_Scancode insert_coin_p1 = SDL_SCANCODE_C;
+        static constexpr SDL_Scancode insert_coin_p2 = SDL_SCANCODE_V;
 
         static constexpr SDL_Scancode p1_start = SDL_SCANCODE_RETURN;
         static constexpr SDL_Scancode p1_up = SDL_SCANCODE_W;

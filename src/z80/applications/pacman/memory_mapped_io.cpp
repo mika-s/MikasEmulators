@@ -20,6 +20,14 @@ namespace emu::z80::applications::pacman {
         return is_bit_set(m_memory[address_in0], bit_number);
     }
 
+    u8 MemoryMappedIo::read_in0() {
+        return m_memory[address_in0];
+    }
+
+    u8 MemoryMappedIo::read_in1() {
+        return m_memory[address_in1];
+    }
+
     void MemoryMappedIo::write_in0(unsigned int bit_number, bool is_setting) {
         if (is_setting) {
             set_bit(m_memory[address_in0], bit_number);
@@ -36,63 +44,67 @@ namespace emu::z80::applications::pacman {
         }
     }
 
+    u8 MemoryMappedIo::read_coin_counter() {
+        return m_memory[address_coin_counter];
+    }
+
     void MemoryMappedIo::set_dipswitches(const Settings &settings) {
         switch (settings.m_coins_per_game) {
             case CoinsPerGame::FreePlay:
-                set_bit(m_memory[address_dipswitches], dipswitches_coinage_1);
-                set_bit(m_memory[address_dipswitches], dipswitches_coinage_2);
+                unset_bit(m_memory[address_dipswitches], dipswitches_coinage_1);
+                unset_bit(m_memory[address_dipswitches], dipswitches_coinage_2);
                 break;
             case CoinsPerGame::OnePerGame:
-                unset_bit(m_memory[address_dipswitches], dipswitches_coinage_1);
-                set_bit(m_memory[address_dipswitches], dipswitches_coinage_2);
-                break;
-            case CoinsPerGame::OnePerTwoGames:
                 set_bit(m_memory[address_dipswitches], dipswitches_coinage_1);
                 unset_bit(m_memory[address_dipswitches], dipswitches_coinage_2);
                 break;
-            case CoinsPerGame::TwoCoinsPerGame:
+            case CoinsPerGame::OnePerTwoGames:
                 unset_bit(m_memory[address_dipswitches], dipswitches_coinage_1);
-                unset_bit(m_memory[address_dipswitches], dipswitches_coinage_2);
+                set_bit(m_memory[address_dipswitches], dipswitches_coinage_2);
+                break;
+            case CoinsPerGame::TwoCoinsPerGame:
+                set_bit(m_memory[address_dipswitches], dipswitches_coinage_1);
+                set_bit(m_memory[address_dipswitches], dipswitches_coinage_2);
             default:
                 break;
         }
 
         switch (settings.m_number_of_lives) {
             case NumberOfLives::One:
-                set_bit(m_memory[address_dipswitches], dipswitches_lives_1);
-                set_bit(m_memory[address_dipswitches], dipswitches_lives_2);
+                unset_bit(m_memory[address_dipswitches], dipswitches_lives_1);
+                unset_bit(m_memory[address_dipswitches], dipswitches_lives_2);
                 break;
             case NumberOfLives::Two:
-                unset_bit(m_memory[address_dipswitches], dipswitches_lives_1);
-                set_bit(m_memory[address_dipswitches], dipswitches_lives_2);
-                break;
-            case NumberOfLives::Three:
                 set_bit(m_memory[address_dipswitches], dipswitches_lives_1);
                 unset_bit(m_memory[address_dipswitches], dipswitches_lives_2);
                 break;
-            case NumberOfLives::Five:
+            case NumberOfLives::Three:
                 unset_bit(m_memory[address_dipswitches], dipswitches_lives_1);
-                unset_bit(m_memory[address_dipswitches], dipswitches_lives_2);
+                set_bit(m_memory[address_dipswitches], dipswitches_lives_2);
+                break;
+            case NumberOfLives::Five:
+                set_bit(m_memory[address_dipswitches], dipswitches_lives_1);
+                set_bit(m_memory[address_dipswitches], dipswitches_lives_2);
             default:
                 break;
         }
 
         switch (settings.m_bonus_life_at) {
             case BonusLifeAt::_10000:
-                set_bit(m_memory[address_dipswitches], dipswitches_bonus_life_1);
-                set_bit(m_memory[address_dipswitches], dipswitches_bonus_life_2);
+                unset_bit(m_memory[address_dipswitches], dipswitches_bonus_life_1);
+                unset_bit(m_memory[address_dipswitches], dipswitches_bonus_life_2);
                 break;
             case BonusLifeAt::_15000:
-                unset_bit(m_memory[address_dipswitches], dipswitches_bonus_life_1);
-                set_bit(m_memory[address_dipswitches], dipswitches_bonus_life_2);
-                break;
-            case BonusLifeAt::_20000:
                 set_bit(m_memory[address_dipswitches], dipswitches_bonus_life_1);
                 unset_bit(m_memory[address_dipswitches], dipswitches_bonus_life_2);
                 break;
-            case BonusLifeAt::None:
+            case BonusLifeAt::_20000:
                 unset_bit(m_memory[address_dipswitches], dipswitches_bonus_life_1);
-                unset_bit(m_memory[address_dipswitches], dipswitches_bonus_life_2);
+                set_bit(m_memory[address_dipswitches], dipswitches_bonus_life_2);
+                break;
+            case BonusLifeAt::None:
+                set_bit(m_memory[address_dipswitches], dipswitches_bonus_life_1);
+                set_bit(m_memory[address_dipswitches], dipswitches_bonus_life_2);
             default:
                 break;
         }
@@ -120,9 +132,13 @@ namespace emu::z80::applications::pacman {
         }
     }
 
+    u8 MemoryMappedIo::read_dipswitches() {
+        return m_memory[address_dipswitches];
+    }
+
     void MemoryMappedIo::set_initial_values() {
         m_memory[address_in0] = 0b10011111;
-        m_memory[address_in1] = 0xff;
+        m_memory[address_in1] = 0b11111111;
     }
 
     void MemoryMappedIo::memory_changed(u16 address) {

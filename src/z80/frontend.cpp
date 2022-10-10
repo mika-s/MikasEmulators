@@ -179,12 +179,12 @@ namespace emu::z80 {
                         settings.m_bonus_life_at = BonusLifeAt::_15000;
                     } else if (opt == "b=20000") {
                         settings.m_bonus_life_at = BonusLifeAt::_20000;
-                    } else if (opt == "b=None") {
+                    } else if (opt == "b=none") {
                         settings.m_bonus_life_at = BonusLifeAt::None;
                     } else {
                         std::stringstream ss;
                         ss << "Invalid bonus life at passed to the -d option: " << opt
-                           << R"(. Should be "-d b=10000", "-d b=15000", "-d b=20000" or "-d b=None".)";
+                           << R"(. Should be "-d b=10000", "-d b=15000", "-d b=20000" or "-d b=none".)";
                         throw InvalidProgramArgumentsException(ss.str());
                     }
                     break;

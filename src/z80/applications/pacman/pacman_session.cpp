@@ -224,6 +224,56 @@ namespace emu::z80::applications::pacman {
                 [&]() { return m_outputs_during_cycle.contains(out_port_vblank_interrupt_return); },
                 [&]() { return m_outputs_during_cycle[out_port_vblank_interrupt_return]; }
         ));
+        m_debug_container.add_io(IoDebugContainer(
+                "coin counter",
+                [&]() { return true; },
+                [&]() { return m_memory_mapped_io->read_coin_counter(); }
+        ));
+        m_debug_container.add_io(IoDebugContainer(
+                "dipswitches",
+                [&]() { return true; },
+                [&]() { return m_memory_mapped_io->read_dipswitches(); },
+                {
+                        {"coin 1 (AH)",       0},
+                        {"coin 2 (AH)",       1},
+                        {"lives 1 (AH)",      2},
+                        {"lives 2 (AH)",      3},
+                        {"bonus life 1 (AH)", 4},
+                        {"bonus life 2 (AH)", 5},
+                        {"difficulty (AH)",   6},
+                        {"ghost names (AH)",  7}
+                }
+        ));
+        m_debug_container.add_io(IoDebugContainer(
+                "in 0",
+                [&]() { return true; },
+                [&]() { return m_memory_mapped_io->read_in0(); },
+                {
+                        {"up (AL)",        0},
+                        {"left (AL)",      1},
+                        {"right (AL)",     2},
+                        {"down (AL)",      3},
+                        {"off (AH)",       4},
+                        {"coin 1 (AL)",    5},
+                        {"coin 2 (AL)",    6},
+                        {"service 1 (AL)", 7}
+                }
+        ));
+        m_debug_container.add_io(IoDebugContainer(
+                "in 1",
+                [&]() { return true; },
+                [&]() { return m_memory_mapped_io->read_in1(); },
+                {
+                        {"up (AL)",         0},
+                        {"left (AL)",       1},
+                        {"right (AL)",      2},
+                        {"down (AL)",       3},
+                        {"board test (AL)", 4},
+                        {"start 1 (AL)",    5},
+                        {"start 2 (AL)",    6},
+                        {"cocktail (AL)",   7}
+                }
+        ));
         m_debug_container.add_memory(MemoryDebugContainer(
                 [&]() { return memory(); }
         ));
