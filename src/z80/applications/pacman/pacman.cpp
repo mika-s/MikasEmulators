@@ -56,13 +56,7 @@ namespace emu::z80::applications::pacman {
     }
 
     std::vector<u8> create_empty_vector(int size) {
-        std::vector<u8> vec;
-
-        vec.reserve(size);
-        for (int i = 0; i <= size; ++i) {
-            vec.push_back(0);
-        }
-
+        std::vector<u8> vec(size, 0);
         return vec;
     }
 

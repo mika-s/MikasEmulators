@@ -3,6 +3,7 @@
 #include <SDL_timer.h>
 #include "space_invaders_session.h"
 #include "8080/disassembler8080.h"
+#include "crosscutting/misc/sdl_counter.h"
 #include "crosscutting/util/string_util.h"
 
 namespace emu::i8080::applications::space_invaders {
@@ -11,6 +12,7 @@ namespace emu::i8080::applications::space_invaders {
     using emu::debugger::IoDebugContainer;
     using emu::debugger::MemoryDebugContainer;
     using emu::debugger::RegisterDebugContainer;
+    using emu::misc::sdl_get_ticks_high_performance;
     using emu::util::string::split;
 
     SpaceInvadersSession::SpaceInvadersSession(
@@ -30,7 +32,7 @@ namespace emu::i8080::applications::space_invaders {
               m_memory(std::move(memory)),
               m_logger(std::make_shared<Logger>()),
               m_debugger(std::make_shared<Debugger>()),
-              m_governor(Governor(1.0, tick_limit, [&]() { return SDL_GetTicks64(); })) {
+              m_governor(Governor(tick_limit, sdl_get_ticks_high_performance)) {
         setup_cpu();
         setup_debugging();
         m_cpu_io.set_dipswitches(settings);

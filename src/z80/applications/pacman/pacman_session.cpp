@@ -4,6 +4,7 @@
 #include <SDL_timer.h>
 #include "pacman_session.h"
 #include "z80/disassemblerZ80.h"
+#include "crosscutting/misc/sdl_counter.h"
 #include "crosscutting/util/string_util.h"
 
 namespace emu::z80::applications::pacman {
@@ -12,6 +13,7 @@ namespace emu::z80::applications::pacman {
     using emu::debugger::IoDebugContainer;
     using emu::debugger::MemoryDebugContainer;
     using emu::debugger::RegisterDebugContainer;
+    using emu::misc::sdl_get_ticks_high_performance;
     using emu::util::string::split;
 
     PacmanSession::PacmanSession(
@@ -32,7 +34,7 @@ namespace emu::z80::applications::pacman {
               m_memory(memory),
               m_logger(std::make_shared<Logger>()),
               m_debugger(std::make_shared<Debugger>()),
-              m_governor(Governor(1.0, tick_limit, [&]() { return SDL_GetTicks64(); })) {
+              m_governor(Governor(tick_limit, sdl_get_ticks_high_performance)) {
         setup_cpu();
         setup_debugging();
 

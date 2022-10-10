@@ -29,31 +29,25 @@ namespace emu::i8080::applications::space_invaders {
         m_memory.add(read_file_into_vector(directory + "invaders.g")); // $0800-$0fff: invaders.g
         m_memory.add(read_file_into_vector(directory + "invaders.f")); // $1000-$17ff: invaders.f
         m_memory.add(read_file_into_vector(directory + "invaders.e")); // $1800-$1fff: invaders.e
-        m_memory.add(create_work_ram());                                     // $2000-$23ff: work RAM
-        m_memory.add(create_vram());                                         // $2400-$3fff: video RAM
+        m_memory.add(create_work_ram());                               // $2000-$23ff: work RAM
+        m_memory.add(create_vram());                                   // $2400-$3fff: video RAM
+        m_memory.add(fill_remaining(m_memory.size()));
+    }
+
+    std::vector<u8> create_empty_vector(int size) {
+        std::vector<u8> vec(size, 0);
+        return vec;
     }
 
     std::vector<u8> SpaceInvaders::create_work_ram() {
-        std::vector<u8> work_ram;
-        const int size = 0x23ff - 0x2000;
-
-        work_ram.reserve(size);
-        for (int i = 0; i <= size; ++i) {
-            work_ram.push_back(0);
-        }
-
-        return work_ram;
+        return create_empty_vector(0x23ff - 0x2000);
     }
 
     std::vector<u8> SpaceInvaders::create_vram() {
-        std::vector<u8> vram;
-        const int size = 0x3fff - 0x2400;
+        return create_empty_vector(0x3fff - 0x2400);
+    }
 
-        vram.reserve(size);
-        for (int i = 0; i <= size; ++i) {
-            vram.push_back(0);
-        }
-
-        return vram;
+    std::vector<u8> SpaceInvaders::fill_remaining(size_t memory_size) {
+        return create_empty_vector(UINT16_MAX - memory_size);
     }
 }
