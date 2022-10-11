@@ -1,5 +1,5 @@
-#ifndef MIKA_EMULATORS_CROSSCUTTING_GUI_TILEMAP_WINDOW_H
-#define MIKA_EMULATORS_CROSSCUTTING_GUI_TILEMAP_WINDOW_H
+#ifndef MIKA_EMULATORS_CROSSCUTTING_GUI_SPRITEMAP_WINDOW_H
+#define MIKA_EMULATORS_CROSSCUTTING_GUI_SPRITEMAP_WINDOW_H
 
 #include <string>
 #include <vector>
@@ -12,9 +12,9 @@ namespace emu::gui {
 
     using emu::debugger::DebugContainer;
 
-    class TilemapWindow {
+    class SpritemapWindow {
     public:
-        explicit TilemapWindow(int default_palette_idx = 0);
+        explicit SpritemapWindow(int default_palette_idx = 0);
 
         void attach_debug_container(DebugContainer &debug_container);
 
@@ -23,25 +23,33 @@ namespace emu::gui {
     private:
         static constexpr int width = 128;
         static constexpr int height = 128;
-        static constexpr unsigned int tiles_per_row = 16;
+        static constexpr unsigned int sprites_per_row = 8;
 
         static constexpr float scale = 4.0;
         static constexpr int scaled_width = static_cast<int>(scale * static_cast<float>(width));
         static constexpr int scaled_height = static_cast<int>(scale * static_cast<float>(height));
 
         DebugContainer m_debug_container;
-        std::vector<Framebuffer> m_framebuffers;
+        std::vector<std::vector<Framebuffer>> m_framebuffers;
         int m_chosen_palette_idx;
         int m_number_of_palettes;
+        int m_chosen_rotation;
+        int m_number_of_rotations;
         ImGuiSliderFlags m_slider_flags;
-        bool m_are_all_tiles_rendered;
+        bool m_are_all_sprites_rendered;
 
         void prepare_framebuffers();
 
         bool prepare_framebuffer(unsigned int palette_idx);
 
+        bool prepare_framebuffer_for_rotation(
+                const std::vector<std::shared_ptr<Sprite>> &sprites,
+                unsigned int rotation,
+                unsigned int palette_idx
+        );
+
         void render_image(u32 tile_texture);
     };
 }
 
-#endif //MIKA_EMULATORS_CROSSCUTTING_GUI_TILEMAP_WINDOW_H
+#endif //MIKA_EMULATORS_CROSSCUTTING_GUI_SPRITEMAP_WINDOW_H

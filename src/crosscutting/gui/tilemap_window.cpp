@@ -1,5 +1,4 @@
 #include "glad/glad.h"
-#include "imgui.h"
 #include "tilemap_window.h"
 
 namespace emu::gui {

@@ -115,6 +115,15 @@ namespace emu::z80::applications::pacman {
         return m_tiles;
     }
 
+    std::tuple<
+            std::vector<std::vector<std::shared_ptr<Sprite>>>,
+            std::vector<std::vector<std::shared_ptr<Sprite>>>,
+            std::vector<std::vector<std::shared_ptr<Sprite>>>,
+            std::vector<std::vector<std::shared_ptr<Sprite>>>
+    > Gui::sprites() {
+        return {m_sprites, m_sprites_x, m_sprites_y, m_sprites_xy};
+    }
+
     std::shared_ptr<Tile> Gui::render_tile(u8 palette_idx, u8 tile_idx) {
         if (palette_idx >= m_number_of_palettes) {
             palette_idx = 0;
@@ -360,11 +369,11 @@ namespace emu::z80::applications::pacman {
         }
 
         if (flip_x) {
-            sprite->flip_horizontal();
+            new_sprite->flip_horizontal();
         }
 
         if (flip_y) {
-            sprite->flip_vertical();
+            new_sprite->flip_vertical();
         }
 
         return new_sprite;

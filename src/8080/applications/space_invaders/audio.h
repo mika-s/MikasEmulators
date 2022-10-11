@@ -57,17 +57,17 @@ namespace emu::i8080::applications::space_invaders {
         static constexpr unsigned int ufo_hit = 4;
 
         SDL_AudioDeviceID m_audio_device;
-        size_t m_ufo_x = 0;
-        size_t m_shot_x = 0;
-        size_t m_flash_x = 0;
-        size_t m_invader_die_x = 0;
-        size_t m_extended_play_x = 0;
+        std::size_t m_ufo_x = 0;
+        std::size_t m_shot_x = 0;
+        std::size_t m_flash_x = 0;
+        std::size_t m_invader_die_x = 0;
+        std::size_t m_extended_play_x = 0;
 
-        size_t m_fleet_movement_1_x = 0;
-        size_t m_fleet_movement_2_x = 0;
-        size_t m_fleet_movement_3_x = 0;
-        size_t m_fleet_movement_4_x = 0;
-        size_t m_ufo_hit_x = 0;
+        std::size_t m_fleet_movement_1_x = 0;
+        std::size_t m_fleet_movement_2_x = 0;
+        std::size_t m_fleet_movement_3_x = 0;
+        std::size_t m_fleet_movement_4_x = 0;
+        std::size_t m_ufo_hit_x = 0;
 
         bool m_is_ufo_sound_on;
         bool m_is_shot_sound_on;
@@ -92,7 +92,7 @@ namespace emu::i8080::applications::space_invaders {
 
         void generate_audio(Uint8 *stream, int len);
 
-        void play(std::vector<double> sound, int samples, Sint16 *stream16, size_t &x, bool &is_sound_on) const;
+        void play(std::vector<double> sound, int samples, Sint16 *stream16, std::size_t &x, bool &is_sound_on) const;
 
         static void forward_callback(void *userdata, Uint8 *stream, int len) {
             static_cast<Audio *>(userdata)->generate_audio(stream, len);

@@ -62,6 +62,13 @@ namespace emu::z80::applications::pacman {
 
         std::vector<std::vector<std::shared_ptr<Tile>>> tiles();
 
+        std::tuple<
+                std::vector<std::vector<std::shared_ptr<Sprite>>>,
+                std::vector<std::vector<std::shared_ptr<Sprite>>>,
+                std::vector<std::vector<std::shared_ptr<Sprite>>>,
+                std::vector<std::vector<std::shared_ptr<Sprite>>>
+        > sprites();
+
     protected:
 
         static constexpr int tile_size = 8;

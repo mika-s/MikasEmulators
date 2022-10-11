@@ -279,6 +279,7 @@ namespace emu::z80::applications::pacman {
         ));
         m_debug_container.add_disassembled_program(disassemble_program());
         m_debug_container.add_tilemap(m_gui->tiles());
+        m_debug_container.add_spritemap(m_gui->sprites());
 
         m_gui->attach_debugger(m_debugger);
         m_gui->attach_debug_container(m_debug_container);

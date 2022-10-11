@@ -11,7 +11,7 @@ namespace emu::gui {
 
     class Sprite {
     public:
-        Sprite(size_t height, size_t width);
+        Sprite(std::size_t height, std::size_t width);
 
         virtual ~Sprite() = default;
 
@@ -19,7 +19,7 @@ namespace emu::gui {
             return true;
         }
 
-        void set(size_t row, size_t col, Color value);
+        void set(std::size_t row, std::size_t col, Color value);
 
         void flip_horizontal();
 
@@ -27,12 +27,14 @@ namespace emu::gui {
 
         void map_to_framebuffer(Framebuffer &framebuffer, int origin_row, int origin_col);
 
+        std::size_t size();
+
     private:
         std::vector<std::vector<Color>> m_values;
-        size_t m_height;
-        size_t m_width;
+        std::size_t m_height;
+        std::size_t m_width;
 
-        Color get(size_t row, size_t col);
+        Color get(std::size_t row, std::size_t col);
     };
 
     class UninitializedSprite : public Sprite {

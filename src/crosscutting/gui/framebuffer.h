@@ -14,6 +14,10 @@ namespace emu::gui {
 
         std::vector<u32> to_output_vector();
 
+        unsigned int height();
+
+        unsigned int width();
+
     private:
         unsigned int m_height;
         unsigned int m_width;

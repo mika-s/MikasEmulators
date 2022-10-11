@@ -11,7 +11,7 @@ namespace emu::gui {
 
     class Tile {
     public:
-        Tile(size_t height, size_t width);
+        Tile(std::size_t height, std::size_t width);
 
         virtual ~Tile() = default;
 
@@ -19,18 +19,18 @@ namespace emu::gui {
             return true;
         }
 
-        void set(size_t row, size_t col, Color value);
+        void set(std::size_t row, std::size_t col, Color value);
 
         void map_to_framebuffer(Framebuffer &framebuffer, unsigned int origin_row, unsigned int origin_col);
 
-        size_t size();
+        std::size_t size();
 
     private:
         std::vector<std::vector<Color>> m_values;
-        size_t m_height;
-        size_t m_width;
+        std::size_t m_height;
+        std::size_t m_width;
 
-        Color get(size_t row, size_t col);
+        Color get(std::size_t row, std::size_t col);
     };
 
     class UninitializedTile : public Tile {

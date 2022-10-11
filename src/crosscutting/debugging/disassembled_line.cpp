@@ -25,7 +25,7 @@ namespace emu::debugger {
 
     u16 DisassembledLine::address_from_disassembly_line(std::string line) {
         const std::string delimiter = "\t";
-        size_t pos;
+        std::size_t pos;
         std::string token;
         std::vector<std::string> split;
         while ((pos = line.find(delimiter)) != std::string::npos) {

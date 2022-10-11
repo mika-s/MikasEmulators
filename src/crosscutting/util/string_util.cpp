@@ -57,7 +57,7 @@ namespace emu::util::string {
         std::string name(long_program_name);
         const std::string delimiter = "/";
 
-        size_t pos;
+        std::size_t pos;
         std::string token;
         while ((pos = name.find(delimiter)) != std::string::npos) {
             name.substr(0, pos);
@@ -71,7 +71,7 @@ namespace emu::util::string {
         std::vector<std::string> split_string;
         std::string s = ss.str();
         std::string token;
-        size_t pos;
+        std::size_t pos;
 
         while ((pos = s.find(delimiter)) != std::string::npos) {
             token = s.substr(0, pos);
@@ -85,11 +85,11 @@ namespace emu::util::string {
     std::string prepend(std::string prefix, const char *txt) {
         char *out = new char[strlen(txt) + prefix.size() + 1];
 
-        for (size_t i = 0; i < prefix.size(); ++i) {
+        for (std::size_t i = 0; i < prefix.size(); ++i) {
             out[i] = prefix[i];
         }
 
-        for (size_t i = prefix.size(); i < strlen(txt) + prefix.size(); ++i) {
+        for (std::size_t i = prefix.size(); i < strlen(txt) + prefix.size(); ++i) {
             out[i] = txt[i - prefix.size()];
         }
 
@@ -101,11 +101,11 @@ namespace emu::util::string {
     std::string append(std::string postfix, const char *txt) {
         char *out = new char[strlen(txt) + postfix.size() + 1];
 
-        for (size_t i = 0; i < strlen(txt); ++i) {
+        for (std::size_t i = 0; i < strlen(txt); ++i) {
             out[i] = txt[i];
         }
 
-        for (size_t i = strlen(txt); i < strlen(txt) + postfix.size(); ++i) {
+        for (std::size_t i = strlen(txt); i < strlen(txt) + postfix.size(); ++i) {
             out[i] = postfix[i - strlen(txt)];
         }
 

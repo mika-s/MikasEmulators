@@ -26,9 +26,11 @@ namespace emu::z80::applications::pacman {
               m_show_disassembly(true),
               m_show_memory_editor(true),
               m_show_tilemap(true),
+              m_show_spritemap(true),
               m_show_demo(false),
               m_is_in_debug_mode(false),
-              m_tilemap(1) {
+              m_tilemap(1),
+              m_spritemap(1) {
         init();
     }
 
@@ -78,6 +80,7 @@ namespace emu::z80::applications::pacman {
         m_disassembly.attach_debug_container(debug_container);
         m_memory_editor.attach_debug_container(debug_container);
         m_tilemap.attach_debug_container(debug_container);
+        m_spritemap.attach_debug_container(debug_container);
     }
 
     void GuiImgui::attach_logger(std::shared_ptr<Logger> logger) {
@@ -234,6 +237,7 @@ namespace emu::z80::applications::pacman {
                 ImGui::MenuItem("Disassembly", nullptr, &m_show_disassembly);
                 ImGui::MenuItem("Memory editor", nullptr, &m_show_memory_editor);
                 ImGui::MenuItem("Tilemap", nullptr, &m_show_tilemap);
+                ImGui::MenuItem("Spritemap", nullptr, &m_show_spritemap);
                 ImGui::MenuItem("Demo", nullptr, &m_show_demo);
                 ImGui::EndMenu();
             }
@@ -270,6 +274,9 @@ namespace emu::z80::applications::pacman {
         }
         if (m_show_tilemap) {
             render_tilemap_window();
+        }
+        if (m_show_spritemap) {
+            render_spritemap_window();
         }
         if (m_show_demo) {
             ImGui::ShowDemoWindow();
@@ -365,5 +372,9 @@ namespace emu::z80::applications::pacman {
 
     void GuiImgui::render_tilemap_window() {
         m_tilemap.draw("Tilemap", m_tile_texture, &m_show_tilemap);
+    }
+
+    void GuiImgui::render_spritemap_window() {
+        m_spritemap.draw("Spritemap", m_sprite_texture, &m_show_spritemap);
     }
 }

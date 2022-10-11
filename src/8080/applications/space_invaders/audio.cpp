@@ -1,4 +1,3 @@
-#include <cmath>
 #include <SDL.h>
 #include "audio.h"
 #include "8080/applications/space_invaders/sounds.h"
@@ -153,7 +152,7 @@ namespace emu::i8080::applications::space_invaders {
         }
     }
 
-    void Audio::play(std::vector<double> sound, int samples, Sint16 *stream16, size_t &x, bool &is_sound_on) const {
+    void Audio::play(std::vector<double> sound, int samples, Sint16 *stream16, std::size_t &x, bool &is_sound_on) const {
         for (int i = 0; i < samples; i++) {
             if (x < sound.size()) {
                 stream16[i] += static_cast<Sint16>(sound[x++] * m_volume * !m_is_muted);

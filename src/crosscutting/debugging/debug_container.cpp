@@ -257,4 +257,27 @@ namespace emu::debugger {
     bool DebugContainer::is_tilemap_set() const {
         return m_is_tilemap_set;
     }
+
+    void DebugContainer::add_spritemap(const std::tuple<
+            std::vector<std::vector<std::shared_ptr<Sprite>>>,
+            std::vector<std::vector<std::shared_ptr<Sprite>>>,
+            std::vector<std::vector<std::shared_ptr<Sprite>>>,
+            std::vector<std::vector<std::shared_ptr<Sprite>>>
+    > &sprites) {
+        m_sprites = sprites;
+        m_is_spritemap_set = true;
+    }
+
+    std::tuple<
+            std::vector<std::vector<std::shared_ptr<Sprite>>>,
+            std::vector<std::vector<std::shared_ptr<Sprite>>>,
+            std::vector<std::vector<std::shared_ptr<Sprite>>>,
+            std::vector<std::vector<std::shared_ptr<Sprite>>>
+    > DebugContainer::sprites() {
+        return m_sprites;
+    }
+
+    bool DebugContainer::is_spritemap_set() const {
+        return m_is_spritemap_set;
+    }
 }

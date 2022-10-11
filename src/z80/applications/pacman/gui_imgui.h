@@ -17,6 +17,7 @@
 #include "crosscutting/gui/io_info.h"
 #include "crosscutting/gui/memory_editor_window.h"
 #include "crosscutting/gui/tilemap_window.h"
+#include "crosscutting/gui/spritemap_window.h"
 #include "crosscutting/logging/log_observer.h"
 #include "crosscutting/logging/logger.h"
 
@@ -28,6 +29,7 @@ namespace emu::z80::applications::pacman {
     using emu::gui::IoInfo;
     using emu::gui::MemoryEditorWindow;
     using emu::gui::TilemapWindow;
+    using emu::gui::SpritemapWindow;
 
     class GuiImgui : public Gui {
 
@@ -60,6 +62,7 @@ namespace emu::z80::applications::pacman {
         SDL_GLContext m_gl_context;
         u32 m_screen_texture;
         u32 m_tile_texture;
+        u32 m_sprite_texture;
 
         bool m_show_game;
         bool m_show_game_info;
@@ -69,6 +72,7 @@ namespace emu::z80::applications::pacman {
         bool m_show_disassembly;
         bool m_show_memory_editor;
         bool m_show_tilemap;
+        bool m_show_spritemap;
         bool m_show_demo;
 
         bool m_is_in_debug_mode;
@@ -82,6 +86,7 @@ namespace emu::z80::applications::pacman {
         IoInfo m_io_info;
         MemoryEditorWindow m_memory_editor;
         TilemapWindow m_tilemap;
+        SpritemapWindow m_spritemap;
 
         void notify_gui_observers_about_run_status(RunStatus new_status);
 
@@ -106,6 +111,8 @@ namespace emu::z80::applications::pacman {
         void render_memory_editor_window();
 
         void render_tilemap_window();
+
+        void render_spritemap_window();
     };
 }
 

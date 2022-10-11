@@ -37,4 +37,12 @@ namespace emu::gui {
 
         return output;
     }
+
+    unsigned int Framebuffer::height() {
+        return m_height;
+    }
+
+    unsigned int Framebuffer::width() {
+        return m_width;
+    }
 }

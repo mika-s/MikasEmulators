@@ -1,19 +1,24 @@
 #include <algorithm>
 #include <fmt/format.h>
+#include <sstream>
 #include <stdexcept>
 #include "sprite.h"
 
 namespace emu::gui {
 
-    Sprite::Sprite(size_t height, size_t width)
+    Sprite::Sprite(std::size_t height, std::size_t width)
             : m_height(height),
               m_width(width) {
+        if (height != width) {
+            throw std::invalid_argument("Non-square tiles not supported");
+        }
+
         for (unsigned int row = 0; row < height; ++row) {
             m_values.emplace_back(width, Color::black());
         }
     }
 
-    void Sprite::set(size_t row, size_t col, Color value) {
+    void Sprite::set(std::size_t row, std::size_t col, Color value) {
         if (row > m_height - 1) {
             throw std::runtime_error(fmt::format("row of {} is too large, height is {}", row, m_height));
         } else if (col > m_width - 1) {
@@ -33,15 +38,15 @@ namespace emu::gui {
     }
 
     void Sprite::map_to_framebuffer(Framebuffer &framebuffer, int origin_row, int origin_col) {
-        for (size_t row = 0; row < m_height; ++row) {
-            for (size_t col = 0; col < m_width; ++col) {
+        for (std::size_t row = 0; row < m_height; ++row) {
+            for (std::size_t col = 0; col < m_width; ++col) {
                 const Color pixel = get(row, col);
 
                 if (pixel.is_transparent()) {
                     continue;
                 }
 
-                if (origin_col + col >= m_width || origin_row + row >= m_height) {
+                if (origin_col + col >= framebuffer.width() || origin_row + row >= framebuffer.height()) {
                     continue;
                 }
 
@@ -50,8 +55,12 @@ namespace emu::gui {
         }
     }
 
-    Color Sprite::get(size_t row, size_t col) {
+    Color Sprite::get(std::size_t row, std::size_t col) {
         return m_values[row][col];
+    }
+
+    std::size_t Sprite::size() {
+        return m_width;
     }
 
     UninitializedSprite::UninitializedSprite() : Sprite(0, 0) {}
