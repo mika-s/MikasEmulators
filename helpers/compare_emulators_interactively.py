@@ -4,8 +4,8 @@
 Runs two emulators in parallel and stops when the output from them differs.
 
 The emulators have to print the contents of everything that should be
-compared to stdout. The format of of the print-out should be exactly
-the same for both emulators. Each log line should end with '\n' (newline).
+compared to stdout. The format of the print-out should be exactly the
+same for both emulators. Each log line should end with '\n' (newline).
 
 The emulators also have to respond to commands via stdin. This script expects
 the emulators to send one log line at a time to stdout. When the script is ready
@@ -32,14 +32,14 @@ The script compares one instruction at a time. It compares by string comparison.
 After comparing the emulator under test vs. the reference emulator, it will
 ask the emulators to execute a new instruction if no difference was found.
 It will quit and show the last 20 executed instructions if a diff was found
-between them. For test binaries such as zexdoc it could take hundred of millions
-of instructions before a diff is found.
+between them. For test binaries such as zexdoc it could take billions of
+instructions before a diff is found.
 
 If one or both of the emulators run to completion, i.e. no diffs are found, the
 script will exit with exceptions etc. This is because it loses connection to the
 emulator and there's no soft shutdown.
 
-Tested on Python 3.8.8 only. Will need at least Python 3. Also only tested on Linux.
+Tested on Python 3.8.8 only. Will need at least Python 3. Also, only tested on Linux.
 """
 
 import asyncio

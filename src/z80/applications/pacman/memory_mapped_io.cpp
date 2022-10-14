@@ -136,9 +136,24 @@ namespace emu::z80::applications::pacman {
         return m_memory[address_dipswitches];
     }
 
+    void MemoryMappedIo::set_board_test(const Settings &settings) {
+        switch (settings.m_board_test) {
+            case BoardTest::Off:
+                set_bit(m_memory[address_in1], board_test);
+                set_bit(m_initial_value_in1, board_test);
+                break;
+            case BoardTest::On:
+                unset_bit(m_memory[address_in1], board_test);
+                unset_bit(m_initial_value_in1, board_test);
+                break;
+            default:
+                break;
+        }
+    }
+
     void MemoryMappedIo::set_initial_values() {
-        m_memory[address_in0] = 0b10011111;
-        m_memory[address_in1] = 0b11111111;
+        m_memory[address_in0] = m_initial_value_in0;
+        m_memory[address_in1] = m_initial_value_in1;
     }
 
     void MemoryMappedIo::memory_changed(u16 address) {

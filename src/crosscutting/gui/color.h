@@ -10,6 +10,10 @@ namespace emu::gui {
 
         static Color black();
 
+        static Color white();
+
+        static Color red();
+
         [[nodiscard]] bool is_transparent() const;
 
         u32 to_u32();

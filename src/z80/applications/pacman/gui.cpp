@@ -181,8 +181,13 @@ namespace emu::z80::applications::pacman {
             const u8 tile_idx = tile_ram[address];
             const u8 palette_idx = palette_ram[address] & 0x7f;
 
-            render_tile(palette_idx, tile_idx)
-                    ->map_to_framebuffer(framebuffer, origin_row, origin_col);
+            if (m_is_tile_debug_enabled) {
+                render_tile(palette_idx, tile_idx)
+                        ->map_debug_overlay_to_framebuffer(framebuffer, origin_row, origin_col, tile_idx);
+            } else {
+                render_tile(palette_idx, tile_idx)
+                        ->map_to_framebuffer(framebuffer, origin_row, origin_col);
+            }
 
             if (play_area_row == play_area_height_in_tiles - 1) {
                 origin_col -= tile_size;
@@ -208,8 +213,13 @@ namespace emu::z80::applications::pacman {
             const u8 tile_idx = tile_ram[address];
             const u8 palette_idx = palette_ram[address] & 0x7f;
 
-            render_tile(palette_idx, tile_idx)
-                    ->map_to_framebuffer(framebuffer, origin_row, origin_col);
+            if (m_is_tile_debug_enabled) {
+                render_tile(palette_idx, tile_idx)
+                        ->map_debug_overlay_to_framebuffer(framebuffer, origin_row, origin_col, tile_idx);
+            } else {
+                render_tile(palette_idx, tile_idx)
+                        ->map_to_framebuffer(framebuffer, origin_row, origin_col);
+            }
 
             origin_col += tile_size;
         }
@@ -222,8 +232,13 @@ namespace emu::z80::applications::pacman {
             const u8 tile_idx = tile_ram[address];
             const u8 palette_idx = palette_ram[address] & 0x7f;
 
-            render_tile(palette_idx, tile_idx)
-                    ->map_to_framebuffer(framebuffer, origin_row, origin_col);
+            if (m_is_tile_debug_enabled) {
+                render_tile(palette_idx, tile_idx)
+                        ->map_debug_overlay_to_framebuffer(framebuffer, origin_row, origin_col, tile_idx);
+            } else {
+                render_tile(palette_idx, tile_idx)
+                        ->map_to_framebuffer(framebuffer, origin_row, origin_col);
+            }
 
             origin_col += tile_size;
         }
@@ -242,8 +257,13 @@ namespace emu::z80::applications::pacman {
             const u8 tile_idx = tile_ram[address];
             const u8 palette_idx = palette_ram[address] & 0x7f;
 
-            render_tile(palette_idx, tile_idx)
-                    ->map_to_framebuffer(framebuffer, origin_row, origin_col);
+            if (m_is_tile_debug_enabled) {
+                render_tile(palette_idx, tile_idx)
+                        ->map_debug_overlay_to_framebuffer(framebuffer, origin_row, origin_col, tile_idx);
+            } else {
+                render_tile(palette_idx, tile_idx)
+                        ->map_to_framebuffer(framebuffer, origin_row, origin_col);
+            }
 
             origin_col += tile_size;
         }
@@ -256,8 +276,13 @@ namespace emu::z80::applications::pacman {
             const u8 tile_idx = tile_ram[address];
             const u8 palette_idx = palette_ram[address] & 0x7f;
 
-            render_tile(palette_idx, tile_idx)
-                    ->map_to_framebuffer(framebuffer, origin_row, origin_col);
+            if (m_is_tile_debug_enabled) {
+                render_tile(palette_idx, tile_idx)
+                        ->map_debug_overlay_to_framebuffer(framebuffer, origin_row, origin_col, tile_idx);
+            } else {
+                render_tile(palette_idx, tile_idx)
+                        ->map_to_framebuffer(framebuffer, origin_row, origin_col);
+            }
 
             origin_col += tile_size;
         }

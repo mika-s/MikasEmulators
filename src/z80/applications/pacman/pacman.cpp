@@ -20,6 +20,7 @@ namespace emu::z80::applications::pacman {
 
         m_memory_mapped_io = std::make_shared<MemoryMappedIo>(m_memory);
         m_memory_mapped_io->set_dipswitches(settings);
+        m_memory_mapped_io->set_board_test(settings);
     }
 
     std::unique_ptr<Session> Pacman::new_session() {

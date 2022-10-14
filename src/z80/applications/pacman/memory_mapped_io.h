@@ -32,6 +32,8 @@ namespace emu::z80::applications::pacman {
 
         u8 read_dipswitches();
 
+        void set_board_test(const Settings &settings);
+
         void memory_changed(u16 address) override;
 
         void set_initial_values();
@@ -45,6 +47,7 @@ namespace emu::z80::applications::pacman {
         static constexpr u16 address_coin_counter = 0x5007;
         static constexpr u16 address_in1 = 0x5040;
         static constexpr u16 address_dipswitches = 0x5080;
+        static constexpr unsigned int board_test = 4;
         static constexpr unsigned int dipswitches_coinage_1 = 0;
         static constexpr unsigned int dipswitches_coinage_2 = 1;
         static constexpr unsigned int dipswitches_lives_1 = 2;
@@ -55,6 +58,9 @@ namespace emu::z80::applications::pacman {
         static constexpr unsigned int dipswitches_ghost_names = 7;
 
         EmulatorMemory &m_memory;
+
+        u8 m_initial_value_in0 = 0b10011111;
+        u8 m_initial_value_in1 = 0b11111111;
     };
 }
 

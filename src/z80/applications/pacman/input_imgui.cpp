@@ -84,6 +84,12 @@ namespace emu::z80::applications::pacman {
                         break;
                     case SDL_KEYDOWN:
                         switch (read_input_event.key.keysym.scancode) {
+                            case tile_debug:
+                                notify_io_observers(IoRequest::TOGGLE_TILE_DEBUG);
+                                break;
+                            case sprite_debug:
+                                notify_io_observers(IoRequest::TOGGLE_SPRITE_DEBUG);
+                                break;
                             case mute:
                                 notify_io_observers(IoRequest::TOGGLE_MUTE);
                                 break;

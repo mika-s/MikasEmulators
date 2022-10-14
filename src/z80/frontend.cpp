@@ -146,6 +146,7 @@ namespace emu::z80 {
         using applications::pacman::CoinsPerGame;
         using applications::pacman::Difficulty;
         using applications::pacman::GhostNames;
+        using applications::pacman::BoardTest;
 
         Settings settings{};
         settings.m_number_of_lives = NumberOfLives::Three;
@@ -153,6 +154,7 @@ namespace emu::z80 {
         settings.m_coins_per_game = CoinsPerGame::OnePerGame;
         settings.m_difficulty = Difficulty::Normal;
         settings.m_ghost_names = GhostNames::Normal;
+        settings.m_board_test = BoardTest::Off;
 
         for (auto &opt: options["-d"]) {
             switch (opt[0]) {
@@ -226,6 +228,18 @@ namespace emu::z80 {
                         std::stringstream ss;
                         ss << "Invalid ghost names passed to the -d option: " << opt
                            << R"(. Should be "-d g=normal" or "-d g=alternate".)";
+                        throw InvalidProgramArgumentsException(ss.str());
+                    }
+                    break;
+                case 't':
+                    if (opt == "t=off") {
+                        settings.m_board_test = BoardTest::Off;
+                    } else if (opt == "t=on") {
+                        settings.m_board_test = BoardTest::On;
+                    } else {
+                        std::stringstream ss;
+                        ss << "Invalid board test passed to the -d option: " << opt
+                           << R"(. Should be "-d t=off" or "-d t=on".)";
                         throw InvalidProgramArgumentsException(ss.str());
                     }
                     break;

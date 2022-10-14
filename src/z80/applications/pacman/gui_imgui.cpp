@@ -18,6 +18,8 @@ namespace emu::z80::applications::pacman {
             : m_win(nullptr),
               m_gl_context(nullptr),
               m_screen_texture(0),
+              m_tile_texture(0),
+              m_sprite_texture(0),
               m_show_game(true),
               m_show_game_info(true),
               m_show_cpu_info(true),
@@ -87,6 +89,22 @@ namespace emu::z80::applications::pacman {
         m_logger = std::move(logger);
         m_log.attach_logger(m_logger);
         m_disassembly.attach_logger(m_logger);
+    }
+
+    void GuiImgui::toggle_tile_debug() {
+        m_is_tile_debug_enabled = !m_is_tile_debug_enabled;
+        m_logger->info(m_is_tile_debug_enabled ? "Tile debug: on" : "Tile debug: off");
+        if (m_is_tile_debug_enabled) {
+            m_framebuffer.clear();
+        }
+    }
+
+    void GuiImgui::toggle_sprite_debug() {
+        m_is_sprite_debug_enabled = !m_is_sprite_debug_enabled;
+        m_logger->info(m_is_sprite_debug_enabled ? "Sprite debug: on" : "Sprite debug: off");
+        if (m_is_sprite_debug_enabled) {
+            m_framebuffer.clear();
+        }
     }
 
     void GuiImgui::init() {

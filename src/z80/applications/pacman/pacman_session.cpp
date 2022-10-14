@@ -337,6 +337,12 @@ namespace emu::z80::applications::pacman {
             case TOGGLE_MUTE:
 //                m_audio.toggle_mute();
                 break;
+            case TOGGLE_TILE_DEBUG:
+                m_gui->toggle_tile_debug();
+                break;
+            case TOGGLE_SPRITE_DEBUG:
+                m_gui->toggle_sprite_debug();
+                break;
             default:
                 throw std::runtime_error("Unhandled IoRequest in io_changed");
         }

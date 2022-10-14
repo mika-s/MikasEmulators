@@ -65,6 +65,12 @@ namespace emu::z80::applications::pacman {
         void io_changed(IoRequest request) override;
 
     private:
+        static constexpr double fps = 60.0;
+        static constexpr long double tick_limit = 1000.0 / fps;
+        static constexpr int cycles_per_ms = 2000;
+        static constexpr long double cycles_per_tick = cycles_per_ms * tick_limit;
+        static constexpr int out_port_vblank_interrupt_return = 0;
+
         bool m_is_in_debug_mode;
         bool m_is_stepping_instruction;
         bool m_is_stepping_cycle;
@@ -86,17 +92,6 @@ namespace emu::z80::applications::pacman {
         std::unordered_map<u8, u8> m_outputs_during_cycle;
 
         Governor m_governor;
-
-        // Game loop - begin
-        static constexpr double fps = 60.0;
-        static constexpr long double tick_limit = 1000.0 / fps;
-        static constexpr int cycles_per_ms = 2000;
-        static constexpr long double cycles_per_tick = cycles_per_ms * tick_limit;
-        // Game loop - end
-
-        // IO - begin
-        static constexpr int out_port_vblank_interrupt_return = 0;
-        // IO - end
 
         void running(cyc &cycles);
 

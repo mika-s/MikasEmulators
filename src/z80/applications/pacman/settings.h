@@ -23,6 +23,10 @@ namespace emu::z80::applications::pacman {
         Alternate = 0, Normal = 1
     };
 
+    enum class BoardTest {
+        On = 0, Off = 1
+    };
+
     class Settings {
     public:
         NumberOfLives m_number_of_lives;
@@ -30,6 +34,7 @@ namespace emu::z80::applications::pacman {
         CoinsPerGame m_coins_per_game;
         Difficulty m_difficulty;
         GhostNames m_ghost_names;
+        BoardTest m_board_test;
     };
 }
 

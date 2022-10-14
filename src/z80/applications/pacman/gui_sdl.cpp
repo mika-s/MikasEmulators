@@ -51,6 +51,12 @@ namespace emu::z80::applications::pacman {
     void GuiSdl::attach_logger([[maybe_unused]] std::shared_ptr<Logger> logger) {
     }
 
+    void GuiSdl::toggle_tile_debug() {
+    }
+
+    void GuiSdl::toggle_sprite_debug() {
+    }
+
     void GuiSdl::init() {
         if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
             std::cerr << "error initializing SDL: " << SDL_GetError() << "\n";

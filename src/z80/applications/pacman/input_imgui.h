@@ -22,6 +22,8 @@ namespace emu::z80::applications::pacman {
         void remove_io_observer(IoObserver *observer) override;
 
     private:
+        static constexpr SDL_Scancode tile_debug = SDL_SCANCODE_PAGEUP;
+        static constexpr SDL_Scancode sprite_debug = SDL_SCANCODE_PAGEDOWN;
         static constexpr SDL_Scancode mute = SDL_SCANCODE_M;
         static constexpr SDL_Scancode pause = SDL_SCANCODE_PAUSE;
         static constexpr SDL_Scancode step_instruction = SDL_SCANCODE_F7;

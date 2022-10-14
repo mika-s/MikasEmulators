@@ -26,6 +26,16 @@ namespace emu::gui {
         m_values[row][col] = value.to_u32();
     }
 
+    void Framebuffer::clear() {
+        const u32 black = Color::black().to_u32();
+
+        for (unsigned int row = 0; row < m_height; ++row) {
+            for (unsigned int col = 0; col < m_width; ++col) {
+                m_values[row][col] = black;
+            }
+        }
+    }
+
     std::vector<u32> Framebuffer::to_output_vector() {
         std::vector<u32> output;
 

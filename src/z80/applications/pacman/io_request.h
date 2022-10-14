@@ -8,6 +8,8 @@ namespace emu::z80::applications::pacman {
         STEP_CYCLE,
         CONTINUE_EXECUTION,
         TOGGLE_MUTE,
+        TOGGLE_TILE_DEBUG,
+        TOGGLE_SPRITE_DEBUG,
     };
 }
 

@@ -52,6 +52,10 @@ namespace emu::z80::applications::pacman {
 
         virtual void attach_logger(std::shared_ptr<Logger> logger) = 0;
 
+        virtual void toggle_tile_debug() = 0;
+
+        virtual void toggle_sprite_debug() = 0;
+
         void load_color_rom(const std::vector<u8> &color_rom);
 
         void load_palette_rom(const std::vector<u8> &palette_rom);
@@ -115,6 +119,9 @@ namespace emu::z80::applications::pacman {
         bool m_has_loaded_palette_rom = false;
         bool m_has_loaded_tile_rom = false;
         bool m_has_loaded_sprite_rom = false;
+
+        bool m_is_tile_debug_enabled = false;
+        bool m_is_sprite_debug_enabled = false;
 
         Framebuffer m_framebuffer;
 

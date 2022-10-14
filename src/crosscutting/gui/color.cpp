@@ -18,7 +18,15 @@ namespace emu::gui {
         return {0xff, 0, 0, 0};
     }
 
+    Color Color::white() {
+        return {0xff, 0xff, 0xff, 0xff};
+    }
+
     bool Color::is_transparent() const {
         return m_alpha == 0;
+    }
+
+    Color Color::red() {
+        return {0xff, 0xff, 0, 0};
     }
 }

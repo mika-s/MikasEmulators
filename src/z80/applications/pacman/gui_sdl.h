@@ -39,6 +39,10 @@ namespace emu::z80::applications::pacman {
 
         void attach_logger(std::shared_ptr<Logger> logger) override;
 
+        void toggle_tile_debug() override;
+
+        void toggle_sprite_debug() override;
+
     private:
         SDL_Window *m_win;
         SDL_Renderer *m_rend;
