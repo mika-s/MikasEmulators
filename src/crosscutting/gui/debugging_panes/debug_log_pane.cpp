@@ -1,7 +1,7 @@
 #include <chrono>
 #include <fmt/chrono.h>
 #include <string>
-#include "debug_log.h"
+#include "debug_log_pane.h"
 #include "crosscutting/util/string_util.h"
 
 namespace emu::gui {
@@ -9,23 +9,23 @@ namespace emu::gui {
     using emu::util::string::append;
     using emu::util::string::prepend;
 
-    DebugLog::DebugLog()
+    DebugLogPane::DebugLogPane()
             : m_should_autoscroll(true) {
         clear();
     }
 
-    void DebugLog::clear() {
+    void DebugLogPane::clear() {
         m_buf.clear();
         m_line_offsets.clear();
         m_line_offsets.push_back(0);
     }
 
-    void DebugLog::add_log_with_timestamp(const char *fmt, va_list args) {
+    void DebugLogPane::add_log_with_timestamp(const char *fmt, va_list args) {
         auto now = std::chrono::system_clock::now();
         add_log(prepend(fmt::format("{:%Y-%m-%d %H:%M:%OS}: ", now), fmt).c_str(), args);
     }
 
-    void DebugLog::add_log(const char *fmt, va_list args) {
+    void DebugLogPane::add_log(const char *fmt, va_list args) {
         int old_size = m_buf.size();
 
         m_buf.appendfv(fmt, args);
@@ -37,7 +37,7 @@ namespace emu::gui {
         }
     }
 
-    void DebugLog::draw(const char *title, bool *p_open) {
+    void DebugLogPane::draw(const char *title, bool *p_open) {
         if (!ImGui::Begin(title, p_open)) {
             ImGui::End();
             return;
@@ -109,11 +109,11 @@ namespace emu::gui {
         ImGui::End();
     }
 
-    void DebugLog::log_element_added(const char *fmt, va_list args) {
+    void DebugLogPane::log_element_added(const char *fmt, va_list args) {
         add_log_with_timestamp(append("\n", fmt).c_str(), args);
     }
 
-    void DebugLog::attach_logger(std::shared_ptr<Logger> logger) {
+    void DebugLogPane::attach_logger(std::shared_ptr<Logger> logger) {
         m_logger = std::move(logger);
         m_logger->add_log_observer(*this);
     }

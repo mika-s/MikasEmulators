@@ -11,21 +11,21 @@
 #include "crosscutting/typedefs.h"
 #include "crosscutting/debugging/debugger.h"
 #include "crosscutting/debugging/debug_container.h"
-#include "crosscutting/gui/cpu_info.h"
-#include "crosscutting/gui/debug_log.h"
-#include "crosscutting/gui/disassembly_window.h"
-#include "crosscutting/gui/io_info.h"
-#include "crosscutting/gui/memory_editor_window.h"
+#include "crosscutting/gui/debugging_panes/cpu_info_pane.h"
+#include "crosscutting/gui/debugging_panes/debug_log_pane.h"
+#include "crosscutting/gui/debugging_panes/disassembly_pane.h"
+#include "crosscutting/gui/debugging_panes/io_info_pane.h"
+#include "crosscutting/gui/debugging_panes/memory_editor_pane.h"
 #include "crosscutting/logging/log_observer.h"
 #include "crosscutting/logging/logger.h"
 
 namespace emu::i8080::applications::space_invaders {
 
-    using emu::gui::DebugLog;
-    using emu::gui::DisassemblyWindow;
-    using emu::gui::CpuInfo;
-    using emu::gui::IoInfo;
-    using emu::gui::MemoryEditorWindow;
+    using emu::gui::DebugLogPane;
+    using emu::gui::DisassemblyPane;
+    using emu::gui::CpuInfoPane;
+    using emu::gui::IoInfoPane;
+    using emu::gui::MemoryEditorPane;
 
     class GuiImgui : public Gui {
 
@@ -67,11 +67,11 @@ namespace emu::i8080::applications::space_invaders {
         std::vector<GuiObserver *> m_gui_observers;
         std::shared_ptr<Logger> m_logger;
 
-        DebugLog m_log;
-        DisassemblyWindow m_disassembly;
-        CpuInfo m_cpu_info;
-        IoInfo m_io_info;
-        MemoryEditorWindow m_memory_editor;
+        DebugLogPane m_log;
+        DisassemblyPane m_disassembly;
+        CpuInfoPane m_cpu_info;
+        IoInfoPane m_io_info;
+        MemoryEditorPane m_memory_editor;
 
         void notify_gui_observers_about_run_status(RunStatus new_status);
 

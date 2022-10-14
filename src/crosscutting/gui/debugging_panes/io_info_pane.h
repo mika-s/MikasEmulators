@@ -1,5 +1,5 @@
-#ifndef MIKA_EMULATORS_CROSSCUTTING_GUI_IO_INFO_H
-#define MIKA_EMULATORS_CROSSCUTTING_GUI_IO_INFO_H
+#ifndef MIKA_EMULATORS_CROSSCUTTING_GUI_DEBUGGING_PANES_IO_INFO_PANE_H
+#define MIKA_EMULATORS_CROSSCUTTING_GUI_DEBUGGING_PANES_IO_INFO_PANE_H
 
 #include "crosscutting/debugging/debug_container.h"
 
@@ -7,9 +7,9 @@ namespace emu::gui {
 
     using emu::debugger::DebugContainer;
 
-    class IoInfo {
+    class IoInfoPane {
     public:
-        IoInfo();
+        IoInfoPane();
 
         void attach_debug_container(DebugContainer &debug_container);
 
@@ -19,4 +19,4 @@ namespace emu::gui {
         DebugContainer m_debug_container;
     };
 }
-#endif //MIKA_EMULATORS_CROSSCUTTING_GUI_IO_INFO_H
+#endif //MIKA_EMULATORS_CROSSCUTTING_GUI_DEBUGGING_PANES_IO_INFO_PANE_H

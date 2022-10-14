@@ -1,17 +1,18 @@
-#ifndef MIKA_EMULATORS_CROSSCUTTING_GUI_TILE_H
-#define MIKA_EMULATORS_CROSSCUTTING_GUI_TILE_H
+#ifndef MIKA_EMULATORS_CROSSCUTTING_GUI_GRAPHICS_SPRITE_H
+#define MIKA_EMULATORS_CROSSCUTTING_GUI_GRAPHICS_SPRITE_H
 
+#include <cstddef>
 #include <vector>
 #include "color.h"
 #include "framebuffer.h"
 
 namespace emu::gui {
 
-    class Tile {
+    class Sprite {
     public:
-        Tile(std::size_t height, std::size_t width);
+        Sprite(std::size_t height, std::size_t width);
 
-        virtual ~Tile() = default;
+        virtual ~Sprite() = default;
 
         virtual bool is_initialized() {
             return true;
@@ -19,11 +20,11 @@ namespace emu::gui {
 
         void set(std::size_t row, std::size_t col, Color value);
 
-        void map_to_framebuffer(
-                Framebuffer &framebuffer,
-                unsigned int origin_row,
-                unsigned int origin_col
-        );
+        void flip_horizontal();
+
+        void flip_vertical();
+
+        void map_to_framebuffer(Framebuffer &framebuffer, int origin_row, int origin_col);
 
         std::size_t size();
 
@@ -35,9 +36,9 @@ namespace emu::gui {
         Color get(std::size_t row, std::size_t col);
     };
 
-    class UninitializedTile : public Tile {
+    class UninitializedSprite : public Sprite {
     public:
-        UninitializedTile();
+        UninitializedSprite();
 
         bool is_initialized() override {
             return false;
@@ -45,4 +46,4 @@ namespace emu::gui {
     };
 }
 
-#endif //MIKA_EMULATORS_CROSSCUTTING_GUI_TILE_H
+#endif //MIKA_EMULATORS_CROSSCUTTING_GUI_GRAPHICS_SPRITE_H

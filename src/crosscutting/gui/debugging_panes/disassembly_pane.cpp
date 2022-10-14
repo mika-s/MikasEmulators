@@ -1,6 +1,6 @@
 #include <memory>
 #include "imgui.h"
-#include "disassembly_window.h"
+#include "disassembly_pane.h"
 #include "crosscutting/debugging/breakpoint.h"
 #include "crosscutting/util/string_util.h"
 
@@ -9,7 +9,7 @@ namespace emu::gui {
     using emu::debugger::Breakpoint;
     using emu::util::string::hexify;
 
-    DisassemblyWindow::DisassemblyWindow()
+    DisassemblyPane::DisassemblyPane()
             : m_address_to_goto_str("00000000"),
               m_address_to_goto(0),
               m_bp_address_to_goto(0),
@@ -20,19 +20,19 @@ namespace emu::gui {
               m_is_going_to_breakpoint(false) {
     }
 
-    void DisassemblyWindow::attach_debugger(std::shared_ptr<Debugger> debugger) {
+    void DisassemblyPane::attach_debugger(std::shared_ptr<Debugger> debugger) {
         m_debugger = std::move(debugger);
     }
 
-    void DisassemblyWindow::attach_debug_container(DebugContainer &debug_container) {
+    void DisassemblyPane::attach_debug_container(DebugContainer &debug_container) {
         m_debug_container = debug_container;
     }
 
-    void DisassemblyWindow::attach_logger(std::shared_ptr<Logger> logger) {
+    void DisassemblyPane::attach_logger(std::shared_ptr<Logger> logger) {
         m_logger = std::move(logger);
     }
 
-    void DisassemblyWindow::draw(const char *title, bool *p_open) {
+    void DisassemblyPane::draw(const char *title, bool *p_open) {
         if (!ImGui::Begin(title, p_open, ImGuiWindowFlags_MenuBar)) {
             ImGui::End();
             return;
@@ -48,13 +48,13 @@ namespace emu::gui {
         ImGui::End();
     }
 
-    void DisassemblyWindow::reset_temp_state() {
+    void DisassemblyPane::reset_temp_state() {
         m_is_going_to_pc = false;
         m_is_going_to_address = false;
         m_is_going_to_breakpoint = false;
     }
 
-    void DisassemblyWindow::draw_menubar() {
+    void DisassemblyPane::draw_menubar() {
         if (ImGui::BeginMenuBar()) {
             if (ImGui::BeginMenu("Menu")) {
                 if (ImGui::BeginMenu("Breakpoints")) {
@@ -111,7 +111,7 @@ namespace emu::gui {
         }
     }
 
-    void DisassemblyWindow::draw_buttons() {
+    void DisassemblyPane::draw_buttons() {
         ImGui::Checkbox("Follow PC", &m_is_following_pc);
         if (m_is_following_pc != m_is_following_pc_previous) {
             m_logger->info(m_is_following_pc ? "Following PC" : "Stop following PC");
@@ -137,7 +137,7 @@ namespace emu::gui {
         m_address_to_goto = static_cast<u16>(std::stoi(m_address_to_goto_str, nullptr, address_base));
     }
 
-    void DisassemblyWindow::draw_addresses() {
+    void DisassemblyPane::draw_addresses() {
         if (m_debug_container.is_disassembled_program_set()) {
             const u16 pc = m_debug_container.pc();
 

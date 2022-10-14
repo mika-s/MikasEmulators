@@ -1,15 +1,15 @@
 #include "imgui.h"
-#include "memory_editor_window.h"
+#include "memory_editor_pane.h"
 
 namespace emu::gui {
 
-    MemoryEditorWindow::MemoryEditorWindow() = default;
+    MemoryEditorPane::MemoryEditorPane() = default;
 
-    void MemoryEditorWindow::attach_debug_container(DebugContainer &debug_container) {
+    void MemoryEditorPane::attach_debug_container(DebugContainer &debug_container) {
         m_debug_container = debug_container;
     }
 
-    void MemoryEditorWindow::draw(const char *title, bool *p_open) {
+    void MemoryEditorPane::draw(const char *title, bool *p_open) {
         if (!ImGui::Begin(title, p_open, ImGuiWindowFlags_MenuBar)) {
             ImGui::End();
             return;

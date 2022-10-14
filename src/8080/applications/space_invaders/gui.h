@@ -5,8 +5,8 @@
 #include "crosscutting/typedefs.h"
 #include "crosscutting/debugging/debugger.h"
 #include "crosscutting/debugging/debug_container.h"
-#include "crosscutting/gui/color.h"
-#include "crosscutting/gui/framebuffer.h"
+#include "crosscutting/gui/graphics/color.h"
+#include "crosscutting/gui/graphics/framebuffer.h"
 #include "crosscutting/logging/logger.h"
 #include "crosscutting/util/byte_util.h"
 

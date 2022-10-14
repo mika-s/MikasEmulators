@@ -1,5 +1,5 @@
-#ifndef MIKA_EMULATORS_CROSSCUTTING_GUI_MEMORY_EDITOR_WINDOW_H
-#define MIKA_EMULATORS_CROSSCUTTING_GUI_MEMORY_EDITOR_WINDOW_H
+#ifndef MIKA_EMULATORS_CROSSCUTTING_GUI_DEBUGGING_PANES_MEMORY_EDITOR_PANE_H
+#define MIKA_EMULATORS_CROSSCUTTING_GUI_DEBUGGING_PANES_MEMORY_EDITOR_PANE_H
 
 #include <string>
 #include <vector>
@@ -10,9 +10,9 @@ namespace emu::gui {
 
     using emu::debugger::DebugContainer;
 
-    class MemoryEditorWindow {
+    class MemoryEditorPane {
     public:
-        MemoryEditorWindow();
+        MemoryEditorPane();
 
         void attach_debug_container(DebugContainer &debug_container);
 
@@ -24,4 +24,4 @@ namespace emu::gui {
     };
 }
 
-#endif //MIKA_EMULATORS_CROSSCUTTING_GUI_MEMORY_EDITOR_WINDOW_H
+#endif //MIKA_EMULATORS_CROSSCUTTING_GUI_DEBUGGING_PANES_MEMORY_EDITOR_PANE_H

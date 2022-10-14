@@ -1,5 +1,5 @@
-#include <imgui.h>
-#include "io_info.h"
+#include "imgui.h"
+#include "io_info_pane.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
@@ -10,13 +10,13 @@ namespace emu::gui {
     using emu::util::byte::is_bit_set;
     using emu::util::string::hexify;
 
-    IoInfo::IoInfo() = default;
+    IoInfoPane::IoInfoPane() = default;
 
-    void IoInfo::attach_debug_container(DebugContainer &debug_container) {
+    void IoInfoPane::attach_debug_container(DebugContainer &debug_container) {
         m_debug_container = debug_container;
     }
 
-    void IoInfo::draw(const char *title, bool *p_open) {
+    void IoInfoPane::draw(const char *title, bool *p_open) {
         if (!ImGui::Begin(title, p_open)) {
             ImGui::End();
             return;

@@ -1,5 +1,5 @@
-#include <imgui.h>
-#include "cpu_info.h"
+#include "imgui.h"
+#include "cpu_info_pane.h"
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
 
@@ -8,13 +8,13 @@ namespace emu::gui {
     using emu::util::byte::is_bit_set;
     using emu::util::string::hexify;
 
-    CpuInfo::CpuInfo() = default;
+    CpuInfoPane::CpuInfoPane() = default;
 
-    void CpuInfo::attach_debug_container(DebugContainer &debug_container) {
+    void CpuInfoPane::attach_debug_container(DebugContainer &debug_container) {
         m_debug_container = debug_container;
     }
 
-    void CpuInfo::draw(const char *title, bool *p_open) {
+    void CpuInfoPane::draw(const char *title, bool *p_open) {
         if (!ImGui::Begin(title, p_open)) {
             ImGui::End();
             return;

@@ -6,18 +6,18 @@ set(SOURCES_CROSSCUTTING_CPP
         src/crosscutting/debugging/disassembled_line.cpp
         src/crosscutting/exceptions/invalid_program_arguments_exception.cpp
         src/crosscutting/exceptions/unrecognized_opcode_exception.cpp
-        src/crosscutting/gui/cpu_info.cpp
-        src/crosscutting/gui/color.cpp
-        src/crosscutting/gui/debug_log.cpp
-        src/crosscutting/gui/disassembly_window.cpp
-        src/crosscutting/gui/framebuffer.cpp
-        src/crosscutting/gui/io_info.cpp
-        src/crosscutting/gui/memory_editor_window.cpp
-        src/crosscutting/gui/palette.cpp
-        src/crosscutting/gui/sprite.cpp
-        src/crosscutting/gui/spritemap_window.cpp
-        src/crosscutting/gui/tile.cpp
-        src/crosscutting/gui/tilemap_window.cpp
+        src/crosscutting/gui/debugging_panes/cpu_info_pane.cpp
+        src/crosscutting/gui/debugging_panes/debug_log_pane.cpp
+        src/crosscutting/gui/debugging_panes/disassembly_pane.cpp
+        src/crosscutting/gui/debugging_panes/io_info_pane.cpp
+        src/crosscutting/gui/debugging_panes/memory_editor_pane.cpp
+        src/crosscutting/gui/debugging_panes/spritemap_pane.cpp
+        src/crosscutting/gui/debugging_panes/tilemap_pane.cpp
+        src/crosscutting/gui/graphics/color.cpp
+        src/crosscutting/gui/graphics/framebuffer.cpp
+        src/crosscutting/gui/graphics/palette.cpp
+        src/crosscutting/gui/graphics/sprite.cpp
+        src/crosscutting/gui/graphics/tile.cpp
         src/crosscutting/logging/logger.cpp
         src/crosscutting/misc/governor.cpp
         src/crosscutting/misc/sdl_counter.cpp
@@ -35,19 +35,19 @@ set(SOURCES_CROSSCUTTING_H
         src/crosscutting/debugging/disassembled_line.h
         src/crosscutting/exceptions/invalid_program_arguments_exception.h
         src/crosscutting/exceptions/unrecognized_opcode_exception.h
-        src/crosscutting/gui/color.h
-        src/crosscutting/gui/cpu_info.h
-        src/crosscutting/gui/debug_log.h
-        src/crosscutting/gui/disassembly_window.h
-        src/crosscutting/gui/framebuffer.h
         src/crosscutting/gui/gui_type.h
-        src/crosscutting/gui/io_info.h
-        src/crosscutting/gui/memory_editor_window.h
-        src/crosscutting/gui/palette.h
-        src/crosscutting/gui/sprite.h
-        src/crosscutting/gui/spritemap_window.h
-        src/crosscutting/gui/tile.h
-        src/crosscutting/gui/tilemap_window.h
+        src/crosscutting/gui/debugging_panes/disassembly_pane.h
+        src/crosscutting/gui/debugging_panes/cpu_info_pane.h
+        src/crosscutting/gui/debugging_panes/debug_log_pane.h
+        src/crosscutting/gui/debugging_panes/io_info_pane.h
+        src/crosscutting/gui/debugging_panes/memory_editor_pane.h
+        src/crosscutting/gui/debugging_panes/spritemap_pane.h
+        src/crosscutting/gui/debugging_panes/tilemap_pane.h
+        src/crosscutting/gui/graphics/color.h
+        src/crosscutting/gui/graphics/framebuffer.h
+        src/crosscutting/gui/graphics/palette.h
+        src/crosscutting/gui/graphics/sprite.h
+        src/crosscutting/gui/graphics/tile.h
         src/crosscutting/logging/log_observer.h
         src/crosscutting/logging/logger.h
         src/crosscutting/misc/governor.h

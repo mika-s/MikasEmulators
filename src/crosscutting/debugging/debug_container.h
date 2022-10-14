@@ -7,8 +7,8 @@
 #include <vector>
 #include "disassembled_line.h"
 #include "crosscutting/typedefs.h"
-#include "crosscutting/gui/sprite.h"
-#include "crosscutting/gui/tile.h"
+#include "crosscutting/gui/graphics/sprite.h"
+#include "crosscutting/gui/graphics/tile.h"
 
 namespace emu::debugger {
 

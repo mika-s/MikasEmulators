@@ -1,9 +1,9 @@
 #include "glad/glad.h"
-#include "tilemap_window.h"
+#include "tilemap_pane.h"
 
 namespace emu::gui {
 
-    TilemapWindow::TilemapWindow(int default_palette_idx)
+    TilemapPane::TilemapPane(int default_palette_idx)
             : m_framebuffers({}),
               m_chosen_palette_idx(default_palette_idx),
               m_number_of_palettes(0),
@@ -14,11 +14,11 @@ namespace emu::gui {
         }
     }
 
-    void TilemapWindow::attach_debug_container(DebugContainer &debug_container) {
+    void TilemapPane::attach_debug_container(DebugContainer &debug_container) {
         m_debug_container = debug_container;
     }
 
-    void TilemapWindow::draw(const char *title, u32 tile_texture, bool *p_open) {
+    void TilemapPane::draw(const char *title, u32 tile_texture, bool *p_open) {
         if (!ImGui::Begin(title, p_open, ImGuiWindowFlags_MenuBar)) {
             ImGui::End();
             return;
@@ -43,7 +43,7 @@ namespace emu::gui {
         ImGui::End();
     }
 
-    void TilemapWindow::prepare_framebuffers() {
+    void TilemapPane::prepare_framebuffers() {
         const std::size_t number_of_palettes = m_debug_container.tiles().size();
 
         for (std::size_t palette_idx = 0; palette_idx < number_of_palettes; ++palette_idx) {
@@ -56,7 +56,7 @@ namespace emu::gui {
         m_number_of_palettes = number_of_palettes;
     }
 
-    bool TilemapWindow::prepare_framebuffer(unsigned int palette_idx) {
+    bool TilemapPane::prepare_framebuffer(unsigned int palette_idx) {
         const std::vector<std::shared_ptr<Tile>> tiles = m_debug_container.tiles()[palette_idx];
         const std::size_t number_of_tiles = tiles.size();
         const std::size_t tile_size = tiles[0]->size();
@@ -81,7 +81,7 @@ namespace emu::gui {
         return true;
     }
 
-    void TilemapWindow::render_image(u32 tile_texture) {
+    void TilemapPane::render_image(u32 tile_texture) {
         glBindTexture(GL_TEXTURE_2D, tile_texture);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);

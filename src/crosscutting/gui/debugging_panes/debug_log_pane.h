@@ -1,7 +1,7 @@
-#ifndef MIKA_EMULATORS_CROSSCUTTING_GUI_DEBUG_LOG_H
-#define MIKA_EMULATORS_CROSSCUTTING_GUI_DEBUG_LOG_H
+#ifndef MIKA_EMULATORS_CROSSCUTTING_GUI_DEBUGGING_PANES_DEBUG_LOG_PANE_H
+#define MIKA_EMULATORS_CROSSCUTTING_GUI_DEBUGGING_PANES_DEBUG_LOG_PANE_H
 
-#include <imgui.h>
+#include "imgui.h"
 #include "crosscutting/logging/log_observer.h"
 #include "crosscutting/logging/logger.h"
 
@@ -10,9 +10,9 @@ namespace emu::gui {
     using emu::logging::Logger;
     using emu::logging::LogObserver;
 
-    class DebugLog : public LogObserver {
+    class DebugLogPane : public LogObserver {
     public:
-        DebugLog();
+        DebugLogPane();
 
         void draw(const char *title, bool *p_open = nullptr);
 
@@ -36,4 +36,4 @@ namespace emu::gui {
     };
 }
 
-#endif //MIKA_EMULATORS_CROSSCUTTING_GUI_DEBUG_LOG_H
+#endif //MIKA_EMULATORS_CROSSCUTTING_GUI_DEBUGGING_PANES_DEBUG_LOG_PANE_H

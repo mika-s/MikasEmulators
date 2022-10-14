@@ -1,10 +1,9 @@
-#include <iostream>
 #include "glad/glad.h"
-#include "spritemap_window.h"
+#include "spritemap_pane.h"
 
 namespace emu::gui {
 
-    SpritemapWindow::SpritemapWindow(int default_palette_idx)
+    SpritemapPane::SpritemapPane(int default_palette_idx)
             : m_framebuffers({{},{},{},{}}),
               m_chosen_palette_idx(default_palette_idx),
               m_number_of_palettes(0),
@@ -17,11 +16,11 @@ namespace emu::gui {
         }
     }
 
-    void SpritemapWindow::attach_debug_container(DebugContainer &debug_container) {
+    void SpritemapPane::attach_debug_container(DebugContainer &debug_container) {
         m_debug_container = debug_container;
     }
 
-    void SpritemapWindow::draw(const char *title, u32 sprite_texture, bool *p_open) {
+    void SpritemapPane::draw(const char *title, u32 sprite_texture, bool *p_open) {
         if (!ImGui::Begin(title, p_open, ImGuiWindowFlags_MenuBar)) {
             ImGui::End();
             return;
@@ -54,7 +53,7 @@ namespace emu::gui {
         ImGui::End();
     }
 
-    void SpritemapWindow::prepare_framebuffers() {
+    void SpritemapPane::prepare_framebuffers() {
         const std::size_t number_of_palettes = std::get<0>(m_debug_container.sprites()).size();
 
         for (std::size_t palette_idx = 0; palette_idx < number_of_palettes; ++palette_idx) {
@@ -67,7 +66,7 @@ namespace emu::gui {
         m_number_of_palettes = number_of_palettes;
     }
 
-    bool SpritemapWindow::prepare_framebuffer(unsigned int palette_idx) {
+    bool SpritemapPane::prepare_framebuffer(unsigned int palette_idx) {
         const auto all_sprites = m_debug_container.sprites();
 
         const std::vector<std::shared_ptr<Sprite>> sprites = std::get<0>(all_sprites)[palette_idx];
@@ -93,7 +92,7 @@ namespace emu::gui {
         return true;
     }
 
-    bool SpritemapWindow::prepare_framebuffer_for_rotation(
+    bool SpritemapPane::prepare_framebuffer_for_rotation(
             const std::vector<std::shared_ptr<Sprite>> &sprites,
             unsigned int rotation,
             unsigned int palette_idx
@@ -121,7 +120,7 @@ namespace emu::gui {
         return true;
     }
 
-    void SpritemapWindow::render_image(u32 tile_texture) {
+    void SpritemapPane::render_image(u32 tile_texture) {
         glBindTexture(GL_TEXTURE_2D, tile_texture);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
