@@ -83,6 +83,12 @@ namespace emu::z80::applications::pacman {
         static constexpr int number_of_sprites = 8;
         static constexpr u16 sprite_ram_address_offset = 0x4ff0;
 
+        // Debugging
+        static constexpr unsigned int offset_row_high_number = 0;
+        static constexpr unsigned int offset_col_high_number = 1;
+        static constexpr unsigned int offset_row_low_number = 0;
+        static constexpr unsigned int offset_col_low_number = 4;
+
         // Border
         static constexpr int border_size_in_tiles = 2;
         static constexpr int width_invisible_border = border_size_in_tiles * tile_size;
@@ -129,6 +135,7 @@ namespace emu::z80::applications::pacman {
         std::vector<Palette> m_palettes;
         std::vector<u8> m_tile_rom;
         std::vector<std::vector<std::shared_ptr<Tile>>> m_tiles;
+        std::vector<std::shared_ptr<Tile>> m_debugging_tiles;
         std::vector<u8> m_sprite_rom;
         std::vector<std::vector<std::shared_ptr<Sprite>>> m_sprites;
         std::vector<std::vector<std::shared_ptr<Sprite>>> m_sprites_x;
@@ -156,6 +163,8 @@ namespace emu::z80::applications::pacman {
         );
 
         std::shared_ptr<Tile> render_tile(u8 palette_idx, u8 tile_idx);
+
+        std::shared_ptr<Tile> render_debugging_tile(u8 tile_idx);
 
         void draw_tiles(Framebuffer &screen, const std::vector<u8> &tile_ram, const std::vector<u8> &palette_ram);
 

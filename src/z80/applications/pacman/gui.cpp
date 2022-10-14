@@ -1,10 +1,12 @@
 #include <iostream>
 #include "gui.h"
+#include "crosscutting/util/gui_util.h"
 
 namespace emu::z80::applications::pacman {
 
     using emu::gui::UninitializedSprite;
     using emu::gui::UninitializedTile;
+    using emu::util::gui::number_to_pixels;
 
     Gui::Gui()
             : m_framebuffer(Framebuffer(height, width, Color(0xff, 0, 128, 255))) {
@@ -68,14 +70,18 @@ namespace emu::z80::applications::pacman {
 
         m_tile_rom = tile_rom;
 
-        const int tile_count = tile_rom.size() / bytes_per_tile;
+        const unsigned int tile_count = tile_rom.size() / bytes_per_tile;
 
         for (size_t palette_idx = 0; palette_idx < m_palettes.size(); ++palette_idx) {
             m_tiles.emplace_back(tile_count, std::make_shared<UninitializedTile>());
 
-            for (int tile_idx = 0; tile_idx < tile_count; ++tile_idx) {
+            for (unsigned int tile_idx = 0; tile_idx < tile_count; ++tile_idx) {
                 m_tiles[palette_idx][tile_idx] = render_tile(palette_idx, tile_idx);
             }
+        }
+
+        for (unsigned int tile_idx = 0; tile_idx < tile_count; ++tile_idx) {
+            m_debugging_tiles.push_back(render_debugging_tile(tile_idx));
         }
 
         m_has_loaded_tile_rom = true;
@@ -168,6 +174,22 @@ namespace emu::z80::applications::pacman {
         return new_tile;
     }
 
+    std::shared_ptr<Tile> Gui::render_debugging_tile(u8 tile_idx) {
+        std::shared_ptr<Tile> new_tile = std::make_shared<Tile>(tile_size, tile_size);
+
+        const unsigned int high_digit = tile_idx >> 4;
+        for (auto &pixel: number_to_pixels(high_digit, offset_row_high_number, offset_col_high_number)) {
+            new_tile->set(pixel.first, pixel.second, Color::white());
+        }
+
+        const unsigned int low_digit = tile_idx & 0x0f;
+        for (auto &pixel: number_to_pixels(low_digit, offset_row_low_number, offset_col_low_number)) {
+            new_tile->set(pixel.first, pixel.second, Color::red());
+        }
+
+        return new_tile;
+    }
+
     void Gui::render_play_area(
             Framebuffer &framebuffer,
             const std::vector<u8> &tile_ram,
@@ -182,8 +204,8 @@ namespace emu::z80::applications::pacman {
             const u8 palette_idx = palette_ram[address] & 0x7f;
 
             if (m_is_tile_debug_enabled) {
-                render_tile(palette_idx, tile_idx)
-                        ->map_debug_overlay_to_framebuffer(framebuffer, origin_row, origin_col, tile_idx);
+                m_debugging_tiles[tile_idx]
+                        ->map_to_framebuffer(framebuffer, origin_row, origin_col);
             } else {
                 render_tile(palette_idx, tile_idx)
                         ->map_to_framebuffer(framebuffer, origin_row, origin_col);
@@ -214,8 +236,8 @@ namespace emu::z80::applications::pacman {
             const u8 palette_idx = palette_ram[address] & 0x7f;
 
             if (m_is_tile_debug_enabled) {
-                render_tile(palette_idx, tile_idx)
-                        ->map_debug_overlay_to_framebuffer(framebuffer, origin_row, origin_col, tile_idx);
+                m_debugging_tiles[tile_idx]
+                        ->map_to_framebuffer(framebuffer, origin_row, origin_col);
             } else {
                 render_tile(palette_idx, tile_idx)
                         ->map_to_framebuffer(framebuffer, origin_row, origin_col);
@@ -233,8 +255,8 @@ namespace emu::z80::applications::pacman {
             const u8 palette_idx = palette_ram[address] & 0x7f;
 
             if (m_is_tile_debug_enabled) {
-                render_tile(palette_idx, tile_idx)
-                        ->map_debug_overlay_to_framebuffer(framebuffer, origin_row, origin_col, tile_idx);
+                m_debugging_tiles[tile_idx]
+                        ->map_to_framebuffer(framebuffer, origin_row, origin_col);
             } else {
                 render_tile(palette_idx, tile_idx)
                         ->map_to_framebuffer(framebuffer, origin_row, origin_col);
@@ -258,8 +280,8 @@ namespace emu::z80::applications::pacman {
             const u8 palette_idx = palette_ram[address] & 0x7f;
 
             if (m_is_tile_debug_enabled) {
-                render_tile(palette_idx, tile_idx)
-                        ->map_debug_overlay_to_framebuffer(framebuffer, origin_row, origin_col, tile_idx);
+                m_debugging_tiles[tile_idx]
+                        ->map_to_framebuffer(framebuffer, origin_row, origin_col);
             } else {
                 render_tile(palette_idx, tile_idx)
                         ->map_to_framebuffer(framebuffer, origin_row, origin_col);
@@ -277,8 +299,8 @@ namespace emu::z80::applications::pacman {
             const u8 palette_idx = palette_ram[address] & 0x7f;
 
             if (m_is_tile_debug_enabled) {
-                render_tile(palette_idx, tile_idx)
-                        ->map_debug_overlay_to_framebuffer(framebuffer, origin_row, origin_col, tile_idx);
+                m_debugging_tiles[tile_idx]
+                        ->map_to_framebuffer(framebuffer, origin_row, origin_col);
             } else {
                 render_tile(palette_idx, tile_idx)
                         ->map_to_framebuffer(framebuffer, origin_row, origin_col);
@@ -457,8 +479,16 @@ namespace emu::z80::applications::pacman {
             throw std::runtime_error("Programming error: The sprite ROM has not been loaded");
         }
 
-        draw_tiles(m_framebuffer, tile_ram, palette_ram);
-        draw_sprites(m_framebuffer, sprite_ram);
+        const bool is_not_debugging_tiles_or_sprites = !(m_is_tile_debug_enabled || m_is_sprite_debug_enabled);
+        const bool should_draw_tiles = m_is_tile_debug_enabled || is_not_debugging_tiles_or_sprites;
+        const bool should_draw_sprites = m_is_sprite_debug_enabled || is_not_debugging_tiles_or_sprites;
+
+        if (should_draw_tiles) {
+            draw_tiles(m_framebuffer, tile_ram, palette_ram);
+        }
+        if (should_draw_sprites) {
+            draw_sprites(m_framebuffer, sprite_ram);
+        }
         draw_edges(m_framebuffer);
 
         return m_framebuffer.to_output_vector();

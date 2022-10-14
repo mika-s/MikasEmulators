@@ -23,6 +23,7 @@ set(SOURCES_CROSSCUTTING_CPP
         src/crosscutting/misc/sdl_counter.cpp
         src/crosscutting/util/byte_util.cpp
         src/crosscutting/util/file_util.cpp
+        src/crosscutting/util/gui_util.cpp
         src/crosscutting/util/string_util.cpp
         )
 
@@ -55,5 +56,6 @@ set(SOURCES_CROSSCUTTING_H
         src/crosscutting/misc/next_word.h
         src/crosscutting/util/byte_util.h
         src/crosscutting/util/file_util.h
+        src/crosscutting/util/gui_util.h
         src/crosscutting/util/string_util.h
         )
