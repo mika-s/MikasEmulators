@@ -84,10 +84,17 @@ namespace emu::z80::applications::pacman {
         static constexpr u16 sprite_ram_address_offset = 0x4ff0;
 
         // Debugging
-        static constexpr unsigned int offset_row_high_number = 0;
-        static constexpr unsigned int offset_col_high_number = 1;
-        static constexpr unsigned int offset_row_low_number = 0;
-        static constexpr unsigned int offset_col_low_number = 4;
+        static constexpr unsigned int tile_offset_row_high_number = 0;
+        static constexpr unsigned int tile_offset_col_high_number = 1;
+        static constexpr unsigned int tile_offset_row_low_number = 0;
+        static constexpr unsigned int tile_offset_col_low_number = 4;
+        static constexpr unsigned int sprite_offset_row_high_number = 0;
+        static constexpr unsigned int sprite_offset_col_high_number = 3;
+        static constexpr unsigned int sprite_offset_row_low_number = 0;
+        static constexpr unsigned int sprite_offset_col_low_number = 7;
+        static constexpr unsigned int sprite_offset_row_rotation_number = 9;
+        static constexpr unsigned int sprite_offset_col_rotation_number = 5;
+        static constexpr unsigned int sprite_number_of_rotations = 4;
 
         // Border
         static constexpr int border_size_in_tiles = 2;
@@ -141,6 +148,7 @@ namespace emu::z80::applications::pacman {
         std::vector<std::vector<std::shared_ptr<Sprite>>> m_sprites_x;
         std::vector<std::vector<std::shared_ptr<Sprite>>> m_sprites_y;
         std::vector<std::vector<std::shared_ptr<Sprite>>> m_sprites_xy;
+        std::vector<std::vector<std::shared_ptr<Sprite>>> m_debugging_sprites;
 
         unsigned int m_number_of_palettes;
 
@@ -169,6 +177,8 @@ namespace emu::z80::applications::pacman {
         void draw_tiles(Framebuffer &screen, const std::vector<u8> &tile_ram, const std::vector<u8> &palette_ram);
 
         std::shared_ptr<Sprite> render_sprite(u8 palette_idx, u8 sprite_idx, bool flip_x, bool flip_y);
+
+        std::shared_ptr<Sprite> render_debugging_sprite(unsigned int rotation, u8 sprite_idx);
 
         void draw_sprites(Framebuffer &screen, const std::vector<u8> &sprite_ram);
 

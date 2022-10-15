@@ -20,11 +20,11 @@ namespace emu::z80::applications::pacman {
         return is_bit_set(m_memory[address_in0], bit_number);
     }
 
-    u8 MemoryMappedIo::read_in0() {
+    u8 MemoryMappedIo::read_in0() const {
         return m_memory[address_in0];
     }
 
-    u8 MemoryMappedIo::read_in1() {
+    u8 MemoryMappedIo::read_in1() const {
         return m_memory[address_in1];
     }
 

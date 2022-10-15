@@ -18,9 +18,9 @@ namespace emu::z80::applications::pacman {
 
         bool read_in0(unsigned int bit_number);
 
-        u8 read_in0();
+        u8 read_in0() const;
 
-        u8 read_in1();
+        u8 read_in1() const;
 
         void write_in0(unsigned int bit_number, bool is_setting);
 

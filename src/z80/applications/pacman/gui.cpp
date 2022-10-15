@@ -9,7 +9,11 @@ namespace emu::z80::applications::pacman {
     using emu::util::gui::number_to_pixels;
 
     Gui::Gui()
-            : m_framebuffer(Framebuffer(height, width, Color(0xff, 0, 128, 255))) {
+            : m_framebuffer(Framebuffer(height, width, Color(0xff, 0, 128, 255))),
+              m_debugging_sprites({{},
+                                   {},
+                                   {},
+                                   {}}) {
     }
 
     void Gui::load_color_rom(const std::vector<u8> &color_rom) {
@@ -114,6 +118,12 @@ namespace emu::z80::applications::pacman {
             }
         }
 
+        for (unsigned int rotation = 0; rotation < sprite_number_of_rotations; ++rotation) {
+            for (unsigned int sprite_idx = 0; sprite_idx < sprite_count; ++sprite_idx) {
+                m_debugging_sprites[rotation].push_back(render_debugging_sprite(rotation, sprite_idx));
+            }
+        }
+
         m_has_loaded_sprite_rom = true;
     }
 
@@ -178,12 +188,12 @@ namespace emu::z80::applications::pacman {
         std::shared_ptr<Tile> new_tile = std::make_shared<Tile>(tile_size, tile_size);
 
         const unsigned int high_digit = tile_idx >> 4;
-        for (auto &pixel: number_to_pixels(high_digit, offset_row_high_number, offset_col_high_number)) {
+        for (auto &pixel: number_to_pixels(high_digit, tile_offset_row_high_number, tile_offset_col_high_number)) {
             new_tile->set(pixel.first, pixel.second, Color::white());
         }
 
         const unsigned int low_digit = tile_idx & 0x0f;
-        for (auto &pixel: number_to_pixels(low_digit, offset_row_low_number, offset_col_low_number)) {
+        for (auto &pixel: number_to_pixels(low_digit, tile_offset_row_low_number, tile_offset_col_low_number)) {
             new_tile->set(pixel.first, pixel.second, Color::red());
         }
 
@@ -426,6 +436,28 @@ namespace emu::z80::applications::pacman {
         return new_sprite;
     }
 
+    std::shared_ptr<Sprite> Gui::render_debugging_sprite(unsigned int rotation, u8 sprite_idx) {
+        std::shared_ptr<Sprite> new_sprite = std::make_shared<Sprite>(sprite_size, sprite_size);
+
+        const unsigned int high_digit = sprite_idx >> 4;
+        for (auto &pixel: number_to_pixels(high_digit, sprite_offset_row_high_number, sprite_offset_col_high_number)) {
+            new_sprite->set(pixel.first, pixel.second, Color::green());
+        }
+
+        const unsigned int low_digit = sprite_idx & 0x0f;
+        for (auto &pixel: number_to_pixels(low_digit, sprite_offset_row_low_number, sprite_offset_col_low_number)) {
+            new_sprite->set(pixel.first, pixel.second, Color::blue());
+        }
+
+        for (auto &pixel: number_to_pixels(rotation,
+                                           sprite_offset_row_rotation_number,
+                                           sprite_offset_col_rotation_number)) {
+            new_sprite->set(pixel.first, pixel.second, Color::yellow());
+        }
+
+        return new_sprite;
+    }
+
     void Gui::draw_sprites(Framebuffer &framebuffer, const std::vector<u8> &sprite_ram) {
         u16 sprite_coordinates_address = 0x506f - sprite_ram_address_offset;
         u16 sprite_data_address = 0x4fff - sprite_ram_address_offset;
@@ -434,11 +466,21 @@ namespace emu::z80::applications::pacman {
             const u8 palette_idx = sprite_ram[sprite_data_address--];
             const u8 flags = sprite_ram[sprite_data_address--];
 
-            const bool flip_y = is_bit_set(flags, 1);
-            const bool flip_x = is_bit_set(flags, 2);
+            const bool flip_y = is_bit_set(flags, 0);
+            const bool flip_x = is_bit_set(flags, 1);
+            unsigned int rotation = 0;
+            if (flip_x) {
+                ++rotation;
+            }
+            if (flip_y) {
+                ++rotation;
+                ++rotation;
+            }
             const u8 sprite_idx = (flags & 0b11111100) >> 2;
 
-            std::shared_ptr<Sprite> sprite = render_sprite(palette_idx, sprite_idx, flip_x, flip_y);
+            std::shared_ptr<Sprite> sprite = m_is_sprite_debug_enabled
+                                             ? m_debugging_sprites[rotation][sprite_idx]
+                                             : render_sprite(palette_idx, sprite_idx, flip_x, flip_y);
 
             const int sprite_origin_row = sprite_ram[sprite_coordinates_address--];
             const int sprite_origin_col = sprite_ram[sprite_coordinates_address--];

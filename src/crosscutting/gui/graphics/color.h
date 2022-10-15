@@ -8,15 +8,21 @@ namespace emu::gui {
     public:
         Color(u8 alpha, u8 red, u8 green, u8 blue);
 
+        [[nodiscard]] bool is_transparent() const;
+
+        u32 to_u32();
+
         static Color black();
 
         static Color white();
 
         static Color red();
 
-        [[nodiscard]] bool is_transparent() const;
+        static Color green();
 
-        u32 to_u32();
+        static Color blue();
+
+        static Color yellow();
 
     private:
         u8 m_alpha;
