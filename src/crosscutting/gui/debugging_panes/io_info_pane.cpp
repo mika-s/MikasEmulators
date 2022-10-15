@@ -10,10 +10,13 @@ namespace emu::gui {
     using emu::util::byte::is_bit_set;
     using emu::util::string::hexify;
 
-    IoInfoPane::IoInfoPane() = default;
+    IoInfoPane::IoInfoPane()
+            : m_is_debug_container_set(false) {
+    }
 
     void IoInfoPane::attach_debug_container(DebugContainer &debug_container) {
         m_debug_container = debug_container;
+        m_is_debug_container_set = true;
     }
 
     void IoInfoPane::draw(const char *title, bool *p_open) {
@@ -22,9 +25,13 @@ namespace emu::gui {
             return;
         }
 
-        ImGui::Text("IO:");
-        ImGui::Separator();
-        if (m_debug_container.is_io_set()) {
+        if (!m_is_debug_container_set) {
+            ImGui::Text("The debug container is not provided this pane.");
+        } else if (!m_debug_container.is_io_set()) {
+            ImGui::Text("IO is not provided to this pane.");
+        } else {
+            ImGui::Text("IO:");
+            ImGui::Separator();
             for (const auto &io: m_debug_container.io()) {
                 const std::string name = io.name();
                 const bool is_active = io.is_active();

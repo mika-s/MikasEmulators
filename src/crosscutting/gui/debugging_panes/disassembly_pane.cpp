@@ -10,7 +10,10 @@ namespace emu::gui {
     using emu::util::string::hexify;
 
     DisassemblyPane::DisassemblyPane()
-            : m_address_to_goto_str("00000000"),
+            : m_is_debugger_set(false),
+              m_is_debug_container_set(false),
+              m_is_logger_set(false),
+              m_address_to_goto_str("00000000"),
               m_address_to_goto(0),
               m_bp_address_to_goto(0),
               m_is_following_pc(false),
@@ -22,14 +25,17 @@ namespace emu::gui {
 
     void DisassemblyPane::attach_debugger(std::shared_ptr<Debugger> debugger) {
         m_debugger = std::move(debugger);
+        m_is_debugger_set = true;
     }
 
     void DisassemblyPane::attach_debug_container(DebugContainer &debug_container) {
         m_debug_container = debug_container;
+        m_is_debug_container_set = true;
     }
 
     void DisassemblyPane::attach_logger(std::shared_ptr<Logger> logger) {
         m_logger = std::move(logger);
+        m_is_logger_set = true;
     }
 
     void DisassemblyPane::draw(const char *title, bool *p_open) {
@@ -38,12 +44,22 @@ namespace emu::gui {
             return;
         }
 
-        reset_temp_state();
-        draw_menubar();
-        draw_buttons();
-        draw_addresses();
+        if (!m_is_debugger_set) {
+            ImGui::Text("The debugger is not provided this pane.");
+        } else if (!m_is_debug_container_set) {
+            ImGui::Text("The debug container is not provided this pane.");
+        } else if (!m_is_logger_set) {
+            ImGui::Text("The logger is not provided this pane.");
+        } else if (!m_debug_container.is_disassembled_program_set()) {
+            ImGui::Text("Disassembled program is not provided to this pane.");
+        } else {
+            reset_temp_state();
+            draw_menubar();
+            draw_buttons();
+            draw_addresses();
 
-        // - Scroll when PC leaves the visible area, but not otherwise.
+            // - Scroll when PC leaves the visible area, but not otherwise.
+        }
 
         ImGui::End();
     }
@@ -155,8 +171,10 @@ namespace emu::gui {
                     ImGui::SetScrollHereY(0.25f);
                 } else {
                     const bool is_scrolling_due_to_goto_pc = m_is_going_to_pc && is_currently_looking_at_pc;
-                    const bool is_scrolling_due_to_given_address = m_is_going_to_address && address == m_address_to_goto;
-                    const bool is_scrolling_due_to_goto_bp = m_is_going_to_breakpoint && address == m_bp_address_to_goto;
+                    const bool is_scrolling_due_to_given_address =
+                            m_is_going_to_address && address == m_address_to_goto;
+                    const bool is_scrolling_due_to_goto_bp =
+                            m_is_going_to_breakpoint && address == m_bp_address_to_goto;
                     if (is_scrolling_due_to_goto_pc || is_scrolling_due_to_given_address ||
                         is_scrolling_due_to_goto_bp) {
                         ImGui::SetScrollHereY(0.25f);

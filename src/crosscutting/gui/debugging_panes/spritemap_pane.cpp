@@ -4,7 +4,11 @@
 namespace emu::gui {
 
     SpritemapPane::SpritemapPane(int default_palette_idx)
-            : m_framebuffers({{},{},{},{}}),
+            : m_is_debug_container_set(false),
+              m_framebuffers({{},
+                              {},
+                              {},
+                              {}}),
               m_chosen_palette_idx(default_palette_idx),
               m_number_of_palettes(0),
               m_chosen_rotation(0),
@@ -18,6 +22,7 @@ namespace emu::gui {
 
     void SpritemapPane::attach_debug_container(DebugContainer &debug_container) {
         m_debug_container = debug_container;
+        m_is_debug_container_set = true;
     }
 
     void SpritemapPane::draw(const char *title, u32 sprite_texture, bool *p_open) {
@@ -26,7 +31,11 @@ namespace emu::gui {
             return;
         }
 
-        if (m_debug_container.is_tilemap_set()) {
+        if (!m_is_debug_container_set) {
+            ImGui::Text("The debug container is not provided this pane.");
+        } else if (!m_debug_container.is_spritemap_set()) {
+            ImGui::Text("The spritemap is not provided to this pane.");
+        } else {
             if (m_are_all_sprites_rendered) {
                 ImGui::SliderInt(
                         "Palette index",

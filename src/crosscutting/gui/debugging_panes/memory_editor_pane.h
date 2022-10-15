@@ -21,6 +21,7 @@ namespace emu::gui {
     private:
         MemoryEditor m_memory_editor;
         DebugContainer m_debug_container;
+        bool m_is_debug_container_set;
     };
 }
 

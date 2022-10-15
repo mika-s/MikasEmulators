@@ -30,6 +30,7 @@ namespace emu::gui {
         static constexpr int scaled_height = static_cast<int>(scale * static_cast<float>(height));
 
         DebugContainer m_debug_container;
+        bool m_is_debug_container_set;
         std::vector<std::vector<Framebuffer>> m_framebuffers;
         int m_chosen_palette_idx;
         int m_number_of_palettes;

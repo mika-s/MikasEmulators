@@ -17,6 +17,7 @@ namespace emu::gui {
 
     private:
         DebugContainer m_debug_container;
+        bool m_is_debug_container_set;
     };
 }
 #endif //MIKA_EMULATORS_CROSSCUTTING_GUI_DEBUGGING_PANES_IO_INFO_PANE_H

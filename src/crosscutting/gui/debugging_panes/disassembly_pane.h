@@ -32,6 +32,9 @@ namespace emu::gui {
 
         std::shared_ptr<Debugger> m_debugger;
         DebugContainer m_debug_container;
+        bool m_is_debugger_set;
+        bool m_is_debug_container_set;
+        bool m_is_logger_set;
         std::vector<std::string> m_content;
         std::shared_ptr<Logger> m_logger;
 

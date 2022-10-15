@@ -14,16 +14,17 @@ namespace emu::gui {
     public:
         DebugLogPane();
 
+        void attach_logger(std::shared_ptr<Logger> logger);
+
         void draw(const char *title, bool *p_open = nullptr);
 
         void clear();
 
         void log_element_added(const char *fmt, va_list args) override;
 
-        void attach_logger(std::shared_ptr<Logger> logger);
-
     private:
         std::shared_ptr<Logger> m_logger;
+        bool m_is_logger_set;
 
         ImGuiTextBuffer m_buf;
         ImGuiTextFilter m_filter;
