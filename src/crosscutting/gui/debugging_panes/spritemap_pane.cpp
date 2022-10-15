@@ -44,7 +44,12 @@ namespace emu::gui {
                         "%d",
                         m_slider_flags
                 );
+                ImGui::BeginChild("spritemap_image_child",
+                                  ImVec2(0, 0),
+                                  false,
+                                  ImGuiWindowFlags_HorizontalScrollbar);
                 render_image(sprite_texture);
+                ImGui::EndChild();
             } else {
                 prepare_framebuffers();
             }

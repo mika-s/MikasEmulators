@@ -21,9 +21,9 @@ namespace emu::gui {
         void draw(const char *title, u32 tile_texture, bool *p_open = nullptr);
 
     private:
-        static constexpr int width = 128;
-        static constexpr int height = 128;
-        static constexpr unsigned int sprites_per_row = 8;
+        static constexpr int width = 256;
+        static constexpr int height = 64;
+        static constexpr unsigned int sprites_per_row = 16;
 
         static constexpr float scale = 4.0;
         static constexpr int scaled_width = static_cast<int>(scale * static_cast<float>(width));
