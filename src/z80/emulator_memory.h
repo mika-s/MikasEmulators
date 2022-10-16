@@ -2,6 +2,7 @@
 #define MIKA_EMULATORS_Z80_EMULATOR_MEMORY_H
 
 #include <cstdint>
+#include <functional>
 #include <memory>
 #include <vector>
 #include "z80/interfaces/memory_observer.h"
@@ -11,11 +12,11 @@ namespace emu::z80 {
 
     class EmulatorMemory {
     public:
+        EmulatorMemory();
+
         void add(const std::vector<u8> &to_add);
 
-        void add_memory_observer(MemoryObserver &observer);
-
-        void remove_memory_observer(MemoryObserver *observer);
+        void add_address_mask(std::size_t mask);
 
         std::size_t size();
 
@@ -35,10 +36,7 @@ namespace emu::z80 {
 
     private:
         std::vector<u8> m_memory;
-
-        std::vector<MemoryObserver *> m_memory_observers;
-
-        void notify_memory_observers_about_memory_update(u16 address);
+        std::size_t m_mask;
     };
 }
 

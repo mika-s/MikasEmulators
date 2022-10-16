@@ -54,15 +54,15 @@ namespace emu::z80::applications::pacman {
                 unset_bit(m_memory[address_dipswitches], dipswitches_coinage_1);
                 unset_bit(m_memory[address_dipswitches], dipswitches_coinage_2);
                 break;
-            case CoinsPerGame::OnePerGame:
+            case CoinsPerGame::_1C1G:
                 set_bit(m_memory[address_dipswitches], dipswitches_coinage_1);
                 unset_bit(m_memory[address_dipswitches], dipswitches_coinage_2);
                 break;
-            case CoinsPerGame::OnePerTwoGames:
+            case CoinsPerGame::_1C2G:
                 unset_bit(m_memory[address_dipswitches], dipswitches_coinage_1);
                 set_bit(m_memory[address_dipswitches], dipswitches_coinage_2);
                 break;
-            case CoinsPerGame::TwoCoinsPerGame:
+            case CoinsPerGame::_2C1G:
                 set_bit(m_memory[address_dipswitches], dipswitches_coinage_1);
                 set_bit(m_memory[address_dipswitches], dipswitches_coinage_2);
             default:

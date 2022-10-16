@@ -151,7 +151,7 @@ namespace emu::z80 {
         Settings settings{};
         settings.m_number_of_lives = NumberOfLives::Three;
         settings.m_bonus_life_at = BonusLifeAt::_15000;
-        settings.m_coins_per_game = CoinsPerGame::OnePerGame;
+        settings.m_coins_per_game = CoinsPerGame::_1C1G;
         settings.m_difficulty = Difficulty::Normal;
         settings.m_ghost_names = GhostNames::Normal;
         settings.m_board_test = BoardTest::Off;
@@ -191,19 +191,19 @@ namespace emu::z80 {
                     }
                     break;
                 case 'c':
-                    if (opt == "c=opg") {
-                        settings.m_coins_per_game = CoinsPerGame::OnePerGame;
-                    } else if (opt == "c=optg") {
-                        settings.m_coins_per_game = CoinsPerGame::OnePerTwoGames;
-                    } else if (opt == "c=tpg") {
-                        settings.m_coins_per_game = CoinsPerGame::TwoCoinsPerGame;
+                    if (opt == "c=1C1G") {
+                        settings.m_coins_per_game = CoinsPerGame::_1C1G;
+                    } else if (opt == "c=1C2G") {
+                        settings.m_coins_per_game = CoinsPerGame::_1C2G;
+                    } else if (opt == "c=2C1G") {
+                        settings.m_coins_per_game = CoinsPerGame::_2C1G;
                     } else if (opt == "c=free") {
                         settings.m_coins_per_game = CoinsPerGame::FreePlay;
                     } else {
                         std::stringstream ss;
                         ss << "Invalid number of coins per game passed to the -d option: " << opt
-                           << R"(. Should be "-d c=opg" (one per game), "-d c=optg" (one per two games), )"
-                           << R"("-d c=tpg" (two per game) or "-d c=free".)";
+                           << R"(. Should be "-d c=1C1G" (one per game), "-d c=1C2G" (one per two games), )"
+                           << R"("-d c=2C1G" (two per game) or "-d c=free".)";
                         throw InvalidProgramArgumentsException(ss.str());
                     }
                     break;

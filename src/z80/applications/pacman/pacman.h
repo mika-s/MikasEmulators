@@ -24,6 +24,8 @@ namespace emu::z80::applications::pacman {
         std::unique_ptr<Session> new_session() override;
 
     private:
+        static constexpr std::size_t address_mask = 0x7fff;
+
         Settings m_settings;
 
         EmulatorMemory m_memory;

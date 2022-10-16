@@ -12,7 +12,7 @@ namespace emu::z80::applications::pacman {
     };
 
     enum class CoinsPerGame {
-        FreePlay = 0, OnePerGame = 1, OnePerTwoGames = 2, TwoCoinsPerGame = 3
+        FreePlay = 0, _1C1G = 1, _1C2G = 2, _2C1G = 3
     };
 
     enum class Difficulty {

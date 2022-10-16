@@ -44,6 +44,7 @@ namespace emu::z80::applications::pacman {
         m_memory.add(create_sprite_ram());                                  // $4ff0-$4fff: sprite RAM
         m_memory.add(create_memory_mapped_io());                            // $5000-$50ff: memory-mapped IO
         m_memory.add(fill_remaining(m_memory.size()));
+        m_memory.add_address_mask(address_mask);
 
         m_color_rom.add(read_file_into_vector(directory + "82s123.7f"));   // $0000-$0020: 82s123.7f, colors
         m_palette_rom.add(read_file_into_vector(directory + "82s126.4a"));   // $0000-$00ff: 82s126.4a, palettes

@@ -1,8 +1,12 @@
-#include <algorithm>
+#include <iostream>
 #include "doctest.h"
 #include "z80/emulator_memory.h"
 
 namespace emu::z80 {
+
+    EmulatorMemory::EmulatorMemory()
+            : m_mask(0xffff) {
+    }
 
     void EmulatorMemory::add(const std::vector<u8> &to_add) {
         std::size_t current_size = m_memory.size();
@@ -10,6 +14,10 @@ namespace emu::z80 {
         for (std::size_t i = current_size, j = 0; i < current_size + to_add.size(); ++i, ++j) {
             m_memory.push_back(to_add[j]);
         }
+    }
+
+    void EmulatorMemory::add_address_mask(std::size_t mask) {
+        m_mask = mask;
     }
 
     std::size_t EmulatorMemory::size() {
@@ -32,16 +40,17 @@ namespace emu::z80 {
 
         EmulatorMemory sliced_memory;
         sliced_memory.add(data);
+        sliced_memory.add_address_mask(m_mask);
 
         return sliced_memory;
     }
 
     u8 &EmulatorMemory::operator[](std::size_t address) {
-        return m_memory[address];
+        return m_memory[address & m_mask];
     }
 
     const u8 &EmulatorMemory::operator[](std::size_t address) const {
-        return m_memory[address];
+        return m_memory[address & m_mask];
     }
 
     std::vector<u8>::iterator EmulatorMemory::begin() {
@@ -58,23 +67,6 @@ namespace emu::z80 {
 
     std::vector<u8>::const_iterator EmulatorMemory::end() const {
         return m_memory.end();
-    }
-
-    void EmulatorMemory::add_memory_observer(MemoryObserver &observer) {
-        m_memory_observers.push_back(&observer);
-    }
-
-    void EmulatorMemory::remove_memory_observer(MemoryObserver *observer) {
-        m_memory_observers.erase(
-                std::remove(m_memory_observers.begin(), m_memory_observers.end(), observer),
-                m_memory_observers.end()
-        );
-    }
-
-    void EmulatorMemory::notify_memory_observers_about_memory_update(u16 address) {
-        for (MemoryObserver *observer: m_memory_observers) {
-            observer->memory_changed(address);
-        }
     }
 
     TEST_CASE("Z80: EmulatorMemory") {
