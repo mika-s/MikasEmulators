@@ -41,7 +41,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
         )
 
 set(CMAKE_CXX_FLAGS_RELEASE "-Werror -Wall -Wextra -O3")
-set(CMAKE_CXX_FLAGS_DEBUG "-Werror -Wall -Wextra -g -D_GLIBCXX_DEBUG")
+set(CMAKE_CXX_FLAGS_DEBUG "-Werror -Wall -Wextra -Og -g -D_GLIBCXX_DEBUG")
 
 # ------------------------ Copy files to working directory
 
