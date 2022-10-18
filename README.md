@@ -125,10 +125,10 @@ The CP/M test binaries can be run like this:
 
 ```sh
 cd cmake-build-debug/
-./emulator 8080 run CPUTEST
-./emulator 8080 run TST8080
-./emulator 8080 run 8080PRE
-./emulator 8080 run 8080EXM
+./emulator run CPUTEST
+./emulator run TST8080
+./emulator run 8080PRE
+./emulator run 8080EXM
 ```
 
 Unlike Space Invaders, the test binaries are provided.
@@ -140,7 +140,7 @@ after building:
 
 ```sh
 cd cmake-build-debug/
-./emulator 8080 run space_invaders
+./emulator run space_invaders
 ```
 
 The four rom files (invaders.e, invaders.f, invaders.g and invaders.h) have to be in the directory
@@ -155,7 +155,7 @@ It is possible to provide arguments that sets the DIP switches. The flag is `-d`
 An example:
 
 ```sh
-./emulator 8080 run space_invaders -d n=5 -d b=1500
+./emulator run space_invaders -d n=5 -d b=1500
 ```
 
 sets number of lives to 5 and bonus life at a score of 1500.
@@ -169,7 +169,7 @@ the `-g` flag:
 An example:
 
 ```sh
-./emulator 8080 run space_invaders -g debugging
+./emulator run space_invaders -g debugging
 ```
 
 The keymap is:
@@ -327,9 +327,9 @@ The CP/M test binaries can be run like this:
 
 ```sh
 cd cmake-build-debug/
-./emulator Z80 run prelim
-./emulator Z80 run zexdoc
-./emulator Z80 run zexall
+./emulator run prelim
+./emulator run zexdoc
+./emulator run zexall
 ```
 
 #### Pacman
@@ -338,7 +338,7 @@ The emulator supports Pacman. The rom files are not provided. To run Pacman, run
 
 ```sh
 cd cmake-build-debug/
-./emulator Z80 run pacman
+./emulator run pacman
 ```
 
 The ten rom files (82s123.7f, 82s126.1m, 82s126.3m, 82s126.4a, pacman.5e, pacman.5f, pacman.6e, pacman.6f, pacman.6h
@@ -349,7 +349,7 @@ It is possible to provide arguments that sets the DIP switches. The flag is `-d`
 - `n=1`, `n=2`, `n=3` or `n=5` sets number of lives. The default value, if unset, is 3 lives.
 - `b=10000`, `b=15000`, `b=20000` or `b=none` sets bonus life at a score of 10000, 15000, 20000 points, or disables
   bonus lives. The default value, if unset, is bonus life at 15000.
-- `c=opg`, `c=optg`, `c=tpg` or `c=free` sets the price of each game: either one-per-game, one-per-two-games,
+- `c=1C1G`, `c=1C2G`, `c=2C1G` or `c=free` sets the price of each game: either one-per-game, one-per-two-games,
   two-per-game or free. The default value, if unset, is one per game.
 - `d=normal` or `d=hard` sets the difficulty. The default value, if unset, is normal.
 - `g=normal` or `g=alternate` sets the ghost names. The default value, if unset, is normal.
@@ -357,7 +357,7 @@ It is possible to provide arguments that sets the DIP switches. The flag is `-d`
 An example:
 
 ```sh
-./emulator Z80 run pacman -d n=5 -d b=20000
+./emulator run pacman -d n=5 -d b=20000
 ```
 
 sets number of lives to 5 and bonus life at a score of 20000.
@@ -371,7 +371,7 @@ the `-g` flag:
 An example:
 
 ```sh
-./emulator Z80 run pacman -g debugging
+./emulator run pacman -g debugging
 ```
 
 The keymap is:

@@ -1,7 +1,6 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_PACMAN_GUI_GUI_IMGUI_H
 #define MIKA_EMULATORS_APPLICATIONS_PACMAN_GUI_GUI_IMGUI_H
 
-#include <cstdint>
 #include <memory>
 #include <vector>
 #include <SDL_video.h>

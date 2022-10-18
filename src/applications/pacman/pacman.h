@@ -1,7 +1,6 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_PACMAN_PACMAN_H
 #define MIKA_EMULATORS_APPLICATIONS_PACMAN_PACMAN_H
 
-#include <cstdint>
 #include <memory>
 #include "gui.h"
 #include "settings.h"

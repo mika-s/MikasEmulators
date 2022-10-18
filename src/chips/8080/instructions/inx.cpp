@@ -1,4 +1,3 @@
-#include <cstdint>
 #include <iostream>
 #include "doctest.h"
 #include "crosscutting/typedefs.h"

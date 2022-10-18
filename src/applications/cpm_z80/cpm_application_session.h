@@ -1,7 +1,6 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_CPM_Z80_CPM_APPLICATION_SESSION_H
 #define MIKA_EMULATORS_APPLICATIONS_CPM_Z80_CPM_APPLICATION_SESSION_H
 
-#include <cstdint>
 #include <vector>
 #include <memory>
 #include "chips/z80/cpu.h"

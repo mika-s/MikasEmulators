@@ -1,7 +1,6 @@
 #ifndef MIKA_EMULATORS_CHIPS_Z80_EMULATOR_MEMORY_H
 #define MIKA_EMULATORS_CHIPS_Z80_EMULATOR_MEMORY_H
 
-#include <cstdint>
 #include <functional>
 #include <memory>
 #include <vector>

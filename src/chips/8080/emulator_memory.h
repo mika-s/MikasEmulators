@@ -1,7 +1,6 @@
 #ifndef MIKA_EMULATORS_CHIPS_8080_EMULATORMEMORY_H
 #define MIKA_EMULATORS_CHIPS_8080_EMULATORMEMORY_H
 
-#include <cstdint>
 #include <vector>
 #include "crosscutting/typedefs.h"
 

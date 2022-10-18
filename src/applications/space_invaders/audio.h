@@ -1,7 +1,6 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_AUDIO_H
 #define MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_AUDIO_H
 
-#include <cstdint>
 #include <SDL.h>
 #include <vector>
 #include "crosscutting/typedefs.h"

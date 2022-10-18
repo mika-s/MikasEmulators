@@ -1,4 +1,3 @@
-#include <cstdint>
 #include <iostream>
 #include "doctest.h"
 #include "chips/8080/flags.h"

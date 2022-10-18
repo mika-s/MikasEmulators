@@ -1,7 +1,6 @@
 #ifndef MIKA_EMULATORS_CHIPS_8080_CPU_H
 #define MIKA_EMULATORS_CHIPS_8080_CPU_H
 
-#include <cstdint>
 #include <vector>
 #include "flags.h"
 #include "emulator_memory.h"

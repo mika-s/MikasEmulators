@@ -1,7 +1,6 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_CPM_8080_CPM_APPLICATION_H
 #define MIKA_EMULATORS_APPLICATIONS_CPM_8080_CPM_APPLICATION_H
 
-#include <cstdint>
 #include <vector>
 #include <memory>
 #include "chips/8080/cpu.h"
