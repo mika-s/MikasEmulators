@@ -50,8 +50,11 @@ set(SOURCES_CROSSCUTTING_H
         src/crosscutting/gui/graphics/tile.h
         src/crosscutting/logging/log_observer.h
         src/crosscutting/logging/logger.h
+        src/crosscutting/misc/emulator.h
         src/crosscutting/misc/governor.h
+        src/crosscutting/misc/run_status.h
         src/crosscutting/misc/sdl_counter.h
+        src/crosscutting/misc/session.h
         src/crosscutting/misc/next_byte.h
         src/crosscutting/misc/next_word.h
         src/crosscutting/util/byte_util.h

@@ -22,12 +22,14 @@ include(${PROJECT_SOURCE_DIR}/libs/imgui/SourceFiles.cmake)
 
 # ------------------------ Main binary
 
-include(${PROJECT_SOURCE_DIR}/src/8080/SourceFiles.cmake)
-include(${PROJECT_SOURCE_DIR}/src/z80/SourceFiles.cmake)
+include(${PROJECT_SOURCE_DIR}/src/applications/SourceFiles.cmake)
+include(${PROJECT_SOURCE_DIR}/src/chips/8080/SourceFiles.cmake)
+include(${PROJECT_SOURCE_DIR}/src/chips/z80/SourceFiles.cmake)
 include(${PROJECT_SOURCE_DIR}/src/crosscutting/SourceFiles.cmake)
 
 add_executable(${PROJECT_NAME}
         ${SOURCES_DOCTEST} ${SOURCES_GLAD} ${SOURCES_IMGUI}
+        ${SOURCES_APPLICATIONS_CPP} ${SOURCES_APPLICATIONS_H}
         ${SOURCES_CROSSCUTTING_CPP} ${SOURCES_CROSSCUTTING_H}
         ${SOURCES_8080_CPP} ${SOURCES_8080_H}
         ${SOURCES_Z80_CPP} ${SOURCES_Z80_H}

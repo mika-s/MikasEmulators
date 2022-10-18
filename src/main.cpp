@@ -1,77 +1,35 @@
 #define DOCTEST_CONFIG_IMPLEMENT
 
 #include <iostream>
-#include <unordered_map>
 #include "doctest.h"
-#include "8080/frontend.h"
-#include "z80/frontend.h"
+#include "applications/frontend.h"
+#include "applications/options.h"
 #include "crosscutting/exceptions/invalid_program_arguments_exception.h"
 #include "crosscutting/util/string_util.h"
 
+using emu::applications::Frontend;
+using emu::applications::Options;
 using emu::exceptions::InvalidProgramArgumentsException;
 using emu::util::string::find_short_executable_name;
 
 void print_usage(const std::string &program_name) {
     std::cout << "USAGE:\n\n";
-    std::cout << "CPU:\n";
-    std::cout << "  - 8080: Emulates the Intel 8080 CPU.\n\n";
-    std::cout << "       Modes:\n";
-    std::cout << "       - disassemble: Shows the assembly code of the given file.\n";
-    std::cout << "         Example: ./" << program_name << " 8080 disassemble my_file.h\n";
-    std::cout << "       - run: Runs a specific game or program. Available: "
-              << emu::i8080::Frontend::supported() << "\n";
-    std::cout << "       - test: Run unit tests related to 8080.\n\n";
-    std::cout << "       Example: ./" << program_name << " 8080 run space_invaders\n";
-    std::cout << "\n\n";
-    std::cout << "  - Z80: Emulates the Z80 CPU.\n\n";
-    std::cout << "       Modes:\n";
-    std::cout << "       - disassemble: Shows the assembly code of the given file.\n";
-    std::cout << "         Example: ./" << program_name << " Z80 disassemble my_file.h\n";
-    std::cout << "       - run: Runs a specific game or program. Available: "
-              << emu::z80::Frontend::supported() << "\n";
-    std::cout << "       - test: Run unit tests related to Z80.\n\n";
-    std::cout << "       Example: ./" << program_name << " Z80 run pacman\n";
-}
 
-std::unordered_map<std::string, std::vector<std::string>> find_options(std::vector<std::string> args) {
-    const std::string dipswitch_flag = "-d";
-    const std::string gui_flag = "-g";
+    std::cout << "Run a specific game or program:\n";
+    std::cout << "./" << program_name << " run <application> [flags]\n\n";
+    std::cout << "Applications:\n";
+    std::cout << Frontend::supported() << "\n\n";
 
-    std::unordered_map<std::string, std::vector<std::string>> options;
+    std::cout << "Show the assembly code of the given file:\n";
+    std::cout << "./" << program_name << " disassemble <cpu> <file>\n\n";
 
-    for (std::size_t arg_idx = 0; arg_idx < args.size(); ++arg_idx) {
-        if (args[arg_idx] == dipswitch_flag) {
-            if (arg_idx == args.size() - 1) {
-                throw InvalidProgramArgumentsException(
-                        dipswitch_flag + " flag at the end of the line, without a value."
-                );
-            }
+    std::cout << "Run the unit tests of a given CPU:\n";
+    std::cout << "./" << program_name << " test <cpu1>, <cpu2>, ..., <cpuN>\n";
+    std::cout << "All tests are run if no CPUs are provided.\n\n";
 
-            if (options.count(dipswitch_flag) == 0) {
-                std::vector<std::string> vec;
-                vec.emplace_back(args[arg_idx + 1]);
-                options[dipswitch_flag] = vec;
-            } else {
-                options[dipswitch_flag].push_back(args[arg_idx + 1]);
-            }
-        } else if (args[arg_idx] == gui_flag) {
-            if (arg_idx == args.size() - 1) {
-                throw InvalidProgramArgumentsException(
-                        gui_flag + " flag at the end of the line, without a value."
-                );
-            }
-
-            if (options.count(gui_flag) == 0) {
-                std::vector<std::string> vec;
-                vec.emplace_back(args[arg_idx + 1]);
-                options[gui_flag] = vec;
-            } else {
-                options[gui_flag].push_back(args[arg_idx + 1]);
-            }
-        }
-    }
-
-    return options;
+    std::cout << "Examples:\n\n";
+    std::cout << "./" << program_name << " run space_invaders -g debugging -d b=1000\n";
+    std::cout << "Runs Space Invaders with the debugging GUI and b=1000 as manually set dipswitch.\n\n";
 }
 
 // NOLINTNEXTLINE(modernize-avoid-c-arrays)
@@ -86,27 +44,16 @@ std::vector<std::string> argv_to_vector(int argc, char *argv[]) {
 }
 
 int main(int argc, char *argv[]) {
-    std::vector<std::string> args = argv_to_vector(argc, argv);
-    const std::string short_name = find_short_executable_name(argv[0]);
-
     try {
         if (argc > 1) {
-            std::unordered_map<std::string, std::vector<std::string>> options = find_options(args);
-            const std::string cpu = args[1];
-
-            if (cpu == "8080") {
-                emu::i8080::Frontend::run(args, options);
-            } else if (cpu == "Z80") {
-                emu::z80::Frontend::run(args, options);
-            } else {
-                throw InvalidProgramArgumentsException("Unknown CPU");
-            }
+            Options options(argv_to_vector(argc, argv));
+            Frontend::run(options);
         } else {
             throw InvalidProgramArgumentsException("No arguments provided");
         }
     } catch (InvalidProgramArgumentsException &ex) {
         std::cout << ex.what() << "\n\n";
-        print_usage(short_name);
+        print_usage(find_short_executable_name(argv[0]));
     }
 
     return 0;
