@@ -89,7 +89,7 @@ namespace emu::z80 {
     ) {
         assert(bit_number < 8);
 
-        bit(bit_number, memory[hl_reg], flag_reg);
+        bit(bit_number, memory.read(hl_reg), flag_reg);
 
         // TODO: Handle X and Y flags
 
@@ -118,7 +118,7 @@ namespace emu::z80 {
     ) {
         assert(bit_number < 8);
 
-        bit(bit_number, memory[ixy_reg + static_cast<i8>(d)], flag_reg);
+        bit(bit_number, memory.read(ixy_reg + static_cast<i8>(d)), flag_reg);
 
         // TODO: memptr
 

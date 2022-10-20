@@ -1,4 +1,3 @@
-#include <string>
 #include "cpm_application.h"
 #include "cpm_application_session.h"
 #include "crosscutting/util/byte_util.h"

@@ -3,6 +3,7 @@ set(SOURCES_Z80_CPP
         src/chips/z80/disassemblerZ80.cpp
         src/chips/z80/emulator_memory.cpp
         src/chips/z80/flags.cpp
+        src/chips/z80/util.cpp
         src/chips/z80/instructions/adc.cpp
         src/chips/z80/instructions/add.cpp
         src/chips/z80/instructions/and.cpp
@@ -75,6 +76,7 @@ set(SOURCES_Z80_H
         src/chips/z80/disassemblerZ80.h
         src/chips/z80/emulator_memory.h
         src/chips/z80/flags.h
+        src/chips/z80/util.h
         src/chips/z80/interrupt_mode.h
         src/chips/z80/instructions/instruction_util.h
         src/chips/z80/instructions/instructions.h

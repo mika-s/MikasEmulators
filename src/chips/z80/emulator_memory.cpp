@@ -45,11 +45,11 @@ namespace emu::z80 {
         return sliced_memory;
     }
 
-    u8 &EmulatorMemory::operator[](std::size_t address) {
-        return m_memory[address & m_mask];
+    void EmulatorMemory::write(u16 address, u8 value) {
+        m_memory[address & m_mask] = value;
     }
 
-    const u8 &EmulatorMemory::operator[](std::size_t address) const {
+    u8 EmulatorMemory::read(u16 address) const {
         return m_memory[address & m_mask];
     }
 
@@ -78,7 +78,7 @@ namespace emu::z80 {
             memory.add(input);
 
             for (std::size_t i = 0; i < input.size(); ++i) {
-                CHECK_EQ(input[i], memory[i]);
+                CHECK_EQ(input[i], memory.read(i));
             }
         }
 
@@ -91,11 +91,11 @@ namespace emu::z80 {
             memory.add(input);
 
             for (std::size_t i = 0; i < input.size(); ++i) {
-                CHECK_EQ(input[i], memory[i]);
+                CHECK_EQ(input[i], memory.read(i));
             }
 
             for (std::size_t i = input.size(), j = 0; i < 2 * input.size(); ++i, ++j) {
-                CHECK_EQ(input[j], memory[i]);
+                CHECK_EQ(input[j], memory.read(i));
             }
         }
 
@@ -109,11 +109,11 @@ namespace emu::z80 {
             memory.add(input2);
 
             for (std::size_t i = 0; i < input1.size(); ++i) {
-                CHECK_EQ(input1[i], memory[i]);
+                CHECK_EQ(input1[i], memory.read(i));
             }
 
             for (std::size_t i = input1.size(), j = 0; i < input1.size() + input2.size(); ++i, ++j) {
-                CHECK_EQ(input2[j], memory[i]);
+                CHECK_EQ(input2[j], memory.read(i));
             }
         }
 
@@ -124,13 +124,13 @@ namespace emu::z80 {
 
             memory.add(input);
 
-            memory[5] = 100;
+            memory.write(5, 100);
 
             for (std::size_t i = 0; i < input.size(); ++i) {
                 if (i == 5) {
-                    CHECK_EQ(100, memory[i]);
+                    CHECK_EQ(100, memory.read(i));
                 } else {
-                    CHECK_EQ(input[i], memory[i]);
+                    CHECK_EQ(input[i], memory.read(i));
                 }
             }
         }

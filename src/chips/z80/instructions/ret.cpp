@@ -345,7 +345,7 @@ namespace emu::z80 {
 
             ret_nc(pc, sp, memory, flag_reg, cycles);
 
-            CHECK_EQ(to_u16(memory[1], memory[0]), pc);
+            CHECK_EQ(to_u16(memory.read(1), memory.read(0)), pc);
         }
 
         SUBCASE("should not pop PC off the stack when the carry flag is set") {
@@ -399,7 +399,7 @@ namespace emu::z80 {
 
             ret_z(pc, sp, memory, flag_reg, cycles);
 
-            CHECK_EQ(to_u16(memory[1], memory[0]), pc);
+            CHECK_EQ(to_u16(memory.read(1), memory.read(0)), pc);
             CHECK_EQ(0x2, sp);
         }
 
@@ -452,7 +452,7 @@ namespace emu::z80 {
 
             ret_nz(pc, sp, memory, flag_reg, cycles);
 
-            CHECK_EQ(to_u16(memory[1], memory[0]), pc);
+            CHECK_EQ(to_u16(memory.read(1), memory.read(0)), pc);
         }
 
         SUBCASE("should not pop PC off the stack when the zero flag is set") {
@@ -503,7 +503,7 @@ namespace emu::z80 {
 
             ret_m(pc, sp, memory, flag_reg, cycles);
 
-            CHECK_EQ(to_u16(memory[1], memory[0]), pc);
+            CHECK_EQ(to_u16(memory.read(1), memory.read(0)), pc);
         }
 
         SUBCASE("should not pop PC off the stack when the sign flag is unset") {
@@ -554,7 +554,7 @@ namespace emu::z80 {
 
             ret_p(pc, sp, memory, flag_reg, cycles);
 
-            CHECK_EQ(to_u16(memory[1], memory[0]), pc);
+            CHECK_EQ(to_u16(memory.read(1), memory.read(0)), pc);
         }
 
         SUBCASE("should not pop PC off the stack when the sign flag is set") {
@@ -605,7 +605,7 @@ namespace emu::z80 {
 
             ret_pe(pc, sp, memory, flag_reg, cycles);
 
-            CHECK_EQ(to_u16(memory[1], memory[0]), pc);
+            CHECK_EQ(to_u16(memory.read(1), memory.read(0)), pc);
         }
 
         SUBCASE("should not pop PC off the stack when the parity flag is unset") {
@@ -656,7 +656,7 @@ namespace emu::z80 {
 
             ret_po(pc, sp, memory, flag_reg, cycles);
 
-            CHECK_EQ(to_u16(memory[1], memory[0]), pc);
+            CHECK_EQ(to_u16(memory.read(1), memory.read(0)), pc);
         }
 
         SUBCASE("should not pop PC off the stack when the parity flag is set") {

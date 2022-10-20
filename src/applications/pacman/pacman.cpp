@@ -57,6 +57,10 @@ namespace emu::applications::pacman {
         m_gui->load_sprite_rom({m_sprite_rom.begin(), m_sprite_rom.end()});
     }
 
+    void Pacman::memory_map([[maybe_unused]] EmulatorMemory &memory, [[maybe_unused]] u16 address) {
+
+    }
+
     std::vector<u8> create_empty_vector(int size) {
         std::vector<u8> vec(size, 0);
         return vec;

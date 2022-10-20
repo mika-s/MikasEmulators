@@ -20,9 +20,9 @@ namespace emu::z80 {
 
         EmulatorMemory slice(int from, int to);
 
-        u8 &operator[](std::size_t address);
+        void write(u16 address, u8 value);
 
-        const u8 &operator[](std::size_t address) const;
+        u8 read(u16 address) const;
 
         std::vector<u8>::iterator begin();
 

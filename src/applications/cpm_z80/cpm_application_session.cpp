@@ -66,7 +66,7 @@ namespace emu::applications::cpm::z80 {
 
     void CpmApplicationSession::c_writestr(const EmulatorMemory &memory, u16 address) {
         do {
-            std::cout << memory[address++];
-        } while (memory[address] != '$');
+            std::cout << memory.read(address++);
+        } while (memory.read(address) != '$');
     }
 }

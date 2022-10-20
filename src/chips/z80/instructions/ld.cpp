@@ -21,6 +21,10 @@ namespace emu::z80 {
         to = value;
     }
 
+    void ld_M(EmulatorMemory &memory, u16 address, u8 value) {
+        memory.write(address, value);
+    }
+
     /**
      * Load from register to register
      * <ul>
@@ -178,8 +182,8 @@ namespace emu::z80 {
      * @param value is the register value to load into to
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_MHL_r(u8 &to, u8 value, cyc &cycles) {
-        ld(to, value);
+    void ld_MHL_r(EmulatorMemory &memory, u16 address, u8 value, cyc &cycles) {
+        ld_M(memory, address, value);
 
         cycles = 7;
     }
@@ -198,8 +202,8 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      * @param is_memory_involved is true if memory is involved, either written or read
      */
-    void ld_MHL_n(u8 &reg, const NextByte &args, cyc &cycles) {
-        reg = args.farg;
+    void ld_MHL_n(EmulatorMemory &memory, u16 address, const NextByte &args, cyc &cycles) {
+        ld_M(memory, address, args.farg);
 
         cycles = 10;
     }
@@ -270,7 +274,7 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void ld_A_Mnn(u8 &acc_reg, const EmulatorMemory &memory, const NextWord &args, cyc &cycles) {
-        acc_reg = memory[to_u16(args.sarg, args.farg)];
+        acc_reg = memory.read(to_u16(args.sarg, args.farg));
 
         cycles = 13;
     }
@@ -358,8 +362,8 @@ namespace emu::z80 {
      * @param acc_reg is the accumulator value to load into to
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_Mss_A(u8 &to, u8 acc_reg, cyc &cycles) {
-        ld(to, acc_reg);
+    void ld_Mss_A(EmulatorMemory &memory, u16 address, u8 acc_reg, cyc &cycles) {
+        ld_M(memory, address, acc_reg);
 
         cycles = 7;
     }
@@ -381,7 +385,7 @@ namespace emu::z80 {
     void ld_Mnn_A(u8 &acc_reg, EmulatorMemory &memory, const NextWord &args, cyc &cycles) {
         const u16 address = to_u16(args.sarg, args.farg);
 
-        memory[address] = acc_reg;
+        memory.write(address, acc_reg);
 
         cycles = 13;
     }
@@ -403,8 +407,8 @@ namespace emu::z80 {
      */
     void ld_HL_Mnn(u8 &h_reg, u8 &l_reg, const EmulatorMemory &memory, const NextWord &args, cyc &cycles) {
         const u16 address = to_u16(args.sarg, args.farg);
-        h_reg = memory[address + 1];
-        l_reg = memory[address];
+        h_reg = memory.read(address + 1);
+        l_reg = memory.read(address);
 
         cycles = 16;
     }
@@ -514,8 +518,8 @@ namespace emu::z80 {
      */
     void ld_dd_Mnn(u8 &hi_reg, u8 &lo_reg, const NextWord &args, const EmulatorMemory &memory, cyc &cycles) {
         const u16 address = to_u16(args.sarg, args.farg);
-        hi_reg = memory[address + 1];
-        lo_reg = memory[address];
+        hi_reg = memory.read(address + 1);
+        lo_reg = memory.read(address);
 
         cycles = 20;
     }
@@ -536,7 +540,7 @@ namespace emu::z80 {
      */
     void ld_ixy_Mnn(u16 &ixy_reg, const NextWord &args, const EmulatorMemory &memory, cyc &cycles) {
         const u16 address = to_u16(args.sarg, args.farg);
-        ixy_reg = to_u16(memory[address + 1], memory[address]);
+        ixy_reg = to_u16(memory.read(address + 1), memory.read(address));
 
         cycles = 20;
     }
@@ -557,7 +561,7 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void ld_r_MixyPd(u8 &reg, u16 ixy_reg, const NextByte &args, const EmulatorMemory &memory, cyc &cycles) {
-        reg = memory[ixy_reg + static_cast<i8>(args.farg)];
+        reg = memory.read(ixy_reg + static_cast<i8>(args.farg));
 
         cycles = 19;
     }
@@ -638,8 +642,8 @@ namespace emu::z80 {
         const u16 l_address = to_u16(args.sarg, args.farg);
         const u16 h_address = l_address + 1;
 
-        memory[h_address] = h_reg;
-        memory[l_address] = l_reg;
+        memory.write(h_address, h_reg);
+        memory.write(l_address, l_reg);
 
         cycles = 16;
     }
@@ -663,8 +667,8 @@ namespace emu::z80 {
         const u16 lo_address = to_u16(args.sarg, args.farg);
         const u16 hi_address = lo_address + 1;
 
-        memory[hi_address] = hi_reg;
-        memory[lo_address] = lo_reg;
+        memory.write(hi_address, hi_reg);
+        memory.write(lo_address, lo_reg);
 
         cycles = 20;
     }
@@ -719,12 +723,12 @@ namespace emu::z80 {
      * @param args contains the argument with the address to lookup
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ld_sp_Mnn(u16 &sp, EmulatorMemory memory, const NextWord &args, cyc &cycles) {
+    void ld_sp_Mnn(u16 &sp, const EmulatorMemory &memory, const NextWord &args, cyc &cycles) {
         const u16 first_address = to_u16(args.sarg, args.farg);
         const u16 second_address = first_address + 1;
 
-        const u8 lo = memory[first_address];
-        const u8 hi = memory[second_address];
+        const u8 lo = memory.read(first_address);
+        const u8 hi = memory.read(second_address);
 
         sp = to_u16(hi, lo);
 
@@ -746,7 +750,12 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void ld_MixyPd_n(u16 ixy_reg, const NextWord &args, EmulatorMemory &memory, cyc &cycles) {
-        ld(memory[ixy_reg + static_cast<i8>(args.farg)], args.sarg);
+        const u16 address = ixy_reg + static_cast<i8>(args.farg);
+        u8 value = memory.read(address);
+
+        ld(value, args.sarg);
+
+        memory.write(address, value);
 
         cycles = 19;
     }
@@ -767,7 +776,12 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void ld_MixyPd_r(u16 ixy_reg, const NextByte &args, EmulatorMemory &memory, u8 reg, cyc &cycles) {
-        ld(memory[ixy_reg + static_cast<i8>(args.farg)], reg);
+        const u16 address = ixy_reg + static_cast<i8>(args.farg);
+        u8 value = memory.read(address);
+
+        ld(value, reg);
+
+        memory.write(address, value);
 
         cycles = 19;
     }
@@ -951,15 +965,15 @@ namespace emu::z80 {
         u8 reg2 = 0x3;
 
         SUBCASE("should store the accumulator in memory at the given address") {
-            ld_MHL_r(memory[to_u16(reg1, reg2)], acc_reg, cycles);
+            ld_MHL_r(memory, to_u16(reg1, reg2), acc_reg, cycles);
 
-            CHECK_EQ(acc_reg, memory[0x3]);
+            CHECK_EQ(acc_reg, memory.read(0x3));
         }
 
         SUBCASE("should use 7 cycles") {
             cycles = 0;
 
-            ld_MHL_r(memory[to_u16(reg1, reg2)], acc_reg, cycles);
+            ld_MHL_r(memory, to_u16(reg1, reg2), acc_reg, cycles);
 
             CHECK_EQ(7, cycles);
         }
@@ -975,7 +989,7 @@ namespace emu::z80 {
         SUBCASE("should load the register from memory using the address in args") {
             ld_A_Mnn(reg, memory, args, cycles);
 
-            CHECK_EQ(memory[0x04], reg);
+            CHECK_EQ(memory.read(0x04), reg);
         }
 
         SUBCASE("should use 13 cycles") {
@@ -998,8 +1012,8 @@ namespace emu::z80 {
         SUBCASE("should load HL from memory using the address in args") {
             ld_HL_Mnn(h_reg, l_reg, memory, args, cycles);
 
-            CHECK_EQ(memory[0x04], l_reg);
-            CHECK_EQ(memory[0x05], h_reg);
+            CHECK_EQ(memory.read(0x04), l_reg);
+            CHECK_EQ(memory.read(0x05), h_reg);
         }
 
         SUBCASE("should use 16 cycles") {
@@ -1051,8 +1065,8 @@ namespace emu::z80 {
         SUBCASE("should load memory with H and L registers") {
             ld_Mnn_HL(h_reg, l_reg, memory, args, cycles);
 
-            CHECK_EQ(h_reg, memory[0x03]);
-            CHECK_EQ(l_reg, memory[0x02]);
+            CHECK_EQ(h_reg, memory.read(0x03));
+            CHECK_EQ(l_reg, memory.read(0x02));
         }
 
         SUBCASE("should use 16 cycles") {
@@ -1074,7 +1088,7 @@ namespace emu::z80 {
         SUBCASE("should store the accumulator in memory at the given address") {
             ld_Mnn_A(acc_reg, memory, args, cycles);
 
-            CHECK_EQ(acc_reg, memory[0x3]);
+            CHECK_EQ(acc_reg, memory.read(0x3));
         }
 
         SUBCASE("should use 13 cycles") {

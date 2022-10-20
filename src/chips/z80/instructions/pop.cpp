@@ -25,8 +25,8 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void pop(u8 &reg1, u8 &reg2, u16 &sp, const EmulatorMemory &memory, cyc &cycles) {
-        reg2 = memory[sp++];
-        reg1 = memory[sp++];
+        reg2 = memory.read(sp++);
+        reg1 = memory.read(sp++);
 
         cycles = 10;
     }
@@ -46,8 +46,8 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void pop_af(Flags &flag_reg, u8 &acc_reg, u16 &sp, const EmulatorMemory &memory, cyc &cycles) {
-        flag_reg.from_u8(memory[sp++]);
-        acc_reg = memory[sp++];
+        flag_reg.from_u8(memory.read(sp++));
+        acc_reg = memory.read(sp++);
 
         cycles = 10;
     }
@@ -67,8 +67,8 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void pop_ixy(u16 &ix_iy_reg, u16 &sp, const EmulatorMemory &memory, cyc &cycles) {
-        const u8 lo = memory[sp++];
-        const u8 hi = memory[sp++];
+        const u8 lo = memory.read(sp++);
+        const u8 hi = memory.read(sp++);
 
         ix_iy_reg = to_u16(hi, lo);
 
@@ -93,8 +93,8 @@ namespace emu::z80 {
 
             pop(reg1, reg2, sp, memory, cycles);
 
-            CHECK_EQ(memory[0x03], reg2);
-            CHECK_EQ(memory[0x04], reg1);
+            CHECK_EQ(memory.read(0x03), reg2);
+            CHECK_EQ(memory.read(0x04), reg1);
             CHECK_EQ(0x05, sp);
         }
 

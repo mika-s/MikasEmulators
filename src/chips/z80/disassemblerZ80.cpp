@@ -2378,14 +2378,14 @@ namespace emu::z80 {
 
     NextByte DisassemblerZ80::get_next_byte() {
         return {
-                .farg = m_memory[m_pc++]
+                .farg = m_memory.read(m_pc++)
         };
     }
 
     NextWord DisassemblerZ80::get_next_word() {
         return {
-                .farg = m_memory[m_pc++],
-                .sarg = m_memory[m_pc++]
+                .farg = m_memory.read(m_pc++),
+                .sarg = m_memory.read(m_pc++)
         };
     }
 }

@@ -260,8 +260,8 @@ namespace emu::z80 {
             call(pc, sp, memory, args, cycles);
 
             CHECK_EQ(0x0002, pc);
-            CHECK_EQ(0x0f, memory[0]);
-            CHECK_EQ(0x10, memory[1]);
+            CHECK_EQ(0x0f, memory.read(0));
+            CHECK_EQ(0x10, memory.read(1));
         }
 
         SUBCASE("should use 17 cycles") {
@@ -291,8 +291,8 @@ namespace emu::z80 {
             call_nz(pc, sp, memory, args, flag_reg, cycles);
 
             CHECK_EQ(to_u16(args.sarg, args.farg), pc);
-            CHECK_EQ(0x0f, memory[0]);
-            CHECK_EQ(0x10, memory[1]);
+            CHECK_EQ(0x0f, memory.read(0));
+            CHECK_EQ(0x10, memory.read(1));
         }
 
         SUBCASE("should not do anything when the zero flag is set") {
@@ -307,8 +307,8 @@ namespace emu::z80 {
             call_nz(pc, sp, memory, args, flag_reg, cycles);
 
             CHECK_EQ(0x100f, pc);
-            CHECK_EQ(0x00, memory[0]);
-            CHECK_EQ(0x01, memory[1]);
+            CHECK_EQ(0x00, memory.read(0));
+            CHECK_EQ(0x01, memory.read(1));
         }
 
         SUBCASE("should use 10 cycles when not called") {
@@ -359,8 +359,8 @@ namespace emu::z80 {
             call_z(pc, sp, memory, args, flag_reg, cycles);
 
             CHECK_EQ(to_u16(args.sarg, args.farg), pc);
-            CHECK_EQ(0x0f, memory[0]);
-            CHECK_EQ(0x10, memory[1]);
+            CHECK_EQ(0x0f, memory.read(0));
+            CHECK_EQ(0x10, memory.read(1));
         }
 
         SUBCASE("should not do anything when the zero flag is unset") {
@@ -375,8 +375,8 @@ namespace emu::z80 {
             call_z(pc, sp, memory, args, flag_reg, cycles);
 
             CHECK_EQ(0x100f, pc);
-            CHECK_EQ(0x00, memory[0]);
-            CHECK_EQ(0x01, memory[1]);
+            CHECK_EQ(0x00, memory.read(0));
+            CHECK_EQ(0x01, memory.read(1));
         }
 
         SUBCASE("should use 10 cycles when not called") {
@@ -425,8 +425,8 @@ namespace emu::z80 {
             call_nc(pc, sp, memory, args, flag_reg, cycles);
 
             CHECK_EQ(to_u16(args.sarg, args.farg), pc);
-            CHECK_EQ(0x0f, memory[0]);
-            CHECK_EQ(0x10, memory[1]);
+            CHECK_EQ(0x0f, memory.read(0));
+            CHECK_EQ(0x10, memory.read(1));
         }
 
         SUBCASE("should not do anything when the carry flag is set") {
@@ -441,8 +441,8 @@ namespace emu::z80 {
             call_nc(pc, sp, memory, args, flag_reg, cycles);
 
             CHECK_EQ(0x100f, pc);
-            CHECK_EQ(0x00, memory[0]);
-            CHECK_EQ(0x01, memory[1]);
+            CHECK_EQ(0x00, memory.read(0));
+            CHECK_EQ(0x01, memory.read(1));
         }
 
         SUBCASE("should use 10 cycles when not called") {
@@ -491,8 +491,8 @@ namespace emu::z80 {
             call_c(pc, sp, memory, args, flag_reg, cycles);
 
             CHECK_EQ(to_u16(args.sarg, args.farg), pc);
-            CHECK_EQ(0x0f, memory[0]);
-            CHECK_EQ(0x10, memory[1]);
+            CHECK_EQ(0x0f, memory.read(0));
+            CHECK_EQ(0x10, memory.read(1));
         }
 
         SUBCASE("should not do anything when carry flag is unset") {
@@ -507,8 +507,8 @@ namespace emu::z80 {
             call_c(pc, sp, memory, args, flag_reg, cycles);
 
             CHECK_EQ(0x100f, pc);
-            CHECK_EQ(0x00, memory[0]);
-            CHECK_EQ(0x01, memory[1]);
+            CHECK_EQ(0x00, memory.read(0));
+            CHECK_EQ(0x01, memory.read(1));
         }
 
         SUBCASE("should use 10 cycles when not called") {
@@ -557,8 +557,8 @@ namespace emu::z80 {
             call_po(pc, sp, memory, args, flag_reg, cycles);
 
             CHECK_EQ(to_u16(args.sarg, args.farg), pc);
-            CHECK_EQ(0x0f, memory[0]);
-            CHECK_EQ(0x10, memory[1]);
+            CHECK_EQ(0x0f, memory.read(0));
+            CHECK_EQ(0x10, memory.read(1));
         }
 
         SUBCASE("should not do anything when the parity flag is set") {
@@ -573,8 +573,8 @@ namespace emu::z80 {
             call_po(pc, sp, memory, args, flag_reg, cycles);
 
             CHECK_EQ(0x100f, pc);
-            CHECK_EQ(0x00, memory[0]);
-            CHECK_EQ(0x01, memory[1]);
+            CHECK_EQ(0x00, memory.read(0));
+            CHECK_EQ(0x01, memory.read(1));
         }
 
         SUBCASE("should use 10 cycles when not called") {
@@ -623,8 +623,8 @@ namespace emu::z80 {
             call_pe(pc, sp, memory, args, flag_reg, cycles);
 
             CHECK_EQ(to_u16(args.sarg, args.farg), pc);
-            CHECK_EQ(0x0f, memory[0]);
-            CHECK_EQ(0x10, memory[1]);
+            CHECK_EQ(0x0f, memory.read(0));
+            CHECK_EQ(0x10, memory.read(1));
         }
 
         SUBCASE("should not do anything when the parity flag is unset") {
@@ -639,8 +639,8 @@ namespace emu::z80 {
             call_pe(pc, sp, memory, args, flag_reg, cycles);
 
             CHECK_EQ(0x100f, pc);
-            CHECK_EQ(0x00, memory[0]);
-            CHECK_EQ(0x01, memory[1]);
+            CHECK_EQ(0x00, memory.read(0));
+            CHECK_EQ(0x01, memory.read(1));
         }
 
         SUBCASE("should use 10 cycles when not called") {
@@ -689,8 +689,8 @@ namespace emu::z80 {
             call_p(pc, sp, memory, args, flag_reg, cycles);
 
             CHECK_EQ(to_u16(args.sarg, args.farg), pc);
-            CHECK_EQ(0x0f, memory[0]);
-            CHECK_EQ(0x10, memory[1]);
+            CHECK_EQ(0x0f, memory.read(0));
+            CHECK_EQ(0x10, memory.read(1));
         }
 
         SUBCASE("should not do anything when the sign flag is set") {
@@ -705,8 +705,8 @@ namespace emu::z80 {
             call_p(pc, sp, memory, args, flag_reg, cycles);
 
             CHECK_EQ(0x100f, pc);
-            CHECK_EQ(0x00, memory[0]);
-            CHECK_EQ(0x01, memory[1]);
+            CHECK_EQ(0x00, memory.read(0));
+            CHECK_EQ(0x01, memory.read(1));
         }
 
         SUBCASE("should use 10 cycles when not called") {
@@ -755,8 +755,8 @@ namespace emu::z80 {
             call_m(pc, sp, memory, args, flag_reg, cycles);
 
             CHECK_EQ(to_u16(args.sarg, args.farg), pc);
-            CHECK_EQ(0x0f, memory[0]);
-            CHECK_EQ(0x10, memory[1]);
+            CHECK_EQ(0x0f, memory.read(0));
+            CHECK_EQ(0x10, memory.read(1));
         }
 
         SUBCASE("should not do anything when the sign flag is unset") {
@@ -771,8 +771,8 @@ namespace emu::z80 {
             call_m(pc, sp, memory, args, flag_reg, cycles);
 
             CHECK_EQ(0x100f, pc);
-            CHECK_EQ(0x00, memory[0]);
-            CHECK_EQ(0x01, memory[1]);
+            CHECK_EQ(0x00, memory.read(0));
+            CHECK_EQ(0x01, memory.read(1));
         }
 
         SUBCASE("should use 10 cycles when not called") {

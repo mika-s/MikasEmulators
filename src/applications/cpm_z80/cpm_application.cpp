@@ -1,4 +1,3 @@
-#include <string>
 #include "cpm_application.h"
 #include "cpm_application_session.h"
 #include "crosscutting/util/byte_util.h"
@@ -55,9 +54,9 @@ namespace emu::applications::cpm::z80 {
     }
 
     void CpmApplication::patch_program(EmulatorMemory &program) {
-        program[0x0000] = 0xd3;
-        program[0x0005] = 0xd3;
-        program[0x0006] = 0x01;
-        program[0x0007] = 0xc9;
+        program.write(0x0000, 0xd3);
+        program.write(0x0005, 0xd3);
+        program.write(0x0006, 0x01);
+        program.write(0x0007, 0xc9);
     }
 }

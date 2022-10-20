@@ -3,6 +3,7 @@
 #include "doctest.h"
 #include "chips/z80/emulator_memory.h"
 #include "chips/z80/flags.h"
+#include "chips/z80/util.h"
 #include "crosscutting/misc/next_byte.h"
 #include "crosscutting/util/byte_util.h"
 
@@ -49,7 +50,7 @@ namespace emu::z80 {
     void set_MHL(unsigned int bit_number, u16 hl_reg, EmulatorMemory &memory, cyc &cycles) {
         assert(bit_number < 8);
 
-        set_bit(memory[hl_reg], bit_number);
+        set_bit_in_memory(memory, hl_reg, bit_number);
 
         cycles = 15;
     }
@@ -74,7 +75,7 @@ namespace emu::z80 {
     ) {
         assert(bit_number < 8);
 
-        set_bit(memory[ixy_reg + static_cast<i8>(d)], bit_number);
+        set_bit_in_memory(memory, ixy_reg + static_cast<i8>(d), bit_number);
 
         cycles = 23;
     }

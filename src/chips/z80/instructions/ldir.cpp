@@ -36,15 +36,15 @@ namespace emu::z80 {
               u8 acc_reg, EmulatorMemory &memory, Flags &flag_reg, cyc &cycles) {
         u16 de = to_u16(d_reg, e_reg);
         u16 hl = to_u16(h_reg, l_reg);
-        memory[de] = memory[hl];
+        memory.write(de, memory.read(hl));
 
-        if (is_bit_set(acc_reg + memory[hl], 1)) {
+        if (is_bit_set(acc_reg + memory.read(hl), 1)) {
             flag_reg.set_y_flag();
         } else {
             flag_reg.clear_y_flag();
         }
 
-        if (is_bit_set(acc_reg + memory[hl], 3)) {
+        if (is_bit_set(acc_reg + memory.read(hl), 3)) {
             flag_reg.set_x_flag();
         } else {
             flag_reg.clear_x_flag();
@@ -97,8 +97,8 @@ namespace emu::z80 {
                  acc_reg, memory, flag_reg, cycles);
 
             CHECK_EQ(0, pc);
-            CHECK_EQ(0x23, memory[to_u16(d_reg, e_reg) - 1]);
-            CHECK_EQ(0x23, memory[to_u16(h_reg, l_reg) - 1]);
+            CHECK_EQ(0x23, memory.read(to_u16(d_reg, e_reg) - 1));
+            CHECK_EQ(0x23, memory.read(to_u16(h_reg, l_reg) - 1));
             CHECK_EQ(0, to_u16(b_reg, c_reg));
             CHECK_EQ(5, to_u16(d_reg, e_reg));
             CHECK_EQ(1, to_u16(h_reg, l_reg));

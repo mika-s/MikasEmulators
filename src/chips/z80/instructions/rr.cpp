@@ -82,12 +82,14 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void rr_MHL(u8 &value_in_hl, Flags &flag_reg, cyc &cycles) {
-        rr(value_in_hl, flag_reg);
+    void rr_MHL(EmulatorMemory &memory, u16 address, Flags &flag_reg, cyc &cycles) {
+        u8 value = memory.read(address);
+        rr(value, flag_reg);
+        memory.write(address, value);
 
-        flag_reg.handle_zero_flag(value_in_hl);
-        flag_reg.handle_sign_flag(value_in_hl);
-        flag_reg.handle_parity_flag(value_in_hl);
+        flag_reg.handle_zero_flag(value);
+        flag_reg.handle_sign_flag(value);
+        flag_reg.handle_parity_flag(value);
 
         cycles = 15;
     }
@@ -108,8 +110,12 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void rr_MixyPd(u16 ixy_reg, u8 d, EmulatorMemory &memory, Flags &flag_reg, cyc &cycles) {
-        u8 &value = memory[ixy_reg + static_cast<i8>(d)];
+        const u16 address = ixy_reg + static_cast<i8>(d);
+        u8 value = memory.read(address);
+
         rr(value, flag_reg);
+
+        memory.write(address, value);
 
         flag_reg.handle_zero_flag(value);
         flag_reg.handle_sign_flag(value);

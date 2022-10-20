@@ -99,10 +99,15 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void xor_MixyPd(u8 &acc_reg, u16 ixy_reg, const NextByte &args, const EmulatorMemory &memory, Flags &flag_reg,
-                      cyc &cycles
+    void xor_MixyPd(u8 &acc_reg, u16 ixy_reg, const NextByte &args, EmulatorMemory &memory, Flags &flag_reg,
+                    cyc &cycles
     ) {
-        xor_(acc_reg, memory[ixy_reg + static_cast<i8>(args.farg)], flag_reg);
+        const u16 address = ixy_reg + static_cast<i8>(args.farg);
+        u8 value = memory.read(address);
+
+        xor_(acc_reg, value, flag_reg);
+
+        memory.write(address, value);
 
         cycles = 19;
     }

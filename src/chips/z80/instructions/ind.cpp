@@ -35,7 +35,7 @@ namespace emu::z80 {
     ) {
         u16 hl = to_u16(h_reg, l_reg);
 
-        memory[hl] = io[c_reg];
+        memory.write(hl, io[c_reg]);
 
         b_reg--;
 
@@ -80,7 +80,7 @@ namespace emu::z80 {
             CHECK_EQ(9, to_u16(h_reg, l_reg));
             CHECK_EQ(1, b_reg);
             CHECK_EQ(6, io[c_reg]);
-            CHECK_EQ(6, memory[to_u16(h_reg, l_reg) + 1]);
+            CHECK_EQ(6, memory.read(to_u16(h_reg, l_reg) + 1));
             CHECK_EQ(true, flag_reg.is_add_subtract_flag_set());
             CHECK_EQ(false, flag_reg.is_zero_flag_set());
 
@@ -89,7 +89,7 @@ namespace emu::z80 {
             CHECK_EQ(8, to_u16(h_reg, l_reg));
             CHECK_EQ(0, b_reg);
             CHECK_EQ(6, io[c_reg]);
-            CHECK_EQ(6, memory[to_u16(h_reg, l_reg) + 1]);
+            CHECK_EQ(6, memory.read(to_u16(h_reg, l_reg) + 1));
             CHECK_EQ(true, flag_reg.is_add_subtract_flag_set());
             CHECK_EQ(true, flag_reg.is_zero_flag_set());
         }

@@ -26,8 +26,8 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void push_qq(u8 reg1, u8 reg2, u16 &sp, EmulatorMemory &memory, cyc &cycles) {
-        memory[--sp] = reg1;
-        memory[--sp] = reg2;
+        memory.write(--sp, reg1);
+        memory.write(--sp, reg2);
 
         cycles = 11;
     }
@@ -48,8 +48,8 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void push_af(const Flags &flag_reg, u8 acc_reg, u16 &sp, EmulatorMemory &memory, cyc &cycles) {
-        memory[--sp] = acc_reg;
-        memory[--sp] = flag_reg.to_u8();
+        memory.write(--sp, acc_reg);
+        memory.write(--sp, flag_reg.to_u8());
 
         cycles = 11;
     }
@@ -69,8 +69,8 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void push_ixy(u16 ixy_reg, u16 &sp, EmulatorMemory &memory, cyc &cycles) {
-        memory[--sp] = high_byte(ixy_reg);
-        memory[--sp] = low_byte(ixy_reg);
+        memory.write(--sp, high_byte(ixy_reg));
+        memory.write(--sp, low_byte(ixy_reg));
 
         cycles = 15;
     }
@@ -93,8 +93,8 @@ namespace emu::z80 {
 
             push_qq(reg1, reg2, sp, memory, cycles);
 
-            CHECK_EQ(reg1, memory[0x2]);
-            CHECK_EQ(reg2, memory[0x1]);
+            CHECK_EQ(reg1, memory.read(0x2));
+            CHECK_EQ(reg2, memory.read(0x1));
             CHECK_EQ(0x01, sp);
         }
 
@@ -113,8 +113,8 @@ namespace emu::z80 {
 
             push_af(flag_reg, acc_reg, sp, memory, cycles);
 
-            CHECK_EQ(acc_reg, memory[0x2]);
-            CHECK_EQ(flag_reg.to_u8(), memory[0x1]);
+            CHECK_EQ(acc_reg, memory.read(0x2));
+            CHECK_EQ(flag_reg.to_u8(), memory.read(0x1));
             CHECK_EQ(0x01, sp);
         }
 

@@ -1,6 +1,7 @@
 #include <iostream>
 #include "doctest.h"
 #include "chips/z80/flags.h"
+#include "chips/z80/emulator_memory.h"
 #include "crosscutting/typedefs.h"
 
 namespace emu::z80 {
@@ -19,11 +20,14 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void rld(u8 &acc_reg, u8 &value, Flags &flag_reg, cyc &cycles) {
+    void rld(u8 &acc_reg, EmulatorMemory &memory, u16 address, Flags &flag_reg, cyc &cycles) {
+        u8 value = memory.read(address);
         u8 new_acc = acc_reg;
 
         new_acc = (new_acc & 0xf0) | ((value & 0xf0) >> 4);
         value = ((value & 0x0f) << 4) | (acc_reg & 0x0f);
+
+        memory.write(address, value);
 
         acc_reg = new_acc;
 

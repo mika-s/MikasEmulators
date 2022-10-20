@@ -36,15 +36,15 @@ namespace emu::z80 {
     ) {
         u16 de = to_u16(d_reg, e_reg);
         u16 hl = to_u16(h_reg, l_reg);
-        memory[de] = memory[hl];
+        memory.write(de, memory.read(hl));
 
-        if (is_bit_set(acc_reg + memory[hl], 1)) {
+        if (is_bit_set(acc_reg + memory.read(hl), 1)) {
             flag_reg.set_y_flag();
         } else {
             flag_reg.clear_y_flag();
         }
 
-        if (is_bit_set(acc_reg + memory[hl], 3)) {
+        if (is_bit_set(acc_reg + memory.read(hl), 3)) {
             flag_reg.set_x_flag();
         } else {
             flag_reg.clear_x_flag();

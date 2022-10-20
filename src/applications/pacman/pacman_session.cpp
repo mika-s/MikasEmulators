@@ -93,11 +93,11 @@ namespace emu::applications::pacman {
                 }
             }
 
-            m_input->read(m_run_status, m_memory_mapped_io);
-            m_gui->update_screen(tile_ram(), sprite_ram(), palette_ram(), m_run_status);
-
             if (m_memory_mapped_io->is_interrupt_enabled()) {
                 m_cpu->interrupt(m_vblank_interrupt_return);
+
+                m_input->read(m_run_status, m_memory_mapped_io);
+                m_gui->update_screen(tile_ram(), sprite_ram(), palette_ram(), m_run_status);
             }
 
             m_memory_mapped_io->set_initial_values();

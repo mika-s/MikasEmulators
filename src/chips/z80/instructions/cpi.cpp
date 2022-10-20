@@ -32,7 +32,7 @@ namespace emu::z80 {
     void cpi(u8 &b_reg, u8 &c_reg, u8 &h_reg, u8 &l_reg, u8 acc_reg, const EmulatorMemory &memory,
              Flags &flag_reg, cyc &cycles) {
 
-        const u8 value = memory[to_u16(h_reg, l_reg)];
+        const u8 value = memory.read(to_u16(h_reg, l_reg));
         const u8 result = acc_reg - value;
 
         flag_reg.handle_zero_flag(result);

@@ -147,7 +147,7 @@ namespace emu::z80 {
                 ld_dd_nn(m_b_reg, m_c_reg, get_next_word(), cycles);
                 break;
             case LD_MBC_A:
-                ld_Mss_A(m_memory[to_u16(m_b_reg, m_c_reg)], m_acc_reg, cycles);
+                ld_Mss_A(m_memory, to_u16(m_b_reg, m_c_reg), m_acc_reg, cycles);
                 break;
             case INC_BC:
                 inc_ss(m_b_reg, m_c_reg, cycles);
@@ -171,7 +171,7 @@ namespace emu::z80 {
                 add_HL_ss(m_h_reg, m_l_reg, to_u16(m_b_reg, m_c_reg), m_flag_reg, cycles);
                 break;
             case LD_A_MBC:
-                ld_A_Mss(m_acc_reg, m_memory[to_u16(m_b_reg, m_c_reg)], cycles);
+                ld_A_Mss(m_acc_reg, m_memory.read(to_u16(m_b_reg, m_c_reg)), cycles);
                 break;
             case DEC_BC:
                 dec_ss(m_b_reg, m_c_reg, cycles);
@@ -195,7 +195,7 @@ namespace emu::z80 {
                 ld_dd_nn(m_d_reg, m_e_reg, get_next_word(), cycles);
                 break;
             case LD_MDE_A:
-                ld_Mss_A(m_memory[to_u16(m_d_reg, m_e_reg)], m_acc_reg, cycles);
+                ld_Mss_A(m_memory, to_u16(m_d_reg, m_e_reg), m_acc_reg, cycles);
                 break;
             case INC_DE:
                 inc_ss(m_d_reg, m_e_reg, cycles);
@@ -219,7 +219,7 @@ namespace emu::z80 {
                 add_HL_ss(m_h_reg, m_l_reg, to_u16(m_d_reg, m_e_reg), m_flag_reg, cycles);
                 break;
             case LD_A_MDE:
-                ld_A_Mss(m_acc_reg, m_memory[to_u16(m_d_reg, m_e_reg)], cycles);
+                ld_A_Mss(m_acc_reg, m_memory.read(to_u16(m_d_reg, m_e_reg)), cycles);
                 break;
             case DEC_DE:
                 dec_ss(m_d_reg, m_e_reg, cycles);
@@ -297,13 +297,13 @@ namespace emu::z80 {
                 inc_sp(m_sp, cycles);
                 break;
             case INC_MHL:
-                inc_MHL(m_memory[address_in_HL()], m_flag_reg, cycles);
+                inc_MHL(m_memory, address_in_HL(), m_flag_reg, cycles);
                 break;
             case DEC_MHL:
-                dec_MHL(m_memory[address_in_HL()], m_flag_reg, cycles);
+                dec_MHL(m_memory, address_in_HL(), m_flag_reg, cycles);
                 break;
             case LD_MHL_n:
-                ld_MHL_n(m_memory[address_in_HL()], get_next_byte(), cycles);
+                ld_MHL_n(m_memory, address_in_HL(), get_next_byte(), cycles);
                 break;
             case SCF:
                 scf(m_flag_reg, m_acc_reg, cycles);
@@ -351,7 +351,7 @@ namespace emu::z80 {
                 ld_r_r(m_b_reg, m_l_reg, cycles);
                 break;
             case LD_B_MHL:
-                ld_r_MHL(m_b_reg, m_memory[address_in_HL()], cycles);
+                ld_r_MHL(m_b_reg, m_memory.read(address_in_HL()), cycles);
                 break;
             case LD_B_A:
                 ld_r_r(m_b_reg, m_acc_reg, cycles);
@@ -375,7 +375,7 @@ namespace emu::z80 {
                 ld_r_r(m_c_reg, m_l_reg, cycles);
                 break;
             case LD_C_MHL:
-                ld_r_MHL(m_c_reg, m_memory[address_in_HL()], cycles);
+                ld_r_MHL(m_c_reg, m_memory.read(address_in_HL()), cycles);
                 break;
             case LD_C_A:
                 ld_r_r(m_c_reg, m_acc_reg, cycles);
@@ -399,7 +399,7 @@ namespace emu::z80 {
                 ld_r_r(m_d_reg, m_l_reg, cycles);
                 break;
             case LD_D_MHL:
-                ld_r_MHL(m_d_reg, m_memory[address_in_HL()], cycles);
+                ld_r_MHL(m_d_reg, m_memory.read(address_in_HL()), cycles);
                 break;
             case LD_D_A:
                 ld_r_r(m_d_reg, m_acc_reg, cycles);
@@ -423,7 +423,7 @@ namespace emu::z80 {
                 ld_r_r(m_e_reg, m_l_reg, cycles);
                 break;
             case LD_E_MHL:
-                ld_r_MHL(m_e_reg, m_memory[address_in_HL()], cycles);
+                ld_r_MHL(m_e_reg, m_memory.read(address_in_HL()), cycles);
                 break;
             case LD_E_A:
                 ld_r_r(m_e_reg, m_acc_reg, cycles);
@@ -447,7 +447,7 @@ namespace emu::z80 {
                 ld_r_r(m_h_reg, m_l_reg, cycles);
                 break;
             case LD_H_MHL:
-                ld_r_MHL(m_h_reg, m_memory[address_in_HL()], cycles);
+                ld_r_MHL(m_h_reg, m_memory.read(address_in_HL()), cycles);
                 break;
             case LD_H_A:
                 ld_r_r(m_h_reg, m_acc_reg, cycles);
@@ -471,34 +471,34 @@ namespace emu::z80 {
                 ld_r_r(m_l_reg, m_l_reg, cycles);
                 break;
             case LD_L_MHL:
-                ld_r_MHL(m_l_reg, m_memory[address_in_HL()], cycles);
+                ld_r_MHL(m_l_reg, m_memory.read(address_in_HL()), cycles);
                 break;
             case LD_L_A:
                 ld_r_r(m_l_reg, m_acc_reg, cycles);
                 break;
             case LD_MHL_B:
-                ld_MHL_r(m_memory[address_in_HL()], m_b_reg, cycles);
+                ld_MHL_r(m_memory, address_in_HL(), m_b_reg, cycles);
                 break;
             case LD_MHL_C:
-                ld_MHL_r(m_memory[address_in_HL()], m_c_reg, cycles);
+                ld_MHL_r(m_memory, address_in_HL(), m_c_reg, cycles);
                 break;
             case LD_MHL_D:
-                ld_MHL_r(m_memory[address_in_HL()], m_d_reg, cycles);
+                ld_MHL_r(m_memory, address_in_HL(), m_d_reg, cycles);
                 break;
             case LD_MHL_E:
-                ld_MHL_r(m_memory[address_in_HL()], m_e_reg, cycles);
+                ld_MHL_r(m_memory, address_in_HL(), m_e_reg, cycles);
                 break;
             case LD_MHL_H:
-                ld_MHL_r(m_memory[address_in_HL()], m_h_reg, cycles);
+                ld_MHL_r(m_memory, address_in_HL(), m_h_reg, cycles);
                 break;
             case LD_MHL_L:
-                ld_MHL_r(m_memory[address_in_HL()], m_l_reg, cycles);
+                ld_MHL_r(m_memory, address_in_HL(), m_l_reg, cycles);
                 break;
             case HALT:
                 halt(m_is_halted, cycles);
                 break;
             case LD_MHL_A:
-                ld_MHL_r(m_memory[address_in_HL()], m_acc_reg, cycles);
+                ld_MHL_r(m_memory, address_in_HL(), m_acc_reg, cycles);
                 break;
             case LD_A_B:
                 ld_r_r(m_acc_reg, m_b_reg, cycles);
@@ -519,7 +519,7 @@ namespace emu::z80 {
                 ld_r_r(m_acc_reg, m_l_reg, cycles);
                 break;
             case LD_A_MHL:
-                ld_r_MHL(m_acc_reg, m_memory[address_in_HL()], cycles);
+                ld_r_MHL(m_acc_reg, m_memory.read(address_in_HL()), cycles);
                 break;
             case LD_A_A:
                 ld_r_r(m_acc_reg, m_acc_reg, cycles);
@@ -543,7 +543,7 @@ namespace emu::z80 {
                 add_A_r(m_acc_reg, m_l_reg, m_flag_reg, cycles);
                 break;
             case ADD_A_MHL:
-                add_A_MHL(m_acc_reg, m_memory[address_in_HL()], m_flag_reg, cycles);
+                add_A_MHL(m_acc_reg, m_memory.read(address_in_HL()), m_flag_reg, cycles);
                 break;
             case ADD_A_A:
                 add_A_r(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
@@ -567,7 +567,7 @@ namespace emu::z80 {
                 adc_A_r(m_acc_reg, m_l_reg, m_flag_reg, cycles);
                 break;
             case ADC_A_MHL:
-                adc_A_MHL(m_acc_reg, m_memory[address_in_HL()], m_flag_reg, cycles);
+                adc_A_MHL(m_acc_reg, m_memory.read(address_in_HL()), m_flag_reg, cycles);
                 break;
             case ADC_A_A:
                 adc_A_r(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
@@ -591,7 +591,7 @@ namespace emu::z80 {
                 sub_r(m_acc_reg, m_l_reg, m_flag_reg, cycles);
                 break;
             case SUB_MHL:
-                sub_MHL(m_acc_reg, m_memory[address_in_HL()], m_flag_reg, cycles);
+                sub_MHL(m_acc_reg, m_memory.read(address_in_HL()), m_flag_reg, cycles);
                 break;
             case SUB_A:
                 sub_r(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
@@ -615,7 +615,7 @@ namespace emu::z80 {
                 sbc_A_r(m_acc_reg, m_l_reg, m_flag_reg, cycles);
                 break;
             case SBC_A_MHL:
-                sbc_A_MHL(m_acc_reg, m_memory[address_in_HL()], m_flag_reg, cycles);
+                sbc_A_MHL(m_acc_reg, m_memory.read(address_in_HL()), m_flag_reg, cycles);
                 break;
             case SBC_A_A:
                 sbc_A_r(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
@@ -639,7 +639,7 @@ namespace emu::z80 {
                 and_r(m_acc_reg, m_l_reg, m_flag_reg, cycles);
                 break;
             case AND_MHL:
-                and_MHL(m_acc_reg, m_memory[address_in_HL()], m_flag_reg, cycles);
+                and_MHL(m_acc_reg, m_memory.read(address_in_HL()), m_flag_reg, cycles);
                 break;
             case AND_A:
                 and_r(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
@@ -663,7 +663,7 @@ namespace emu::z80 {
                 xor_r(m_acc_reg, m_l_reg, m_flag_reg, cycles);
                 break;
             case XOR_MHL:
-                xor_MHL(m_acc_reg, m_memory[address_in_HL()], m_flag_reg, cycles);
+                xor_MHL(m_acc_reg, m_memory.read(address_in_HL()), m_flag_reg, cycles);
                 break;
             case XOR_A:
                 xor_r(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
@@ -687,7 +687,7 @@ namespace emu::z80 {
                 or_r(m_acc_reg, m_l_reg, m_flag_reg, cycles);
                 break;
             case OR_MHL:
-                or_MHL(m_acc_reg, m_memory[address_in_HL()], m_flag_reg, cycles);
+                or_MHL(m_acc_reg, m_memory.read(address_in_HL()), m_flag_reg, cycles);
                 break;
             case OR_A:
                 or_r(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
@@ -711,7 +711,7 @@ namespace emu::z80 {
                 cp_r(m_acc_reg, m_l_reg, m_flag_reg, cycles);
                 break;
             case CP_MHL:
-                cp_MHL(m_acc_reg, m_memory[address_in_HL()], m_flag_reg, cycles);
+                cp_MHL(m_acc_reg, m_memory.read(address_in_HL()), m_flag_reg, cycles);
                 break;
             case CP_A:
                 cp_r(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
@@ -948,7 +948,7 @@ namespace emu::z80 {
                 rlc_r(m_l_reg, m_flag_reg, cycles);
                 break;
             case RLC_MHL:
-                rlc_MHL(m_memory[address_in_HL()], m_flag_reg, cycles);
+                rlc_MHL(m_memory, address_in_HL(), m_flag_reg, cycles);
                 break;
             case RLC_A:
                 rlc_r(m_acc_reg, m_flag_reg, cycles);
@@ -972,7 +972,7 @@ namespace emu::z80 {
                 rrc_r(m_l_reg, m_flag_reg, cycles);
                 break;
             case RRC_MHL:
-                rrc_MHL(m_memory[address_in_HL()], m_flag_reg, cycles);
+                rrc_MHL(m_memory, address_in_HL(), m_flag_reg, cycles);
                 break;
             case RRC_A:
                 rrc_r(m_acc_reg, m_flag_reg, cycles);
@@ -996,7 +996,7 @@ namespace emu::z80 {
                 rl_r(m_l_reg, m_flag_reg, cycles);
                 break;
             case RL_MHL:
-                rl_MHL(m_memory[address_in_HL()], m_flag_reg, cycles);
+                rl_MHL(m_memory, address_in_HL(), m_flag_reg, cycles);
                 break;
             case RL_A:
                 rl_r(m_acc_reg, m_flag_reg, cycles);
@@ -1020,7 +1020,7 @@ namespace emu::z80 {
                 rr_r(m_l_reg, m_flag_reg, cycles);
                 break;
             case RR_MHL:
-                rr_MHL(m_memory[address_in_HL()], m_flag_reg, cycles);
+                rr_MHL(m_memory, address_in_HL(), m_flag_reg, cycles);
                 break;
             case RR_A:
                 rr_r(m_acc_reg, m_flag_reg, cycles);
@@ -1044,7 +1044,7 @@ namespace emu::z80 {
                 sla_r(m_l_reg, m_flag_reg, cycles);
                 break;
             case SLA_MHL:
-                sla_MHL(m_memory[address_in_HL()], m_flag_reg, cycles);
+                sla_MHL(m_memory, address_in_HL(), m_flag_reg, cycles);
                 break;
             case SLA_A:
                 sla_r(m_acc_reg, m_flag_reg, cycles);
@@ -1068,7 +1068,7 @@ namespace emu::z80 {
                 sra_r(m_l_reg, m_flag_reg, cycles);
                 break;
             case SRA_MHL:
-                sra_MHL(m_memory[address_in_HL()], m_flag_reg, cycles);
+                sra_MHL(m_memory, address_in_HL(), m_flag_reg, cycles);
                 break;
             case SRA_A:
                 sra_r(m_acc_reg, m_flag_reg, cycles);
@@ -1092,7 +1092,7 @@ namespace emu::z80 {
                 sll_r(m_l_reg, m_flag_reg, cycles);
                 break;
             case SLL_MHL:
-                sll_MHL(m_memory[address_in_HL()], m_flag_reg, cycles);
+                sll_MHL(m_memory, address_in_HL(), m_flag_reg, cycles);
                 break;
             case SLL_A:
                 sll_r(m_acc_reg, m_flag_reg, cycles);
@@ -1116,7 +1116,7 @@ namespace emu::z80 {
                 srl_r(m_l_reg, m_flag_reg, cycles);
                 break;
             case SRL_MHL:
-                srl_MHL(m_memory[address_in_HL()], m_flag_reg, cycles);
+                srl_MHL(m_memory, address_in_HL(), m_flag_reg, cycles);
                 break;
             case SRL_A:
                 srl_r(m_acc_reg, m_flag_reg, cycles);
@@ -2295,10 +2295,10 @@ namespace emu::z80 {
                 ld_Mnn_dd(m_h_reg, m_l_reg, m_memory, get_next_word(), cycles);
                 break;
             case RRD:
-                rrd(m_acc_reg, m_memory[address_in_HL()], m_flag_reg, cycles);
+                rrd(m_acc_reg, m_memory, address_in_HL(), m_flag_reg, cycles);
                 break;
             case RLD:
-                rld(m_acc_reg, m_memory[address_in_HL()], m_flag_reg, cycles);
+                rld(m_acc_reg, m_memory, address_in_HL(), m_flag_reg, cycles);
                 break;
             case ADC_HL_HL:
                 adc_hl_ss(m_h_reg, m_l_reg, to_u16(m_h_reg, m_l_reg), m_flag_reg, cycles);
@@ -2428,8 +2428,8 @@ namespace emu::z80 {
                 break;
             case InterruptMode::TWO:
                 const u16 address_of_interrupt_vector = to_u16(m_i_reg, m_instruction_from_interruptor);
-                const u8 farg = m_memory[address_of_interrupt_vector];
-                const u8 sarg = m_memory[address_of_interrupt_vector + 1];
+                const u8 farg = m_memory.read(address_of_interrupt_vector);
+                const u8 sarg = m_memory.read(address_of_interrupt_vector + 1);
                 call(m_pc, m_sp, m_memory, {.farg = farg, .sarg = sarg}, cycles);
                 cycles = 19;
                 break;
@@ -2440,27 +2440,19 @@ namespace emu::z80 {
 
     NextByte Cpu::get_next_byte() {
         return {
-                .farg = m_memory[m_pc++]
+                .farg = m_memory.read(m_pc++)
         };
     }
 
     NextWord Cpu::get_next_word() {
         return {
-                .farg = m_memory[m_pc++],
-                .sarg = m_memory[m_pc++]
+                .farg = m_memory.read(m_pc++),
+                .sarg = m_memory.read(m_pc++)
         };
     }
 
     u16 Cpu::address_in_HL() const {
         return to_u16(m_h_reg, m_l_reg);
-    }
-
-    u16 Cpu::address_in_DE() const {
-        return to_u16(m_d_reg, m_e_reg);
-    }
-
-    u16 Cpu::address_in_HL_p() const {
-        return to_u16(m_h_p_reg, m_l_p_reg);
     }
 
     EmulatorMemory &Cpu::memory() {

@@ -42,6 +42,8 @@ namespace emu::applications::pacman {
 
         void load_file();
 
+        void memory_map(EmulatorMemory &memory, u16 address);
+
         static std::vector<u8> create_tile_ram();
 
         static std::vector<u8> create_palette_ram();

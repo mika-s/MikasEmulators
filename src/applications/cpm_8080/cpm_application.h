@@ -1,8 +1,9 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_CPM_8080_CPM_APPLICATION_H
 #define MIKA_EMULATORS_APPLICATIONS_CPM_8080_CPM_APPLICATION_H
 
-#include <vector>
+#include <string>
 #include <memory>
+#include <vector>
 #include "chips/8080/cpu.h"
 #include "chips/8080/interfaces/out_observer.h"
 #include "crosscutting/typedefs.h"

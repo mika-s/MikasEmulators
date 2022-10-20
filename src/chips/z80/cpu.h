@@ -170,10 +170,6 @@ namespace emu::z80 {
 
         [[nodiscard]] u16 address_in_HL() const;
 
-        [[nodiscard]] u16 address_in_HL_p() const;
-
-        [[nodiscard]] u16 address_in_DE() const;
-
         void r_tick();
 
         void print_debug(u8 opcode);

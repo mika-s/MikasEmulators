@@ -1,6 +1,7 @@
 #include <iostream>
 #include "doctest.h"
 #include "chips/z80/flags.h"
+#include "chips/z80/emulator_memory.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
 
@@ -23,11 +24,14 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void rrd(u8 &acc_reg, u8 &value, Flags &flag_reg, cyc &cycles) {
+    void rrd(u8 &acc_reg, EmulatorMemory &memory, u16 address, Flags &flag_reg, cyc &cycles) {
+        u8 value = memory.read(address);
         u8 new_acc = acc_reg;
 
         new_acc = (new_acc & 0xf0) | (value & 0x0f);
         value = ((acc_reg & 0x0f) << 4) | ((value & 0xf0) >> 4);
+
+        memory.write(address, value);
 
         acc_reg = new_acc;
 
@@ -48,48 +52,49 @@ namespace emu::z80 {
     TEST_CASE("Z80: RRD") {
         cyc cycles = 0;
         u8 acc_reg = 0;
-        u8 value = 0;
 
         SUBCASE("should put (HL) LS nibble in LS nibble acc_reg, and LS nibble in acc_reg in MS nibble (HL), and MS nibble (HL) in LS nibble (HL)") {
             Flags flag_reg;
             acc_reg = 0x84;
-            value = 0x20;
+            EmulatorMemory memory;
+            memory.add({0x20});
 
-            rrd(acc_reg, value, flag_reg, cycles);
+            rrd(acc_reg, memory, 0x0000, flag_reg, cycles);
 
             CHECK_EQ(0x80, acc_reg);
-            CHECK_EQ(0x42, value);
+            CHECK_EQ(0x42, memory.read(0x0000));
         }
 
         SUBCASE("should ignore the carry flag into account when shifting") {
             Flags flag_reg;
             flag_reg.set_carry_flag();
             acc_reg = 0xab;
-            value = 0xde;
+            EmulatorMemory memory;
+            memory.add({0xde});
 
-            rrd(acc_reg, value, flag_reg, cycles);
-
-            CHECK_EQ(true, flag_reg.is_carry_flag_set());
-
-            rrd(acc_reg, value, flag_reg, cycles);
+            rrd(acc_reg, memory, 0x0000, flag_reg, cycles);
 
             CHECK_EQ(true, flag_reg.is_carry_flag_set());
 
-            rrd(acc_reg, value, flag_reg, cycles);
+            rrd(acc_reg, memory, 0x0000, flag_reg, cycles);
+
+            CHECK_EQ(true, flag_reg.is_carry_flag_set());
+
+            rrd(acc_reg, memory, 0x0000, flag_reg, cycles);
 
             CHECK_EQ(true, flag_reg.is_carry_flag_set());
 
             flag_reg.clear_carry_flag();
 
-            rrd(acc_reg, value, flag_reg, cycles);
+            rrd(acc_reg, memory, 0x0000, flag_reg, cycles);
 
             CHECK_EQ(false, flag_reg.is_carry_flag_set());
 
-            rrd(acc_reg, value, flag_reg, cycles);
+            rrd(acc_reg, memory, 0x0000, flag_reg, cycles);
 
             CHECK_EQ(false, flag_reg.is_carry_flag_set());
 
-            rrd(acc_reg, value, flag_reg, cycles);
+            rrd(acc_reg, memory, 0x0000, flag_reg, cycles);
 
             CHECK_EQ(false, flag_reg.is_carry_flag_set());
         }
@@ -98,19 +103,20 @@ namespace emu::z80 {
             Flags flag_reg;
             flag_reg.set_half_carry_flag();
             acc_reg = 0xab;
-            value = 0xde;
+            EmulatorMemory memory;
+            memory.add({0xde});
 
-            rrd(acc_reg, value, flag_reg, cycles);
+            rrd(acc_reg, memory, 0x0000, flag_reg, cycles);
 
             CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
 
-            rrd(acc_reg, value, flag_reg, cycles);
+            rrd(acc_reg, memory, 0x0000, flag_reg, cycles);
 
             CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
 
             flag_reg.set_half_carry_flag();
 
-            rrd(acc_reg, value, flag_reg, cycles);
+            rrd(acc_reg, memory, 0x0000, flag_reg, cycles);
 
             CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
         }
@@ -119,19 +125,20 @@ namespace emu::z80 {
             Flags flag_reg;
             flag_reg.set_add_subtract_flag();
             acc_reg = 0xab;
-            value = 0xde;
+            EmulatorMemory memory;
+            memory.add({0xde});
 
-            rrd(acc_reg, value, flag_reg, cycles);
+            rrd(acc_reg, memory, 0x0000, flag_reg, cycles);
 
             CHECK_EQ(false, flag_reg.is_add_subtract_flag_set());
 
-            rrd(acc_reg, value, flag_reg, cycles);
+            rrd(acc_reg, memory, 0x0000, flag_reg, cycles);
 
             CHECK_EQ(false, flag_reg.is_add_subtract_flag_set());
 
             flag_reg.set_add_subtract_flag();
 
-            rrd(acc_reg, value, flag_reg, cycles);
+            rrd(acc_reg, memory, 0x0000, flag_reg, cycles);
 
             CHECK_EQ(false, flag_reg.is_add_subtract_flag_set());
         }
@@ -141,9 +148,10 @@ namespace emu::z80 {
 
             Flags flag_reg;
             acc_reg = 0xab;
-            value = 0xde;
+            EmulatorMemory memory;
+            memory.add({0xde});
 
-            rrd(acc_reg, value, flag_reg, cycles);
+            rrd(acc_reg, memory, 0x0000, flag_reg, cycles);
 
             CHECK_EQ(18, cycles);
         }

@@ -38,9 +38,9 @@ namespace emu::z80 {
 
     void ex_msp_dd(u16 sp, EmulatorMemory &memory, u16 &reg) {
         const u16 previous_reg = reg;
-        reg = to_u16(memory[sp + 1], memory[sp]);
-        memory[sp] = low_byte(previous_reg);
-        memory[sp + 1] = high_byte(previous_reg);
+        reg = to_u16(memory.read(sp + 1), memory.read(sp));
+        memory.write(sp, low_byte(previous_reg));
+        memory.write(sp + 1, high_byte(previous_reg));
     }
 
     /**
@@ -185,8 +185,8 @@ namespace emu::z80 {
 
             CHECK_EQ(0x44, h_reg);
             CHECK_EQ(0x33, l_reg);
-            CHECK_EQ(0x22, memory[sp]);
-            CHECK_EQ(0x11, memory[sp + 1]);
+            CHECK_EQ(0x22, memory.read(sp));
+            CHECK_EQ(0x11, memory.read(sp + 1));
         }
 
         SUBCASE("should use 18 cycles") {
@@ -215,8 +215,8 @@ namespace emu::z80 {
             ex_msp_ixy(sp, memory, ix_reg, cycles);
 
             CHECK_EQ(0x4890, ix_reg);
-            CHECK_EQ(0x88, memory[sp]);
-            CHECK_EQ(0x39, memory[sp + 1]);
+            CHECK_EQ(0x88, memory.read(sp));
+            CHECK_EQ(0x39, memory.read(sp + 1));
         }
 
         SUBCASE("should use 23 cycles") {
