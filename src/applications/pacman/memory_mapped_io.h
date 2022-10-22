@@ -15,27 +15,23 @@ namespace emu::applications::pacman {
 
         void in0_read(unsigned int bit_number, bool is_setting);
 
-        bool in0_read(unsigned int bit_number);
+        [[nodiscard]] u8 in0_read() const;
 
         void in1_read(unsigned int bit_number, bool is_setting);
 
-        bool in1_read(unsigned int bit_number);
-
-        u8 in0_write() const;
-
-        u8 in0_read() const;
-
-        u8 in1_write() const;
-
-        u8 in1_read() const;
-
-        void in0_write(u8 value);
+        [[nodiscard]] u8 in1_read() const;
 
         void in0_write(unsigned int bit_number, bool is_setting);
 
-        void in1_write(u8 value);
+        [[nodiscard]] u8 in0_write() const;
+
+        void in0_write(u8 value);
 
         void in1_write(unsigned int bit_number, bool is_setting);
+
+        [[nodiscard]] u8 in1_write() const;
+
+        void in1_write(u8 value);
 
         u8 coin_counter();
 

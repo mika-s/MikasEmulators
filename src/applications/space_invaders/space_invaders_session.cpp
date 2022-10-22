@@ -345,8 +345,6 @@ namespace emu::applications::space_invaders {
             case TOGGLE_MUTE:
                 m_audio.toggle_mute();
                 break;
-            default:
-                throw std::runtime_error("Unhandled IoRequest in io_changed");
         }
     }
 

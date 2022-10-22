@@ -18,10 +18,8 @@
 #include "crosscutting/debugging/debugger.h"
 #include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/debugging/disassembled_line.h"
-#include "crosscutting/misc/emulator.h"
 #include "crosscutting/misc/governor.h"
 #include "crosscutting/misc/session.h"
-#include "crosscutting/logging/log_observer.h"
 #include "crosscutting/logging/logger.h"
 
 namespace emu::applications::pacman {

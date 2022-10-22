@@ -76,7 +76,7 @@ namespace emu::applications::pacman {
 
         const unsigned int tile_count = tile_rom.size() / bytes_per_tile;
 
-        for (size_t palette_idx = 0; palette_idx < m_palettes.size(); ++palette_idx) {
+        for (std::size_t palette_idx = 0; palette_idx < m_palettes.size(); ++palette_idx) {
             m_tiles.emplace_back(tile_count, std::make_shared<UninitializedTile>());
 
             for (unsigned int tile_idx = 0; tile_idx < tile_count; ++tile_idx) {
@@ -104,7 +104,7 @@ namespace emu::applications::pacman {
 
         const unsigned int sprite_count = sprite_rom.size() / bytes_per_sprite;
 
-        for (size_t palette_idx = 0; palette_idx < m_palettes.size(); ++palette_idx) {
+        for (std::size_t palette_idx = 0; palette_idx < m_palettes.size(); ++palette_idx) {
             m_sprites.emplace_back(sprite_count, std::make_shared<UninitializedSprite>());
             m_sprites_x.emplace_back(sprite_count, std::make_shared<UninitializedSprite>());
             m_sprites_y.emplace_back(sprite_count, std::make_shared<UninitializedSprite>());

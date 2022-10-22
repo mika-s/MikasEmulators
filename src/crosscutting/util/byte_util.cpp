@@ -16,11 +16,11 @@ namespace emu::util::byte {
     }
 
     u16 to_u16(u8 farg, u8 sarg) {
-        return (farg << 8u) + sarg;
+        return static_cast<u16>((farg << 8U) + sarg);
     }
 
     u32 to_u32(u8 fiarg, u8 sarg, u8 targ, u8 foarg) {
-        return fiarg << 24 | sarg << 16 | targ << 8 | foarg;
+        return static_cast<u32>(fiarg << 24U | sarg << 16U | targ << 8U | foarg);
     }
 
     /**

@@ -59,8 +59,6 @@ namespace emu::applications::pacman {
         static constexpr unsigned int dipswitches_difficulty = 6;
         static constexpr unsigned int dipswitches_ghost_names = 7;
 
-        Settings m_settings;
-
         EmulatorMemory m_memory;
         EmulatorMemory m_color_rom;
         EmulatorMemory m_palette_rom;

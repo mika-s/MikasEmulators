@@ -3,7 +3,6 @@
 
 #include <functional>
 #include <vector>
-#include "crosscutting/typedefs.h"
 
 namespace emu::misc {
 

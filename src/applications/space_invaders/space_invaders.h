@@ -36,7 +36,7 @@ namespace emu::applications::space_invaders {
 
         static std::vector<u8> create_vram();
 
-        std::vector<u8> fill_remaining(size_t size);
+        std::vector<u8> fill_remaining(std::size_t size);
     };
 }
 

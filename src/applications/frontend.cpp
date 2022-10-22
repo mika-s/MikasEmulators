@@ -11,11 +11,13 @@
 #include "applications/pacman/gui_sdl.h"
 #include "applications/pacman/input_imgui.h"
 #include "applications/pacman/input_sdl.h"
+#include "applications/pacman/settings.h"
 #include "applications/space_invaders/gui_imgui.h"
 #include "applications/space_invaders/gui_sdl.h"
 #include "applications/space_invaders/input_imgui.h"
 #include "applications/space_invaders/input_sdl.h"
 #include "applications/space_invaders/space_invaders.h"
+#include "applications/space_invaders/settings.h"
 #include "chips/8080/disassembler8080.h"
 #include "chips/8080/emulator_memory.h"
 #include "chips/z80/disassemblerZ80.h"
@@ -29,7 +31,7 @@ namespace emu::applications {
 
     void Frontend::run(Options &options) {
         const std::vector<std::string> args = options.args();
-        if (args.size() >= global__minimum_number_of_arguments) {
+        if (args.size() >= global_minimum_number_of_arguments) {
             const std::string &mode = args[mode_argument];
 
             if (mode == "disassemble") {
@@ -57,8 +59,8 @@ namespace emu::applications {
     }
 
     void Frontend::run(const std::vector<std::string> &args, Options &options) {
-        if (args.size() >= run__minimum_number_of_arguments) {
-            const std::string &program = args[run__program_argument];
+        if (args.size() >= run_minimum_number_of_arguments) {
+            const std::string &program = args[run_program_argument];
             if (is_supporting(program)) {
                 choose_emulator(program, options)->new_session()->run();
             } else {
@@ -74,9 +76,9 @@ namespace emu::applications {
         using emu::z80::DisassemblerZ80;
         using emu::util::file::read_file_into_vector;
 
-        if (args.size() == disassembly__number_of_arguments) {
-            const std::string &cpu = args[disassembly__cpu_argument];
-            const std::string &file_path = args[disassembly__file_path_argument];
+        if (args.size() == disassembly_number_of_arguments) {
+            const std::string &cpu = args[disassembly_cpu_argument];
+            const std::string &file_path = args[disassembly_file_path_argument];
 
             if (cpu == "8080") {
                 emu::i8080::EmulatorMemory memory;
@@ -165,11 +167,11 @@ namespace emu::applications {
     }
 
     void Frontend::test(const std::vector<std::string> &args) {
-        if (args.size() >= test__minimum_number_of_arguments) {
+        if (args.size() >= test_minimum_number_of_arguments) {
             doctest::Context context;
             context.addFilter("test-case", "crosscutting*");
 
-            if (args.size() == test__number_of_arguments_when_no_cpus_provided) {
+            if (args.size() == test_number_of_arguments_when_no_cpus_provided) {
                 context.addFilter("test-case", "8080*");
                 context.addFilter("test-case", "Z80*");
             } else {

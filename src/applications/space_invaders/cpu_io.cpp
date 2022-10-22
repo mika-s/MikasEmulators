@@ -28,7 +28,6 @@ namespace emu::applications::space_invaders {
                 m_in_port2 |= 0b00000001;
                 break;
             case NumberOfLives::Three:
-            default:
                 break;
         }
     }

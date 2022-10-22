@@ -103,7 +103,7 @@ namespace emu::applications::space_invaders {
         if (SDL_LockTexture(m_texture, nullptr, &pixels, &pitch) != 0) {
             std::cerr << "error while unlocking SDL texture: " << SDL_GetError() << "\n";
         } else {
-            memcpy(pixels, framebuffer.data(), pitch * height);
+            memcpy(pixels, framebuffer.data(), static_cast<std::size_t>(pitch * height));
         }
 
         std::string title;

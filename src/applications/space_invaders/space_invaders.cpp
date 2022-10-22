@@ -1,6 +1,4 @@
 #include "space_invaders.h"
-#include "chips/8080/cpu.h"
-#include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/file_util.h"
 
 namespace emu::applications::space_invaders {
@@ -34,7 +32,7 @@ namespace emu::applications::space_invaders {
         m_memory.add(fill_remaining(m_memory.size()));
     }
 
-    std::vector<u8> create_empty_vector(int size) {
+    std::vector<u8> create_empty_vector(std::size_t size) {
         std::vector<u8> vec(size, 0);
         return vec;
     }
@@ -47,7 +45,7 @@ namespace emu::applications::space_invaders {
         return create_empty_vector(0x3fff - 0x2400);
     }
 
-    std::vector<u8> SpaceInvaders::fill_remaining(size_t memory_size) {
+    std::vector<u8> SpaceInvaders::fill_remaining(std::size_t memory_size) {
         return create_empty_vector(UINT16_MAX - memory_size);
     }
 }

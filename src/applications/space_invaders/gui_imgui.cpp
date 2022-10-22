@@ -6,9 +6,7 @@
 #include "imgui_impl_sdl.h"
 #include "imgui_impl_opengl3.h"
 #include "gui_imgui.h"
-#include "chips/8080/cpu.h"
 #include "crosscutting/util/byte_util.h"
-#include "crosscutting/util/file_util.h"
 
 namespace emu::applications::space_invaders {
 
@@ -140,7 +138,7 @@ namespace emu::applications::space_invaders {
         SDL_GL_MakeCurrent(m_win, m_gl_context);
         SDL_GL_SetSwapInterval(1);
 
-        if (!gladLoadGLLoader((GLADloadproc) SDL_GL_GetProcAddress)) {
+        if (!gladLoadGLLoader(static_cast<GLADloadproc>(SDL_GL_GetProcAddress))) {
             std::cerr << "error initializing glad\n";
             exit(1);
         }

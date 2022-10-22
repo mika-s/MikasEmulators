@@ -11,9 +11,6 @@
 #include "interfaces/io_observer.h"
 #include "chips/8080/cpu.h"
 #include "chips/8080/emulator_memory.h"
-#include "chips/8080/shift_register.h"
-#include "chips/8080/instructions/instructions.h"
-#include "src/crosscutting/misc/emulator.h"
 #include "chips/8080/interfaces/gui_observer.h"
 #include "chips/8080/interfaces/in_observer.h"
 #include "chips/8080/interfaces/out_observer.h"
@@ -21,7 +18,6 @@
 #include "crosscutting/debugging/debugger.h"
 #include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/debugging/disassembled_line.h"
-#include "crosscutting/logging/log_observer.h"
 #include "crosscutting/logging/logger.h"
 #include "crosscutting/misc/governor.h"
 #include "crosscutting/misc/session.h"
@@ -97,8 +93,8 @@ namespace emu::applications::space_invaders {
         Governor m_governor;
 
         // Game loop - begin
-        static constexpr double fps = 60.0;
-        static constexpr long double tick_limit = 1000.0 / fps;
+        static constexpr long double fps = 60.0L;
+        static constexpr long double tick_limit = 1000.0L / fps;
         static constexpr int cycles_per_ms = 2000;
         static constexpr long double cycles_per_tick = cycles_per_ms * tick_limit;
         // Game loop - end
@@ -116,8 +112,8 @@ namespace emu::applications::space_invaders {
         static constexpr u8 out_port_watchdog = 6;
         // IO - end
 
-        static constexpr unsigned int rst_1_i8080 = 0xCF;
-        static constexpr unsigned int rst_2_i8080 = 0xD7;
+        static constexpr unsigned int rst_1_i8080 = 0xcf;
+        static constexpr unsigned int rst_2_i8080 = 0xd7;
 
         void running(cyc &cycles);
 

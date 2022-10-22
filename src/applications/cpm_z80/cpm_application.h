@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 #include "chips/z80/cpu.h"
-#include "chips/z80/interfaces/out_observer.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/misc/emulator.h"
 #include "crosscutting/misc/session.h"

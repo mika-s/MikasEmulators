@@ -30,7 +30,7 @@ namespace emu::util::string {
         if (val >= 0) {
             return hexify_wo_0x(static_cast<u8>(val));
         } else {
-            u8 uval = abs(val);
+            u8 uval = static_cast<u8>(abs(val));
             std::stringstream ss;
             ss << "-" << hexify_wo_0x(uval);
             return ss.str();

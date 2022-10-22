@@ -60,8 +60,7 @@ namespace emu::gui {
 
                 float offset = 0.0f;
                 for (const auto &bit: m_debug_container.flag_register().flag_names()) {
-                    std::string bit_name = std::get<0>(bit);
-                    u8 bit_number = std::get<1>(bit);
+                    auto &[bit_name, bit_number] = bit;
                     ImGui::Text("%s", is_bit_set(value, bit_number) ? bit_name.c_str() : "-");
                     offset += 10.0f;
                     ImGui::SameLine(200.0f + offset, ImGui::GetStyle().ItemInnerSpacing.x);

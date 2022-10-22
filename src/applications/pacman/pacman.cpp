@@ -11,8 +11,7 @@ namespace emu::applications::pacman {
             std::shared_ptr<Gui> gui,
             std::shared_ptr<Input> input
     )
-            : m_settings(settings),
-              m_gui(std::move(gui)),
+            : m_gui(std::move(gui)),
               m_input(std::move(input)) {
         load_file();
 

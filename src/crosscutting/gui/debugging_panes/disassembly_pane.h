@@ -1,6 +1,7 @@
 #ifndef MIKA_EMULATORS_CROSSCUTTING_GUI_DEBUGGING_PANES_DISASSEMBLY_PANE_H
 #define MIKA_EMULATORS_CROSSCUTTING_GUI_DEBUGGING_PANES_DISASSEMBLY_PANE_H
 
+#include <memory>
 #include <string>
 #include <vector>
 #include "crosscutting/typedefs.h"

@@ -42,7 +42,7 @@ namespace emu::debugger {
     FlagRegisterDebugContainer::FlagRegisterDebugContainer(
             std::string name,
             std::function<u8()> value_retriever,
-            std::vector<std::tuple<std::string, int>> flag_names
+            std::vector<std::tuple<std::string, unsigned int>> flag_names
     ) : m_name(std::move(name)),
         m_value_retriever(std::move(value_retriever)),
         m_flag_names(std::move(flag_names)) {
@@ -56,7 +56,7 @@ namespace emu::debugger {
         return m_value_retriever();
     }
 
-    std::vector<std::tuple<std::string, int>> FlagRegisterDebugContainer::flag_names() const {
+    std::vector<std::tuple<std::string, unsigned int>> FlagRegisterDebugContainer::flag_names() const {
         return m_flag_names;
     }
 
@@ -74,7 +74,7 @@ namespace emu::debugger {
             std::string name,
             std::function<bool()> is_active_retriever,
             std::function<u8()> value_retriever,
-            std::vector<std::tuple<std::string, int>> m_bit_names
+            std::vector<std::tuple<std::string, unsigned int>> m_bit_names
     ) : m_name(std::move(name)),
         m_is_active_retriever(std::move(is_active_retriever)),
         m_value_retriever(std::move(value_retriever)),
@@ -98,7 +98,7 @@ namespace emu::debugger {
         return m_is_divided_into_bits;
     }
 
-    std::vector<std::tuple<std::string, int>> IoDebugContainer::bit_names() const {
+    std::vector<std::tuple<std::string, unsigned int>> IoDebugContainer::bit_names() const {
         return m_bit_names;
     }
 

@@ -7,8 +7,6 @@
 #include <SDL_render.h>
 #include "gui.h"
 #include "crosscutting/typedefs.h"
-#include "crosscutting/debugging/debugger.h"
-#include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/misc/run_status.h"
 
 namespace emu::applications::space_invaders {

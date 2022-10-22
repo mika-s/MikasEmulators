@@ -7,7 +7,6 @@
 #include "chips/8080/emulator_memory.h"
 #include "chips/8080/interfaces/out_observer.h"
 #include "crosscutting/typedefs.h"
-#include "crosscutting/misc/emulator.h"
 #include "crosscutting/misc/session.h"
 
 namespace emu::applications::cpm::i8080 {
@@ -15,7 +14,6 @@ namespace emu::applications::cpm::i8080 {
     using emu::i8080::Cpu;
     using emu::i8080::EmulatorMemory;
     using emu::i8080::OutObserver;
-    using emu::misc::Emulator;
     using emu::misc::Session;
 
     class CpmApplicationSession : public Session, public OutObserver {

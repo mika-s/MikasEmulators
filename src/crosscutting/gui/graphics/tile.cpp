@@ -8,7 +8,11 @@ namespace emu::gui {
             : m_height(height),
               m_width(width) {
         if (height != width) {
-            throw std::invalid_argument("Non-square tiles not supported");
+            throw std::invalid_argument(fmt::format("Non-square tiles not supported: {}x{}", height, width));
+        } else if (m_height > UINT32_MAX) {
+            throw std::invalid_argument(fmt::format("Tile height too large: {}", height));
+        } else if (m_width > UINT32_MAX) {
+            throw std::invalid_argument(fmt::format("Tile width too large: {}", width));
         }
 
         for (unsigned int row = 0; row < height; ++row) {
@@ -35,8 +39,9 @@ namespace emu::gui {
             unsigned int origin_row,
             unsigned int origin_col
     ) {
-        for (std::size_t px_row = 0; px_row < m_height; ++px_row) {
-            for (std::size_t px_col = 0; px_col < m_width; ++px_col) {
+        for (unsigned int px_row = 0; px_row < static_cast<unsigned int>(m_height); ++px_row) {
+            for (unsigned int px_col = 0; px_col < static_cast<unsigned int>(m_width); ++px_col) {
+
                 framebuffer.set(origin_row + px_row, origin_col + px_col, get(px_row, px_col));
             }
         }

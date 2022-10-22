@@ -5,7 +5,6 @@
 #include <memory>
 #include <vector>
 #include "chips/8080/cpu.h"
-#include "chips/8080/interfaces/out_observer.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/misc/emulator.h"
 #include "crosscutting/misc/session.h"

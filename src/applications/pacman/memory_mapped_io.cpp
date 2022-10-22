@@ -34,12 +34,20 @@ namespace emu::applications::pacman {
         }
     }
 
-    u8 MemoryMappedIo::in1_read() const {
-        return m_in1_read;
+    void MemoryMappedIo::in0_write(unsigned int bit_number, bool is_setting) {
+        if (is_setting) {
+            set_bit(m_in0_write, bit_number);
+        } else {
+            unset_bit(m_in0_write, bit_number);
+        }
     }
 
     u8 MemoryMappedIo::in0_write() const {
         return m_in0_write;
+    }
+
+    u8 MemoryMappedIo::in1_read() const {
+        return m_in1_read;
     }
 
     u8 MemoryMappedIo::in1_write() const {
@@ -50,24 +58,16 @@ namespace emu::applications::pacman {
         m_in0_write = value;
     }
 
-    void MemoryMappedIo::in0_write(unsigned int bit_number, bool is_setting) {
-        if (is_setting) {
-            set_bit(m_in0_write, bit_number);
-        } else {
-            unset_bit(m_in0_write, bit_number);
-        }
-    }
-
-    void MemoryMappedIo::in1_write(u8 value) {
-        m_in1_write = value;
-    }
-
     void MemoryMappedIo::in1_write(unsigned int bit_number, bool is_setting) {
         if (is_setting) {
             set_bit(m_in1_write, bit_number);
         } else {
             unset_bit(m_in1_write, bit_number);
         }
+    }
+
+    void MemoryMappedIo::in1_write(u8 value) {
+        m_in1_write = value;
     }
 
     u8 MemoryMappedIo::coin_counter() {
@@ -162,10 +162,10 @@ namespace emu::applications::pacman {
     void MemoryMappedIo::board_test(const Settings &settings) {
         switch (settings.m_board_test) {
             case BoardTest::Off:
-                set_bit(m_dipswitches, board_test_bit);
+                set_bit(m_in1_read, board_test_bit);
                 break;
             case BoardTest::On:
-                unset_bit(m_dipswitches, board_test_bit);
+                unset_bit(m_in1_read, board_test_bit);
                 break;
         }
     }

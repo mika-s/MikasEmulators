@@ -11,6 +11,10 @@ namespace emu::gui {
               m_width(width) {
         if (height != width) {
             throw std::invalid_argument("Non-square tiles not supported");
+        } else if (m_height > UINT32_MAX) {
+            throw std::invalid_argument(fmt::format("Sprite height too large: {}", height));
+        } else if (m_width > UINT32_MAX) {
+            throw std::invalid_argument(fmt::format("Sprite width too large: {}", width));
         }
 
         for (unsigned int row = 0; row < height; ++row) {
@@ -38,8 +42,8 @@ namespace emu::gui {
     }
 
     void Sprite::map_to_framebuffer(Framebuffer &framebuffer, int origin_row, int origin_col) {
-        for (std::size_t row = 0; row < m_height; ++row) {
-            for (std::size_t col = 0; col < m_width; ++col) {
+        for (unsigned int row = 0; row < m_height; ++row) {
+            for (unsigned int col = 0; col < m_width; ++col) {
                 const Color pixel = get(row, col);
 
                 if (pixel.is_transparent()) {

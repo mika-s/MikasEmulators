@@ -50,19 +50,19 @@ namespace emu::debugger {
         FlagRegisterDebugContainer(
                 std::string name,
                 std::function<u8()> value_retriever,
-                std::vector<std::tuple<std::string, int>> flag_names
+                std::vector<std::tuple<std::string, unsigned int>> flag_names
         );
 
         [[nodiscard]] std::string name() const;
 
         [[nodiscard]] u8 value() const;
 
-        [[nodiscard]] std::vector<std::tuple<std::string, int>> flag_names() const;
+        [[nodiscard]] std::vector<std::tuple<std::string, unsigned int>> flag_names() const;
 
     private:
         std::string m_name;
         std::function<u8()> m_value_retriever;
-        std::vector<std::tuple<std::string, int>> m_flag_names;
+        std::vector<std::tuple<std::string, unsigned int>> m_flag_names;
     };
 
     class IoDebugContainer {
@@ -77,7 +77,7 @@ namespace emu::debugger {
                 std::string name,
                 std::function<bool()> is_active_retriever,
                 std::function<u8()> value_retriever,
-                std::vector<std::tuple<std::string, int>> bit_name
+                std::vector<std::tuple<std::string, unsigned int>> bit_name
         );
 
         [[nodiscard]] std::string name() const;
@@ -88,13 +88,13 @@ namespace emu::debugger {
 
         [[nodiscard]] bool is_divided_into_bits() const;
 
-        [[nodiscard]] std::vector<std::tuple<std::string, int>> bit_names() const;
+        [[nodiscard]] std::vector<std::tuple<std::string, unsigned int>> bit_names() const;
 
     private:
         std::string m_name;
         std::function<bool()> m_is_active_retriever;
         std::function<u8()> m_value_retriever;
-        std::vector<std::tuple<std::string, int>> m_bit_names;
+        std::vector<std::tuple<std::string, unsigned int>> m_bit_names;
         bool m_is_divided_into_bits;
     };
 

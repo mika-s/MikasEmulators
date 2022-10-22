@@ -8,6 +8,7 @@
 #include "crosscutting/gui/graphics/color.h"
 #include "crosscutting/gui/graphics/framebuffer.h"
 #include "crosscutting/logging/logger.h"
+#include "crosscutting/misc/run_status.h"
 #include "crosscutting/util/byte_util.h"
 
 namespace emu::applications::space_invaders {
@@ -59,7 +60,7 @@ namespace emu::applications::space_invaders {
             for (int i = 0; i < height * width / bits_in_byte; ++i) {
                 const int y = i * bits_in_byte / height;
                 const int base_x = (i * bits_in_byte) % height;
-                const u8 current_byte = vram[i];
+                const u8 current_byte = vram[static_cast<std::size_t>(i)];
 
                 for (u8 bit = 0; bit < bits_in_byte; ++bit) {
                     int px = base_x + bit;
@@ -87,7 +88,11 @@ namespace emu::applications::space_invaders {
                     px = py;
                     py = -temp_x + height - 1;
 
-                    m_framebuffer.set(py, px, Color(0xff, r, g, b));
+                    m_framebuffer.set(
+                                static_cast<unsigned int>(py),
+                                static_cast<unsigned int>(px),
+                                Color(0xff, r, g, b)
+                    );
                 }
             }
 
