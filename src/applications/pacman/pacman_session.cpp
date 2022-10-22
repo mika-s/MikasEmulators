@@ -100,7 +100,7 @@ namespace emu::applications::pacman {
                 m_gui->update_screen(tile_ram(), sprite_ram(), palette_ram(), m_run_status);
             }
 
-            m_memory_mapped_io->set_initial_values();
+//            m_memory_mapped_io->set_initial_values();
         }
     }
 
@@ -210,7 +210,7 @@ namespace emu::applications::pacman {
                 case InterruptMode::TWO:
                     return "2";
                 default:
-                    return "Unknown";
+                    throw std::invalid_argument("Unhandled InterruptMode");
             }
         });
         m_debug_container.add_flag_register(FlagRegisterDebugContainer(
@@ -234,12 +234,12 @@ namespace emu::applications::pacman {
         m_debug_container.add_io(IoDebugContainer(
                 "coin counter",
                 [&]() { return true; },
-                [&]() { return m_memory_mapped_io->read_coin_counter(); }
+                [&]() { return m_memory_mapped_io->coin_counter(); }
         ));
         m_debug_container.add_io(IoDebugContainer(
                 "dipswitches",
                 [&]() { return true; },
-                [&]() { return m_memory_mapped_io->read_dipswitches(); },
+                [&]() { return m_memory_mapped_io->dipswitches(); },
                 {
                         {"coin 1 (AH)",       0},
                         {"coin 2 (AH)",       1},
@@ -254,7 +254,7 @@ namespace emu::applications::pacman {
         m_debug_container.add_io(IoDebugContainer(
                 "in 0",
                 [&]() { return true; },
-                [&]() { return m_memory_mapped_io->read_in0(); },
+                [&]() { return m_memory_mapped_io->in0_read(); },
                 {
                         {"up (AL)",        0},
                         {"left (AL)",      1},
@@ -269,7 +269,7 @@ namespace emu::applications::pacman {
         m_debug_container.add_io(IoDebugContainer(
                 "in 1",
                 [&]() { return true; },
-                [&]() { return m_memory_mapped_io->read_in1(); },
+                [&]() { return m_memory_mapped_io->in1_read(); },
                 {
                         {"up (AL)",         0},
                         {"left (AL)",       1},
@@ -350,8 +350,6 @@ namespace emu::applications::pacman {
             case TOGGLE_SPRITE_DEBUG:
                 m_gui->toggle_sprite_debug();
                 break;
-            default:
-                throw std::runtime_error("Unhandled IoRequest in io_changed");
         }
     }
 

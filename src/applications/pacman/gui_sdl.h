@@ -6,10 +6,7 @@
 #include <SDL_video.h>
 #include <SDL_render.h>
 #include "gui.h"
-#include "src/crosscutting/misc/run_status.h"
 #include "crosscutting/typedefs.h"
-#include "crosscutting/debugging/debugger.h"
-#include "crosscutting/debugging/debug_container.h"
 
 namespace emu::applications::pacman {
 

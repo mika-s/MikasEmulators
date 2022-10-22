@@ -5,7 +5,9 @@
 namespace emu::z80 {
 
     EmulatorMemory::EmulatorMemory()
-            : m_mask(0xffff) {
+            : m_mask(0xffff),
+              m_memory_mapper_for_write_is_set(false),
+              m_memory_mapper_for_read_is_set(false) {
     }
 
     void EmulatorMemory::add(const std::vector<u8> &to_add) {
@@ -20,6 +22,20 @@ namespace emu::z80 {
         m_mask = mask;
     }
 
+    void EmulatorMemory::attach_memory_mapper_for_write(
+            std::function<void(EmulatorMemory &memory, u16 address, u8 value)> memory_mapper_for_write
+    ) {
+        m_memory_mapper_for_write = memory_mapper_for_write;
+        m_memory_mapper_for_write_is_set = true;
+    }
+
+    void EmulatorMemory::attach_memory_mapper_for_read(
+            std::function<u8(const EmulatorMemory &memory, u16 address)> memory_mapper_for_read
+    ) {
+        m_memory_mapper_for_read = memory_mapper_for_read;
+        m_memory_mapper_for_read_is_set = true;
+    }
+
     std::size_t EmulatorMemory::size() {
         return m_memory.size();
     }
@@ -31,10 +47,10 @@ namespace emu::z80 {
      * @param to is the index to slice until
      * @return a new EmulatorMemory object that contains the sliced memory
      */
-    EmulatorMemory EmulatorMemory::slice(int from, int to) {
+    EmulatorMemory EmulatorMemory::slice(std::size_t from, std::size_t to) {
         std::vector<u8> data;
 
-        for (int i = from; i < to; ++i) {
+        for (std::size_t i = from; i < to; ++i) {
             data.push_back(m_memory[i]);
         }
 
@@ -46,11 +62,27 @@ namespace emu::z80 {
     }
 
     void EmulatorMemory::write(u16 address, u8 value) {
-        m_memory[address & m_mask] = value;
+        if (m_memory_mapper_for_write_is_set) {
+            m_memory_mapper_for_write(*this, address, value);
+        } else {
+            direct_write(address, value);
+        }
+    }
+
+    void EmulatorMemory::direct_write(u16 address, u8 value) {
+        m_memory[address] = value;
     }
 
     u8 EmulatorMemory::read(u16 address) const {
-        return m_memory[address & m_mask];
+        if (m_memory_mapper_for_read_is_set) {
+            return m_memory_mapper_for_read(*this, address);
+        } else {
+            return direct_read(address);
+        }
+    }
+
+    u8 EmulatorMemory::direct_read(u16 address) const {
+        return m_memory[address];
     }
 
     std::vector<u8>::iterator EmulatorMemory::begin() {
@@ -78,7 +110,8 @@ namespace emu::z80 {
             memory.add(input);
 
             for (std::size_t i = 0; i < input.size(); ++i) {
-                CHECK_EQ(input[i], memory.read(i));
+                const u16 address = static_cast<u16>(i);
+                CHECK_EQ(input[i], memory.read(address));
             }
         }
 
@@ -91,11 +124,13 @@ namespace emu::z80 {
             memory.add(input);
 
             for (std::size_t i = 0; i < input.size(); ++i) {
-                CHECK_EQ(input[i], memory.read(i));
+                const u16 address = static_cast<u16>(i);
+                CHECK_EQ(input[i], memory.read(address));
             }
 
             for (std::size_t i = input.size(), j = 0; i < 2 * input.size(); ++i, ++j) {
-                CHECK_EQ(input[j], memory.read(i));
+                const u16 address = static_cast<u16>(i);
+                CHECK_EQ(input[j], memory.read(address));
             }
         }
 
@@ -109,11 +144,13 @@ namespace emu::z80 {
             memory.add(input2);
 
             for (std::size_t i = 0; i < input1.size(); ++i) {
-                CHECK_EQ(input1[i], memory.read(i));
+                const u16 address = static_cast<u16>(i);
+                CHECK_EQ(input1[i], memory.read(address));
             }
 
             for (std::size_t i = input1.size(), j = 0; i < input1.size() + input2.size(); ++i, ++j) {
-                CHECK_EQ(input2[j], memory.read(i));
+                const u16 address = static_cast<u16>(i);
+                CHECK_EQ(input2[j], memory.read(address));
             }
         }
 
@@ -127,10 +164,11 @@ namespace emu::z80 {
             memory.write(5, 100);
 
             for (std::size_t i = 0; i < input.size(); ++i) {
-                if (i == 5) {
-                    CHECK_EQ(100, memory.read(i));
+                const u16 address = static_cast<u16>(i);
+                if (address == 5) {
+                    CHECK_EQ(100, memory.read(address));
                 } else {
-                    CHECK_EQ(input[i], memory.read(i));
+                    CHECK_EQ(input[i], memory.read(address));
                 }
             }
         }

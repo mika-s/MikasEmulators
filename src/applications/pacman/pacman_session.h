@@ -72,8 +72,8 @@ namespace emu::applications::pacman {
         void io_changed(IoRequest request) override;
 
     private:
-        static constexpr double fps = 60.0;
-        static constexpr long double tick_limit = 1000.0 / fps;
+        static constexpr long double fps = 60.0L;
+        static constexpr long double tick_limit = 1000.0L / fps;
         static constexpr int cycles_per_ms = 2000;
         static constexpr long double cycles_per_tick = cycles_per_ms * tick_limit;
         static constexpr int out_port_vblank_interrupt_return = 0;

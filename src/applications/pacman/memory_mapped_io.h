@@ -11,40 +11,54 @@ namespace emu::applications::pacman {
 
     class MemoryMappedIo {
     public:
-        explicit MemoryMappedIo(EmulatorMemory &memory);
-
         bool is_interrupt_enabled();
 
-        bool read_in0(unsigned int bit_number);
+        void in0_read(unsigned int bit_number, bool is_setting);
 
-        u8 read_in0() const;
+        bool in0_read(unsigned int bit_number);
 
-        u8 read_in1() const;
+        void in1_read(unsigned int bit_number, bool is_setting);
 
-        void write_in0(unsigned int bit_number, bool is_setting);
+        bool in1_read(unsigned int bit_number);
 
-        void write_in1(unsigned int bit_number, bool is_setting);
+        u8 in0_write() const;
 
-        u8 read_coin_counter();
+        u8 in0_read() const;
 
-        void set_dipswitches(const Settings &settings);
+        u8 in1_write() const;
 
-        u8 read_dipswitches();
+        u8 in1_read() const;
 
-        void set_board_test(const Settings &settings);
+        void in0_write(u8 value);
 
-        void set_initial_values();
+        void in0_write(unsigned int bit_number, bool is_setting);
+
+        void in1_write(u8 value);
+
+        void in1_write(unsigned int bit_number, bool is_setting);
+
+        u8 coin_counter();
+
+        u8 flip_screen();
+
+        void flip_screen(u8 value);
+
+        void dipswitches(const Settings &settings);
+
+        u8 dipswitches();
+
+        void board_test(const Settings &settings);
+
+        bool is_sound_enabled();
+
+        void is_sound_enabled(bool new_value);
+
+        bool is_aux_board_enabled();
+
+        void is_aux_board_enabled(bool new_value);
 
     private:
-        static constexpr u16 from_address = 0x5000;
-        static constexpr u16 to_address = 0x50ff;
-        static constexpr u16 address_in0 = 0x5000;
-        static constexpr u16 address_sound_enable = 0x5001;
-        static constexpr u16 address_flip_screen = 0x5003;
-        static constexpr u16 address_coin_counter = 0x5007;
-        static constexpr u16 address_in1 = 0x5040;
-        static constexpr u16 address_dipswitches = 0x5080;
-        static constexpr unsigned int board_test = 4;
+        static constexpr unsigned int board_test_bit = 4;
         static constexpr unsigned int dipswitches_coinage_1 = 0;
         static constexpr unsigned int dipswitches_coinage_2 = 1;
         static constexpr unsigned int dipswitches_lives_1 = 2;
@@ -53,11 +67,20 @@ namespace emu::applications::pacman {
         static constexpr unsigned int dipswitches_bonus_life_2 = 5;
         static constexpr unsigned int dipswitches_difficulty = 6;
         static constexpr unsigned int dipswitches_ghost_names = 7;
+        static constexpr u8 m_initial_value_in0_read = 0b10011111;
+        static constexpr u8 m_initial_value_in1_read = 0b11111111;
 
-        EmulatorMemory &m_memory;
+        u8 m_in0_read = m_initial_value_in0_read;
+        u8 m_in0_write;
 
-        u8 m_initial_value_in0 = 0b10011111;
-        u8 m_initial_value_in1 = 0b11111111;
+        u8 m_in1_read = m_initial_value_in1_read;
+        u8 m_in1_write;
+
+        u8 m_dipswitches;
+
+        bool m_is_sound_enabled;
+
+        bool m_is_aux_board_enabled;
     };
 }
 

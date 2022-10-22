@@ -8,8 +8,6 @@
 #include "gui.h"
 #include "src/crosscutting/misc/run_status.h"
 #include "crosscutting/typedefs.h"
-#include "crosscutting/debugging/debugger.h"
-#include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/gui/debugging_panes/cpu_info_pane.h"
 #include "crosscutting/gui/debugging_panes/debug_log_pane.h"
 #include "crosscutting/gui/debugging_panes/disassembly_pane.h"
@@ -17,9 +15,6 @@
 #include "crosscutting/gui/debugging_panes/memory_editor_pane.h"
 #include "crosscutting/gui/debugging_panes/tilemap_pane.h"
 #include "crosscutting/gui/debugging_panes/spritemap_pane.h"
-#include "crosscutting/logging/log_observer.h"
-#include "crosscutting/logging/logger.h"
-#include "crosscutting/misc/run_status.h"
 
 namespace emu::applications::pacman {
 

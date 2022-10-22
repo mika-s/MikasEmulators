@@ -19,6 +19,10 @@ void print_usage(const std::string &program_name) {
     std::cout << "./" << program_name << " run <application> [flags]\n\n";
     std::cout << "Applications:\n";
     std::cout << Frontend::supported() << "\n\n";
+    std::cout << "Flags:\n\n";
+    std::cout << "-g: ordinary, debugger. ordinary is default.\n";
+    std::cout << "-d: dipswitches. Game dependent.\n";
+    std::cout << "\n\n";
 
     std::cout << "Show the assembly code of the given file:\n";
     std::cout << "./" << program_name << " disassemble <cpu> <file>\n\n";

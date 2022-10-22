@@ -49,40 +49,40 @@ namespace emu::applications::pacman {
                     case SDL_KEYUP:
                         switch (read_input_event.key.keysym.scancode) {
                             case insert_coin_p1:
-                                memory_mapped_io->write_in0(5, true);
+                                memory_mapped_io->in0_read(5, true);
                                 break;
                             case insert_coin_p2:
-                                memory_mapped_io->write_in0(6, true);
+                                memory_mapped_io->in0_read(6, true);
                                 break;
                             case p1_start:
-                                memory_mapped_io->write_in1(5, true);
+                                memory_mapped_io->in1_read(5, true);
                                 break;
                             case p1_up:
-                                memory_mapped_io->write_in0(0, true);
+                                memory_mapped_io->in0_read(0, true);
                                 break;
                             case p1_down:
-                                memory_mapped_io->write_in0(3, true);
+                                memory_mapped_io->in0_read(3, true);
                                 break;
                             case p1_left:
-                                memory_mapped_io->write_in0(1, true);
+                                memory_mapped_io->in0_read(1, true);
                                 break;
                             case p1_right:
-                                memory_mapped_io->write_in0(2, true);
+                                memory_mapped_io->in0_read(2, true);
                                 break;
                             case p2_start:
-                                memory_mapped_io->write_in1(6, true);
+                                memory_mapped_io->in1_read(6, true);
                                 break;
                             case p2_up:
-                                memory_mapped_io->write_in1(0, true);
+                                memory_mapped_io->in1_read(0, true);
                                 break;
                             case p2_down:
-                                memory_mapped_io->write_in1(3, true);
+                                memory_mapped_io->in1_read(3, true);
                                 break;
                             case p2_left:
-                                memory_mapped_io->write_in1(1, true);
+                                memory_mapped_io->in1_read(1, true);
                                 break;
                             case p2_right:
-                                memory_mapped_io->write_in1(2, true);
+                                memory_mapped_io->in1_read(2, true);
                                 break;
                             default:
                                 break;
@@ -107,40 +107,40 @@ namespace emu::applications::pacman {
                                 }
                                 break;
                             case insert_coin_p1:
-                                memory_mapped_io->write_in0(5, false);
+                                memory_mapped_io->in0_read(5, false);
                                 break;
                             case insert_coin_p2:
-                                memory_mapped_io->write_in0(6, false);
+                                memory_mapped_io->in0_read(6, false);
                                 break;
                             case p1_start:
-                                memory_mapped_io->write_in1(5, false);
+                                memory_mapped_io->in1_read(5, false);
                                 break;
                             case p1_up:
-                                memory_mapped_io->write_in0(0, false);
+                                memory_mapped_io->in0_read(0, false);
                                 break;
                             case p1_down:
-                                memory_mapped_io->write_in0(3, false);
+                                memory_mapped_io->in0_read(3, false);
                                 break;
                             case p1_left:
-                                memory_mapped_io->write_in0(1, false);
+                                memory_mapped_io->in0_read(1, false);
                                 break;
                             case p1_right:
-                                memory_mapped_io->write_in0(2, false);
+                                memory_mapped_io->in0_read(2, false);
                                 break;
                             case p2_start:
-                                memory_mapped_io->write_in1(6, false);
+                                memory_mapped_io->in1_read(6, false);
                                 break;
                             case p2_up:
-                                memory_mapped_io->write_in1(0, false);
+                                memory_mapped_io->in1_read(0, false);
                                 break;
                             case p2_down:
-                                memory_mapped_io->write_in1(3, false);
+                                memory_mapped_io->in1_read(3, false);
                                 break;
                             case p2_left:
-                                memory_mapped_io->write_in1(1, false);
+                                memory_mapped_io->in1_read(1, false);
                                 break;
                             case p2_right:
-                                memory_mapped_io->write_in1(2, false);
+                                memory_mapped_io->in1_read(2, false);
                                 break;
                             default:
                                 break;

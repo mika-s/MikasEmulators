@@ -16,13 +16,25 @@ namespace emu::z80 {
 
         void add_address_mask(std::size_t mask);
 
+        void attach_memory_mapper_for_write(
+                std::function<void(EmulatorMemory &memory, u16 address, u8 value)> memory_mapper_for_write
+        );
+
+        void attach_memory_mapper_for_read(
+                std::function<u8(const EmulatorMemory &memory, u16 address)> memory_mapper_for_read
+        );
+
         std::size_t size();
 
-        EmulatorMemory slice(int from, int to);
+        EmulatorMemory slice(std::size_t from, std::size_t to);
 
         void write(u16 address, u8 value);
 
         u8 read(u16 address) const;
+
+        void direct_write(u16 address, u8 value);
+
+        u8 direct_read(u16 address) const;
 
         std::vector<u8>::iterator begin();
 
@@ -35,6 +47,12 @@ namespace emu::z80 {
     private:
         std::vector<u8> m_memory;
         std::size_t m_mask;
+
+        std::function<void(EmulatorMemory &memory, u16 address, u8 value)> m_memory_mapper_for_write;
+        std::function<u8(const EmulatorMemory &memory, u16 address)> m_memory_mapper_for_read;
+
+        bool m_memory_mapper_for_write_is_set;
+        bool m_memory_mapper_for_read_is_set;
     };
 }
 

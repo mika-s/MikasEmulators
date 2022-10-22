@@ -27,6 +27,37 @@ namespace emu::applications::pacman {
 
     private:
         static constexpr std::size_t address_mask = 0x7fff;
+        static constexpr u16 address_rom_end = 0x3fff;
+        static constexpr u16 address_ram_end = 0x4fff;
+        static constexpr u16 address_in0_beginning = 0x5000;
+        static constexpr u16 address_in0_end = 0x503f;
+        static constexpr u16 address_sound_enable = 0x5001;
+        static constexpr u16 address_aux_board = 0x5002;
+        static constexpr u16 address_flip_screen = 0x5003;
+        static constexpr u16 address_lamp1 = 0x5004;
+        static constexpr u16 address_lamp2 = 0x5005;
+        static constexpr u16 address_coin_lockout = 0x5006;
+        static constexpr u16 address_coin_counter = 0x5007;
+        static constexpr u16 address_in1_beginning = 0x5040;
+        static constexpr u16 address_in1_end = 0x507f;
+        static constexpr u16 address_dipswitches_beginning = 0x5080;
+        static constexpr u16 address_dipswitches_end = 0x50bf;
+        static constexpr u16 address_audio_beginning = 0x5040;
+        static constexpr u16 address_audio_end = 0x505f;
+        static constexpr u16 address_sprite_coords_beginning = 0x5060;
+        static constexpr u16 address_sprite_coords_end = 0x506f;
+        static constexpr u16 address_watchdog_beginning = 0x50c0;
+        static constexpr u16 address_watchdog_end = 0x50ff;
+        static constexpr u16 address_pacman_memory_end = 0x50ff;
+        static constexpr unsigned int board_test = 4;
+        static constexpr unsigned int dipswitches_coinage_1 = 0;
+        static constexpr unsigned int dipswitches_coinage_2 = 1;
+        static constexpr unsigned int dipswitches_lives_1 = 2;
+        static constexpr unsigned int dipswitches_lives_2 = 3;
+        static constexpr unsigned int dipswitches_bonus_life_1 = 4;
+        static constexpr unsigned int dipswitches_bonus_life_2 = 5;
+        static constexpr unsigned int dipswitches_difficulty = 6;
+        static constexpr unsigned int dipswitches_ghost_names = 7;
 
         Settings m_settings;
 
@@ -42,8 +73,6 @@ namespace emu::applications::pacman {
 
         void load_file();
 
-        void memory_map(EmulatorMemory &memory, u16 address);
-
         static std::vector<u8> create_tile_ram();
 
         static std::vector<u8> create_palette_ram();
@@ -54,7 +83,7 @@ namespace emu::applications::pacman {
 
         static std::vector<u8> create_memory_mapped_io();
 
-        static std::vector<u8> fill_remaining(size_t memory_size);
+        static std::vector<u8> fill_remaining(std::size_t memory_size);
     };
 }
 

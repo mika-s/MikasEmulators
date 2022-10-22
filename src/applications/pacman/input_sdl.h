@@ -7,7 +7,6 @@
 #include "io_request.h"
 #include "interfaces/input.h"
 #include "interfaces/io_observer.h"
-#include "src/crosscutting/misc/run_status.h"
 
 namespace emu::applications::pacman {
 
