@@ -2,7 +2,7 @@
 #define MIKA_EMULATORS_APPLICATIONS_PACMAN_INTERFACES_INPUT_H
 
 #include "io_observer.h"
-#include "applications/pacman/memory_mapped_io.h"
+#include "applications/pacman/memory_mapped_io_for_pacman.h"
 #include "crosscutting/misc/run_status.h"
 
 namespace emu::applications::pacman {
@@ -13,7 +13,7 @@ namespace emu::applications::pacman {
     public:
         virtual ~Input() = default;
 
-        virtual void read(RunStatus &run_status, std::shared_ptr<MemoryMappedIo> memory_mapped_io) = 0;
+        virtual void read(RunStatus &run_status, std::shared_ptr<MemoryMappedIoForPacman> memory_mapped_io) = 0;
 
         virtual void read_debug_only(RunStatus &run_status) = 0;
 

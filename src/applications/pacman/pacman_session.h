@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <vector>
 #include "gui.h"
-#include "memory_mapped_io.h"
+#include "memory_mapped_io_for_pacman.h"
 #include "interfaces/input.h"
 #include "interfaces/io_observer.h"
 #include "chips/z80/cpu.h"
@@ -47,7 +47,7 @@ namespace emu::applications::pacman {
         PacmanSession(
                 std::shared_ptr<Gui> gui,
                 std::shared_ptr<Input> input,
-                std::shared_ptr<MemoryMappedIo> memory_mapped_io,
+                std::shared_ptr<MemoryMappedIoForPacman> memory_mapped_io,
                 EmulatorMemory &memory
         );
 
@@ -84,7 +84,7 @@ namespace emu::applications::pacman {
 
         u8 m_vblank_interrupt_return;
 
-        std::shared_ptr<MemoryMappedIo> m_memory_mapped_io;
+        std::shared_ptr<MemoryMappedIoForPacman> m_memory_mapped_io;
         std::shared_ptr<Gui> m_gui;
         std::shared_ptr<Input> m_input;
         std::unique_ptr<Cpu> m_cpu;

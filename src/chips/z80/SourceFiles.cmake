@@ -82,5 +82,6 @@ set(SOURCES_Z80_H
         src/chips/z80/instructions/instructions.h
         src/chips/z80/interfaces/gui_observer.h
         src/chips/z80/interfaces/in_observer.h
+        src/chips/z80/interfaces/memory_mapped_io.h
         src/chips/z80/interfaces/out_observer.h
         )

@@ -1,13 +1,10 @@
-#include <iostream>
 #include "doctest.h"
 #include "emulator_memory.h"
 
 namespace emu::z80 {
 
     EmulatorMemory::EmulatorMemory()
-            : m_mask(0xffff),
-              m_memory_mapper_for_write_is_set(false),
-              m_memory_mapper_for_read_is_set(false) {
+            : m_memory_mapper_is_attached(false) {
     }
 
     void EmulatorMemory::add(const std::vector<u8> &to_add) {
@@ -18,22 +15,9 @@ namespace emu::z80 {
         }
     }
 
-    void EmulatorMemory::add_address_mask(std::size_t mask) {
-        m_mask = mask;
-    }
-
-    void EmulatorMemory::attach_memory_mapper_for_write(
-            std::function<void(EmulatorMemory &memory, u16 address, u8 value)> memory_mapper_for_write
-    ) {
-        m_memory_mapper_for_write = memory_mapper_for_write;
-        m_memory_mapper_for_write_is_set = true;
-    }
-
-    void EmulatorMemory::attach_memory_mapper_for_read(
-            std::function<u8(const EmulatorMemory &memory, u16 address)> memory_mapper_for_read
-    ) {
-        m_memory_mapper_for_read = memory_mapper_for_read;
-        m_memory_mapper_for_read_is_set = true;
+    void EmulatorMemory::attach_memory_mapper(std::shared_ptr<MemoryMappedIo> memory_mapper) {
+        m_memory_mapper = std::move(memory_mapper);
+        m_memory_mapper_is_attached = true;
     }
 
     std::size_t EmulatorMemory::size() {
@@ -56,14 +40,13 @@ namespace emu::z80 {
 
         EmulatorMemory sliced_memory;
         sliced_memory.add(data);
-        sliced_memory.add_address_mask(m_mask);
 
         return sliced_memory;
     }
 
     void EmulatorMemory::write(u16 address, u8 value) {
-        if (m_memory_mapper_for_write_is_set) {
-            m_memory_mapper_for_write(*this, address, value);
+        if (m_memory_mapper_is_attached) {
+            m_memory_mapper->write(address, value);
         } else {
             direct_write(address, value);
         }
@@ -74,8 +57,8 @@ namespace emu::z80 {
     }
 
     u8 EmulatorMemory::read(u16 address) const {
-        if (m_memory_mapper_for_read_is_set) {
-            return m_memory_mapper_for_read(*this, address);
+        if (m_memory_mapper_is_attached) {
+            return m_memory_mapper->read(address);
         } else {
             return direct_read(address);
         }

@@ -4,6 +4,7 @@
 #include <functional>
 #include <memory>
 #include <vector>
+#include "interfaces/memory_mapped_io.h"
 #include "crosscutting/typedefs.h"
 
 namespace emu::z80 {
@@ -14,15 +15,7 @@ namespace emu::z80 {
 
         void add(const std::vector<u8> &to_add);
 
-        void add_address_mask(std::size_t mask);
-
-        void attach_memory_mapper_for_write(
-                std::function<void(EmulatorMemory &memory, u16 address, u8 value)> memory_mapper_for_write
-        );
-
-        void attach_memory_mapper_for_read(
-                std::function<u8(const EmulatorMemory &memory, u16 address)> memory_mapper_for_read
-        );
+        void attach_memory_mapper(std::shared_ptr<MemoryMappedIo> memory_mapper);
 
         std::size_t size();
 
@@ -46,13 +39,8 @@ namespace emu::z80 {
 
     private:
         std::vector<u8> m_memory;
-        std::size_t m_mask;
-
-        std::function<void(EmulatorMemory &memory, u16 address, u8 value)> m_memory_mapper_for_write;
-        std::function<u8(const EmulatorMemory &memory, u16 address)> m_memory_mapper_for_read;
-
-        bool m_memory_mapper_for_write_is_set;
-        bool m_memory_mapper_for_read_is_set;
+        std::shared_ptr<MemoryMappedIo> m_memory_mapper;
+        bool m_memory_mapper_is_attached;
     };
 }
 

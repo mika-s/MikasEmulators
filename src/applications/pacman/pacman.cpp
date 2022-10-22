@@ -15,9 +15,10 @@ namespace emu::applications::pacman {
               m_input(std::move(input)) {
         load_file();
 
-        m_memory_mapped_io = std::make_shared<MemoryMappedIo>();
+        m_memory_mapped_io = std::make_shared<MemoryMappedIoForPacman>(m_memory);
         m_memory_mapped_io->dipswitches(settings);
         m_memory_mapped_io->board_test(settings);
+        m_memory.attach_memory_mapper(m_memory_mapped_io);
     }
 
     std::unique_ptr<Session> Pacman::new_session() {
@@ -41,8 +42,6 @@ namespace emu::applications::pacman {
         m_memory.add(create_sprite_ram());                            // $4ff0-$4fff: sprite RAM
         m_memory.add(create_memory_mapped_io());                      // $5000-$50ff: memory-mapped IO
         m_memory.add(fill_remaining(m_memory.size()));
-        m_memory.add_address_mask(address_mask);
-
 
         m_color_rom.add(read_file_into_vector(directory + "82s123.7f"));   // $0000-$0020: 82s123.7f, colors
         m_palette_rom.add(read_file_into_vector(directory + "82s126.4a")); // $0000-$00ff: 82s126.4a, palettes
@@ -53,60 +52,6 @@ namespace emu::applications::pacman {
         m_gui->load_palette_rom({m_palette_rom.begin(), m_palette_rom.end()});
         m_gui->load_tile_rom({m_tile_rom.begin(), m_tile_rom.end()});
         m_gui->load_sprite_rom({m_sprite_rom.begin(), m_sprite_rom.end()});
-
-        m_memory.attach_memory_mapper_for_write([&](EmulatorMemory &memory, u16 address, u8 value) -> void {
-            address &= address_mask;
-
-            if (address <= address_rom_end) {               // ROM: 0x0000 - 0x3fff
-            } else if (address < address_in0_beginning) {   // RAM: 0x4000 - 0x4fff
-                memory.direct_write(address, value);
-            } else if (address <= address_pacman_memory_end) {
-                if (address == address_in0_beginning) {
-                    m_memory_mapped_io->in0_write(value);
-                } else if (address == address_sound_enable) {
-                    m_memory_mapped_io->is_sound_enabled(value > 0);
-                } else if (address == address_aux_board) {
-                    m_memory_mapped_io->is_aux_board_enabled(value > 0);
-                } else if (address == address_flip_screen) {
-                    m_memory_mapped_io->flip_screen(1);   // TODO: Fix
-                } else if (address == address_lamp1 || address == address_lamp2) {
-                } else if (address == address_coin_lockout) {
-                } else if (address == address_coin_counter) {
-                } else if (address_audio_beginning <= address && address <= address_audio_end) {
-                    // TODO
-                } else if (address_sprite_coords_beginning <= address && address <= address_sprite_coords_end) {
-                    memory.direct_write(address, value);
-                } else if (address_watchdog_beginning <= address && address <= address_watchdog_end) {
-                }
-            }
-        });
-
-        m_memory.attach_memory_mapper_for_read([&](const EmulatorMemory &memory, u16 address) -> u8 {
-            address &= address_mask;
-
-            if (address <= address_ram_end) {
-                return memory.direct_read(address);
-            } else if (address <= address_pacman_memory_end) {
-                if (address == address_flip_screen) {
-                    return m_memory_mapped_io->flip_screen();
-                } else if (address == address_lamp1 || address == address_lamp2) {
-                    return 0;
-                } else if (address == address_coin_lockout) {
-                    return 0;
-                } else if (address == address_coin_counter) {
-                } else if (address_in0_beginning <= address && address <= address_in0_end) {
-                    return m_memory_mapped_io->in0_read();
-                } else if (address_in1_beginning <= address && address <= address_in1_end) {
-                    return m_memory_mapped_io->in1_read();
-                } else if (address_dipswitches_beginning <= address && address <= address_dipswitches_end) {
-                    return m_memory_mapped_io->dipswitches();
-                }
-
-                return 0xff;
-            } else {
-                return 0;
-            }
-        });
     }
 
     std::vector<u8> create_empty_vector(std::size_t size) {

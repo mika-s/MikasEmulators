@@ -3,7 +3,7 @@
 
 #include <SDL_scancode.h>
 #include <vector>
-#include "memory_mapped_io.h"
+#include "memory_mapped_io_for_pacman.h"
 #include "io_request.h"
 #include "interfaces/input.h"
 #include "interfaces/io_observer.h"
@@ -13,7 +13,7 @@ namespace emu::applications::pacman {
 
     class InputImgui : public Input {
     public:
-        void read(RunStatus &run_status, std::shared_ptr<MemoryMappedIo> memory_mapped_io) override;
+        void read(RunStatus &run_status, std::shared_ptr<MemoryMappedIoForPacman> memory_mapped_io) override;
 
         void read_debug_only(RunStatus &run_status) override;
 

@@ -13,7 +13,7 @@ set(SOURCES_APPLICATIONS_CPP
         src/applications/pacman/gui_sdl.cpp
         src/applications/pacman/input_imgui.cpp
         src/applications/pacman/input_sdl.cpp
-        src/applications/pacman/memory_mapped_io.cpp
+        src/applications/pacman/memory_mapped_io_for_pacman.cpp
         src/applications/pacman/pacman.cpp
         src/applications/pacman/pacman_session.cpp
 
@@ -43,7 +43,7 @@ set(SOURCES_APPLICATIONS_H
         src/applications/pacman/input_imgui.h
         src/applications/pacman/input_sdl.h
         src/applications/pacman/io_request.h
-        src/applications/pacman/memory_mapped_io.h
+        src/applications/pacman/memory_mapped_io_for_pacman.h
         src/applications/pacman/pacman.h
         src/applications/pacman/pacman_session.h
         src/applications/pacman/settings.h

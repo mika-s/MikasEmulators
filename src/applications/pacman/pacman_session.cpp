@@ -26,7 +26,7 @@ namespace emu::applications::pacman {
     PacmanSession::PacmanSession(
             std::shared_ptr<Gui> gui,
             std::shared_ptr<Input> input,
-            std::shared_ptr<MemoryMappedIo> memory_mapped_io,
+            std::shared_ptr<MemoryMappedIoForPacman> memory_mapped_io,
             EmulatorMemory &memory
     )
             : m_is_in_debug_mode(false),

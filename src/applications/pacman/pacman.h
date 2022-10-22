@@ -64,7 +64,7 @@ namespace emu::applications::pacman {
         EmulatorMemory m_palette_rom;
         EmulatorMemory m_tile_rom;
         EmulatorMemory m_sprite_rom;
-        std::shared_ptr<MemoryMappedIo> m_memory_mapped_io;
+        std::shared_ptr<MemoryMappedIoForPacman> m_memory_mapped_io;
 
         std::shared_ptr<Gui> m_gui;
         std::shared_ptr<Input> m_input;

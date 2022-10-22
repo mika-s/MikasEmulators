@@ -27,7 +27,7 @@ namespace emu::applications::pacman {
         }
     }
 
-    void InputSdl::read(RunStatus &run_status, std::shared_ptr<MemoryMappedIo> memory_mapped_io) {
+    void InputSdl::read(RunStatus &run_status, std::shared_ptr<MemoryMappedIoForPacman> memory_mapped_io) {
         SDL_Event read_input_event;
 
         while (SDL_PollEvent(&read_input_event) != 0) {
