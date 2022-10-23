@@ -104,25 +104,17 @@ namespace emu::applications {
         const GuiType gui_type = options.gui_type();
 
         if (program == "pacman") {
-            using applications::pacman::InputSdl;
-            using applications::pacman::InputImgui;
-            using applications::pacman::GuiSdl;
-            using applications::pacman::GuiImgui;
-            using applications::pacman::Pacman;
-
-            const applications::pacman::Settings settings = options.pacman_settings();
-
             if (gui_type == GuiType::DEBUGGING) {
-                return std::make_unique<Pacman>(
-                        settings,
-                        std::make_shared<GuiImgui>(),
-                        std::make_shared<InputImgui>()
+                return std::make_unique<applications::pacman::Pacman>(
+                        options.pacman_settings(),
+                        std::make_shared<applications::pacman::GuiImgui>(),
+                        std::make_shared<applications::pacman::InputImgui>()
                 );
             } else {
-                return std::make_unique<Pacman>(
-                        settings,
-                        std::make_shared<GuiSdl>(),
-                        std::make_shared<InputSdl>()
+                return std::make_unique<applications::pacman::Pacman>(
+                        options.pacman_settings(),
+                        std::make_shared<applications::pacman::GuiSdl>(),
+                        std::make_shared<applications::pacman::InputSdl>()
                 );
             }
         } else if (program == "prelim") {
@@ -132,25 +124,17 @@ namespace emu::applications {
         } else if (program == "zexdoc") {
             return std::make_unique<applications::cpm::z80::CpmApplication>("roms/z80/zexdoc.cim");
         } else if (program == "space_invaders") {
-            using applications::space_invaders::InputSdl;
-            using applications::space_invaders::InputImgui;
-            using applications::space_invaders::GuiSdl;
-            using applications::space_invaders::GuiImgui;
-            using applications::space_invaders::SpaceInvaders;
-
-            const applications::space_invaders::Settings settings = options.space_invaders_settings();
-
             if (gui_type == GuiType::DEBUGGING) {
-                return std::make_unique<SpaceInvaders>(
-                        settings,
-                        std::make_shared<GuiImgui>(),
-                        std::make_shared<InputImgui>()
+                return std::make_unique<applications::space_invaders::SpaceInvaders>(
+                        options.space_invaders_settings(),
+                        std::make_shared<applications::space_invaders::GuiImgui>(),
+                        std::make_shared<applications::space_invaders::InputImgui>()
                 );
             } else {
-                return std::make_unique<SpaceInvaders>(
-                        settings,
-                        std::make_shared<GuiSdl>(),
-                        std::make_shared<InputSdl>()
+                return std::make_unique<applications::space_invaders::SpaceInvaders>(
+                        options.space_invaders_settings(),
+                        std::make_shared<applications::space_invaders::GuiSdl>(),
+                        std::make_shared<applications::space_invaders::InputSdl>()
                 );
             }
         } else if (program == "TST8080") {

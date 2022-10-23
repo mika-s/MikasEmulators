@@ -14,6 +14,8 @@ namespace emu::gui {
 
         static Color black();
 
+        static Color transparent();
+
         static Color white();
 
         static Color red();

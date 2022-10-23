@@ -5,12 +5,12 @@
 #include <SDL.h>
 #include <unordered_map>
 #include <vector>
+#include "audio.h"
 #include "gui.h"
 #include "memory_mapped_io_for_pacman.h"
 #include "interfaces/input.h"
 #include "interfaces/io_observer.h"
 #include "chips/z80/cpu.h"
-#include "src/crosscutting/misc/run_status.h"
 #include "chips/z80/interfaces/gui_observer.h"
 #include "chips/z80/interfaces/in_observer.h"
 #include "chips/z80/interfaces/out_observer.h"
@@ -19,6 +19,7 @@
 #include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/debugging/disassembled_line.h"
 #include "crosscutting/misc/governor.h"
+#include "crosscutting/misc/run_status.h"
 #include "crosscutting/misc/session.h"
 #include "crosscutting/logging/logger.h"
 
@@ -41,7 +42,6 @@ namespace emu::applications::pacman {
             : public Session,
               public GuiObserver,
               public OutObserver,
-              public InObserver,
               public IoObserver {
     public:
         PacmanSession(
@@ -62,8 +62,6 @@ namespace emu::applications::pacman {
         void run_status_changed(RunStatus new_status) override;
 
         void debug_mode_changed(bool is_in_debug_mode) override;
-
-        void in_requested(u8 port) override;
 
         void out_changed(u8 port) override;
 
@@ -88,6 +86,7 @@ namespace emu::applications::pacman {
         std::shared_ptr<Gui> m_gui;
         std::shared_ptr<Input> m_input;
         std::unique_ptr<Cpu> m_cpu;
+        Audio m_audio;
 
         EmulatorMemory &m_memory;
 

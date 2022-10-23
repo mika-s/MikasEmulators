@@ -90,17 +90,16 @@ namespace emu::applications::pacman {
 
         EmulatorMemory &m_memory;
 
-        u8 m_in0_read = m_initial_value_in0_read;
-        u8 m_in0_write;
-
-        u8 m_in1_read = m_initial_value_in1_read;
-        u8 m_in1_write;
-
+        bool m_is_sound_enabled;
+        bool m_is_aux_board_enabled;
         u8 m_dipswitches;
 
-        bool m_is_sound_enabled;
+        // Is read by the CPU:
+        u8 m_in0_read = m_initial_value_in0_read;
+        u8 m_in1_read = m_initial_value_in1_read;
 
-        bool m_is_aux_board_enabled;
+        // Is written by the CPU:
+        u8 m_in0_write;
     };
 }
 

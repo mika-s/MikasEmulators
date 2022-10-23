@@ -9,7 +9,7 @@ namespace emu::applications::pacman {
     using emu::util::gui::number_to_pixels;
 
     Gui::Gui()
-            : m_framebuffer(Framebuffer(height, width, Color(0xff, 0, 128, 255))),
+            : m_framebuffer(Framebuffer(height, width, Color::white())),
               m_debugging_sprites({{},
                                    {},
                                    {},
@@ -365,9 +365,17 @@ namespace emu::applications::pacman {
             const std::vector<u8> &tile_ram,
             const std::vector<u8> &palette_ram
     ) {
+        render_bottom_bar(framebuffer, tile_ram, palette_ram);
         render_play_area(framebuffer, tile_ram, palette_ram);
         render_top_bar(framebuffer, tile_ram, palette_ram);
-        render_bottom_bar(framebuffer, tile_ram, palette_ram);
+    }
+
+    Color color_or_transparent(const Palette &palette, int color_idx, u8 palette_idx) {
+        if (color_idx == 0 || palette_idx == 0) {
+            return Color::transparent();
+        } else {
+            return palette[color_idx];
+        }
     }
 
     std::shared_ptr<Sprite> Gui::render_sprite(u8 palette_idx, u8 sprite_idx, bool flip_x, bool flip_y) {
@@ -411,10 +419,15 @@ namespace emu::applications::pacman {
                 const int pixel3_color_idx = (is_bit_set(sprite_byte, 6) << 1) | is_bit_set(sprite_byte, 2);
                 const int pixel4_color_idx = (is_bit_set(sprite_byte, 7) << 1) | is_bit_set(sprite_byte, 3);
 
-                new_sprite->set(origin_row + 0, origin_col, palette[pixel4_color_idx]);
-                new_sprite->set(origin_row + 1, origin_col, palette[pixel3_color_idx]);
-                new_sprite->set(origin_row + 2, origin_col, palette[pixel2_color_idx]);
-                new_sprite->set(origin_row + 3, origin_col, palette[pixel1_color_idx]);
+                const Color pixel4_color = color_or_transparent(palette, pixel4_color_idx, palette_idx);
+                const Color pixel3_color = color_or_transparent(palette, pixel3_color_idx, palette_idx);
+                const Color pixel2_color = color_or_transparent(palette, pixel2_color_idx, palette_idx);
+                const Color pixel1_color = color_or_transparent(palette, pixel1_color_idx, palette_idx);
+
+                new_sprite->set(origin_row + 0, origin_col, pixel4_color);
+                new_sprite->set(origin_row + 1, origin_col, pixel3_color);
+                new_sprite->set(origin_row + 2, origin_col, pixel2_color);
+                new_sprite->set(origin_row + 3, origin_col, pixel1_color);
 
                 if (origin_col == sprite_size - 1) {
                     origin_col = 0;

@@ -18,7 +18,7 @@ namespace emu::gui {
         }
 
         for (unsigned int row = 0; row < height; ++row) {
-            m_values.emplace_back(width, Color::black());
+            m_values.emplace_back(width, Color::transparent());
         }
     }
 

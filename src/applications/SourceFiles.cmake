@@ -8,6 +8,7 @@ set(SOURCES_APPLICATIONS_CPP
         src/applications/cpm_z80/cpm_application.cpp
         src/applications/cpm_z80/cpm_application_session.cpp
 
+        src/applications/pacman/audio.cpp
         src/applications/pacman/gui.cpp
         src/applications/pacman/gui_imgui.cpp
         src/applications/pacman/gui_sdl.cpp
@@ -37,6 +38,7 @@ set(SOURCES_APPLICATIONS_H
         src/applications/cpm_z80/cpm_application.h
         src/applications/cpm_z80/cpm_application_session.h
 
+        src/applications/pacman/audio.h
         src/applications/pacman/gui.h
         src/applications/pacman/gui_imgui.h
         src/applications/pacman/gui_sdl.h

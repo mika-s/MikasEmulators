@@ -1,5 +1,5 @@
-#ifndef MIKA_EMULATORS_APPLICATIONS_PACMAN_GUI_GUI_H
-#define MIKA_EMULATORS_APPLICATIONS_PACMAN_GUI_GUI_H
+#ifndef MIKA_EMULATORS_APPLICATIONS_PACMAN_GUI_H
+#define MIKA_EMULATORS_APPLICATIONS_PACMAN_GUI_H
 
 #include <memory>
 #include "chips/z80/interfaces/gui_observer.h"
@@ -195,4 +195,4 @@ namespace emu::applications::pacman {
     };
 }
 
-#endif //MIKA_EMULATORS_APPLICATIONS_PACMAN_GUI_GUI_H
+#endif //MIKA_EMULATORS_APPLICATIONS_PACMAN_GUI_H

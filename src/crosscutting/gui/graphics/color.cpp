@@ -22,6 +22,10 @@ namespace emu::gui {
         return {0xff, 0, 0, 0};
     }
 
+    Color Color::transparent() {
+        return {0, 0, 0, 0};
+    }
+
     Color Color::white() {
         return {0xff, 0xff, 0xff, 0xff};
     }

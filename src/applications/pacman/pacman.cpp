@@ -3,7 +3,6 @@
 
 namespace emu::applications::pacman {
 
-    using emu::z80::RunStatus;
     using emu::util::file::read_file_into_vector;
 
     Pacman::Pacman(
@@ -41,7 +40,6 @@ namespace emu::applications::pacman {
         m_memory.add(create_ram());                                   // $4800-$4fef: RAM
         m_memory.add(create_sprite_ram());                            // $4ff0-$4fff: sprite RAM
         m_memory.add(create_memory_mapped_io());                      // $5000-$50ff: memory-mapped IO
-        m_memory.add(fill_remaining(m_memory.size()));
 
         m_color_rom.add(read_file_into_vector(directory + "82s123.7f"));   // $0000-$0020: 82s123.7f, colors
         m_palette_rom.add(read_file_into_vector(directory + "82s126.4a")); // $0000-$00ff: 82s126.4a, palettes
@@ -60,26 +58,22 @@ namespace emu::applications::pacman {
     }
 
     std::vector<u8> Pacman::create_tile_ram() {
-        return create_empty_vector(0x43ff - 0x4000);
+        return create_empty_vector(0x43ff - 0x4000 + 1);
     }
 
     std::vector<u8> Pacman::create_palette_ram() {
-        return create_empty_vector(0x47ff - 0x4400);
+        return create_empty_vector(0x47ff - 0x4400 + 1);
     }
 
     std::vector<u8> Pacman::create_ram() {
-        return create_empty_vector(0x4fef - 0x4800);
+        return create_empty_vector(0x4fef - 0x4800 + 1);
     }
 
     std::vector<u8> Pacman::create_sprite_ram() {
-        return create_empty_vector(0x4fff - 0x4ff0);
+        return create_empty_vector(0x4fff - 0x4ff0 + 1);
     }
 
     std::vector<u8> Pacman::create_memory_mapped_io() {
-        return create_empty_vector(0x50ff - 0x5000);
-    }
-
-    std::vector<u8> Pacman::fill_remaining(std::size_t memory_size) {
-        return create_empty_vector(UINT16_MAX - memory_size);
+        return create_empty_vector(0x50ff - 0x5000 + 1);
     }
 }

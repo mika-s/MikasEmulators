@@ -124,7 +124,7 @@ namespace emu::gui {
                 }
 
                 if (m_framebuffers[rotation].size() <= palette_idx) {
-                    m_framebuffers[rotation].emplace_back(height, width, Color(0xff, 128, 128, 50));
+                    m_framebuffers[rotation].emplace_back(height, width, Color::black());
                 }
 
                 sprite->map_to_framebuffer(m_framebuffers[rotation][palette_idx], row * sprite_size, col * sprite_size);

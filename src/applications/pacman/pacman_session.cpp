@@ -52,7 +52,6 @@ namespace emu::applications::pacman {
     PacmanSession::~PacmanSession() {
         m_gui->remove_gui_observer(this);
         m_input->remove_io_observer(this);
-        m_cpu->remove_in_observer(this);
         m_cpu->remove_out_observer(this);
     }
 
@@ -169,7 +168,6 @@ namespace emu::applications::pacman {
         m_cpu = std::make_unique<Cpu>(m_memory, initial_pc);
 
         m_cpu->add_out_observer(*this);
-        m_cpu->add_in_observer(*this);
     }
 
     void PacmanSession::setup_debugging() {
@@ -299,13 +297,6 @@ namespace emu::applications::pacman {
         m_is_in_debug_mode = is_in_debug_mode;
     }
 
-    void PacmanSession::in_requested(u8 port) {
-        switch (port) {
-            default:
-                throw std::runtime_error("Illegal input port for Pacman");
-        }
-    }
-
     void PacmanSession::out_changed(u8 port) {
         if (!m_outputs_during_cycle.contains(port)) {
             m_outputs_during_cycle[port] = m_cpu->a();
@@ -313,12 +304,10 @@ namespace emu::applications::pacman {
             m_outputs_during_cycle[port] |= m_cpu->a();
         }
 
-        switch (port) {
-            case out_port_vblank_interrupt_return:
-                m_vblank_interrupt_return = m_cpu->a();
-                break;
-            default:
-                throw std::runtime_error("Illegal output port for Pacman");
+        if (port == out_port_vblank_interrupt_return) {
+            m_vblank_interrupt_return = m_cpu->a();
+        } else {
+            throw std::runtime_error("Illegal output port for Pacman");
         }
     }
 
@@ -340,7 +329,7 @@ namespace emu::applications::pacman {
                 }
                 break;
             case TOGGLE_MUTE:
-//                m_audio.toggle_mute();
+                m_audio.toggle_mute();
                 break;
             case TOGGLE_TILE_DEBUG:
                 m_gui->toggle_tile_debug();
@@ -364,7 +353,7 @@ namespace emu::applications::pacman {
     }
 
     std::vector<u8> PacmanSession::memory() {
-        return {m_memory.begin(), m_memory.begin() + 0x50ff + 1};
+        return {m_memory.begin(), m_memory.end()};
     }
 
     std::vector<DisassembledLine> PacmanSession::disassemble_program() {
