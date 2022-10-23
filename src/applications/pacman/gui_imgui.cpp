@@ -192,9 +192,10 @@ namespace emu::applications::pacman {
             const std::vector<u8> &tile_ram,
             const std::vector<u8> &sprite_ram,
             const std::vector<u8> &palette_ram,
-            RunStatus run_status
+            RunStatus run_status,
+            bool is_screen_flipped
     ) {
-        std::vector<u32> framebuffer = create_framebuffer(tile_ram, sprite_ram, palette_ram);
+        std::vector<u32> framebuffer = create_framebuffer(tile_ram, sprite_ram, palette_ram, is_screen_flipped);
 
         glBindTexture(GL_TEXTURE_2D, m_screen_texture);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);

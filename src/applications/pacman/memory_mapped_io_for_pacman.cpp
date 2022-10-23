@@ -10,10 +10,22 @@ namespace emu::applications::pacman {
     using emu::z80::set_bit_in_memory;
     using emu::z80::unset_bit_in_memory;
 
-    MemoryMappedIoForPacman::MemoryMappedIoForPacman(EmulatorMemory &memory)
-            : m_memory(memory) {
+    MemoryMappedIoForPacman::MemoryMappedIoForPacman(EmulatorMemory &memory, Settings settings)
+            : m_memory(memory),
+              m_is_sound_enabled(false),
+              m_is_aux_board_enabled(false),
+              m_is_screen_flipped(false) {
+
+        dipswitches(settings);
+        board_test(settings);
+        cabinet_mode(settings);
     }
 
+    /**
+     * Called when the CPU writes to memory
+     * @param address is the address in memory to write to
+     * @param value is the value that should be written to memory
+     */
     void MemoryMappedIoForPacman::write(u16 address, u8 value) {
         address &= address_mask;
 
@@ -24,11 +36,11 @@ namespace emu::applications::pacman {
             if (address == address_in0_beginning) {
                 in0_write(value);
             } else if (address == address_sound_enable) {
-                is_sound_enabled(value > 0);
+                is_sound_enabled(value);
             } else if (address == address_aux_board) {
-                is_aux_board_enabled(value > 0);
+                is_aux_board_enabled(value);
             } else if (address == address_flip_screen) {
-                flip_screen(1);   // TODO: Fix
+                flip_screen(value);
             } else if (address == address_lamp1 || address == address_lamp2) {
             } else if (address == address_coin_lockout) {
             } else if (address == address_coin_counter) {
@@ -41,15 +53,18 @@ namespace emu::applications::pacman {
         }
     }
 
+    /**
+     * Called when the CPU reads from memory
+     * @param address is the address in memory to read from
+     * @return the value in memory at the given address
+     */
     u8 MemoryMappedIoForPacman::read(u16 address) {
         address &= address_mask;
 
         if (address <= address_ram_end) {
             return m_memory.direct_read(address);
         } else if (address <= address_pacman_memory_end) {
-            if (address == address_flip_screen) {
-                return flip_screen();
-            } else if (address == address_lamp1 || address == address_lamp2) {
+            if (address == address_lamp1 || address == address_lamp2) {
                 return 0;
             } else if (address == address_coin_lockout) {
                 return 0;
@@ -104,11 +119,8 @@ namespace emu::applications::pacman {
         return 0;
     }
 
-    u8 MemoryMappedIoForPacman::flip_screen() {
-        return 0;
-    }
-
-    void MemoryMappedIoForPacman::flip_screen([[maybe_unused]] u8 value) {
+    void MemoryMappedIoForPacman::flip_screen(u8 value) {
+        m_is_screen_flipped = value > 0;
     }
 
     void MemoryMappedIoForPacman::dipswitches(const Settings &settings) {
@@ -200,19 +212,34 @@ namespace emu::applications::pacman {
         }
     }
 
+    void MemoryMappedIoForPacman::cabinet_mode(const Settings &settings) {
+        switch (settings.m_cabinet_mode) {
+            case CabinetMode::Table:
+                unset_bit(m_in1_read, cabinet_mode_bit);
+                break;
+            case CabinetMode::Upright:
+                set_bit(m_in1_read, cabinet_mode_bit);
+                break;
+        }
+    }
+
     bool MemoryMappedIoForPacman::is_sound_enabled() {
         return m_is_sound_enabled;
     }
 
-    void MemoryMappedIoForPacman::is_sound_enabled(bool new_value) {
-        m_is_sound_enabled = new_value;
+    void MemoryMappedIoForPacman::is_sound_enabled(u8 value) {
+        m_is_sound_enabled = value > 0;
     }
 
     bool MemoryMappedIoForPacman::is_aux_board_enabled() {
         return m_is_aux_board_enabled;
     }
 
-    void MemoryMappedIoForPacman::is_aux_board_enabled(bool new_value) {
-        m_is_aux_board_enabled = new_value;
+    void MemoryMappedIoForPacman::is_aux_board_enabled(u8 value) {
+        m_is_aux_board_enabled = value > 0;
+    }
+
+    bool MemoryMappedIoForPacman::is_screen_flipped() {
+        return m_is_screen_flipped;
     }
 }

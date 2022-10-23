@@ -27,8 +27,8 @@ namespace emu::applications::pacman {
     using emu::gui::Sprite;
     using emu::gui::Tile;
     using emu::logging::Logger;
-    using emu::z80::GuiObserver;
     using emu::misc::RunStatus;
+    using emu::z80::GuiObserver;
 
     class Gui {
     public:
@@ -44,7 +44,8 @@ namespace emu::applications::pacman {
                 const std::vector<u8> &tile_ram,
                 const std::vector<u8> &sprite_ram,
                 const std::vector<u8> &palette_ram,
-                RunStatus run_status
+                RunStatus run_status,
+                bool is_screen_flipped
         ) = 0;
 
         virtual void update_debug_only() = 0;
@@ -190,7 +191,8 @@ namespace emu::applications::pacman {
         std::vector<u32> create_framebuffer(
                 const std::vector<u8> &tile_ram,
                 const std::vector<u8> &sprite_ram,
-                const std::vector<u8> &palette_ram
+                const std::vector<u8> &palette_ram,
+                bool is_screen_flipped
         );
     };
 }

@@ -13,6 +13,8 @@ namespace emu::gui {
 
         void set(unsigned int row, unsigned int col, Color value);
 
+        void flip_vertical();
+
         void clear();
 
         std::vector<u32> to_output_vector();

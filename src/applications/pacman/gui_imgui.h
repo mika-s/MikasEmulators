@@ -42,7 +42,8 @@ namespace emu::applications::pacman {
                 const std::vector<u8> &tile_ram,
                 const std::vector<u8> &sprite_ram,
                 const std::vector<u8> &palette_ram,
-                RunStatus run_status
+                RunStatus run_status,
+                bool is_screen_flipped
         ) override;
 
         void update_debug_only() override;

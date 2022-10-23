@@ -10,7 +10,8 @@ cd cmake-build-debug/
 The ten rom files (82s123.7f, 82s126.1m, 82s126.3m, 82s126.4a, pacman.5e, pacman.5f, pacman.6e, pacman.6f, pacman.6h
 and pacman.6j) have to be in the directory `roms/z80/pacman/`, using the emulator binary folder as root folder.
 
-It is possible to provide arguments that sets the DIP switches. The flag is `-d`, and it has the following options:
+It is possible to provide arguments that sets the DIP switches, as well as the board test bit and cocktail mode bit.
+The flag is `-d`, and it has the following options:
 
 - `n=1`, `n=2`, `n=3` or `n=5` sets number of lives. The default value, if unset, is 3 lives.
 - `b=10000`, `b=15000`, `b=20000` or `b=none` sets bonus life at a score of 10000, 15000, 20000 points, or disables
@@ -19,6 +20,8 @@ It is possible to provide arguments that sets the DIP switches. The flag is `-d`
   two-per-game or free. The default value, if unset, is one per game.
 - `d=normal` or `d=hard` sets the difficulty. The default value, if unset, is normal.
 - `g=normal` or `g=alternate` sets the ghost names. The default value, if unset, is normal.
+- `t=on` or `t=off` sets the board test bit. The default value, if unset, is off.
+- `m=table` or `t=upright` sets the cabinet mode bit. The default value, if unset, is upright.
 
 An example:
 
@@ -80,6 +83,8 @@ The keymap is:
 </td>
 </tr>
 </table>
+
+The P2 controls are only used in cocktail mode. In upright mode P2 uses the same keys as P1.
 
 Screenshots:
 

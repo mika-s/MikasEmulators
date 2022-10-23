@@ -41,20 +41,17 @@ namespace emu::applications {
     }
 
     applications::pacman::Settings Options::pacman_settings() {
-        using applications::pacman::NumberOfLives;
-        using applications::pacman::BonusLifeAt;
-        using applications::pacman::CoinsPerGame;
-        using applications::pacman::Difficulty;
-        using applications::pacman::GhostNames;
-        using applications::pacman::BoardTest;
+        using namespace applications::pacman;
 
-        applications::pacman::Settings settings{};
-        settings.m_number_of_lives = NumberOfLives::Three;
-        settings.m_bonus_life_at = BonusLifeAt::_15000;
-        settings.m_coins_per_game = CoinsPerGame::_1C1G;
-        settings.m_difficulty = Difficulty::Normal;
-        settings.m_ghost_names = GhostNames::Normal;
-        settings.m_board_test = BoardTest::Off;
+        Settings settings{
+                .m_number_of_lives = NumberOfLives::Three,
+                .m_bonus_life_at = BonusLifeAt::_15000,
+                .m_coins_per_game = CoinsPerGame::_1C1G,
+                .m_difficulty = Difficulty::Normal,
+                .m_ghost_names = GhostNames::Normal,
+                .m_board_test = BoardTest::Off,
+                .m_cabinet_mode = CabinetMode::Upright
+        };
 
         for (auto &opt: m_options["-d"]) {
             switch (opt[0]) {
@@ -143,6 +140,18 @@ namespace emu::applications {
                         throw InvalidProgramArgumentsException(ss.str());
                     }
                     break;
+                case 'm':
+                    if (opt == "m=table") {
+                        settings.m_cabinet_mode = CabinetMode::Table;
+                    } else if (opt == "m=upright") {
+                        settings.m_cabinet_mode = CabinetMode::Upright;
+                    } else {
+                        std::stringstream ss;
+                        ss << "Invalid cabinet mode passed to the -d option: " << opt
+                           << R"(. Should be "-d m=table" or "-d m=upright".)";
+                        throw InvalidProgramArgumentsException(ss.str());
+                    }
+                    break;
                 default:
                     std::stringstream ss;
                     ss << "Unknown -d value: " << opt << "\n";
@@ -154,14 +163,13 @@ namespace emu::applications {
     }
 
     applications::space_invaders::Settings Options::space_invaders_settings() {
-        using applications::space_invaders::BonusLifeAt;
-        using applications::space_invaders::CoinInfo;
-        using applications::space_invaders::NumberOfLives;
+        using namespace applications::space_invaders;
 
-        applications::space_invaders::Settings settings{};
-        settings.m_number_of_lives = NumberOfLives::Three;
-        settings.m_bonus_life_at = BonusLifeAt::_1500;
-        settings.m_coin_info = CoinInfo::On;
+        Settings settings{
+                .m_number_of_lives = NumberOfLives::Three,
+                .m_bonus_life_at = BonusLifeAt::_1500,
+                .m_coin_info = CoinInfo::On
+        };
 
         for (auto &opt: m_options["-d"]) {
             switch (opt[0]) {

@@ -101,9 +101,10 @@ namespace emu::applications::pacman {
             const std::vector<u8> &tile_ram,
             const std::vector<u8> &sprite_ram,
             const std::vector<u8> &palette_ram,
-            RunStatus run_status
+            RunStatus run_status,
+            bool is_screen_flipped
     ) {
-        std::vector<u32> frame_buffer = create_framebuffer(tile_ram, sprite_ram, palette_ram);
+        std::vector<u32> framebuffer = create_framebuffer(tile_ram, sprite_ram, palette_ram, is_screen_flipped);
 
         void *pixels = nullptr;
         int pitch = 0;
@@ -111,7 +112,7 @@ namespace emu::applications::pacman {
         if (SDL_LockTexture(m_texture, nullptr, &pixels, &pitch) != 0) {
             std::cerr << "error while unlocking SDL texture: " << SDL_GetError() << "\n";
         } else {
-            memcpy(pixels, frame_buffer.data(), pitch * height);
+            memcpy(pixels, framebuffer.data(), pitch * height);
         }
 
         std::string title;

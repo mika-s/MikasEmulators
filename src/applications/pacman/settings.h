@@ -27,6 +27,10 @@ namespace emu::applications::pacman {
         On = 0, Off = 1
     };
 
+    enum class CabinetMode {
+        Table = 0, Upright = 1
+    };
+
     class Settings {
     public:
         NumberOfLives m_number_of_lives;
@@ -35,6 +39,7 @@ namespace emu::applications::pacman {
         Difficulty m_difficulty;
         GhostNames m_ghost_names;
         BoardTest m_board_test;
+        CabinetMode m_cabinet_mode;
     };
 }
 

@@ -30,6 +30,7 @@ namespace emu::applications::pacman {
         static constexpr SDL_Scancode step_cycle = SDL_SCANCODE_F8;
         static constexpr SDL_Scancode continue_running = SDL_SCANCODE_F9;
 
+        static constexpr SDL_Scancode credit = SDL_SCANCODE_X;
         static constexpr SDL_Scancode insert_coin_p1 = SDL_SCANCODE_C;
         static constexpr SDL_Scancode insert_coin_p2 = SDL_SCANCODE_V;
 

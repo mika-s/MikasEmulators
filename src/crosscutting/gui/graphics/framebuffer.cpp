@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <fmt/format.h>
 #include <stdexcept>
 #include "framebuffer.h"
@@ -24,6 +25,10 @@ namespace emu::gui {
         }
 
         m_values[row][col] = value.to_u32();
+    }
+
+    void Framebuffer::flip_vertical() {
+        std::reverse(std::begin(m_values), std::end(m_values));
     }
 
     void Framebuffer::clear() {

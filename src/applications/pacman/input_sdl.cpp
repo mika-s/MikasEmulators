@@ -37,6 +37,9 @@ namespace emu::applications::pacman {
                     break;
                 case SDL_KEYUP:
                     switch (read_input_event.key.keysym.scancode) {
+                        case credit:
+                            memory_mapped_io->in0_read(7, true);
+                            break;
                         case insert_coin_p1:
                             memory_mapped_io->in0_read(5, true);
                             break;
@@ -88,6 +91,9 @@ namespace emu::applications::pacman {
                             } else if (run_status == RunStatus::RUNNING) {
                                 run_status = RunStatus::PAUSED;
                             }
+                            break;
+                        case credit:
+                            memory_mapped_io->in0_read(7, false);
                             break;
                         case insert_coin_p1:
                             memory_mapped_io->in0_read(5, false);

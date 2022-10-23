@@ -13,7 +13,7 @@ namespace emu::applications::pacman {
 
     class MemoryMappedIoForPacman : public MemoryMappedIo {
     public:
-        explicit MemoryMappedIoForPacman(EmulatorMemory &memory);
+        explicit MemoryMappedIoForPacman(EmulatorMemory &memory, Settings settings);
 
         void write(u16 address, u8 value) override;
 
@@ -33,26 +33,23 @@ namespace emu::applications::pacman {
 
         u8 coin_counter();
 
-        u8 flip_screen();
-
         void flip_screen(u8 value);
-
-        void dipswitches(const Settings &settings);
 
         u8 dipswitches();
 
-        void board_test(const Settings &settings);
-
         bool is_sound_enabled();
 
-        void is_sound_enabled(bool new_value);
+        void is_sound_enabled(u8 value);
 
         bool is_aux_board_enabled();
 
-        void is_aux_board_enabled(bool new_value);
+        void is_aux_board_enabled(u8 value);
+
+        bool is_screen_flipped();
 
     private:
         static constexpr unsigned int board_test_bit = 4;
+        static constexpr unsigned int cabinet_mode_bit = 7;
         static constexpr unsigned int dipswitches_coinage_1 = 0;
         static constexpr unsigned int dipswitches_coinage_2 = 1;
         static constexpr unsigned int dipswitches_lives_1 = 2;
@@ -92,6 +89,7 @@ namespace emu::applications::pacman {
 
         bool m_is_sound_enabled;
         bool m_is_aux_board_enabled;
+        bool m_is_screen_flipped;
         u8 m_dipswitches;
 
         // Is read by the CPU:
@@ -100,6 +98,12 @@ namespace emu::applications::pacman {
 
         // Is written by the CPU:
         u8 m_in0_write;
+
+        void dipswitches(const Settings &settings);
+
+        void board_test(const Settings &settings);
+
+        void cabinet_mode(const Settings &settings);
     };
 }
 

@@ -522,7 +522,8 @@ namespace emu::applications::pacman {
     std::vector<u32> Gui::create_framebuffer(
             const std::vector<u8> &tile_ram,
             const std::vector<u8> &sprite_ram,
-            const std::vector<u8> &palette_ram
+            const std::vector<u8> &palette_ram,
+            bool is_screen_flipped
     ) {
         if (!m_has_loaded_color_rom) {
             throw std::runtime_error("Programming error: The color ROM has not been loaded");
@@ -540,6 +541,9 @@ namespace emu::applications::pacman {
 
         if (should_draw_tiles) {
             draw_tiles(m_framebuffer, tile_ram, palette_ram);
+            if (is_screen_flipped) {
+                m_framebuffer.flip_vertical();
+            }
         }
         if (should_draw_sprites) {
             draw_sprites(m_framebuffer, sprite_ram);

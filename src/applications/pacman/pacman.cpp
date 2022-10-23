@@ -14,9 +14,7 @@ namespace emu::applications::pacman {
               m_input(std::move(input)) {
         load_file();
 
-        m_memory_mapped_io = std::make_shared<MemoryMappedIoForPacman>(m_memory);
-        m_memory_mapped_io->dipswitches(settings);
-        m_memory_mapped_io->board_test(settings);
+        m_memory_mapped_io = std::make_shared<MemoryMappedIoForPacman>(m_memory, settings);
         m_memory.attach_memory_mapper(m_memory_mapped_io);
     }
 
