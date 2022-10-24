@@ -12,7 +12,7 @@ namespace emu::applications::pacman {
     )
             : m_gui(std::move(gui)),
               m_input(std::move(input)) {
-        load_file();
+        load_files();
 
         m_memory_mapped_io = std::make_shared<MemoryMappedIoForPacman>(m_memory, settings);
         m_memory.attach_memory_mapper(m_memory_mapped_io);
@@ -22,12 +22,13 @@ namespace emu::applications::pacman {
         return std::make_unique<PacmanSession>(
                 m_gui,
                 m_input,
+                m_audio,
                 m_memory_mapped_io,
                 m_memory
         );
     }
 
-    void Pacman::load_file() {
+    void Pacman::load_files() {
         const std::string directory = "roms/z80/pacman/";
         m_memory.add(read_file_into_vector(directory + "pacman.6e")); // $0000-$0fff: pacman.6e, code
         m_memory.add(read_file_into_vector(directory + "pacman.6f")); // $1000-$1fff: pacman.6f, code
@@ -43,11 +44,17 @@ namespace emu::applications::pacman {
         m_palette_rom.add(read_file_into_vector(directory + "82s126.4a")); // $0000-$00ff: 82s126.4a, palettes
         m_tile_rom.add(read_file_into_vector(directory + "pacman.5e"));    // $0000-$0fff: pacman.5e, tiles
         m_sprite_rom.add(read_file_into_vector(directory + "pacman.5f"));  // $0000-$0fff: pacman.5f, sprites
+        m_sound_rom1.add(read_file_into_vector(directory + "82s126.1m"));  // $0000-$00ff: 82s126.1m, sound 1
+        m_sound_rom2.add(read_file_into_vector(directory + "82s126.3m"));  // $0000-$00ff: 82s126.3m, sound 2
 
         m_gui->load_color_rom({m_color_rom.begin(), m_color_rom.end()});
         m_gui->load_palette_rom({m_palette_rom.begin(), m_palette_rom.end()});
         m_gui->load_tile_rom({m_tile_rom.begin(), m_tile_rom.end()});
         m_gui->load_sprite_rom({m_sprite_rom.begin(), m_sprite_rom.end()});
+
+        std::vector<u8> sound_rom1 = {m_sound_rom1.begin(), m_sound_rom1.end()};
+        std::vector<u8> sound_rom2 = {m_sound_rom2.begin(), m_sound_rom2.end()};
+        m_audio = std::make_shared<Audio>(sound_rom1, sound_rom2);
     }
 
     std::vector<u8> create_empty_vector(std::size_t size) {

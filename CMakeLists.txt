@@ -24,6 +24,7 @@ include(${PROJECT_SOURCE_DIR}/libs/imgui/SourceFiles.cmake)
 
 include(${PROJECT_SOURCE_DIR}/src/applications/SourceFiles.cmake)
 include(${PROJECT_SOURCE_DIR}/src/chips/8080/SourceFiles.cmake)
+include(${PROJECT_SOURCE_DIR}/src/chips/namco_wsg3/SourceFiles.cmake)
 include(${PROJECT_SOURCE_DIR}/src/chips/z80/SourceFiles.cmake)
 include(${PROJECT_SOURCE_DIR}/src/crosscutting/SourceFiles.cmake)
 
@@ -32,6 +33,7 @@ add_executable(${PROJECT_NAME}
         ${SOURCES_APPLICATIONS_CPP} ${SOURCES_APPLICATIONS_H}
         ${SOURCES_CROSSCUTTING_CPP} ${SOURCES_CROSSCUTTING_H}
         ${SOURCES_8080_CPP} ${SOURCES_8080_H}
+        ${SOURCES_NAMCO_WSG3_CPP} ${SOURCES_NAMCO_WSG3_H}
         ${SOURCES_Z80_CPP} ${SOURCES_Z80_H}
         )
 target_link_libraries(${PROJECT_NAME} SDL2::Main SDL2::Image fmt::fmt)
@@ -42,8 +44,10 @@ target_include_directories(${PROJECT_NAME} PRIVATE
         src
         )
 
+# TODO: Use modern cmake
 set(CMAKE_CXX_FLAGS_RELEASE "-Werror -Wall -Wextra -O3")
-set(CMAKE_CXX_FLAGS_DEBUG "-Werror -Wall -Wextra -Og -g -D_GLIBCXX_DEBUG")
+set(CMAKE_CXX_FLAGS_DEBUG "-Werror -Wall -Wextra -Og -g3 -D_GLIBCXX_DEBUG")
+# ASAN: -fsanitize=address,undefined -fsanitize-undefined-trap-on-error -fno-omit-frame-pointer
 
 # ------------------------ Copy files to working directory
 

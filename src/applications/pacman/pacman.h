@@ -31,12 +31,15 @@ namespace emu::applications::pacman {
         EmulatorMemory m_palette_rom;
         EmulatorMemory m_tile_rom;
         EmulatorMemory m_sprite_rom;
+        EmulatorMemory m_sound_rom1;
+        EmulatorMemory m_sound_rom2;
         std::shared_ptr<MemoryMappedIoForPacman> m_memory_mapped_io;
 
         std::shared_ptr<Gui> m_gui;
         std::shared_ptr<Input> m_input;
+        std::shared_ptr<Audio> m_audio;
 
-        void load_file();
+        void load_files();
 
         static std::vector<u8> create_tile_ram();
 

@@ -19,6 +19,10 @@ namespace emu::util::byte {
 
     u8 high_byte(u16 number);
 
+    u8 low_nibble(u8 number);
+
+    u8 high_nibble(u8 number);
+
     bool carried_out_of(unsigned int bit_position, u16 a, u16 b, bool cf);
 
     bool borrow_from(unsigned int bit_position, u16 a, u16 b, bool cf);

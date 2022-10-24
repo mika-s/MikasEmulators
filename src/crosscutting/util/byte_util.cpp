@@ -54,6 +54,14 @@ namespace emu::util::byte {
         return carry & (1 << (bit_position + 1));
     }
 
+    u8 low_nibble(u8 number) {
+        return number & 0x0f;
+    }
+
+    u8 high_nibble(u8 number) {
+        return number & 0xf0;
+    }
+
     bool borrow_from(unsigned int bit_position, u16 a, u16 b, bool cf) {
         const i32 result = a - b - (cf ? 1 : 0);
         const i32 carry = result ^ a ^ b;

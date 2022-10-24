@@ -26,6 +26,7 @@ namespace emu::applications::pacman {
     PacmanSession::PacmanSession(
             std::shared_ptr<Gui> gui,
             std::shared_ptr<Input> input,
+            std::shared_ptr<Audio> audio,
             std::shared_ptr<MemoryMappedIoForPacman> memory_mapped_io,
             EmulatorMemory &memory
     )
@@ -38,6 +39,7 @@ namespace emu::applications::pacman {
               m_memory_mapped_io(std::move(memory_mapped_io)),
               m_gui(std::move(gui)),
               m_input(std::move(input)),
+              m_audio(std::move(audio)),
               m_memory(memory),
               m_logger(std::make_shared<Logger>()),
               m_debugger(std::make_shared<Debugger>()),
@@ -98,6 +100,7 @@ namespace emu::applications::pacman {
                 m_input->read(m_run_status, m_memory_mapped_io);
                 m_gui->update_screen(tile_ram(), sprite_ram(), palette_ram(),
                                      m_run_status, m_memory_mapped_io->is_screen_flipped());
+                m_audio->handle_sound(m_memory_mapped_io->is_sound_enabled(), m_memory_mapped_io->voices());
             }
         }
     }
@@ -129,12 +132,13 @@ namespace emu::applications::pacman {
             }
         }
 
-        m_input->read(m_run_status, m_memory_mapped_io);
-        m_gui->update_screen(tile_ram(), sprite_ram(), palette_ram(),
-                             m_run_status, m_memory_mapped_io->is_screen_flipped());
-
         if (m_memory_mapped_io->is_interrupt_enabled()) {
             m_cpu->interrupt(m_vblank_interrupt_return);
+
+            m_input->read(m_run_status, m_memory_mapped_io);
+            m_gui->update_screen(tile_ram(), sprite_ram(), palette_ram(),
+                                 m_run_status, m_memory_mapped_io->is_screen_flipped());
+            m_audio->handle_sound(m_memory_mapped_io->is_sound_enabled(), m_memory_mapped_io->voices());
         }
 
         m_is_stepping_cycle = false;
@@ -332,7 +336,7 @@ namespace emu::applications::pacman {
                 }
                 break;
             case TOGGLE_MUTE:
-                m_audio.toggle_mute();
+                m_audio->toggle_mute();
                 break;
             case TOGGLE_TILE_DEBUG:
                 m_gui->toggle_tile_debug();

@@ -14,7 +14,8 @@ namespace emu::applications::pacman {
             : m_memory(memory),
               m_is_sound_enabled(false),
               m_is_aux_board_enabled(false),
-              m_is_screen_flipped(false) {
+              m_is_screen_flipped(false),
+              m_voices({Voice(), Voice(), Voice()}) {
 
         dipswitches(settings);
         board_test(settings);
@@ -45,7 +46,31 @@ namespace emu::applications::pacman {
             } else if (address == address_coin_lockout) {
             } else if (address == address_coin_counter) {
             } else if (address_audio_beginning <= address && address <= address_audio_end) {
-                // TODO
+                if (address_voice1_sound_beginning <= address && address <= address_voice1_sound_end) {
+                    voice1_accumulator(value, address);
+                } else if (address == address_voice1_waveform) {
+                    voice1_waveform(value);
+                } else if (address_voice2_sound_beginning <= address && address <= address_voice2_sound_end) {
+                    voice2_accumulator(value, address);
+                } else if (address == address_voice2_waveform) {
+                    voice2_waveform(value);
+                } else if (address_voice3_sound_beginning <= address && address <= address_voice3_sound_end) {
+                    voice3_accumulator(value, address);
+                } else if (address == address_voice3_waveform) {
+                    voice3_waveform(value);
+                } else if (address_voice1_frequency_beginning <= address && address <= address_voice1_frequency_end) {
+                    voice1_frequency(value, address);
+                } else if (address == address_voice1_volume) {
+                    voice1_volume(value);
+                } else if (address_voice2_frequency_beginning <= address && address <= address_voice2_frequency_end) {
+                    voice2_frequency(value, address);
+                } else if (address == address_voice2_volume) {
+                    voice2_volume(value);
+                } else if (address_voice3_frequency_beginning <= address && address <= address_voice3_frequency_end) {
+                    voice3_frequency(value, address);
+                } else if (address == address_voice3_volume) {
+                    voice3_volume(value);
+                }
             } else if (address_sprite_coords_beginning <= address && address <= address_sprite_coords_end) {
                 m_memory.direct_write(address, value);
             } else if (address_watchdog_beginning <= address && address <= address_watchdog_end) {
@@ -228,7 +253,7 @@ namespace emu::applications::pacman {
     }
 
     void MemoryMappedIoForPacman::is_sound_enabled(u8 value) {
-        m_is_sound_enabled = value > 0;
+        m_is_sound_enabled = is_bit_set(value, sound_enabled_bit);
     }
 
     bool MemoryMappedIoForPacman::is_aux_board_enabled() {
@@ -241,5 +266,69 @@ namespace emu::applications::pacman {
 
     bool MemoryMappedIoForPacman::is_screen_flipped() {
         return m_is_screen_flipped;
+    }
+
+    std::vector<Voice> MemoryMappedIoForPacman::voices() {
+        return m_voices;
+    }
+
+    void MemoryMappedIoForPacman::voice1_accumulator(u8 value, u16 address) {
+        const u8 sample = address - address_voice1_sound_beginning;
+        m_voices[0].accumulator(m_voices[0].accumulator() & ~(0x0f << (sample * 4)));
+        m_voices[0].accumulator(m_voices[0].accumulator() | (low_nibble(value) << (sample * 4)));
+    }
+
+    void MemoryMappedIoForPacman::voice1_waveform(u8 value) {
+        m_voices[0].waveform_number(value & 0b111);
+    }
+
+    void MemoryMappedIoForPacman::voice1_frequency(u8 frequency, u16 address) {
+        const u8 sample = address - address_voice1_frequency_beginning;
+        m_voices[0].frequency(m_voices[0].frequency() & ~(0x0f << (sample * 4)));
+        m_voices[0].frequency(m_voices[0].frequency() | (low_nibble(frequency) << (sample * 4)));
+    }
+
+    void MemoryMappedIoForPacman::voice1_volume(u8 volume) {
+        m_voices[0].volume(low_nibble(volume));
+    }
+
+    void MemoryMappedIoForPacman::voice2_accumulator(u8 value, u16 address) {
+        const u8 sample = address - address_voice2_sound_beginning + 1;
+        m_voices[1].accumulator(m_voices[1].accumulator() & ~(0x0f << (sample * 4)));
+        m_voices[1].accumulator(m_voices[1].accumulator() | (low_nibble(value) << (sample * 4)));
+    }
+
+    void MemoryMappedIoForPacman::voice2_waveform(u8 value) {
+        m_voices[1].waveform_number(value & 0b111);
+    }
+
+    void MemoryMappedIoForPacman::voice2_frequency(u8 frequency, u16 address) {
+        const u8 sample = address - address_voice2_frequency_beginning + 1;
+        m_voices[1].frequency(m_voices[1].frequency() & ~(0x0f << (sample * 4)));
+        m_voices[1].frequency(m_voices[1].frequency() | (low_nibble(frequency) << (sample * 4)));
+    }
+
+    void MemoryMappedIoForPacman::voice2_volume(u8 volume) {
+        m_voices[1].volume(low_nibble(volume));
+    }
+
+    void MemoryMappedIoForPacman::voice3_accumulator(u8 value, u16 address) {
+        const u8 sample = address - address_voice3_sound_beginning + 1;
+        m_voices[2].accumulator(m_voices[2].accumulator() & ~(0x0f << (sample * 4)));
+        m_voices[2].accumulator(m_voices[2].accumulator() | (low_nibble(value) << (sample * 4)));
+    }
+
+    void MemoryMappedIoForPacman::voice3_waveform(u8 value) {
+        m_voices[2].waveform_number(value & 0b111);
+    }
+
+    void MemoryMappedIoForPacman::voice3_frequency(u8 frequency, u16 address) {
+        const u8 sample = address - address_voice3_frequency_beginning + 1;
+        m_voices[2].frequency(m_voices[2].frequency() & ~(0x0f << (sample * 4)));
+        m_voices[2].frequency(m_voices[2].frequency() | (low_nibble(frequency) << (sample * 4)));
+    }
+
+    void MemoryMappedIoForPacman::voice3_volume(u8 volume) {
+        m_voices[2].volume(low_nibble(volume));
     }
 }

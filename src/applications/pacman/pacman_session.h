@@ -47,6 +47,7 @@ namespace emu::applications::pacman {
         PacmanSession(
                 std::shared_ptr<Gui> gui,
                 std::shared_ptr<Input> input,
+                std::shared_ptr<Audio> audio,
                 std::shared_ptr<MemoryMappedIoForPacman> memory_mapped_io,
                 EmulatorMemory &memory
         );
@@ -70,7 +71,7 @@ namespace emu::applications::pacman {
     private:
         static constexpr long double fps = 60.0L;
         static constexpr long double tick_limit = 1000.0L / fps;
-        static constexpr int cycles_per_ms = 2000;
+        static constexpr int cycles_per_ms = 3072;
         static constexpr long double cycles_per_tick = cycles_per_ms * tick_limit;
         static constexpr int out_port_vblank_interrupt_return = 0;
 
@@ -85,8 +86,8 @@ namespace emu::applications::pacman {
         std::shared_ptr<MemoryMappedIoForPacman> m_memory_mapped_io;
         std::shared_ptr<Gui> m_gui;
         std::shared_ptr<Input> m_input;
+        std::shared_ptr<Audio> m_audio;
         std::unique_ptr<Cpu> m_cpu;
-        Audio m_audio;
 
         EmulatorMemory &m_memory;
 

@@ -2,12 +2,17 @@
 #define MIKA_EMULATORS_APPLICATIONS_PACMAN_MEMORY_MAPPED_IO_H
 
 #include "settings.h"
+#include "chips/namco_wsg3/voice.h"
+#include "chips/namco_wsg3/wsg3.h"
 #include "chips/z80/emulator_memory.h"
 #include "chips/z80/interfaces/memory_mapped_io.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/util/byte_util.h"
 
 namespace emu::applications::pacman {
 
+    using emu::util::byte::low_nibble;
+    using emu::wsg3::Voice;
     using emu::z80::EmulatorMemory;
     using emu::z80::MemoryMappedIo;
 
@@ -29,25 +34,21 @@ namespace emu::applications::pacman {
 
         [[nodiscard]] u8 in1_read() const;
 
-        void in0_write(u8 value);
-
         u8 coin_counter();
-
-        void flip_screen(u8 value);
 
         u8 dipswitches();
 
         bool is_sound_enabled();
 
-        void is_sound_enabled(u8 value);
-
         bool is_aux_board_enabled();
-
-        void is_aux_board_enabled(u8 value);
 
         bool is_screen_flipped();
 
+        std::vector<Voice> voices();
+
     private:
+        static constexpr unsigned int sound_enabled_bit = 1;
+
         static constexpr unsigned int board_test_bit = 4;
         static constexpr unsigned int cabinet_mode_bit = 7;
         static constexpr unsigned int dipswitches_coinage_1 = 0;
@@ -79,6 +80,24 @@ namespace emu::applications::pacman {
         static constexpr u16 address_dipswitches_end = 0x50bf;
         static constexpr u16 address_audio_beginning = 0x5040;
         static constexpr u16 address_audio_end = 0x505f;
+        static constexpr u16 address_voice1_sound_beginning = 0x5040;
+        static constexpr u16 address_voice1_sound_end = 0x5044;
+        static constexpr u16 address_voice1_waveform = 0x5045;
+        static constexpr u16 address_voice2_sound_beginning = 0x5046;
+        static constexpr u16 address_voice2_sound_end = 0x5049;
+        static constexpr u16 address_voice2_waveform = 0x504a;
+        static constexpr u16 address_voice3_sound_beginning = 0x504b;
+        static constexpr u16 address_voice3_sound_end = 0x504e;
+        static constexpr u16 address_voice3_waveform = 0x504f;
+        static constexpr u16 address_voice1_frequency_beginning = 0x5050;
+        static constexpr u16 address_voice1_frequency_end = 0x5054;
+        static constexpr u16 address_voice1_volume = 0x5055;
+        static constexpr u16 address_voice2_frequency_beginning = 0x5056;
+        static constexpr u16 address_voice2_frequency_end = 0x5059;
+        static constexpr u16 address_voice2_volume = 0x505a;
+        static constexpr u16 address_voice3_frequency_beginning = 0x505b;
+        static constexpr u16 address_voice3_frequency_end = 0x505e;
+        static constexpr u16 address_voice3_volume = 0x505f;
         static constexpr u16 address_sprite_coords_beginning = 0x5060;
         static constexpr u16 address_sprite_coords_end = 0x506f;
         static constexpr u16 address_watchdog_beginning = 0x50c0;
@@ -92,6 +111,8 @@ namespace emu::applications::pacman {
         bool m_is_screen_flipped;
         u8 m_dipswitches;
 
+        std::vector<Voice> m_voices;
+
         // Is read by the CPU:
         u8 m_in0_read = m_initial_value_in0_read;
         u8 m_in1_read = m_initial_value_in1_read;
@@ -99,11 +120,43 @@ namespace emu::applications::pacman {
         // Is written by the CPU:
         u8 m_in0_write;
 
+        void in0_write(u8 value);
+
+        void flip_screen(u8 value);
+
+        void is_sound_enabled(u8 value);
+
+        void is_aux_board_enabled(u8 value);
+
         void dipswitches(const Settings &settings);
 
         void board_test(const Settings &settings);
 
         void cabinet_mode(const Settings &settings);
+
+        void voice1_accumulator(u8 value, u16 address);
+
+        void voice1_waveform(u8 value);
+
+        void voice1_frequency(u8 frequency, u16 address);
+
+        void voice1_volume(u8 volume);
+
+        void voice2_accumulator(u8 value, u16 address);
+
+        void voice2_waveform(u8 value);
+
+        void voice2_frequency(u8 frequency, u16 address);
+
+        void voice2_volume(u8 volume);
+
+        void voice3_accumulator(u8 value, u16 address);
+
+        void voice3_waveform(u8 value);
+
+        void voice3_frequency(u8 frequency, u16 address);
+
+        void voice3_volume(u8 volume);
     };
 }
 
