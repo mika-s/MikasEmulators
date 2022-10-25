@@ -15,6 +15,7 @@
 #include "crosscutting/gui/debugging_panes/memory_editor_pane.h"
 #include "crosscutting/gui/debugging_panes/tilemap_pane.h"
 #include "crosscutting/gui/debugging_panes/spritemap_pane.h"
+#include "crosscutting/gui/debugging_panes/waveform_pane.h"
 
 namespace emu::applications::pacman {
 
@@ -25,6 +26,7 @@ namespace emu::applications::pacman {
     using emu::gui::MemoryEditorPane;
     using emu::gui::TilemapPane;
     using emu::gui::SpritemapPane;
+    using emu::gui::WaveformPane;
     using emu::misc::RunStatus;
 
     class GuiImgui : public Gui {
@@ -74,6 +76,7 @@ namespace emu::applications::pacman {
         bool m_show_memory_editor;
         bool m_show_tilemap;
         bool m_show_spritemap;
+        bool m_show_waveforms;
         bool m_show_demo;
 
         bool m_is_in_debug_mode;
@@ -88,6 +91,7 @@ namespace emu::applications::pacman {
         MemoryEditorPane m_memory_editor;
         TilemapPane m_tilemap;
         SpritemapPane m_spritemap;
+        WaveformPane m_waveforms;
 
         void notify_gui_observers_about_run_status(RunStatus new_status);
 
@@ -97,23 +101,25 @@ namespace emu::applications::pacman {
 
         void render(RunStatus run_status);
 
-        void render_game_window(RunStatus run_status);
+        void render_game_pane(RunStatus run_status);
 
-        void render_game_info_window();
+        void render_game_info_pane();
 
-        void render_cpu_info_window();
+        void render_cpu_info_pane();
 
-        void render_io_info_window();
+        void render_io_info_pane();
 
-        void render_log_window();
+        void render_log_pane();
 
-        void render_disassembly_window();
+        void render_disassembly_pane();
 
-        void render_memory_editor_window();
+        void render_memory_editor_pane();
 
-        void render_tilemap_window();
+        void render_tilemap_pane();
 
-        void render_spritemap_window();
+        void render_spritemap_pane();
+
+        void render_waveform_pane();
     };
 }
 

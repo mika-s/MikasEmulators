@@ -123,7 +123,9 @@ namespace emu::debugger {
               m_is_interrupted_set(false),
               m_is_interrupt_mode_set(false),
               m_is_disassembled_program_set(false),
-              m_is_tilemap_set(false) {
+              m_is_tilemap_set(false),
+              m_is_spritemap_set(false),
+              m_is_waveforms_set(false) {
     }
 
     void DebugContainer::add_register(const RegisterDebugContainer &reg) {
@@ -279,5 +281,18 @@ namespace emu::debugger {
 
     bool DebugContainer::is_spritemap_set() const {
         return m_is_spritemap_set;
+    }
+
+    std::vector<Waveform> DebugContainer::waveforms() {
+        return m_waveforms;
+    }
+
+    bool DebugContainer::is_waveforms_set() const {
+        return m_is_waveforms_set;
+    }
+
+    void DebugContainer::add_waveforms(const std::vector<Waveform> &waveforms) {
+        m_waveforms = waveforms;
+        m_is_waveforms_set = true;
     }
 }

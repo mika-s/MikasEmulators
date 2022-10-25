@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include "disassembled_line.h"
+#include "chips/namco_wsg3/waveform.h"  // TODO: Move to crosscutting
 #include "crosscutting/typedefs.h"
 #include "crosscutting/gui/graphics/sprite.h"
 #include "crosscutting/gui/graphics/tile.h"
@@ -14,6 +15,7 @@ namespace emu::debugger {
 
     using emu::gui::Sprite;
     using emu::gui::Tile;
+    using emu::wsg3::Waveform;
 
     class RegisterDebugContainer {
     public:
@@ -192,6 +194,12 @@ namespace emu::debugger {
 
         [[nodiscard]] bool is_spritemap_set() const;
 
+        void add_waveforms(const std::vector<Waveform> &waveforms);
+
+        std::vector<Waveform> waveforms();
+
+        [[nodiscard]] bool is_waveforms_set() const;
+
     private:
         std::vector<RegisterDebugContainer> m_register_retrievers;
         bool m_has_alternate_registers;
@@ -230,6 +238,9 @@ namespace emu::debugger {
                 std::vector<std::vector<std::shared_ptr<Sprite>>>
         > m_sprites;
         bool m_is_spritemap_set;
+
+        std::vector<Waveform> m_waveforms;
+        bool m_is_waveforms_set;
     };
 }
 

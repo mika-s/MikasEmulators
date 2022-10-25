@@ -34,6 +34,10 @@ namespace emu::applications::pacman {
         m_is_muted = !m_is_muted;
     }
 
+    std::vector<Waveform> Audio::waveforms() {
+        return m_sound_chip.waveforms();
+    }
+
     Wsg3 Audio::load_waveforms_from_roms(const std::vector<u8> &sound_rom1, const std::vector<u8> &sound_rom2) {
         std::vector<Waveform> waveforms;
         std::vector<u8> samples;

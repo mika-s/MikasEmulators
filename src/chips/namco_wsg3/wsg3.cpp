@@ -18,6 +18,10 @@ namespace emu::wsg3 {
         }
     }
 
+    std::vector<Waveform> Wsg3::waveforms() {
+        return m_waveforms;
+    }
+
     /**
      * 1. Add the 20-bit (or 16-bit) voice frequency to the 20-bit (or 16-bit) accumulator.
      * 2. Use the waveform 0-7 to lookup a 32-byte sample in the Sound ROM.
@@ -35,7 +39,5 @@ namespace emu::wsg3 {
                     )
             );
         }
-
-
     }
 }

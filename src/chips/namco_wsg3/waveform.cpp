@@ -19,4 +19,8 @@ namespace emu::wsg3 {
             }
         }
     }
+
+    std::vector<u8> Waveform::samples() {
+        return m_samples;
+    }
 }

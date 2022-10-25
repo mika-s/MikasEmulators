@@ -10,6 +10,8 @@ namespace emu::wsg3 {
     public:
         explicit Waveform(std::vector<u8> samples);
 
+        std::vector<u8> samples();
+
     private:
         static constexpr u8 max_value_for_sample = 1 << 4;
 

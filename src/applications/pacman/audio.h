@@ -9,6 +9,7 @@
 namespace emu::applications::pacman {
 
     using emu::wsg3::Voice;
+    using emu::wsg3::Waveform;
     using emu::wsg3::Wsg3;
 
     class Audio {
@@ -16,13 +17,15 @@ namespace emu::applications::pacman {
 
         Audio(const std::vector<u8> &sound_rom1, const std::vector<u8> &sound_rom2);
 
-        void handle_sound(bool is_sound_enabled, const std::vector<Voice>& voices);
+        void handle_sound(bool is_sound_enabled, const std::vector<Voice> &voices);
 
         void mute();
 
         void unmute();
 
         void toggle_mute();
+
+        std::vector<Waveform> waveforms();
 
     private:
         static constexpr unsigned int samples_per_waveform = 32;

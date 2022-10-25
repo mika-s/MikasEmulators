@@ -11,6 +11,8 @@ namespace emu::wsg3 {
     public:
         explicit Wsg3(std::vector<Waveform> waveforms);
 
+        std::vector<Waveform> waveforms();
+
         void next_tick(const std::vector<Voice> &voices);
 
     private:

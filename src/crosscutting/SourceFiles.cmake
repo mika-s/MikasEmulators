@@ -13,6 +13,7 @@ set(SOURCES_CROSSCUTTING_CPP
         src/crosscutting/gui/debugging_panes/memory_editor_pane.cpp
         src/crosscutting/gui/debugging_panes/spritemap_pane.cpp
         src/crosscutting/gui/debugging_panes/tilemap_pane.cpp
+        src/crosscutting/gui/debugging_panes/waveform_pane.cpp
         src/crosscutting/gui/graphics/color.cpp
         src/crosscutting/gui/graphics/framebuffer.cpp
         src/crosscutting/gui/graphics/palette.cpp
@@ -43,6 +44,7 @@ set(SOURCES_CROSSCUTTING_H
         src/crosscutting/gui/debugging_panes/memory_editor_pane.h
         src/crosscutting/gui/debugging_panes/spritemap_pane.h
         src/crosscutting/gui/debugging_panes/tilemap_pane.h
+        src/crosscutting/gui/debugging_panes/waveform_pane.h
         src/crosscutting/gui/graphics/color.h
         src/crosscutting/gui/graphics/framebuffer.h
         src/crosscutting/gui/graphics/palette.h

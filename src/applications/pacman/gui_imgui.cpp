@@ -35,6 +35,7 @@ namespace emu::applications::pacman {
               m_show_memory_editor(true),
               m_show_tilemap(true),
               m_show_spritemap(true),
+              m_show_waveforms(true),
               m_show_demo(false),
               m_is_in_debug_mode(false),
               m_tilemap(1),
@@ -89,6 +90,7 @@ namespace emu::applications::pacman {
         m_memory_editor.attach_debug_container(debug_container);
         m_tilemap.attach_debug_container(debug_container);
         m_spritemap.attach_debug_container(debug_container);
+        m_waveforms.attach_debug_container(debug_container);
     }
 
     void GuiImgui::attach_logger(std::shared_ptr<Logger> logger) {
@@ -259,6 +261,7 @@ namespace emu::applications::pacman {
                 ImGui::MenuItem("Memory editor", nullptr, &m_show_memory_editor);
                 ImGui::MenuItem("Tilemap", nullptr, &m_show_tilemap);
                 ImGui::MenuItem("Spritemap", nullptr, &m_show_spritemap);
+                ImGui::MenuItem("Waveforms", nullptr, &m_show_waveforms);
                 ImGui::MenuItem("Demo", nullptr, &m_show_demo);
                 ImGui::EndMenu();
             }
@@ -273,31 +276,34 @@ namespace emu::applications::pacman {
         );
 
         if (m_show_log) {
-            render_log_window();
+            render_log_pane();
         }
         if (m_show_disassembly) {
-            render_disassembly_window();
+            render_disassembly_pane();
         }
         if (m_show_game) {
-            render_game_window(run_status);
+            render_game_pane(run_status);
         }
         if (m_show_game_info) {
-            render_game_info_window();
+            render_game_info_pane();
         }
         if (m_show_cpu_info) {
-            render_cpu_info_window();
+            render_cpu_info_pane();
         }
         if (m_show_io_info) {
-            render_io_info_window();
+            render_io_info_pane();
         }
         if (m_show_memory_editor) {
-            render_memory_editor_window();
+            render_memory_editor_pane();
         }
         if (m_show_tilemap) {
-            render_tilemap_window();
+            render_tilemap_pane();
         }
         if (m_show_spritemap) {
-            render_spritemap_window();
+            render_spritemap_pane();
+        }
+        if (m_show_waveforms) {
+            render_waveform_pane();
         }
         if (m_show_demo) {
             ImGui::ShowDemoWindow();
@@ -315,7 +321,7 @@ namespace emu::applications::pacman {
         render(STEPPING);
     }
 
-    void GuiImgui::render_game_window(RunStatus run_status) {
+    void GuiImgui::render_game_pane(RunStatus run_status) {
         std::string prefix = "Game";
         std::string id = "###" + prefix;
         std::string title;
@@ -345,7 +351,7 @@ namespace emu::applications::pacman {
         ImGui::End();
     }
 
-    void GuiImgui::render_game_info_window() {
+    void GuiImgui::render_game_info_pane() {
         ImGui::Begin("Game info", &m_show_game);
 
         ImGui::Text("Avg %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
@@ -371,31 +377,35 @@ namespace emu::applications::pacman {
         ImGui::End();
     }
 
-    void GuiImgui::render_cpu_info_window() {
+    void GuiImgui::render_cpu_info_pane() {
         m_cpu_info.draw("CPU info", &m_show_cpu_info);
     }
 
-    void GuiImgui::render_io_info_window() {
+    void GuiImgui::render_io_info_pane() {
         m_io_info.draw("IO info", &m_show_io_info);
     }
 
-    void GuiImgui::render_log_window() {
+    void GuiImgui::render_log_pane() {
         m_log.draw("Log", &m_show_log);
     }
 
-    void GuiImgui::render_disassembly_window() {
+    void GuiImgui::render_disassembly_pane() {
         m_disassembly.draw("Disassembly", &m_show_disassembly);
     }
 
-    void GuiImgui::render_memory_editor_window() {
+    void GuiImgui::render_memory_editor_pane() {
         m_memory_editor.draw("Memory editor", &m_show_memory_editor);
     }
 
-    void GuiImgui::render_tilemap_window() {
+    void GuiImgui::render_tilemap_pane() {
         m_tilemap.draw("Tilemap", m_tile_texture, &m_show_tilemap);
     }
 
-    void GuiImgui::render_spritemap_window() {
+    void GuiImgui::render_spritemap_pane() {
         m_spritemap.draw("Spritemap", m_sprite_texture, &m_show_spritemap);
+    }
+
+    void GuiImgui::render_waveform_pane() {
+        m_waveforms.draw("Waveforms", &m_show_waveforms);
     }
 }
