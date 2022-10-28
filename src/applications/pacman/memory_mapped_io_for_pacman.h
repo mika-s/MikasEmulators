@@ -44,10 +44,10 @@ namespace emu::applications::pacman {
 
         bool is_screen_flipped();
 
-        std::vector<Voice> voices();
+        std::vector<Voice> &voices();
 
     private:
-        static constexpr unsigned int sound_enabled_bit = 1;
+        static constexpr unsigned int sound_enabled_bit = 0;
 
         static constexpr unsigned int board_test_bit = 4;
         static constexpr unsigned int cabinet_mode_bit = 7;

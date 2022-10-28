@@ -20,7 +20,7 @@ namespace emu::wsg3 {
         }
     }
 
-    std::vector<u8> Waveform::samples() {
+    std::vector<u8> Waveform::samples() const {
         return m_samples;
     }
 }

@@ -9,31 +9,31 @@ namespace emu::wsg3 {
     public:
         Voice();
 
-        u32 waveform_number();
+        [[nodiscard]] u8 waveform_number() const;
 
-        void waveform_number(u32 waveform_number);
+        void waveform_number(u8 waveform_number);
 
-        u32 frequency();
+        [[nodiscard]] u32 frequency() const;
 
         void frequency(u32 frequency);
 
-        u8 volume();
+        [[nodiscard]] u8 volume() const;
 
         void volume(u8 volume);
 
-        u8 accumulator();
+        [[nodiscard]] u32 accumulator() const;
 
-        void accumulator(u8 accumulator);
+        void accumulator(u32 accumulator);
 
     private:
-        static constexpr u32 waveforms_supported = 8;
+        static constexpr u8 waveforms_supported = 8;
         static constexpr u32 max_frequency = 1 << 20;
         static constexpr u8 volume_levels_supported = 16;
 
-        u32 m_waveform_number;
+        u8 m_waveform_number;
         u32 m_frequency;
         u8 m_volume;
-        u8 m_accumulator;
+        u32 m_accumulator;
     };
 }
 

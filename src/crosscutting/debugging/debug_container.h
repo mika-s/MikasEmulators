@@ -6,8 +6,8 @@
 #include <string>
 #include <vector>
 #include "disassembled_line.h"
-#include "chips/namco_wsg3/waveform.h"  // TODO: Move to crosscutting
 #include "crosscutting/typedefs.h"
+#include "crosscutting/audio/waveform.h"
 #include "crosscutting/gui/graphics/sprite.h"
 #include "crosscutting/gui/graphics/tile.h"
 

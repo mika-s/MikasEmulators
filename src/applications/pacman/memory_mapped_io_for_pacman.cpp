@@ -24,6 +24,7 @@ namespace emu::applications::pacman {
 
     /**
      * Called when the CPU writes to memory
+     *
      * @param address is the address in memory to write to
      * @param value is the value that should be written to memory
      */
@@ -80,6 +81,7 @@ namespace emu::applications::pacman {
 
     /**
      * Called when the CPU reads from memory
+     *
      * @param address is the address in memory to read from
      * @return the value in memory at the given address
      */
@@ -268,7 +270,7 @@ namespace emu::applications::pacman {
         return m_is_screen_flipped;
     }
 
-    std::vector<Voice> MemoryMappedIoForPacman::voices() {
+    std::vector<Voice> &MemoryMappedIoForPacman::voices() {
         return m_voices;
     }
 

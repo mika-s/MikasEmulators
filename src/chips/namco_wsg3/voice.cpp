@@ -10,11 +10,11 @@ namespace emu::wsg3 {
               m_accumulator(0) {
     }
 
-    u32 Voice::waveform_number() {
+    u8 Voice::waveform_number() const {
         return m_waveform_number;
     }
 
-    void Voice::waveform_number(u32 waveform_number) {
+    void Voice::waveform_number(u8 waveform_number) {
         if (waveform_number > waveforms_supported - 1) {
             throw std::invalid_argument(
                     fmt::format(
@@ -28,7 +28,7 @@ namespace emu::wsg3 {
         m_waveform_number = waveform_number;
     }
 
-    u32 Voice::frequency() {
+    u32 Voice::frequency() const {
         return m_frequency;
     }
 
@@ -46,7 +46,7 @@ namespace emu::wsg3 {
         m_frequency = frequency;
     }
 
-    u8 Voice::volume() {
+    u8 Voice::volume() const {
         return m_volume;
     }
 
@@ -64,11 +64,11 @@ namespace emu::wsg3 {
         m_volume = volume;
     }
 
-    u8 Voice::accumulator() {
+    u32 Voice::accumulator() const {
         return m_accumulator;
     }
 
-    void Voice::accumulator(u8 accumulator) {
+    void Voice::accumulator(u32 accumulator) {
         m_accumulator = accumulator;
     }
 }

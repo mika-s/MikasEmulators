@@ -22,14 +22,7 @@ namespace emu::wsg3 {
         return m_waveforms;
     }
 
-    /**
-     * 1. Add the 20-bit (or 16-bit) voice frequency to the 20-bit (or 16-bit) accumulator.
-     * 2. Use the waveform 0-7 to lookup a 32-byte sample in the Sound ROM.
-     * 3. Take the top 5 bits of the accumulator to look up a nibble 0-31 in that sample.
-     * 4. Multiply that nibble by the volume nibble 0-15.
-     * 5. Send the result to the amplifier for output.
-     */
-    void Wsg3::next_tick(const std::vector<Voice> &voices) {
+    std::vector<i16> Wsg3::next_tick(std::vector<Voice> &voices) {
         if (voices.size() != expected_number_of_voices) {
             throw std::invalid_argument(
                     fmt::format(
@@ -39,5 +32,20 @@ namespace emu::wsg3 {
                     )
             );
         }
+
+        std::vector<i16> buffer;
+        for (unsigned int i = 0; i < buffer_size; ++i) {
+            i16 sample = 0;
+            for (auto &voice: voices) {
+                voice.accumulator((voice.frequency() + voice.accumulator()) & mask_for_20_bit);
+                const u32 sample_idx = voice.accumulator() >> 15;
+                i16 voice_sample = m_waveforms[voice.waveform_number()].samples()[sample_idx];
+                voice_sample *= voice.volume();
+                sample += voice_sample;
+            }
+            buffer.push_back(sample);
+        }
+
+        return buffer;
     }
 }

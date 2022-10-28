@@ -59,7 +59,7 @@ namespace emu::applications::pacman {
 
     void GuiSdl::init() {
         if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-            std::cerr << "error initializing SDL: " << SDL_GetError() << "\n";
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error initializing SDL: %s", SDL_GetError());
             exit(1);
         }
 
@@ -72,19 +72,19 @@ namespace emu::applications::pacman {
                 SDL_WINDOW_RESIZABLE
         );
         if (!m_win) {
-            std::cerr << "error creating SDL window: " << SDL_GetError() << "\n";
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error creating SDL window: %s", SDL_GetError());
             exit(1);
         }
 
         m_rend = SDL_CreateRenderer(m_win, -1, SDL_RENDERER_ACCELERATED);
 
         if (!m_rend) {
-            std::cerr << "error creating SDL renderer: " << SDL_GetError() << "\n";
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error creating SDL renderer: %s", SDL_GetError());
             exit(1);
         }
 
         if (SDL_RenderSetScale(m_rend, scale, scale) != 0) {
-            std::cerr << "error setting renderer scale in SDL: " << SDL_GetError() << "\n";
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error setting renderer scale in SDL: %s", SDL_GetError());
             exit(1);
         }
 
@@ -92,7 +92,7 @@ namespace emu::applications::pacman {
                                       SDL_TEXTUREACCESS_STREAMING, width, height);
 
         if (!m_texture) {
-            std::cerr << "error creating SDL texture: " << SDL_GetError() << "\n";
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error creating SDL texture: %s", SDL_GetError());
             exit(1);
         }
     }
@@ -110,7 +110,7 @@ namespace emu::applications::pacman {
         int pitch = 0;
 
         if (SDL_LockTexture(m_texture, nullptr, &pixels, &pitch) != 0) {
-            std::cerr << "error while unlocking SDL texture: " << SDL_GetError() << "\n";
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error while unlocking SDL texture: %s", SDL_GetError());
         } else {
             memcpy(pixels, framebuffer.data(), pitch * height);
         }

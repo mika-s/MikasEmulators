@@ -87,7 +87,7 @@ namespace emu::applications::space_invaders {
 
     void GuiImgui::init() {
         if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-            std::cerr << "error initializing SDL: " << SDL_GetError() << "\n";
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error initializing SDL: %s", SDL_GetError());
             exit(1);
         }
 
@@ -129,7 +129,7 @@ namespace emu::applications::space_invaders {
                 SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_MAXIMIZED
         );
         if (!m_win) {
-            std::cerr << "error creating SDL window: " << SDL_GetError() << "\n";
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error creating SDL window: %s", SDL_GetError());
             exit(1);
         }
 
@@ -139,7 +139,7 @@ namespace emu::applications::space_invaders {
         SDL_GL_SetSwapInterval(1);
 
         if (!gladLoadGLLoader(static_cast<GLADloadproc>(SDL_GL_GetProcAddress))) {
-            std::cerr << "error initializing glad\n";
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error initializing glad");
             exit(1);
         }
 

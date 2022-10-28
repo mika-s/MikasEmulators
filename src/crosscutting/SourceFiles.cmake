@@ -1,5 +1,6 @@
 set(SOURCES_CROSSCUTTING_CPP
         src/main.cpp
+        src/crosscutting/audio/waveform.cpp
         src/crosscutting/debugging/breakpoint.cpp
         src/crosscutting/debugging/debugger.cpp
         src/crosscutting/debugging/debug_container.cpp
@@ -30,6 +31,7 @@ set(SOURCES_CROSSCUTTING_CPP
 
 set(SOURCES_CROSSCUTTING_H
         src/crosscutting/typedefs.h
+        src/crosscutting/audio/waveform.h
         src/crosscutting/debugging/breakpoint.h
         src/crosscutting/debugging/debugger.h
         src/crosscutting/debugging/debug_container.h

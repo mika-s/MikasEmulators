@@ -38,6 +38,10 @@ namespace emu::applications::space_invaders {
                 nullptr,
                 0
         );
+        if (m_audio_device == 0) {
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error opening audio device: %s", SDL_GetError());
+            exit(1);
+        }
         SDL_PauseAudioDevice(m_audio_device, 0);
     }
 
@@ -113,9 +117,9 @@ namespace emu::applications::space_invaders {
         SDL_UnlockAudioDevice(m_audio_device);
     }
 
-    void Audio::generate_audio(Uint8 *stream, int len) {
-        auto *stream16 = (Sint16 *) stream;
-        int samples = static_cast<int>(len / sizeof(Sint16));
+    void Audio::generate_audio(u8 *stream, int len) {
+        auto *stream16 = (i16 *) stream;
+        int samples = static_cast<int>(len / sizeof(i16));
 
         SDL_memset(stream, 0, len); // no sound
 
@@ -152,10 +156,10 @@ namespace emu::applications::space_invaders {
         }
     }
 
-    void Audio::play(std::vector<double> sound, int samples, Sint16 *stream16, std::size_t &x, bool &is_sound_on) const {
+    void Audio::play(std::vector<double> sound, int samples, i16 *stream16, std::size_t &x, bool &is_sound_on) const {
         for (int i = 0; i < samples; i++) {
             if (x < sound.size()) {
-                stream16[i] += static_cast<Sint16>(sound[x++] * m_volume * !m_is_muted);
+                stream16[i] += static_cast<i16>(sound[x++] * m_volume * !m_is_muted);
             } else {
                 is_sound_on = false;
                 x = 0;
