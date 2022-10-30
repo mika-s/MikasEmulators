@@ -1,8 +1,11 @@
 #include <fstream>
 #include <iostream>
 #include "file_util.h"
+#include "crosscutting/exceptions/rom_file_not_found_exception.h"
 
 namespace emu::util::file {
+
+    using emu::exceptions::RomFileNotFoundException;
 
     std::vector<u8> convert_char_pointer_to_vector(char *memory, std::streampos size) {
         std::vector<u8> program;
@@ -34,8 +37,7 @@ namespace emu::util::file {
 
             delete[] memory;
         } else {
-            std::cout << "Unable to open file: " << path << "\n";
-            // TODO: Throw exception instead
+            throw RomFileNotFoundException(path);
         }
 
         return program;

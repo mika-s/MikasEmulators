@@ -5,6 +5,7 @@ set(SOURCES_CROSSCUTTING_CPP
         debugging/debug_container.cpp
         debugging/disassembled_line.cpp
         exceptions/invalid_program_arguments_exception.cpp
+        exceptions/rom_file_not_found_exception.cpp
         exceptions/unrecognized_opcode_exception.cpp
         gui/debugging_panes/cpu_info_pane.cpp
         gui/debugging_panes/debug_log_pane.cpp
@@ -36,6 +37,7 @@ set(SOURCES_CROSSCUTTING_H
         debugging/debug_container.h
         debugging/disassembled_line.h
         exceptions/invalid_program_arguments_exception.h
+        exceptions/rom_file_not_found_exception.h
         exceptions/unrecognized_opcode_exception.h
         gui/gui_type.h
         gui/debugging_panes/disassembly_pane.h

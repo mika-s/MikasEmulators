@@ -6,11 +6,13 @@
 #include "applications/frontend.h"
 #include "applications/options.h"
 #include "crosscutting/exceptions/invalid_program_arguments_exception.h"
+#include "crosscutting/exceptions/rom_file_not_found_exception.h"
 #include "crosscutting/util/string_util.h"
 
 using emu::applications::Frontend;
 using emu::applications::Options;
 using emu::exceptions::InvalidProgramArgumentsException;
+using emu::exceptions::RomFileNotFoundException;
 using emu::util::string::find_short_executable_name;
 
 void print_usage(const std::string &program_name) {
@@ -60,6 +62,11 @@ int main(int argc, char *argv[]) {
     } catch (InvalidProgramArgumentsException &ex) {
         std::cout << ex.what() << "\n\n";
         print_usage(find_short_executable_name(argv[0]));
+        return 1;
+    } catch (RomFileNotFoundException &ex) {
+        std::cout << ex.what() << "\n\n";
+        SDL_Quit();
+        return 2;
     }
 
     return 0;

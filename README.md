@@ -36,7 +36,7 @@ On Linux, the emulator can be built in debug mode like this:
 ```sh
 mkdir -p build/linux-debug
 cmake --preset linux-debug
-cmake --build build/linux-debug/
+cmake --build --preset linux-debug
 ```
 
 and in release mode like this:
@@ -44,7 +44,7 @@ and in release mode like this:
 ```sh
 mkdir build/linux-release
 cmake --preset linux-release
-cmake --build build/linux-release/
+cmake --build --preset linux-release
 ```
 
 For other OSes, see CMakePresets.json. The OS in question might exist there.

@@ -69,5 +69,5 @@ set(SOURCES_APPLICATIONS_H
         )
 
 add_library(Applications STATIC ${SOURCES_APPLICATIONS_H} ${SOURCES_APPLICATIONS_CPP})
-target_link_libraries(Applications PUBLIC Glad SDL2::Main SDL2::Image ImGui Doctest Crosscutting I8080 NamcoWsg3 Z80)
+target_link_libraries(Applications PRIVATE Glad SDL2::Main SDL2::Image ImGui Doctest Crosscutting I8080 NamcoWsg3 Z80)
 target_include_directories(Applications PUBLIC ../)
