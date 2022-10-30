@@ -45,6 +45,7 @@ namespace emu::applications::pacman {
               public IoObserver {
     public:
         PacmanSession(
+                const RunStatus startup_runstatus,
                 std::shared_ptr<Gui> gui,
                 std::shared_ptr<Input> input,
                 std::shared_ptr<Audio> audio,
@@ -79,6 +80,7 @@ namespace emu::applications::pacman {
         bool m_is_stepping_instruction;
         bool m_is_stepping_cycle;
         bool m_is_continuing_execution;
+        RunStatus m_startup_runstatus;
         RunStatus m_run_status;
 
         u8 m_vblank_interrupt_return;

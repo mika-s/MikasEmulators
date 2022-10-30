@@ -8,18 +8,21 @@
 #include "interfaces/input.h"
 #include "chips/8080/emulator_memory.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/gui/gui_type.h"
 #include "crosscutting/misc/emulator.h"
+#include "crosscutting/misc/session.h"
 
 namespace emu::applications::space_invaders {
 
+    using emu::gui::GuiType;
     using emu::misc::Emulator;
+    using emu::misc::RunStatus;
 
     class SpaceInvaders : public Emulator {
     public:
         SpaceInvaders(
                 const Settings &settings,
-                std::shared_ptr<Gui> gui,
-                std::shared_ptr<Input> input
+                const GuiType gui_type
         );
 
         std::unique_ptr<Session> new_session() override;
@@ -29,6 +32,7 @@ namespace emu::applications::space_invaders {
         EmulatorMemory m_memory;
         std::shared_ptr<Gui> m_gui;
         std::shared_ptr<Input> m_input;
+        RunStatus m_startup_runstatus;
 
         void load_file();
 

@@ -7,17 +7,7 @@
 #include "applications/cpm_8080/cpm_application.h"
 #include "applications/cpm_z80/cpm_application.h"
 #include "applications/pacman/pacman.h"
-#include "applications/pacman/gui_imgui.h"
-#include "applications/pacman/gui_sdl.h"
-#include "applications/pacman/input_imgui.h"
-#include "applications/pacman/input_sdl.h"
-#include "applications/pacman/settings.h"
-#include "applications/space_invaders/gui_imgui.h"
-#include "applications/space_invaders/gui_sdl.h"
-#include "applications/space_invaders/input_imgui.h"
-#include "applications/space_invaders/input_sdl.h"
 #include "applications/space_invaders/space_invaders.h"
-#include "applications/space_invaders/settings.h"
 #include "chips/8080/disassembler8080.h"
 #include "chips/8080/emulator_memory.h"
 #include "chips/z80/disassemblerZ80.h"
@@ -81,13 +71,13 @@ namespace emu::applications {
             const std::string &file_path = args[disassembly_file_path_argument];
 
             if (cpu == "8080") {
-                emu::i8080::EmulatorMemory memory;
+                i8080::EmulatorMemory memory;
                 memory.add(read_file_into_vector(file_path));
 
                 Disassembler8080 disassembler(memory, std::cout);
                 disassembler.disassemble();
             } else if (cpu == "Z80") {
-                emu::z80::EmulatorMemory memory;
+                z80::EmulatorMemory memory;
                 memory.add(read_file_into_vector(file_path));
 
                 DisassemblerZ80 disassembler(memory, std::cout);
@@ -101,50 +91,28 @@ namespace emu::applications {
     }
 
     std::unique_ptr<Emulator> Frontend::choose_emulator(const std::string &program, Options &options) {
-        const GuiType gui_type = options.gui_type();
+        using namespace applications;
 
         if (program == "pacman") {
-            if (gui_type == GuiType::DEBUGGING) {
-                return std::make_unique<applications::pacman::Pacman>(
-                        options.pacman_settings(),
-                        std::make_shared<applications::pacman::GuiImgui>(),
-                        std::make_shared<applications::pacman::InputImgui>()
-                );
-            } else {
-                return std::make_unique<applications::pacman::Pacman>(
-                        options.pacman_settings(),
-                        std::make_shared<applications::pacman::GuiSdl>(),
-                        std::make_shared<applications::pacman::InputSdl>()
-                );
-            }
+            return std::make_unique<pacman::Pacman>(options.pacman_settings(), options.gui_type());
         } else if (program == "prelim") {
-            return std::make_unique<applications::cpm::z80::CpmApplication>("roms/z80/prelim.com");
+            return std::make_unique<cpm::z80::CpmApplication>("roms/z80/prelim.com");
         } else if (program == "zexall") {
-            return std::make_unique<applications::cpm::z80::CpmApplication>("roms/z80/zexall.cim");
+            return std::make_unique<cpm::z80::CpmApplication>("roms/z80/zexall.cim");
         } else if (program == "zexdoc") {
-            return std::make_unique<applications::cpm::z80::CpmApplication>("roms/z80/zexdoc.cim");
+            return std::make_unique<cpm::z80::CpmApplication>("roms/z80/zexdoc.cim");
         } else if (program == "space_invaders") {
-            if (gui_type == GuiType::DEBUGGING) {
-                return std::make_unique<applications::space_invaders::SpaceInvaders>(
-                        options.space_invaders_settings(),
-                        std::make_shared<applications::space_invaders::GuiImgui>(),
-                        std::make_shared<applications::space_invaders::InputImgui>()
-                );
-            } else {
-                return std::make_unique<applications::space_invaders::SpaceInvaders>(
-                        options.space_invaders_settings(),
-                        std::make_shared<applications::space_invaders::GuiSdl>(),
-                        std::make_shared<applications::space_invaders::InputSdl>()
-                );
-            }
+            return std::make_unique<space_invaders::SpaceInvaders>(
+                    options.space_invaders_settings(), options.gui_type()
+            );
         } else if (program == "TST8080") {
-            return std::make_unique<applications::cpm::i8080::CpmApplication>("roms/8080/TST8080.COM");
+            return std::make_unique<cpm::i8080::CpmApplication>("roms/8080/TST8080.COM");
         } else if (program == "8080PRE") {
-            return std::make_unique<applications::cpm::i8080::CpmApplication>("roms/8080/8080PRE.COM");
+            return std::make_unique<cpm::i8080::CpmApplication>("roms/8080/8080PRE.COM");
         } else if (program == "8080EXM") {
-            return std::make_unique<applications::cpm::i8080::CpmApplication>("roms/8080/8080EXM.COM");
+            return std::make_unique<cpm::i8080::CpmApplication>("roms/8080/8080EXM.COM");
         } else if (program == "CPUTEST") {
-            return std::make_unique<applications::cpm::i8080::CpmApplication>("roms/8080/CPUTEST.COM");
+            return std::make_unique<cpm::i8080::CpmApplication>("roms/8080/CPUTEST.COM");
         } else {
             throw InvalidProgramArgumentsException("Illegal program argument when choosing emulator");
         }

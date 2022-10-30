@@ -22,6 +22,7 @@ namespace emu::applications::space_invaders {
 
     SpaceInvadersSession::SpaceInvadersSession(
             const Settings &settings,
+            const RunStatus startup_runstatus,
             std::shared_ptr<Gui> gui,
             std::shared_ptr<Input> input,
             EmulatorMemory memory
@@ -30,6 +31,7 @@ namespace emu::applications::space_invaders {
               m_is_stepping_instruction(false),
               m_is_stepping_cycle(false),
               m_is_continuing_execution(false),
+              m_startup_runstatus(startup_runstatus),
               m_run_status(NOT_RUNNING),
               m_cpu_io(CpuIo(0, 0b00001000, 0)),
               m_gui(std::move(gui)),
@@ -59,7 +61,7 @@ namespace emu::applications::space_invaders {
         }
 
         m_cpu->start();
-        m_run_status = RUNNING;
+        m_run_status = m_startup_runstatus;
 
         cyc cycles;
 

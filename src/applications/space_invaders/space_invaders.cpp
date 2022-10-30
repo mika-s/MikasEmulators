@@ -1,4 +1,8 @@
 #include "space_invaders.h"
+#include "gui_imgui.h"
+#include "gui_sdl.h"
+#include "input_imgui.h"
+#include "input_sdl.h"
 #include "crosscutting/util/file_util.h"
 
 namespace emu::applications::space_invaders {
@@ -6,19 +10,23 @@ namespace emu::applications::space_invaders {
     using emu::i8080::RunStatus;
     using emu::util::file::read_file_into_vector;
 
-    SpaceInvaders::SpaceInvaders(
-            const Settings &settings,
-            std::shared_ptr<Gui> gui,
-            std::shared_ptr<Input> input
-    )
-            : m_settings(settings),
-              m_gui(std::move(gui)),
-              m_input(std::move(input)) {
+    SpaceInvaders::SpaceInvaders(const Settings &settings, const GuiType gui_type)
+            : m_settings(settings) {
+        if (gui_type == GuiType::DEBUGGING) {
+            m_gui = std::make_shared<GuiImgui>();
+            m_input = std::make_shared<InputImgui>();
+            m_startup_runstatus = RunStatus::PAUSED;
+        } else {
+            m_gui = std::make_shared<GuiSdl>();
+            m_input = std::make_shared<InputSdl>();
+            m_startup_runstatus = RunStatus::RUNNING;
+        }
+
         load_file();
     }
 
     std::unique_ptr<Session> SpaceInvaders::new_session() {
-        return std::make_unique<SpaceInvadersSession>(m_settings, m_gui, m_input, m_memory);
+        return std::make_unique<SpaceInvadersSession>(m_settings, m_startup_runstatus, m_gui, m_input, m_memory);
     }
 
     void SpaceInvaders::load_file() {

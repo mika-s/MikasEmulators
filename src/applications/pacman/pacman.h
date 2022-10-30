@@ -8,19 +8,20 @@
 #include "interfaces/input.h"
 #include "chips/z80/emulator_memory.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/gui/gui_type.h"
 #include "crosscutting/misc/emulator.h"
 #include "crosscutting/misc/session.h"
 
 namespace emu::applications::pacman {
 
     using emu::misc::Emulator;
+    using emu::gui::GuiType;
 
     class Pacman : public Emulator {
     public:
         Pacman(
                 const Settings &settings,
-                std::shared_ptr<Gui> gui,
-                std::shared_ptr<Input> input
+                const GuiType gui_type
         );
 
         std::unique_ptr<Session> new_session() override;
@@ -38,6 +39,7 @@ namespace emu::applications::pacman {
         std::shared_ptr<Gui> m_gui;
         std::shared_ptr<Input> m_input;
         std::shared_ptr<Audio> m_audio;
+        RunStatus m_startup_runstatus;
 
         void load_files();
 

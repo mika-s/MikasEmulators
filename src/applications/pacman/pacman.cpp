@@ -1,17 +1,25 @@
 #include "pacman.h"
+#include "gui_imgui.h"
+#include "gui_sdl.h"
+#include "input_imgui.h"
+#include "input_sdl.h"
 #include "crosscutting/util/file_util.h"
 
 namespace emu::applications::pacman {
 
     using emu::util::file::read_file_into_vector;
 
-    Pacman::Pacman(
-            const Settings &settings,
-            std::shared_ptr<Gui> gui,
-            std::shared_ptr<Input> input
-    )
-            : m_gui(std::move(gui)),
-              m_input(std::move(input)) {
+    Pacman::Pacman(const Settings &settings, const GuiType gui_type) {
+        if (gui_type == GuiType::DEBUGGING) {
+            m_gui = std::make_shared<GuiImgui>();
+            m_input = std::make_shared<InputImgui>();
+            m_startup_runstatus = RunStatus::PAUSED;
+        } else {
+            m_gui = std::make_shared<GuiSdl>();
+            m_input = std::make_shared<InputSdl>();
+            m_startup_runstatus = RunStatus::RUNNING;
+        }
+
         load_files();
 
         m_memory_mapped_io = std::make_shared<MemoryMappedIoForPacman>(m_memory, settings);
@@ -20,6 +28,7 @@ namespace emu::applications::pacman {
 
     std::unique_ptr<Session> Pacman::new_session() {
         return std::make_unique<PacmanSession>(
+                m_startup_runstatus,
                 m_gui,
                 m_input,
                 m_audio,

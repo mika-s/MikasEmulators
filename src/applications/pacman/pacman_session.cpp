@@ -24,6 +24,7 @@ namespace emu::applications::pacman {
     using emu::z80::RunStatus::STEPPING;
 
     PacmanSession::PacmanSession(
+            const RunStatus startup_runstatus,
             std::shared_ptr<Gui> gui,
             std::shared_ptr<Input> input,
             std::shared_ptr<Audio> audio,
@@ -34,6 +35,7 @@ namespace emu::applications::pacman {
               m_is_stepping_instruction(false),
               m_is_stepping_cycle(false),
               m_is_continuing_execution(false),
+              m_startup_runstatus(startup_runstatus),
               m_run_status(NOT_RUNNING),
               m_vblank_interrupt_return(0),
               m_memory_mapped_io(std::move(memory_mapped_io)),
@@ -63,7 +65,7 @@ namespace emu::applications::pacman {
         }
 
         m_cpu->start();
-        m_run_status = RUNNING;
+        m_run_status = m_startup_runstatus;
 
         cyc cycles;
 
