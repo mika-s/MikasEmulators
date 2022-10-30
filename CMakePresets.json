@@ -39,12 +39,26 @@
         "CMAKE_C_FLAGS": "$env{CXX_WARNINGS} $env{CXX_OPT}"
       },
       "environment": {
-        "CXX_WARNINGS": "-Werror -Wall -Wextra",
+        "CXX_WARNINGS": "-Wall -Wextra",
         "CXX_OPT": "-O3"
       },
       "warnings": {
         "dev": false
       }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "linux-debug",
+      "configurePreset": "linux-debug"
+    },
+    {
+      "name": "linux-debug-asan",
+      "configurePreset": "linux-debug-asan"
+    },
+    {
+      "name": "linux-release",
+      "configurePreset": "linux-release"
     }
   ]
 }

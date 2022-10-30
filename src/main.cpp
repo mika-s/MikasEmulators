@@ -1,6 +1,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT
 
 #include <iostream>
+#include <SDL.h>
 #include "doctest.h"
 #include "applications/frontend.h"
 #include "applications/options.h"
@@ -52,6 +53,7 @@ int main(int argc, char *argv[]) {
         if (argc > 1) {
             Options options(argv_to_vector(argc, argv));
             Frontend::run(options);
+            SDL_Quit();
         } else {
             throw InvalidProgramArgumentsException("No arguments provided");
         }

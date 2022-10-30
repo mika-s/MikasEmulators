@@ -13,6 +13,11 @@ namespace emu::applications::pacman {
             : m_sound_chip(Wsg3(load_waveforms_from_roms(sound_rom1, sound_rom2))),
               m_is_muted(false) {
 
+        if (SDL_Init(SDL_INIT_AUDIO) != 0) {
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error initializing SDL audio: %s", SDL_GetError());
+            exit(1);
+        }
+
         SDL_AudioSpec audio_spec{
                 .freq = sdl_frequency,
                 .format = AUDIO_S16SYS,
@@ -41,6 +46,7 @@ namespace emu::applications::pacman {
     Audio::~Audio() {
         SDL_PauseAudioDevice(m_audio_device, 1);
         SDL_CloseAudioDevice(m_audio_device);
+        SDL_QuitSubSystem(SDL_INIT_AUDIO);
     }
 
     void Audio::handle_sound(bool is_sound_enabled, std::vector<Voice> &voices) {

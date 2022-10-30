@@ -1,9 +1,8 @@
 # Pacman
 
-The rom files are not provided. To run Pacman, run the following after building:
+The rom files are not provided. To run Pacman:
 
 ```sh
-cd cmake-build-debug/
 ./emulator run pacman
 ```
 
@@ -86,9 +85,9 @@ The keymap is:
 
 The P2 controls are only used in cocktail mode. In upright mode P2 uses the same keys as P1.
 
-Screenshots:
+**Screenshots:**
 
-|                |                              |
-|:--------------:|:----------------------------:|
-|      TODO      |             TODO             | 
-| *Plain Pacman* | *Pacman in the debugger GUI* |
+|                                                                |                                                                                         |
+|:--------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|
+| ![Plain Pacman](../../assets/images/Z80_PM.png "Plain Pacman") | ![Pacman with debugger](../../assets/images/Z80_PM_debugger.png "Pacman with debugger") | 
+|                         *Plain Pacman*                         |                              *Pacman in the debugger GUI*                               |

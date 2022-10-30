@@ -1,9 +1,8 @@
 # Space Invaders
 
-The rom files are not provided. To run Space Invaders, run the following after building:
+The rom files are not provided. To run Space Invaders:
 
 ```sh
-cd cmake-build-debug/
 ./emulator run space_invaders
 ```
 
@@ -73,7 +72,7 @@ The keymap is:
 </tr>
 </table>
 
-Screenshots:
+**Screenshots:**
 
 |                                                                                 |                                                                                                          |
 |:-------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------:|

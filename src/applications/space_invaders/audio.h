@@ -89,7 +89,7 @@ namespace emu::applications::space_invaders {
 
         [[nodiscard]] bool is_falling_edge(u8 acc_reg, unsigned int value) const;
 
-        void generate_audio(Uint8 *stream, int len);
+        void generate_audio(u8 *stream, int len);
 
         void play(std::vector<double> sound, int samples, i16 *stream16, std::size_t &x, bool &is_sound_on) const;
 

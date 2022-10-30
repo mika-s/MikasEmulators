@@ -50,7 +50,6 @@ namespace emu::applications::space_invaders {
         static constexpr float scale = 4.0;
         static constexpr int width = 224;
         static constexpr int height = 256;
-        static constexpr int colors = 3;
         static constexpr int scaled_width = static_cast<int>(scale * static_cast<float>(width));
         static constexpr int scaled_height = static_cast<int>(scale * static_cast<float>(height));
 

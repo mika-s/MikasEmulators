@@ -47,7 +47,7 @@ namespace emu::applications::pacman {
 
         SDL_GL_DeleteContext(m_gl_context);
         SDL_DestroyWindow(m_win);
-        SDL_Quit();
+        SDL_QuitSubSystem(SDL_INIT_VIDEO);
 
         m_win = nullptr;
         m_gl_context = nullptr;
@@ -109,7 +109,7 @@ namespace emu::applications::pacman {
     }
 
     void GuiImgui::init() {
-        if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
+        if (SDL_Init(SDL_INIT_VIDEO) != 0) {
             SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error initializing SDL: %s", SDL_GetError());
             exit(1);
         }

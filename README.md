@@ -10,8 +10,8 @@ notice.
 
 - [Intel 8080](documentation/chips/8080.md)
     - [Space Invaders](documentation/applications/space_invaders.md)
-- [Z80](documentation/chips/z80.md) (WIP)
-    - [Pacman](documentation/applications/pacman.md) (WIP)
+- [Z80](documentation/chips/z80.md)
+    - [Pacman](documentation/applications/pacman.md)
 
 ## Dependencies
 

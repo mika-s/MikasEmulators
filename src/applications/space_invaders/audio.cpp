@@ -20,6 +20,12 @@ namespace emu::applications::space_invaders {
               m_is_ufo_hit_sound_on(false),
               m_is_muted(false),
               m_last_acc_reg(0) {
+
+        if (SDL_Init(SDL_INIT_AUDIO) != 0) {
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error initializing SDL audio: %s", SDL_GetError());
+            exit(1);
+        }
+
         SDL_AudioSpec audio_spec{
                 .freq = 11025,
                 .format = AUDIO_S16SYS,
@@ -48,6 +54,7 @@ namespace emu::applications::space_invaders {
     Audio::~Audio() {
         SDL_PauseAudioDevice(m_audio_device, 1);
         SDL_CloseAudioDevice(m_audio_device);
+        SDL_QuitSubSystem(SDL_INIT_AUDIO);
     }
 
     void Audio::play_sound_port_1(u8 acc_reg) {
