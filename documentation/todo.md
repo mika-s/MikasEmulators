@@ -8,4 +8,3 @@
 - [ ] Conditional breakpoints
 - [ ] Stack view (as in IDA Pro)
 - [ ] Use smart pointers for observer code
-- [ ] Modernize cmake and make a profile for ASAN

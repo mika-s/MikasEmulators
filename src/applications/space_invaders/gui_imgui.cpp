@@ -6,7 +6,6 @@
 #include "imgui_impl_sdl.h"
 #include "imgui_impl_opengl3.h"
 #include "gui_imgui.h"
-#include "crosscutting/util/byte_util.h"
 
 namespace emu::applications::space_invaders {
 

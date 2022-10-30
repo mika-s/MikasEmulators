@@ -23,11 +23,11 @@ namespace emu::z80 {
 
         void write(u16 address, u8 value);
 
-        u8 read(u16 address) const;
+        [[nodiscard]] u8 read(u16 address) const;
 
         void direct_write(u16 address, u8 value);
 
-        u8 direct_read(u16 address) const;
+        [[nodiscard]] u8 direct_read(u16 address) const;
 
         std::vector<u8>::iterator begin();
 

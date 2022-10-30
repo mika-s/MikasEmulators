@@ -18,7 +18,7 @@ notice.
 - [SDL2](https://www.libsdl.org/) (and SDL2_image)
 - [Dear Imgui](https://github.com/ocornut/imgui) (included)
 - [OpenGL](https://www.opengl.org/)
-- [cmake](https://cmake.org/) 3.17 or later
+- [cmake](https://cmake.org/) 3.21 or later
 - [doctest](https://github.com/doctest/doctest) (included)
 - [fmt](https://fmt.dev/)
 
@@ -31,18 +31,20 @@ Installation of dependencies:
 - Arch: `sudo pacman -S cmake sdl2 sdl2_image fmt`
 - Ubuntu: `sudo apt install cmake libsdl2-dev libsdl2-image-dev libfmt-dev`
 
-The emulator can be built in debug mode like this:
+On Linux, the emulator can be built in debug mode like this:
 
 ```sh
-mkdir cmake-build-debug
-cmake -G "CodeBlocks - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -B cmake-build-debug/
-cmake --build cmake-build-debug/
+mkdir -p build/linux-debug
+cmake --preset linux-debug
+cmake --build build/linux-debug/
 ```
 
 and in release mode like this:
 
 ```sh
-mkdir cmake-build-release
-cmake -G "CodeBlocks - Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -B cmake-build-release/
-cmake --build cmake-build-release/
+mkdir build/linux-release
+cmake --preset linux-release
+cmake --build build/linux-release/
 ```
+
+For other OSes, see CMakePresets.json. The OS in question might exist there.

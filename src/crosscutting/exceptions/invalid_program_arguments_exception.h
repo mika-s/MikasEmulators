@@ -2,7 +2,6 @@
 #define MIKA_EMULATORS_CROSSCUTTING_INVALID_PROGRAM_ARGUMENTS_EXCEPTION_H
 
 #include <iostream>
-#include <exception>
 #include <stdexcept>
 
 namespace emu::exceptions {

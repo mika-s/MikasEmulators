@@ -1,4 +1,3 @@
-#include <iostream>
 #include <SDL.h>
 #include <SDL_timer.h>
 #include "glad/glad.h"
@@ -7,9 +6,7 @@
 #include "imgui_impl_opengl3.h"
 #include "gui_imgui.h"
 #include "chips/z80/cpu.h"
-#include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/file_util.h"
-#include "crosscutting/misc/run_status.h"
 
 namespace emu::applications::pacman {
 

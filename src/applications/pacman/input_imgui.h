@@ -3,11 +3,10 @@
 
 #include <SDL_scancode.h>
 #include <vector>
-#include "memory_mapped_io_for_pacman.h"
 #include "io_request.h"
+#include "memory_mapped_io_for_pacman.h"
 #include "interfaces/input.h"
 #include "interfaces/io_observer.h"
-#include "crosscutting/misc/run_status.h"
 
 namespace emu::applications::pacman {
 

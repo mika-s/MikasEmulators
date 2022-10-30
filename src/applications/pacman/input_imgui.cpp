@@ -2,9 +2,7 @@
 #include <SDL.h>
 #include "input_imgui.h"
 #include "imgui_impl_sdl.h"
-#include "interfaces/io_observer.h"
 #include "crosscutting/util/byte_util.h"
-#include "crosscutting/misc/run_status.h"
 
 namespace emu::applications::pacman {
 

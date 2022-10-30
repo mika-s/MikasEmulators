@@ -2,7 +2,6 @@
 #define MIKA_EMULATORS_CROSSCUTTING_UNRECOGNIZED_OPCODE_EXCEPTION_H
 
 #include <iostream>
-#include <exception>
 #include <stdexcept>
 #include "crosscutting/typedefs.h"
 

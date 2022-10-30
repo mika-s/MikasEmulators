@@ -6,7 +6,6 @@
 #include <SDL_video.h>
 #include <SDL_render.h>
 #include "gui.h"
-#include "src/crosscutting/misc/run_status.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/gui/debugging_panes/cpu_info_pane.h"
 #include "crosscutting/gui/debugging_panes/debug_log_pane.h"
@@ -16,6 +15,7 @@
 #include "crosscutting/gui/debugging_panes/tilemap_pane.h"
 #include "crosscutting/gui/debugging_panes/spritemap_pane.h"
 #include "crosscutting/gui/debugging_panes/waveform_pane.h"
+#include "crosscutting/misc/run_status.h"
 
 namespace emu::applications::pacman {
 

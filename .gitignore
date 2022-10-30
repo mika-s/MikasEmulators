@@ -1,5 +1,8 @@
-cmake-build-debug
-cmake-build-release
+cmake-build-debug/
+cmake-build-release/
+build/
+install/
+CMakeUserPresets.json
 .idea/
 helpers/ref_emulator_dir
 roms/8080/space_invaders/

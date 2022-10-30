@@ -1,0 +1,50 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "linux-debug",
+      "displayName": "Linux Debug",
+      "description": "Sets the generator, build flags and debug build type",
+      "generator": "CodeBlocks - Unix Makefiles",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_FLAGS": "$env{CXX_WARNINGS} $env{CXX_OPT}",
+        "CMAKE_C_FLAGS": "$env{CXX_WARNINGS} $env{CXX_OPT}"
+      },
+      "environment": {
+        "CXX_WARNINGS": "-Werror -Wall -Wextra",
+        "CXX_OPT": "-g3"
+      }
+    },
+    {
+      "name": "linux-debug-asan",
+      "displayName": "Linux Debug Address Sanitizer",
+      "description": "Sets the generator, build flags and debug build type",
+      "inherits": ["linux-debug"],
+      "environment": {
+        "CXX_WARNINGS": "-Werror -Wall -Wextra",
+        "CXX_OPT": "-g3 -D_GLIBCXX_DEBUG -fsanitize=address,undefined -fsanitize-undefined-trap-on-error -fno-omit-frame-pointer"
+      }
+    },
+    {
+      "name": "linux-release",
+      "displayName": "Linux Release",
+      "description": "Sets the generator, build flags and release build type",
+      "generator": "CodeBlocks - Unix Makefiles",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_CXX_FLAGS": "$env{CXX_WARNINGS} $env{CXX_OPT}",
+        "CMAKE_C_FLAGS": "$env{CXX_WARNINGS} $env{CXX_OPT}"
+      },
+      "environment": {
+        "CXX_WARNINGS": "-Werror -Wall -Wextra",
+        "CXX_OPT": "-O3"
+      },
+      "warnings": {
+        "dev": false
+      }
+    }
+  ]
+}

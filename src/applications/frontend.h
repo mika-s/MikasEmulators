@@ -1,8 +1,8 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_FRONTEND_H
 #define MIKA_EMULATORS_APPLICATIONS_FRONTEND_H
 
-#include <vector>
 #include <memory>
+#include <vector>
 #include "applications/options.h"
 #include "crosscutting/gui/gui_type.h"
 #include "crosscutting/misc/emulator.h"
