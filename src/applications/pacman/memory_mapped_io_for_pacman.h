@@ -1,20 +1,20 @@
-#ifndef MIKA_EMULATORS_APPLICATIONS_PACMAN_MEMORY_MAPPED_IO_H
-#define MIKA_EMULATORS_APPLICATIONS_PACMAN_MEMORY_MAPPED_IO_H
+#ifndef MIKA_EMULATORS_APPLICATIONS_PACMAN_MEMORY_MAPPED_IO_FOR_PACMAN_H
+#define MIKA_EMULATORS_APPLICATIONS_PACMAN_MEMORY_MAPPED_IO_FOR_PACMAN_H
 
-#include "settings.h"
 #include "chips/namco_wsg3/voice.h"
 #include "chips/namco_wsg3/wsg3.h"
-#include "crosscutting/typedefs.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/memory/memory_mapped_io.h"
+#include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
+#include "settings.h"
 
 namespace emu::applications::pacman {
 
-    using emu::util::byte::low_nibble;
-    using emu::wsg3::Voice;
     using emu::memory::EmulatorMemory;
     using emu::memory::MemoryMappedIo;
+    using emu::util::byte::low_nibble;
+    using emu::wsg3::Voice;
 
     class MemoryMappedIoForPacman : public MemoryMappedIo {
     public:
@@ -160,4 +160,4 @@ namespace emu::applications::pacman {
     };
 }
 
-#endif //MIKA_EMULATORS_APPLICATIONS_PACMAN_MEMORY_MAPPED_IO_H
+#endif //MIKA_EMULATORS_APPLICATIONS_PACMAN_MEMORY_MAPPED_IO_FOR_PACMAN_H

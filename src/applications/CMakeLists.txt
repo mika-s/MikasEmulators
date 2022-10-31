@@ -24,6 +24,7 @@ set(SOURCES_APPLICATIONS_CPP
         space_invaders/gui_sdl.cpp
         space_invaders/input_imgui.cpp
         space_invaders/input_sdl.cpp
+        space_invaders/memory_map_for_space_invaders.cpp
         space_invaders/space_invaders.cpp
         space_invaders/space_invaders_session.cpp
         )
@@ -60,6 +61,7 @@ set(SOURCES_APPLICATIONS_H
         space_invaders/input_imgui.h
         space_invaders/input_sdl.h
         space_invaders/io_request.h
+        space_invaders/memory_map_for_space_invaders.h
         space_invaders/sounds.h
         space_invaders/space_invaders.h
         space_invaders/space_invaders_session.h

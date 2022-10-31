@@ -1,10 +1,10 @@
-#include "doctest.h"
 #include "emulator_memory.h"
+#include "doctest.h"
 
 namespace emu::memory {
 
     EmulatorMemory::EmulatorMemory()
-            : m_memory_mapper_is_attached(false) {
+        : m_memory_mapper_is_attached(false) {
     }
 
     void EmulatorMemory::add(const std::vector<u8> &to_add) {
@@ -25,7 +25,7 @@ namespace emu::memory {
     }
 
     /**
-     * Creates a slice of the memory.
+     * Creates a slice of the memory. Does not copy any potential memory mapper.
      *
      * @param from is the index to start from
      * @param to is the index to slice until

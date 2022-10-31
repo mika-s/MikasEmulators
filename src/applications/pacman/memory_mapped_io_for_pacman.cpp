@@ -1,6 +1,5 @@
 #include "memory_mapped_io_for_pacman.h"
 #include "chips/z80/util.h"
-#include "crosscutting/util/byte_util.h"
 
 namespace emu::applications::pacman {
 
@@ -11,11 +10,11 @@ namespace emu::applications::pacman {
     using emu::z80::unset_bit_in_memory;
 
     MemoryMappedIoForPacman::MemoryMappedIoForPacman(EmulatorMemory &memory, Settings settings)
-            : m_memory(memory),
-              m_is_sound_enabled(false),
-              m_is_aux_board_enabled(false),
-              m_is_screen_flipped(false),
-              m_voices({Voice(), Voice(), Voice()}) {
+        : m_memory(memory),
+          m_is_sound_enabled(false),
+          m_is_aux_board_enabled(false),
+          m_is_screen_flipped(false),
+          m_voices({Voice(), Voice(), Voice()}) {
 
         dipswitches(settings);
         board_test(settings);

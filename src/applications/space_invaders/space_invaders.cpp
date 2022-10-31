@@ -22,14 +22,17 @@ namespace emu::applications::space_invaders {
             m_startup_runstatus = RunStatus::RUNNING;
         }
 
-        load_file();
+        load_files();
+
+        m_memory_mapped_io = std::make_shared<MemoryMapForSpaceInvaders>(m_memory);
+        m_memory.attach_memory_mapper(m_memory_mapped_io);
     }
 
     std::unique_ptr<Session> SpaceInvaders::new_session() {
         return std::make_unique<SpaceInvadersSession>(m_settings, m_startup_runstatus, m_gui, m_input, m_memory);
     }
 
-    void SpaceInvaders::load_file() {
+    void SpaceInvaders::load_files() {
         const std::string directory = "roms/8080/space_invaders/";
         m_memory.add(read_file_into_vector(directory + "invaders.h")); // $0000-$07ff: invaders.h
         m_memory.add(read_file_into_vector(directory + "invaders.g")); // $0800-$0fff: invaders.g
@@ -37,7 +40,6 @@ namespace emu::applications::space_invaders {
         m_memory.add(read_file_into_vector(directory + "invaders.e")); // $1800-$1fff: invaders.e
         m_memory.add(create_work_ram());                               // $2000-$23ff: work RAM
         m_memory.add(create_vram());                                   // $2400-$3fff: video RAM
-        m_memory.add(fill_remaining(m_memory.size()));
     }
 
     std::vector<u8> create_empty_vector(std::size_t size) {
@@ -46,14 +48,10 @@ namespace emu::applications::space_invaders {
     }
 
     std::vector<u8> SpaceInvaders::create_work_ram() {
-        return create_empty_vector(0x23ff - 0x2000);
+        return create_empty_vector(0x23ff - 0x2000 + 1);
     }
 
     std::vector<u8> SpaceInvaders::create_vram() {
-        return create_empty_vector(0x3fff - 0x2400);
-    }
-
-    std::vector<u8> SpaceInvaders::fill_remaining(std::size_t memory_size) {
-        return create_empty_vector(UINT16_MAX - memory_size);
+        return create_empty_vector(0x3fff - 0x2400 + 1);
     }
 }

@@ -25,7 +25,7 @@ namespace emu::applications::space_invaders {
             const RunStatus startup_runstatus,
             std::shared_ptr<Gui> gui,
             std::shared_ptr<Input> input,
-            EmulatorMemory memory
+            EmulatorMemory &memory
     )
         : m_is_in_debug_mode(false),
           m_is_stepping_instruction(false),
@@ -36,7 +36,7 @@ namespace emu::applications::space_invaders {
           m_cpu_io(CpuIo(0, 0b00001000, 0)),
           m_gui(std::move(gui)),
           m_input(std::move(input)),
-          m_memory(std::move(memory)),
+          m_memory(memory),
           m_logger(std::make_shared<Logger>()),
           m_debugger(std::make_shared<Debugger>()),
           m_governor(Governor(tick_limit, sdl_get_ticks_high_performance)) {

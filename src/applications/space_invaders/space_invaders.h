@@ -8,6 +8,7 @@
 #include "crosscutting/typedefs.h"
 #include "gui.h"
 #include "interfaces/input.h"
+#include "memory_map_for_space_invaders.h"
 #include "settings.h"
 #include "space_invaders_session.h"
 #include <memory>
@@ -33,14 +34,13 @@ namespace emu::applications::space_invaders {
         std::shared_ptr<Gui> m_gui;
         std::shared_ptr<Input> m_input;
         RunStatus m_startup_runstatus;
+        std::shared_ptr<MemoryMapForSpaceInvaders> m_memory_mapped_io;
 
-        void load_file();
+        void load_files();
 
         static std::vector<u8> create_work_ram();
 
         static std::vector<u8> create_vram();
-
-        std::vector<u8> fill_remaining(std::size_t size);
     };
 }
 
