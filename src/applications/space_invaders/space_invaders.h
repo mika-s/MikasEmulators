@@ -1,16 +1,16 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_SPACE_INVADERS_H
 #define MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_SPACE_INVADERS_H
 
-#include <memory>
-#include "gui.h"
-#include "settings.h"
-#include "space_invaders_session.h"
-#include "interfaces/input.h"
-#include "chips/8080/emulator_memory.h"
-#include "crosscutting/typedefs.h"
 #include "crosscutting/gui/gui_type.h"
+#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/misc/emulator.h"
 #include "crosscutting/misc/session.h"
+#include "crosscutting/typedefs.h"
+#include "gui.h"
+#include "interfaces/input.h"
+#include "settings.h"
+#include "space_invaders_session.h"
+#include <memory>
 
 namespace emu::applications::space_invaders {
 

@@ -1,11 +1,12 @@
-#include <iostream>
-#include "doctest.h"
-#include "chips/8080/emulator_memory.h"
+#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
+#include "doctest.h"
+#include <iostream>
 
 namespace emu::i8080 {
 
+    using emu::memory::EmulatorMemory;
     using emu::util::byte::to_u16;
 
     /**
@@ -26,7 +27,7 @@ namespace emu::i8080 {
     void stax(u8 acc_reg, u8 reg1, u8 reg2, EmulatorMemory &memory, cyc &cycles) {
         const u16 address = to_u16(reg1, reg2);
 
-        memory[address] = acc_reg;
+        memory.write(address, acc_reg);
 
         cycles = 7;
     }
@@ -47,7 +48,7 @@ namespace emu::i8080 {
         SUBCASE("should store the accumulator in memory at the given address") {
             stax(acc_reg, reg1, reg2, memory, cycles);
 
-            CHECK_EQ(acc_reg, memory[0x3]);
+            CHECK_EQ(acc_reg, memory.read(0x3));
         }
 
         SUBCASE("should use 7 cycles") {

@@ -1,8 +1,8 @@
-#include <iostream>
-#include "doctest.h"
 #include "chips/8080/flags.h"
-#include "instruction_util.h"
 #include "crosscutting/typedefs.h"
+#include "doctest.h"
+#include "instruction_util.h"
+#include <iostream>
 
 namespace emu::i8080 {
     /**

@@ -1,10 +1,13 @@
-#include <iostream>
-#include "doctest.h"
-#include "chips/8080/emulator_memory.h"
 #include "chips/8080/flags.h"
+#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/typedefs.h"
+#include "doctest.h"
+#include <iostream>
 
 namespace emu::i8080 {
+
+    using emu::memory::EmulatorMemory;
+
     /**
      * Push
      * <ul>
@@ -21,8 +24,8 @@ namespace emu::i8080 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void push(u8 reg1, u8 reg2, u16 &sp, EmulatorMemory &memory, cyc &cycles) {
-        memory[--sp] = reg1;
-        memory[--sp] = reg2;
+        memory.write(--sp, reg1);
+        memory.write(--sp, reg2);
 
         cycles = 11;
     }
@@ -43,8 +46,8 @@ namespace emu::i8080 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void push_psw(const Flags &flag_reg, u8 acc_reg, u16 &sp, EmulatorMemory &memory, cyc &cycles) {
-        memory[--sp] = acc_reg;
-        memory[--sp] = flag_reg.to_u8();
+        memory.write(--sp, acc_reg);
+        memory.write(--sp, flag_reg.to_u8());
 
         cycles = 11;
     }
@@ -67,8 +70,8 @@ namespace emu::i8080 {
 
             push(reg1, reg2, sp, memory, cycles);
 
-            CHECK_EQ(reg1, memory[0x2]);
-            CHECK_EQ(reg2, memory[0x1]);
+            CHECK_EQ(reg1, memory.read(0x2));
+            CHECK_EQ(reg2, memory.read(0x1));
             CHECK_EQ(0x01, sp);
         }
 
@@ -87,8 +90,8 @@ namespace emu::i8080 {
 
             push_psw(flag_reg, acc_reg, sp, memory, cycles);
 
-            CHECK_EQ(acc_reg, memory[0x2]);
-            CHECK_EQ(flag_reg.to_u8(), memory[0x1]);
+            CHECK_EQ(acc_reg, memory.read(0x2));
+            CHECK_EQ(flag_reg.to_u8(), memory.read(0x1));
             CHECK_EQ(0x01, sp);
         }
 

@@ -1,23 +1,23 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_GUI_IMGUI_H
 #define MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_GUI_IMGUI_H
 
-#include <memory>
-#include <vector>
-#include <SDL_video.h>
-#include <SDL_render.h>
-#include "gui.h"
-#include "crosscutting/typedefs.h"
 #include "crosscutting/gui/debugging_panes/cpu_info_pane.h"
 #include "crosscutting/gui/debugging_panes/debug_log_pane.h"
 #include "crosscutting/gui/debugging_panes/disassembly_pane.h"
 #include "crosscutting/gui/debugging_panes/io_info_pane.h"
 #include "crosscutting/gui/debugging_panes/memory_editor_pane.h"
+#include "crosscutting/typedefs.h"
+#include "gui.h"
+#include <SDL_render.h>
+#include <SDL_video.h>
+#include <memory>
+#include <vector>
 
 namespace emu::applications::space_invaders {
 
+    using emu::gui::CpuInfoPane;
     using emu::gui::DebugLogPane;
     using emu::gui::DisassemblyPane;
-    using emu::gui::CpuInfoPane;
     using emu::gui::IoInfoPane;
     using emu::gui::MemoryEditorPane;
     using emu::i8080::GuiObserver;

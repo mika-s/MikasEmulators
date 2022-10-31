@@ -1,9 +1,9 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_AUDIO_H
 #define MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_AUDIO_H
 
+#include "crosscutting/typedefs.h"
 #include <SDL.h>
 #include <vector>
-#include "crosscutting/typedefs.h"
 
 namespace emu::applications::space_invaders {
     class Audio {
@@ -39,7 +39,7 @@ namespace emu::applications::space_invaders {
         static constexpr unsigned int flash = 2;
         static constexpr unsigned int invader_die = 3;
         static constexpr unsigned int extended_play = 4;
-        static constexpr unsigned int amp_enable = 5;       // not implemented
+        static constexpr unsigned int amp_enable = 5; // not implemented
         static constexpr unsigned int no_sound = 255;
 
         /* Port 5:

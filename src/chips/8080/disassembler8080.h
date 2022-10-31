@@ -2,15 +2,16 @@
 #define MIKA_EMULATORS_CHIPS_8080_DISASSEMBLER_H
 
 #include <string>
-#include "emulator_memory.h"
 #include "crosscutting/typedefs.h"
-#include "crosscutting/misc/next_byte.h"
-#include "crosscutting/misc/next_word.h"
+#include "crosscutting/memory/emulator_memory.h"
+#include "crosscutting/memory/next_byte.h"
+#include "crosscutting/memory/next_word.h"
 
 namespace emu::i8080 {
 
-    using emu::misc::NextByte;
-    using emu::misc::NextWord;
+    using emu::memory::EmulatorMemory;
+    using emu::memory::NextByte;
+    using emu::memory::NextWord;
 
     class Disassembler8080 {
     public:

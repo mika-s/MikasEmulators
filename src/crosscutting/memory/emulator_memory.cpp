@@ -1,7 +1,11 @@
 #include "doctest.h"
 #include "emulator_memory.h"
 
-namespace emu::i8080 {
+namespace emu::memory {
+
+    EmulatorMemory::EmulatorMemory()
+            : m_memory_mapper_is_attached(false) {
+    }
 
     void EmulatorMemory::add(const std::vector<u8> &to_add) {
         std::size_t current_size = m_memory.size();
@@ -9,6 +13,11 @@ namespace emu::i8080 {
         for (std::size_t i = current_size, j = 0; i < current_size + to_add.size(); ++i, ++j) {
             m_memory.push_back(to_add[j]);
         }
+    }
+
+    void EmulatorMemory::attach_memory_mapper(std::shared_ptr<MemoryMappedIo> memory_mapper) {
+        m_memory_mapper = std::move(memory_mapper);
+        m_memory_mapper_is_attached = true;
     }
 
     std::size_t EmulatorMemory::size() {
@@ -22,10 +31,10 @@ namespace emu::i8080 {
      * @param to is the index to slice until
      * @return a new EmulatorMemory object that contains the sliced memory
      */
-    EmulatorMemory EmulatorMemory::slice(int from, int to) {
+    EmulatorMemory EmulatorMemory::slice(std::size_t from, std::size_t to) {
         std::vector<u8> data;
 
-        for (int i = from; i < to; ++i) {
+        for (std::size_t i = from; i < to; ++i) {
             data.push_back(m_memory[i]);
         }
 
@@ -35,11 +44,27 @@ namespace emu::i8080 {
         return sliced_memory;
     }
 
-    u8 &EmulatorMemory::operator[](std::size_t address) {
-        return m_memory[address];
+    void EmulatorMemory::write(u16 address, u8 value) {
+        if (m_memory_mapper_is_attached) {
+            m_memory_mapper->write(address, value);
+        } else {
+            direct_write(address, value);
+        }
     }
 
-    const u8 &EmulatorMemory::operator[](std::size_t address) const {
+    void EmulatorMemory::direct_write(u16 address, u8 value) {
+        m_memory[address] = value;
+    }
+
+    u8 EmulatorMemory::read(u16 address) const {
+        if (m_memory_mapper_is_attached) {
+            return m_memory_mapper->read(address);
+        } else {
+            return direct_read(address);
+        }
+    }
+
+    u8 EmulatorMemory::direct_read(u16 address) const {
         return m_memory[address];
     }
 
@@ -59,7 +84,7 @@ namespace emu::i8080 {
         return m_memory.end();
     }
 
-    TEST_CASE("8080: EmulatorMemory") {
+    TEST_CASE("crosscutting: EmulatorMemory") {
         SUBCASE("should index properly after one added vector") {
             EmulatorMemory memory;
 
@@ -68,7 +93,8 @@ namespace emu::i8080 {
             memory.add(input);
 
             for (std::size_t i = 0; i < input.size(); ++i) {
-                CHECK_EQ(input[i], memory[i]);
+                const u16 address = static_cast<u16>(i);
+                CHECK_EQ(input[i], memory.read(address));
             }
         }
 
@@ -81,11 +107,13 @@ namespace emu::i8080 {
             memory.add(input);
 
             for (std::size_t i = 0; i < input.size(); ++i) {
-                CHECK_EQ(input[i], memory[i]);
+                const u16 address = static_cast<u16>(i);
+                CHECK_EQ(input[i], memory.read(address));
             }
 
             for (std::size_t i = input.size(), j = 0; i < 2 * input.size(); ++i, ++j) {
-                CHECK_EQ(input[j], memory[i]);
+                const u16 address = static_cast<u16>(i);
+                CHECK_EQ(input[j], memory.read(address));
             }
         }
 
@@ -99,11 +127,13 @@ namespace emu::i8080 {
             memory.add(input2);
 
             for (std::size_t i = 0; i < input1.size(); ++i) {
-                CHECK_EQ(input1[i], memory[i]);
+                const u16 address = static_cast<u16>(i);
+                CHECK_EQ(input1[i], memory.read(address));
             }
 
             for (std::size_t i = input1.size(), j = 0; i < input1.size() + input2.size(); ++i, ++j) {
-                CHECK_EQ(input2[j], memory[i]);
+                const u16 address = static_cast<u16>(i);
+                CHECK_EQ(input2[j], memory.read(address));
             }
         }
 
@@ -114,13 +144,14 @@ namespace emu::i8080 {
 
             memory.add(input);
 
-            memory[5] = 100;
+            memory.write(5, 100);
 
             for (std::size_t i = 0; i < input.size(); ++i) {
-                if (i == 5) {
-                    CHECK_EQ(100, memory[i]);
+                const u16 address = static_cast<u16>(i);
+                if (address == 5) {
+                    CHECK_EQ(100, memory.read(address));
                 } else {
-                    CHECK_EQ(input[i], memory[i]);
+                    CHECK_EQ(input[i], memory.read(address));
                 }
             }
         }

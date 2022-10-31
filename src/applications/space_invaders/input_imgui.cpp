@@ -1,14 +1,14 @@
-#include <algorithm>
-#include <SDL.h>
 #include "input_imgui.h"
-#include "imgui_impl_sdl.h"
 #include "crosscutting/util/byte_util.h"
+#include "imgui_impl_sdl.h"
+#include <SDL.h>
+#include <algorithm>
 
 namespace emu::applications::space_invaders {
 
     using emu::misc::RunStatus::NOT_RUNNING;
-    using emu::misc::RunStatus::RUNNING;
     using emu::misc::RunStatus::PAUSED;
+    using emu::misc::RunStatus::RUNNING;
     using emu::misc::RunStatus::STEPPING;
     using emu::util::byte::set_bit;
     using emu::util::byte::unset_bit;

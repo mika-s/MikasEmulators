@@ -1,13 +1,13 @@
-#include <vector>
-#include <iostream>
-#include "doctest.h"
+#include "crosscutting/memory/next_byte.h"
 #include "crosscutting/typedefs.h"
-#include "crosscutting/misc/next_byte.h"
 #include "crosscutting/util/string_util.h"
+#include "doctest.h"
+#include <iostream>
+#include <vector>
 
 namespace emu::i8080 {
 
-    using emu::misc::NextByte;
+    using emu::memory::NextByte;
     using emu::util::string::hexify_wo_0x;
 
     /**

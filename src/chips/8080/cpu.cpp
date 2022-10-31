@@ -1,35 +1,35 @@
-#include <algorithm>
-#include <iostream>
 #include "cpu.h"
-#include "instructions/instructions.h"
 #include "crosscutting/exceptions/unrecognized_opcode_exception.h"
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
+#include "instructions/instructions.h"
+#include <algorithm>
+#include <iostream>
 
 namespace emu::i8080 {
 
+    using emu::exceptions::UnrecognizedOpcodeException;
     using emu::util::byte::to_u16;
     using emu::util::string::hexify;
-    using emu::exceptions::UnrecognizedOpcodeException;
 
     Cpu::Cpu(
             EmulatorMemory &memory,
             const u16 initial_pc
-    ) :
-            m_is_halted(false),
-            m_inte(false),
-            m_is_interrupted(false),
-            m_instruction_from_interruptor(0),
-            m_memory(memory), m_memory_size(memory.size()),
-            m_io_in(number_of_io_ports), m_io_out(number_of_io_ports),
-            m_opcode(0), m_sp(0), m_pc(initial_pc),
-            m_acc_reg(0),
-            m_b_reg(0),
-            m_c_reg(0),
-            m_d_reg(0),
-            m_e_reg(0),
-            m_h_reg(0),
-            m_l_reg(0) {
+    )
+        : m_is_halted(false),
+          m_inte(false),
+          m_is_interrupted(false),
+          m_instruction_from_interruptor(0),
+          m_memory(memory), m_memory_size(memory.size()),
+          m_io_in(number_of_io_ports), m_io_out(number_of_io_ports),
+          m_opcode(0), m_sp(0), m_pc(initial_pc),
+          m_acc_reg(0),
+          m_b_reg(0),
+          m_c_reg(0),
+          m_d_reg(0),
+          m_e_reg(0),
+          m_h_reg(0),
+          m_l_reg(0) {
     }
 
     Cpu::~Cpu() {
@@ -111,7 +111,7 @@ namespace emu::i8080 {
             m_is_halted = false;
             m_opcode = m_instruction_from_interruptor;
         } else if (m_is_halted) {
-            return 4;   // TODO: What is the proper value while NOPing during halt?
+            return 4; // TODO: What is the proper value while NOPing during halt?
         } else {
             m_opcode = get_next_byte().farg;
         }
@@ -130,13 +130,13 @@ namespace emu::i8080 {
                 inx(m_b_reg, m_c_reg, cycles);
                 break;
             case INR_B:
-                inr(m_b_reg, m_flag_reg, cycles);
+                inr_r(m_b_reg, m_flag_reg, cycles);
                 break;
             case DCR_B:
-                dcr(m_b_reg, m_flag_reg, cycles);
+                dcr_r(m_b_reg, m_flag_reg, cycles);
                 break;
             case MVI_B:
-                mvi(m_b_reg, get_next_byte(), cycles);
+                mvi_r(m_b_reg, get_next_byte(), cycles);
                 break;
             case RLC_B:
                 rlc(m_acc_reg, m_flag_reg, cycles);
@@ -154,13 +154,13 @@ namespace emu::i8080 {
                 dcx(m_b_reg, m_c_reg, cycles);
                 break;
             case INR_C:
-                inr(m_c_reg, m_flag_reg, cycles);
+                inr_r(m_c_reg, m_flag_reg, cycles);
                 break;
             case DCR_C:
-                dcr(m_c_reg, m_flag_reg, cycles);
+                dcr_r(m_c_reg, m_flag_reg, cycles);
                 break;
             case MVI_C:
-                mvi(m_c_reg, get_next_byte(), cycles);
+                mvi_r(m_c_reg, get_next_byte(), cycles);
                 break;
             case RRC:
                 rrc(m_acc_reg, m_flag_reg, cycles);
@@ -178,13 +178,13 @@ namespace emu::i8080 {
                 inx(m_d_reg, m_e_reg, cycles);
                 break;
             case INR_D:
-                inr(m_d_reg, m_flag_reg, cycles);
+                inr_r(m_d_reg, m_flag_reg, cycles);
                 break;
             case DCR_D:
-                dcr(m_d_reg, m_flag_reg, cycles);
+                dcr_r(m_d_reg, m_flag_reg, cycles);
                 break;
             case MVI_D:
-                mvi(m_d_reg, get_next_byte(), cycles);
+                mvi_r(m_d_reg, get_next_byte(), cycles);
                 break;
             case RAL:
                 ral(m_acc_reg, m_flag_reg, cycles);
@@ -202,13 +202,13 @@ namespace emu::i8080 {
                 dcx(m_d_reg, m_e_reg, cycles);
                 break;
             case INR_E:
-                inr(m_e_reg, m_flag_reg, cycles);
+                inr_r(m_e_reg, m_flag_reg, cycles);
                 break;
             case DCR_E:
-                dcr(m_e_reg, m_flag_reg, cycles);
+                dcr_r(m_e_reg, m_flag_reg, cycles);
                 break;
             case MVI_E:
-                mvi(m_e_reg, get_next_byte(), cycles);
+                mvi_r(m_e_reg, get_next_byte(), cycles);
                 break;
             case RAR:
                 rar(m_acc_reg, m_flag_reg, cycles);
@@ -226,13 +226,13 @@ namespace emu::i8080 {
                 inx(m_h_reg, m_l_reg, cycles);
                 break;
             case INR_H:
-                inr(m_h_reg, m_flag_reg, cycles);
+                inr_r(m_h_reg, m_flag_reg, cycles);
                 break;
             case DCR_H:
-                dcr(m_h_reg, m_flag_reg, cycles);
+                dcr_r(m_h_reg, m_flag_reg, cycles);
                 break;
             case MVI_H:
-                mvi(m_h_reg, get_next_byte(), cycles);
+                mvi_r(m_h_reg, get_next_byte(), cycles);
                 break;
             case DAA:
                 daa(m_acc_reg, m_flag_reg, cycles);
@@ -250,13 +250,13 @@ namespace emu::i8080 {
                 dcx(m_h_reg, m_l_reg, cycles);
                 break;
             case INR_L:
-                inr(m_l_reg, m_flag_reg, cycles);
+                inr_r(m_l_reg, m_flag_reg, cycles);
                 break;
             case DCR_L:
-                dcr(m_l_reg, m_flag_reg, cycles);
+                dcr_r(m_l_reg, m_flag_reg, cycles);
                 break;
             case MVI_L:
-                mvi(m_l_reg, get_next_byte(), cycles);
+                mvi_r(m_l_reg, get_next_byte(), cycles);
                 break;
             case CMA:
                 cma(m_acc_reg, cycles);
@@ -274,13 +274,13 @@ namespace emu::i8080 {
                 inx_sp(m_sp, cycles);
                 break;
             case INR_M:
-                inr(m_memory[address_in_HL()], m_flag_reg, cycles, true);
+                inr_m(m_memory, address_in_HL(), m_flag_reg, cycles);
                 break;
             case DCR_M:
-                dcr(m_memory[address_in_HL()], m_flag_reg, cycles, true);
+                dcr_m(m_memory, address_in_HL(), m_flag_reg, cycles);
                 break;
             case MVI_M:
-                mvi(m_memory[address_in_HL()], get_next_byte(), cycles, true);
+                mvi_m(m_memory, address_in_HL(), get_next_byte(), cycles);
                 break;
             case STC:
                 stc(m_flag_reg, cycles);
@@ -298,400 +298,400 @@ namespace emu::i8080 {
                 dcx_sp(m_sp, cycles);
                 break;
             case INR_A:
-                inr(m_acc_reg, m_flag_reg, cycles);
+                inr_r(m_acc_reg, m_flag_reg, cycles);
                 break;
             case DCR_A:
-                dcr(m_acc_reg, m_flag_reg, cycles);
+                dcr_r(m_acc_reg, m_flag_reg, cycles);
                 break;
             case MVI_A:
-                mvi(m_acc_reg, get_next_byte(), cycles);
+                mvi_r(m_acc_reg, get_next_byte(), cycles);
                 break;
             case CMC:
                 cmc(m_flag_reg, cycles);
                 break;
             case MOV_B_B:
-                mov(m_b_reg, m_b_reg, cycles);
+                mov_r_r(m_b_reg, m_b_reg, cycles);
                 break;
             case MOV_B_C:
-                mov(m_b_reg, m_c_reg, cycles);
+                mov_r_r(m_b_reg, m_c_reg, cycles);
                 break;
             case MOV_B_D:
-                mov(m_b_reg, m_d_reg, cycles);
+                mov_r_r(m_b_reg, m_d_reg, cycles);
                 break;
             case MOV_B_E:
-                mov(m_b_reg, m_e_reg, cycles);
+                mov_r_r(m_b_reg, m_e_reg, cycles);
                 break;
             case MOV_B_H:
-                mov(m_b_reg, m_h_reg, cycles);
+                mov_r_r(m_b_reg, m_h_reg, cycles);
                 break;
             case MOV_B_L:
-                mov(m_b_reg, m_l_reg, cycles);
+                mov_r_r(m_b_reg, m_l_reg, cycles);
                 break;
             case MOV_B_M:
-                mov(m_b_reg, m_memory[address_in_HL()], cycles, true);
+                mov_r_m(m_b_reg, m_memory.read(address_in_HL()), cycles);
                 break;
             case MOV_B_A:
-                mov(m_b_reg, m_acc_reg, cycles);
+                mov_r_r(m_b_reg, m_acc_reg, cycles);
                 break;
             case MOV_C_B:
-                mov(m_c_reg, m_b_reg, cycles);
+                mov_r_r(m_c_reg, m_b_reg, cycles);
                 break;
             case MOV_C_C:
-                mov(m_c_reg, m_c_reg, cycles);
+                mov_r_r(m_c_reg, m_c_reg, cycles);
                 break;
             case MOV_C_D:
-                mov(m_c_reg, m_d_reg, cycles);
+                mov_r_r(m_c_reg, m_d_reg, cycles);
                 break;
             case MOV_C_E:
-                mov(m_c_reg, m_e_reg, cycles);
+                mov_r_r(m_c_reg, m_e_reg, cycles);
                 break;
             case MOV_C_H:
-                mov(m_c_reg, m_h_reg, cycles);
+                mov_r_r(m_c_reg, m_h_reg, cycles);
                 break;
             case MOV_C_L:
-                mov(m_c_reg, m_l_reg, cycles);
+                mov_r_r(m_c_reg, m_l_reg, cycles);
                 break;
             case MOV_C_M:
-                mov(m_c_reg, m_memory[address_in_HL()], cycles, true);
+                mov_r_m(m_c_reg, m_memory.read(address_in_HL()), cycles);
                 break;
             case MOV_C_A:
-                mov(m_c_reg, m_acc_reg, cycles);
+                mov_r_r(m_c_reg, m_acc_reg, cycles);
                 break;
             case MOV_D_B:
-                mov(m_d_reg, m_b_reg, cycles);
+                mov_r_r(m_d_reg, m_b_reg, cycles);
                 break;
             case MOV_D_C:
-                mov(m_d_reg, m_c_reg, cycles);
+                mov_r_r(m_d_reg, m_c_reg, cycles);
                 break;
             case MOV_D_D:
-                mov(m_d_reg, m_d_reg, cycles);
+                mov_r_r(m_d_reg, m_d_reg, cycles);
                 break;
             case MOV_D_E:
-                mov(m_d_reg, m_e_reg, cycles);
+                mov_r_r(m_d_reg, m_e_reg, cycles);
                 break;
             case MOV_D_H:
-                mov(m_d_reg, m_h_reg, cycles);
+                mov_r_r(m_d_reg, m_h_reg, cycles);
                 break;
             case MOV_D_L:
-                mov(m_d_reg, m_l_reg, cycles);
+                mov_r_r(m_d_reg, m_l_reg, cycles);
                 break;
             case MOV_D_M:
-                mov(m_d_reg, m_memory[address_in_HL()], cycles, true);
+                mov_r_m(m_d_reg, m_memory.read(address_in_HL()), cycles);
                 break;
             case MOV_D_A:
-                mov(m_d_reg, m_acc_reg, cycles);
+                mov_r_r(m_d_reg, m_acc_reg, cycles);
                 break;
             case MOV_E_B:
-                mov(m_e_reg, m_b_reg, cycles);
+                mov_r_r(m_e_reg, m_b_reg, cycles);
                 break;
             case MOV_E_C:
-                mov(m_e_reg, m_c_reg, cycles);
+                mov_r_r(m_e_reg, m_c_reg, cycles);
                 break;
             case MOV_E_D:
-                mov(m_e_reg, m_d_reg, cycles);
+                mov_r_r(m_e_reg, m_d_reg, cycles);
                 break;
             case MOV_E_E:
-                mov(m_e_reg, m_e_reg, cycles);
+                mov_r_r(m_e_reg, m_e_reg, cycles);
                 break;
             case MOV_E_H:
-                mov(m_e_reg, m_h_reg, cycles);
+                mov_r_r(m_e_reg, m_h_reg, cycles);
                 break;
             case MOV_E_L:
-                mov(m_e_reg, m_l_reg, cycles);
+                mov_r_r(m_e_reg, m_l_reg, cycles);
                 break;
             case MOV_E_M:
-                mov(m_e_reg, m_memory[address_in_HL()], cycles, true);
+                mov_r_m(m_e_reg, m_memory.read(address_in_HL()), cycles);
                 break;
             case MOV_E_A:
-                mov(m_e_reg, m_acc_reg, cycles);
+                mov_r_r(m_e_reg, m_acc_reg, cycles);
                 break;
             case MOV_H_B:
-                mov(m_h_reg, m_b_reg, cycles);
+                mov_r_r(m_h_reg, m_b_reg, cycles);
                 break;
             case MOV_H_C:
-                mov(m_h_reg, m_c_reg, cycles);
+                mov_r_r(m_h_reg, m_c_reg, cycles);
                 break;
             case MOV_H_D:
-                mov(m_h_reg, m_d_reg, cycles);
+                mov_r_r(m_h_reg, m_d_reg, cycles);
                 break;
             case MOV_H_E:
-                mov(m_h_reg, m_e_reg, cycles);
+                mov_r_r(m_h_reg, m_e_reg, cycles);
                 break;
             case MOV_H_H:
-                mov(m_h_reg, m_h_reg, cycles);
+                mov_r_r(m_h_reg, m_h_reg, cycles);
                 break;
             case MOV_H_L:
-                mov(m_h_reg, m_l_reg, cycles);
+                mov_r_r(m_h_reg, m_l_reg, cycles);
                 break;
             case MOV_H_M:
-                mov(m_h_reg, m_memory[address_in_HL()], cycles, true);
+                mov_r_m(m_h_reg, m_memory.read(address_in_HL()), cycles);
                 break;
             case MOV_H_A:
-                mov(m_h_reg, m_acc_reg, cycles);
+                mov_r_r(m_h_reg, m_acc_reg, cycles);
                 break;
             case MOV_L_B:
-                mov(m_l_reg, m_b_reg, cycles);
+                mov_r_r(m_l_reg, m_b_reg, cycles);
                 break;
             case MOV_L_C:
-                mov(m_l_reg, m_c_reg, cycles);
+                mov_r_r(m_l_reg, m_c_reg, cycles);
                 break;
             case MOV_L_D:
-                mov(m_l_reg, m_d_reg, cycles);
+                mov_r_r(m_l_reg, m_d_reg, cycles);
                 break;
             case MOV_L_E:
-                mov(m_l_reg, m_e_reg, cycles);
+                mov_r_r(m_l_reg, m_e_reg, cycles);
                 break;
             case MOV_L_H:
-                mov(m_l_reg, m_h_reg, cycles);
+                mov_r_r(m_l_reg, m_h_reg, cycles);
                 break;
             case MOV_L_L:
-                mov(m_l_reg, m_l_reg, cycles);
+                mov_r_r(m_l_reg, m_l_reg, cycles);
                 break;
             case MOV_L_M:
-                mov(m_l_reg, m_memory[address_in_HL()], cycles, true);
+                mov_r_m(m_l_reg, m_memory.read(address_in_HL()), cycles);
                 break;
             case MOV_L_A:
-                mov(m_l_reg, m_acc_reg, cycles);
+                mov_r_r(m_l_reg, m_acc_reg, cycles);
                 break;
             case MOV_M_B:
-                mov(m_memory[address_in_HL()], m_b_reg, cycles, true);
+                mov_m_r(m_memory, address_in_HL(), m_b_reg, cycles);
                 break;
             case MOV_M_C:
-                mov(m_memory[address_in_HL()], m_c_reg, cycles, true);
+                mov_m_r(m_memory, address_in_HL(), m_c_reg, cycles);
                 break;
             case MOV_M_D:
-                mov(m_memory[address_in_HL()], m_d_reg, cycles, true);
+                mov_m_r(m_memory, address_in_HL(), m_d_reg, cycles);
                 break;
             case MOV_M_E:
-                mov(m_memory[address_in_HL()], m_e_reg, cycles, true);
+                mov_m_r(m_memory, address_in_HL(), m_e_reg, cycles);
                 break;
             case MOV_M_H:
-                mov(m_memory[address_in_HL()], m_h_reg, cycles, true);
+                mov_m_r(m_memory, address_in_HL(), m_h_reg, cycles);
                 break;
             case MOV_M_L:
-                mov(m_memory[address_in_HL()], m_l_reg, cycles, true);
+                mov_m_r(m_memory, address_in_HL(), m_l_reg, cycles);
                 break;
             case HLT:
                 hlt(m_is_halted, cycles);
                 break;
             case MOV_M_A:
-                mov(m_memory[address_in_HL()], m_acc_reg, cycles, true);
+                mov_m_r(m_memory, address_in_HL(), m_acc_reg, cycles);
                 break;
             case MOV_A_B:
-                mov(m_acc_reg, m_b_reg, cycles);
+                mov_r_r(m_acc_reg, m_b_reg, cycles);
                 break;
             case MOV_A_C:
-                mov(m_acc_reg, m_c_reg, cycles);
+                mov_r_r(m_acc_reg, m_c_reg, cycles);
                 break;
             case MOV_A_D:
-                mov(m_acc_reg, m_d_reg, cycles);
+                mov_r_r(m_acc_reg, m_d_reg, cycles);
                 break;
             case MOV_A_E:
-                mov(m_acc_reg, m_e_reg, cycles);
+                mov_r_r(m_acc_reg, m_e_reg, cycles);
                 break;
             case MOV_A_H:
-                mov(m_acc_reg, m_h_reg, cycles);
+                mov_r_r(m_acc_reg, m_h_reg, cycles);
                 break;
             case MOV_A_L:
-                mov(m_acc_reg, m_l_reg, cycles);
+                mov_r_r(m_acc_reg, m_l_reg, cycles);
                 break;
             case MOV_A_M:
-                mov(m_acc_reg, m_memory[address_in_HL()], cycles, true);
+                mov_r_m(m_acc_reg, m_memory.read(address_in_HL()), cycles);
                 break;
             case MOV_A_A:
-                mov(m_acc_reg, m_acc_reg, cycles);
+                mov_r_r(m_acc_reg, m_acc_reg, cycles);
                 break;
             case ADD_B:
-                add(m_acc_reg, m_b_reg, m_flag_reg, cycles);
+                add_r(m_acc_reg, m_b_reg, m_flag_reg, cycles);
                 break;
             case ADD_C:
-                add(m_acc_reg, m_c_reg, m_flag_reg, cycles);
+                add_r(m_acc_reg, m_c_reg, m_flag_reg, cycles);
                 break;
             case ADD_D:
-                add(m_acc_reg, m_d_reg, m_flag_reg, cycles);
+                add_r(m_acc_reg, m_d_reg, m_flag_reg, cycles);
                 break;
             case ADD_E:
-                add(m_acc_reg, m_e_reg, m_flag_reg, cycles);
+                add_r(m_acc_reg, m_e_reg, m_flag_reg, cycles);
                 break;
             case ADD_H:
-                add(m_acc_reg, m_h_reg, m_flag_reg, cycles);
+                add_r(m_acc_reg, m_h_reg, m_flag_reg, cycles);
                 break;
             case ADD_L:
-                add(m_acc_reg, m_l_reg, m_flag_reg, cycles);
+                add_r(m_acc_reg, m_l_reg, m_flag_reg, cycles);
                 break;
             case ADD_M:
-                add(m_acc_reg, m_memory[address_in_HL()], m_flag_reg, cycles, true);
+                add_m(m_acc_reg, m_memory.read(address_in_HL()), m_flag_reg, cycles);
                 break;
             case ADD_A:
-                add(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
+                add_r(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
                 break;
             case ADC_B:
-                adc(m_acc_reg, m_b_reg, m_flag_reg, cycles);
+                adc_r(m_acc_reg, m_b_reg, m_flag_reg, cycles);
                 break;
             case ADC_C:
-                adc(m_acc_reg, m_c_reg, m_flag_reg, cycles);
+                adc_r(m_acc_reg, m_c_reg, m_flag_reg, cycles);
                 break;
             case ADC_D:
-                adc(m_acc_reg, m_d_reg, m_flag_reg, cycles);
+                adc_r(m_acc_reg, m_d_reg, m_flag_reg, cycles);
                 break;
             case ADC_E:
-                adc(m_acc_reg, m_e_reg, m_flag_reg, cycles);
+                adc_r(m_acc_reg, m_e_reg, m_flag_reg, cycles);
                 break;
             case ADC_H:
-                adc(m_acc_reg, m_h_reg, m_flag_reg, cycles);
+                adc_r(m_acc_reg, m_h_reg, m_flag_reg, cycles);
                 break;
             case ADC_L:
-                adc(m_acc_reg, m_l_reg, m_flag_reg, cycles);
+                adc_r(m_acc_reg, m_l_reg, m_flag_reg, cycles);
                 break;
             case ADC_M:
-                adc(m_acc_reg, m_memory[address_in_HL()], m_flag_reg, cycles, true);
+                adc_m(m_acc_reg, m_memory.read(address_in_HL()), m_flag_reg, cycles);
                 break;
             case ADC_A:
-                adc(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
+                adc_r(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
                 break;
             case SUB_B:
-                sub(m_acc_reg, m_b_reg, m_flag_reg, cycles);
+                sub_r(m_acc_reg, m_b_reg, m_flag_reg, cycles);
                 break;
             case SUB_C:
-                sub(m_acc_reg, m_c_reg, m_flag_reg, cycles);
+                sub_r(m_acc_reg, m_c_reg, m_flag_reg, cycles);
                 break;
             case SUB_D:
-                sub(m_acc_reg, m_d_reg, m_flag_reg, cycles);
+                sub_r(m_acc_reg, m_d_reg, m_flag_reg, cycles);
                 break;
             case SUB_E:
-                sub(m_acc_reg, m_e_reg, m_flag_reg, cycles);
+                sub_r(m_acc_reg, m_e_reg, m_flag_reg, cycles);
                 break;
             case SUB_H:
-                sub(m_acc_reg, m_h_reg, m_flag_reg, cycles);
+                sub_r(m_acc_reg, m_h_reg, m_flag_reg, cycles);
                 break;
             case SUB_L:
-                sub(m_acc_reg, m_l_reg, m_flag_reg, cycles);
+                sub_r(m_acc_reg, m_l_reg, m_flag_reg, cycles);
                 break;
             case SUB_M:
-                sub(m_acc_reg, m_memory[address_in_HL()], m_flag_reg, cycles, true);
+                sub_m(m_acc_reg, m_memory.read(address_in_HL()), m_flag_reg, cycles);
                 break;
             case SUB_A:
-                sub(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
+                sub_r(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
                 break;
             case SBB_B:
-                sbb(m_acc_reg, m_b_reg, m_flag_reg, cycles);
+                sbb_r(m_acc_reg, m_b_reg, m_flag_reg, cycles);
                 break;
             case SBB_C:
-                sbb(m_acc_reg, m_c_reg, m_flag_reg, cycles);
+                sbb_r(m_acc_reg, m_c_reg, m_flag_reg, cycles);
                 break;
             case SBB_D:
-                sbb(m_acc_reg, m_d_reg, m_flag_reg, cycles);
+                sbb_r(m_acc_reg, m_d_reg, m_flag_reg, cycles);
                 break;
             case SBB_E:
-                sbb(m_acc_reg, m_e_reg, m_flag_reg, cycles);
+                sbb_r(m_acc_reg, m_e_reg, m_flag_reg, cycles);
                 break;
             case SBB_H:
-                sbb(m_acc_reg, m_h_reg, m_flag_reg, cycles);
+                sbb_r(m_acc_reg, m_h_reg, m_flag_reg, cycles);
                 break;
             case SBB_L:
-                sbb(m_acc_reg, m_l_reg, m_flag_reg, cycles);
+                sbb_r(m_acc_reg, m_l_reg, m_flag_reg, cycles);
                 break;
             case SBB_M:
-                sbb(m_acc_reg, m_memory[address_in_HL()], m_flag_reg, cycles, true);
+                sbb_m(m_acc_reg, m_memory.read(address_in_HL()), m_flag_reg, cycles);
                 break;
             case SBB_A:
-                sbb(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
+                sbb_r(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
                 break;
             case ANA_B:
-                ana(m_acc_reg, m_b_reg, m_flag_reg, cycles);
+                ana_r(m_acc_reg, m_b_reg, m_flag_reg, cycles);
                 break;
             case ANA_C:
-                ana(m_acc_reg, m_c_reg, m_flag_reg, cycles);
+                ana_r(m_acc_reg, m_c_reg, m_flag_reg, cycles);
                 break;
             case ANA_D:
-                ana(m_acc_reg, m_d_reg, m_flag_reg, cycles);
+                ana_r(m_acc_reg, m_d_reg, m_flag_reg, cycles);
                 break;
             case ANA_E:
-                ana(m_acc_reg, m_e_reg, m_flag_reg, cycles);
+                ana_r(m_acc_reg, m_e_reg, m_flag_reg, cycles);
                 break;
             case ANA_H:
-                ana(m_acc_reg, m_h_reg, m_flag_reg, cycles);
+                ana_r(m_acc_reg, m_h_reg, m_flag_reg, cycles);
                 break;
             case ANA_L:
-                ana(m_acc_reg, m_l_reg, m_flag_reg, cycles);
+                ana_r(m_acc_reg, m_l_reg, m_flag_reg, cycles);
                 break;
             case ANA_M:
-                ana(m_acc_reg, m_memory[address_in_HL()], m_flag_reg, cycles, true);
+                ana_m(m_acc_reg, m_memory.read(address_in_HL()), m_flag_reg, cycles);
                 break;
             case ANA_A:
-                ana(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
+                ana_r(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
                 break;
             case XRA_B:
-                xra(m_acc_reg, m_b_reg, m_flag_reg, cycles);
+                xra_r(m_acc_reg, m_b_reg, m_flag_reg, cycles);
                 break;
             case XRA_C:
-                xra(m_acc_reg, m_c_reg, m_flag_reg, cycles);
+                xra_r(m_acc_reg, m_c_reg, m_flag_reg, cycles);
                 break;
             case XRA_D:
-                xra(m_acc_reg, m_d_reg, m_flag_reg, cycles);
+                xra_r(m_acc_reg, m_d_reg, m_flag_reg, cycles);
                 break;
             case XRA_E:
-                xra(m_acc_reg, m_e_reg, m_flag_reg, cycles);
+                xra_r(m_acc_reg, m_e_reg, m_flag_reg, cycles);
                 break;
             case XRA_H:
-                xra(m_acc_reg, m_h_reg, m_flag_reg, cycles);
+                xra_r(m_acc_reg, m_h_reg, m_flag_reg, cycles);
                 break;
             case XRA_L:
-                xra(m_acc_reg, m_l_reg, m_flag_reg, cycles);
+                xra_r(m_acc_reg, m_l_reg, m_flag_reg, cycles);
                 break;
             case XRA_M:
-                xra(m_acc_reg, m_memory[address_in_HL()], m_flag_reg, cycles, true);
+                xra_m(m_acc_reg, m_memory.read(address_in_HL()), m_flag_reg, cycles);
                 break;
             case XRA_A:
-                xra(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
+                xra_r(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
                 break;
             case ORA_B:
-                ora(m_acc_reg, m_b_reg, m_flag_reg, cycles);
+                ora_r(m_acc_reg, m_b_reg, m_flag_reg, cycles);
                 break;
             case ORA_C:
-                ora(m_acc_reg, m_c_reg, m_flag_reg, cycles);
+                ora_r(m_acc_reg, m_c_reg, m_flag_reg, cycles);
                 break;
             case ORA_D:
-                ora(m_acc_reg, m_d_reg, m_flag_reg, cycles);
+                ora_r(m_acc_reg, m_d_reg, m_flag_reg, cycles);
                 break;
             case ORA_E:
-                ora(m_acc_reg, m_e_reg, m_flag_reg, cycles);
+                ora_r(m_acc_reg, m_e_reg, m_flag_reg, cycles);
                 break;
             case ORA_H:
-                ora(m_acc_reg, m_h_reg, m_flag_reg, cycles);
+                ora_r(m_acc_reg, m_h_reg, m_flag_reg, cycles);
                 break;
             case ORA_L:
-                ora(m_acc_reg, m_l_reg, m_flag_reg, cycles);
+                ora_r(m_acc_reg, m_l_reg, m_flag_reg, cycles);
                 break;
             case ORA_M:
-                ora(m_acc_reg, m_memory[address_in_HL()], m_flag_reg, cycles, true);
+                ora_m(m_acc_reg, m_memory.read(address_in_HL()), m_flag_reg, cycles);
                 break;
             case ORA_A:
-                ora(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
+                ora_r(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
                 break;
             case CMP_B:
-                cmp(m_acc_reg, m_b_reg, m_flag_reg, cycles);
+                cmp_r(m_acc_reg, m_b_reg, m_flag_reg, cycles);
                 break;
             case CMP_C:
-                cmp(m_acc_reg, m_c_reg, m_flag_reg, cycles);
+                cmp_r(m_acc_reg, m_c_reg, m_flag_reg, cycles);
                 break;
             case CMP_D:
-                cmp(m_acc_reg, m_d_reg, m_flag_reg, cycles);
+                cmp_r(m_acc_reg, m_d_reg, m_flag_reg, cycles);
                 break;
             case CMP_E:
-                cmp(m_acc_reg, m_e_reg, m_flag_reg, cycles);
+                cmp_r(m_acc_reg, m_e_reg, m_flag_reg, cycles);
                 break;
             case CMP_H:
-                cmp(m_acc_reg, m_h_reg, m_flag_reg, cycles);
+                cmp_r(m_acc_reg, m_h_reg, m_flag_reg, cycles);
                 break;
             case CMP_L:
-                cmp(m_acc_reg, m_l_reg, m_flag_reg, cycles);
+                cmp_r(m_acc_reg, m_l_reg, m_flag_reg, cycles);
                 break;
             case CMP_M:
-                cmp(m_acc_reg, m_memory[address_in_HL()], m_flag_reg, cycles, true);
+                cmp_m(m_acc_reg, m_memory.read(address_in_HL()), m_flag_reg, cycles);
                 break;
             case CMP_A:
-                cmp(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
+                cmp_r(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
                 break;
             case RNZ:
                 rnz(m_pc, m_sp, m_memory, m_flag_reg, cycles);
@@ -805,7 +805,7 @@ namespace emu::i8080 {
                 jpo(m_pc, get_next_word(), m_flag_reg, cycles);
                 break;
             case XTHL:
-                xthl(m_h_reg, m_l_reg, m_memory[m_sp], m_memory[m_sp + 1], cycles);
+                xthl(m_sp, m_memory, m_h_reg, m_l_reg, cycles);
                 break;
             case CPO:
                 cpo(m_pc, m_sp, m_memory, get_next_word(), m_flag_reg, cycles);
@@ -900,15 +900,13 @@ namespace emu::i8080 {
 
     NextByte Cpu::get_next_byte() {
         return {
-                .farg = m_memory[m_pc++]
-        };
+                .farg = m_memory.read(m_pc++)};
     }
 
     NextWord Cpu::get_next_word() {
         return {
-                .farg = m_memory[m_pc++],
-                .sarg = m_memory[m_pc++]
-        };
+                .farg = m_memory.read(m_pc++),
+                .sarg = m_memory.read(m_pc++)};
     }
 
     u16 Cpu::address_in_HL() const {

@@ -1,13 +1,13 @@
-#ifndef MIKA_EMULATORS_CHIPS_Z80_EMULATOR_MEMORY_H
-#define MIKA_EMULATORS_CHIPS_Z80_EMULATOR_MEMORY_H
+#ifndef MIKA_EMULATORS_CROSSCUTTING_MEMORY_EMULATOR_MEMORY_H
+#define MIKA_EMULATORS_CROSSCUTTING_MEMORY_EMULATOR_MEMORY_H
 
 #include <functional>
 #include <memory>
 #include <vector>
-#include "interfaces/memory_mapped_io.h"
+#include "memory_mapped_io.h"
 #include "crosscutting/typedefs.h"
 
-namespace emu::z80 {
+namespace emu::memory {
 
     class EmulatorMemory {
     public:
@@ -44,4 +44,4 @@ namespace emu::z80 {
     };
 }
 
-#endif //MIKA_EMULATORS_CHIPS_Z80_EMULATOR_MEMORY_H
+#endif //MIKA_EMULATORS_CROSSCUTTING_MEMORY_EMULATOR_MEMORY_H

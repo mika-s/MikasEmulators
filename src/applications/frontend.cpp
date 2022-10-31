@@ -1,19 +1,18 @@
-#include <algorithm>
-#include <experimental/iterator>
-#include <iostream>
-#include <sstream>
-#include "doctest.h"
 #include "frontend.h"
 #include "applications/cpm_8080/cpm_application.h"
 #include "applications/cpm_z80/cpm_application.h"
 #include "applications/pacman/pacman.h"
 #include "applications/space_invaders/space_invaders.h"
 #include "chips/8080/disassembler8080.h"
-#include "chips/8080/emulator_memory.h"
 #include "chips/z80/disassemblerZ80.h"
-#include "chips/z80/emulator_memory.h"
 #include "crosscutting/exceptions/invalid_program_arguments_exception.h"
+#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/util/file_util.h"
+#include "doctest.h"
+#include <algorithm>
+#include <experimental/iterator>
+#include <iostream>
+#include <sstream>
 
 namespace emu::applications {
 
@@ -42,8 +41,7 @@ namespace emu::applications {
         const char *const delimiter = ", ";
 
         std::ostringstream imploded;
-        std::copy(supported_programs.begin(), supported_programs.end(),
-                  std::experimental::ostream_joiner<std::string>(imploded, delimiter));
+        std::copy(supported_programs.begin(), supported_programs.end(), std::experimental::ostream_joiner<std::string>(imploded, delimiter));
 
         return imploded.str();
     }
@@ -63,8 +61,8 @@ namespace emu::applications {
 
     void Frontend::disassemble(const std::vector<std::string> &args) {
         using emu::i8080::Disassembler8080;
-        using emu::z80::DisassemblerZ80;
         using emu::util::file::read_file_into_vector;
+        using emu::z80::DisassemblerZ80;
 
         if (args.size() == disassembly_number_of_arguments) {
             const std::string &cpu = args[disassembly_cpu_argument];

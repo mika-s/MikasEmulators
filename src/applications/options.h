@@ -1,12 +1,12 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_OPTIONS_H
 #define MIKA_EMULATORS_APPLICATIONS_OPTIONS_H
 
-#include <string>
-#include <unordered_map>
-#include <vector>
 #include "applications/pacman/settings.h"
 #include "applications/space_invaders/settings.h"
 #include "crosscutting/gui/gui_type.h"
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 namespace emu::applications {
 

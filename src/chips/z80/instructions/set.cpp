@@ -1,15 +1,15 @@
 #include <cassert>
 #include <iostream>
 #include "doctest.h"
-#include "chips/z80/emulator_memory.h"
+#include "crosscutting/memory/emulator_memory.h"
 #include "chips/z80/flags.h"
 #include "chips/z80/util.h"
-#include "crosscutting/misc/next_byte.h"
+#include "crosscutting/memory/next_byte.h"
 #include "crosscutting/util/byte_util.h"
 
 namespace emu::z80 {
 
-    using emu::misc::NextByte;
+    using emu::memory::NextByte;
     using emu::util::byte::set_bit;
 
     /**

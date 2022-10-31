@@ -1,14 +1,14 @@
-#include <iostream>
-#include "doctest.h"
 #include "chips/8080/flags.h"
-#include "instruction_util.h"
-#include "crosscutting/misc/next_byte.h"
+#include "crosscutting/memory/next_byte.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/string_util.h"
+#include "doctest.h"
+#include "instruction_util.h"
+#include <iostream>
 
 namespace emu::i8080 {
 
-    using emu::misc::NextByte;
+    using emu::memory::NextByte;
     using emu::util::string::hexify_wo_0x;
 
     /**

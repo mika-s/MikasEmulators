@@ -1,6 +1,6 @@
-#include <iostream>
-#include "doctest.h"
 #include "chips/8080/flags.h"
+#include "doctest.h"
+#include <iostream>
 
 namespace emu::i8080 {
     /**

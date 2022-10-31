@@ -1,15 +1,15 @@
-#include <iostream>
-#include "doctest.h"
 #include "chips/8080/flags.h"
-#include "instruction_util.h"
+#include "crosscutting/memory/next_word.h"
 #include "crosscutting/typedefs.h"
-#include "crosscutting/misc/next_word.h"
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
+#include "doctest.h"
+#include "instruction_util.h"
+#include <iostream>
 
 namespace emu::i8080 {
 
-    using emu::misc::NextWord;
+    using emu::memory::NextWord;
     using emu::util::byte::to_u16;
     using emu::util::string::hexify_wo_0x;
 
@@ -62,8 +62,8 @@ namespace emu::i8080 {
             cc(pc, sp, memory, args, flag_reg, cycles);
 
             CHECK_EQ(to_u16(args.sarg, args.farg), pc);
-            CHECK_EQ(0x0f, memory[0]);
-            CHECK_EQ(0x10, memory[1]);
+            CHECK_EQ(0x0f, memory.read(0));
+            CHECK_EQ(0x10, memory.read(1));
         }
 
         SUBCASE("should not do anything when carry flag is unset") {
@@ -78,8 +78,8 @@ namespace emu::i8080 {
             cc(pc, sp, memory, args, flag_reg, cycles);
 
             CHECK_EQ(0x100f, pc);
-            CHECK_EQ(0x00, memory[0]);
-            CHECK_EQ(0x01, memory[1]);
+            CHECK_EQ(0x00, memory.read(0));
+            CHECK_EQ(0x01, memory.read(1));
         }
 
         SUBCASE("should use 11 cycles when not called") {

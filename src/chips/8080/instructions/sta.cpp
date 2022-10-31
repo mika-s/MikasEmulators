@@ -1,14 +1,15 @@
-#include <iostream>
-#include "doctest.h"
-#include "chips/8080/emulator_memory.h"
+#include "crosscutting/memory/emulator_memory.h"
+#include "crosscutting/memory/next_word.h"
 #include "crosscutting/typedefs.h"
-#include "crosscutting/misc/next_word.h"
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
+#include "doctest.h"
+#include <iostream>
 
 namespace emu::i8080 {
 
-    using emu::misc::NextWord;
+    using emu::memory::EmulatorMemory;
+    using emu::memory::NextWord;
     using emu::util::byte::to_u16;
     using emu::util::string::hexify_wo_0x;
 
@@ -29,7 +30,7 @@ namespace emu::i8080 {
     void sta(u8 &acc_reg, EmulatorMemory &memory, const NextWord &args, cyc &cycles) {
         const u16 address = to_u16(args.sarg, args.farg);
 
-        memory[address] = acc_reg;
+        memory.write(address, acc_reg);
 
         cycles = 13;
     }
@@ -50,7 +51,7 @@ namespace emu::i8080 {
         SUBCASE("should store the accumulator in memory at the given address") {
             sta(acc_reg, memory, args, cycles);
 
-            CHECK_EQ(acc_reg, memory[0x3]);
+            CHECK_EQ(acc_reg, memory.read(0x3));
         }
 
         SUBCASE("should use 13 cycles") {

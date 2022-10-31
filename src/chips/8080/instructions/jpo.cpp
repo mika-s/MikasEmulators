@@ -1,14 +1,14 @@
-#include <iostream>
-#include "doctest.h"
 #include "chips/8080/flags.h"
+#include "crosscutting/memory/next_word.h"
 #include "crosscutting/typedefs.h"
-#include "crosscutting/misc/next_word.h"
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
+#include "doctest.h"
+#include <iostream>
 
 namespace emu::i8080 {
 
-    using emu::misc::NextWord;
+    using emu::memory::NextWord;
     using emu::util::byte::to_u16;
     using emu::util::string::hexify_wo_0x;
 
@@ -47,7 +47,7 @@ namespace emu::i8080 {
             u16 pc = 0;
             NextWord args = {.farg = 0x11, .sarg = 0x22};
             Flags flag_reg;
-            flag_reg.clear_parity_flag();   // Parity is odd when the parity flag is false.
+            flag_reg.clear_parity_flag(); // Parity is odd when the parity flag is false.
 
             jpo(pc, args, flag_reg, cycles);
 

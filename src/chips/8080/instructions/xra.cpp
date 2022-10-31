@@ -1,44 +1,12 @@
-#include <iostream>
-#include "doctest.h"
 #include "chips/8080/flags.h"
-#include "instructions.h"
 #include "crosscutting/typedefs.h"
+#include "doctest.h"
+#include "instructions.h"
+#include <iostream>
 
 namespace emu::i8080 {
-    /**
-     * Exclusive or with accumulator
-     * <ul>
-     *   <li>Size: 2</li>
-     *   <li>Cycles: 1</li>
-     *   <li>States: 4 or 7</li>
-     *   <li>Condition bits affected: carry, auxiliary carry, zero, sign, parity</li>
-     * </ul>
-     *
-     * @param acc_reg is the accumulator register
-     * @param value contains the argument that should be exclusive ored with the accumulator
-     * @param flag_reg is the flag register
-     * @param cycles is the number of cycles variable, which will be mutated
-     */
-    void xra(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles) {
-        xra(acc_reg, value, flag_reg, cycles, false);
-    }
 
-    /**
-     * Exclusive or with accumulator
-     * <ul>
-     *   <li>Size: 2</li>
-     *   <li>Cycles: 1</li>
-     *   <li>States: 4 or 7</li>
-     *   <li>Condition bits affected: carry, auxiliary carry, zero, sign, parity</li>
-     * </ul>
-     *
-     * @param acc_reg is the accumulator register
-     * @param value contains the argument that should be exclusive ored with the accumulator
-     * @param flag_reg is the flag register
-     * @param cycles is the number of cycles variable, which will be mutated
-     * @param is_memory_involved is true if memory is involved, either written or read
-     */
-    void xra(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles, bool is_memory_involved) {
+    void xra(u8 &acc_reg, u8 value, Flags &flag_reg) {
         acc_reg ^= value;
 
         flag_reg.clear_carry_flag();
@@ -51,12 +19,46 @@ namespace emu::i8080 {
         // Manual. It is reset in this emulator.
 
         flag_reg.clear_aux_carry_flag();
+    }
+
+    /**
+     * Exclusive or register with accumulator
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 1</li>
+     *   <li>States: 4</li>
+     *   <li>Condition bits affected: carry, auxiliary carry, zero, sign, parity</li>
+     * </ul>
+     *
+     * @param acc_reg is the accumulator register
+     * @param value contains the argument that should be exclusive ored with the accumulator
+     * @param flag_reg is the flag register
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void xra_r(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles) {
+        xra(acc_reg, value, flag_reg);
 
         cycles = 4;
+    }
 
-        if (is_memory_involved) {
-            cycles += 3;
-        }
+    /**
+     * Exclusive or value in memory with accumulator
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 1</li>
+     *   <li>States: 7</li>
+     *   <li>Condition bits affected: carry, auxiliary carry, zero, sign, parity</li>
+     * </ul>
+     *
+     * @param acc_reg is the accumulator register
+     * @param value_in_memory contains the argument that should be exclusive ored with the accumulator
+     * @param flag_reg is the flag register
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void xra_m(u8 &acc_reg, u8 value_in_memory, Flags &flag_reg, cyc &cycles) {
+        xra(acc_reg, value_in_memory, flag_reg);
+
+        cycles = 7;
     }
 
     void print_xra(std::ostream &ostream, const std::string &reg) {
@@ -74,7 +76,7 @@ namespace emu::i8080 {
                     Flags flag_reg;
                     acc_reg = acc_reg_counter;
 
-                    xra(acc_reg, value, flag_reg, cycles);
+                    xra_r(acc_reg, value, flag_reg, cycles);
 
                     CHECK_EQ(acc_reg_counter ^ value, acc_reg);
                 }
@@ -87,7 +89,7 @@ namespace emu::i8080 {
                     Flags flag_reg;
                     acc_reg = acc_reg_counter;
 
-                    xra(acc_reg, value, flag_reg, cycles);
+                    xra_r(acc_reg, value, flag_reg, cycles);
 
                     CHECK_EQ(false, flag_reg.is_carry_flag_set());
                 }
@@ -100,7 +102,7 @@ namespace emu::i8080 {
                     Flags flag_reg;
                     acc_reg = acc_reg_counter;
 
-                    xra(acc_reg, value, flag_reg, cycles);
+                    xra_r(acc_reg, value, flag_reg, cycles);
 
                     CHECK_EQ(acc_reg == 0, flag_reg.is_zero_flag_set());
                 }
@@ -113,7 +115,7 @@ namespace emu::i8080 {
                     Flags flag_reg;
                     acc_reg = acc_reg_counter;
 
-                    xra(acc_reg, value, flag_reg, cycles);
+                    xra_r(acc_reg, value, flag_reg, cycles);
 
                     CHECK_EQ(acc_reg > INT8_MAX, flag_reg.is_sign_flag_set());
                 }
@@ -125,7 +127,7 @@ namespace emu::i8080 {
             acc_reg = 0x3;
             u8 value = 0xff;
 
-            xra(acc_reg, value, flag_reg, cycles);
+            xra_r(acc_reg, value, flag_reg, cycles);
 
             CHECK_EQ(true, flag_reg.is_parity_flag_set());
         }
@@ -135,7 +137,7 @@ namespace emu::i8080 {
             acc_reg = 0x2;
             u8 value = 0xff;
 
-            xra(acc_reg, value, flag_reg, cycles);
+            xra_r(acc_reg, value, flag_reg, cycles);
 
             CHECK_EQ(false, flag_reg.is_parity_flag_set());
         }
@@ -146,7 +148,7 @@ namespace emu::i8080 {
                     Flags flag_reg;
                     acc_reg = acc_reg_counter;
 
-                    xra(acc_reg, value, flag_reg, cycles);
+                    xra_r(acc_reg, value, flag_reg, cycles);
 
                     CHECK_EQ(false, flag_reg.is_aux_carry_flag_set());
                 }
@@ -159,7 +161,7 @@ namespace emu::i8080 {
             u8 value = 0;
             Flags flag_reg;
 
-            xra(acc_reg, value, flag_reg, cycles);
+            xra_r(acc_reg, value, flag_reg, cycles);
 
             CHECK_EQ(4, cycles);
         }
@@ -167,10 +169,12 @@ namespace emu::i8080 {
         SUBCASE("should use 7 cycles if memory is involved") {
             cycles = 0;
             acc_reg = 0xe;
-            u8 value = 0;
+            EmulatorMemory memory;
+            memory.add({0x10});
+            u16 address = 0x0000;
             Flags flag_reg;
 
-            xra(acc_reg, value, flag_reg, cycles, true);
+            xra_m(acc_reg, memory.read(address), flag_reg, cycles);
 
             CHECK_EQ(7, cycles);
         }

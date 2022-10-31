@@ -2,13 +2,13 @@
 #include "doctest.h"
 #include "chips/z80/flags.h"
 #include "crosscutting/typedefs.h"
-#include "crosscutting/misc/next_byte.h"
+#include "crosscutting/memory/next_byte.h"
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
 
 namespace emu::z80 {
 
-    using emu::misc::NextByte;
+    using emu::memory::NextByte;
     using emu::util::byte::to_u16;
     using emu::util::string::hexify_wo_0x;
 

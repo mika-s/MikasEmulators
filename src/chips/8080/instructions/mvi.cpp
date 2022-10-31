@@ -1,36 +1,18 @@
-#include <iostream>
-#include "doctest.h"
+#include "crosscutting/memory/emulator_memory.h"
+#include "crosscutting/memory/next_byte.h"
 #include "crosscutting/typedefs.h"
-#include "crosscutting/misc/next_byte.h"
 #include "crosscutting/util/string_util.h"
+#include "doctest.h"
+#include <iostream>
 
 namespace emu::i8080 {
 
-    using emu::misc::NextByte;
+    using emu::memory::EmulatorMemory;
+    using emu::memory::NextByte;
     using emu::util::string::hexify_wo_0x;
 
-    /**
-     * Move immediate
-     * <ul>
-     *   <li>Size: 2</li>
-     *   <li>Cycles: 2</li>
-     *   <li>States: 7 or 10</li>
-     *   <li>Condition bits affected: none</li>
-     * </ul>
-     *
-     * @param reg is the register to load into, which will be mutated
-     * @param args contains value to load into the register
-     * @param cycles is the number of cycles variable, which will be mutated
-     * @param is_memory_involved is true if memory is involved, either written or read
-     */
-    void mvi(u8 &reg, const NextByte &args, cyc &cycles, bool is_memory_involved) {
+    void mvi(u8 &reg, const NextByte &args) {
         reg = args.farg;
-
-        cycles = 7;
-
-        if (is_memory_involved) {
-            cycles += 3;
-        }
     }
 
     /**
@@ -38,7 +20,7 @@ namespace emu::i8080 {
      * <ul>
      *   <li>Size: 2</li>
      *   <li>Cycles: 2</li>
-     *   <li>States: 7 or 10</li>
+     *   <li>States: 7</li>
      *   <li>Condition bits affected: none</li>
      * </ul>
      *
@@ -46,8 +28,34 @@ namespace emu::i8080 {
      * @param args contains value to load into the register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void mvi(u8 &reg, const NextByte &args, cyc &cycles) {
-        mvi(reg, args, cycles, false);
+    void mvi_r(u8 &reg, const NextByte &args, cyc &cycles) {
+        mvi(reg, args);
+
+        cycles = 7;
+    }
+
+    /**
+     * Move immediate value in memory
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 10</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param memory is the memory, which will be mutated
+     * @param address is the address in memory to move immediate to
+     * @param args contains value to load into the register
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void mvi_m(EmulatorMemory &memory, u16 address, const NextByte &args, cyc &cycles) {
+        u8 value = memory.read(address);
+
+        mvi(value, args);
+
+        memory.write(address, value);
+
+        cycles = 10;
     }
 
     void print_mvi(std::ostream &ostream, const std::string &reg, const NextByte &args) {
@@ -63,38 +71,40 @@ namespace emu::i8080 {
             u8 reg = 0;
             NextByte args = {.farg = 0};
 
-            mvi(reg, args, cycles);
+            mvi_r(reg, args, cycles);
             CHECK_EQ(0, reg);
 
             args = {.farg = 0xa};
-            mvi(reg, args, cycles);
+            mvi_r(reg, args, cycles);
             CHECK_EQ(0xa, reg);
 
-            mvi(reg, args, cycles);
+            mvi_r(reg, args, cycles);
             CHECK_EQ(0xa, reg);
 
             args = {.farg = 0xff};
-            mvi(reg, args, cycles);
+            mvi_r(reg, args, cycles);
             CHECK_EQ(0xff, reg);
         }
 
         SUBCASE("should load memory with value") {
-            u8 memory_location = 0;
             NextByte args = {.farg = 0};
+            EmulatorMemory memory;
+            memory.add({0x10, 0x15, 0x01, 0xaa});
+            u16 address = 0x0000;
 
-            mvi(memory_location, args, cycles, true);
-            CHECK_EQ(0, memory_location);
+            mvi_m(memory, address, args, cycles);
+            CHECK_EQ(0, memory.read(address));
 
             args = {.farg = 0xa};
-            mvi(memory_location, args, cycles, true);
-            CHECK_EQ(0xa, memory_location);
+            mvi_m(memory, address + 1, args, cycles);
+            CHECK_EQ(0xa, memory.read(address + 1));
 
-            mvi(memory_location, args, cycles, true);
-            CHECK_EQ(0xa, memory_location);
+            mvi_m(memory, address + 2, args, cycles);
+            CHECK_EQ(0xa, memory.read(address + 2));
 
             args = {.farg = 0xff};
-            mvi(memory_location, args, cycles, true);
-            CHECK_EQ(0xff, memory_location);
+            mvi_m(memory, address + 3, args, cycles);
+            CHECK_EQ(0xff, memory.read(address + 3));
         }
 
         SUBCASE("should use 7 cycles if memory is not involved") {
@@ -102,17 +112,19 @@ namespace emu::i8080 {
             u8 reg = 0;
             NextByte args = {.farg = 0x11};
 
-            mvi(reg, args, cycles);
+            mvi_r(reg, args, cycles);
 
             CHECK_EQ(7, cycles);
         }
 
         SUBCASE("should use 10 cycles if memory is involved") {
             cycles = 0;
-            u8 memory_location = 0;
             NextByte args = {.farg = 0x21};
+            EmulatorMemory memory;
+            memory.add({0x10});
+            u16 address = 0x0000;
 
-            mvi(memory_location, args, cycles, true);
+            mvi_m(memory, address, args, cycles);
 
             CHECK_EQ(10, cycles);
         }

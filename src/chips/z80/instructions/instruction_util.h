@@ -2,14 +2,15 @@
 #define MIKA_EMULATORS_CHIPS_Z80_INSTRUCTIONS_INSTRUCTION_UTIL_H
 
 #include <vector>
-#include "chips/z80/emulator_memory.h"
 #include "chips/z80/flags.h"
 #include "crosscutting/typedefs.h"
-#include "crosscutting/misc/next_word.h"
+#include "crosscutting/memory/emulator_memory.h"
+#include "crosscutting/memory/next_word.h"
 
 namespace emu::z80 {
 
-    using emu::misc::NextWord;
+    using emu::memory::EmulatorMemory;
+    using emu::memory::NextWord;
 
     static constexpr unsigned int lsb = 0;
     static constexpr unsigned int msb = 7;

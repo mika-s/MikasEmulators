@@ -1,58 +1,59 @@
-#include <iostream>
-#include "doctest.h"
 #include "chips/8080/flags.h"
-#include "instructions.h"
 #include "crosscutting/typedefs.h"
+#include "doctest.h"
+#include <iostream>
 
 namespace emu::i8080 {
-    /**
-     * Compare with accumulator
-     * <ul>
-     *   <li>Size: 1</li>
-     *   <li>Cycles: 1</li>
-     *   <li>States: 4 or 7</li>
-     *   <li>Condition bits affected: carry, auxiliary carry, zero, sign, parity</li>
-     * </ul>
-     *
-     * @param acc_reg is the accumulator register
-     * @param value is the value to compare with the accumulator register
-     * @param flag_reg is the flag register, which will be mutated
-     * @param cycles is the number of cycles variable, which will be mutated
-     */
-    void cmp(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles) {
-        cmp(acc_reg, value, flag_reg, cycles, false);
-    }
 
-    /**
-     * Compare with accumulator
-     * <ul>
-     *   <li>Size: 1</li>
-     *   <li>Cycles: 1</li>
-     *   <li>States: 4 or 7</li>
-     *   <li>Condition bits affected: carry, auxiliary carry, zero, sign, parity</li>
-     * </ul>
-     *
-     * @param acc_reg is the accumulator register
-     * @param value is the value to compare with the accumulator register
-     * @param flag_reg is the flag register, which will be mutated
-     * @param cycles is the number of cycles variable, which will be mutated
-     * @param is_memory_involved is true if memory is involved, either written or read
-     */
-    void cmp(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles, bool is_memory_involved) {
+    void cmp(u8 &acc_reg, u8 arg, Flags &flag_reg) {
         const u8 previous = acc_reg;
-        const u8 new_acc_reg = previous - value;
+        const u8 new_acc_reg = previous - arg;
 
-        flag_reg.handle_borrow_flag(previous, value, false);
+        flag_reg.handle_borrow_flag(previous, arg, false);
         flag_reg.handle_zero_flag(new_acc_reg);
         flag_reg.handle_parity_flag(new_acc_reg);
         flag_reg.handle_sign_flag(new_acc_reg);
-        flag_reg.handle_aux_borrow_flag(previous, value, false);
+        flag_reg.handle_aux_borrow_flag(previous, arg, false);
+    }
+
+    /**
+     * Compare register with accumulator
+     * <ul>
+     *   <li>Size: 1</li>
+     *   <li>Cycles: 1</li>
+     *   <li>States: 4</li>
+     *   <li>Condition bits affected: carry, auxiliary carry, zero, sign, parity</li>
+     * </ul>
+     *
+     * @param acc_reg is the accumulator register
+     * @param reg is the value to compare with the accumulator register
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void cmp_r(u8 &acc_reg, u8 reg, Flags &flag_reg, cyc &cycles) {
+        cmp(acc_reg, reg, flag_reg);
 
         cycles = 4;
+    }
 
-        if (is_memory_involved) {
-            cycles += 3;
-        }
+    /**
+     * Compare value in memory with accumulator
+     * <ul>
+     *   <li>Size: 1</li>
+     *   <li>Cycles: 1</li>
+     *   <li>States: 7</li>
+     *   <li>Condition bits affected: carry, auxiliary carry, zero, sign, parity</li>
+     * </ul>
+     *
+     * @param acc_reg is the accumulator register
+     * @param value_in_memory is the value to compare with the accumulator register
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void cmp_m(u8 &acc_reg, u8 value_in_memory, Flags &flag_reg, cyc &cycles) {
+        cmp(acc_reg, value_in_memory, flag_reg);
+
+        cycles = 7;
     }
 
     void print_cmp(std::ostream &ostream, const std::string &reg) {
@@ -69,7 +70,7 @@ namespace emu::i8080 {
                 for (u8 value = 0; value < UINT8_MAX; ++value) {
                     acc_reg = acc_reg_counter;
 
-                    cmp(acc_reg, value, flag_reg, cycles);
+                    cmp_r(acc_reg, value, flag_reg, cycles);
 
                     CHECK_EQ(static_cast<u8>(acc_reg - value) > INT8_MAX, flag_reg.is_sign_flag_set());
                     CHECK_EQ(static_cast<u8>(acc_reg - value) == 0, flag_reg.is_zero_flag_set());
@@ -82,7 +83,7 @@ namespace emu::i8080 {
             cycles = 0;
             u8 value = 0;
 
-            cmp(acc_reg, value, flag_reg, cycles);
+            cmp_r(acc_reg, value, flag_reg, cycles);
 
             CHECK_EQ(4, cycles);
         }
@@ -91,7 +92,7 @@ namespace emu::i8080 {
             cycles = 0;
             u8 value = 0;
 
-            cmp(acc_reg, value, flag_reg, cycles, true);
+            cmp_m(acc_reg, value, flag_reg, cycles);
 
             CHECK_EQ(7, cycles);
         }

@@ -1,13 +1,13 @@
-#include <sstream>
 #include "options.h"
 #include "crosscutting/exceptions/invalid_program_arguments_exception.h"
+#include <sstream>
 
 namespace emu::applications {
 
     using emu::exceptions::InvalidProgramArgumentsException;
 
     Options::Options(std::vector<std::string> args)
-            : m_args(args) {
+        : m_args(args) {
         for (std::size_t arg_idx = 0; arg_idx < args.size(); ++arg_idx) {
             if (args[arg_idx] == dipswitch_flag) {
                 parse_flag(dipswitch_flag, args, arg_idx);
@@ -50,8 +50,7 @@ namespace emu::applications {
                 .m_difficulty = Difficulty::Normal,
                 .m_ghost_names = GhostNames::Normal,
                 .m_board_test = BoardTest::Off,
-                .m_cabinet_mode = CabinetMode::Upright
-        };
+                .m_cabinet_mode = CabinetMode::Upright};
 
         for (auto &opt: m_options["-d"]) {
             switch (opt[0]) {
@@ -168,8 +167,7 @@ namespace emu::applications {
         Settings settings{
                 .m_number_of_lives = NumberOfLives::Three,
                 .m_bonus_life_at = BonusLifeAt::_1500,
-                .m_coin_info = CoinInfo::On
-        };
+                .m_coin_info = CoinInfo::On};
 
         for (auto &opt: m_options["-d"]) {
             switch (opt[0]) {

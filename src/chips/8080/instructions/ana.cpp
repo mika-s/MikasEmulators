@@ -1,48 +1,15 @@
-#include <iostream>
-#include "doctest.h"
 #include "chips/8080/flags.h"
-#include "instructions.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
+#include "doctest.h"
+#include "instructions.h"
+#include <iostream>
 
 namespace emu::i8080 {
 
     using emu::util::byte::is_bit_set;
 
-    /**
-     * Logical and with accumulator
-     * <ul>
-     *   <li>Size: 2</li>
-     *   <li>Cycles: 1</li>
-     *   <li>States: 4 or 7</li>
-     *   <li>Condition bits affected: carry, auxiliary carry, zero, sign, parity</li>
-     * </ul>
-     *
-     * @param acc_reg is the accumulator register
-     * @param value contains the argument that should be anded with the accumulator
-     * @param flag_reg is the flag register
-     * @param cycles is the number of cycles variable, which will be mutated
-     */
-    void ana(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles) {
-        ana(acc_reg, value, flag_reg, cycles, false);
-    }
-
-    /**
-     * Logical and with accumulator
-     * <ul>
-     *   <li>Size: 2</li>
-     *   <li>Cycles: 1</li>
-     *   <li>States: 4 or 7</li>
-     *   <li>Condition bits affected: carry, auxiliary carry, zero, sign, parity</li>
-     * </ul>
-     *
-     * @param acc_reg is the accumulator register
-     * @param value contains the argument that should be anded with the accumulator
-     * @param flag_reg is the flag register
-     * @param cycles is the number of cycles variable, which will be mutated
-     * @param is_memory_involved is true if memory is involved, either written or read
-     */
-    void ana(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles, bool is_memory_involved) {
+    void ana(u8 &acc_reg, u8 value, Flags &flag_reg) {
         const u8 previous = acc_reg;
         acc_reg &= value;
 
@@ -61,12 +28,46 @@ namespace emu::i8080 {
         } else {
             flag_reg.clear_aux_carry_flag();
         }
+    }
+
+    /**
+     * Logical and register with accumulator
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 1</li>
+     *   <li>States: 4</li>
+     *   <li>Condition bits affected: carry, auxiliary carry, zero, sign, parity</li>
+     * </ul>
+     *
+     * @param acc_reg is the accumulator register
+     * @param reg contains the argument that should be anded with the accumulator
+     * @param flag_reg is the flag register
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void ana_r(u8 &acc_reg, u8 reg, Flags &flag_reg, cyc &cycles) {
+        ana(acc_reg, reg, flag_reg);
 
         cycles = 4;
+    }
 
-        if (is_memory_involved) {
-            cycles += 3;
-        }
+    /**
+     * Logical and value in memory with accumulator
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 1</li>
+     *   <li>States: 7</li>
+     *   <li>Condition bits affected: carry, auxiliary carry, zero, sign, parity</li>
+     * </ul>
+     *
+     * @param acc_reg is the accumulator register
+     * @param value_in_memory contains the argument that should be anded with the accumulator
+     * @param flag_reg is the flag register
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void ana_m(u8 &acc_reg, u8 value_in_memory, Flags &flag_reg, cyc &cycles) {
+        ana(acc_reg, value_in_memory, flag_reg);
+
+        cycles = 7;
     }
 
     void print_ana(std::ostream &ostream, const std::string &reg) {
@@ -84,7 +85,7 @@ namespace emu::i8080 {
                     Flags flag_reg;
                     acc_reg = acc_reg_counter;
 
-                    ana(acc_reg, value, flag_reg, cycles);
+                    ana_r(acc_reg, value, flag_reg, cycles);
 
                     CHECK_EQ(acc_reg_counter & value, acc_reg);
                 }
@@ -97,7 +98,7 @@ namespace emu::i8080 {
                     Flags flag_reg;
                     acc_reg = acc_reg_counter;
 
-                    ana(acc_reg, value, flag_reg, cycles);
+                    ana_r(acc_reg, value, flag_reg, cycles);
 
                     CHECK_EQ(false, flag_reg.is_carry_flag_set());
                 }
@@ -110,7 +111,7 @@ namespace emu::i8080 {
                     Flags flag_reg;
                     acc_reg = acc_reg_counter;
 
-                    ana(acc_reg, value, flag_reg, cycles);
+                    ana_r(acc_reg, value, flag_reg, cycles);
 
                     CHECK_EQ(acc_reg == 0, flag_reg.is_zero_flag_set());
                 }
@@ -123,7 +124,7 @@ namespace emu::i8080 {
                     Flags flag_reg;
                     acc_reg = acc_reg_counter;
 
-                    ana(acc_reg, value, flag_reg, cycles);
+                    ana_r(acc_reg, value, flag_reg, cycles);
 
                     CHECK_EQ(acc_reg > INT8_MAX, flag_reg.is_sign_flag_set());
                 }
@@ -135,7 +136,7 @@ namespace emu::i8080 {
             acc_reg = 0x3;
             u8 value = 0xff;
 
-            ana(acc_reg, value, flag_reg, cycles);
+            ana_r(acc_reg, value, flag_reg, cycles);
 
             CHECK_EQ(true, flag_reg.is_parity_flag_set());
         }
@@ -145,7 +146,7 @@ namespace emu::i8080 {
             acc_reg = 0x2;
             u8 value = 0xff;
 
-            ana(acc_reg, value, flag_reg, cycles);
+            ana_r(acc_reg, value, flag_reg, cycles);
 
             CHECK_EQ(false, flag_reg.is_parity_flag_set());
         }
@@ -156,7 +157,7 @@ namespace emu::i8080 {
                     Flags flag_reg;
                     acc_reg = acc_reg_counter;
 
-                    ana(acc_reg, value, flag_reg, cycles);
+                    ana_r(acc_reg, value, flag_reg, cycles);
 
                     CHECK_EQ(is_bit_set(acc_reg_counter | value, 3), flag_reg.is_aux_carry_flag_set());
                 }
@@ -169,7 +170,7 @@ namespace emu::i8080 {
             u8 value = 0;
             Flags flag_reg;
 
-            ana(acc_reg, value, flag_reg, cycles);
+            ana_r(acc_reg, value, flag_reg, cycles);
 
             CHECK_EQ(4, cycles);
         }
@@ -177,10 +178,12 @@ namespace emu::i8080 {
         SUBCASE("should use 7 cycles if memory is involved") {
             cycles = 0;
             acc_reg = 0xe;
-            u8 value = 0;
+            EmulatorMemory memory;
+            memory.add({0x10});
+            u16 address = 0x0000;
             Flags flag_reg;
 
-            ana(acc_reg, value, flag_reg, cycles, true);
+            ana_m(acc_reg, memory.read(address), flag_reg, cycles);
 
             CHECK_EQ(7, cycles);
         }

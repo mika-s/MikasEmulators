@@ -1,14 +1,15 @@
 #include <iostream>
 #include "doctest.h"
-#include "chips/z80/emulator_memory.h"
 #include "chips/z80/flags.h"
 #include "crosscutting/typedefs.h"
-#include "crosscutting/misc/next_byte.h"
+#include "crosscutting/memory/emulator_memory.h"
+#include "crosscutting/memory/next_byte.h"
 #include "crosscutting/util/string_util.h"
 
 namespace emu::z80 {
 
-    using emu::misc::NextByte;
+    using emu::memory::EmulatorMemory;
+    using emu::memory::NextByte;
     using emu::util::string::hexify_wo_0x;
 
     void and_(u8 &acc_reg, u8 value, Flags &flag_reg) {

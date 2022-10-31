@@ -3,11 +3,11 @@
 
 #include <vector>
 #include <string>
-#include "chips/z80/emulator_memory.h"
 #include "chips/z80/flags.h"
 #include "chips/z80/interrupt_mode.h"
-#include "crosscutting/misc/next_byte.h"
-#include "crosscutting/misc/next_word.h"
+#include "crosscutting/memory/emulator_memory.h"
+#include "crosscutting/memory/next_byte.h"
+#include "crosscutting/memory/next_word.h"
 #include "crosscutting/typedefs.h"
 
 // @formatter:off
@@ -811,8 +811,9 @@ constexpr unsigned int OTDR            = 0xBB;
 
 namespace emu::z80 {
 
-    using emu::misc::NextByte;
-    using emu::misc::NextWord;
+    using emu::memory::EmulatorMemory;
+    using emu::memory::NextByte;
+    using emu::memory::NextWord;
 
     void adc_A_r(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles);
     void adc_A_n(u8 &acc_reg, NextByte args, Flags &flag_reg, cyc &cycles);

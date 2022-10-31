@@ -1,9 +1,9 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_CPU_IO_H
 #define MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_CPU_IO_H
 
-#include "settings.h"
 #include "chips/8080/shift_register.h"
 #include "crosscutting/typedefs.h"
+#include "settings.h"
 
 namespace emu::applications::space_invaders {
 

@@ -1,6 +1,6 @@
-#include <iostream>
 #include "cpm_application_session.h"
 #include "crosscutting/util/byte_util.h"
+#include <iostream>
 
 namespace emu::applications::cpm::i8080 {
 
@@ -10,9 +10,9 @@ namespace emu::applications::cpm::i8080 {
             std::string loaded_file,
             EmulatorMemory memory
     )
-            : m_memory(std::move(memory)),
-              m_loaded_file(std::move(loaded_file)),
-              m_is_finished(false) {
+        : m_memory(std::move(memory)),
+          m_loaded_file(std::move(loaded_file)),
+          m_is_finished(false) {
         setup_cpu();
     }
 
@@ -66,7 +66,7 @@ namespace emu::applications::cpm::i8080 {
 
     void CpmApplicationSession::c_writestr(const EmulatorMemory &memory, u16 address) {
         do {
-            std::cout << memory[address++];
-        } while (memory[address] != '$');
+            std::cout << memory.read(address++);
+        } while (memory.read(address) != '$');
     }
 }

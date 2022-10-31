@@ -1,13 +1,13 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_CPM_8080_CPM_APPLICATION_H
 #define MIKA_EMULATORS_APPLICATIONS_CPM_8080_CPM_APPLICATION_H
 
-#include <string>
-#include <memory>
-#include <vector>
 #include "chips/8080/cpu.h"
-#include "crosscutting/typedefs.h"
 #include "crosscutting/misc/emulator.h"
 #include "crosscutting/misc/session.h"
+#include "crosscutting/typedefs.h"
+#include <memory>
+#include <string>
+#include <vector>
 
 namespace emu::applications::cpm::i8080 {
 

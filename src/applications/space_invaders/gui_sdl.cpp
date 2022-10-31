@@ -1,18 +1,18 @@
-#include <iostream>
-#include <SDL.h>
 #include "gui_sdl.h"
+#include <SDL.h>
+#include <iostream>
 
 namespace emu::applications::space_invaders {
 
     using emu::i8080::RunStatus::NOT_RUNNING;
-    using emu::i8080::RunStatus::RUNNING;
     using emu::i8080::RunStatus::PAUSED;
+    using emu::i8080::RunStatus::RUNNING;
     using emu::util::byte::is_bit_set;
 
     GuiSdl::GuiSdl()
-            : m_win(nullptr),
-              m_rend(nullptr),
-              m_texture(nullptr) {
+        : m_win(nullptr),
+          m_rend(nullptr),
+          m_texture(nullptr) {
         init();
     }
 
@@ -84,8 +84,7 @@ namespace emu::applications::space_invaders {
             exit(1);
         }
 
-        m_texture = SDL_CreateTexture(m_rend, SDL_PIXELFORMAT_RGBA32,
-                                      SDL_TEXTUREACCESS_STREAMING, width, height);
+        m_texture = SDL_CreateTexture(m_rend, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STREAMING, width, height);
 
         if (!m_texture) {
             SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error creating SDL texture: %s", SDL_GetError());

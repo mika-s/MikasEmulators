@@ -4,7 +4,7 @@
 #include <vector>
 #include <memory>
 #include "chips/z80/cpu.h"
-#include "chips/z80/emulator_memory.h"
+#include "crosscutting/memory/emulator_memory.h"
 #include "chips/z80/interfaces/out_observer.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/misc/session.h"

@@ -3,12 +3,12 @@
 #include "chips/z80/flags.h"
 #include "instruction_util.h"
 #include "crosscutting/typedefs.h"
-#include "crosscutting/misc/next_byte.h"
+#include "crosscutting/memory/next_byte.h"
 #include "crosscutting/util/byte_util.h"
 
 namespace emu::z80 {
 
-    using emu::misc::NextByte;
+    using emu::memory::NextByte;
     using emu::util::byte::low_byte;
     using emu::util::byte::high_byte;
     using emu::util::byte::to_u16;

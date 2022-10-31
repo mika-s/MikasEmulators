@@ -1,11 +1,12 @@
-#include <iostream>
-#include "doctest.h"
-#include "chips/8080/emulator_memory.h"
+#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
+#include "doctest.h"
+#include <iostream>
 
 namespace emu::i8080 {
 
+    using emu::memory::EmulatorMemory;
     using emu::util::byte::to_u16;
 
     /**
@@ -24,7 +25,7 @@ namespace emu::i8080 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void ldax(u8 &acc_reg, u8 reg1, u8 reg2, const EmulatorMemory &memory, cyc &cycles) {
-        acc_reg = memory[to_u16(reg1, reg2)];
+        acc_reg = memory.read(to_u16(reg1, reg2));
 
         cycles = 7;
     }
@@ -45,7 +46,7 @@ namespace emu::i8080 {
         SUBCASE("should load the accumulator from memory using address in args") {
             ldax(acc_reg, reg1, reg2, memory, cycles);
 
-            CHECK_EQ(memory[0x04], acc_reg);
+            CHECK_EQ(memory.read(0x04), acc_reg);
         }
 
         SUBCASE("should use 7 cycles") {

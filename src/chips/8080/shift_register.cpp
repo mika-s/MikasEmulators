@@ -3,8 +3,8 @@
 namespace emu::i8080 {
 
     ShiftRegister::ShiftRegister()
-            : m_value(0),
-              m_offset(0) {}
+        : m_value(0),
+          m_offset(0) {}
 
     void ShiftRegister::change_offset(u8 new_offset) {
         m_offset = new_offset & 0b111;

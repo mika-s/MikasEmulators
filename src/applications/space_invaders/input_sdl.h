@@ -1,19 +1,19 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_INPUT_SDL_H
 #define MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_INPUT_SDL_H
 
-#include <SDL_scancode.h>
-#include <vector>
 #include "cpu_io.h"
-#include "io_request.h"
+#include "crosscutting/misc/run_status.h"
 #include "interfaces/input.h"
 #include "interfaces/io_observer.h"
-#include "crosscutting/misc/run_status.h"
+#include "io_request.h"
+#include <SDL_scancode.h>
+#include <vector>
 
 namespace emu::applications::space_invaders {
 
     using emu::misc::RunStatus;
 
-    class InputSdl: public Input {
+    class InputSdl : public Input {
     public:
         void read(RunStatus &run_status, CpuIo &cpu_io) override;
 

@@ -1,9 +1,9 @@
-#include <iostream>
-#include "doctest.h"
 #include "chips/8080/flags.h"
-#include "instruction_util.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
+#include "doctest.h"
+#include "instruction_util.h"
+#include <iostream>
 
 namespace emu::i8080 {
 
@@ -53,7 +53,7 @@ namespace emu::i8080 {
 
             rp(pc, sp, memory, flag_reg, cycles);
 
-            CHECK_EQ(to_u16(memory[1], memory[0]), pc);
+            CHECK_EQ(to_u16(memory.read(1), memory.read(0)), pc);
         }
 
         SUBCASE("should not pop PC off the stack when the sign flag is set") {

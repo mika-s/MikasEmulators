@@ -8,11 +8,11 @@ namespace emu::i8080 {
     using emu::util::byte::is_bit_set;
 
     Flags::Flags()
-            : m_carry(false),
-              m_parity(false),
-              m_auxiliary_carry(false),
-              m_zero(false),
-              m_sign(false) {}
+        : m_carry(false),
+          m_parity(false),
+          m_auxiliary_carry(false),
+          m_zero(false),
+          m_sign(false) {}
 
     void Flags::reset() {
         clear_carry_flag();

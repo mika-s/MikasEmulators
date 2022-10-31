@@ -1,15 +1,16 @@
 #include <iostream>
 #include "doctest.h"
-#include "chips/z80/emulator_memory.h"
 #include "chips/z80/flags.h"
-#include "crosscutting/util/byte_util.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/memory/emulator_memory.h"
+#include "crosscutting/util/byte_util.h"
 
 namespace emu::z80 {
 
     using emu::util::byte::low_byte;
     using emu::util::byte::high_byte;
     using emu::util::byte::to_u16;
+    using emu::memory::EmulatorMemory;
 
     /**
      * Exchange registers

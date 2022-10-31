@@ -1,20 +1,20 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_GUI_SDL_H
 #define MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_GUI_SDL_H
 
+#include "crosscutting/misc/run_status.h"
+#include "crosscutting/typedefs.h"
+#include "gui.h"
+#include <SDL_render.h>
+#include <SDL_video.h>
 #include <memory>
 #include <vector>
-#include <SDL_video.h>
-#include <SDL_render.h>
-#include "gui.h"
-#include "crosscutting/typedefs.h"
-#include "crosscutting/misc/run_status.h"
 
 namespace emu::applications::space_invaders {
 
     using emu::i8080::GuiObserver;
     using emu::misc::RunStatus;
 
-    class GuiSdl: public Gui {
+    class GuiSdl : public Gui {
     public:
         GuiSdl();
 

@@ -1,13 +1,13 @@
-#include <iostream>
+#include "crosscutting/memory/next_word.h"
+#include "crosscutting/typedefs.h"
+#include "crosscutting/util/string_util.h"
 #include "doctest.h"
 #include "instruction_util.h"
-#include "crosscutting/typedefs.h"
-#include "crosscutting/misc/next_word.h"
-#include "crosscutting/util/string_util.h"
+#include <iostream>
 
 namespace emu::i8080 {
 
-    using emu::misc::NextWord;
+    using emu::memory::NextWord;
     using emu::util::string::hexify_wo_0x;
 
     /**
@@ -50,8 +50,8 @@ namespace emu::i8080 {
             call(pc, sp, memory, args, cycles);
 
             CHECK_EQ(0x0002, pc);
-            CHECK_EQ(0x0f, memory[0]);
-            CHECK_EQ(0x10, memory[1]);
+            CHECK_EQ(0x0f, memory.read(0));
+            CHECK_EQ(0x10, memory.read(1));
         }
 
         SUBCASE("should use 17 cycles") {

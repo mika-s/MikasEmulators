@@ -79,7 +79,7 @@ namespace emu::debugger {
                 std::string name,
                 std::function<bool()> is_active_retriever,
                 std::function<u8()> value_retriever,
-                std::vector<std::tuple<std::string, unsigned int>> bit_name
+                std::vector<std::tuple<std::string, unsigned int>> bit_names
         );
 
         [[nodiscard]] std::string name() const;

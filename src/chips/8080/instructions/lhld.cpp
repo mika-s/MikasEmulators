@@ -1,17 +1,18 @@
-#include <iostream>
-#include "doctest.h"
-#include "chips/8080/emulator_memory.h"
+#include "crosscutting/memory/emulator_memory.h"
+#include "crosscutting/memory/next_word.h"
 #include "crosscutting/typedefs.h"
-#include "crosscutting/misc/next_word.h"
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
+#include "doctest.h"
+#include <iostream>
 
 namespace emu::i8080 {
 
-    using emu::misc::NextWord;
+    using emu::memory::EmulatorMemory;
+    using emu::memory::NextWord;
     using emu::util::byte::to_u16;
     using emu::util::string::hexify_wo_0x;
-    
+
     /**
      * Load H and L direct
      * <ul>
@@ -28,8 +29,8 @@ namespace emu::i8080 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void lhld(u8 &l_reg, u8 &h_reg, const EmulatorMemory &memory, const NextWord &args, cyc &cycles) {
-        l_reg = memory[to_u16(args.sarg, args.farg)];
-        h_reg = memory[to_u16(args.sarg, args.farg) + 1];
+        l_reg = memory.read(to_u16(args.sarg, args.farg));
+        h_reg = memory.read(to_u16(args.sarg, args.farg) + 1);
 
         cycles = 16;
     }
@@ -51,8 +52,8 @@ namespace emu::i8080 {
         SUBCASE("should load the accumulator from memory using the address in args") {
             lhld(l_reg, h_reg, memory, args, cycles);
 
-            CHECK_EQ(memory[0x04], l_reg);
-            CHECK_EQ(memory[0x05], h_reg);
+            CHECK_EQ(memory.read(0x04), l_reg);
+            CHECK_EQ(memory.read(0x05), h_reg);
         }
 
         SUBCASE("should use 16 cycles") {

@@ -1,14 +1,15 @@
-#include <iostream>
-#include "doctest.h"
-#include "chips/8080/emulator_memory.h"
-#include "instruction_util.h"
+#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
+#include "doctest.h"
+#include "instruction_util.h"
+#include <iostream>
 
 namespace emu::i8080 {
 
-    using emu::util::byte::low_byte;
+    using emu::memory::EmulatorMemory;
     using emu::util::byte::high_byte;
+    using emu::util::byte::low_byte;
 
     void rst(u16 &pc, u16 new_pc, u16 &sp, EmulatorMemory &memory, cyc &cycles) {
 
@@ -179,8 +180,8 @@ namespace emu::i8080 {
             rst_0(pc, sp, memory, cycles);
 
             CHECK_EQ(expected_new_pc, pc);
-            CHECK_EQ(0xac, memory[0x02]);
-            CHECK_EQ(0x12, memory[0x01]);
+            CHECK_EQ(0xac, memory.read(0x02));
+            CHECK_EQ(0x12, memory.read(0x01));
         }
 
         SUBCASE("should push PC onto the stack and change to the new PC -- 1") {
@@ -195,8 +196,8 @@ namespace emu::i8080 {
             rst_1(pc, sp, memory, cycles);
 
             CHECK_EQ(expected_new_pc, pc);
-            CHECK_EQ(0xac, memory[0x02]);
-            CHECK_EQ(0x12, memory[0x01]);
+            CHECK_EQ(0xac, memory.read(0x02));
+            CHECK_EQ(0x12, memory.read(0x01));
         }
 
         SUBCASE("should push PC onto the stack and change to the new PC -- 2") {
@@ -211,8 +212,8 @@ namespace emu::i8080 {
             rst_2(pc, sp, memory, cycles);
 
             CHECK_EQ(expected_new_pc, pc);
-            CHECK_EQ(0xac, memory[0x02]);
-            CHECK_EQ(0x12, memory[0x01]);
+            CHECK_EQ(0xac, memory.read(0x02));
+            CHECK_EQ(0x12, memory.read(0x01));
         }
 
         SUBCASE("should push PC onto the stack and change to the new PC -- 3") {
@@ -227,8 +228,8 @@ namespace emu::i8080 {
             rst_3(pc, sp, memory, cycles);
 
             CHECK_EQ(expected_new_pc, pc);
-            CHECK_EQ(0xac, memory[0x02]);
-            CHECK_EQ(0x12, memory[0x01]);
+            CHECK_EQ(0xac, memory.read(0x02));
+            CHECK_EQ(0x12, memory.read(0x01));
         }
 
         SUBCASE("should push PC onto the stack and change to the new PC -- 4") {
@@ -243,8 +244,8 @@ namespace emu::i8080 {
             rst_4(pc, sp, memory, cycles);
 
             CHECK_EQ(expected_new_pc, pc);
-            CHECK_EQ(0xac, memory[0x02]);
-            CHECK_EQ(0x12, memory[0x01]);
+            CHECK_EQ(0xac, memory.read(0x02));
+            CHECK_EQ(0x12, memory.read(0x01));
         }
 
         SUBCASE("should push PC onto the stack and change to the new PC -- 5") {
@@ -259,8 +260,8 @@ namespace emu::i8080 {
             rst_5(pc, sp, memory, cycles);
 
             CHECK_EQ(expected_new_pc, pc);
-            CHECK_EQ(0xac, memory[0x02]);
-            CHECK_EQ(0x12, memory[0x01]);
+            CHECK_EQ(0xac, memory.read(0x02));
+            CHECK_EQ(0x12, memory.read(0x01));
         }
 
         SUBCASE("should push PC onto the stack and change to the new PC -- 6") {
@@ -275,8 +276,8 @@ namespace emu::i8080 {
             rst_6(pc, sp, memory, cycles);
 
             CHECK_EQ(expected_new_pc, pc);
-            CHECK_EQ(0xac, memory[0x02]);
-            CHECK_EQ(0x12, memory[0x01]);
+            CHECK_EQ(0xac, memory.read(0x02));
+            CHECK_EQ(0x12, memory.read(0x01));
         }
 
         SUBCASE("should push PC onto the stack and change to the new PC -- 7") {
@@ -291,8 +292,8 @@ namespace emu::i8080 {
             rst_7(pc, sp, memory, cycles);
 
             CHECK_EQ(expected_new_pc, pc);
-            CHECK_EQ(0xac, memory[0x02]);
-            CHECK_EQ(0x12, memory[0x01]);
+            CHECK_EQ(0xac, memory.read(0x02));
+            CHECK_EQ(0x12, memory.read(0x01));
         }
 
         SUBCASE("should use 11 cycles when returning") {

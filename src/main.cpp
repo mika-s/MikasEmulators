@@ -1,13 +1,13 @@
 #define DOCTEST_CONFIG_IMPLEMENT
 
-#include <iostream>
-#include <SDL.h>
-#include "doctest.h"
 #include "applications/frontend.h"
 #include "applications/options.h"
 #include "crosscutting/exceptions/invalid_program_arguments_exception.h"
 #include "crosscutting/exceptions/rom_file_not_found_exception.h"
 #include "crosscutting/util/string_util.h"
+#include "doctest.h"
+#include <SDL.h>
+#include <iostream>
 
 using emu::applications::Frontend;
 using emu::applications::Options;

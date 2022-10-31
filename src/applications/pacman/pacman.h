@@ -6,7 +6,7 @@
 #include "settings.h"
 #include "pacman_session.h"
 #include "interfaces/input.h"
-#include "chips/z80/emulator_memory.h"
+#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/gui/gui_type.h"
 #include "crosscutting/misc/emulator.h"

@@ -1,6 +1,6 @@
 #include <iostream>
 #include "doctest.h"
-#include "chips/z80/emulator_memory.h"
+#include "crosscutting/memory/emulator_memory.h"
 #include "instruction_util.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"

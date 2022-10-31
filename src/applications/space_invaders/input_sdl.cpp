@@ -1,8 +1,7 @@
-#include <algorithm>
-#include <SDL.h>
-#include "imgui_impl_sdl.h"
 #include "input_sdl.h"
 #include "crosscutting/util/byte_util.h"
+#include <SDL.h>
+#include <algorithm>
 
 namespace emu::applications::space_invaders {
 
@@ -11,7 +10,6 @@ namespace emu::applications::space_invaders {
 
     void InputSdl::add_io_observer(IoObserver &observer) {
         m_io_observers.push_back(&observer);
-
     }
 
     void InputSdl::remove_io_observer(IoObserver *observer) {

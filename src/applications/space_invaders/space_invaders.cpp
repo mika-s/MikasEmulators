@@ -1,9 +1,9 @@
 #include "space_invaders.h"
+#include "crosscutting/util/file_util.h"
 #include "gui_imgui.h"
 #include "gui_sdl.h"
 #include "input_imgui.h"
 #include "input_sdl.h"
-#include "crosscutting/util/file_util.h"
 
 namespace emu::applications::space_invaders {
 
@@ -11,7 +11,7 @@ namespace emu::applications::space_invaders {
     using emu::util::file::read_file_into_vector;
 
     SpaceInvaders::SpaceInvaders(const Settings &settings, const GuiType gui_type)
-            : m_settings(settings) {
+        : m_settings(settings) {
         if (gui_type == GuiType::DEBUGGING) {
             m_gui = std::make_shared<GuiImgui>();
             m_input = std::make_shared<InputImgui>();

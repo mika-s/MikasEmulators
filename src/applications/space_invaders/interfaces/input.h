@@ -1,9 +1,9 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_INTERFACES_INPUT_H
 #define MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_INTERFACES_INPUT_H
 
-#include "io_observer.h"
 #include "applications/space_invaders/cpu_io.h"
 #include "crosscutting/misc/run_status.h"
+#include "io_observer.h"
 
 namespace emu::applications::space_invaders {
 

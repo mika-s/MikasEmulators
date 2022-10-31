@@ -3,7 +3,7 @@
 
 namespace emu::z80 {
 
-    using emu::misc::NextWord;
+    using emu::memory::NextWord;
     using emu::util::byte::low_byte;
     using emu::util::byte::high_byte;
     using emu::util::byte::to_u16;

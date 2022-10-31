@@ -3,18 +3,19 @@
 
 #include <vector>
 #include "flags.h"
-#include "emulator_memory.h"
 #include "interrupt_mode.h"
 #include "interfaces/in_observer.h"
 #include "interfaces/out_observer.h"
 #include "crosscutting/typedefs.h"
-#include "crosscutting/misc/next_byte.h"
-#include "crosscutting/misc/next_word.h"
+#include "crosscutting/memory/emulator_memory.h"
+#include "crosscutting/memory/next_byte.h"
+#include "crosscutting/memory/next_word.h"
 
 namespace emu::z80 {
 
-    using emu::misc::NextByte;
-    using emu::misc::NextWord;
+    using emu::memory::EmulatorMemory;
+    using emu::memory::NextByte;
+    using emu::memory::NextWord;
 
     class Cpu {
     public:

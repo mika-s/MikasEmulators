@@ -4,17 +4,17 @@
 #include "settings.h"
 #include "chips/namco_wsg3/voice.h"
 #include "chips/namco_wsg3/wsg3.h"
-#include "chips/z80/emulator_memory.h"
-#include "chips/z80/interfaces/memory_mapped_io.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/memory/emulator_memory.h"
+#include "crosscutting/memory/memory_mapped_io.h"
 #include "crosscutting/util/byte_util.h"
 
 namespace emu::applications::pacman {
 
     using emu::util::byte::low_nibble;
     using emu::wsg3::Voice;
-    using emu::z80::EmulatorMemory;
-    using emu::z80::MemoryMappedIo;
+    using emu::memory::EmulatorMemory;
+    using emu::memory::MemoryMappedIo;
 
     class MemoryMappedIoForPacman : public MemoryMappedIo {
     public:

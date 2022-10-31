@@ -1,7 +1,6 @@
 set(SOURCES_Z80_CPP
         cpu.cpp
         disassemblerZ80.cpp
-        emulator_memory.cpp
         flags.cpp
         util.cpp
         instructions/adc.cpp
@@ -74,7 +73,6 @@ set(SOURCES_Z80_CPP
 set(SOURCES_Z80_H
         cpu.h
         disassemblerZ80.h
-        emulator_memory.h
         flags.h
         util.h
         interrupt_mode.h
@@ -82,7 +80,6 @@ set(SOURCES_Z80_H
         instructions/instructions.h
         interfaces/gui_observer.h
         interfaces/in_observer.h
-        interfaces/memory_mapped_io.h
         interfaces/out_observer.h
         )
 

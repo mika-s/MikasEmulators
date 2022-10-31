@@ -1,27 +1,27 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_SPACE_INVADERS_SESSION_H
 #define MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_SPACE_INVADERS_SESSION_H
 
-#include <memory>
-#include <vector>
-#include <unordered_map>
 #include "audio.h"
-#include "cpu_io.h"
-#include "gui.h"
-#include "interfaces/input.h"
-#include "interfaces/io_observer.h"
 #include "chips/8080/cpu.h"
-#include "chips/8080/emulator_memory.h"
 #include "chips/8080/interfaces/gui_observer.h"
 #include "chips/8080/interfaces/in_observer.h"
 #include "chips/8080/interfaces/out_observer.h"
-#include "crosscutting/typedefs.h"
-#include "crosscutting/debugging/debugger.h"
+#include "cpu_io.h"
 #include "crosscutting/debugging/debug_container.h"
+#include "crosscutting/debugging/debugger.h"
 #include "crosscutting/debugging/disassembled_line.h"
 #include "crosscutting/logging/logger.h"
+#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/misc/governor.h"
-#include "crosscutting/misc/session.h"
 #include "crosscutting/misc/run_status.h"
+#include "crosscutting/misc/session.h"
+#include "crosscutting/typedefs.h"
+#include "gui.h"
+#include "interfaces/input.h"
+#include "interfaces/io_observer.h"
+#include <memory>
+#include <unordered_map>
+#include <vector>
 
 namespace emu::applications::space_invaders {
 
@@ -39,11 +39,11 @@ namespace emu::applications::space_invaders {
     using emu::misc::Session;
 
     class SpaceInvadersSession
-            : public Session,
-              public GuiObserver,
-              public OutObserver,
-              public InObserver,
-              public IoObserver {
+        : public Session,
+          public GuiObserver,
+          public OutObserver,
+          public InObserver,
+          public IoObserver {
     public:
         SpaceInvadersSession(
                 const Settings &settings,

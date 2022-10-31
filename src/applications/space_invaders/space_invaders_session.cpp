@@ -1,9 +1,9 @@
-#include <iostream>
-#include <SDL_timer.h>
 #include "space_invaders_session.h"
 #include "chips/8080/disassembler8080.h"
 #include "crosscutting/misc/sdl_counter.h"
 #include "crosscutting/util/string_util.h"
+#include <SDL_timer.h>
+#include <iostream>
 
 namespace emu::applications::space_invaders {
 
@@ -12,10 +12,10 @@ namespace emu::applications::space_invaders {
     using emu::debugger::MemoryDebugContainer;
     using emu::debugger::RegisterDebugContainer;
     using emu::i8080::Disassembler8080;
-    using emu::i8080::RunStatus::NOT_RUNNING;
-    using emu::i8080::RunStatus::RUNNING;
-    using emu::i8080::RunStatus::PAUSED;
     using emu::i8080::RunStatus::FINISHED;
+    using emu::i8080::RunStatus::NOT_RUNNING;
+    using emu::i8080::RunStatus::PAUSED;
+    using emu::i8080::RunStatus::RUNNING;
     using emu::i8080::RunStatus::STEPPING;
     using emu::misc::sdl_get_ticks_high_performance;
     using emu::util::string::split;
@@ -27,19 +27,19 @@ namespace emu::applications::space_invaders {
             std::shared_ptr<Input> input,
             EmulatorMemory memory
     )
-            : m_is_in_debug_mode(false),
-              m_is_stepping_instruction(false),
-              m_is_stepping_cycle(false),
-              m_is_continuing_execution(false),
-              m_startup_runstatus(startup_runstatus),
-              m_run_status(NOT_RUNNING),
-              m_cpu_io(CpuIo(0, 0b00001000, 0)),
-              m_gui(std::move(gui)),
-              m_input(std::move(input)),
-              m_memory(std::move(memory)),
-              m_logger(std::make_shared<Logger>()),
-              m_debugger(std::make_shared<Debugger>()),
-              m_governor(Governor(tick_limit, sdl_get_ticks_high_performance)) {
+        : m_is_in_debug_mode(false),
+          m_is_stepping_instruction(false),
+          m_is_stepping_cycle(false),
+          m_is_continuing_execution(false),
+          m_startup_runstatus(startup_runstatus),
+          m_run_status(NOT_RUNNING),
+          m_cpu_io(CpuIo(0, 0b00001000, 0)),
+          m_gui(std::move(gui)),
+          m_input(std::move(input)),
+          m_memory(std::move(memory)),
+          m_logger(std::make_shared<Logger>()),
+          m_debugger(std::make_shared<Debugger>()),
+          m_governor(Governor(tick_limit, sdl_get_ticks_high_performance)) {
         setup_cpu();
         setup_debugging();
         m_cpu_io.set_dipswitches(settings);
@@ -214,16 +214,15 @@ namespace emu::applications::space_invaders {
         m_debug_container.add_flag_register(FlagRegisterDebugContainer(
                 "F",
                 [&]() { return m_cpu->f(); },
-                {
-                        {"s", 7},
-                        {"z", 6},
-                        {"u", 5},
-                        {"a", 4},
-                        {"u", 3},
-                        {"p", 2},
-                        {"u", 1},
-                        {"c", 0}
-                }));
+                {{"s", 7},
+                 {"z", 6},
+                 {"u", 5},
+                 {"a", 4},
+                 {"u", 3},
+                 {"p", 2},
+                 {"u", 1},
+                 {"c", 0}}
+        ));
         m_debug_container.add_io(IoDebugContainer(
                 "shift (change offset)",
                 [&]() { return m_outputs_during_cycle.contains(out_port_shift_offset); },
@@ -243,25 +242,21 @@ namespace emu::applications::space_invaders {
                 "out sound 1",
                 [&]() { return m_outputs_during_cycle.contains(out_port_sound_1); },
                 [&]() { return m_outputs_during_cycle[out_port_sound_1]; },
-                {
-                        {"ufo",           0},
-                        {"shot",          1},
-                        {"flash",         2},
-                        {"invader_die",   3},
-                        {"extended_play", 4}
-                }
+                {{"ufo", 0},
+                 {"shot", 1},
+                 {"flash", 2},
+                 {"invader_die", 3},
+                 {"extended_play", 4}}
         ));
         m_debug_container.add_io(IoDebugContainer(
                 "out sound 2",
                 [&]() { return m_outputs_during_cycle.contains(out_port_sound_2); },
                 [&]() { return m_outputs_during_cycle[out_port_sound_2]; },
-                {
-                        {"fleet_movement_1", 0},
-                        {"fleet_movement_2", 1},
-                        {"fleet_movement_3", 2},
-                        {"fleet_movement_4", 3},
-                        {"ufo_hit",          4}
-                }
+                {{"fleet_movement_1", 0},
+                 {"fleet_movement_2", 1},
+                 {"fleet_movement_3", 2},
+                 {"fleet_movement_4", 3},
+                 {"ufo_hit", 4}}
         ));
         m_debug_container.add_memory(MemoryDebugContainer(
                 [&]() { return memory(); }
@@ -369,8 +364,7 @@ namespace emu::applications::space_invaders {
         std::vector<std::string> disassembled_program = split(ss, "\n");
 
         std::vector<DisassembledLine> lines;
-        std::transform(disassembled_program.begin(), disassembled_program.end(), std::back_inserter(lines),
-                       [](const std::string &line) { return DisassembledLine(line); });
+        std::transform(disassembled_program.begin(), disassembled_program.end(), std::back_inserter(lines), [](const std::string &line) { return DisassembledLine(line); });
 
         return lines;
     }

@@ -2,31 +2,31 @@
 #define MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_GUI_H
 
 #include "chips/8080/interfaces/gui_observer.h"
-#include "crosscutting/typedefs.h"
-#include "crosscutting/debugging/debugger.h"
 #include "crosscutting/debugging/debug_container.h"
+#include "crosscutting/debugging/debugger.h"
 #include "crosscutting/gui/graphics/color.h"
 #include "crosscutting/gui/graphics/framebuffer.h"
 #include "crosscutting/logging/logger.h"
 #include "crosscutting/misc/run_status.h"
+#include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
 
 namespace emu::applications::space_invaders {
 
-    using emu::util::byte::is_bit_set;
-    using emu::util::byte::to_u32;
     using emu::debugger::DebugContainer;
     using emu::debugger::Debugger;
     using emu::gui::Color;
     using emu::gui::Framebuffer;
-    using emu::logging::Logger;
     using emu::i8080::GuiObserver;
     using emu::i8080::RunStatus;
+    using emu::logging::Logger;
+    using emu::util::byte::is_bit_set;
+    using emu::util::byte::to_u32;
 
     class Gui {
     public:
         Gui()
-                : m_framebuffer(Framebuffer(height, width, Color(0xff, 0, 128, 255))) {
+            : m_framebuffer(Framebuffer(height, width, Color(0xff, 0, 128, 255))) {
         }
 
         virtual ~Gui() = default;
@@ -88,9 +88,9 @@ namespace emu::applications::space_invaders {
                     py = -temp_x + height - 1;
 
                     m_framebuffer.set(
-                                static_cast<unsigned int>(py),
-                                static_cast<unsigned int>(px),
-                                Color(0xff, r, g, b)
+                            static_cast<unsigned int>(py),
+                            static_cast<unsigned int>(px),
+                            Color(0xff, r, g, b)
                     );
                 }
             }

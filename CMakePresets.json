@@ -10,11 +10,13 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_CXX_FLAGS": "$env{CXX_WARNINGS} $env{CXX_OPT}",
-        "CMAKE_C_FLAGS": "$env{CXX_WARNINGS} $env{CXX_OPT}"
+        "CMAKE_C_FLAGS": "$env{C_WARNINGS} $env{C_OPT}"
       },
       "environment": {
-        "CXX_WARNINGS": "-Werror -Wall -Wextra",
-        "CXX_OPT": "-g3"
+        "CXX_WARNINGS": "-Werror -Wall -Wextra -Wshadow -Wnon-virtual-dtor",
+        "C_WARNINGS": "-Werror -Wall -Wextra -Wshadow",
+        "CXX_OPT": "-g3",
+        "C_OPT": "-g3"
       }
     },
     {
@@ -23,8 +25,10 @@
       "description": "Sets the generator, build flags and debug build type",
       "inherits": ["linux-debug"],
       "environment": {
-        "CXX_WARNINGS": "-Werror -Wall -Wextra",
-        "CXX_OPT": "-g3 -D_GLIBCXX_DEBUG -fsanitize=address,undefined -fsanitize-undefined-trap-on-error -fno-omit-frame-pointer"
+        "CXX_WARNINGS": "-Werror -Wall -Wextra -Wshadow -Wnon-virtual-dtor",
+        "C_WARNINGS": "-Werror -Wall -Wextra -Wshadow",
+        "CXX_OPT": "-g3 -D_GLIBCXX_DEBUG -fsanitize=address,undefined -fsanitize-undefined-trap-on-error -fno-omit-frame-pointer",
+        "C_OPT": "-g3 -D_GLIBCXX_DEBUG -fsanitize=address,undefined -fsanitize-undefined-trap-on-error -fno-omit-frame-pointer"
       }
     },
     {
@@ -36,11 +40,13 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_CXX_FLAGS": "$env{CXX_WARNINGS} $env{CXX_OPT}",
-        "CMAKE_C_FLAGS": "$env{CXX_WARNINGS} $env{CXX_OPT}"
+        "CMAKE_C_FLAGS": "$env{C_WARNINGS} $env{C_OPT}"
       },
       "environment": {
-        "CXX_WARNINGS": "-Wall -Wextra",
-        "CXX_OPT": "-O3"
+        "CXX_WARNINGS": "-Wall -Wextra -Wshadow -Wnon-virtual-dtor",
+        "C_WARNINGS": "-Werror -Wall -Wextra -Wshadow",
+        "CXX_OPT": "-O3",
+        "C_OPT": "-O3"
       },
       "warnings": {
         "dev": false

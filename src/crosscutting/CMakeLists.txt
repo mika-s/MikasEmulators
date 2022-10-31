@@ -21,6 +21,7 @@ set(SOURCES_CROSSCUTTING_CPP
         gui/graphics/sprite.cpp
         gui/graphics/tile.cpp
         logging/logger.cpp
+        memory/emulator_memory.cpp
         misc/governor.cpp
         misc/sdl_counter.cpp
         util/byte_util.cpp
@@ -55,13 +56,15 @@ set(SOURCES_CROSSCUTTING_H
         gui/graphics/tile.h
         logging/log_observer.h
         logging/logger.h
+        memory/emulator_memory.h
+        memory/memory_mapped_io.h
+        memory/next_byte.h
+        memory/next_word.h
         misc/emulator.h
         misc/governor.h
         misc/run_status.h
         misc/sdl_counter.h
         misc/session.h
-        misc/next_byte.h
-        misc/next_word.h
         util/byte_util.h
         util/file_util.h
         util/gui_util.h

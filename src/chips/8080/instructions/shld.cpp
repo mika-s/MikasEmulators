@@ -1,14 +1,15 @@
-#include <iostream>
-#include "doctest.h"
-#include "chips/8080/emulator_memory.h"
+#include "crosscutting/memory/emulator_memory.h"
+#include "crosscutting/memory/next_word.h"
 #include "crosscutting/typedefs.h"
-#include "crosscutting/misc/next_word.h"
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
+#include "doctest.h"
+#include <iostream>
 
 namespace emu::i8080 {
 
-    using emu::misc::NextWord;
+    using emu::memory::EmulatorMemory;
+    using emu::memory::NextWord;
     using emu::util::byte::to_u16;
     using emu::util::string::hexify_wo_0x;
 
@@ -31,8 +32,8 @@ namespace emu::i8080 {
         const u16 l_address = to_u16(args.sarg, args.farg);
         const u16 h_address = l_address + 1;
 
-        memory[l_address] = l_reg;
-        memory[h_address] = h_reg;
+        memory.write(l_address, l_reg);
+        memory.write(h_address, h_reg);
 
         cycles = 16;
     }
@@ -54,8 +55,8 @@ namespace emu::i8080 {
         SUBCASE("should load memory with H and L registers") {
             shld(l_reg, h_reg, memory, args, cycles);
 
-            CHECK_EQ(l_reg, memory[0x02]);
-            CHECK_EQ(h_reg, memory[0x03]);
+            CHECK_EQ(l_reg, memory.read(0x02));
+            CHECK_EQ(h_reg, memory.read(0x03));
         }
 
         SUBCASE("should use 16 cycles") {

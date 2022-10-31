@@ -1,12 +1,12 @@
 #include <iostream>
 #include "doctest.h"
 #include "crosscutting/typedefs.h"
-#include "crosscutting/misc/next_byte.h"
+#include "crosscutting/memory/next_byte.h"
 #include "crosscutting/util/string_util.h"
 
 namespace emu::z80 {
 
-    using emu::misc::NextByte;
+    using emu::memory::NextByte;
     using emu::util::string::hexify_wo_0x;
 
     /**

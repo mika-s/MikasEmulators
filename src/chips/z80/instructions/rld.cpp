@@ -1,10 +1,12 @@
 #include <iostream>
 #include "doctest.h"
 #include "chips/z80/flags.h"
-#include "chips/z80/emulator_memory.h"
+#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/typedefs.h"
 
 namespace emu::z80 {
+
+    using emu::memory::EmulatorMemory;
 
     /**
      * Rotate left digit

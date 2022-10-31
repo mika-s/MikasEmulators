@@ -74,11 +74,11 @@ namespace emu::debugger {
             std::string name,
             std::function<bool()> is_active_retriever,
             std::function<u8()> value_retriever,
-            std::vector<std::tuple<std::string, unsigned int>> m_bit_names
+            std::vector<std::tuple<std::string, unsigned int>> bit_names
     ) : m_name(std::move(name)),
         m_is_active_retriever(std::move(is_active_retriever)),
         m_value_retriever(std::move(value_retriever)),
-        m_bit_names(std::move(m_bit_names)),
+        m_bit_names(std::move(bit_names)),
         m_is_divided_into_bits(true) {
     }
 

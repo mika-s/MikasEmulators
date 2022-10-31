@@ -1,7 +1,7 @@
-#include <iostream>
-#include "doctest.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
+#include "doctest.h"
+#include <iostream>
 
 namespace emu::i8080 {
 

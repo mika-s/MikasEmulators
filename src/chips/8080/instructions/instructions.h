@@ -1,13 +1,13 @@
 #ifndef MIKA_EMULATORS_CHIPS_8080_INSTRUCTIONS_INSTRUCTIONS_H
 #define MIKA_EMULATORS_CHIPS_8080_INSTRUCTIONS_INSTRUCTIONS_H
 
-#include <vector>
 #include <string>
-#include "chips/8080/emulator_memory.h"
+#include <vector>
 #include "chips/8080/flags.h"
 #include "crosscutting/typedefs.h"
-#include "crosscutting/misc/next_byte.h"
-#include "crosscutting/misc/next_word.h"
+#include "crosscutting/memory/emulator_memory.h"
+#include "crosscutting/memory/next_byte.h"
+#include "crosscutting/memory/next_word.h"
 
 // @formatter:off
 
@@ -270,25 +270,26 @@ constexpr unsigned int RST_7         = 0xFF;
 
 namespace emu::i8080 {
 
-    using emu::misc::NextByte;
-    using emu::misc::NextWord;
+    using emu::memory::EmulatorMemory;
+    using emu::memory::NextByte;
+    using emu::memory::NextWord;
 
     void aci(u8 &acc_reg, NextByte args, Flags &flag_reg, cyc &cycles);
-    void adc(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles);
-    void adc(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles, bool is_memory_involved);
-    void add(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles);
-    void add(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles, bool is_memory_involved);
+    void adc_r(u8 &acc_reg, u8 reg, Flags &flag_reg, cyc &cycles);
+    void adc_m(u8 &acc_reg, u8 value_in_memory, Flags &flag_reg, cyc &cycles);
+    void add_r(u8 &acc_reg, u8 reg, Flags &flag_reg, cyc &cycles);
+    void add_m(u8 &acc_reg, u8 value_in_memory, Flags &flag_reg, cyc &cycles);
     void adi(u8 &acc_reg, const NextByte &args, Flags &flag_reg, cyc &cycles);
-    void ana(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles);
-    void ana(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles, bool is_memory_involved);
+    void ana_r(u8 &acc_reg, u8 reg, Flags &flag_reg, cyc &cycles);
+    void ana_m(u8 &acc_reg, u8 value_in_memory, Flags &flag_reg, cyc &cycles);
     void ani(u8 &acc_reg, const NextByte &args, Flags &flag_reg, cyc &cycles);
     void call(u16 &pc, u16 &sp, EmulatorMemory &memory, const NextWord &args, cyc &cycles);
     void cc(u16 &pc, u16 &sp, EmulatorMemory &memory, const NextWord &args, const Flags &flag_reg, cyc &cycles);
     void cm(u16 &pc, u16 &sp, EmulatorMemory &memory, const NextWord &args, const Flags &flag_reg, cyc &cycles);
     void cma(u8 &acc_reg, cyc &cycles);
     void cmc(Flags &flag_reg, cyc &cycles);
-    void cmp(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles);
-    void cmp(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles, bool is_memory_involved);
+    void cmp_r(u8 &acc_reg, u8 reg, Flags &flag_reg, cyc &cycles);
+    void cmp_m(u8 &acc_reg, u8 value_in_memory, Flags &flag_reg, cyc &cycles);
     void cnc(u16 &pc, u16 &sp, EmulatorMemory &memory, const NextWord &args, const Flags &flag_reg, cyc &cycles);
     void cnz(u16 &pc, u16 &sp, EmulatorMemory &memory, const NextWord &args, const Flags &flag_reg, cyc &cycles);
     void cp(u16 &pc, u16 &sp, EmulatorMemory &memory, const NextWord &args, const Flags &flag_reg, cyc &cycles);
@@ -298,16 +299,16 @@ namespace emu::i8080 {
     void cz(u16 &pc, u16 &sp, EmulatorMemory &memory, const NextWord &args, const Flags &flag_reg, cyc &cycles);
     void daa(u8 &acc_reg, Flags &flag_reg, cyc &cycles);
     void dad(u8 &h_reg, u8 &l_reg, u16 value, Flags &flag_reg, cyc &cycles);
-    void dcr(u8 &reg, Flags &flag_reg, cyc &cycles);
-    void dcr(u8 &reg, Flags &flag_reg, cyc &cycles, bool is_memory_involved);
+    void dcr_r(u8 &reg, Flags &flag_reg, cyc &cycles);
+    void dcr_m(EmulatorMemory &memory, u16 address, Flags &flag_reg, cyc &cycles);
     void dcx(u8 &reg1, u8 &reg2, cyc &cycles);
     void dcx_sp(u16 &sp, cyc &cycles);
     void di(bool &inte, cyc &cycles);
     void ei(bool &inte, cyc &cycles);
     void hlt(bool &stopped, cyc &cycles);
     void in(u8 &acc_reg, const NextByte &args, std::vector<u8> io, cyc &cycles);
-    void inr(u8 &reg, Flags &flag_reg, cyc &cycles);
-    void inr(u8 &reg, Flags &flag_reg, cyc &cycles, bool is_memory_involved);
+    void inr_r(u8 &reg, Flags &flag_reg, cyc &cycles);
+    void inr_m(EmulatorMemory &memory, u16 address, Flags &flag_reg, cyc &cycles);
     void inx(u8 &reg1, u8 &reg2, cyc &cycles);
     void inx_sp(u16 &sp, cyc &cycles);
     void jc(u16 &pc, const NextWord &args, const Flags &flag_reg, cyc &cycles);
@@ -324,13 +325,14 @@ namespace emu::i8080 {
     void lhld(u8 &l_reg, u8 &h_reg, const EmulatorMemory &memory, const NextWord &args, cyc &cycles);
     void lxi(u8 &reg1, u8 &reg2, const NextWord &args, cyc &cycles);
     void lxi_sp(u16 &sp, const NextWord &args, cyc &cycles);
-    void mov(u8 &to, u8 value, cyc &cycles);
-    void mov(u8 &to, u8 value, cyc &cycles, bool is_memory_involved);
-    void mvi(u8 &reg, const NextByte &args, cyc &cycles);
-    void mvi(u8 &reg, const NextByte &args, cyc &cycles, bool is_memory_involved);
+    void mov_r_r(u8 &to, u8 value, cyc &cycles);
+    void mov_r_m(u8 &to, u8 value_in_memory, cyc &cycles);
+    void mov_m_r(EmulatorMemory &memory, u16 address, u8 new_value, cyc &cycles);
+    void mvi_r(u8 &reg, const NextByte &args, cyc &cycles);
+    void mvi_m(EmulatorMemory &memory, u16 address, const NextByte &args, cyc &cycles);
     void nop(cyc &cycles);
-    void ora(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles);
-    void ora(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles, bool is_memory_involved);
+    void ora_r(u8 &acc_reg, u8 reg, Flags &flag_reg, cyc &cycles);
+    void ora_m(u8 &acc_reg, u8 value_in_memory, Flags &flag_reg, cyc &cycles);
     void ori(u8 &acc_reg, const NextByte &args, Flags &flag_reg, cyc &cycles);
     void out(u8 acc_reg, const NextByte &args, std::vector<u8> &io, cyc &cycles);
     void pchl(u16 &pc, u16 address, cyc &cycles);
@@ -359,24 +361,24 @@ namespace emu::i8080 {
     void rst_6(u16 &pc, u16 &sp, EmulatorMemory &memory, cyc &cycles);
     void rst_7(u16 &pc, u16 &sp, EmulatorMemory &memory, cyc &cycles);
     void rz(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, cyc &cycles);
-    void sbb(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles);
-    void sbb(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles, bool is_memory_involved);
+    void sbb_r(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles);
+    void sbb_m(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles);
     void sbi(u8 &acc_reg, const NextByte &args, Flags &flag_reg, cyc &cycles);
     void shld(u8 l_reg, u8 h_reg, EmulatorMemory &memory, const NextWord &args, cyc &cycles);
     void sphl(u16 &sp, u16 address, cyc &cycles);
     void sta(u8 &acc_reg, EmulatorMemory &memory, const NextWord &args, cyc &cycles);
     void stax(u8 acc_reg, u8 reg1, u8 reg2, EmulatorMemory &memory, cyc &cycles);
     void stc(Flags &flag_reg, cyc &cycles);
-    void sub(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles);
-    void sub(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles, bool is_memory_involved);
+    void sub_r(u8 &acc_reg, u8 reg, Flags &flag_reg, cyc &cycles);
+    void sub_m(u8 &acc_reg, u8 value_in_memory, Flags &flag_reg, cyc &cycles);
     void sui(u8 &acc_reg, const NextByte &args, Flags &flag_reg, cyc &cycles);
     void unused_1(u8 opcode, cyc &cycles);
     void unused_3(u8 opcode, u16 &pc, cyc &cycles);
     void xchg(u8 &h_reg, u8 &l_reg, u8 &d_reg, u8 &e_reg, cyc &cycles);
-    void xra(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles);
-    void xra(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles, bool is_memory_involved);
+    void xra_r(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles);
+    void xra_m(u8 &acc_reg, u8 value_in_memory, Flags &flag_reg, cyc &cycles);
     void xri(u8 &acc_reg, const NextByte &args, Flags &flag_reg, cyc &cycles);
-    void xthl(u8 &h_reg, u8 &l_reg, u8 &sp0, u8 &sp1, cyc &cycles);
+    void xthl(u16 sp, EmulatorMemory &memory, u8 &h_reg, u8 &l_reg, cyc &cycles);
 
     void print_aci(std::ostream &ostream, const NextByte &args);
     void print_adc(std::ostream &ostream, const std::string &reg);

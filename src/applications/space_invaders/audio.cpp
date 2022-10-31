@@ -1,25 +1,25 @@
-#include <SDL.h>
 #include "audio.h"
-#include "sounds.h"
 #include "crosscutting/util/byte_util.h"
+#include "sounds.h"
+#include <SDL.h>
 
 namespace emu::applications::space_invaders {
 
     using emu::util::byte::is_bit_set;
 
     Audio::Audio()
-            : m_is_ufo_sound_on(false),
-              m_is_shot_sound_on(false),
-              m_is_flash_sound_on(false),
-              m_is_invader_die_sound_on(false),
-              m_is_extended_play_sound_on(false),
-              m_is_fleet_movement_1_sound_on(false),
-              m_is_fleet_movement_2_sound_on(false),
-              m_is_fleet_movement_3_sound_on(false),
-              m_is_fleet_movement_4_sound_on(false),
-              m_is_ufo_hit_sound_on(false),
-              m_is_muted(false),
-              m_last_acc_reg(0) {
+        : m_is_ufo_sound_on(false),
+          m_is_shot_sound_on(false),
+          m_is_flash_sound_on(false),
+          m_is_invader_die_sound_on(false),
+          m_is_extended_play_sound_on(false),
+          m_is_fleet_movement_1_sound_on(false),
+          m_is_fleet_movement_2_sound_on(false),
+          m_is_fleet_movement_3_sound_on(false),
+          m_is_fleet_movement_4_sound_on(false),
+          m_is_ufo_hit_sound_on(false),
+          m_is_muted(false),
+          m_last_acc_reg(0) {
 
         if (SDL_Init(SDL_INIT_AUDIO) != 0) {
             SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error initializing SDL audio: %s", SDL_GetError());
@@ -35,8 +35,7 @@ namespace emu::applications::space_invaders {
                 .padding = 0,
                 .size = 0,
                 .callback = forward_callback,
-                .userdata = this
-        };
+                .userdata = this};
         m_audio_device = SDL_OpenAudioDevice(
                 nullptr,
                 0,
@@ -61,7 +60,7 @@ namespace emu::applications::space_invaders {
         if (is_rising_edge(acc_reg, ufo)) {
             m_is_ufo_sound_on = true;
         }
-        if (is_falling_edge(acc_reg, ufo)) {        // the UFO sound is looped, and disabled by a falling edge
+        if (is_falling_edge(acc_reg, ufo)) { // the UFO sound is looped, and disabled by a falling edge
             SDL_LockAudioDevice(m_audio_device);
             m_is_ufo_sound_on = false;
             SDL_UnlockAudioDevice(m_audio_device);

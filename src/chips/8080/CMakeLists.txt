@@ -1,7 +1,6 @@
 set(SOURCES_8080_CPP
         cpu.cpp
         disassembler8080.cpp
-        emulator_memory.cpp
         flags.cpp
         shift_register.cpp
         instructions/aci.cpp
@@ -89,7 +88,6 @@ set(SOURCES_8080_CPP
 set(SOURCES_8080_H
         cpu.h
         disassembler8080.h
-        emulator_memory.h
         flags.h
         shift_register.h
         instructions/instruction_util.h

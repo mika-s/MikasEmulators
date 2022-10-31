@@ -805,14 +805,14 @@ namespace emu::i8080 {
 
     NextByte Disassembler8080::get_next_byte() {
         return {
-                .farg = m_memory[m_pc++]
+                .farg = m_memory.read(m_pc++)
         };
     }
 
     NextWord Disassembler8080::get_next_word() {
         return {
-                .farg = m_memory[m_pc++],
-                .sarg = m_memory[m_pc++]
+                .farg = m_memory.read(m_pc++),
+                .sarg = m_memory.read(m_pc++)
         };
     }
 }

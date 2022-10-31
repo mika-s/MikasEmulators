@@ -3,8 +3,8 @@
 
 namespace emu::i8080 {
 
-    using emu::util::byte::low_byte;
     using emu::util::byte::high_byte;
+    using emu::util::byte::low_byte;
     using emu::util::byte::to_u16;
 
     void add_to_register(u8 &acc_reg, u8 value, bool cf, Flags &flag_reg) {
@@ -36,15 +36,15 @@ namespace emu::i8080 {
     }
 
     void execute_call(u16 &pc, u16 &sp, EmulatorMemory &memory, u8 farg, u8 sarg) {
-        memory[--sp] = high_byte(pc);
-        memory[--sp] = low_byte(pc);
+        memory.write(--sp, high_byte(pc));
+        memory.write(--sp, low_byte(pc));
 
         pc = to_u16(sarg, farg);
     }
 
     void execute_return(u16 &pc, u16 &sp, const EmulatorMemory &memory) {
-        const u8 sarg = memory[sp++];
-        const u8 farg = memory[sp++];
+        const u8 sarg = memory.read(sp++);
+        const u8 farg = memory.read(sp++);
         pc = to_u16(farg, sarg);
     }
 }

@@ -1,11 +1,11 @@
-#include <iostream>
+#include "crosscutting/memory/next_word.h"
 #include "crosscutting/typedefs.h"
-#include "crosscutting/misc/next_word.h"
 #include "crosscutting/util/string_util.h"
+#include <iostream>
 
 namespace emu::i8080 {
 
-    using emu::misc::NextWord;
+    using emu::memory::NextWord;
     using emu::util::string::hexify;
     using emu::util::string::hexify_wo_0x;
 
@@ -30,21 +30,21 @@ namespace emu::i8080 {
         pc += 2;
     }
 
-    void print_unused_nop(std::ostream& ostream) {
+    void print_unused_nop(std::ostream &ostream) {
         ostream << "*NOP";
     }
 
-    void print_unused_jmp(std::ostream& ostream, const NextWord &args) {
+    void print_unused_jmp(std::ostream &ostream, const NextWord &args) {
         ostream << "*JMP "
                 << hexify_wo_0x(args.sarg)
                 << hexify_wo_0x(args.farg);
     }
 
-    void print_unused_ret(std::ostream& ostream) {
+    void print_unused_ret(std::ostream &ostream) {
         ostream << "*RET";
     }
 
-    void print_unused_call(std::ostream& ostream, const NextWord &args) {
+    void print_unused_call(std::ostream &ostream, const NextWord &args) {
         ostream << "*CALL "
                 << hexify_wo_0x(args.sarg)
                 << hexify_wo_0x(args.farg);

@@ -1,8 +1,23 @@
-#include <iostream>
-#include "doctest.h"
+#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/util/byte_util.h"
+#include "doctest.h"
+#include <iostream>
 
 namespace emu::i8080 {
+
+    using emu::memory::EmulatorMemory;
+    using emu::util::byte::low_byte;
+    using emu::util::byte::high_byte;
+    using emu::util::byte::to_u16;
+
+    void ex_msp_dd(u16 sp, EmulatorMemory &memory, u16 &reg) {
+        const u16 previous_reg = reg;
+        reg = to_u16(memory.read(sp + 1), memory.read(sp));
+        memory.write(sp, low_byte(previous_reg));
+        memory.write(sp + 1, high_byte(previous_reg));
+    }
+
     /**
      * Exchange H&L with top of stack
      * <ul>
@@ -18,13 +33,11 @@ namespace emu::i8080 {
      * @param sp1 is the second from the top of the stack, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void xthl(u8 &h_reg, u8 &l_reg, u8 &sp0, u8 &sp1, cyc &cycles) {
-        const u8 h = h_reg;
-        const u8 l = l_reg;
-        l_reg = sp0;
-        sp0 = l;
-        h_reg = sp1;
-        sp1 = h;
+    void xthl(u16 sp, EmulatorMemory &memory, u8 &h_reg, u8 &l_reg, cyc &cycles) {
+        u16 hl = to_u16(h_reg, l_reg);
+        ex_msp_dd(sp, memory, hl);
+        h_reg = high_byte(hl);
+        l_reg = low_byte(hl);
 
         cycles = 18;
     }
@@ -35,29 +48,29 @@ namespace emu::i8080 {
 
     TEST_CASE("8080: XTHL") {
         cyc cycles = 0;
+        EmulatorMemory memory;
+        memory.add({0x33, 0x44});
 
         SUBCASE("should exchange HL with top of the stack") {
             u8 h_reg = 0x11;
             u8 l_reg = 0x22;
-            u8 sp0 = 0x33;
-            u8 sp1 = 0x44;
+            u16 sp = 0x0000;
 
-            xthl(h_reg, l_reg, sp0, sp1, cycles);
+            xthl(sp, memory, h_reg, l_reg, cycles);
 
             CHECK_EQ(0x44, h_reg);
             CHECK_EQ(0x33, l_reg);
-            CHECK_EQ(0x22, sp0);
-            CHECK_EQ(0x11, sp1);
+            CHECK_EQ(0x22, memory.read(sp));
+            CHECK_EQ(0x11, memory.read(sp + 1));
         }
 
         SUBCASE("should use 18 cycles") {
             cycles = 0;
             u8 h_reg = 0x11;
             u8 l_reg = 0x22;
-            u8 sp0 = 0;
-            u8 sp1 = 0;
+            u16 sp = 0x0000;
 
-            xthl(h_reg, l_reg, sp0, sp1, cycles);
+            xthl(sp, memory, h_reg, l_reg, cycles);
 
             CHECK_EQ(18, cycles);
         }
