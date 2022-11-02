@@ -4,9 +4,11 @@ set(SOURCES_APPLICATIONS_CPP
 
         cpm_8080/cpm_application.cpp
         cpm_8080/cpm_application_session.cpp
+        cpm_8080/usage.cpp
 
         cpm_z80/cpm_application.cpp
         cpm_z80/cpm_application_session.cpp
+        cpm_z80/usage.cpp
 
         pacman/audio.cpp
         pacman/gui.cpp
@@ -17,6 +19,8 @@ set(SOURCES_APPLICATIONS_CPP
         pacman/memory_mapped_io_for_pacman.cpp
         pacman/pacman.cpp
         pacman/pacman_session.cpp
+        pacman/settings.cpp
+        pacman/usage.cpp
 
         space_invaders/audio.cpp
         space_invaders/cpu_io.cpp
@@ -27,6 +31,8 @@ set(SOURCES_APPLICATIONS_CPP
         space_invaders/memory_map_for_space_invaders.cpp
         space_invaders/space_invaders.cpp
         space_invaders/space_invaders_session.cpp
+        space_invaders/settings.cpp
+        space_invaders/usage.cpp
         )
 
 set(SOURCES_APPLICATIONS_H
@@ -35,9 +41,11 @@ set(SOURCES_APPLICATIONS_H
 
         cpm_8080/cpm_application.h
         cpm_8080/cpm_application_session.h
+        cpm_8080/usage.h
 
         cpm_z80/cpm_application.h
         cpm_z80/cpm_application_session.h
+        cpm_z80/usage.h
 
         pacman/audio.h
         pacman/gui.h
@@ -50,6 +58,7 @@ set(SOURCES_APPLICATIONS_H
         pacman/pacman.h
         pacman/pacman_session.h
         pacman/settings.h
+        pacman/usage.h
         pacman/interfaces/input.h
         pacman/interfaces/io_observer.h
 
@@ -66,6 +75,7 @@ set(SOURCES_APPLICATIONS_H
         space_invaders/space_invaders.h
         space_invaders/space_invaders_session.h
         space_invaders/settings.h
+        space_invaders/usage.h
         space_invaders/interfaces/input.h
         space_invaders/interfaces/io_observer.h
         )

@@ -1,5 +1,7 @@
-#include <cstring>
 #include "string_util.h"
+#include <cstring>
+#include <fmt/format.h>
+#include <stdexcept>
 
 namespace emu::util::string {
 
@@ -65,6 +67,25 @@ namespace emu::util::string {
         }
 
         return name;
+    }
+
+    std::string create_padding(std::size_t length_so_far, std::size_t expected_length) {
+        if (length_so_far > expected_length) {
+            throw std::invalid_argument(
+                    fmt::format(
+                            "length_so_far cannot be larger than expected_length: {} > {}",
+                            length_so_far,
+                            expected_length
+                    )
+            );
+        }
+
+        std::stringstream ss;
+        for (std::size_t i = 0; i < expected_length - length_so_far; ++i) {
+            ss << " ";
+        }
+
+        return ss.str();
     }
 
     std::vector<std::string> split(const std::stringstream &ss, const std::string &delimiter) {

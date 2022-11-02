@@ -1,6 +1,8 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_PACMAN_SETTINGS_H
 #define MIKA_EMULATORS_APPLICATIONS_PACMAN_SETTINGS_H
 
+#include "applications/options.h"
+
 namespace emu::applications::pacman {
 
     enum class NumberOfLives {
@@ -40,6 +42,8 @@ namespace emu::applications::pacman {
         GhostNames m_ghost_names;
         BoardTest m_board_test;
         CabinetMode m_cabinet_mode;
+
+        static Settings from_options(Options &options);
     };
 }
 

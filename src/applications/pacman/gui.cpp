@@ -544,6 +544,8 @@ namespace emu::applications::pacman {
             if (is_screen_flipped) {
                 m_framebuffer.flip_vertical();
             }
+        } else {
+            m_framebuffer.clear();
         }
         if (should_draw_sprites) {
             draw_sprites(m_framebuffer, sprite_ram);

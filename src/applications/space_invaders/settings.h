@@ -1,6 +1,8 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_SETTINGS_H
 #define MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_SETTINGS_H
 
+#include "applications/options.h"
+
 namespace emu::applications::space_invaders {
 
     enum NumberOfLives {
@@ -25,6 +27,8 @@ namespace emu::applications::space_invaders {
         NumberOfLives m_number_of_lives;
         BonusLifeAt m_bonus_life_at;
         CoinInfo m_coin_info;
+
+        static Settings from_options(Options &options);
     };
 }
 

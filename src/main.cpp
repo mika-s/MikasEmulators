@@ -15,30 +15,6 @@ using emu::exceptions::InvalidProgramArgumentsException;
 using emu::exceptions::RomFileNotFoundException;
 using emu::util::string::find_short_executable_name;
 
-void print_usage(const std::string &program_name) {
-    std::cout << "USAGE:\n\n";
-
-    std::cout << "Run a specific game or program:\n";
-    std::cout << "./" << program_name << " run <application> [flags]\n\n";
-    std::cout << "Applications:\n";
-    std::cout << Frontend::supported() << "\n\n";
-    std::cout << "Flags:\n\n";
-    std::cout << "-g: ordinary, debugger. ordinary is default.\n";
-    std::cout << "-d: dipswitches. Game dependent.\n";
-    std::cout << "\n\n";
-
-    std::cout << "Show the assembly code of the given file:\n";
-    std::cout << "./" << program_name << " disassemble <cpu> <file>\n\n";
-
-    std::cout << "Run the unit tests of a given CPU:\n";
-    std::cout << "./" << program_name << " test <cpu1>, <cpu2>, ..., <cpuN>\n";
-    std::cout << "All tests are run if no CPUs are provided.\n\n";
-
-    std::cout << "Examples:\n\n";
-    std::cout << "./" << program_name << " run space_invaders -g debugging -d b=1000\n";
-    std::cout << "Runs Space Invaders with the debugging GUI and b=1000 as manually set dipswitch.\n\n";
-}
-
 // NOLINTNEXTLINE(modernize-avoid-c-arrays)
 std::vector<std::string> argv_to_vector(int argc, char *argv[]) {
     std::vector<std::string> args;
@@ -51,20 +27,21 @@ std::vector<std::string> argv_to_vector(int argc, char *argv[]) {
 }
 
 int main(int argc, char *argv[]) {
+    std::string short_executable_name = find_short_executable_name(argv[0]);
     try {
         if (argc > 1) {
-            Options options(argv_to_vector(argc, argv));
+            Options options(argv_to_vector(argc, argv), short_executable_name);
             Frontend::run(options);
             SDL_Quit();
         } else {
-            throw InvalidProgramArgumentsException("No arguments provided");
+            Frontend::print_main_usage(short_executable_name);
         }
     } catch (InvalidProgramArgumentsException &ex) {
-        std::cout << ex.what() << "\n\n";
-        print_usage(find_short_executable_name(argv[0]));
+        std::cout << ex.what() << "\n";
+        ex.usage_function()(short_executable_name);
         return 1;
     } catch (RomFileNotFoundException &ex) {
-        std::cout << ex.what() << "\n\n";
+        std::cout << ex.what() << "\n";
         SDL_Quit();
         return 2;
     }

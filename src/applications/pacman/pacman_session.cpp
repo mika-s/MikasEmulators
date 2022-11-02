@@ -1,11 +1,11 @@
-#include <iostream>
-#include <memory>
-#include <SDL_timer.h>
 #include "pacman_session.h"
 #include "chips/z80/disassemblerZ80.h"
 #include "chips/z80/interrupt_mode.h"
 #include "crosscutting/misc/sdl_counter.h"
 #include "crosscutting/util/string_util.h"
+#include <SDL_timer.h>
+#include <iostream>
+#include <memory>
 
 namespace emu::applications::pacman {
 
@@ -17,10 +17,10 @@ namespace emu::applications::pacman {
     using emu::util::string::split;
     using emu::z80::DisassemblerZ80;
     using emu::z80::InterruptMode;
-    using emu::z80::RunStatus::NOT_RUNNING;
-    using emu::z80::RunStatus::RUNNING;
-    using emu::z80::RunStatus::PAUSED;
     using emu::z80::RunStatus::FINISHED;
+    using emu::z80::RunStatus::NOT_RUNNING;
+    using emu::z80::RunStatus::PAUSED;
+    using emu::z80::RunStatus::RUNNING;
     using emu::z80::RunStatus::STEPPING;
 
     PacmanSession::PacmanSession(
@@ -31,21 +31,21 @@ namespace emu::applications::pacman {
             std::shared_ptr<MemoryMappedIoForPacman> memory_mapped_io,
             EmulatorMemory &memory
     )
-            : m_is_in_debug_mode(false),
-              m_is_stepping_instruction(false),
-              m_is_stepping_cycle(false),
-              m_is_continuing_execution(false),
-              m_startup_runstatus(startup_runstatus),
-              m_run_status(NOT_RUNNING),
-              m_vblank_interrupt_return(0),
-              m_memory_mapped_io(std::move(memory_mapped_io)),
-              m_gui(std::move(gui)),
-              m_input(std::move(input)),
-              m_audio(std::move(audio)),
-              m_memory(memory),
-              m_logger(std::make_shared<Logger>()),
-              m_debugger(std::make_shared<Debugger>()),
-              m_governor(Governor(tick_limit, sdl_get_ticks_high_performance)) {
+        : m_is_in_debug_mode(false),
+          m_is_stepping_instruction(false),
+          m_is_stepping_cycle(false),
+          m_is_continuing_execution(false),
+          m_startup_runstatus(startup_runstatus),
+          m_run_status(NOT_RUNNING),
+          m_vblank_interrupt_return(0),
+          m_memory_mapped_io(std::move(memory_mapped_io)),
+          m_gui(std::move(gui)),
+          m_input(std::move(input)),
+          m_audio(std::move(audio)),
+          m_memory(memory),
+          m_logger(std::make_shared<Logger>()),
+          m_debugger(std::make_shared<Debugger>()),
+          m_governor(Governor(tick_limit, sdl_get_ticks_high_performance)) {
         setup_cpu();
         setup_debugging();
 
@@ -100,8 +100,7 @@ namespace emu::applications::pacman {
                 m_cpu->interrupt(m_vblank_interrupt_return);
 
                 m_input->read(m_run_status, m_memory_mapped_io);
-                m_gui->update_screen(tile_ram(), sprite_ram(), palette_ram(),
-                                     m_run_status, m_memory_mapped_io->is_screen_flipped());
+                m_gui->update_screen(tile_ram(), sprite_ram(), palette_ram(), m_run_status, m_memory_mapped_io->is_screen_flipped());
                 m_audio->handle_sound(m_memory_mapped_io->is_sound_enabled(), m_memory_mapped_io->voices());
             }
         }
@@ -110,8 +109,7 @@ namespace emu::applications::pacman {
     void PacmanSession::pausing() {
         if (m_governor.is_time_to_update()) {
             m_input->read(m_run_status, m_memory_mapped_io);
-            m_gui->update_screen(tile_ram(), sprite_ram(), palette_ram(),
-                                 m_run_status, m_memory_mapped_io->is_screen_flipped());
+            m_gui->update_screen(tile_ram(), sprite_ram(), palette_ram(), m_run_status, m_memory_mapped_io->is_screen_flipped());
         }
     }
 
@@ -138,8 +136,7 @@ namespace emu::applications::pacman {
             m_cpu->interrupt(m_vblank_interrupt_return);
 
             m_input->read(m_run_status, m_memory_mapped_io);
-            m_gui->update_screen(tile_ram(), sprite_ram(), palette_ram(),
-                                 m_run_status, m_memory_mapped_io->is_screen_flipped());
+            m_gui->update_screen(tile_ram(), sprite_ram(), palette_ram(), m_run_status, m_memory_mapped_io->is_screen_flipped());
             m_audio->handle_sound(m_memory_mapped_io->is_sound_enabled(), m_memory_mapped_io->voices());
         }
 
@@ -180,27 +177,41 @@ namespace emu::applications::pacman {
     }
 
     void PacmanSession::setup_debugging() {
-        m_debug_container.add_register(RegisterDebugContainer("A",
-                                                              [&]() { return m_cpu->a(); },
-                                                              [&]() { return m_cpu->a_p(); }));
-        m_debug_container.add_register(RegisterDebugContainer("B",
-                                                              [&]() { return m_cpu->b(); },
-                                                              [&]() { return m_cpu->b_p(); }));
-        m_debug_container.add_register(RegisterDebugContainer("C",
-                                                              [&]() { return m_cpu->c(); },
-                                                              [&]() { return m_cpu->c_p(); }));
-        m_debug_container.add_register(RegisterDebugContainer("D",
-                                                              [&]() { return m_cpu->d(); },
-                                                              [&]() { return m_cpu->d_p(); }));
-        m_debug_container.add_register(RegisterDebugContainer("E",
-                                                              [&]() { return m_cpu->e(); },
-                                                              [&]() { return m_cpu->e_p(); }));
-        m_debug_container.add_register(RegisterDebugContainer("H",
-                                                              [&]() { return m_cpu->h(); },
-                                                              [&]() { return m_cpu->h_p(); }));
-        m_debug_container.add_register(RegisterDebugContainer("L",
-                                                              [&]() { return m_cpu->l(); },
-                                                              [&]() { return m_cpu->l_p(); }));
+        m_debug_container.add_register(RegisterDebugContainer(
+                "A",
+                [&]() { return m_cpu->a(); },
+                [&]() { return m_cpu->a_p(); }
+        ));
+        m_debug_container.add_register(RegisterDebugContainer(
+                "B",
+                [&]() { return m_cpu->b(); },
+                [&]() { return m_cpu->b_p(); }
+        ));
+        m_debug_container.add_register(RegisterDebugContainer(
+                "C",
+                [&]() { return m_cpu->c(); },
+                [&]() { return m_cpu->c_p(); }
+        ));
+        m_debug_container.add_register(RegisterDebugContainer(
+                "D",
+                [&]() { return m_cpu->d(); },
+                [&]() { return m_cpu->d_p(); }
+        ));
+        m_debug_container.add_register(RegisterDebugContainer(
+                "E",
+                [&]() { return m_cpu->e(); },
+                [&]() { return m_cpu->e_p(); }
+        ));
+        m_debug_container.add_register(RegisterDebugContainer(
+                "H",
+                [&]() { return m_cpu->h(); },
+                [&]() { return m_cpu->h_p(); }
+        ));
+        m_debug_container.add_register(RegisterDebugContainer(
+                "L",
+                [&]() { return m_cpu->l(); },
+                [&]() { return m_cpu->l_p(); }
+        ));
         m_debug_container.add_register(RegisterDebugContainer("I", [&]() { return m_cpu->i(); }));
         m_debug_container.add_register(RegisterDebugContainer("R", [&]() { return m_cpu->r(); }));
         m_debug_container.add_pc([&]() { return m_cpu->pc(); });
@@ -221,16 +232,15 @@ namespace emu::applications::pacman {
         m_debug_container.add_flag_register(FlagRegisterDebugContainer(
                 "F",
                 [&]() { return m_cpu->f(); },
-                {
-                        {"s", 7},
-                        {"z", 6},
-                        {"y", 5},
-                        {"h", 4},
-                        {"x", 3},
-                        {"p", 2},
-                        {"n", 1},
-                        {"c", 0}
-                }));
+                {{"s", 7},
+                 {"z", 6},
+                 {"y", 5},
+                 {"h", 4},
+                 {"x", 3},
+                 {"p", 2},
+                 {"n", 1},
+                 {"c", 0}}
+        ));
         m_debug_container.add_io(IoDebugContainer(
                 "vblank return",
                 [&]() { return m_outputs_during_cycle.contains(out_port_vblank_interrupt_return); },
@@ -245,46 +255,40 @@ namespace emu::applications::pacman {
                 "dipswitches",
                 [&]() { return true; },
                 [&]() { return m_memory_mapped_io->dipswitches(); },
-                {
-                        {"coin 1 (AH)",       0},
-                        {"coin 2 (AH)",       1},
-                        {"lives 1 (AH)",      2},
-                        {"lives 2 (AH)",      3},
-                        {"bonus life 1 (AH)", 4},
-                        {"bonus life 2 (AH)", 5},
-                        {"difficulty (AH)",   6},
-                        {"ghost names (AH)",  7}
-                }
+                {{"coin 1 (AH)", 0},
+                 {"coin 2 (AH)", 1},
+                 {"lives 1 (AH)", 2},
+                 {"lives 2 (AH)", 3},
+                 {"bonus life 1 (AH)", 4},
+                 {"bonus life 2 (AH)", 5},
+                 {"difficulty (AH)", 6},
+                 {"ghost names (AH)", 7}}
         ));
         m_debug_container.add_io(IoDebugContainer(
                 "in 0",
                 [&]() { return true; },
                 [&]() { return m_memory_mapped_io->in0_read(); },
-                {
-                        {"up (AL)",        0},
-                        {"left (AL)",      1},
-                        {"right (AL)",     2},
-                        {"down (AL)",      3},
-                        {"off (AH)",       4},
-                        {"coin 1 (AL)",    5},
-                        {"coin 2 (AL)",    6},
-                        {"service 1 (AL)", 7}
-                }
+                {{"up (AL)", 0},
+                 {"left (AL)", 1},
+                 {"right (AL)", 2},
+                 {"down (AL)", 3},
+                 {"off (AH)", 4},
+                 {"coin 1 (AL)", 5},
+                 {"coin 2 (AL)", 6},
+                 {"service 1 (AL)", 7}}
         ));
         m_debug_container.add_io(IoDebugContainer(
                 "in 1",
                 [&]() { return true; },
                 [&]() { return m_memory_mapped_io->in1_read(); },
-                {
-                        {"up (AL)",         0},
-                        {"left (AL)",       1},
-                        {"right (AL)",      2},
-                        {"down (AL)",       3},
-                        {"board test (AL)", 4},
-                        {"start 1 (AL)",    5},
-                        {"start 2 (AL)",    6},
-                        {"cocktail (AL)",   7}
-                }
+                {{"up (AL)", 0},
+                 {"left (AL)", 1},
+                 {"right (AL)", 2},
+                 {"down (AL)", 3},
+                 {"board test (AL)", 4},
+                 {"start 1 (AL)", 5},
+                 {"start 2 (AL)", 6},
+                 {"cocktail (AL)", 7}}
         ));
         m_debug_container.add_memory(MemoryDebugContainer(
                 [&]() { return memory(); }
@@ -376,8 +380,12 @@ namespace emu::applications::pacman {
         std::vector<std::string> disassembled_program = split(ss, "\n");
 
         std::vector<DisassembledLine> lines;
-        std::transform(disassembled_program.begin(), disassembled_program.end(), std::back_inserter(lines),
-                       [](const std::string &line) { return DisassembledLine(line); });
+        std::transform(
+                disassembled_program.begin(),
+                disassembled_program.end(),
+                std::back_inserter(lines),
+                [](const std::string &line) { return DisassembledLine(line); }
+        );
 
         return lines;
     }
