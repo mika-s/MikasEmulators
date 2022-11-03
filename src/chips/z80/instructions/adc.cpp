@@ -1,17 +1,17 @@
-#include <iostream>
-#include "doctest.h"
 #include "chips/z80/flags.h"
-#include "instruction_util.h"
-#include "crosscutting/typedefs.h"
 #include "crosscutting/memory/next_byte.h"
+#include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
+#include "doctest.h"
+#include "instruction_util.h"
+#include <iostream>
 
 namespace emu::z80 {
 
     using emu::memory::NextByte;
-    using emu::util::byte::low_byte;
     using emu::util::byte::high_byte;
+    using emu::util::byte::low_byte;
     using emu::util::byte::to_u16;
     using emu::util::string::hexify_wo_0x;
 
@@ -41,6 +41,26 @@ namespace emu::z80 {
         adc(acc_reg, value, flag_reg);
 
         cycles = 4;
+    }
+
+    /**
+     * Add from register to accumulator with carry (undocumented)
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 8</li>
+     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+     * </ul>
+     *
+     * @param acc_reg is the accumulator register, which will be mutated
+     * @param value is the value to add to the accumulator register
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void adc_A_r_undoc(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles) {
+        adc(acc_reg, value, flag_reg);
+
+        cycles = 8;
     }
 
     /**
@@ -99,9 +119,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void adc_A_MixyPd(u8 &acc_reg, u16 ixy_reg, const NextByte &args, EmulatorMemory &memory, Flags &flag_reg,
-                      cyc &cycles
-    ) {
+    void adc_A_MixyPd(u8 &acc_reg, u16 ixy_reg, const NextByte &args, EmulatorMemory &memory, Flags &flag_reg, cyc &cycles) {
         const u16 address = ixy_reg + static_cast<i8>(args.farg);
         u8 value = memory.read(address);
 
@@ -184,9 +202,7 @@ namespace emu::z80 {
                 << hexify_wo_0x(args.farg);
     }
 
-    void print_adc_MixyPn(std::ostream &ostream, const std::string &reg, const std::string &ixy_reg,
-                          const NextByte &args
-    ) {
+    void print_adc_MixyPn(std::ostream &ostream, const std::string &reg, const std::string &ixy_reg, const NextByte &args) {
         const i8 signed_value = static_cast<i8>(args.farg);
         const std::string plus_or_minus = (signed_value >= 0) ? "+" : "";
 
@@ -226,8 +242,7 @@ namespace emu::z80 {
                                 flag_reg.is_half_carry_flag_set()
                         );
 
-                        const bool are_same_sign = (acc_reg_counter <= INT8_MAX && value <= INT8_MAX)
-                                                   || (INT8_MAX < acc_reg_counter && INT8_MAX < value);
+                        const bool are_same_sign = (acc_reg_counter <= INT8_MAX && value <= INT8_MAX) || (INT8_MAX < acc_reg_counter && INT8_MAX < value);
                         const bool are_positive = are_same_sign && acc_reg_counter <= INT8_MAX;
                         const bool are_negative = are_same_sign && INT8_MAX < acc_reg_counter;
                         const bool goes_from_positive_to_negative = are_positive && acc_reg > INT8_MAX;

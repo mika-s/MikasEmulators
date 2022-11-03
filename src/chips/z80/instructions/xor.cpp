@@ -27,7 +27,7 @@ namespace emu::z80 {
     /**
      * Exclusive or with accumulator
      * <ul>
-     *   <li>Size: 2</li>
+     *   <li>Size: 1</li>
      *   <li>Cycles: 1</li>
      *   <li>States: 4</li>
      *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
@@ -42,6 +42,26 @@ namespace emu::z80 {
         xor_(acc_reg, value, flag_reg);
 
         cycles = 4;
+    }
+
+    /**
+     * Exclusive or with accumulator (undocumented)
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 8</li>
+     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+     * </ul>
+     *
+     * @param acc_reg is the accumulator register
+     * @param value contains the argument that should be exclusive ored with the accumulator
+     * @param flag_reg is the flag register
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void xor_r_undoc(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles) {
+        xor_(acc_reg, value, flag_reg);
+
+        cycles = 8;
     }
 
     /**

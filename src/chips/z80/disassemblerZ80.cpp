@@ -1778,8 +1778,47 @@ namespace emu::z80 {
             case LD_E_A_UNDOC:
                 print_ld_undocumented(m_ostream, "E", "A");
                 break;
+            case LD_IXYH_B_UNDOC:
+                print_ld_undocumented(m_ostream, ixy_reg + "H", "B");
+                break;
+            case LD_IXYH_C_UNDOC:
+                print_ld_undocumented(m_ostream, ixy_reg + "H", "C");
+                break;
+            case LD_IXYH_D_UNDOC:
+                print_ld_undocumented(m_ostream, ixy_reg + "H", "D");
+                break;
+            case LD_IXYH_E_UNDOC:
+                print_ld_undocumented(m_ostream, ixy_reg + "H", "E");
+                break;
+            case LD_IXYH_IXYH_UNDOC:
+                print_ld_undocumented(m_ostream, ixy_reg + "H", ixy_reg + "H");
+                break;
+            case LD_IXYH_IXYL_UNDOC:
+                print_ld_undocumented(m_ostream, ixy_reg + "H", ixy_reg + "L");
+                break;
             case LD_H_MIXY_P_n:
                 print_ld_r_MixyPn(m_ostream, "H", ixy_reg, get_next_byte());
+                break;
+            case LD_IXYH_A_UNDOC:
+                print_ld_undocumented(m_ostream, ixy_reg + "H", "A");
+                break;
+            case LD_IXYL_B_UNDOC:
+                print_ld_undocumented(m_ostream, ixy_reg + "L", "B");
+                break;
+            case LD_IXYL_C_UNDOC:
+                print_ld_undocumented(m_ostream, ixy_reg + "L", "C");
+                break;
+            case LD_IXYL_D_UNDOC:
+                print_ld_undocumented(m_ostream, ixy_reg + "L", "D");
+                break;
+            case LD_IXYL_E_UNDOC:
+                print_ld_undocumented(m_ostream, ixy_reg + "L", "E");
+                break;
+            case LD_IXYL_IXYH_UNDOC:
+                print_ld_undocumented(m_ostream, ixy_reg + "L", ixy_reg + "H");
+                break;
+            case LD_IXYL_IXYL_UNDOC:
+                print_ld_undocumented(m_ostream, ixy_reg + "L", ixy_reg + "L");
                 break;
             case LD_L_MIXY_P_n:
                 print_ld_r_MixyPn(m_ostream, "L", ixy_reg, get_next_byte());
@@ -2182,11 +2221,11 @@ namespace emu::z80 {
 
     void DisassemblerZ80::print_next_extd_instruction(u8 extd_opcode) {
         switch (extd_opcode) {
-            case IN_B_MC:
-                print_in_r_Mr(m_ostream, "B", "C");
+            case IN_B_C:
+                print_in_r_r(m_ostream, "B", "C");
                 break;
-            case OUT_MC_B:
-                print_out_Mr_r(m_ostream, "C", "B");
+            case OUT_C_B:
+                print_out_r_r(m_ostream, "C", "B");
                 break;
             case SBC_HL_BC:
                 print_sbc_r_s(m_ostream, "HL", "BC");
@@ -2200,6 +2239,7 @@ namespace emu::z80 {
             case NEG_UNDOC4:
             case NEG_UNDOC5:
             case NEG_UNDOC6:
+            case NEG_UNDOC7:
             case NEG:
                 print_neg(m_ostream);
                 break;
@@ -2213,11 +2253,11 @@ namespace emu::z80 {
             case IM_0_2:
                 print_im(m_ostream, 0);
                 break;
-            case IN_C_MC:
-                print_in_r_Mr(m_ostream, "C", "C");
+            case IN_C_C:
+                print_in_r_r(m_ostream, "C", "C");
                 break;
-            case OUT_MC_C:
-                print_out_Mr_r(m_ostream, "C", "C");
+            case OUT_C_C:
+                print_out_r_r(m_ostream, "C", "C");
                 break;
             case ADC_HL_BC:
                 print_adc_r_s(m_ostream, "HL", "BC");
@@ -2231,11 +2271,11 @@ namespace emu::z80 {
             case LD_R_A:
                 print_ld(m_ostream, "R", "A");
                 break;
-            case IN_D_MC:
-                print_in_r_Mr(m_ostream, "D", "C");
+            case IN_D_C:
+                print_in_r_r(m_ostream, "D", "C");
                 break;
-            case OUT_MC_D:
-                print_out_Mr_r(m_ostream, "C", "D");
+            case OUT_C_D:
+                print_out_r_r(m_ostream, "C", "D");
                 break;
             case SBC_HL_DE:
                 print_sbc_r_s(m_ostream, "HL", "DE");
@@ -2249,11 +2289,11 @@ namespace emu::z80 {
             case LD_A_R:
                 print_ld(m_ostream, "A", "R");
                 break;
-            case IN_H_MC:
-                print_in_r_Mr(m_ostream, "H", "C");
+            case IN_H_C:
+                print_in_r_r(m_ostream, "H", "C");
                 break;
-            case OUT_MC_H:
-                print_out_Mr_r(m_ostream, "C", "H");
+            case OUT_C_H:
+                print_out_r_r(m_ostream, "C", "H");
                 break;
             case SBC_HL_HL:
                 print_sbc_r_s(m_ostream, "HL", "HL");
@@ -2271,17 +2311,17 @@ namespace emu::z80 {
             case LD_A_I:
                 print_ld(m_ostream, "A", "I");
                 break;
-            case IN_A_MC:
-                print_in_r_Mr(m_ostream, "A", "C");
+            case IN_A_C:
+                print_in_r_r(m_ostream, "A", "C");
                 break;
-            case OUT_MC_A:
-                print_out_Mr_r(m_ostream, "C", "A");
+            case OUT_C_A:
+                print_out_r_r(m_ostream, "C", "A");
                 break;
-            case IN_E_MC:
-                print_in_r_Mr(m_ostream, "E", "C");
+            case IN_E_C:
+                print_in_r_r(m_ostream, "E", "C");
                 break;
-            case OUT_MC_E:
-                print_out_Mr_r(m_ostream, "C", "E");
+            case OUT_C_E:
+                print_out_r_r(m_ostream, "C", "E");
                 break;
             case ADC_HL_DE:
                 print_adc_r_s(m_ostream, "HL", "DE");
@@ -2292,11 +2332,11 @@ namespace emu::z80 {
             case RRD:
                 print_rrd(m_ostream);
                 break;
-            case IN_L_MC:
-                print_in_r_Mr(m_ostream, "L", "C");
+            case IN_L_C:
+                print_in_r_r(m_ostream, "L", "C");
                 break;
-            case OUT_MC_L:
-                print_out_Mr_r(m_ostream, "C", "L");
+            case OUT_C_L:
+                print_out_r_r(m_ostream, "C", "L");
                 break;
             case ADC_HL_HL:
                 print_adc_r_s(m_ostream, "HL", "HL");
@@ -2307,11 +2347,11 @@ namespace emu::z80 {
             case RLD:
                 print_rld(m_ostream);
                 break;
-            case IN_MC:
+            case IN_C:
                 print_in_undocumented(m_ostream, "(C)");
                 break;
-            case OUT_MC_0:
-                print_out_Mr_r_undocumented(m_ostream, "C", "0");
+            case OUT_C_0:
+                print_out_r_r_undocumented(m_ostream, "C", "0");
                 break;
             case LD_Mnn_SP:
                 print_ld_Mnn_dd(m_ostream, get_next_word(), "SP");

@@ -11,7 +11,7 @@ namespace emu::z80 {
     using emu::util::string::hexify_wo_0x;
 
     /**
-     * Output to port
+     * Output to port using immediate value
      * <ul>
      *   <li>Size: 2</li>
      *   <li>Cycles: 3</li>
@@ -24,10 +24,30 @@ namespace emu::z80 {
      * @param io is the IO addresses, which might be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void out_Mn_A(u8 acc_reg, const NextByte &args, std::vector<u8> &io, cyc &cycles) {
+    void out_n_A(u8 acc_reg, const NextByte &args, std::vector<u8> &io, cyc &cycles) {
         io[args.farg] = acc_reg;
 
         cycles = 11;
+    }
+
+    /**
+     * Output to port using the C register
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 3</li>
+     *   <li>States: 12</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param c_reg is the C register
+     * @param reg is the register that will be stored in IO
+     * @param io is the IO addresses, which might be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void out_C_r(u8 c_reg, u8 reg, std::vector<u8> &io, cyc &cycles) {
+        io[c_reg] = reg;
+
+        cycles = 12;
     }
 
     void print_out(std::ostream &ostream, const NextByte &args) {
@@ -35,7 +55,7 @@ namespace emu::z80 {
                 << hexify_wo_0x(args.farg);
     }
 
-    void print_out_Mr_r(std::ostream &ostream, const std::string& dest, const std::string& src) {
+    void print_out_r_r(std::ostream &ostream, const std::string& dest, const std::string& src) {
         ostream << "OUT "
                 << "("
                 << dest
@@ -43,7 +63,7 @@ namespace emu::z80 {
                 << src;
     }
 
-    void print_out_Mr_r_undocumented(std::ostream &ostream, const std::string& dest, const std::string& src) {
+    void print_out_r_r_undocumented(std::ostream &ostream, const std::string& dest, const std::string& src) {
         ostream << "OUT "
                 << "("
                 << dest
@@ -59,7 +79,7 @@ namespace emu::z80 {
         u8 acc_reg = 100;
 
         SUBCASE("should store the accumulator in the addressed IO") {
-            out_Mn_A(acc_reg, args, io, cycles);
+            out_n_A(acc_reg, args, io, cycles);
 
             CHECK_EQ(acc_reg, io[args.farg]);
         }
@@ -67,7 +87,7 @@ namespace emu::z80 {
         SUBCASE("should use 11 cycles") {
             cycles = 0;
 
-            out_Mn_A(acc_reg, args, io, cycles);
+            out_n_A(acc_reg, args, io, cycles);
 
             CHECK_EQ(11, cycles);
         }

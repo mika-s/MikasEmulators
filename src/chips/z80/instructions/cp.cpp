@@ -53,6 +53,26 @@ namespace emu::z80 {
     }
 
     /**
+     * Compare register with accumulator (undocumented)
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 8</li>
+     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+     * </ul>
+     *
+     * @param acc_reg is the accumulator register
+     * @param value is the value to compare with the accumulator register
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void cp_r_undoc(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles) {
+        cp(acc_reg, value, flag_reg);
+
+        cycles = 8;
+    }
+
+    /**
      * Compare immediate with accumulator
      * <ul>
      *   <li>Size: 2</li>

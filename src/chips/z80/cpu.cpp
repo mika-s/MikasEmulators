@@ -1,41 +1,40 @@
+#include "cpu.h"
+#include "crosscutting/exceptions/unrecognized_opcode_exception.h"
+#include "crosscutting/util/byte_util.h"
+#include "crosscutting/util/string_util.h"
+#include "instructions/instructions.h"
 #include <algorithm>
 #include <iostream>
-#include "cpu.h"
-#include "instructions/instructions.h"
-#include "crosscutting/util/byte_util.h"
-#include "crosscutting/exceptions/unrecognized_opcode_exception.h"
-#include "crosscutting/util/string_util.h"
 
 namespace emu::z80 {
 
-    using emu::util::byte::low_byte;
+    using emu::exceptions::UnrecognizedOpcodeException;
     using emu::util::byte::high_byte;
+    using emu::util::byte::low_byte;
     using emu::util::byte::to_u16;
     using emu::util::string::hexify;
-    using emu::exceptions::UnrecognizedOpcodeException;
 
     Cpu::Cpu(
             EmulatorMemory &memory,
             const u16 initial_pc
-    ) :
-            m_is_halted(false),
-            m_iff1(false), m_iff2(false),
-            m_is_interrupted(false),
-            m_is_nmi_interrupted(false),
-            m_instruction_from_interruptor(0),
-            m_memory(memory), m_memory_size(memory.size()),
-            m_io_in(number_of_io_ports), m_io_out(number_of_io_ports),
-            m_opcode(0), m_sp(0xffff), m_pc(initial_pc),
-            m_acc_reg(0xff), m_acc_p_reg(0),
-            m_b_reg(0), m_b_p_reg(0),
-            m_c_reg(0), m_c_p_reg(0),
-            m_d_reg(0), m_d_p_reg(0),
-            m_e_reg(0), m_e_p_reg(0),
-            m_h_reg(0), m_h_p_reg(0),
-            m_l_reg(0), m_l_p_reg(0),
-            m_ix_reg(0), m_iy_reg(0),
-            m_i_reg(0), m_r_reg(0),
-            m_interrupt_mode(InterruptMode::ZERO) {
+    ) : m_is_halted(false),
+        m_iff1(false), m_iff2(false),
+        m_is_interrupted(false),
+        m_is_nmi_interrupted(false),
+        m_instruction_from_interruptor(0),
+        m_memory(memory), m_memory_size(memory.size()),
+        m_io_in(number_of_io_ports), m_io_out(number_of_io_ports),
+        m_opcode(0), m_sp(0xffff), m_pc(initial_pc),
+        m_acc_reg(0xff), m_acc_p_reg(0),
+        m_b_reg(0), m_b_p_reg(0),
+        m_c_reg(0), m_c_p_reg(0),
+        m_d_reg(0), m_d_p_reg(0),
+        m_e_reg(0), m_e_p_reg(0),
+        m_h_reg(0), m_h_p_reg(0),
+        m_l_reg(0), m_l_p_reg(0),
+        m_ix_reg(0), m_iy_reg(0),
+        m_i_reg(0), m_r_reg(0),
+        m_interrupt_mode(InterruptMode::ZERO) {
         m_flag_reg.from_u8(0xff);
         m_flag_p_reg.from_u8(0x00);
     }
@@ -130,7 +129,7 @@ namespace emu::z80 {
         } else if (m_iff1 && m_is_interrupted) {
             return handle_maskable_interrupt_1_2(cycles);
         } else if (m_is_halted) {
-            return 4;   // TODO: What is the proper value while NOPing during halt?
+            return 4; // TODO: What is the proper value while NOPing during halt?
         }
 
         m_opcode = get_next_byte().farg;
@@ -775,7 +774,7 @@ namespace emu::z80 {
                 break;
             case OUT: {
                 NextByte args = get_next_byte();
-                out_Mn_A(m_acc_reg, args, m_io_out, cycles);
+                out_n_A(m_acc_reg, args, m_io_out, cycles);
                 notify_out_observers(args.farg);
                 break;
             }
@@ -806,7 +805,7 @@ namespace emu::z80 {
             case IN: {
                 NextByte args = get_next_byte();
                 notify_in_observers(args.farg);
-                in_A_Mn(m_acc_reg, args, m_io_in, cycles);
+                in_A_n(m_acc_reg, args, m_io_in, cycles);
                 break;
             }
             case CALL_C:
@@ -1995,6 +1994,18 @@ namespace emu::z80 {
             case LD_A_A_UNDOC:
                 ld_r_r_undoc(m_acc_reg, m_acc_reg, cycles);
                 break;
+            case ADD_A_B_UNDOC:
+                add_A_r_undoc(m_acc_reg, m_b_reg, m_flag_reg, cycles);
+                break;
+            case ADD_A_C_UNDOC:
+                add_A_r_undoc(m_acc_reg, m_c_reg, m_flag_reg, cycles);
+                break;
+            case ADD_A_D_UNDOC:
+                add_A_r_undoc(m_acc_reg, m_d_reg, m_flag_reg, cycles);
+                break;
+            case ADD_A_E_UNDOC:
+                add_A_r_undoc(m_acc_reg, m_e_reg, m_flag_reg, cycles);
+                break;
             case ADD_A_IXYH_UNDOC:
                 add_A_ixy_h_or_l(m_acc_reg, high_byte(ixy_reg), m_flag_reg, cycles);
                 break;
@@ -2003,6 +2014,21 @@ namespace emu::z80 {
                 break;
             case ADD_A_MIXY_P_n:
                 add_A_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
+                break;
+            case ADD_A_A_UNDOC:
+                add_A_r_undoc(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
+                break;
+            case ADC_A_B_UNDOC:
+                adc_A_r_undoc(m_acc_reg, m_b_reg, m_flag_reg, cycles);
+                break;
+            case ADC_A_C_UNDOC:
+                adc_A_r_undoc(m_acc_reg, m_c_reg, m_flag_reg, cycles);
+                break;
+            case ADC_A_D_UNDOC:
+                adc_A_r_undoc(m_acc_reg, m_d_reg, m_flag_reg, cycles);
+                break;
+            case ADC_A_E_UNDOC:
+                adc_A_r_undoc(m_acc_reg, m_e_reg, m_flag_reg, cycles);
                 break;
             case ADC_A_MIXY_P_n:
                 adc_A_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
@@ -2013,6 +2039,21 @@ namespace emu::z80 {
             case ADC_A_IXYL_UNDOC:
                 adc_A_ixy_h_or_l(m_acc_reg, low_byte(ixy_reg), m_flag_reg, cycles);
                 break;
+            case ADC_A_A_UNDOC:
+                adc_A_r_undoc(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
+                break;
+            case SUB_B_UNDOC:
+                sub_r_undoc(m_acc_reg, m_b_reg, m_flag_reg, cycles);
+                break;
+            case SUB_C_UNDOC:
+                sub_r_undoc(m_acc_reg, m_c_reg, m_flag_reg, cycles);
+                break;
+            case SUB_D_UNDOC:
+                sub_r_undoc(m_acc_reg, m_d_reg, m_flag_reg, cycles);
+                break;
+            case SUB_E_UNDOC:
+                sub_r_undoc(m_acc_reg, m_e_reg, m_flag_reg, cycles);
+                break;
             case SUB_IXYH_UNDOC:
                 sub_ixy_h_or_l(m_acc_reg, high_byte(ixy_reg), m_flag_reg, cycles);
                 break;
@@ -2021,6 +2062,21 @@ namespace emu::z80 {
                 break;
             case SUB_MIXY_P_n:
                 sub_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
+                break;
+            case SUB_A_UNDOC:
+                sub_r_undoc(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
+                break;
+            case SBC_A_B_UNDOC:
+                sbc_A_r_undoc(m_acc_reg, m_b_reg, m_flag_reg, cycles);
+                break;
+            case SBC_A_C_UNDOC:
+                sbc_A_r_undoc(m_acc_reg, m_c_reg, m_flag_reg, cycles);
+                break;
+            case SBC_A_D_UNDOC:
+                sbc_A_r_undoc(m_acc_reg, m_d_reg, m_flag_reg, cycles);
+                break;
+            case SBC_A_E_UNDOC:
+                sbc_A_r_undoc(m_acc_reg, m_e_reg, m_flag_reg, cycles);
                 break;
             case SBC_A_IXYH_UNDOC:
                 sbc_A_ixy_h_or_l(m_acc_reg, high_byte(ixy_reg), m_flag_reg, cycles);
@@ -2031,6 +2087,21 @@ namespace emu::z80 {
             case SBC_A_MIXY_P_n:
                 sbc_A_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
                 break;
+            case SBC_A_A_UNDOC:
+                sbc_A_r_undoc(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
+                break;
+            case AND_B_UNDOC:
+                and_r_undoc(m_acc_reg, m_b_reg, m_flag_reg, cycles);
+                break;
+            case AND_C_UNDOC:
+                and_r_undoc(m_acc_reg, m_c_reg, m_flag_reg, cycles);
+                break;
+            case AND_D_UNDOC:
+                and_r_undoc(m_acc_reg, m_d_reg, m_flag_reg, cycles);
+                break;
+            case AND_E_UNDOC:
+                and_r_undoc(m_acc_reg, m_e_reg, m_flag_reg, cycles);
+                break;
             case AND_IXYH_UNDOC:
                 and_ixy_h_or_l(m_acc_reg, high_byte(ixy_reg), m_flag_reg, cycles);
                 break;
@@ -2040,11 +2111,41 @@ namespace emu::z80 {
             case AND_MIXY_P_n:
                 and_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
                 break;
+            case AND_A_UNDOC:
+                and_r_undoc(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
+                break;
+            case XOR_B_UNDOC:
+                xor_r_undoc(m_acc_reg, m_b_reg, m_flag_reg, cycles);
+                break;
+            case XOR_C_UNDOC:
+                xor_r_undoc(m_acc_reg, m_c_reg, m_flag_reg, cycles);
+                break;
+            case XOR_D_UNDOC:
+                xor_r_undoc(m_acc_reg, m_d_reg, m_flag_reg, cycles);
+                break;
+            case XOR_E_UNDOC:
+                xor_r_undoc(m_acc_reg, m_e_reg, m_flag_reg, cycles);
+                break;
             case XOR_IXYH_UNDOC:
                 xor_ixy_h_or_l(m_acc_reg, high_byte(ixy_reg), m_flag_reg, cycles);
                 break;
             case XOR_IXYL_UNDOC:
                 xor_ixy_h_or_l(m_acc_reg, low_byte(ixy_reg), m_flag_reg, cycles);
+                break;
+            case XOR_A_UNDOC:
+                xor_r_undoc(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
+                break;
+            case OR_B_UNDOC:
+                or_r_undoc(m_acc_reg, m_b_reg, m_flag_reg, cycles);
+                break;
+            case OR_C_UNDOC:
+                or_r_undoc(m_acc_reg, m_c_reg, m_flag_reg, cycles);
+                break;
+            case OR_D_UNDOC:
+                or_r_undoc(m_acc_reg, m_d_reg, m_flag_reg, cycles);
+                break;
+            case OR_E_UNDOC:
+                or_r_undoc(m_acc_reg, m_e_reg, m_flag_reg, cycles);
                 break;
             case OR_IXYH_UNDOC:
                 or_ixy_h_or_l(m_acc_reg, high_byte(ixy_reg), m_flag_reg, cycles);
@@ -2058,6 +2159,21 @@ namespace emu::z80 {
             case XOR_MIXY_P_n:
                 xor_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
                 break;
+            case OR_A_UNDOC:
+                or_r_undoc(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
+                break;
+            case CP_B_UNDOC:
+                cp_r_undoc(m_acc_reg, m_b_reg, m_flag_reg, cycles);
+                break;
+            case CP_C_UNDOC:
+                cp_r_undoc(m_acc_reg, m_c_reg, m_flag_reg, cycles);
+                break;
+            case CP_D_UNDOC:
+                cp_r_undoc(m_acc_reg, m_d_reg, m_flag_reg, cycles);
+                break;
+            case CP_E_UNDOC:
+                cp_r_undoc(m_acc_reg, m_e_reg, m_flag_reg, cycles);
+                break;
             case CP_IXYH_UNDOC:
                 cp_ixy_h_or_l(m_acc_reg, high_byte(ixy_reg), m_flag_reg, cycles);
                 break;
@@ -2066,6 +2182,9 @@ namespace emu::z80 {
                 break;
             case CP_MIXY_P_n:
                 cp_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
+                break;
+            case CP_A_UNDOC:
+                cp_r_undoc(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
                 break;
             case IXY_BITS:
                 next_ixy_bits_instruction(get_next_word(), ixy_reg, cycles);
@@ -2114,8 +2233,8 @@ namespace emu::z80 {
             case RLC_MIXY_P_n_L_UNDOC1:
                 rlc_MixyPd_r(m_l_reg, ixy_reg, d, m_memory, m_flag_reg, cycles);
                 break;
-//            case RL_MIXY_P_n_B_UNDOC1:
-//                break;
+                //            case RL_MIXY_P_n_B_UNDOC1:
+                //                break;
             case RLC_MIXY_P_n:
                 rlc_MixyPd(ixy_reg, d, m_memory, m_flag_reg, cycles);
                 break;
@@ -2225,6 +2344,16 @@ namespace emu::z80 {
         r_tick();
 
         switch (extd_opcode) {
+            case IN_B_C: {
+                in_r_C(m_b_reg, m_c_reg, m_io_in, m_flag_reg, cycles);
+                notify_in_observers(m_c_reg);
+                break;
+            }
+            case OUT_C_B: {
+                out_C_r(m_c_reg, m_b_reg, m_io_in, cycles);
+                notify_out_observers(m_c_reg);
+                break;
+            }
             case SBC_HL_BC:
                 sbc_HL_ss(m_h_reg, m_l_reg, to_u16(m_b_reg, m_c_reg), m_flag_reg, cycles);
                 break;
@@ -2251,6 +2380,16 @@ namespace emu::z80 {
             case LD_I_A:
                 ld_I_A(m_i_reg, m_acc_reg, cycles);
                 break;
+            case IN_C_C: {
+                in_r_C(m_c_reg, m_c_reg, m_io_in, m_flag_reg, cycles);
+                notify_in_observers(m_c_reg);
+                break;
+            }
+            case OUT_C_C: {
+                out_C_r(m_c_reg, m_c_reg, m_io_in, cycles);
+                notify_out_observers(m_c_reg);
+                break;
+            }
             case ADC_HL_BC:
                 adc_hl_ss(m_h_reg, m_l_reg, to_u16(m_b_reg, m_c_reg), m_flag_reg, cycles);
                 break;
@@ -2263,6 +2402,16 @@ namespace emu::z80 {
             case LD_R_A:
                 ld_R_A(m_r_reg, m_acc_reg, cycles);
                 break;
+            case IN_D_C: {
+                in_r_C(m_d_reg, m_c_reg, m_io_in, m_flag_reg, cycles);
+                notify_in_observers(m_c_reg);
+                break;
+            }
+            case OUT_C_D: {
+                out_C_r(m_c_reg, m_d_reg, m_io_in, cycles);
+                notify_out_observers(m_c_reg);
+                break;
+            }
             case SBC_HL_DE:
                 sbc_HL_ss(m_h_reg, m_l_reg, to_u16(m_d_reg, m_e_reg), m_flag_reg, cycles);
                 break;
@@ -2273,9 +2422,29 @@ namespace emu::z80 {
             case IM_1_2:
                 im(m_interrupt_mode, InterruptMode::ONE, cycles);
                 break;
+            case IN_A_C: {
+                in_r_C(m_acc_reg, m_c_reg, m_io_in, m_flag_reg, cycles);
+                notify_in_observers(m_c_reg);
+                break;
+            }
+            case OUT_C_A: {
+                out_C_r(m_c_reg, m_acc_reg, m_io_in, cycles);
+                notify_out_observers(m_c_reg);
+                break;
+            }
             case LD_A_I:
                 ld_A_I(m_acc_reg, m_i_reg, m_flag_reg, m_iff2, cycles);
                 break;
+            case IN_E_C: {
+                in_r_C(m_e_reg, m_c_reg, m_io_in, m_flag_reg, cycles);
+                notify_in_observers(m_c_reg);
+                break;
+            }
+            case OUT_C_E: {
+                out_C_r(m_c_reg, m_e_reg, m_io_in, cycles);
+                notify_out_observers(m_c_reg);
+                break;
+            }
             case ADC_HL_DE:
                 adc_hl_ss(m_h_reg, m_l_reg, to_u16(m_d_reg, m_e_reg), m_flag_reg, cycles);
                 break;
@@ -2288,6 +2457,16 @@ namespace emu::z80 {
             case LD_A_R:
                 ld_A_R(m_acc_reg, m_r_reg, m_flag_reg, m_iff2, cycles);
                 break;
+            case IN_H_C: {
+                in_r_C(m_h_reg, m_c_reg, m_io_in, m_flag_reg, cycles);
+                notify_in_observers(m_c_reg);
+                break;
+            }
+            case OUT_C_H: {
+                out_C_r(m_c_reg, m_h_reg, m_io_in, cycles);
+                notify_out_observers(m_c_reg);
+                break;
+            }
             case SBC_HL_HL:
                 sbc_HL_ss(m_h_reg, m_l_reg, to_u16(m_h_reg, m_l_reg), m_flag_reg, cycles);
                 break;
@@ -2297,15 +2476,36 @@ namespace emu::z80 {
             case RRD:
                 rrd(m_acc_reg, m_memory, address_in_HL(), m_flag_reg, cycles);
                 break;
-            case RLD:
-                rld(m_acc_reg, m_memory, address_in_HL(), m_flag_reg, cycles);
+            case IN_L_C: {
+                in_r_C(m_l_reg, m_c_reg, m_io_in, m_flag_reg, cycles);
+                notify_in_observers(m_c_reg);
                 break;
+            }
+            case OUT_C_L: {
+                out_C_r(m_c_reg, m_l_reg, m_io_in, cycles);
+                notify_out_observers(m_c_reg);
+                break;
+            }
             case ADC_HL_HL:
                 adc_hl_ss(m_h_reg, m_l_reg, to_u16(m_h_reg, m_l_reg), m_flag_reg, cycles);
                 break;
             case LD_HL_Mnn_UNDOC:
                 ld_dd_Mnn(m_h_reg, m_l_reg, get_next_word(), m_memory, cycles);
                 break;
+            case RLD:
+                rld(m_acc_reg, m_memory, address_in_HL(), m_flag_reg, cycles);
+                break;
+            case IN_C: {
+                u8 throwaway;
+                in_r_C(throwaway, m_c_reg, m_io_in, m_flag_reg, cycles);
+                notify_in_observers(m_c_reg);
+                break;
+            }
+            case OUT_C_0: {
+                out_C_r(m_c_reg, 0, m_io_in, cycles);
+                notify_out_observers(m_c_reg);
+                break;
+            }
             case SBC_HL_SP:
                 sbc_HL_ss(m_h_reg, m_l_reg, m_sp, m_flag_reg, cycles);
                 break;
@@ -2440,15 +2640,13 @@ namespace emu::z80 {
 
     NextByte Cpu::get_next_byte() {
         return {
-                .farg = m_memory.read(m_pc++)
-        };
+                .farg = m_memory.read(m_pc++)};
     }
 
     NextWord Cpu::get_next_word() {
         return {
                 .farg = m_memory.read(m_pc++),
-                .sarg = m_memory.read(m_pc++)
-        };
+                .sarg = m_memory.read(m_pc++)};
     }
 
     u16 Cpu::address_in_HL() const {
