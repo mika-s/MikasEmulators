@@ -1,5 +1,6 @@
 #include "flags.h"
 #include "crosscutting/util/byte_util.h"
+#include <cstdint>
 
 namespace emu::i8080 {
 

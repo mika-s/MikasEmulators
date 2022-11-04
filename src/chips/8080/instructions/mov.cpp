@@ -3,6 +3,7 @@
 #include "doctest.h"
 #include "instructions.h"
 #include <iostream>
+#include <string>
 
 namespace emu::i8080 {
 

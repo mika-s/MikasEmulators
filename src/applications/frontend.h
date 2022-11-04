@@ -3,14 +3,23 @@
 
 #include "applications/cpm_8080/usage.h"
 #include "applications/cpm_z80/usage.h"
-#include "applications/options.h"
 #include "applications/pacman/usage.h"
 #include "applications/space_invaders/usage.h"
 #include "crosscutting/gui/gui_type.h"
-#include "crosscutting/misc/emulator.h"
+#include <cstddef>
 #include <functional>
 #include <memory>
+#include <string>
+#include <unordered_map>
+#include <utility>
 #include <vector>
+
+namespace emu::applications {
+    class Options;
+}
+namespace emu::misc {
+    class Emulator;
+}
 
 namespace emu::applications {
 
@@ -51,8 +60,7 @@ namespace emu::applications {
                 {"TST8080", "The TST8080 CP/M-based test binary for 8080"},
                 {"8080PRE", "The 8080PRE CP/M-based test binary for 8080"},
                 {"8080EXM", "The 8080EXM CP/M-based test binary for 8080"},
-                {"CPUTEST", "The CPUTEST CP/M-based test binary for 8080"}
-        };
+                {"CPUTEST", "The CPUTEST CP/M-based test binary for 8080"}};
 
         static const inline std::vector<std::pair<std::string, std::string>> supported_cpus = {
                 {"8080", "The Intel 8080 8-bit microprocessor"},
@@ -62,14 +70,12 @@ namespace emu::applications {
         static const inline std::vector<std::pair<std::string, std::string>> command_descriptions = {
                 {"run", "Run an application"},
                 {"disassemble", "Disassemble a binary"},
-                {"test", "Run unit tests"}
-        };
+                {"test", "Run unit tests"}};
 
         static const inline std::vector<std::pair<std::string, std::string>> test_examples = {
                 {"8080", "The unit tests for 8080 are run"},
                 {"8080 Z80", "The unit tests for 8080 and Z80 are run"},
-                {"", "All the unit tests are run"}
-        };
+                {"", "All the unit tests are run"}};
 
         static const inline std::unordered_map<std::string, std::function<void(const std::string &)>> program_usages = {
                 {"pacman", pacman::print_usage},
@@ -80,8 +86,7 @@ namespace emu::applications {
                 {"TST8080", cpm::i8080::print_usage},
                 {"8080PRE", cpm::i8080::print_usage},
                 {"8080EXM", cpm::i8080::print_usage},
-                {"CPUTEST", cpm::i8080::print_usage}
-        };
+                {"CPUTEST", cpm::i8080::print_usage}};
 
         static void run(const std::vector<std::string> &args, Options &options);
 

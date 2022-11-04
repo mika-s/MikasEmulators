@@ -1,6 +1,25 @@
 #include "gui_sdl.h"
+#include "8080/interfaces/gui_observer.h"
+#include "crosscutting/util/byte_util.h"
+#include "gui.h"
 #include <SDL.h>
-#include <iostream>
+#include <SDL_error.h>
+#include <SDL_log.h>
+#include <SDL_pixels.h>
+#include <algorithm>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+
+namespace emu::debugger {
+    class DebugContainer;
+}
+namespace emu::debugger {
+    class Debugger;
+}
+namespace emu::logging {
+    class Logger;
+}
 
 namespace emu::applications::space_invaders {
 

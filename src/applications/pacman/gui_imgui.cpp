@@ -1,42 +1,58 @@
-#include <SDL.h>
-#include <SDL_timer.h>
+#include "gui_imgui.h"
+#include "crosscutting/gui/graphics/framebuffer.h"
+#include "crosscutting/logging/logger.h"
+#include "crosscutting/util/byte_util.h"
 #include "glad/glad.h"
 #include "imgui.h"
-#include "imgui_impl_sdl.h"
 #include "imgui_impl_opengl3.h"
-#include "gui_imgui.h"
-#include "chips/z80/cpu.h"
-#include "crosscutting/util/file_util.h"
+#include "imgui_impl_sdl.h"
+#include "pacman/gui.h"
+#include "z80/interfaces/gui_observer.h"
+#include <SDL.h>
+#include <SDL_error.h>
+#include <SDL_log.h>
+#include <algorithm>
+#include <cstdint>
+#include <cstdlib>
+#include <string>
+#include <utility>
+
+namespace emu::debugger {
+    class DebugContainer;
+}
+namespace emu::debugger {
+    class Debugger;
+}
 
 namespace emu::applications::pacman {
 
-    using emu::util::byte::is_bit_set;
     using emu::misc::RunStatus;
     using emu::misc::RunStatus::NOT_RUNNING;
-    using emu::misc::RunStatus::RUNNING;
     using emu::misc::RunStatus::PAUSED;
+    using emu::misc::RunStatus::RUNNING;
     using emu::misc::RunStatus::STEPPING;
+    using emu::util::byte::is_bit_set;
 
     GuiImgui::GuiImgui()
-            : m_win(nullptr),
-              m_gl_context(nullptr),
-              m_screen_texture(0),
-              m_tile_texture(0),
-              m_sprite_texture(0),
-              m_show_game(true),
-              m_show_game_info(true),
-              m_show_cpu_info(true),
-              m_show_io_info(true),
-              m_show_log(true),
-              m_show_disassembly(true),
-              m_show_memory_editor(true),
-              m_show_tilemap(true),
-              m_show_spritemap(true),
-              m_show_waveforms(true),
-              m_show_demo(false),
-              m_is_in_debug_mode(false),
-              m_tilemap(1),
-              m_spritemap(1) {
+        : m_win(nullptr),
+          m_gl_context(nullptr),
+          m_screen_texture(0),
+          m_tile_texture(0),
+          m_sprite_texture(0),
+          m_show_game(true),
+          m_show_game_info(true),
+          m_show_cpu_info(true),
+          m_show_io_info(true),
+          m_show_log(true),
+          m_show_disassembly(true),
+          m_show_memory_editor(true),
+          m_show_tilemap(true),
+          m_show_spritemap(true),
+          m_show_waveforms(true),
+          m_show_demo(false),
+          m_is_in_debug_mode(false),
+          m_tilemap(1),
+          m_spritemap(1) {
         init();
     }
 
@@ -124,9 +140,9 @@ namespace emu::applications::pacman {
         // GL 3.2 Core + GLSL 150
         glsl_version = "#version 150";
         SDL_GL_SetAttribute( // required on Mac OS
-            SDL_GL_CONTEXT_FLAGS,
-            SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG
-            );
+                SDL_GL_CONTEXT_FLAGS,
+                SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG
+        );
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 #elif __linux__

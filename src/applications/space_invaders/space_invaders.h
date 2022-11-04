@@ -4,14 +4,25 @@
 #include "crosscutting/gui/gui_type.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/misc/emulator.h"
-#include "crosscutting/misc/session.h"
+#include "crosscutting/misc/run_status.h"
 #include "crosscutting/typedefs.h"
-#include "gui.h"
-#include "interfaces/input.h"
-#include "memory_map_for_space_invaders.h"
 #include "settings.h"
 #include "space_invaders_session.h"
 #include <memory>
+#include <vector>
+
+namespace emu::applications::space_invaders {
+    class Gui;
+}
+namespace emu::applications::space_invaders {
+    class Input;
+}
+namespace emu::applications::space_invaders {
+    class MemoryMapForSpaceInvaders;
+}
+namespace emu::misc {
+    class Session;
+}
 
 namespace emu::applications::space_invaders {
 

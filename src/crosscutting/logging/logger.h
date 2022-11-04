@@ -1,8 +1,12 @@
 #ifndef MIKA_EMULATORS_CROSSCUTTING_LOGGING_LOGGER_H
 #define MIKA_EMULATORS_CROSSCUTTING_LOGGING_LOGGER_H
 
+#include <cstdarg>
 #include <vector>
-#include "crosscutting/logging/log_observer.h"
+
+namespace emu::logging {
+    class LogObserver;
+}
 
 namespace emu::logging {
 

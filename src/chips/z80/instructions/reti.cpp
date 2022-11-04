@@ -1,7 +1,10 @@
-#include <iostream>
-#include "doctest.h"
-#include "instruction_util.h"
 #include "crosscutting/typedefs.h"
+#include "instruction_util.h"
+#include <iostream>
+
+namespace emu::memory {
+    class EmulatorMemory;
+}
 
 namespace emu::z80 {
 

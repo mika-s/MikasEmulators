@@ -2,12 +2,17 @@
 #define MIKA_EMULATORS_APPLICATIONS_CPM_8080_CPM_APPLICATION_H
 
 #include "chips/8080/cpu.h"
+#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/misc/emulator.h"
-#include "crosscutting/misc/session.h"
 #include "crosscutting/typedefs.h"
+#include <cstddef>
 #include <memory>
 #include <string>
 #include <vector>
+
+namespace emu::misc {
+    class Session;
+}
 
 namespace emu::applications::cpm::i8080 {
 

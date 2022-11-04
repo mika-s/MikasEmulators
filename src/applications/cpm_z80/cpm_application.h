@@ -1,13 +1,18 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_CPM_Z80_CPM_APPLICATION_H
 #define MIKA_EMULATORS_APPLICATIONS_CPM_Z80_CPM_APPLICATION_H
 
+#include "chips/z80/cpu.h"
+#include "crosscutting/memory/emulator_memory.h"
+#include "crosscutting/misc/emulator.h"
+#include "crosscutting/typedefs.h"
+#include <cstddef>
 #include <memory>
 #include <string>
 #include <vector>
-#include "chips/z80/cpu.h"
-#include "crosscutting/typedefs.h"
-#include "crosscutting/misc/emulator.h"
-#include "crosscutting/misc/session.h"
+
+namespace emu::misc {
+    class Session;
+}
 
 namespace emu::applications::cpm::z80 {
 

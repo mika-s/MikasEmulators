@@ -1,5 +1,6 @@
 #include "invalid_program_arguments_exception.h"
 #include <sstream>
+#include <utility>
 
 namespace emu::exceptions {
 

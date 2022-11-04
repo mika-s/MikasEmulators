@@ -1,6 +1,7 @@
-#include "doctest.h"
 #include "flags.h"
 #include "crosscutting/util/byte_util.h"
+#include "doctest.h"
+#include <cstdint>
 
 namespace emu::z80 {
 
@@ -9,14 +10,14 @@ namespace emu::z80 {
     using emu::util::byte::is_bit_set;
 
     Flags::Flags()
-            : m_zero(false),
-              m_sign(false),
-              m_y_unused_flag(false),
-              m_half_carry(false),
-              m_x_unused_flag(false),
-              m_parity_overflow(false),
-              m_add_subtract(false),
-              m_carry(false) {}
+        : m_zero(false),
+          m_sign(false),
+          m_y_unused_flag(false),
+          m_half_carry(false),
+          m_x_unused_flag(false),
+          m_parity_overflow(false),
+          m_add_subtract(false),
+          m_carry(false) {}
 
     void Flags::reset() {
         clear_sign_flag();
@@ -62,7 +63,7 @@ namespace emu::z80 {
     }
 
     void Flags::handle_carry_flag(u16 previous, u16 to_add) {
-        if (((previous + to_add) >> 16) & 1) {  // TODO: Change to carried_out_of bit 15
+        if (((previous + to_add) >> 16) & 1) { // TODO: Change to carried_out_of bit 15
             set_carry_flag();
         } else {
             clear_carry_flag();

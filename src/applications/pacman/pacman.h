@@ -1,21 +1,39 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_PACMAN_PACMAN_H
 #define MIKA_EMULATORS_APPLICATIONS_PACMAN_PACMAN_H
 
-#include <memory>
-#include "gui.h"
-#include "settings.h"
-#include "pacman_session.h"
-#include "interfaces/input.h"
-#include "crosscutting/memory/emulator_memory.h"
-#include "crosscutting/typedefs.h"
 #include "crosscutting/gui/gui_type.h"
+#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/misc/emulator.h"
-#include "crosscutting/misc/session.h"
+#include "crosscutting/misc/run_status.h"
+#include "crosscutting/typedefs.h"
+#include "pacman_session.h"
+//#include "settings.h"
+#include <memory>
+#include <vector>
+
+namespace emu::applications::pacman {
+    class Audio;
+}
+namespace emu::applications::pacman {
+    class Gui;
+}
+namespace emu::applications::pacman {
+    class Input;
+}
+namespace emu::applications::pacman {
+    class MemoryMappedIoForPacman;
+}
+namespace emu::applications::pacman {
+    class Settings;
+}
+namespace emu::misc {
+    class Session;
+}
 
 namespace emu::applications::pacman {
 
-    using emu::misc::Emulator;
     using emu::gui::GuiType;
+    using emu::misc::Emulator;
 
     class Pacman : public Emulator {
     public:

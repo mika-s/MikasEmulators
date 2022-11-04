@@ -1,12 +1,26 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_PACMAN_GUI_SDL_H
 #define MIKA_EMULATORS_APPLICATIONS_PACMAN_GUI_SDL_H
 
+#include "crosscutting/misc/run_status.h"
+#include "crosscutting/typedefs.h"
+#include "gui.h"
+#include <SDL_render.h>
+#include <SDL_video.h>
 #include <memory>
 #include <vector>
-#include <SDL_video.h>
-#include <SDL_render.h>
-#include "gui.h"
-#include "crosscutting/typedefs.h"
+
+namespace emu::debugger {
+    class DebugContainer;
+}
+namespace emu::debugger {
+    class Debugger;
+}
+namespace emu::logging {
+    class Logger;
+}
+namespace emu::z80 {
+    class GuiObserver;
+}
 
 namespace emu::applications::pacman {
 

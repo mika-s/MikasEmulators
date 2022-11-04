@@ -2,6 +2,7 @@
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/string_util.h"
 #include <iostream>
+#include <string>
 
 namespace emu::i8080 {
 

@@ -1,14 +1,15 @@
-#include <iostream>
-#include "doctest.h"
 #include "crosscutting/memory/emulator_memory.h"
-#include "instruction_util.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
+#include "doctest.h"
+#include "instruction_util.h"
+#include <iostream>
+#include <vector>
 
 namespace emu::z80 {
 
-    using emu::util::byte::low_byte;
     using emu::util::byte::high_byte;
+    using emu::util::byte::low_byte;
 
     void rst(u16 &pc, u16 new_pc, u16 &sp, EmulatorMemory &memory, cyc &cycles) {
         execute_call(pc, sp, memory, low_byte(new_pc), high_byte(new_pc));

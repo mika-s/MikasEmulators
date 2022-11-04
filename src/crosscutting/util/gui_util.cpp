@@ -1,5 +1,6 @@
-#include <stdexcept>
 #include "gui_util.h"
+#include <stdexcept>
+#include <utility>
 
 namespace emu::util::gui {
 

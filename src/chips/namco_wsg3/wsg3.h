@@ -1,9 +1,13 @@
 #ifndef MIKA_EMULATORS_CHIPS_NAMCO_WSG3_WSG3_H
 #define MIKA_EMULATORS_CHIPS_NAMCO_WSG3_WSG3_H
 
-#include "voice.h"
-#include "crosscutting/typedefs.h"
 #include "crosscutting/audio/waveform.h"
+#include "crosscutting/typedefs.h"
+#include <vector>
+
+namespace emu::wsg3 {
+    class Voice;
+}
 
 namespace emu::wsg3 {
 

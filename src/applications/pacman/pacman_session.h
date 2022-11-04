@@ -1,27 +1,49 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_PACMAN_PACMAN_SESSION_H
 #define MIKA_EMULATORS_APPLICATIONS_PACMAN_PACMAN_SESSION_H
 
-#include <memory>
-#include <SDL.h>
-#include <unordered_map>
-#include <vector>
-#include "audio.h"
-#include "gui.h"
-#include "memory_mapped_io_for_pacman.h"
-#include "interfaces/input.h"
-#include "interfaces/io_observer.h"
-#include "chips/z80/cpu.h"
 #include "chips/z80/interfaces/gui_observer.h"
-#include "chips/z80/interfaces/in_observer.h"
 #include "chips/z80/interfaces/out_observer.h"
-#include "crosscutting/typedefs.h"
-#include "crosscutting/debugging/debugger.h"
 #include "crosscutting/debugging/debug_container.h"
-#include "crosscutting/debugging/disassembled_line.h"
 #include "crosscutting/misc/governor.h"
 #include "crosscutting/misc/run_status.h"
 #include "crosscutting/misc/session.h"
-#include "crosscutting/logging/logger.h"
+#include "crosscutting/typedefs.h"
+#include "interfaces/io_observer.h"
+#include "pacman/io_request.h"
+#include <memory>
+#include <unordered_map>
+#include <vector>
+
+namespace emu::applications::pacman {
+    class Audio;
+}
+namespace emu::applications::pacman {
+    class Gui;
+}
+namespace emu::applications::pacman {
+    class Input;
+}
+namespace emu::applications::pacman {
+    class MemoryMappedIoForPacman;
+}
+namespace emu::debugger {
+    class Debugger;
+}
+namespace emu::debugger {
+    class DisassembledLine;
+}
+namespace emu::logging {
+    class Logger;
+}
+namespace emu::memory {
+    class EmulatorMemory;
+}
+namespace emu::z80 {
+    class Cpu;
+}
+namespace emu::z80 {
+    class InObserver;
+}
 
 namespace emu::applications::pacman {
 
@@ -29,20 +51,20 @@ namespace emu::applications::pacman {
     using emu::debugger::Debugger;
     using emu::debugger::DisassembledLine;
     using emu::logging::Logger;
+    using emu::memory::EmulatorMemory;
     using emu::misc::Governor;
     using emu::misc::Session;
     using emu::z80::Cpu;
-    using emu::z80::EmulatorMemory;
     using emu::z80::GuiObserver;
     using emu::z80::InObserver;
     using emu::z80::OutObserver;
     using emu::z80::RunStatus;
 
     class PacmanSession
-            : public Session,
-              public GuiObserver,
-              public OutObserver,
-              public IoObserver {
+        : public Session,
+          public GuiObserver,
+          public OutObserver,
+          public IoObserver {
     public:
         PacmanSession(
                 const RunStatus startup_runstatus,

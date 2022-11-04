@@ -1,14 +1,18 @@
-#include <algorithm>
-#include <fmt/format.h>
-#include <sstream>
-#include <stdexcept>
 #include "sprite.h"
+#include "gui/graphics/color.h"
+#include "gui/graphics/framebuffer.h"
+#include <algorithm>
+#include <cstdint>
+#include <ext/alloc_traits.h>
+#include <fmt/core.h>
+#include <iterator>
+#include <stdexcept>
 
 namespace emu::gui {
 
     Sprite::Sprite(std::size_t height, std::size_t width)
-            : m_height(height),
-              m_width(width) {
+        : m_height(height),
+          m_width(width) {
         if (height != width) {
             throw std::invalid_argument("Non-square tiles not supported");
         } else if (m_height > UINT32_MAX) {
@@ -33,8 +37,11 @@ namespace emu::gui {
     }
 
     void Sprite::flip_horizontal() {
-        std::for_each(std::begin(m_values), std::end(m_values),
-                      [](auto &i) { std::reverse(std::begin(i), std::end(i)); });
+        std::for_each(
+                std::begin(m_values),
+                std::end(m_values),
+                [](auto &i) { std::reverse(std::begin(i), std::end(i)); }
+        );
     }
 
     void Sprite::flip_vertical() {

@@ -1,14 +1,22 @@
 #ifndef MIKA_EMULATORS_CHIPS_8080_CPU_H
 #define MIKA_EMULATORS_CHIPS_8080_CPU_H
 
-#include <vector>
-#include "flags.h"
-#include "interfaces/in_observer.h"
-#include "interfaces/out_observer.h"
-#include "crosscutting/typedefs.h"
-#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/memory/next_byte.h"
 #include "crosscutting/memory/next_word.h"
+#include "crosscutting/typedefs.h"
+#include "flags.h"
+#include <cstddef>
+#include <vector>
+
+namespace emu::i8080 {
+    class InObserver;
+}
+namespace emu::i8080 {
+    class OutObserver;
+}
+namespace emu::memory {
+    class EmulatorMemory;
+}
 
 namespace emu::i8080 {
 

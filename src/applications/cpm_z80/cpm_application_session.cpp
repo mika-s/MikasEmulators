@@ -1,6 +1,9 @@
-#include <iostream>
 #include "cpm_application_session.h"
 #include "crosscutting/util/byte_util.h"
+#include "z80/cpu.h"
+#include <iostream>
+#include <stdexcept>
+#include <utility>
 
 namespace emu::applications::cpm::z80 {
 
@@ -10,9 +13,9 @@ namespace emu::applications::cpm::z80 {
             std::string loaded_file,
             EmulatorMemory memory
     )
-            : m_memory(std::move(memory)),
-              m_loaded_file(std::move(loaded_file)),
-              m_is_finished(false) {
+        : m_memory(std::move(memory)),
+          m_loaded_file(std::move(loaded_file)),
+          m_is_finished(false) {
         setup_cpu();
     }
 

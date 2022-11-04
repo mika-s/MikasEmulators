@@ -4,6 +4,17 @@
 #include "gui_sdl.h"
 #include "input_imgui.h"
 #include "input_sdl.h"
+#include "space_invaders/memory_map_for_space_invaders.h"
+#include "space_invaders/space_invaders_session.h"
+#include <cstddef>
+#include <string>
+
+namespace emu::applications::space_invaders {
+    class Settings;
+}
+namespace emu::misc {
+    class Session;
+}
 
 namespace emu::applications::space_invaders {
 

@@ -2,7 +2,8 @@
 #define MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_AUDIO_H
 
 #include "crosscutting/typedefs.h"
-#include <SDL.h>
+#include <SDL_audio.h>
+#include <cstddef>
 #include <vector>
 
 namespace emu::applications::space_invaders {

@@ -1,11 +1,14 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_MEMORY_MAPPED_IO_FOR_SPACE_INVADERS_H
 #define MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_MEMORY_MAPPED_IO_FOR_SPACE_INVADERS_H
 
-#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/memory/memory_mapped_io.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
-#include "settings.h"
+#include <cstddef>
+
+namespace emu::memory {
+    class EmulatorMemory;
+}
 
 namespace emu::applications::space_invaders {
 

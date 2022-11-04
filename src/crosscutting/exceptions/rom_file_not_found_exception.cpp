@@ -1,10 +1,10 @@
-#include <sstream>
 #include "rom_file_not_found_exception.h"
+#include <sstream>
 
 namespace emu::exceptions {
 
     RomFileNotFoundException::RomFileNotFoundException(const std::string &file)
-            : runtime_error("ROM file not found or unable to be opened: ") {
+        : runtime_error("ROM file not found or unable to be opened: ") {
         make_message(file);
     }
 

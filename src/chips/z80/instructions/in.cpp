@@ -4,6 +4,7 @@
 #include "doctest.h"
 #include "flags.h"
 #include <iostream>
+#include <string>
 #include <vector>
 
 namespace emu::z80 {

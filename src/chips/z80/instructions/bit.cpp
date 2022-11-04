@@ -1,10 +1,12 @@
+#include "chips/z80/flags.h"
+#include "crosscutting/memory/emulator_memory.h"
+#include "crosscutting/typedefs.h"
+#include "crosscutting/util/byte_util.h"
+#include "doctest.h"
+#include "instruction_util.h"
 #include <cassert>
 #include <iostream>
-#include "doctest.h"
-#include "crosscutting/memory/emulator_memory.h"
-#include "chips/z80/flags.h"
-#include "instruction_util.h"
-#include "crosscutting/util/byte_util.h"
+#include <string>
 
 namespace emu::z80 {
 
@@ -52,15 +54,13 @@ namespace emu::z80 {
 
         bit(bit_number, reg, flag_reg);
 
-//        const bool is_set = is_bit_set(reg, bit_number);
-
-        if (is_bit_set(reg, 5)) { // "bit_number == 5 && is_set" in the undoc docs
+        if (is_bit_set(reg, 5)) {
             flag_reg.set_y_flag();
         } else {
             flag_reg.clear_y_flag();
         }
 
-        if (is_bit_set(reg, 3)) { // "bit_number == 3 && is_set" in the undoc docs
+        if (is_bit_set(reg, 3)) {
             flag_reg.set_x_flag();
         } else {
             flag_reg.clear_x_flag();

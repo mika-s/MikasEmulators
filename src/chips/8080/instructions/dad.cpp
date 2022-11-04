@@ -2,7 +2,9 @@
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
 #include "doctest.h"
+#include <cstdint>
 #include <iostream>
+#include <string>
 
 namespace emu::i8080 {
 

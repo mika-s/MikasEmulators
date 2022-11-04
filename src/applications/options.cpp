@@ -2,6 +2,7 @@
 #include "crosscutting/exceptions/invalid_program_arguments_exception.h"
 #include "crosscutting/util/string_util.h"
 #include "frontend.h"
+#include <utility>
 
 namespace emu::applications {
 
@@ -32,7 +33,7 @@ namespace emu::applications {
         return m_short_executable_name;
     }
 
-    GuiType Options::gui_type(const std::function<void(const std::string &)>& print_usage) {
+    GuiType Options::gui_type(const std::function<void(const std::string &)> &print_usage) {
         if (!m_options.contains("-g")) {
             return GuiType::ORDINARY;
         }

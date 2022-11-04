@@ -7,8 +7,8 @@
 namespace emu::i8080 {
 
     using emu::memory::EmulatorMemory;
-    using emu::util::byte::low_byte;
     using emu::util::byte::high_byte;
+    using emu::util::byte::low_byte;
     using emu::util::byte::to_u16;
 
     void ex_msp_dd(u16 sp, EmulatorMemory &memory, u16 &reg) {

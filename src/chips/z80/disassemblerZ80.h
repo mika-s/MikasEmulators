@@ -1,12 +1,16 @@
 #ifndef MIKA_EMULATORS_CHIPS_Z80_DISASSEMBLER_H
 #define MIKA_EMULATORS_CHIPS_Z80_DISASSEMBLER_H
 
-#include <string>
-#include "crosscutting/memory/emulator_memory.h"
-#include "crosscutting/typedefs.h"
-#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/memory/next_byte.h"
 #include "crosscutting/memory/next_word.h"
+#include "crosscutting/typedefs.h"
+#include <cstddef>
+#include <iosfwd>
+#include <string>
+
+namespace emu::memory {
+    class EmulatorMemory;
+}
 
 namespace emu::z80 {
 
@@ -16,7 +20,7 @@ namespace emu::z80 {
 
     class DisassemblerZ80 {
     public:
-        DisassemblerZ80(EmulatorMemory &memory, std::ostream& iostream);
+        DisassemblerZ80(EmulatorMemory &memory, std::ostream &iostream);
 
         void disassemble();
 

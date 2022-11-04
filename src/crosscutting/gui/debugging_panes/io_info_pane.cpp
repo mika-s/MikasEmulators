@@ -1,8 +1,12 @@
-#include "imgui.h"
 #include "io_info_pane.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
+#include "debugging/debug_container.h"
+#include "imgui.h"
+#include <string>
+#include <type_traits>
+#include <vector>
 
 namespace emu::gui {
 
@@ -11,7 +15,7 @@ namespace emu::gui {
     using emu::util::string::hexify;
 
     IoInfoPane::IoInfoPane()
-            : m_is_debug_container_set(false) {
+        : m_is_debug_container_set(false) {
     }
 
     void IoInfoPane::attach_debug_container(DebugContainer &debug_container) {

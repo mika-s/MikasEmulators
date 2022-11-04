@@ -1,11 +1,14 @@
 #ifndef MIKA_EMULATORS_CROSSCUTTING_MEMORY_EMULATOR_MEMORY_H
 #define MIKA_EMULATORS_CROSSCUTTING_MEMORY_EMULATOR_MEMORY_H
 
-#include <functional>
+#include "crosscutting/typedefs.h"
+#include <cstddef>
 #include <memory>
 #include <vector>
-#include "memory_mapped_io.h"
-#include "crosscutting/typedefs.h"
+
+namespace emu::memory {
+    class MemoryMappedIo;
+}
 
 namespace emu::memory {
 

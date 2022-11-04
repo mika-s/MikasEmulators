@@ -2,6 +2,10 @@
 #include "crosscutting/util/byte_util.h"
 #include "sounds.h"
 #include <SDL.h>
+#include <SDL_error.h>
+#include <SDL_log.h>
+#include <SDL_stdinc.h>
+#include <cstdlib>
 
 namespace emu::applications::space_invaders {
 

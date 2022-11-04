@@ -1,6 +1,9 @@
 #include "string_util.h"
+#include "typedefs.h"
+#include <cstdlib>
 #include <cstring>
-#include <fmt/format.h>
+#include <fmt/core.h>
+#include <iomanip>
 #include <stdexcept>
 
 namespace emu::util::string {

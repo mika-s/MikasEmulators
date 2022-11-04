@@ -1,9 +1,24 @@
 #include "pacman.h"
+#include "crosscutting/util/file_util.h"
 #include "gui_imgui.h"
 #include "gui_sdl.h"
 #include "input_imgui.h"
 #include "input_sdl.h"
-#include "crosscutting/util/file_util.h"
+#include "pacman/audio.h"
+#include "pacman/gui.h"
+#include "pacman/interfaces/input.h"
+#include "pacman/memory_mapped_io_for_pacman.h"
+#include "pacman/pacman_session.h"
+#include <cstddef>
+#include <memory>
+#include <string>
+
+namespace emu::applications::pacman {
+    class Settings {};
+}
+namespace emu::misc {
+    class Session;
+}
 
 namespace emu::applications::pacman {
 

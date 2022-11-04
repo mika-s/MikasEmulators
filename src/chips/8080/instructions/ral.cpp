@@ -3,6 +3,7 @@
 #include "crosscutting/util/byte_util.h"
 #include "doctest.h"
 #include "instruction_util.h"
+#include <cstdint>
 #include <iostream>
 
 namespace emu::i8080 {

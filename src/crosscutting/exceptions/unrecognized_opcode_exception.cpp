@@ -1,18 +1,19 @@
-#include <sstream>
 #include "unrecognized_opcode_exception.h"
 #include "crosscutting/util/string_util.h"
+#include "typedefs.h"
+#include <sstream>
 
 namespace emu::exceptions {
 
     using namespace emu::util::string;
 
     UnrecognizedOpcodeException::UnrecognizedOpcodeException(u8 opcode)
-            : runtime_error("Unrecognized opcode") {
+        : runtime_error("Unrecognized opcode") {
         make_message(opcode);
     }
 
-    UnrecognizedOpcodeException::UnrecognizedOpcodeException(u8 opcode, const std::string& extra_message)
-            : runtime_error("Unrecognized opcode (" + extra_message + ")") {
+    UnrecognizedOpcodeException::UnrecognizedOpcodeException(u8 opcode, const std::string &extra_message)
+        : runtime_error("Unrecognized opcode (" + extra_message + ")") {
         make_message(opcode);
     }
 

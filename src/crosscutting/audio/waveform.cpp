@@ -1,11 +1,13 @@
-#include <fmt/format.h>
-#include <stdexcept>
 #include "waveform.h"
+#include "typedefs.h"
+#include <fmt/core.h>
+#include <stdexcept>
+#include <utility>
 
 namespace emu::wsg3 {
 
     Waveform::Waveform(std::vector<u8> samples)
-            : m_samples(std::move(samples)) {
+        : m_samples(std::move(samples)) {
 
         for (u8 sample: m_samples) {
             if (sample > max_value_for_sample) {

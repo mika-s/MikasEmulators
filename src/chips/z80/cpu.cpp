@@ -1,10 +1,16 @@
 #include "cpu.h"
 #include "crosscutting/exceptions/unrecognized_opcode_exception.h"
+#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
 #include "instructions/instructions.h"
+#include "interfaces/in_observer.h"
+#include "interfaces/out_observer.h"
 #include <algorithm>
+#include <cstdint>
 #include <iostream>
+#include <stdexcept>
+#include <string>
 
 namespace emu::z80 {
 

@@ -1,7 +1,9 @@
+#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/typedefs.h"
 #include "doctest.h"
 #include "instruction_util.h"
 #include <iostream>
+#include <vector>
 
 namespace emu::i8080 {
     /**

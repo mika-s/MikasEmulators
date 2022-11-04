@@ -1,4 +1,5 @@
 #include "cpu_io.h"
+#include "space_invaders/settings.h"
 
 namespace emu::applications::space_invaders {
 

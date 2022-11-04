@@ -1,8 +1,8 @@
 #ifndef MIKA_EMULATORS_CROSSCUTTING_ROM_FILE_NOT_FOUND_EXCEPTION_H
 #define MIKA_EMULATORS_CROSSCUTTING_ROM_FILE_NOT_FOUND_EXCEPTION_H
 
-#include <iostream>
 #include <stdexcept>
+#include <string>
 
 namespace emu::exceptions {
 

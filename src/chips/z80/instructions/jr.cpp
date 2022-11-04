@@ -1,10 +1,11 @@
-#include <iostream>
-#include "doctest.h"
 #include "chips/z80/flags.h"
-#include "crosscutting/typedefs.h"
 #include "crosscutting/memory/next_byte.h"
+#include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
+#include "doctest.h"
+#include <iostream>
+#include <string>
 
 namespace emu::z80 {
 
@@ -142,7 +143,7 @@ namespace emu::z80 {
                 << ", "
                 << hexify_wo_0x(static_cast<i8>(args.farg));
     }
-    
+
     TEST_CASE("Z80: JR") {
         cyc cycles = 0;
         u16 pc = 0;

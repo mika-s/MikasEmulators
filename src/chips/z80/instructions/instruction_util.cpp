@@ -1,11 +1,13 @@
 #include "instruction_util.h"
+#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/util/byte_util.h"
+#include "flags.h"
 
 namespace emu::z80 {
 
     using emu::memory::NextWord;
-    using emu::util::byte::low_byte;
     using emu::util::byte::high_byte;
+    using emu::util::byte::low_byte;
     using emu::util::byte::to_u16;
 
     void add_to_register(u8 &reg, u8 value, bool cf, Flags &flag_reg) {

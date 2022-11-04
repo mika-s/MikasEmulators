@@ -1,8 +1,12 @@
-#include <algorithm>
-#include <SDL.h>
-#include "imgui_impl_sdl.h"
 #include "input_sdl.h"
 #include "crosscutting/util/byte_util.h"
+#include "pacman/interfaces/input.h"
+#include "pacman/interfaces/io_observer.h"
+#include "pacman/io_request.h"
+#include "pacman/memory_mapped_io_for_pacman.h"
+#include <SDL_events.h>
+#include <SDL_keyboard.h>
+#include <algorithm>
 
 namespace emu::applications::pacman {
 
@@ -11,7 +15,6 @@ namespace emu::applications::pacman {
 
     void InputSdl::add_io_observer(IoObserver &observer) {
         m_io_observers.push_back(&observer);
-
     }
 
     void InputSdl::remove_io_observer(IoObserver *observer) {

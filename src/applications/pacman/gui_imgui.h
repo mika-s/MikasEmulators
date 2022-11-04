@@ -1,31 +1,43 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_PACMAN_GUI_IMGUI_H
 #define MIKA_EMULATORS_APPLICATIONS_PACMAN_GUI_IMGUI_H
 
-#include <memory>
-#include <vector>
-#include <SDL_video.h>
-#include <SDL_render.h>
-#include "gui.h"
-#include "crosscutting/typedefs.h"
 #include "crosscutting/gui/debugging_panes/cpu_info_pane.h"
 #include "crosscutting/gui/debugging_panes/debug_log_pane.h"
 #include "crosscutting/gui/debugging_panes/disassembly_pane.h"
 #include "crosscutting/gui/debugging_panes/io_info_pane.h"
 #include "crosscutting/gui/debugging_panes/memory_editor_pane.h"
-#include "crosscutting/gui/debugging_panes/tilemap_pane.h"
 #include "crosscutting/gui/debugging_panes/spritemap_pane.h"
+#include "crosscutting/gui/debugging_panes/tilemap_pane.h"
 #include "crosscutting/gui/debugging_panes/waveform_pane.h"
 #include "crosscutting/misc/run_status.h"
+#include "crosscutting/typedefs.h"
+#include "gui.h"
+#include <SDL_video.h>
+#include <memory>
+#include <vector>
+
+namespace emu::debugger {
+    class DebugContainer;
+}
+namespace emu::debugger {
+    class Debugger;
+}
+namespace emu::logging {
+    class Logger;
+}
+namespace emu::z80 {
+    class GuiObserver;
+}
 
 namespace emu::applications::pacman {
 
+    using emu::gui::CpuInfoPane;
     using emu::gui::DebugLogPane;
     using emu::gui::DisassemblyPane;
-    using emu::gui::CpuInfoPane;
     using emu::gui::IoInfoPane;
     using emu::gui::MemoryEditorPane;
-    using emu::gui::TilemapPane;
     using emu::gui::SpritemapPane;
+    using emu::gui::TilemapPane;
     using emu::gui::WaveformPane;
     using emu::misc::RunStatus;
 

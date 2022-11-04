@@ -1,12 +1,19 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_PACMAN_INPUT_IMGUI_H
 #define MIKA_EMULATORS_APPLICATIONS_PACMAN_INPUT_IMGUI_H
 
-#include <SDL_scancode.h>
-#include <vector>
-#include "io_request.h"
-#include "memory_mapped_io_for_pacman.h"
+#include "crosscutting/misc/run_status.h"
 #include "interfaces/input.h"
-#include "interfaces/io_observer.h"
+#include "io_request.h"
+#include <SDL_scancode.h>
+#include <memory>
+#include <vector>
+
+namespace emu::applications::pacman {
+    class IoObserver;
+}
+namespace emu::applications::pacman {
+    class MemoryMappedIoForPacman;
+}
 
 namespace emu::applications::pacman {
 

@@ -1,4 +1,5 @@
 #include "chips/8080/flags.h"
+#include "crosscutting/typedefs.h"
 #include "doctest.h"
 #include <iostream>
 

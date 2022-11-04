@@ -1,8 +1,9 @@
-#include <iostream>
-#include "doctest.h"
-#include "crosscutting/typedefs.h"
 #include "crosscutting/memory/next_byte.h"
+#include "crosscutting/typedefs.h"
 #include "crosscutting/util/string_util.h"
+#include "doctest.h"
+#include <iostream>
+#include <string>
 
 namespace emu::z80 {
 

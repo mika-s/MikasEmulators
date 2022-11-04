@@ -1,9 +1,12 @@
 #ifndef MIKA_EMULATORS_CROSSCUTTING_GUI_GRAPHICS_FRAMEBUFFER_H
 #define MIKA_EMULATORS_CROSSCUTTING_GUI_GRAPHICS_FRAMEBUFFER_H
 
-#include <vector>
-#include "color.h"
 #include "crosscutting/typedefs.h"
+#include <vector>
+
+namespace emu::gui {
+    class Color;
+}
 
 namespace emu::gui {
     class Framebuffer {

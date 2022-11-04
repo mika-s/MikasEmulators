@@ -1,9 +1,30 @@
 #include "space_invaders_session.h"
+#include "8080/cpu.h"
+#include "8080/interfaces/gui_observer.h"
+#include "8080/shift_register.h"
 #include "chips/8080/disassembler8080.h"
+#include "crosscutting/debugging/debugger.h"
+#include "crosscutting/debugging/disassembled_line.h"
+#include "crosscutting/logging/logger.h"
+#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/misc/sdl_counter.h"
 #include "crosscutting/util/string_util.h"
-#include <SDL_timer.h>
+#include "space_invaders/audio.h"
+#include "space_invaders/cpu_io.h"
+#include "space_invaders/gui.h"
+#include "space_invaders/interfaces/input.h"
+#include <algorithm>
+#include <functional>
 #include <iostream>
+#include <iterator>
+#include <stdexcept>
+#include <string>
+#include <tuple>
+#include <utility>
+
+namespace emu::applications::space_invaders {
+    class Settings;
+}
 
 namespace emu::applications::space_invaders {
 

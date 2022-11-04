@@ -1,11 +1,17 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_PACMAN_AUDIO_H
 #define MIKA_EMULATORS_APPLICATIONS_PACMAN_AUDIO_H
 
-#include <SDL.h>
-#include <vector>
-#include "chips/namco_wsg3/voice.h"
 #include "chips/namco_wsg3/wsg3.h"
 #include "crosscutting/typedefs.h"
+#include <SDL_audio.h>
+#include <vector>
+
+namespace emu::wsg3 {
+    class Voice;
+}
+namespace emu::wsg3 {
+    class Waveform;
+}
 
 namespace emu::applications::pacman {
 
@@ -15,7 +21,6 @@ namespace emu::applications::pacman {
 
     class Audio {
     public:
-
         Audio(const std::vector<u8> &sound_rom1, const std::vector<u8> &sound_rom2);
 
         ~Audio();

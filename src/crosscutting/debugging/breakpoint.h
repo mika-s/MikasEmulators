@@ -1,9 +1,12 @@
 #ifndef MIKA_EMULATORS_CROSSCUTTING_DEBUGGING_BREAKPOINT_H
 #define MIKA_EMULATORS_CROSSCUTTING_DEBUGGING_BREAKPOINT_H
 
-#include <string>
-#include "disassembled_line.h"
 #include "crosscutting/typedefs.h"
+#include <string>
+
+namespace emu::debugger {
+    class DisassembledLine;
+}
 
 namespace emu::debugger {
 

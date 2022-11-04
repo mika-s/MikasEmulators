@@ -1,10 +1,11 @@
-#include <iostream>
-#include "doctest.h"
 #include "chips/z80/flags.h"
-#include "crosscutting/typedefs.h"
 #include "crosscutting/memory/next_word.h"
+#include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
+#include "doctest.h"
+#include <iostream>
+#include <string>
 
 namespace emu::z80 {
 
@@ -529,7 +530,7 @@ namespace emu::z80 {
             u16 pc = 0;
             NextWord args = {.farg = 0x11, .sarg = 0x22};
             Flags flag_reg;
-            flag_reg.clear_parity_overflow_flag();   // Parity is odd when the parity flag is false.
+            flag_reg.clear_parity_overflow_flag(); // Parity is odd when the parity flag is false.
 
             jp_po(pc, args, flag_reg, cycles);
 
@@ -588,7 +589,7 @@ namespace emu::z80 {
             u16 pc = 0;
             NextWord args = {.farg = 0x11, .sarg = 0x22};
             Flags flag_reg;
-            flag_reg.set_parity_overflow_flag();   // Parity is even when the parity flag is true.
+            flag_reg.set_parity_overflow_flag(); // Parity is even when the parity flag is true.
 
             jp_pe(pc, args, flag_reg, cycles);
 
@@ -647,7 +648,7 @@ namespace emu::z80 {
             u16 pc = 0;
             NextWord args = {.farg = 0x11, .sarg = 0x22};
             Flags flag_reg;
-            flag_reg.clear_sign_flag();     // Positive if the sign flag is false.
+            flag_reg.clear_sign_flag(); // Positive if the sign flag is false.
 
             jp_p(pc, args, flag_reg, cycles);
 
@@ -706,7 +707,7 @@ namespace emu::z80 {
             u16 pc = 0;
             NextWord args = {.farg = 0x11, .sarg = 0x22};
             Flags flag_reg;
-            flag_reg.set_sign_flag();     // Negative if the sign flag is true.
+            flag_reg.set_sign_flag(); // Negative if the sign flag is true.
 
             jp_m(pc, args, flag_reg, cycles);
 

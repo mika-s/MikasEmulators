@@ -1,5 +1,8 @@
 #include "emulator_memory.h"
 #include "doctest.h"
+#include "memory/memory_mapped_io.h"
+#include "typedefs.h"
+#include <utility>
 
 namespace emu::memory {
 

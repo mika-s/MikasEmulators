@@ -2,6 +2,7 @@
 #define MIKA_EMULATORS_CROSSCUTTING_GUI_GRAPHICS_PALETTE_H
 
 #include "color.h"
+#include <cstddef>
 
 namespace emu::gui {
 

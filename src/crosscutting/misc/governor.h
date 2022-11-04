@@ -2,7 +2,6 @@
 #define MIKA_EMULATORS_CROSSCUTTING_MISC_GOVERNOR_H
 
 #include <functional>
-#include <vector>
 
 namespace emu::misc {
 

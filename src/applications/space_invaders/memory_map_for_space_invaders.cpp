@@ -1,4 +1,5 @@
 #include "memory_map_for_space_invaders.h"
+#include "crosscutting/memory/emulator_memory.h"
 
 namespace emu::applications::space_invaders {
 

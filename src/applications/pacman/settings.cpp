@@ -1,7 +1,12 @@
 #include "settings.h"
 #include "crosscutting/exceptions/invalid_program_arguments_exception.h"
+#include "options.h"
 #include "usage.h"
+#include <functional>
 #include <sstream>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 namespace emu::applications::pacman {
 

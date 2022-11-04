@@ -1,13 +1,13 @@
-#include <stdexcept>
-#include <fmt/format.h>
 #include "voice.h"
+#include <fmt/core.h>
+#include <stdexcept>
 
 namespace emu::wsg3 {
     Voice::Voice()
-            : m_waveform_number(0),
-              m_frequency(0),
-              m_volume(0),
-              m_accumulator(0) {
+        : m_waveform_number(0),
+          m_frequency(0),
+          m_volume(0),
+          m_accumulator(0) {
     }
 
     u8 Voice::waveform_number() const {

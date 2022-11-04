@@ -100,3 +100,7 @@ set(SOURCES_8080_H
 add_library(I8080 STATIC ${SOURCES_8080_CPP} ${SOURCES_8080_H})
 target_link_libraries(I8080 PRIVATE Doctest Crosscutting)
 target_include_directories(I8080 PUBLIC ../)
+
+if(iwyu_path)
+    set_property(TARGET I8080 PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
+endif()

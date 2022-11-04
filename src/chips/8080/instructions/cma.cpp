@@ -1,5 +1,6 @@
 #include "crosscutting/typedefs.h"
 #include "doctest.h"
+#include <cstdint>
 #include <iostream>
 
 namespace emu::i8080 {

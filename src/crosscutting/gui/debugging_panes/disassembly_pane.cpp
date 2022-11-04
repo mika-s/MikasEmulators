@@ -1,8 +1,15 @@
-#include <memory>
-#include "imgui.h"
 #include "disassembly_pane.h"
 #include "crosscutting/debugging/breakpoint.h"
 #include "crosscutting/util/string_util.h"
+#include "debugging/debug_container.h"
+#include "debugging/debugger.h"
+#include "debugging/disassembled_line.h"
+#include "imgui.h"
+#include "logging/logger.h"
+#include "typedefs.h"
+#include <memory>
+#include <unordered_map>
+#include <utility>
 
 namespace emu::gui {
 
@@ -10,17 +17,17 @@ namespace emu::gui {
     using emu::util::string::hexify;
 
     DisassemblyPane::DisassemblyPane()
-            : m_is_debugger_set(false),
-              m_is_debug_container_set(false),
-              m_is_logger_set(false),
-              m_address_to_goto_str("00000000"),
-              m_address_to_goto(0),
-              m_bp_address_to_goto(0),
-              m_is_following_pc(false),
-              m_is_following_pc_previous(false),
-              m_is_going_to_pc(false),
-              m_is_going_to_address(false),
-              m_is_going_to_breakpoint(false) {
+        : m_is_debugger_set(false),
+          m_is_debug_container_set(false),
+          m_is_logger_set(false),
+          m_address_to_goto_str("00000000"),
+          m_address_to_goto(0),
+          m_bp_address_to_goto(0),
+          m_is_following_pc(false),
+          m_is_following_pc_previous(false),
+          m_is_going_to_pc(false),
+          m_is_going_to_address(false),
+          m_is_going_to_breakpoint(false) {
     }
 
     void DisassemblyPane::attach_debugger(std::shared_ptr<Debugger> debugger) {

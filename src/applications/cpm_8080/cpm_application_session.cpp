@@ -1,6 +1,9 @@
 #include "cpm_application_session.h"
+#include "8080/cpu.h"
 #include "crosscutting/util/byte_util.h"
 #include <iostream>
+#include <stdexcept>
+#include <utility>
 
 namespace emu::applications::cpm::i8080 {
 

@@ -1,11 +1,14 @@
-#include <fmt/format.h>
-#include <stdexcept>
 #include "wsg3.h"
+#include "voice.h"
+#include <fmt/core.h>
+#include <memory>
+#include <stdexcept>
+#include <utility>
 
 namespace emu::wsg3 {
 
     Wsg3::Wsg3(std::vector<Waveform> waveforms)
-            : m_waveforms(std::move(waveforms)) {
+        : m_waveforms(std::move(waveforms)) {
 
         if (m_waveforms.size() != expected_number_of_waveforms) {
             throw std::invalid_argument(

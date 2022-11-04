@@ -2,12 +2,18 @@
 #define MIKA_EMULATORS_APPLICATIONS_PACMAN_MEMORY_MAPPED_IO_FOR_PACMAN_H
 
 #include "chips/namco_wsg3/voice.h"
-#include "chips/namco_wsg3/wsg3.h"
-#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/memory/memory_mapped_io.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
-#include "settings.h"
+#include <cstddef>
+#include <vector>
+
+namespace emu::applications::pacman {
+    class Settings;
+}
+namespace emu::memory {
+    class EmulatorMemory;
+}
 
 namespace emu::applications::pacman {
 

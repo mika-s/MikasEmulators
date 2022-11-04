@@ -2,6 +2,7 @@
 #define MIKA_EMULATORS_APPLICATIONS_OPTIONS_H
 
 #include "crosscutting/gui/gui_type.h"
+#include <cstddef>
 #include <functional>
 #include <string>
 #include <unordered_map>
@@ -19,7 +20,7 @@ namespace emu::applications {
 
         std::string short_executable_name();
 
-        GuiType gui_type(const std::function<void(const std::string &)>& print_usage);
+        GuiType gui_type(const std::function<void(const std::string &)> &print_usage);
 
         bool is_asking_for_help();
 

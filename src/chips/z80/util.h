@@ -1,8 +1,11 @@
 #ifndef MIKA_EMULATORS_CHIPS_Z80_UTIL_H
 #define MIKA_EMULATORS_CHIPS_Z80_UTIL_H
 
-#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/typedefs.h"
+
+namespace emu::memory {
+    class EmulatorMemory;
+}
 
 namespace emu::z80 {
 

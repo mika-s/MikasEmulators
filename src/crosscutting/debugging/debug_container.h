@@ -1,15 +1,21 @@
 #ifndef MIKA_EMULATORS_CROSSCUTTING_DEBUGGING_DEBUG_CONTAINER_H
 #define MIKA_EMULATORS_CROSSCUTTING_DEBUGGING_DEBUG_CONTAINER_H
 
+#include "crosscutting/audio/waveform.h"
+#include "crosscutting/typedefs.h"
+#include "disassembled_line.h"
 #include <functional>
 #include <memory>
 #include <string>
+#include <tuple>
 #include <vector>
-#include "disassembled_line.h"
-#include "crosscutting/typedefs.h"
-#include "crosscutting/audio/waveform.h"
-#include "crosscutting/gui/graphics/sprite.h"
-#include "crosscutting/gui/graphics/tile.h"
+
+namespace emu::gui {
+    class Sprite;
+}
+namespace emu::gui {
+    class Tile;
+}
 
 namespace emu::debugger {
 
@@ -130,13 +136,13 @@ namespace emu::debugger {
 
         [[nodiscard]] bool is_flag_register_set() const;
 
-        void add_io(const IoDebugContainer& io);
+        void add_io(const IoDebugContainer &io);
 
         [[nodiscard]] std::vector<IoDebugContainer> io() const;
 
         [[nodiscard]] bool is_io_set() const;
 
-        void add_memory(const MemoryDebugContainer& memory);
+        void add_memory(const MemoryDebugContainer &memory);
 
         [[nodiscard]] MemoryDebugContainer memory() const;
 
@@ -179,18 +185,17 @@ namespace emu::debugger {
         [[nodiscard]] bool is_tilemap_set() const;
 
         void add_spritemap(const std::tuple<
-                std::vector<std::vector<std::shared_ptr<Sprite>>>,
-                std::vector<std::vector<std::shared_ptr<Sprite>>>,
-                std::vector<std::vector<std::shared_ptr<Sprite>>>,
-                std::vector<std::vector<std::shared_ptr<Sprite>>>
-        >& sprites);
+                           std::vector<std::vector<std::shared_ptr<Sprite>>>,
+                           std::vector<std::vector<std::shared_ptr<Sprite>>>,
+                           std::vector<std::vector<std::shared_ptr<Sprite>>>,
+                           std::vector<std::vector<std::shared_ptr<Sprite>>>> &sprites);
 
         std::tuple<
                 std::vector<std::vector<std::shared_ptr<Sprite>>>,
                 std::vector<std::vector<std::shared_ptr<Sprite>>>,
                 std::vector<std::vector<std::shared_ptr<Sprite>>>,
-                std::vector<std::vector<std::shared_ptr<Sprite>>>
-        > sprites();
+                std::vector<std::vector<std::shared_ptr<Sprite>>>>
+        sprites();
 
         [[nodiscard]] bool is_spritemap_set() const;
 
@@ -235,8 +240,8 @@ namespace emu::debugger {
                 std::vector<std::vector<std::shared_ptr<Sprite>>>,
                 std::vector<std::vector<std::shared_ptr<Sprite>>>,
                 std::vector<std::vector<std::shared_ptr<Sprite>>>,
-                std::vector<std::vector<std::shared_ptr<Sprite>>>
-        > m_sprites;
+                std::vector<std::vector<std::shared_ptr<Sprite>>>>
+                m_sprites;
         bool m_is_spritemap_set;
 
         std::vector<Waveform> m_waveforms;

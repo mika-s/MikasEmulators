@@ -2,6 +2,11 @@
 #include "cpm_application_session.h"
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/file_util.h"
+#include <cstdint>
+
+namespace emu::misc {
+    class Session;
+}
 
 namespace emu::applications::cpm::i8080 {
 

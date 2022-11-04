@@ -1,13 +1,18 @@
 #ifndef MIKA_EMULATORS_CROSSCUTTING_GUI_DEBUGGING_PANES_DISASSEMBLY_PANE_H
 #define MIKA_EMULATORS_CROSSCUTTING_GUI_DEBUGGING_PANES_DISASSEMBLY_PANE_H
 
+#include "crosscutting/debugging/debug_container.h"
+#include "crosscutting/typedefs.h"
 #include <memory>
 #include <string>
 #include <vector>
-#include "crosscutting/typedefs.h"
-#include "crosscutting/debugging/debugger.h"
-#include "crosscutting/debugging/debug_container.h"
-#include "crosscutting/logging/logger.h"
+
+namespace emu::debugger {
+    class Debugger;
+}
+namespace emu::logging {
+    class Logger;
+}
 
 namespace emu::gui {
 

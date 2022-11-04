@@ -1,18 +1,24 @@
-#include <algorithm>
-#include <SDL.h>
 #include "input_imgui.h"
-#include "imgui_impl_sdl.h"
 #include "crosscutting/util/byte_util.h"
+#include "imgui.h"
+#include "imgui_impl_sdl.h"
+#include "pacman/interfaces/input.h"
+#include "pacman/interfaces/io_observer.h"
+#include "pacman/io_request.h"
+#include "pacman/memory_mapped_io_for_pacman.h"
+#include <SDL_events.h>
+#include <SDL_keyboard.h>
+#include <algorithm>
 
 namespace emu::applications::pacman {
 
-    using emu::util::byte::set_bit;
-    using emu::util::byte::unset_bit;
     using emu::misc::RunStatus;
     using emu::misc::RunStatus::NOT_RUNNING;
-    using emu::misc::RunStatus::RUNNING;
     using emu::misc::RunStatus::PAUSED;
+    using emu::misc::RunStatus::RUNNING;
     using emu::misc::RunStatus::STEPPING;
+    using emu::util::byte::set_bit;
+    using emu::util::byte::unset_bit;
 
     void InputImgui::add_io_observer(IoObserver &observer) {
         m_io_observers.push_back(&observer);

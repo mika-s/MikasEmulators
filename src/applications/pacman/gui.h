@@ -1,24 +1,37 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_PACMAN_GUI_H
 #define MIKA_EMULATORS_APPLICATIONS_PACMAN_GUI_H
 
-#include <memory>
-#include "chips/z80/interfaces/gui_observer.h"
-#include "crosscutting/typedefs.h"
-#include "crosscutting/debugging/debugger.h"
-#include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/gui/graphics/color.h"
 #include "crosscutting/gui/graphics/framebuffer.h"
 #include "crosscutting/gui/graphics/palette.h"
-#include "crosscutting/gui/graphics/sprite.h"
-#include "crosscutting/gui/graphics/tile.h"
-#include "crosscutting/logging/logger.h"
 #include "crosscutting/misc/run_status.h"
+#include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
+#include <memory>
+#include <tuple>
+#include <vector>
+
+namespace emu::debugger {
+    class DebugContainer;
+}
+namespace emu::debugger {
+    class Debugger;
+}
+namespace emu::gui {
+    class Sprite;
+}
+namespace emu::gui {
+    class Tile;
+}
+namespace emu::logging {
+    class Logger;
+}
+namespace emu::z80 {
+    class GuiObserver;
+}
 
 namespace emu::applications::pacman {
 
-    using emu::util::byte::is_bit_set;
-    using emu::util::byte::to_u32;
     using emu::debugger::DebugContainer;
     using emu::debugger::Debugger;
     using emu::gui::Color;
@@ -28,6 +41,8 @@ namespace emu::applications::pacman {
     using emu::gui::Tile;
     using emu::logging::Logger;
     using emu::misc::RunStatus;
+    using emu::util::byte::is_bit_set;
+    using emu::util::byte::to_u32;
     using emu::z80::GuiObserver;
 
     class Gui {
@@ -78,7 +93,6 @@ namespace emu::applications::pacman {
         > sprites();
 
     protected:
-
         static constexpr int tile_size = 8;
         static constexpr int bytes_per_tile = 16;
 

@@ -1,13 +1,14 @@
 #include "color.h"
 #include "crosscutting/util/byte_util.h"
+#include "typedefs.h"
 
 namespace emu::gui {
 
     Color::Color(u8 alpha, u8 red, u8 green, u8 blue)
-            : m_alpha(alpha),
-              m_red(red),
-              m_green(green),
-              m_blue(blue) {
+        : m_alpha(alpha),
+          m_red(red),
+          m_green(green),
+          m_blue(blue) {
     }
 
     u32 Color::to_u32() {

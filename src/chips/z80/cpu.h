@@ -1,15 +1,23 @@
 #ifndef MIKA_EMULATORS_CHIPS_Z80_CPU_H
 #define MIKA_EMULATORS_CHIPS_Z80_CPU_H
 
-#include <vector>
-#include "flags.h"
-#include "interrupt_mode.h"
-#include "interfaces/in_observer.h"
-#include "interfaces/out_observer.h"
-#include "crosscutting/typedefs.h"
-#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/memory/next_byte.h"
 #include "crosscutting/memory/next_word.h"
+#include "crosscutting/typedefs.h"
+#include "flags.h"
+#include "interrupt_mode.h"
+#include <cstddef>
+#include <vector>
+
+namespace emu::memory {
+    class EmulatorMemory;
+}
+namespace emu::z80 {
+    class InObserver;
+}
+namespace emu::z80 {
+    class OutObserver;
+}
 
 namespace emu::z80 {
 

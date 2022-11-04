@@ -1,6 +1,11 @@
-#include <iostream>
 #include "gui.h"
+#include "crosscutting/gui/graphics/sprite.h"
+#include "crosscutting/gui/graphics/tile.h"
 #include "crosscutting/util/gui_util.h"
+#include <cstddef>
+#include <ext/alloc_traits.h>
+#include <stdexcept>
+#include <utility>
 
 namespace emu::applications::pacman {
 
@@ -9,11 +14,8 @@ namespace emu::applications::pacman {
     using emu::util::gui::number_to_pixels;
 
     Gui::Gui()
-            : m_framebuffer(Framebuffer(height, width, Color::white())),
-              m_debugging_sprites({{},
-                                   {},
-                                   {},
-                                   {}}) {
+        : m_framebuffer(Framebuffer(height, width, Color::white())),
+          m_debugging_sprites({{}, {}, {}, {}}) {
     }
 
     void Gui::load_color_rom(const std::vector<u8> &color_rom) {
@@ -492,8 +494,8 @@ namespace emu::applications::pacman {
             const u8 sprite_idx = (flags & 0b11111100) >> 2;
 
             std::shared_ptr<Sprite> sprite = m_is_sprite_debug_enabled
-                                             ? m_debugging_sprites[rotation][sprite_idx]
-                                             : render_sprite(palette_idx, sprite_idx, flip_x, flip_y);
+                                                     ? m_debugging_sprites[rotation][sprite_idx]
+                                                     : render_sprite(palette_idx, sprite_idx, flip_x, flip_y);
 
             const int sprite_origin_row = sprite_ram[sprite_coordinates_address--];
             const int sprite_origin_col = sprite_ram[sprite_coordinates_address--];

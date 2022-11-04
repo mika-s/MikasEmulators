@@ -1,4 +1,5 @@
 #include "chips/8080/flags.h"
+#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/memory/next_word.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
@@ -6,6 +7,8 @@
 #include "doctest.h"
 #include "instruction_util.h"
 #include <iostream>
+#include <string>
+#include <vector>
 
 namespace emu::i8080 {
 

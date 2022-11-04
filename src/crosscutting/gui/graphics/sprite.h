@@ -1,10 +1,13 @@
 #ifndef MIKA_EMULATORS_CROSSCUTTING_GUI_GRAPHICS_SPRITE_H
 #define MIKA_EMULATORS_CROSSCUTTING_GUI_GRAPHICS_SPRITE_H
 
+#include "color.h"
 #include <cstddef>
 #include <vector>
-#include "color.h"
-#include "framebuffer.h"
+
+namespace emu::gui {
+    class Framebuffer;
+}
 
 namespace emu::gui {
 

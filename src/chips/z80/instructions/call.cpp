@@ -1,10 +1,14 @@
-#include <iostream>
-#include "doctest.h"
-#include "instruction_util.h"
-#include "crosscutting/typedefs.h"
+#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/memory/next_word.h"
+#include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
+#include "doctest.h"
+#include "flags.h"
+#include "instruction_util.h"
+#include <iostream>
+#include <string>
+#include <vector>
 
 namespace emu::z80 {
 

@@ -1,10 +1,12 @@
-#include "imgui.h"
 #include "memory_editor_pane.h"
+#include "debugging/debug_container.h"
+#include "imgui.h"
+#include <vector>
 
 namespace emu::gui {
 
     MemoryEditorPane::MemoryEditorPane()
-            : m_is_debug_container_set(false) {
+        : m_is_debug_container_set(false) {
     }
 
     void MemoryEditorPane::attach_debug_container(DebugContainer &debug_container) {

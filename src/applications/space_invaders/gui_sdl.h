@@ -9,6 +9,19 @@
 #include <memory>
 #include <vector>
 
+namespace emu::debugger {
+    class DebugContainer;
+}
+namespace emu::debugger {
+    class Debugger;
+}
+namespace emu::i8080 {
+    class GuiObserver;
+}
+namespace emu::logging {
+    class Logger;
+}
+
 namespace emu::applications::space_invaders {
 
     using emu::i8080::GuiObserver;

@@ -6,12 +6,25 @@
 #include "crosscutting/gui/debugging_panes/disassembly_pane.h"
 #include "crosscutting/gui/debugging_panes/io_info_pane.h"
 #include "crosscutting/gui/debugging_panes/memory_editor_pane.h"
+#include "crosscutting/misc/run_status.h"
 #include "crosscutting/typedefs.h"
 #include "gui.h"
-#include <SDL_render.h>
 #include <SDL_video.h>
 #include <memory>
 #include <vector>
+
+namespace emu::debugger {
+    class DebugContainer;
+}
+namespace emu::debugger {
+    class Debugger;
+}
+namespace emu::i8080 {
+    class GuiObserver;
+}
+namespace emu::logging {
+    class Logger;
+}
 
 namespace emu::applications::space_invaders {
 

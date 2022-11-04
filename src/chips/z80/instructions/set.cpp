@@ -1,11 +1,14 @@
-#include <cassert>
-#include <iostream>
-#include "doctest.h"
-#include "crosscutting/memory/emulator_memory.h"
-#include "chips/z80/flags.h"
 #include "chips/z80/util.h"
 #include "crosscutting/memory/next_byte.h"
+#include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
+#include <cassert>
+#include <iostream>
+#include <string>
+
+namespace emu::memory {
+    class EmulatorMemory;
+}
 
 namespace emu::z80 {
 
@@ -70,9 +73,7 @@ namespace emu::z80 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void set_MixyPd(unsigned int bit_number, u16 ixy_reg, u8 d, EmulatorMemory &memory,
-                    cyc &cycles
-    ) {
+    void set_MixyPd(unsigned int bit_number, u16 ixy_reg, u8 d, EmulatorMemory &memory, cyc &cycles) {
         assert(bit_number < 8);
 
         set_bit_in_memory(memory, ixy_reg + static_cast<i8>(d), bit_number);

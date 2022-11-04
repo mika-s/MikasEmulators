@@ -2,26 +2,45 @@
 #define MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_SPACE_INVADERS_SESSION_H
 
 #include "audio.h"
-#include "chips/8080/cpu.h"
 #include "chips/8080/interfaces/gui_observer.h"
 #include "chips/8080/interfaces/in_observer.h"
 #include "chips/8080/interfaces/out_observer.h"
 #include "cpu_io.h"
 #include "crosscutting/debugging/debug_container.h"
-#include "crosscutting/debugging/debugger.h"
-#include "crosscutting/debugging/disassembled_line.h"
-#include "crosscutting/logging/logger.h"
-#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/misc/governor.h"
 #include "crosscutting/misc/run_status.h"
 #include "crosscutting/misc/session.h"
 #include "crosscutting/typedefs.h"
-#include "gui.h"
-#include "interfaces/input.h"
 #include "interfaces/io_observer.h"
+#include "space_invaders/io_request.h"
 #include <memory>
 #include <unordered_map>
 #include <vector>
+
+namespace emu::applications::space_invaders {
+    class Gui;
+}
+namespace emu::applications::space_invaders {
+    class Input;
+}
+namespace emu::applications::space_invaders {
+    class Settings;
+}
+namespace emu::debugger {
+    class Debugger;
+}
+namespace emu::debugger {
+    class DisassembledLine;
+}
+namespace emu::i8080 {
+    class Cpu;
+}
+namespace emu::logging {
+    class Logger;
+}
+namespace emu::memory {
+    class EmulatorMemory;
+}
 
 namespace emu::applications::space_invaders {
 
@@ -29,11 +48,11 @@ namespace emu::applications::space_invaders {
     using emu::debugger::Debugger;
     using emu::debugger::DisassembledLine;
     using emu::i8080::Cpu;
-    using emu::i8080::EmulatorMemory;
     using emu::i8080::GuiObserver;
     using emu::i8080::InObserver;
     using emu::i8080::OutObserver;
     using emu::logging::Logger;
+    using emu::memory::EmulatorMemory;
     using emu::misc::Governor;
     using emu::misc::RunStatus;
     using emu::misc::Session;

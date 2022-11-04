@@ -1,7 +1,13 @@
 #include "input_imgui.h"
 #include "crosscutting/util/byte_util.h"
+#include "imgui.h"
 #include "imgui_impl_sdl.h"
-#include <SDL.h>
+#include "space_invaders/cpu_io.h"
+#include "space_invaders/interfaces/input.h"
+#include "space_invaders/interfaces/io_observer.h"
+#include "space_invaders/io_request.h"
+#include <SDL_events.h>
+#include <SDL_keyboard.h>
 #include <algorithm>
 
 namespace emu::applications::space_invaders {

@@ -1,4 +1,5 @@
 #include "byte_util.h"
+#include "crosscutting/typedefs.h"
 #include "doctest.h"
 
 namespace emu::util::byte {
@@ -96,7 +97,7 @@ namespace emu::util::byte {
 
                 set_bit(bit_field, bit_pos_to_be_set);
 
-                CHECK_EQ(true, (bit_field >> bit_pos_to_be_set) & 1);   // Does not toggle
+                CHECK_EQ(true, (bit_field >> bit_pos_to_be_set) & 1); // Does not toggle
 
                 for (unsigned int bit_pos = 0; bit_pos < 8; ++bit_pos) {
                     if (bit_pos != bit_pos_to_be_set) {
@@ -115,7 +116,7 @@ namespace emu::util::byte {
 
                 unset_bit(bit_field, bit_pos_to_be_set);
 
-                CHECK_EQ(false, (bit_field >> bit_pos_to_be_set) & 1);   // Does not toggle
+                CHECK_EQ(false, (bit_field >> bit_pos_to_be_set) & 1); // Does not toggle
 
                 for (unsigned int bit_pos = 0; bit_pos < 8; ++bit_pos) {
                     if (bit_pos != bit_pos_to_be_set) {

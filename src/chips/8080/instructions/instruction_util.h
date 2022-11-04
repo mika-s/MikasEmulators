@@ -1,11 +1,15 @@
 #ifndef MIKA_EMULATORS_CHIPS_8080_INSTRUCTIONS_INSTRUCTION_UTIL_H
 #define MIKA_EMULATORS_CHIPS_8080_INSTRUCTIONS_INSTRUCTION_UTIL_H
 
-#include <vector>
-#include "chips/8080/flags.h"
-#include "crosscutting/typedefs.h"
-#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/memory/next_word.h"
+#include "crosscutting/typedefs.h"
+
+namespace emu::i8080 {
+    class Flags;
+}
+namespace emu::memory {
+    class EmulatorMemory;
+}
 
 namespace emu::i8080 {
 

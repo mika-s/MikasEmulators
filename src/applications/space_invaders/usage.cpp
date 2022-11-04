@@ -1,6 +1,8 @@
 #include "usage.h"
 #include "crosscutting/util/string_util.h"
+#include <cstddef>
 #include <iostream>
+#include <utility>
 #include <vector>
 
 namespace emu::applications::space_invaders {

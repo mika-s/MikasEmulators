@@ -2,7 +2,9 @@
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/typedefs.h"
 #include "doctest.h"
+#include <cstdint>
 #include <iostream>
+#include <string>
 
 namespace emu::i8080 {
 

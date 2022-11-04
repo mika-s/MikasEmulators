@@ -1,8 +1,9 @@
-#include <algorithm>
-#include <cstdarg>
 #include "logger.h"
 #include "crosscutting/logging/log_observer.h"
 #include "crosscutting/util/string_util.h"
+#include <algorithm>
+#include <cstdarg>
+#include <string>
 
 namespace emu::logging {
 

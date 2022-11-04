@@ -1,13 +1,16 @@
 #ifndef MIKA_EMULATORS_CROSSCUTTING_GUI_DEBUGGING_PANES_SPRITEMAP_PANE_H
 #define MIKA_EMULATORS_CROSSCUTTING_GUI_DEBUGGING_PANES_SPRITEMAP_PANE_H
 
-#include <memory>
-#include <string>
-#include <vector>
-#include "imgui.h"
-#include "crosscutting/typedefs.h"
 #include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/gui/graphics/framebuffer.h"
+#include "crosscutting/typedefs.h"
+#include "imgui.h"
+#include <memory>
+#include <vector>
+
+namespace emu::gui {
+    class Sprite;
+}
 
 namespace emu::gui {
 

@@ -1,9 +1,10 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_PACMAN_INTERFACES_INPUT_H
 #define MIKA_EMULATORS_APPLICATIONS_PACMAN_INTERFACES_INPUT_H
 
-#include "io_observer.h"
 #include "applications/pacman/memory_mapped_io_for_pacman.h"
 #include "crosscutting/misc/run_status.h"
+#include "io_observer.h"
+#include <memory>
 
 namespace emu::applications::pacman {
 

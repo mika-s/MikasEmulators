@@ -5,6 +5,8 @@
 #include "crosscutting/util/string_util.h"
 #include "doctest.h"
 #include <iostream>
+#include <string>
+#include <vector>
 
 namespace emu::i8080 {
 

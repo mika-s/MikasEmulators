@@ -2,7 +2,7 @@
 #define MIKA_EMULATORS_CROSSCUTTING_STRING_UTIL_H
 
 #include "crosscutting/typedefs.h"
-#include <iomanip>
+#include <cstddef>
 #include <sstream>
 #include <string>
 #include <vector>

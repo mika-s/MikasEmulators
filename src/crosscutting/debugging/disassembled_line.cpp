@@ -1,17 +1,20 @@
 #include "disassembled_line.h"
+#include "typedefs.h"
+#include <cstddef>
 #include <stdexcept>
+#include <utility>
 #include <vector>
 
 namespace emu::debugger {
 
-    DisassembledLine::DisassembledLine(const std::string& raw_line)
-            : m_address(address_from_disassembly_line(raw_line)),
-              m_full_line(raw_line) {
+    DisassembledLine::DisassembledLine(const std::string &raw_line)
+        : m_address(address_from_disassembly_line(raw_line)),
+          m_full_line(raw_line) {
     }
 
     DisassembledLine::DisassembledLine(u16 address, std::string full_line)
-            : m_address(address),
-              m_full_line(std::move(full_line)) {
+        : m_address(address),
+          m_full_line(std::move(full_line)) {
     }
 
     u16 DisassembledLine::address() {

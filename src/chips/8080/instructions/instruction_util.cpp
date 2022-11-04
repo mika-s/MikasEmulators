@@ -1,5 +1,7 @@
 #include "instruction_util.h"
+#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/util/byte_util.h"
+#include "flags.h"
 
 namespace emu::i8080 {
 

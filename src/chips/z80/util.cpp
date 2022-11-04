@@ -1,4 +1,5 @@
 #include "util.h"
+#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/util/byte_util.h"
 
 namespace emu::z80 {

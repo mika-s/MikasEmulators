@@ -7,7 +7,10 @@
 #include "crosscutting/util/string_util.h"
 #include "doctest.h"
 #include <SDL.h>
+#include <functional>
 #include <iostream>
+#include <string>
+#include <vector>
 
 using emu::applications::Frontend;
 using emu::applications::Options;

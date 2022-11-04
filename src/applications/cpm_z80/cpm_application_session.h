@@ -1,20 +1,20 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_CPM_Z80_CPM_APPLICATION_SESSION_H
 #define MIKA_EMULATORS_APPLICATIONS_CPM_Z80_CPM_APPLICATION_SESSION_H
 
-#include <vector>
-#include <memory>
 #include "chips/z80/cpu.h"
-#include "crosscutting/memory/emulator_memory.h"
 #include "chips/z80/interfaces/out_observer.h"
-#include "crosscutting/typedefs.h"
+#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/misc/session.h"
+#include "crosscutting/typedefs.h"
+#include <memory>
+#include <string>
 
 namespace emu::applications::cpm::z80 {
 
+    using emu::misc::Session;
     using emu::z80::Cpu;
     using emu::z80::EmulatorMemory;
     using emu::z80::OutObserver;
-    using emu::misc::Session;
 
     class CpmApplicationSession : public Session, public OutObserver {
     public:

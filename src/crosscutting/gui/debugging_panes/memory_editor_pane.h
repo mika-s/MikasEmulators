@@ -1,10 +1,8 @@
 #ifndef MIKA_EMULATORS_CROSSCUTTING_GUI_DEBUGGING_PANES_MEMORY_EDITOR_PANE_H
 #define MIKA_EMULATORS_CROSSCUTTING_GUI_DEBUGGING_PANES_MEMORY_EDITOR_PANE_H
 
-#include <string>
-#include <vector>
-#include "imgui_memory_editor.h"
 #include "crosscutting/debugging/debug_container.h"
+#include "imgui_memory_editor.h"
 
 namespace emu::gui {
 

@@ -1,11 +1,15 @@
 #ifndef MIKA_EMULATORS_CHIPS_8080_DISASSEMBLER_H
 #define MIKA_EMULATORS_CHIPS_8080_DISASSEMBLER_H
 
-#include <string>
-#include "crosscutting/typedefs.h"
-#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/memory/next_byte.h"
 #include "crosscutting/memory/next_word.h"
+#include "crosscutting/typedefs.h"
+#include <cstddef>
+#include <iosfwd>
+
+namespace emu::memory {
+    class EmulatorMemory;
+}
 
 namespace emu::i8080 {
 
@@ -15,7 +19,7 @@ namespace emu::i8080 {
 
     class Disassembler8080 {
     public:
-        Disassembler8080(EmulatorMemory &memory, std::ostream& iostream);
+        Disassembler8080(EmulatorMemory &memory, std::ostream &iostream);
 
         void disassemble();
 

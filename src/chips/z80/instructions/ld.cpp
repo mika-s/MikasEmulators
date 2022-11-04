@@ -1,20 +1,22 @@
-#include <iostream>
-#include "doctest.h"
-#include "crosscutting/typedefs.h"
+#include "chips/z80/flags.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/memory/next_byte.h"
 #include "crosscutting/memory/next_word.h"
+#include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
-#include "chips/z80/flags.h"
+#include "doctest.h"
+#include <iostream>
+#include <string>
+#include <vector>
 
 namespace emu::z80 {
 
     using emu::memory::EmulatorMemory;
     using emu::memory::NextByte;
     using emu::memory::NextWord;
-    using emu::util::byte::low_byte;
     using emu::util::byte::high_byte;
+    using emu::util::byte::low_byte;
     using emu::util::byte::to_u16;
     using emu::util::string::hexify_wo_0x;
 
@@ -954,7 +956,6 @@ namespace emu::z80 {
 
             CHECK_EQ(7, cycles);
         }
-
     }
 
     TEST_CASE("Z80: LD (HL), r") {

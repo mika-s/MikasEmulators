@@ -1,5 +1,12 @@
-#include <fmt/format.h>
 #include "waveform_pane.h"
+#include "audio/waveform.h"
+#include "debugging/debug_container.h"
+#include "imgui.h"
+#include "typedefs.h"
+#include <cstddef>
+#include <fmt/core.h>
+#include <string>
+#include <vector>
 
 namespace emu::gui {
 

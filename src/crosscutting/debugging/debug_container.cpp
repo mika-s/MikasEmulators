@@ -1,4 +1,15 @@
 #include "debug_container.h"
+#include "audio/waveform.h"
+#include "debugging/disassembled_line.h"
+#include "typedefs.h"
+#include <utility>
+
+namespace emu::gui {
+    class Sprite;
+}
+namespace emu::gui {
+    class Tile;
+}
 
 namespace emu::debugger {
 
@@ -113,19 +124,19 @@ namespace emu::debugger {
     }
 
     DebugContainer::DebugContainer()
-            : m_has_alternate_registers(false),
-              m_flag_register_retriever(FlagRegisterDebugContainer()),
-              m_is_flag_register_set(false),
-              m_is_io_set(false),
-              m_is_memory_set(false),
-              m_is_pc_set(false),
-              m_is_sp_set(false),
-              m_is_interrupted_set(false),
-              m_is_interrupt_mode_set(false),
-              m_is_disassembled_program_set(false),
-              m_is_tilemap_set(false),
-              m_is_spritemap_set(false),
-              m_is_waveforms_set(false) {
+        : m_has_alternate_registers(false),
+          m_flag_register_retriever(FlagRegisterDebugContainer()),
+          m_is_flag_register_set(false),
+          m_is_io_set(false),
+          m_is_memory_set(false),
+          m_is_pc_set(false),
+          m_is_sp_set(false),
+          m_is_interrupted_set(false),
+          m_is_interrupt_mode_set(false),
+          m_is_disassembled_program_set(false),
+          m_is_tilemap_set(false),
+          m_is_spritemap_set(false),
+          m_is_waveforms_set(false) {
     }
 
     void DebugContainer::add_register(const RegisterDebugContainer &reg) {

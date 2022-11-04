@@ -1,10 +1,6 @@
 #ifndef MIKA_EMULATORS_CROSSCUTTING_GUI_DEBUGGING_PANES_WAVEFORM_PANE_H
 #define MIKA_EMULATORS_CROSSCUTTING_GUI_DEBUGGING_PANES_WAVEFORM_PANE_H
 
-#include <string>
-#include <vector>
-#include "imgui.h"
-#include "crosscutting/typedefs.h"
 #include "crosscutting/debugging/debug_container.h"
 
 namespace emu::gui {

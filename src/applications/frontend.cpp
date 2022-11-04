@@ -7,13 +7,23 @@
 #include "applications/space_invaders/space_invaders.h"
 #include "chips/8080/disassembler8080.h"
 #include "chips/z80/disassemblerZ80.h"
+#include "cpm_8080/usage.h"
 #include "crosscutting/exceptions/invalid_program_arguments_exception.h"
+#include "crosscutting/memory/emulator_memory.h"
+#include "crosscutting/misc/emulator.h"
+#include "crosscutting/misc/session.h"
 #include "crosscutting/util/file_util.h"
 #include "crosscutting/util/string_util.h"
 #include "doctest.h"
+#include "options.h"
+#include "pacman/usage.h"
+#include "space_invaders/usage.h"
 #include <algorithm>
-#include <fmt/format.h>
+#include <cstdlib>
+#include <ext/alloc_traits.h>
+#include <fmt/core.h>
 #include <iostream>
+#include <iterator>
 
 namespace emu::applications {
 

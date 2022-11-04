@@ -4,6 +4,7 @@
 #include "doctest.h"
 #include "instruction_util.h"
 #include <iostream>
+#include <vector>
 
 namespace emu::i8080 {
 

@@ -1,8 +1,9 @@
-#include <iostream>
 #include "disassemblerZ80.h"
-#include "instructions/instructions.h"
 #include "crosscutting/exceptions/unrecognized_opcode_exception.h"
+#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/util/string_util.h"
+#include "instructions/instructions.h"
+#include <iostream>
 
 namespace emu::z80 {
 
@@ -11,11 +12,11 @@ namespace emu::z80 {
     using emu::util::string::hexify_wo_0x;
 
     DisassemblerZ80::DisassemblerZ80(EmulatorMemory &memory, std::ostream &ostream)
-            : m_memory(memory),
-              m_memory_size(memory.size()),
-              m_pc(0),
-              m_opcode(0),
-              m_ostream(ostream) {
+        : m_memory(memory),
+          m_memory_size(memory.size()),
+          m_pc(0),
+          m_opcode(0),
+          m_ostream(ostream) {
     }
 
     void DisassemblerZ80::disassemble() {
@@ -2110,8 +2111,8 @@ namespace emu::z80 {
             case RLC_MIXY_P_n_L_UNDOC1:
                 print_rlc_MixyPn_r(m_ostream, ixy_reg, d, "L");
                 break;
-//            case RL_MIXY_P_n_B_UNDOC1:
-//                break;
+                //            case RL_MIXY_P_n_B_UNDOC1:
+                //                break;
             case RLC_MIXY_P_n:
                 print_rlc_MixyPn(m_ostream, ixy_reg, d);
                 break;

@@ -1,13 +1,17 @@
-#include <algorithm>
-#include <fmt/format.h>
-#include <stdexcept>
 #include "framebuffer.h"
+#include "gui/graphics/color.h"
+#include "typedefs.h"
+#include <algorithm>
+#include <ext/alloc_traits.h>
+#include <fmt/core.h>
+#include <iterator>
+#include <stdexcept>
 
 namespace emu::gui {
 
     Framebuffer::Framebuffer(unsigned int height, unsigned int width, Color init_color)
-            : m_height(height),
-              m_width(width) {
+        : m_height(height),
+          m_width(width) {
         for (unsigned int row = 0; row < height; ++row) {
             std::vector<u32> new_row;
             for (unsigned int col = 0; col < width; ++col) {

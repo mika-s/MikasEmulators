@@ -1,11 +1,29 @@
 #include "gui_imgui.h"
+#include "8080/interfaces/gui_observer.h"
+#include "crosscutting/util/byte_util.h"
 #include "glad/glad.h"
+#include "gui.h"
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_sdl.h"
 #include <SDL.h>
-#include <SDL_timer.h>
-#include <iostream>
+#include <SDL_error.h>
+#include <SDL_log.h>
+#include <algorithm>
+#include <cstdint>
+#include <cstdlib>
+#include <string>
+#include <utility>
+
+namespace emu::debugger {
+    class DebugContainer;
+}
+namespace emu::debugger {
+    class Debugger;
+}
+namespace emu::logging {
+    class Logger;
+}
 
 namespace emu::applications::space_invaders {
 

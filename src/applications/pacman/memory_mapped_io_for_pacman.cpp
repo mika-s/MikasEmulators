@@ -1,5 +1,9 @@
 #include "memory_mapped_io_for_pacman.h"
 #include "chips/z80/util.h"
+#include "crosscutting/memory/emulator_memory.h"
+#include "namco_wsg3/voice.h"
+#include "pacman/settings.h"
+#include <memory>
 
 namespace emu::applications::pacman {
 

@@ -3,7 +3,10 @@
 
 #include "chips/8080/shift_register.h"
 #include "crosscutting/typedefs.h"
-#include "settings.h"
+
+namespace emu::applications::space_invaders {
+    class Settings;
+}
 
 namespace emu::applications::space_invaders {
 

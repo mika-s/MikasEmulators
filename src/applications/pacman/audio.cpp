@@ -1,6 +1,15 @@
-#include <cassert>
-#include <iostream>
 #include "audio.h"
+#include "crosscutting/audio/waveform.h"
+#include "namco_wsg3/wsg3.h"
+#include <SDL.h>
+#include <SDL_error.h>
+#include <SDL_log.h>
+#include <cassert>
+#include <cstdlib>
+
+namespace emu::wsg3 {
+    class Voice;
+}
 
 namespace emu::applications::pacman {
 
@@ -10,8 +19,8 @@ namespace emu::applications::pacman {
             const std::vector<u8> &sound_rom1,
             const std::vector<u8> &sound_rom2
     )
-            : m_sound_chip(Wsg3(load_waveforms_from_roms(sound_rom1, sound_rom2))),
-              m_is_muted(false) {
+        : m_sound_chip(Wsg3(load_waveforms_from_roms(sound_rom1, sound_rom2))),
+          m_is_muted(false) {
 
         if (SDL_Init(SDL_INIT_AUDIO) != 0) {
             SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error initializing SDL audio: %s", SDL_GetError());

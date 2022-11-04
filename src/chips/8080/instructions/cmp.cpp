@@ -1,7 +1,9 @@
 #include "chips/8080/flags.h"
 #include "crosscutting/typedefs.h"
 #include "doctest.h"
+#include <cstdint>
 #include <iostream>
+#include <string>
 
 namespace emu::i8080 {
 

@@ -1,9 +1,10 @@
-#include <vector>
-#include <iostream>
-#include "doctest.h"
-#include "crosscutting/typedefs.h"
 #include "crosscutting/memory/next_byte.h"
+#include "crosscutting/typedefs.h"
 #include "crosscutting/util/string_util.h"
+#include "doctest.h"
+#include <iostream>
+#include <string>
+#include <vector>
 
 namespace emu::z80 {
 
@@ -55,7 +56,7 @@ namespace emu::z80 {
                 << hexify_wo_0x(args.farg);
     }
 
-    void print_out_r_r(std::ostream &ostream, const std::string& dest, const std::string& src) {
+    void print_out_r_r(std::ostream &ostream, const std::string &dest, const std::string& src) {
         ostream << "OUT "
                 << "("
                 << dest
@@ -63,7 +64,7 @@ namespace emu::z80 {
                 << src;
     }
 
-    void print_out_r_r_undocumented(std::ostream &ostream, const std::string& dest, const std::string& src) {
+    void print_out_r_r_undocumented(std::ostream &ostream, const std::string &dest, const std::string &src) {
         ostream << "OUT "
                 << "("
                 << dest

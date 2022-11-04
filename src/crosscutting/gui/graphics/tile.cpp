@@ -1,12 +1,16 @@
-#include <fmt/format.h>
-#include <stdexcept>
 #include "tile.h"
+#include "gui/graphics/color.h"
+#include "gui/graphics/framebuffer.h"
+#include <cstdint>
+#include <ext/alloc_traits.h>
+#include <fmt/core.h>
+#include <stdexcept>
 
 namespace emu::gui {
 
     Tile::Tile(std::size_t height, std::size_t width)
-            : m_height(height),
-              m_width(width) {
+        : m_height(height),
+          m_width(width) {
         if (height != width) {
             throw std::invalid_argument(fmt::format("Non-square tiles not supported: {}x{}", height, width));
         } else if (m_height > UINT32_MAX) {

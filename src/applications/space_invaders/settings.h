@@ -1,7 +1,9 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_SETTINGS_H
 #define MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_SETTINGS_H
 
-#include "applications/options.h"
+namespace emu::applications {
+    class Options;
+}
 
 namespace emu::applications::space_invaders {
 

@@ -4,7 +4,9 @@
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
 #include "doctest.h"
+#include <cstdint>
 #include <iostream>
+#include <string>
 
 namespace emu::i8080 {
 

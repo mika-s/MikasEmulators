@@ -1,14 +1,34 @@
-#include <SDL.h>
 #include "gui_sdl.h"
+#include "crosscutting/util/byte_util.h"
+#include "pacman/gui.h"
+#include "z80/interfaces/gui_observer.h"
+#include <SDL.h>
+#include <SDL_error.h>
+#include <SDL_log.h>
+#include <SDL_pixels.h>
+#include <algorithm>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+
+namespace emu::debugger {
+    class DebugContainer;
+}
+namespace emu::debugger {
+    class Debugger;
+}
+namespace emu::logging {
+    class Logger;
+}
 
 namespace emu::applications::pacman {
 
     using emu::util::byte::is_bit_set;
 
     GuiSdl::GuiSdl()
-            : m_win(nullptr),
-              m_rend(nullptr),
-              m_texture(nullptr) {
+        : m_win(nullptr),
+          m_rend(nullptr),
+          m_texture(nullptr) {
         init();
     }
 
@@ -86,8 +106,7 @@ namespace emu::applications::pacman {
             exit(1);
         }
 
-        m_texture = SDL_CreateTexture(m_rend, SDL_PIXELFORMAT_RGBA32,
-                                      SDL_TEXTUREACCESS_STREAMING, width, height);
+        m_texture = SDL_CreateTexture(m_rend, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STREAMING, width, height);
 
         if (!m_texture) {
             SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error creating SDL texture: %s", SDL_GetError());

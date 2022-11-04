@@ -1,13 +1,18 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_INPUT_SDL_H
 #define MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_INPUT_SDL_H
 
-#include "cpu_io.h"
 #include "crosscutting/misc/run_status.h"
 #include "interfaces/input.h"
-#include "interfaces/io_observer.h"
 #include "io_request.h"
 #include <SDL_scancode.h>
 #include <vector>
+
+namespace emu::applications::space_invaders {
+    class CpuIo;
+}
+namespace emu::applications::space_invaders {
+    class IoObserver;
+}
 
 namespace emu::applications::space_invaders {
 

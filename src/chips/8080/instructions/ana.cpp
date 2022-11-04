@@ -1,9 +1,12 @@
 #include "chips/8080/flags.h"
+#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
 #include "doctest.h"
 #include "instructions.h"
+#include <cstdint>
 #include <iostream>
+#include <string>
 
 namespace emu::i8080 {
 

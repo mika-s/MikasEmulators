@@ -1,7 +1,7 @@
-#include <fstream>
-#include <iostream>
 #include "file_util.h"
 #include "crosscutting/exceptions/rom_file_not_found_exception.h"
+#include "typedefs.h"
+#include <fstream>
 
 namespace emu::util::file {
 

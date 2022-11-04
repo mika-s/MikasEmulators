@@ -7,7 +7,7 @@
 #include "crosscutting/misc/session.h"
 #include "crosscutting/typedefs.h"
 #include <memory>
-#include <vector>
+#include <string>
 
 namespace emu::applications::cpm::i8080 {
 

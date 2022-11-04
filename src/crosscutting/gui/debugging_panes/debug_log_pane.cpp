@@ -1,8 +1,11 @@
-#include <chrono>
-#include <fmt/chrono.h>
-#include <string>
 #include "debug_log_pane.h"
 #include "crosscutting/util/string_util.h"
+#include "logging/logger.h"
+#include <bits/chrono.h>
+#include <fmt/chrono.h> // IWYU pragma: keep
+#include <fmt/core.h>
+#include <string>
+#include <utility>
 
 namespace emu::gui {
 
@@ -10,8 +13,8 @@ namespace emu::gui {
     using emu::util::string::prepend;
 
     DebugLogPane::DebugLogPane()
-            : m_is_logger_set(false),
-              m_should_autoscroll(true) {
+        : m_is_logger_set(false),
+          m_should_autoscroll(true) {
         clear();
     }
 
@@ -86,8 +89,8 @@ namespace emu::gui {
                 for (int line_no = 0; line_no < m_line_offsets.Size; line_no++) {
                     const char *line_start = buff + m_line_offsets[line_no];
                     const char *line_end = (line_no + 1 < m_line_offsets.Size)
-                                           ? (buff + m_line_offsets[line_no + 1] - 1)
-                                           : buf_end;
+                                                   ? (buff + m_line_offsets[line_no + 1] - 1)
+                                                   : buf_end;
                     if (m_filter.PassFilter(line_start, line_end)) {
                         ImGui::TextUnformatted(line_start, line_end);
                     }
@@ -100,8 +103,8 @@ namespace emu::gui {
                     for (int line_no = clipper.DisplayStart; line_no < clipper.DisplayEnd; line_no++) {
                         const char *line_start = buff + m_line_offsets[line_no];
                         const char *line_end = (line_no + 1 < m_line_offsets.Size)
-                                               ? (buff + m_line_offsets[line_no + 1] - 1)
-                                               : buf_end;
+                                                       ? (buff + m_line_offsets[line_no + 1] - 1)
+                                                       : buf_end;
                         ImGui::TextUnformatted(line_start, line_end);
                     }
                 }

@@ -1,6 +1,7 @@
 #ifndef MIKA_EMULATORS_CROSSCUTTING_GUI_UTIL_H
 #define MIKA_EMULATORS_CROSSCUTTING_GUI_UTIL_H
 
+#include <utility>
 #include <vector>
 
 namespace emu::util::gui {

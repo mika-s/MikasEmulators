@@ -1,11 +1,27 @@
 #include "pacman_session.h"
 #include "chips/z80/disassemblerZ80.h"
 #include "chips/z80/interrupt_mode.h"
+#include "crosscutting/debugging/debugger.h"
+#include "crosscutting/debugging/disassembled_line.h"
+#include "crosscutting/logging/logger.h"
+#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/misc/sdl_counter.h"
 #include "crosscutting/util/string_util.h"
-#include <SDL_timer.h>
+#include "pacman/audio.h"
+#include "pacman/gui.h"
+#include "pacman/interfaces/input.h"
+#include "pacman/memory_mapped_io_for_pacman.h"
+#include "z80/cpu.h"
+#include "z80/interfaces/gui_observer.h"
+#include <algorithm>
+#include <functional>
 #include <iostream>
+#include <iterator>
 #include <memory>
+#include <stdexcept>
+#include <string>
+#include <tuple>
+#include <utility>
 
 namespace emu::applications::pacman {
 
