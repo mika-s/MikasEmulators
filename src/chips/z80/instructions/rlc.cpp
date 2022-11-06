@@ -130,7 +130,7 @@ namespace emu::z80 {
     }
 
     /**
-     * Rotate left circular (value in memory pointed to by IX or IY plus d)
+     * Rotate left circular (value in memory pointed to by IX or IY plus d), and store the result in a register
      * <ul>
      *   <li>Size: 4</li>
      *   <li>Cycles: 6</li>

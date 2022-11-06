@@ -7,7 +7,6 @@
 #include "crosscutting/misc/run_status.h"
 #include "crosscutting/typedefs.h"
 #include "pacman_session.h"
-//#include "settings.h"
 #include <memory>
 #include <vector>
 

@@ -2239,8 +2239,6 @@ namespace emu::z80 {
             case RLC_MIXY_P_n_L_UNDOC1:
                 rlc_MixyPd_r(m_l_reg, ixy_reg, d, m_memory, m_flag_reg, cycles);
                 break;
-                //            case RL_MIXY_P_n_B_UNDOC1:
-                //                break;
             case RLC_MIXY_P_n:
                 rlc_MixyPd(ixy_reg, d, m_memory, m_flag_reg, cycles);
                 break;
@@ -2250,8 +2248,29 @@ namespace emu::z80 {
             case RRC_MIXY_P_n:
                 rrc_MixyPd(ixy_reg, d, m_memory, m_flag_reg, cycles);
                 break;
+            case RL_MIXY_P_n_B_UNDOC:
+                rl_MixyPd_r(m_b_reg, ixy_reg, d, m_memory, m_flag_reg, cycles);
+                break;
+            case RL_MIXY_P_n_C_UNDOC:
+                rl_MixyPd_r(m_c_reg, ixy_reg, d, m_memory, m_flag_reg, cycles);
+                break;
+            case RL_MIXY_P_n_D_UNDOC:
+                rl_MixyPd_r(m_d_reg, ixy_reg, d, m_memory, m_flag_reg, cycles);
+                break;
+            case RL_MIXY_P_n_E_UNDOC:
+                rl_MixyPd_r(m_e_reg, ixy_reg, d, m_memory, m_flag_reg, cycles);
+                break;
+            case RL_MIXY_P_n_H_UNDOC:
+                rl_MixyPd_r(m_h_reg, ixy_reg, d, m_memory, m_flag_reg, cycles);
+                break;
+            case RL_MIXY_P_n_L_UNDOC:
+                rl_MixyPd_r(m_l_reg, ixy_reg, d, m_memory, m_flag_reg, cycles);
+                break;
             case RL_MIXY_P_n:
                 rl_MixyPd(ixy_reg, d, m_memory, m_flag_reg, cycles);
+                break;
+            case RL_MIXY_P_n_A_UNDOC:
+                rl_MixyPd_r(m_acc_reg, ixy_reg, d, m_memory, m_flag_reg, cycles);
                 break;
             case RR_MIXY_P_n:
                 rr_MixyPd(ixy_reg, d, m_memory, m_flag_reg, cycles);

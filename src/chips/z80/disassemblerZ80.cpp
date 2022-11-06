@@ -2111,8 +2111,6 @@ namespace emu::z80 {
             case RLC_MIXY_P_n_L_UNDOC1:
                 print_rlc_MixyPn_r(m_ostream, ixy_reg, d, "L");
                 break;
-                //            case RL_MIXY_P_n_B_UNDOC1:
-                //                break;
             case RLC_MIXY_P_n:
                 print_rlc_MixyPn(m_ostream, ixy_reg, d);
                 break;
@@ -2122,8 +2120,23 @@ namespace emu::z80 {
             case RRC_MIXY_P_n:
                 print_rrc_MixyPn(m_ostream, ixy_reg, d);
                 break;
-            case RL_MIXY_P_n_B_UNDOC1:
+            case RL_MIXY_P_n_B_UNDOC:
                 print_rl_MixyPn_r(m_ostream, ixy_reg, d, "B");
+                break;
+            case RL_MIXY_P_n_C_UNDOC:
+                print_rl_MixyPn_r(m_ostream, ixy_reg, d, "C");
+                break;
+            case RL_MIXY_P_n_D_UNDOC:
+                print_rl_MixyPn_r(m_ostream, ixy_reg, d, "D");
+                break;
+            case RL_MIXY_P_n_E_UNDOC:
+                print_rl_MixyPn_r(m_ostream, ixy_reg, d, "E");
+                break;
+            case RL_MIXY_P_n_H_UNDOC:
+                print_rl_MixyPn_r(m_ostream, ixy_reg, d, "H");
+                break;
+            case RL_MIXY_P_n_L_UNDOC:
+                print_rl_MixyPn_r(m_ostream, ixy_reg, d, "L");
                 break;
             case RL_MIXY_P_n:
                 print_rl_MixyPn(m_ostream, ixy_reg, d);
