@@ -11,9 +11,9 @@ namespace emu::util::string {
     std::string hexify(u8 val) {
         std::stringstream ss;
         ss << "0x" << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(val);
-        std::string returnVal = ss.str();
+        std::string return_val = ss.str();
 
-        return returnVal;
+        return return_val;
     }
 
     std::string hexify(u16 val) {
