@@ -1078,29 +1078,29 @@ namespace emu::z80 {
             case SRA_A:
                 sra_r(m_acc_reg, m_flag_reg, cycles);
                 break;
-            case SLL_B:
-                sll_r(m_b_reg, m_flag_reg, cycles);
+            case SLL_B_UNDOC:
+                sll_r_undoc(m_b_reg, m_flag_reg, cycles);
                 break;
-            case SLL_C:
-                sll_r(m_c_reg, m_flag_reg, cycles);
+            case SLL_C_UNDOC:
+                sll_r_undoc(m_c_reg, m_flag_reg, cycles);
                 break;
-            case SLL_D:
-                sll_r(m_d_reg, m_flag_reg, cycles);
+            case SLL_D_UNDOC:
+                sll_r_undoc(m_d_reg, m_flag_reg, cycles);
                 break;
-            case SLL_E:
-                sll_r(m_e_reg, m_flag_reg, cycles);
+            case SLL_E_UNDOC:
+                sll_r_undoc(m_e_reg, m_flag_reg, cycles);
                 break;
-            case SLL_H:
-                sll_r(m_h_reg, m_flag_reg, cycles);
+            case SLL_H_UNDOC:
+                sll_r_undoc(m_h_reg, m_flag_reg, cycles);
                 break;
-            case SLL_L:
-                sll_r(m_l_reg, m_flag_reg, cycles);
+            case SLL_L_UNDOC:
+                sll_r_undoc(m_l_reg, m_flag_reg, cycles);
                 break;
-            case SLL_MHL:
-                sll_MHL(m_memory, address_in_HL(), m_flag_reg, cycles);
+            case SLL_MHL_UNDOC:
+                sll_MHL_undoc(m_memory, address_in_HL(), m_flag_reg, cycles);
                 break;
-            case SLL_A:
-                sll_r(m_acc_reg, m_flag_reg, cycles);
+            case SLL_A_UNDOC:
+                sll_r_undoc(m_acc_reg, m_flag_reg, cycles);
                 break;
             case SRL_B:
                 srl_r(m_b_reg, m_flag_reg, cycles);
@@ -2396,10 +2396,15 @@ namespace emu::z80 {
                 neg(m_acc_reg, m_flag_reg, cycles);
                 break;
             case RETN:
+            case RETN_UNDOC1:
+            case RETN_UNDOC2:
+            case RETN_UNDOC3:
+            case RETN_UNDOC4:
                 retn(m_pc, m_sp, m_memory, m_iff1, m_iff2, cycles);
                 break;
             case IM_0_1:
             case IM_0_2:
+            case IM_0_3:
                 im(m_interrupt_mode, InterruptMode::ZERO, cycles);
                 break;
             case LD_I_A:
@@ -2476,7 +2481,8 @@ namespace emu::z80 {
             case LD_DE_Mnn:
                 ld_dd_Mnn(m_d_reg, m_e_reg, get_next_word(), m_memory, cycles);
                 break;
-            case IM_2:
+            case IM_2_0:
+            case IM_2_1:
                 im(m_interrupt_mode, InterruptMode::TWO, cycles);
                 break;
             case LD_A_R:

@@ -26,7 +26,8 @@ Do this before running this script:
 - Make the emulators listen to commands on stdin:
     * Execute a new instruction when receiving 'n'.
     * Quit when receiving 'q'.
-- The working directory of the script should be the same as the emulator binaries.
+- The working directory of the script should be the same as the emulator
+  binaries.
 
 The script compares one instruction at a time. It compares by string comparison.
 After comparing the emulator under test vs. the reference emulator, it will
@@ -39,7 +40,8 @@ If one or both of the emulators run to completion, i.e. no diffs are found, the
 script will exit with exceptions etc. This is because it loses connection to the
 emulator and there's no soft shutdown.
 
-Tested on Python 3.8.8 only. Will need at least Python 3. Also, only tested on Linux.
+Tested on Python 3.8.8 only. Will need at least Python 3. Also, only tested on
+Linux.
 """
 
 import asyncio
@@ -59,7 +61,7 @@ class Emulator:
 
 
 # Must be adapted to each emulator:
-emulator_under_test = Emulator('emulator', ['Z80', 'run', 'zexdoc'])
+emulator_under_test = Emulator('emulator', ['run', 'zexdoc'])
 reference_emulator = Emulator('z80_tests', [])
 log_line_token = 'pc=0x'
 

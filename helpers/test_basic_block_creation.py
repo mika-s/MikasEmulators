@@ -77,17 +77,22 @@ i8080_rules = Language(
 class DisassembledLine:
     def __init__(self, address, code):
         self.is_leader = False
-        self.address = address
+        self.address = int(address, 16)
         self.code = code
         self.instruction = code[0].strip()
         self.argument = code[1].strip() if len(code) > 1 else None
+        self.links_to = []
 
     def set_leader(self):
         self.is_leader = True
 
+    def add_link_to(self, address):
+        self.links_to.append(address)
+
     def __str__(self):
         leader_str = 'L' if self.is_leader else ' '
-        return f"{leader_str} {self.address} {' '.join(self.code)}"
+        links_to_str = (' (' + ', '.join(self.links_to) + ')') if len(self.links_to) > 0 else ''
+        return f"{leader_str} {self.address:04x} {' '.join(self.code)}{links_to_str}"
 
     @staticmethod
     def from_raw_string(raw_string):
@@ -127,14 +132,15 @@ class BasicBlock:
 
 
 def parse_lines(raw_code):
-    parsed_code = []
-    for line in raw_code.split('\n'):
+    parsed_code = {}
+    for line in raw_code:
         trimmed_line = line.strip()
+        trimmed_line = trimmed_line.replace('\t\t', ' ')
         if len(trimmed_line) == 0:
             continue
 
         disassembled_line = DisassembledLine.from_raw_string(trimmed_line)
-        parsed_code.append(disassembled_line)
+        parsed_code[disassembled_line.address] = disassembled_line
 
     return parsed_code
 
@@ -147,19 +153,41 @@ def find_leaders(code, language):
       3. The instruction that immediately follows a conditional or an unconditional goto/jump instruction is a leader.
     """
 
+    def is_jump_instruction(instruction):
+        return instruction in map(lambda x: x.name, language.jmp_instructions)
+
+    def is_return_instruction(instruction):
+        return instruction in map(lambda x: x.name, language.ret_instructions)
+
+    future_leaders = set()  # for jumps forward
+
     line_no = 1
     is_previous_instruction_a_jump = False
-    for code_line in code:
+
+    for code_line in code.values():
         if line_no == 1:
             code_line.set_leader()
             is_previous_instruction_a_jump = False
-        elif code_line.instruction in map(lambda x: x.name, language.jmp_instructions) \
-                or code_line.instruction in map(lambda x: x.name, language.call_instructions):
-            code[int(code_line.argument, 16)].set_leader()
-            is_previous_instruction_a_jump = True
-        elif is_previous_instruction_a_jump:
+
+        if is_previous_instruction_a_jump:
             code_line.set_leader()
             is_previous_instruction_a_jump = False
+
+        if code_line.address in future_leaders:
+            code[code_line.address].set_leader()
+            future_leaders.remove(code_line.address)
+            is_previous_instruction_a_jump = False
+
+        if is_jump_instruction(code_line.instruction):
+            address_in_argument = int(code_line.argument, 16)
+            if address_in_argument in code:
+                code[address_in_argument].set_leader()
+            else:
+                future_leaders.add(address_in_argument)
+
+            is_previous_instruction_a_jump = True
+        elif is_return_instruction(code_line.instruction):
+            is_previous_instruction_a_jump = True
 
         line_no += 1
 
@@ -174,7 +202,7 @@ def find_blocks(code):
     buffer = []
     has_passed_first_line = False
 
-    for code_line in code:
+    for code_line in code.values():
         if code_line.is_leader and has_passed_first_line:
             basic_blocks.append(BasicBlock(list(buffer)))
             buffer.clear()
@@ -211,7 +239,7 @@ def create_graph(basic_blocks, language):
     address_to_block = {}
     for block in basic_blocks:
         for line in block.lines:
-            address = int(line.address, 16)
+            address = line.address
             if address in address_to_block:
                 raise RuntimeError(f"Address in multiple blocks: {address}")
 
@@ -223,13 +251,25 @@ def create_graph(basic_blocks, language):
             if line.instruction in map(lambda x: x.name, language.jmp_instructions):
                 jmp_instruction = [x for x in language.jmp_instructions if line.instruction == x.name][0]
                 if jmp_instruction.is_branching:
-                    address = int(line.address, 16)
+                    address = line.address
                     block.add_successor(address_to_block[find_next_address(address_to_block, address)])
 
                 argument_address = int(line.argument, 16)
                 block.add_successor(address_to_block[argument_address])
 
-    # Connect basic blocks that are not jumping or returning as last instruction
+    # Connect calls to other blocks
+    for block in basic_blocks:
+        for line in block.lines:
+            if line.instruction in map(lambda x: x.name, language.call_instructions):
+                call_instruction = [x for x in language.call_instructions if line.instruction == x.name][0]
+                if call_instruction.is_branching:
+                    address = line.address
+                    block.add_successor(address_to_block[find_next_address(address_to_block, address)])
+
+                argument_address = int(line.argument, 16)
+                block.add_successor(address_to_block[argument_address])
+
+    # Connect basic blocks that are not jumping or calling as last instruction
     for block in basic_blocks:
         if block.is_exit_block:
             break
@@ -237,36 +277,18 @@ def create_graph(basic_blocks, language):
         last_line = block.lines[-1]
         if last_line.instruction not in map(lambda x: x.name, language.jmp_instructions) \
                 and last_line.instruction not in map(lambda x: x.name, language.ret_instructions):
-            address = int(last_line.address, 16)
+            address = last_line.address
             block.add_successor(address_to_block[find_next_address(address_to_block, address)])
 
 
-# one_simple_block_8080 = """
-# 0000 NOP
-# 0001 MOV A, 0x1
-# 0002 INC A
-# 0003 DEC A
-# 0004 JNZ 0002
-# 0007 NOP
-# 0008 NOP
-# 0009 JMP 0000
-# """
-one_simple_block_8080 = """
-0000 NOP
-0001 MOV A, 0x1
-0002 INC A
-0003 DEC A
-0004 CALL 0009
-0007 NOP
-0008 NOP
-0009 MOV A, 0x2
-0010 RET
-"""
-disassembled_lines = parse_lines(one_simple_block_8080)
+with open('test_source_code.txt') as f:
+    lines = f.readlines()
+
+disassembled_lines = parse_lines(lines)
 find_leaders(disassembled_lines, i8080_rules)
 
 print('After finding leaders:\n')
-for disassembled_line in disassembled_lines:
+for disassembled_line in disassembled_lines.values():
     print(disassembled_line)
 
 basic_blocks = find_blocks(disassembled_lines)

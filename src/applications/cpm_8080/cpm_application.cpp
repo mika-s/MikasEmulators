@@ -47,11 +47,11 @@ namespace emu::applications::cpm::i8080 {
         return offset;
     }
 
-    std::vector<u8> CpmApplication::create_work_ram(size_t size) {
+    std::vector<u8> CpmApplication::create_work_ram(std::size_t size) {
         std::vector<u8> work_ram;
 
         work_ram.reserve(size);
-        for (size_t i = 0; i < size; ++i) {
+        for (std::size_t i = 0; i < size; ++i) {
             work_ram.push_back(0);
         }
 

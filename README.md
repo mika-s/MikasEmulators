@@ -12,7 +12,7 @@ notice.
     - [Space Invaders](documentation/applications/space_invaders.md)
 - [Z80](documentation/chips/z80.md)
     - [Pacman](documentation/applications/pacman.md)
-    - [CP/M](documentation/applications/cpm.md)
+    - [CP/M](documentation/applications/cpm.md) (WIP)
 
 ## Dependencies
 

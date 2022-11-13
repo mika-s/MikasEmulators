@@ -952,28 +952,28 @@ namespace emu::z80 {
             case SRA_A:
                 print_sra(m_ostream, "A");
                 break;
-            case SLL_B:
+            case SLL_B_UNDOC:
                 print_sll(m_ostream, "B");
                 break;
-            case SLL_C:
+            case SLL_C_UNDOC:
                 print_sll(m_ostream, "C");
                 break;
-            case SLL_D:
+            case SLL_D_UNDOC:
                 print_sll(m_ostream, "D");
                 break;
-            case SLL_E:
+            case SLL_E_UNDOC:
                 print_sll(m_ostream, "E");
                 break;
-            case SLL_H:
+            case SLL_H_UNDOC:
                 print_sll(m_ostream, "H");
                 break;
-            case SLL_L:
+            case SLL_L_UNDOC:
                 print_sll(m_ostream, "L");
                 break;
-            case SLL_MHL:
+            case SLL_MHL_UNDOC:
                 print_sll(m_ostream, "(HL)");
                 break;
-            case SLL_A:
+            case SLL_A_UNDOC:
                 print_sll(m_ostream, "A");
                 break;
             case SRL_B:
@@ -2265,6 +2265,7 @@ namespace emu::z80 {
                 break;
             case IM_0_1:
             case IM_0_2:
+            case IM_0_3:
                 print_im(m_ostream, 0);
                 break;
             case IN_C_C:
@@ -2297,7 +2298,8 @@ namespace emu::z80 {
             case LD_Mnn_DE:
                 print_ld_Mnn_dd(m_ostream, get_next_word(), "DE");
                 break;
-            case IM_2:
+            case IM_2_0:
+            case IM_2_1:
                 print_im(m_ostream, 2);
                 break;
             case LD_A_R:

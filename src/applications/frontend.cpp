@@ -163,7 +163,7 @@ namespace emu::applications {
                 context.addFilter("test-case", "8080*");
                 context.addFilter("test-case", "Z80*");
             } else {
-                for (size_t arg_idx = 1; arg_idx < args.size(); ++arg_idx) {
+                for (std::size_t arg_idx = 1; arg_idx < args.size(); ++arg_idx) {
                     const std::string cpu = args[arg_idx] + "*";
                     context.addFilter("test-case", cpu.c_str());
                 }

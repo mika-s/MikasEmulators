@@ -36,7 +36,7 @@ namespace emu::applications::cpm::i8080 {
 
         static std::vector<u8> create_initial_offset();
 
-        static std::vector<u8> create_work_ram(size_t size);
+        static std::vector<u8> create_work_ram(std::size_t size);
 
         static void patch_program(EmulatorMemory &program);
     };
