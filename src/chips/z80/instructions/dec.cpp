@@ -49,25 +49,6 @@ namespace emu::z80 {
     }
 
     /**
-     * Decrement register (undocumented)
-     * <ul>
-     *   <li>Size: 2</li>
-     *   <li>Cycles: 2</li>
-     *   <li>States: 8</li>
-     *   <li>Condition bits affected: half carry, zero, sign, parity, add/subtract</li>
-     * </ul>
-     *
-     * @param reg is the register to decrement, which will be mutated
-     * @param flag_reg is the flag register, which will be mutated
-     * @param cycles is the number of cycles variable, which will be mutated
-     */
-    void dec_r_undoc(u8 &reg, Flags &flag_reg, cyc &cycles) {
-        dec_u8(reg, flag_reg);
-
-        cycles = 8;
-    }
-
-    /**
      * Decrement the memory in HL's address
      * <ul>
      *   <li>Size: 1</li>
@@ -220,6 +201,29 @@ namespace emu::z80 {
 
         cycles = 23;
     }
+
+    /************************************ FUNCTIONS FOR UNDOCUMENTED INSTRUCTIONS *************************************/
+
+    /**
+     * Decrement register (undocumented)
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 8</li>
+     *   <li>Condition bits affected: half carry, zero, sign, parity, add/subtract</li>
+     * </ul>
+     *
+     * @param reg is the register to decrement, which will be mutated
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void dec_r_undoc(u8 &reg, Flags &flag_reg, cyc &cycles) {
+        dec_u8(reg, flag_reg);
+
+        cycles = 8;
+    }
+
+    /******************************** END OF FUNCTIONS FOR UNDOCUMENTED INSTRUCTIONS **********************************/
 
     void print_dec(std::ostream &ostream, const std::string &reg) {
         ostream << "DEC "

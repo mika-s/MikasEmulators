@@ -51,30 +51,6 @@ namespace emu::z80 {
     }
 
     /**
-     * Inclusive or with accumulator (undocumented)
-     * <ul>
-     *   <li>Size: 2</li>
-     *   <li>Cycles: 2</li>
-     *   <li>States: 8</li>
-     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
-     * </ul>
-     *
-     * According to the Z80 CPU User Manual, the parity/overflow flag should be set when overflowing for
-     * this instruction. That is not correct, it should be set when even parity.
-     * See https://retrocomputing.stackexchange.com/questions/2549/z80-cpu-user-manual-and-p-v-flag.
-     *
-     * @param acc_reg is the accumulator register
-     * @param value contains the argument that should be ored with the accumulator
-     * @param flag_reg is the flag register, which will be mutated
-     * @param cycles is the number of cycles variable, which will be mutated
-     */
-    void or_r_undoc(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles) {
-        or_(acc_reg, value, flag_reg);
-
-        cycles = 8;
-    }
-
-    /**
      * Or immediate with accumulator
      * <ul>
      *   <li>Size: 2</li>
@@ -152,6 +128,30 @@ namespace emu::z80 {
     }
 
     /************************************ FUNCTIONS FOR UNDOCUMENTED INSTRUCTIONS *************************************/
+
+    /**
+     * Inclusive or with accumulator (undocumented)
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 8</li>
+     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+     * </ul>
+     *
+     * According to the Z80 CPU User Manual, the parity/overflow flag should be set when overflowing for
+     * this instruction. That is not correct, it should be set when even parity.
+     * See https://retrocomputing.stackexchange.com/questions/2549/z80-cpu-user-manual-and-p-v-flag.
+     *
+     * @param acc_reg is the accumulator register
+     * @param value contains the argument that should be ored with the accumulator
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void or_r_undoc(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles) {
+        or_(acc_reg, value, flag_reg);
+
+        cycles = 8;
+    }
 
     /**
      * Inclusive or IX or IY high or low with accumulator (undocumented)

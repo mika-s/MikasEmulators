@@ -47,26 +47,6 @@ namespace emu::z80 {
     }
 
     /**
-     * Exclusive or with accumulator (undocumented)
-     * <ul>
-     *   <li>Size: 2</li>
-     *   <li>Cycles: 2</li>
-     *   <li>States: 8</li>
-     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
-     * </ul>
-     *
-     * @param acc_reg is the accumulator register
-     * @param value contains the argument that should be exclusive ored with the accumulator
-     * @param flag_reg is the flag register
-     * @param cycles is the number of cycles variable, which will be mutated
-     */
-    void xor_r_undoc(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles) {
-        xor_(acc_reg, value, flag_reg);
-
-        cycles = 8;
-    }
-
-    /**
      * Exclusive or immediate with accumulator
      * <ul>
      *   <li>Size: 2</li>
@@ -136,6 +116,26 @@ namespace emu::z80 {
     }
 
     /************************************ FUNCTIONS FOR UNDOCUMENTED INSTRUCTIONS *************************************/
+
+    /**
+     * Exclusive or with accumulator (undocumented)
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 8</li>
+     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+     * </ul>
+     *
+     * @param acc_reg is the accumulator register
+     * @param value contains the argument that should be exclusive ored with the accumulator
+     * @param flag_reg is the flag register
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void xor_r_undoc(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles) {
+        xor_(acc_reg, value, flag_reg);
+
+        cycles = 8;
+    }
 
     /**
      * Exclusive or IX or IY high or low with accumulator (undocumented)

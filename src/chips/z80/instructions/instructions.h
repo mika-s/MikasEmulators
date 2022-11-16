@@ -924,7 +924,7 @@ namespace emu::z80 {
     void jr_nz(u16 &pc, const NextByte &args, const Flags &flag_reg, cyc &cycles);
     void jr_z(u16 &pc, const NextByte &args, const Flags &flag_reg, cyc &cycles);
     void ld_r_n(u8 &reg, const NextByte &args, cyc &cycles);
-    void ld_r_n_undocumented(u8 &to, const NextByte &args, cyc &cycles);
+    void ld_r_n_undoc(u8 &to, const NextByte &args, cyc &cycles);
     void ld_r_r(u8 &to, u8 value, cyc &cycles);
     void ld_r_r_undoc(u8 &to, u8 value, cyc &cycles);
     void ld_r_MHL(u8 &reg, u8 value, cyc &cycles);

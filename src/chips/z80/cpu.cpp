@@ -1719,7 +1719,7 @@ namespace emu::z80 {
                 dec_r_undoc(m_b_reg, m_flag_reg, cycles);
                 break;
             case LD_B_n_UNDOC:
-                ld_r_n_undocumented(m_b_reg, get_next_byte(), cycles);
+                ld_r_n_undoc(m_b_reg, get_next_byte(), cycles);
                 break;
             case ADD_IXY_BC:
                 add_ixy_pp(ixy_reg, to_u16(m_b_reg, m_c_reg), m_flag_reg, cycles);
@@ -1731,7 +1731,7 @@ namespace emu::z80 {
                 dec_r_undoc(m_c_reg, m_flag_reg, cycles);
                 break;
             case LD_C_n_UNDOC:
-                ld_r_n_undocumented(m_c_reg, get_next_byte(), cycles);
+                ld_r_n_undoc(m_c_reg, get_next_byte(), cycles);
                 break;
             case INC_D_UNDOC:
                 inc_r_undoc(m_d_reg, m_flag_reg, cycles);
@@ -1740,7 +1740,7 @@ namespace emu::z80 {
                 dec_r_undoc(m_d_reg, m_flag_reg, cycles);
                 break;
             case LD_D_n_UNDOC:
-                ld_r_n_undocumented(m_d_reg, get_next_byte(), cycles);
+                ld_r_n_undoc(m_d_reg, get_next_byte(), cycles);
                 break;
             case ADD_IXY_DE:
                 add_ixy_pp(ixy_reg, to_u16(m_d_reg, m_e_reg), m_flag_reg, cycles);
@@ -1752,7 +1752,7 @@ namespace emu::z80 {
                 dec_r_undoc(m_e_reg, m_flag_reg, cycles);
                 break;
             case LD_E_n_UNDOC:
-                ld_r_n_undocumented(m_e_reg, get_next_byte(), cycles);
+                ld_r_n_undoc(m_e_reg, get_next_byte(), cycles);
                 break;
             case LD_IXY_nn:
                 ld_ixy_nn(ixy_reg, get_next_word(), cycles);
@@ -1809,7 +1809,7 @@ namespace emu::z80 {
                 dec_r_undoc(m_acc_reg, m_flag_reg, cycles);
                 break;
             case LD_A_n_UNDOC:
-                ld_r_n_undocumented(m_acc_reg, get_next_byte(), cycles);
+                ld_r_n_undoc(m_acc_reg, get_next_byte(), cycles);
                 break;
             case LD_B_B_UNDOC:
                 ld_r_r_undoc(m_b_reg, m_b_reg, cycles);

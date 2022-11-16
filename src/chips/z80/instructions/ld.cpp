@@ -48,74 +48,6 @@ namespace emu::z80 {
     }
 
     /**
-     * Load from register to register (undocumented instructions)
-     * <ul>
-     *   <li>Size: 2</li>
-     *   <li>Cycles: 2</li>
-     *   <li>States: 8</li>
-     *   <li>Condition bits affected: none</li>
-     * </ul>
-     *
-     * @param to is the register or memory location to move value to, which will be mutated
-     * @param value is the value to move into to
-     * @param cycles is the number of cycles variable, which will be mutated
-     */
-    void ld_r_r_undoc(u8 &to, u8 value, cyc &cycles) {
-        ld(to, value);
-
-        cycles = 8;
-    }
-
-
-    /**
-     * Load from register to IXH or IYH (undocumented instructions)
-     * <ul>
-     *   <li>Size: 2</li>
-     *   <li>Cycles: 2</li>
-     *   <li>States: 8</li>
-     *   <li>Condition bits affected: none</li>
-     * </ul>
-     *
-     * @param ixy_reg is the IX or IY register, which will be mutated
-     * @param value is the value to move into to
-     * @param cycles is the number of cycles variable, which will be mutated
-     */
-    void ld_ixyh_r_undoc(u16 &ixy_reg, u8 value, cyc &cycles) {
-        u8 ixyh = high_byte(ixy_reg);
-        const u8 ixyl = low_byte(ixy_reg);
-
-        ld(ixyh, value);
-
-        ixy_reg = to_u16(ixyh, ixyl);
-
-        cycles = 8;
-    }
-
-    /**
-     * Load from register to IXL or IYL (undocumented instructions)
-     * <ul>
-     *   <li>Size: 2</li>
-     *   <li>Cycles: 2</li>
-     *   <li>States: 8</li>
-     *   <li>Condition bits affected: none</li>
-     * </ul>
-     *
-     * @param ixy_reg is the IX or IY register, which will be mutated
-     * @param value is the value to move into to
-     * @param cycles is the number of cycles variable, which will be mutated
-     */
-    void ld_ixyl_r_undoc(u16 &ixy_reg, u8 value, cyc &cycles) {
-        const u8 ixyh = high_byte(ixy_reg);
-        u8 ixyl = low_byte(ixy_reg);
-
-        ld(ixyl, value);
-
-        ixy_reg = to_u16(ixyh, ixyl);
-
-        cycles = 8;
-    }
-
-    /**
      * Load immediate into register
      * <ul>
      *   <li>Size: 2</li>
@@ -132,25 +64,6 @@ namespace emu::z80 {
         ld(to, args.farg);
 
         cycles = 7;
-    }
-
-    /**
-     * Load immediate into register (undocumented)
-     * <ul>
-     *   <li>Size: 3</li>
-     *   <li>Cycles: 2</li>
-     *   <li>States: 11</li>
-     *   <li>Condition bits affected: none</li>
-     * </ul>
-     *
-     * @param to is the register to load into, which will be mutated
-     * @param args contains value to load into the register
-     * @param cycles is the number of cycles variable, which will be mutated
-     */
-    void ld_r_n_undocumented(u8 &to, const NextByte &args, cyc &cycles) {
-        ld(to, args.farg);
-
-        cycles = 11;
     }
 
     /**
@@ -789,6 +702,97 @@ namespace emu::z80 {
         cycles = 19;
     }
 
+    /************************************ FUNCTIONS FOR UNDOCUMENTED INSTRUCTIONS *************************************/
+
+    /**
+     * Load from register to register (undocumented)
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 8</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param to is the register or memory location to move value to, which will be mutated
+     * @param value is the value to move into to
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void ld_r_r_undoc(u8 &to, u8 value, cyc &cycles) {
+        ld(to, value);
+
+        cycles = 8;
+    }
+
+
+    /**
+     * Load from register to IXH or IYH (undocumented)
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 8</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param ixy_reg is the IX or IY register, which will be mutated
+     * @param value is the value to move into to
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void ld_ixyh_r_undoc(u16 &ixy_reg, u8 value, cyc &cycles) {
+        u8 ixyh = high_byte(ixy_reg);
+        const u8 ixyl = low_byte(ixy_reg);
+
+        ld(ixyh, value);
+
+        ixy_reg = to_u16(ixyh, ixyl);
+
+        cycles = 8;
+    }
+
+    /**
+     * Load from register to IXL or IYL (undocumented)
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 8</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param ixy_reg is the IX or IY register, which will be mutated
+     * @param value is the value to move into to
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void ld_ixyl_r_undoc(u16 &ixy_reg, u8 value, cyc &cycles) {
+        const u8 ixyh = high_byte(ixy_reg);
+        u8 ixyl = low_byte(ixy_reg);
+
+        ld(ixyl, value);
+
+        ixy_reg = to_u16(ixyh, ixyl);
+
+        cycles = 8;
+    }
+
+    /**
+     * Load immediate into register (undocumented)
+     * <ul>
+     *   <li>Size: 3</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 11</li>
+     *   <li>Condition bits affected: none</li>
+     * </ul>
+     *
+     * @param to is the register to load into, which will be mutated
+     * @param args contains value to load into the register
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void ld_r_n_undoc(u8 &to, const NextByte &args, cyc &cycles) {
+        ld(to, args.farg);
+
+        cycles = 11;
+    }
+
+    /******************************** END OF FUNCTIONS FOR UNDOCUMENTED INSTRUCTIONS **********************************/
+
     void print_ld(std::ostream &ostream, const std::string &dest, const std::string &src) {
         ostream << "LD "
                 << dest
@@ -886,9 +890,7 @@ namespace emu::z80 {
                 << hexify_wo_0x(args.sarg);
     }
 
-    void print_ld_MixyPd_r(std::ostream &ostream, const std::string &ixy_reg, const NextByte &args,
-                           const std::string &reg
-    ) {
+    void print_ld_MixyPd_r(std::ostream &ostream, const std::string &ixy_reg, const NextByte &args, const std::string &reg) {
         const i8 signed_value = static_cast<i8>(args.farg);
         const std::string plus_or_minus = (signed_value >= 0) ? "+" : "";
 
@@ -901,9 +903,7 @@ namespace emu::z80 {
                 << reg;
     }
 
-    void print_ld_r_MixyPn(std::ostream &ostream, const std::string &dest, const std::string &ixy_reg,
-                           const NextByte &args
-    ) {
+    void print_ld_r_MixyPn(std::ostream &ostream, const std::string &dest, const std::string &ixy_reg, const NextByte &args) {
         const i8 signed_value = static_cast<i8>(args.farg);
         const std::string plus_or_minus = (signed_value >= 0) ? "+" : "";
 
@@ -1130,8 +1130,7 @@ namespace emu::z80 {
         memory.add({0x65, 0x78});
         NextWord args = {
                 .farg = 0,
-                .sarg = 0
-        };
+                .sarg = 0};
 
         SUBCASE("should move HL into SP") {
             ld_sp_Mnn(sp, memory, args, cycles);

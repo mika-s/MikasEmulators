@@ -39,26 +39,6 @@ namespace emu::z80 {
     }
 
     /**
-     * Subtract (undocumented)
-     * <ul>
-     *   <li>Size: 2</li>
-     *   <li>Cycles: 2</li>
-     *   <li>States: 8</li>
-     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
-     * </ul>
-     *
-     * @param acc_reg is the accumulator register, which will be mutated
-     * @param value contains the value to subtract from the accumulator register
-     * @param flag_reg is the flag register, which will be mutated
-     * @param cycles is the number of cycles variable, which will be mutated
-     */
-    void sub_r_undoc(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles) {
-        sub(acc_reg, value, flag_reg);
-
-        cycles = 8;
-    }
-
-    /**
      * Subtract value pointed to by IX or IY plus d from accumulator
      * <ul>
      *   <li>Size: 3</li>
@@ -126,6 +106,26 @@ namespace emu::z80 {
     }
 
     /************************************ FUNCTIONS FOR UNDOCUMENTED INSTRUCTIONS *************************************/
+
+    /**
+     * Subtract (undocumented)
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 8</li>
+     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+     * </ul>
+     *
+     * @param acc_reg is the accumulator register, which will be mutated
+     * @param value contains the value to subtract from the accumulator register
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void sub_r_undoc(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles) {
+        sub(acc_reg, value, flag_reg);
+
+        cycles = 8;
+    }
 
     /**
      * Subtract IX or IY high or low from accumulator (undocumented)
