@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 
-import subprocess
 import graphviz
 
 from blocks import find_blocks
+from classes import BasicBlock
+from dead_code_removal import remove_dead_code
 from graph import create_graph
 from leaders import find_leaders
 from parse import parse_lines
 from rules import Cpu, get_rules
 
 
-def create_graphviz_graph(basic_blocks):
-    dot = graphviz.Digraph('cfg', comment='Control flow graph')
+def create_graphviz_graph(basic_blocks: list[BasicBlock]):
+    dot = graphviz.Digraph('cfg', comment='Control flow graph', graph_attr={'rankdir': 'TB'})
     dot.attr('node', shape='box')
 
     for basic_block in basic_blocks:
@@ -24,7 +25,10 @@ def create_graphviz_graph(basic_blocks):
 
     for basic_block in basic_blocks:
         for successor in basic_block.successors:
-            dot.edge(str(basic_block.id), str(successor.id))
+            if basic_block.id == successor.id:
+                dot.edge(str(basic_block.id), str(successor.id), dir='back')
+            else:
+                dot.edge(str(basic_block.id), str(successor.id))
 
     dot.render(directory='output').replace('\\', '/')
 
@@ -39,7 +43,8 @@ def main():
     find_leaders(disassembled_lines, i8080_rules)
     basic_blocks = find_blocks(disassembled_lines)
     create_graph(basic_blocks, i8080_rules)
-    create_graphviz_graph(basic_blocks)
+    basic_blocks_proper = remove_dead_code(basic_blocks)
+    create_graphviz_graph(basic_blocks_proper)
 
 
 if __name__ == "__main__":

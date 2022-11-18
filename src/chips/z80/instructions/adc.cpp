@@ -47,26 +47,6 @@ namespace emu::z80 {
     }
 
     /**
-     * Add from register to accumulator with carry (undocumented)
-     * <ul>
-     *   <li>Size: 2</li>
-     *   <li>Cycles: 2</li>
-     *   <li>States: 8</li>
-     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
-     * </ul>
-     *
-     * @param acc_reg is the accumulator register, which will be mutated
-     * @param value is the value to add to the accumulator register
-     * @param flag_reg is the flag register, which will be mutated
-     * @param cycles is the number of cycles variable, which will be mutated
-     */
-    void adc_A_r_undoc(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles) {
-        adc(acc_reg, value, flag_reg);
-
-        cycles = 8;
-    }
-
-    /**
      * Add immediate to accumulator with carry
      * <ul>
      *   <li>Size: 2</li>
@@ -118,7 +98,7 @@ namespace emu::z80 {
      * @param acc_reg is the accumulator register, which will be mutated
      * @param ixy_reg is the IX or IY register containing the base address
      * @param args contains address offset
-     * @param memory is the memory
+     * @param memory is the memory, which will be mutated
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
@@ -162,7 +142,7 @@ namespace emu::z80 {
     /************************************ FUNCTIONS FOR UNDOCUMENTED INSTRUCTIONS *************************************/
 
     /**
-     * Add from IX or IY high or low to accumulator with carry (undocumented)
+     * Add from register to accumulator with carry (undocumented)
      * <ul>
      *   <li>Size: 2</li>
      *   <li>Cycles: 2</li>
@@ -172,6 +152,26 @@ namespace emu::z80 {
      *
      * @param acc_reg is the accumulator register, which will be mutated
      * @param value is the value to add to the accumulator register
+     * @param flag_reg is the flag register, which will be mutated
+     * @param cycles is the number of cycles variable, which will be mutated
+     */
+    void adc_A_r_undoc(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles) {
+        adc(acc_reg, value, flag_reg);
+
+        cycles = 8;
+    }
+
+    /**
+     * Add from IX or IY high or low to accumulator with carry (undocumented)
+     * <ul>
+     *   <li>Size: 2</li>
+     *   <li>Cycles: 2</li>
+     *   <li>States: 8</li>
+     *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+     * </ul>
+     *
+     * @param acc_reg is the accumulator register, which will be mutated
+     * @param ixy_reg_h_or_l is the value to add to the accumulator register
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */

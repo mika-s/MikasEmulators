@@ -5,12 +5,14 @@
 #include "doctest.h"
 #include "instruction_util.h"
 #include <cassert>
+#include <cstdint>
 #include <iostream>
 #include <string>
 
 namespace emu::z80 {
 
     using emu::util::byte::is_bit_set;
+    using emu::util::byte::set_bit;
 
     void bit(unsigned int bit_number, u8 reg, Flags &flag_reg) {
         assert(bit_number < 8);
@@ -81,12 +83,10 @@ namespace emu::z80 {
      * @param bit_number is the bit number to test
      * @param hl_reg is the HL register pair
      * @param memory is the memory
-     * @param flag_reg is the flag register, which will be mutated
+     * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void bit_MHL(unsigned int bit_number, u16 hl_reg, const EmulatorMemory &memory, Flags &flag_reg,
-                 cyc &cycles
-    ) {
+    void bit_MHL(unsigned int bit_number, u16 hl_reg, const EmulatorMemory &memory, Flags &flag_reg, cyc &cycles) {
         assert(bit_number < 8);
 
         bit(bit_number, memory.read(hl_reg), flag_reg);
@@ -110,12 +110,10 @@ namespace emu::z80 {
      * @param bit_number is the bit number to reset
      * @param ixy_reg is the IX or IY register containing the base address
      * @param d contains address offset
-     * @param memory is the memory, which will be mutated
+     * @param memory is the memory
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void bit_MixyPd(unsigned int bit_number, u16 ixy_reg, u8 d, const EmulatorMemory &memory, Flags &flag_reg,
-                    cyc &cycles
-    ) {
+    void bit_MixyPd(unsigned int bit_number, u16 ixy_reg, u8 d, const EmulatorMemory &memory, Flags &flag_reg, cyc &cycles) {
         assert(bit_number < 8);
 
         bit(bit_number, memory.read(ixy_reg + static_cast<i8>(d)), flag_reg);
@@ -147,5 +145,60 @@ namespace emu::z80 {
                 << plus_or_minus
                 << +signed_value
                 << ")";
+    }
+
+    TEST_CASE("Z80: BIT r") {
+        cyc cycles = 0;
+
+        SUBCASE("should test a bit in the registry") {
+            for (u8 value = 0; value < UINT8_MAX; ++value) {
+                for (unsigned int bit_number = 0; bit_number < 8; ++bit_number) {
+                    Flags flag_reg;
+                    flag_reg.from_u8(0x00);
+
+                    bit_r(bit_number, value, flag_reg, cycles);
+
+                    if (bit_number == msb && is_bit_set(value, bit_number)) {
+                        CHECK_EQ(true, flag_reg.is_sign_flag_set());
+                    } else {
+                        CHECK_EQ(false, flag_reg.is_sign_flag_set());
+                    }
+
+                    if (is_bit_set(value, bit_number)) {
+                        CHECK_EQ(false, flag_reg.is_zero_flag_set());
+                        CHECK_EQ(false, flag_reg.is_parity_overflow_flag_set());
+                    } else {
+                        CHECK_EQ(true, flag_reg.is_zero_flag_set());
+                        CHECK_EQ(true, flag_reg.is_parity_overflow_flag_set());
+                    }
+
+                    CHECK_EQ(true, flag_reg.is_half_carry_flag_set());
+                    CHECK_EQ(false, flag_reg.is_add_subtract_flag_set());
+
+                    if (is_bit_set(value, 5)) {
+                        CHECK_EQ(true, flag_reg.is_y_flag_set());
+                    } else {
+                        CHECK_EQ(false, flag_reg.is_y_flag_set());
+                    }
+
+                    if (is_bit_set(value, 3)) {
+                        CHECK_EQ(true, flag_reg.is_x_flag_set());
+                    } else {
+                        CHECK_EQ(false, flag_reg.is_x_flag_set());
+                    }
+                }
+            }
+        }
+
+        SUBCASE("should use 8 cycles") {
+            cycles = 0;
+            Flags flag_reg;
+            flag_reg.from_u8(0x00);
+            u8 value = 0;
+
+            bit_r(1, value, flag_reg, cycles);
+
+            CHECK_EQ(8, cycles);
+        }
     }
 }

@@ -33,6 +33,22 @@ namespace emu::z80 {
         cyc cycles = 0;
         InterruptMode interrupt_mode = InterruptMode::ZERO;
 
+        SUBCASE("should set a new interrupt mode") {
+            cycles = 0;
+
+            im(interrupt_mode, InterruptMode::ONE, cycles);
+
+            CHECK_EQ(InterruptMode::ONE, interrupt_mode);
+
+            im(interrupt_mode, InterruptMode::TWO, cycles);
+
+            CHECK_EQ(InterruptMode::TWO, interrupt_mode);
+
+            im(interrupt_mode, InterruptMode::ZERO, cycles);
+
+            CHECK_EQ(InterruptMode::ZERO, interrupt_mode);
+        }
+
         SUBCASE("should use 10 cycles") {
             cycles = 0;
 

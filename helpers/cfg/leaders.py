@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
+from classes import DisassembledLine, Language
 from parse import parse_lines
 from rules import Cpu, get_rules
 
 
-def find_leaders(code, language):
+def find_leaders(code: dict[int, DisassembledLine], language: Language):
     """
     1. Identify the leaders in the code. Leaders are instructions that come under any of the following 3 categories:
       1. It is the first instruction. The first instruction is a leader.
@@ -20,13 +21,13 @@ def find_leaders(code, language):
             * Set next line leader. Cannot continue.
     """
 
-    def is_jump_instruction(instruction):
+    def is_jump_instruction(instruction: str) -> bool:
         return instruction in map(lambda x: x.name, language.jmp_instructions)
 
-    def is_call_instruction(instruction):
+    def is_call_instruction(instruction: str) -> bool:
         return instruction in map(lambda x: x.name, language.call_instructions)
 
-    def is_return_instruction(instruction):
+    def is_return_instruction(instruction: str) -> bool:
         return instruction in map(lambda x: x.name, language.ret_instructions)
 
     line_no = 1

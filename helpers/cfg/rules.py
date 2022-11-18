@@ -24,5 +24,5 @@ rules = {
 }
 
 
-def get_rules(cpu):
+def get_rules(cpu: Cpu):
     return rules[cpu]

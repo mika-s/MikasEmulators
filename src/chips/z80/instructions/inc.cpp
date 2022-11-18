@@ -75,7 +75,8 @@ namespace emu::z80 {
      *   <li>Condition bits affected: half carry, zero, sign, parity, add/subtract</li>
      * </ul>
      *
-     * @param value_in_hl is the value in memory at HL's address, which will be mutated
+     * @param memory is the memory, which will be mutated
+     * @param address is the address in HL
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */

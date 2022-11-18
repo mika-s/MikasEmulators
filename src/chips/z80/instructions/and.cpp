@@ -91,7 +91,6 @@ namespace emu::z80 {
      * @param value contains the argument that should be anded with the accumulator
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
-     * @param is_memory_involved is true if memory is involved, either written or read
      */
     void and_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles) {
         and_(acc_reg, value, flag_reg);
@@ -111,7 +110,7 @@ namespace emu::z80 {
      * @param acc_reg is the accumulator register, which will be mutated
      * @param ixy_reg is the IX or IY register containing the base address
      * @param args contains address offset
-     * @param memory is the memory
+     * @param memory is the memory, which will be mutated
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */

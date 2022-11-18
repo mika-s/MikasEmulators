@@ -51,7 +51,6 @@ namespace emu::i8080 {
      * @param address is the address of value in memory to decrement
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
-     * @param is_memory_involved is true if memory is involved, either written or read
      */
     void dcr_m(EmulatorMemory &memory, u16 address, Flags &flag_reg, cyc &cycles) {
         u8 value = memory.read(address);

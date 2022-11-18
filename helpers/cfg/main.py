@@ -46,6 +46,7 @@ adding labels to the beginning of other blocks.
 """
 
 from blocks import find_blocks
+from dead_code_removal import remove_dead_code
 from graph import create_graph
 from leaders import find_leaders
 from parse import parse_lines
@@ -60,19 +61,12 @@ def main():
 
     disassembled_lines = parse_lines(lines)
     find_leaders(disassembled_lines, i8080_rules)
-
-    print('After finding leaders:\n')
-    for disassembled_line in disassembled_lines.values():
-        print(disassembled_line)
-
     basic_blocks = find_blocks(disassembled_lines)
-
-    print('\n\n\n\n')
     create_graph(basic_blocks, i8080_rules)
-    for basic_block in basic_blocks:
-        print(f'{basic_block}\n')
+    basic_blocks_proper = remove_dead_code(basic_blocks)
 
-    # TODO: Dead code removal
+    for basic_block in basic_blocks_proper:
+        print(f'{basic_block}\n')
 
 
 if __name__ == "__main__":

@@ -106,7 +106,7 @@ namespace emu::z80 {
      * @param acc_reg is the accumulator register, which will be mutated
      * @param ixy_reg is the IX or IY register containing the base address
      * @param args contains address offset
-     * @param memory is the memory
+     * @param memory is the memory, which will be mutated
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */

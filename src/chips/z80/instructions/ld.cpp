@@ -114,9 +114,9 @@ namespace emu::z80 {
      * </ul>
      *
      * @param reg is the register to load into, which will be mutated
+     * @param address is the address in memory to load from
      * @param args contains value to load into the register
      * @param cycles is the number of cycles variable, which will be mutated
-     * @param is_memory_involved is true if memory is involved, either written or read
      */
     void ld_MHL_n(EmulatorMemory &memory, u16 address, const NextByte &args, cyc &cycles) {
         ld_M(memory, address, args.farg);

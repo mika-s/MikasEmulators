@@ -1,26 +1,27 @@
 #!/usr/bin/env python3
 
 from blocks import find_blocks
+from classes import BasicBlock, Language
 from leaders import find_leaders
 from parse import parse_lines
 from rules import Cpu, get_rules
 
 
-def create_graph(basic_blocks, language):
+def create_graph(basic_blocks: list[BasicBlock], language: Language):
     """
     Create a control flow graph given a list of basic blocks.
     """
 
-    def is_jump_instruction(instruction):
+    def is_jump_instruction(instruction: str) -> bool:
         return instruction in map(lambda x: x.name, language.jmp_instructions)
 
-    def is_call_instruction(instruction):
+    def is_call_instruction(instruction: str) -> bool:
         return instruction in map(lambda x: x.name, language.call_instructions)
 
-    def is_return_instruction(instruction):
+    def is_return_instruction(instruction: str) -> bool:
         return instruction in map(lambda x: x.name, language.ret_instructions)
 
-    def find_next_address(_address_to_block, _address):
+    def find_next_address(_address_to_block: dict[int, BasicBlock], _address: int) -> int:
         """
         Look for the next address after address.
         """
@@ -34,8 +35,12 @@ def create_graph(basic_blocks, language):
     basic_blocks[0].is_entry_block = True
     basic_blocks[-1].is_exit_block = True  # TODO: Probably not true
 
+    def handle_returns(from_block: BasicBlock, to_block: BasicBlock, _address_to_block: dict[int, BasicBlock]):
+        # from_block.add_successor(to_block)
+        pass
+
     # Set up dictionary of address to basic block
-    address_to_block = {}
+    address_to_block: dict[int, BasicBlock] = {}
     for block in basic_blocks:
         for line in block.lines:
             address = line.address
@@ -67,7 +72,10 @@ def create_graph(basic_blocks, language):
 
                 argument_address = int(line.argument, 16)
                 block.add_successor(address_to_block[argument_address])
-                # TODO: Deal with returns
+
+                handle_returns(address_to_block[argument_address],
+                               address_to_block[find_next_address(address_to_block, line.address)],
+                               address_to_block)
 
     # Connect basic blocks that are not jumping, calling or returning as last instruction
     for block in basic_blocks:

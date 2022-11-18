@@ -22,7 +22,10 @@ namespace emu::z80 {
      *   <li>Condition bits affected: none</li>
      * </ul>
      *
+     * @param acc_reg is the accumulator, which will be mutated
      * @param flag_reg is the flag register, which will be mutated
+     * @param acc_p_reg is the alternate accumulator, which will be mutated
+     * @param flag_p_reg is the alternate flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void ex(u8 &acc_reg, Flags &flag_reg, u8 &acc_p_reg, Flags &flag_p_reg, cyc &cycles) {

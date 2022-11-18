@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
-from classes import BasicBlock
+from classes import BasicBlock, DisassembledLine
 from leaders import find_leaders
 from parse import parse_lines
 from rules import Cpu, get_rules
 
 
-def find_blocks(code):
+def find_blocks(code: dict[int, DisassembledLine]) -> list[BasicBlock]:
     """
     2. Starting from a leader, the set of all following instructions until and not including the next leader is the
        basic block corresponding to the starting leader. Thus, every basic block has a leader.

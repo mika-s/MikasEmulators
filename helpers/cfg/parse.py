@@ -3,11 +3,11 @@
 from classes import DisassembledLine
 
 
-def parse_lines(raw_code, ignore_ranges=None):
+def parse_lines(raw_code: list[str], ignore_ranges=None) -> dict[int, DisassembledLine]:
     if ignore_ranges is None:
         ignore_ranges = []
 
-    parsed_code = {}
+    parsed_code: dict[int, DisassembledLine] = {}
     for line in raw_code:
         trimmed_line = line.strip()
         trimmed_line = trimmed_line.replace('\t\t', ' ')
