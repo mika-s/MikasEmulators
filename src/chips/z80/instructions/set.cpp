@@ -2,7 +2,9 @@
 #include "crosscutting/memory/next_byte.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
+#include "doctest.h"
 #include <cassert>
+#include <cstdint>
 #include <iostream>
 #include <string>
 
@@ -103,5 +105,33 @@ namespace emu::z80 {
                 << plus_or_minus
                 << +signed_value
                 << ")";
+    }
+
+    TEST_CASE("Z80: SET r") {
+        cyc cycles = 0;
+
+        SUBCASE("should set a bit in the registry") {
+            for (u8 value_counter = 0; value_counter < UINT8_MAX; ++value_counter) {
+                u8 expected = value_counter;
+                u8 value = value_counter;
+
+                for (unsigned int bit_number = 0; bit_number < 8; ++bit_number) {
+                    set_r(bit_number, value, cycles);
+
+                    set_bit(expected, bit_number);
+
+                    CHECK_EQ(expected, value);
+                }
+            }
+        }
+
+        SUBCASE("should use 8 cycles") {
+            cycles = 0;
+            u8 value = 0;
+
+            set_r(1, value, cycles);
+
+            CHECK_EQ(8, cycles);
+        }
     }
 }

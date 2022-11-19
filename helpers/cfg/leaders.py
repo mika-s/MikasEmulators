@@ -11,14 +11,6 @@ def find_leaders(code: dict[int, DisassembledLine], language: Language):
       1. It is the first instruction. The first instruction is a leader.
       2. The target of a conditional or an unconditional goto/jump instruction is a leader.
       3. The instruction that immediately follows a conditional or an unconditional goto/jump instruction is a leader.
-
-
-    NOTE:
-
-        - How to deal with branching returns?
-            * Set next line leader and argument address leader?
-        - How to deal with ordinary return?
-            * Set next line leader. Cannot continue.
     """
 
     def is_jump_instruction(instruction: str) -> bool:

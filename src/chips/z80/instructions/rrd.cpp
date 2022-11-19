@@ -21,7 +21,8 @@ namespace emu::z80 {
      * </ul>
      *
      * @param acc_reg is the accumulator register, which will be mutated
-     * @param value is the value at HL's address, which will be mutated
+     * @param memory is the memory, which will be mutated
+     * @param address is the address in HL
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */

@@ -81,7 +81,8 @@ namespace emu::z80 {
      *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
      * </ul>
      *
-     * @param value_in_hl is the value in memory at HL's address, which will be mutated
+     * @param memory is the memory, which will be mutated
+     * @param address is the address in HL
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
@@ -183,8 +184,7 @@ namespace emu::z80 {
                 << ")";
     }
 
-    void print_rlc_MixyPn_r(std::ostream &ostream, const std::string &ixy_reg, u8 d,
-                            const std::string &reg) {
+    void print_rlc_MixyPn_r(std::ostream &ostream, const std::string &ixy_reg, u8 d, const std::string &reg) {
         const i8 signed_value = static_cast<i8>(d);
         const std::string plus_or_minus = (signed_value >= 0) ? "+" : "";
 

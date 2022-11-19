@@ -23,7 +23,7 @@ namespace emu::z80 {
      *
      * @param pc is the program counter, which will be mutated
      * @param sp is the stack pointer, which will be mutated
-     * @param memory is the memory, which will be mutated
+     * @param memory is the memory
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void ret(u16 &pc, u16 &sp, const EmulatorMemory &memory, cyc &cycles) {
@@ -43,7 +43,7 @@ namespace emu::z80 {
      *
      * @param pc is the program counter, which will be mutated
      * @param sp is the stack pointer, which will be mutated
-     * @param memory is the memory, which will be mutated
+     * @param memory is the memory
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
@@ -70,7 +70,7 @@ namespace emu::z80 {
      *
      * @param pc is the program counter, which will be mutated
      * @param sp is the stack pointer, which will be mutated
-     * @param memory is the memory, which will be mutated
+     * @param memory is the memory
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
@@ -97,7 +97,7 @@ namespace emu::z80 {
      *
      * @param pc is the program counter, which will be mutated
      * @param sp is the stack pointer, which will be mutated
-     * @param memory is the memory, which will be mutated
+     * @param memory is the memory
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
@@ -124,7 +124,7 @@ namespace emu::z80 {
      *
      * @param pc is the program counter, which will be mutated
      * @param sp is the stack pointer, which will be mutated
-     * @param memory is the memory, which will be mutated
+     * @param memory is the memory
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
@@ -151,11 +151,11 @@ namespace emu::z80 {
      *
      * @param pc is the program counter, which will be mutated
      * @param sp is the stack pointer, which will be mutated
-     * @param memory is the memory, which will be mutated
+     * @param memory is the memory
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ret_m(u16 &pc, u16 &sp, EmulatorMemory &memory, const Flags &flag_reg, cyc &cycles) {
+    void ret_m(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, cyc &cycles) {
         cycles = 0;
 
         if (flag_reg.is_sign_flag_set()) {
@@ -178,7 +178,7 @@ namespace emu::z80 {
      *
      * @param pc is the program counter, which will be mutated
      * @param sp is the stack pointer, which will be mutated
-     * @param memory is the memory, which will be mutated
+     * @param memory is the memory
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
@@ -205,7 +205,7 @@ namespace emu::z80 {
      *
      * @param pc is the program counter, which will be mutated
      * @param sp is the stack pointer, which will be mutated
-     * @param memory is the memory, which will be mutated
+     * @param memory is the memory
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
@@ -232,7 +232,7 @@ namespace emu::z80 {
      *
      * @param pc is the program counter, which will be mutated
      * @param sp is the stack pointer, which will be mutated
-     * @param memory is the memory, which will be mutated
+     * @param memory is the memory
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */

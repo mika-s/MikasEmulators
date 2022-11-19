@@ -19,8 +19,8 @@ namespace emu::z80 {
      *
      * @param pc is the program counter, which will be mutated
      * @param sp is the stack pointer, which will be mutated
-     * @param memory is the memory, which will be mutated
-     * @param iff1 is the first interrupt flag
+     * @param memory is the memory
+     * @param iff1 is the first interrupt flag, which will be mutated
      * @param iff2 is the second interrupt flag
      * @param cycles is the number of cycles variable, which will be mutated
      */

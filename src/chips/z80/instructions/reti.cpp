@@ -19,7 +19,7 @@ namespace emu::z80 {
      *
      * @param pc is the program counter, which will be mutated
      * @param sp is the stack pointer, which will be mutated
-     * @param memory is the memory, which will be mutated
+     * @param memory is the memory
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void reti(u16 &pc, u16 &sp, const EmulatorMemory &memory, cyc &cycles) {

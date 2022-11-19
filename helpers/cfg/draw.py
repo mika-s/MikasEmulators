@@ -25,10 +25,10 @@ def create_graphviz_graph(basic_blocks: list[BasicBlock]):
 
     for basic_block in basic_blocks:
         for successor in basic_block.successors:
-            if basic_block.id == successor.id:
-                dot.edge(str(basic_block.id), str(successor.id), dir='back')
+            if basic_block.id == successor[0].id:
+                dot.edge(str(basic_block.id), str(successor[0].id), dir='back')
             else:
-                dot.edge(str(basic_block.id), str(successor.id))
+                dot.edge(str(basic_block.id), str(successor[0].id))
 
     dot.render(directory='output').replace('\\', '/')
 

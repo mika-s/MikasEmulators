@@ -988,7 +988,7 @@ namespace emu::z80 {
     void res_MixyPd(unsigned int bit_number, u16 ixy_reg, u8 d, EmulatorMemory &memory, cyc &cycles);
     void ret(u16 &pc, u16 &sp, const EmulatorMemory &memory, cyc &cycles);
     void ret_c(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, cyc &cycles);
-    void ret_m(u16 &pc, u16 &sp, EmulatorMemory &memory, const Flags &flag_reg, cyc &cycles);
+    void ret_m(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, cyc &cycles);
     void ret_nc(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, cyc &cycles);
     void ret_nz(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, cyc &cycles);
     void ret_p(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, cyc &cycles);

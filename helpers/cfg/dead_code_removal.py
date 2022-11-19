@@ -24,9 +24,9 @@ def remove_dead_code(basic_blocks: list[BasicBlock]) -> list[BasicBlock]:
     while len(queue) > 0:
         current = queue.pop()
         for successor in current.successors:
-            if not is_used[successor.id]:
-                is_used[successor.id] = True
-                queue.insert(0, successor)
+            if not is_used[successor[0].id]:
+                is_used[successor[0].id] = True
+                queue.insert(0, successor[0])
 
     return [basic_block for basic_block in basic_blocks if is_used[basic_block.id]]
 

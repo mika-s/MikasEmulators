@@ -35,9 +35,9 @@ namespace emu::z80 {
      *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
      * </ul>
      *
-     * @param acc_reg is the accumulator register
+     * @param acc_reg is the accumulator register, which will be mutated
      * @param value contains the argument that should be exclusive ored with the accumulator
-     * @param flag_reg is the flag register
+     * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void xor_r(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles) {
@@ -55,9 +55,9 @@ namespace emu::z80 {
      *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
      * </ul>
      *
-     * @param acc_reg is the accumulator register
+     * @param acc_reg is the accumulator register, which will be mutated
      * @param args contains the argument with the immediate value
-     * @param flag_reg is the flag register
+     * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void xor_n(u8 &acc_reg, const NextByte &args, Flags &flag_reg, cyc &cycles) {
@@ -75,9 +75,9 @@ namespace emu::z80 {
      *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
      * </ul>
      *
-     * @param acc_reg is the accumulator register
+     * @param acc_reg is the accumulator register, which will be mutated
      * @param value contains the argument that should be exclusive ored with the accumulator
-     * @param flag_reg is the flag register
+     * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void xor_MHL(u8 &acc_reg, u8 value, Flags &flag_reg, cyc &cycles) {
@@ -98,7 +98,7 @@ namespace emu::z80 {
      * @param acc_reg is the accumulator register, which will be mutated
      * @param ixy_reg is the IX or IY register containing the base address
      * @param args contains address offset
-     * @param memory is the memory
+     * @param memory is the memory, which will be mutated
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
@@ -126,7 +126,7 @@ namespace emu::z80 {
      *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
      * </ul>
      *
-     * @param acc_reg is the accumulator register
+     * @param acc_reg is the accumulator register, which will be mutated
      * @param value contains the argument that should be exclusive ored with the accumulator
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
@@ -147,7 +147,7 @@ namespace emu::z80 {
      * </ul>
      *
      * @param acc_reg is the accumulator register, which will be mutated
-     * @param value contains the argument that should be exclusive ored with the accumulator
+     * @param ixy_reg_h_or_l contains the argument that should be exclusive ored with the accumulator
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
