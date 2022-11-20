@@ -19,7 +19,9 @@ rules = {
          Instruction('CM', True)],
         [Instruction('RET', False), Instruction('RZ', True), Instruction('RNZ', True), Instruction('RC', True),
          Instruction('RNC', True), Instruction('RPE', True), Instruction('RPO', True), Instruction('RP', True),
-         Instruction('RM', True)]
+         Instruction('RM', True)],
+        [Instruction('RST', False)],
+        [0x0000, 0x0008, 0x0010, 0x0018, 0x0020, 0x0028, 0x0030, 0x0038]
     )
 }
 

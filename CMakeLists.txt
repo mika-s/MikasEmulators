@@ -27,6 +27,7 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/src/crosscutting)
 add_subdirectory(${PROJECT_SOURCE_DIR}/src/chips/8080)
 add_subdirectory(${PROJECT_SOURCE_DIR}/src/chips/namco_wsg3)
 add_subdirectory(${PROJECT_SOURCE_DIR}/src/chips/z80)
+add_subdirectory(${PROJECT_SOURCE_DIR}/src/chips/trivial/lmc)
 add_subdirectory(${PROJECT_SOURCE_DIR}/src/applications)
 
 add_executable(${PROJECT_NAME} src/main.cpp)
@@ -41,6 +42,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
         I8080
         NamcoWsg3
         Z80
+        LMC
         Applications
         )
 

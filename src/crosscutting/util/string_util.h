@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <sstream>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace emu::util::string {
@@ -26,6 +27,8 @@ namespace emu::util::string {
     std::string create_padding(std::size_t length_so_far, std::size_t expected_length);
 
     std::vector<std::string> split(const std::stringstream &ss, const std::string &delimiter);
+
+    std::string_view trim(std::string_view s);
 
     std::string prepend(std::string prefix, const char *txt);
 

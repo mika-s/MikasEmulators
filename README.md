@@ -14,6 +14,10 @@ notice.
     - [Pacman](documentation/applications/pacman.md)
     - [CP/M](documentation/applications/cpm.md) (WIP)
 
+**Trivial architectures:**
+
+- [Little Man Computer (LMC)](documentation/chips/lmc.md)
+
 ## Dependencies
 
 - [SDL2](https://www.libsdl.org/) (and SDL2_image)

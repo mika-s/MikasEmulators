@@ -1,7 +1,8 @@
 #include "file_util.h"
 #include "crosscutting/exceptions/rom_file_not_found_exception.h"
 #include "typedefs.h"
-#include <fstream>
+#include <fstream> // IWYU pragma: keep
+#include <sstream> // IWYU pragma: keep
 
 namespace emu::util::file {
 
@@ -41,5 +42,22 @@ namespace emu::util::file {
         }
 
         return program;
+    }
+
+    std::stringstream read_file(const std::string &path) {
+        std::string line;
+        std::stringstream ss;
+        std::ifstream file(path, std::ios::in);
+
+        if (file.is_open()) {
+            while (getline(file, line)) {
+                ss << line << "\n";
+            }
+            file.close();
+        } else {
+            throw RomFileNotFoundException(path);
+        }
+
+        return ss;
     }
 }

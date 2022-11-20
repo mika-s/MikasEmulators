@@ -16,18 +16,22 @@ class ConnectionType(Enum):
 
 class Instruction:
     def __init__(self, name: str, is_branching: bool):
-        self.name = name
-        self.is_branching = is_branching
+        self.name: str = name
+        self.is_branching: bool = is_branching
 
 
 class Language:
     def __init__(self,
                  jmp_instructions: list[Instruction],
                  call_instructions: list[Instruction],
-                 ret_instructions: list[Instruction]):
-        self.jmp_instructions = jmp_instructions
-        self.call_instructions = call_instructions
-        self.ret_instructions = ret_instructions
+                 ret_instructions: list[Instruction],
+                 interrupt_instructions: list[Instruction],
+                 interrupt_addresses: list[int]):
+        self.jmp_instructions: list[Instruction] = jmp_instructions
+        self.call_instructions: list[Instruction] = call_instructions
+        self.ret_instructions: list[Instruction] = ret_instructions
+        self.interrupt_instructions: list[Instruction] = interrupt_instructions
+        self.interrupt_addresses: list[int] = interrupt_addresses
 
 
 class DisassembledLine:

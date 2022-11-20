@@ -10,6 +10,10 @@ set(SOURCES_APPLICATIONS_CPP
         cpm_z80/cpm_application_session.cpp
         cpm_z80/usage.cpp
 
+        lmc_application/lmc_application.cpp
+        lmc_application/lmc_application_session.cpp
+        lmc_application/usage.cpp
+
         pacman/audio.cpp
         pacman/gui.cpp
         pacman/gui_imgui.cpp
@@ -47,6 +51,10 @@ set(SOURCES_APPLICATIONS_H
         cpm_z80/cpm_application_session.h
         cpm_z80/usage.h
 
+        lmc_application/lmc_application.h
+        lmc_application/lmc_application_session.h
+        lmc_application/usage.h
+
         pacman/audio.h
         pacman/gui.h
         pacman/gui_imgui.h
@@ -81,9 +89,12 @@ set(SOURCES_APPLICATIONS_H
         )
 
 add_library(Applications STATIC ${SOURCES_APPLICATIONS_H} ${SOURCES_APPLICATIONS_CPP})
-target_link_libraries(Applications PRIVATE Glad SDL2::Main SDL2::Image ImGui Doctest Crosscutting I8080 NamcoWsg3 Z80)
+target_link_libraries(Applications PRIVATE
+        Glad SDL2::Main SDL2::Image ImGui Doctest
+        Crosscutting I8080 NamcoWsg3 Z80 LMC
+        )
 target_include_directories(Applications PUBLIC ../)
 
-if(iwyu_path)
+if (iwyu_path)
     set_property(TARGET Applications PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
-endif()
+endif ()

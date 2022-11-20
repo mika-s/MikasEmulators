@@ -1,25 +1,33 @@
 #!/usr/bin/env python3
 
 from blocks import find_blocks
-from classes import BasicBlock
+from classes import BasicBlock, Language
 from leaders import find_leaders
 from graph import create_graph
 from parse import parse_lines
 from rules import Cpu, get_rules
 
 
-def remove_dead_code(basic_blocks: list[BasicBlock]) -> list[BasicBlock]:
+def remove_dead_code(basic_blocks: list[BasicBlock], language: Language) -> list[BasicBlock]:
     """
     Use BFS to find all basic blocks in use.
     """
+
+    def is_containing_interrupt_address(_basic_block: BasicBlock) -> bool:
+        block_addresses: set[int] = set(map(lambda l: l.address, _basic_block.lines))
+        interrupt_addresses = set(language.interrupt_addresses)
+
+        return len(block_addresses.intersection(interrupt_addresses)) > 0
 
     is_used: dict[int, bool] = {}
     for basic_block in basic_blocks:
         is_used[basic_block.id] = False
 
-    is_used[0] = True
+    queue = [basic_block for basic_block in basic_blocks if
+             basic_block.is_entry_block or is_containing_interrupt_address(basic_block)]
 
-    queue = [basic_block for basic_block in basic_blocks if basic_block.is_entry_block]
+    for block in queue:
+        is_used[block.id] = True
 
     while len(queue) > 0:
         current = queue.pop()
@@ -41,7 +49,7 @@ def main():
     find_leaders(disassembled_lines, i8080_rules)
     basic_blocks = find_blocks(disassembled_lines)
     create_graph(basic_blocks, i8080_rules)
-    basic_blocks_proper = remove_dead_code(basic_blocks)
+    basic_blocks_proper = remove_dead_code(basic_blocks, i8080_rules)
 
     for basic_block in basic_blocks_proper:
         print(f'{basic_block}\n')

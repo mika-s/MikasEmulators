@@ -384,6 +384,10 @@ namespace emu::applications::space_invaders {
 
         std::vector<std::string> disassembled_program = split(ss, "\n");
 
+        disassembled_program.erase(
+                std::remove_if(disassembled_program.begin(), disassembled_program.end(), [](const std::string &s) { return s.empty(); })
+        );
+
         std::vector<DisassembledLine> lines;
         std::transform(
                 disassembled_program.begin(),

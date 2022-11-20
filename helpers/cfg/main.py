@@ -27,7 +27,7 @@ def main():
     find_leaders(disassembled_lines, i8080_rules)
     basic_blocks = find_blocks(disassembled_lines)
     create_graph(basic_blocks, i8080_rules)
-    basic_blocks_proper = remove_dead_code(basic_blocks)
+    basic_blocks_proper = remove_dead_code(basic_blocks, i8080_rules)
     validate_basic_blocks(basic_blocks_proper, basic_blocks, disassembled_lines, i8080_rules)
 
     for basic_block in basic_blocks_proper:

@@ -1,5 +1,6 @@
 #include "string_util.h"
 #include "typedefs.h"
+#include <algorithm>
 #include <cstdlib>
 #include <cstring>
 #include <fmt/core.h>
@@ -103,7 +104,16 @@ namespace emu::util::string {
             s.erase(0, pos + delimiter.length());
         }
 
+        split_string.push_back(s);
+
         return split_string;
+    }
+
+    std::string_view trim(std::string_view s) {
+        s.remove_prefix(std::min(s.find_first_not_of(" \t\r\v\n"), s.size()));
+        s.remove_suffix(std::min(s.size() - s.find_last_not_of(" \t\r\v\n") - 1, s.size()));
+
+        return s;
     }
 
     std::string prepend(std::string prefix, const char *txt) {

@@ -1,6 +1,7 @@
 #include "frontend.h"
 #include "applications/cpm_8080/cpm_application.h"
 #include "applications/cpm_z80/cpm_application.h"
+#include "applications/lmc_application/lmc_application.h"
 #include "applications/pacman/pacman.h"
 #include "applications/pacman/settings.h"
 #include "applications/space_invaders/settings.h"
@@ -162,6 +163,7 @@ namespace emu::applications {
             if (args.size() == test_number_of_arguments_when_no_cpus_provided) {
                 context.addFilter("test-case", "8080*");
                 context.addFilter("test-case", "Z80*");
+                context.addFilter("test-case", "LMC*");
             } else {
                 for (std::size_t arg_idx = 1; arg_idx < args.size(); ++arg_idx) {
                     const std::string cpu = args[arg_idx] + "*";
@@ -267,6 +269,8 @@ namespace emu::applications {
             return std::make_unique<cpm::i8080::CpmApplication>("roms/8080/8080EXM.COM");
         } else if (program == "CPUTEST") {
             return std::make_unique<cpm::i8080::CpmApplication>("roms/8080/CPUTEST.COM");
+        } else if (program == "lmc_application") {
+            return std::make_unique<lmc::LmcApplication>("roms/trivial/lmc/add_test.lmc");
         } else {
             throw InvalidProgramArgumentsException(
                     "Illegal program argument when choosing emulator",
