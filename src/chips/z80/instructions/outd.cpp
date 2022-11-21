@@ -31,7 +31,7 @@ namespace emu::z80 {
      * @param io is the IO addresses
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void outd(u8 &b_reg, u8 c_reg, u8 &h_reg, u8 &l_reg, EmulatorMemory &memory, Flags &flag_reg,
+    void outd(u8 &b_reg, u8 c_reg, u8 &h_reg, u8 &l_reg, EmulatorMemory<u16, u8> &memory, Flags &flag_reg,
               std::vector<u8> io, cyc &cycles
     ) {
         u16 hl = to_u16(h_reg, l_reg);
@@ -73,7 +73,7 @@ namespace emu::z80 {
             b_reg = 2;
             c_reg = 3;
             Flags flag_reg;
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add(std::vector<u8>{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
 
             outd(b_reg, c_reg, h_reg, l_reg, memory, flag_reg, io, cycles);
@@ -98,7 +98,7 @@ namespace emu::z80 {
         SUBCASE("should use 16 cycles") {
             cycles = 0;
             Flags flag_reg;
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add(std::vector<u8>{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
 
             outd(b_reg, c_reg, h_reg, l_reg, memory, flag_reg, io, cycles);

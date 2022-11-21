@@ -28,7 +28,7 @@ namespace emu::z80 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void push_qq(u8 reg1, u8 reg2, u16 &sp, EmulatorMemory &memory, cyc &cycles) {
+    void push_qq(u8 reg1, u8 reg2, u16 &sp, EmulatorMemory<u16, u8> &memory, cyc &cycles) {
         memory.write(--sp, reg1);
         memory.write(--sp, reg2);
 
@@ -50,7 +50,7 @@ namespace emu::z80 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void push_af(const Flags &flag_reg, u8 acc_reg, u16 &sp, EmulatorMemory &memory, cyc &cycles) {
+    void push_af(const Flags &flag_reg, u8 acc_reg, u16 &sp, EmulatorMemory<u16, u8> &memory, cyc &cycles) {
         memory.write(--sp, acc_reg);
         memory.write(--sp, flag_reg.to_u8());
 
@@ -71,7 +71,7 @@ namespace emu::z80 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void push_ixy(u16 ixy_reg, u16 &sp, EmulatorMemory &memory, cyc &cycles) {
+    void push_ixy(u16 ixy_reg, u16 &sp, EmulatorMemory<u16, u8> &memory, cyc &cycles) {
         memory.write(--sp, high_byte(ixy_reg));
         memory.write(--sp, low_byte(ixy_reg));
 
@@ -91,7 +91,7 @@ namespace emu::z80 {
             u8 reg2 = 0xbb;
             u16 sp = 0x03;
 
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add(std::vector<u8>{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08});
 
             push_qq(reg1, reg2, sp, memory, cycles);
@@ -111,7 +111,7 @@ namespace emu::z80 {
             u8 acc_reg = 0xbb;
             u16 sp = 0x03;
 
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add(std::vector<u8>{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08});
 
             push_af(flag_reg, acc_reg, sp, memory, cycles);
@@ -128,7 +128,7 @@ namespace emu::z80 {
             const u8 reg2 = 0;
             u16 sp = 0x03;
 
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add(std::vector<u8>{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08});
 
             push_qq(reg1, reg2, sp, memory, cycles);
@@ -146,7 +146,7 @@ namespace emu::z80 {
             const u16 ix = 0x01234;
             u16 sp = 0x03;
 
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add(std::vector<u8>{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08});
 
             push_ixy(ix, sp, memory, cycles);

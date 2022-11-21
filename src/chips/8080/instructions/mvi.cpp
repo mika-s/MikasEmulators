@@ -49,7 +49,7 @@ namespace emu::i8080 {
      * @param args contains value to load into the register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void mvi_m(EmulatorMemory &memory, u16 address, const NextByte &args, cyc &cycles) {
+    void mvi_m(EmulatorMemory<u16, u8> &memory, u16 address, const NextByte &args, cyc &cycles) {
         u8 value = memory.read(address);
 
         mvi(value, args);
@@ -89,7 +89,7 @@ namespace emu::i8080 {
 
         SUBCASE("should load memory with value") {
             NextByte args = {.farg = 0};
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add({0x10, 0x15, 0x01, 0xaa});
             u16 address = 0x0000;
 
@@ -121,7 +121,7 @@ namespace emu::i8080 {
         SUBCASE("should use 10 cycles if memory is involved") {
             cycles = 0;
             NextByte args = {.farg = 0x21};
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add({0x10});
             u16 address = 0x0000;
 

@@ -3,7 +3,7 @@
 
 namespace emu::applications::space_invaders {
 
-    MemoryMapForSpaceInvaders::MemoryMapForSpaceInvaders(EmulatorMemory &memory)
+    MemoryMapForSpaceInvaders::MemoryMapForSpaceInvaders(EmulatorMemory<u16, u8> &memory)
         : m_memory(memory) {
     }
 

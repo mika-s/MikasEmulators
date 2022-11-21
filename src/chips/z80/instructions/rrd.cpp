@@ -26,7 +26,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void rrd(u8 &acc_reg, EmulatorMemory &memory, u16 address, Flags &flag_reg, cyc &cycles) {
+    void rrd(u8 &acc_reg, EmulatorMemory<u16, u8> &memory, u16 address, Flags &flag_reg, cyc &cycles) {
         u8 value = memory.read(address);
         u8 new_acc = acc_reg;
 
@@ -58,7 +58,7 @@ namespace emu::z80 {
         SUBCASE("should put (HL) LS nibble in LS nibble acc_reg, and LS nibble in acc_reg in MS nibble (HL), and MS nibble (HL) in LS nibble (HL)") {
             Flags flag_reg;
             acc_reg = 0x84;
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add({0x20});
 
             rrd(acc_reg, memory, 0x0000, flag_reg, cycles);
@@ -71,7 +71,7 @@ namespace emu::z80 {
             Flags flag_reg;
             flag_reg.set_carry_flag();
             acc_reg = 0xab;
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add({0xde});
 
             rrd(acc_reg, memory, 0x0000, flag_reg, cycles);
@@ -105,7 +105,7 @@ namespace emu::z80 {
             Flags flag_reg;
             flag_reg.set_half_carry_flag();
             acc_reg = 0xab;
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add({0xde});
 
             rrd(acc_reg, memory, 0x0000, flag_reg, cycles);
@@ -127,7 +127,7 @@ namespace emu::z80 {
             Flags flag_reg;
             flag_reg.set_add_subtract_flag();
             acc_reg = 0xab;
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add({0xde});
 
             rrd(acc_reg, memory, 0x0000, flag_reg, cycles);
@@ -150,7 +150,7 @@ namespace emu::z80 {
 
             Flags flag_reg;
             acc_reg = 0xab;
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add({0xde});
 
             rrd(acc_reg, memory, 0x0000, flag_reg, cycles);

@@ -5,6 +5,7 @@
 
 namespace emu::memory {
 
+    template<class A, class D>
     class MemoryMappedIo {
     public:
         virtual ~MemoryMappedIo() = default;

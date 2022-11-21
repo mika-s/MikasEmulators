@@ -26,7 +26,7 @@ namespace emu::i8080 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void rm(u16 &pc, u16 &sp, EmulatorMemory &memory, const Flags &flag_reg, cyc &cycles) {
+    void rm(u16 &pc, u16 &sp, EmulatorMemory<u16, u8> &memory, const Flags &flag_reg, cyc &cycles) {
         cycles = 0;
 
         if (flag_reg.is_sign_flag_set()) {
@@ -44,7 +44,7 @@ namespace emu::i8080 {
 
     TEST_CASE("8080: RM") {
         cyc cycles = 0;
-        EmulatorMemory memory;
+        EmulatorMemory<u16, u8> memory;
         memory.add(std::vector<u8>{0xab, 0x01, 0x02, 0x03, 0x04, 0x05});
 
         SUBCASE("should pop PC off the stack when the sign flag is set") {

@@ -65,7 +65,7 @@ namespace emu::i8080 {
      * @param new_value is the value to move into to
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void mov_m_r(EmulatorMemory &memory, u16 address, u8 new_value, cyc &cycles) {
+    void mov_m_r(EmulatorMemory<u16, u8> &memory, u16 address, u8 new_value, cyc &cycles) {
         u8 value_in_memory = memory.read(address);
 
         mov(value_in_memory, new_value);
@@ -101,7 +101,7 @@ namespace emu::i8080 {
         }
 
         SUBCASE("should load the memory with value") {
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add({0x10});
             u16 address = 0x0000;
             u8 value = 0;
@@ -130,7 +130,7 @@ namespace emu::i8080 {
 
         SUBCASE("should use 7 cycles if memory is involved") {
             cycles = 0;
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add({0x10});
             u16 address = 0x0000;
             u8 value = 0x20;

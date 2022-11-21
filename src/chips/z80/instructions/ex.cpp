@@ -41,7 +41,7 @@ namespace emu::z80 {
         cycles = 4;
     }
 
-    void ex_msp_dd(u16 sp, EmulatorMemory &memory, u16 &reg) {
+    void ex_msp_dd(u16 sp, EmulatorMemory<u16, u8> &memory, u16 &reg) {
         const u16 previous_reg = reg;
         reg = to_u16(memory.read(sp + 1), memory.read(sp));
         memory.write(sp, low_byte(previous_reg));
@@ -63,7 +63,7 @@ namespace emu::z80 {
      * @param l_reg is the L register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ex_msp_hl(u16 sp, EmulatorMemory &memory, u8 &h_reg, u8 &l_reg, cyc &cycles) {
+    void ex_msp_hl(u16 sp, EmulatorMemory<u16, u8> &memory, u8 &h_reg, u8 &l_reg, cyc &cycles) {
         u16 hl = to_u16(h_reg, l_reg);
         ex_msp_dd(sp, memory, hl);
         h_reg = high_byte(hl);
@@ -86,7 +86,7 @@ namespace emu::z80 {
      * @param ixy_reg is the IX or IY register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ex_msp_ixy(u16 sp, EmulatorMemory &memory, u16 &ixy_reg, cyc &cycles) {
+    void ex_msp_ixy(u16 sp, EmulatorMemory<u16, u8> &memory, u16 &ixy_reg, cyc &cycles) {
         ex_msp_dd(sp, memory, ixy_reg);
 
         cycles = 23;
@@ -180,7 +180,7 @@ namespace emu::z80 {
         cyc cycles = 0;
 
         SUBCASE("should exchange HL with memory at stack pointer") {
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add({0x33, 0x44});
             u8 h_reg = 0x11;
             u8 l_reg = 0x22;
@@ -196,7 +196,7 @@ namespace emu::z80 {
 
         SUBCASE("should use 18 cycles") {
             cycles = 0;
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add({0x33, 0x44});
             u8 h_reg = 0x11;
             u8 l_reg = 0x22;
@@ -212,7 +212,7 @@ namespace emu::z80 {
         cyc cycles = 0;
 
         SUBCASE("should exchange IX with memory at stack pointer") {
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add({0x90, 0x48});
             u16 ix_reg = 0x3988;
             u8 sp = 0x00;
@@ -226,7 +226,7 @@ namespace emu::z80 {
 
         SUBCASE("should use 23 cycles") {
             cycles = 0;
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add({0x33, 0x44});
             u16 ix_reg = 0x1122;
             u8 sp = 0x00;

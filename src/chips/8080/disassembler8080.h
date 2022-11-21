@@ -8,6 +8,7 @@
 #include <iosfwd>
 
 namespace emu::memory {
+    template<class A, class D>
     class EmulatorMemory;
 }
 
@@ -19,12 +20,12 @@ namespace emu::i8080 {
 
     class Disassembler8080 {
     public:
-        Disassembler8080(EmulatorMemory &memory, std::ostream &iostream);
+        Disassembler8080(EmulatorMemory<u16, u8> &memory, std::ostream &iostream);
 
         void disassemble();
 
     private:
-        EmulatorMemory &m_memory;
+        EmulatorMemory<u16, u8> &m_memory;
         std::size_t m_memory_size;
         u16 m_pc;
         u8 m_opcode;

@@ -28,7 +28,7 @@ namespace emu::i8080 {
      * @param args contains the argument with the address to call
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void call(u16 &pc, u16 &sp, EmulatorMemory &memory, const NextWord &args, cyc &cycles) {
+    void call(u16 &pc, u16 &sp, EmulatorMemory<u16, u8> &memory, const NextWord &args, cyc &cycles) {
         execute_call(pc, sp, memory, args);
 
         cycles = 17;
@@ -42,7 +42,7 @@ namespace emu::i8080 {
 
     TEST_CASE("8080: CALL") {
         cyc cycles = 0;
-        EmulatorMemory memory;
+        EmulatorMemory<u16, u8> memory;
         memory.add(std::vector<u8>{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0xA});
         NextWord args = {.farg = 0x2, .sarg = 0x0};
 

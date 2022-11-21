@@ -3,6 +3,7 @@
 #include <iostream>
 
 namespace emu::memory {
+    template<class A, class D>
     class EmulatorMemory;
 }
 
@@ -24,7 +25,7 @@ namespace emu::z80 {
      * @param iff2 is the second interrupt flag
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void retn(u16 &pc, u16 &sp, const EmulatorMemory &memory, bool &iff1, bool iff2, cyc &cycles) {
+    void retn(u16 &pc, u16 &sp, const EmulatorMemory<u16, u8> &memory, bool &iff1, bool iff2, cyc &cycles) {
         iff1 = iff2;
         execute_return(pc, sp, memory);
 

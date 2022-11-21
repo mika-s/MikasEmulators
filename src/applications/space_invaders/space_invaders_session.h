@@ -39,6 +39,7 @@ namespace emu::logging {
     class Logger;
 }
 namespace emu::memory {
+    template<class A, class D>
     class EmulatorMemory;
 }
 
@@ -69,7 +70,7 @@ namespace emu::applications::space_invaders {
                 const RunStatus startup_runstatus,
                 std::shared_ptr<Gui> gui,
                 std::shared_ptr<Input> input,
-                EmulatorMemory &memory
+                EmulatorMemory<u16, u8> &memory
         );
 
         ~SpaceInvadersSession() override;
@@ -104,7 +105,7 @@ namespace emu::applications::space_invaders {
         std::unique_ptr<Cpu> m_cpu;
         Audio m_audio;
 
-        EmulatorMemory &m_memory;
+        EmulatorMemory<u16, u8> &m_memory;
 
         std::shared_ptr<Logger> m_logger;
         std::shared_ptr<Debugger> m_debugger;

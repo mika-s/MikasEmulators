@@ -35,7 +35,7 @@ namespace emu::z80 {
      * @param cycles is the number of cycles variable, which will be mutated
      */
     void ldir(u16 &pc, u8 &b_reg, u8 &c_reg, u8 &d_reg, u8 &e_reg, u8 &h_reg, u8 &l_reg,
-              u8 acc_reg, EmulatorMemory &memory, Flags &flag_reg, cyc &cycles) {
+              u8 acc_reg, EmulatorMemory<u16, u8> &memory, Flags &flag_reg, cyc &cycles) {
         u16 de = to_u16(d_reg, e_reg);
         u16 hl = to_u16(h_reg, l_reg);
         memory.write(de, memory.read(hl));
@@ -88,7 +88,7 @@ namespace emu::z80 {
 
         SUBCASE("should transfer from (HL) to (DE) once, when BC is 1") {
             u16 pc = 0;
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add({0x23, 0x56, 0x3a, 0x99, 0x3f, 0xaa});
             u8 b_reg = 0, c_reg = 1;
             u8 d_reg = 0, e_reg = 4;
@@ -108,7 +108,7 @@ namespace emu::z80 {
 
         SUBCASE("should always reset the half carry flag") {
             u16 pc = 0;
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add({0x23, 0x56, 0x3a, 0x99, 0x3f, 0xaa, 0x52, 0x11, 0xcd});
             u8 b_reg = 0, c_reg = 1;
             u8 d_reg = 0, e_reg = 4;
@@ -141,7 +141,7 @@ namespace emu::z80 {
 
         SUBCASE("should always reset the add/subtract flag") {
             u16 pc = 0;
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add({0x23, 0x56, 0x3a, 0x99, 0x3f, 0xaa, 0x52, 0x11, 0xcd});
             u8 b_reg = 0, c_reg = 1;
             u8 d_reg = 0, e_reg = 4;
@@ -174,7 +174,7 @@ namespace emu::z80 {
 
         SUBCASE("should set the parity/overflow flag while BC is greater than 0, and reset it when it reaches 0") {
             u16 pc = 0;
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add({0x23, 0x56, 0x3a, 0x99, 0x3f, 0xaa, 0x52, 0x11, 0xcd});
             u8 b_reg = 0, c_reg = 3;
             u8 d_reg = 0, e_reg = 4;
@@ -200,7 +200,7 @@ namespace emu::z80 {
 
         SUBCASE("should use 21 cycles when it's not the last repetition") {
             u16 pc = 0;
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add({0x23, 0x56, 0x3a, 0x99, 0x3f, 0xaa});
             u8 b_reg = 0, c_reg = 2;
             u8 d_reg = 0, e_reg = 4;
@@ -216,7 +216,7 @@ namespace emu::z80 {
 
         SUBCASE("should use 16 cycles when it's the last repetition") {
             u16 pc = 0;
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add({0x23, 0x56, 0x3a, 0x99, 0x3f, 0xaa});
             u8 b_reg = 0, c_reg = 1;
             u8 d_reg = 0, e_reg = 4;

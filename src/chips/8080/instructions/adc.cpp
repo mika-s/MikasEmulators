@@ -186,7 +186,7 @@ namespace emu::i8080 {
             cycles = 0;
             Flags flag_reg;
             acc_reg = 0xe;
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add({0x10});
             u16 address = 0x0000;
 

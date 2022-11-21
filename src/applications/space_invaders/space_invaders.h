@@ -41,7 +41,7 @@ namespace emu::applications::space_invaders {
 
     private:
         Settings m_settings;
-        EmulatorMemory m_memory;
+        EmulatorMemory<u16, u8> m_memory;
         std::shared_ptr<Gui> m_gui;
         std::shared_ptr<Input> m_input;
         RunStatus m_startup_runstatus;

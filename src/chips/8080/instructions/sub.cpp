@@ -183,7 +183,7 @@ namespace emu::i8080 {
         SUBCASE("should use 7 cycles if memory is involved") {
             cycles = 0;
             Flags flag_reg;
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add({0x10});
             u16 address = 0x0000;
             acc_reg = 0xe;

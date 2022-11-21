@@ -20,7 +20,7 @@ namespace emu::lmc {
     using emu::util::string::hexify;
 
     Cpu::Cpu(
-            EmulatorMemory &memory,
+            EmulatorMemory<u16, u8> &memory,
             const u8 initial_pc
     ) : m_is_halted(false),
         m_memory(memory), m_memory_size(memory.size()),
@@ -122,7 +122,7 @@ namespace emu::lmc {
                 .sarg = m_memory.read(m_pc++)};
     }
 
-    EmulatorMemory &Cpu::memory() {
+    EmulatorMemory<u16, u8> &Cpu::memory() {
         return m_memory;
     }
 

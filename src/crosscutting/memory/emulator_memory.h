@@ -1,48 +1,100 @@
 #ifndef MIKA_EMULATORS_CROSSCUTTING_MEMORY_EMULATOR_MEMORY_H
 #define MIKA_EMULATORS_CROSSCUTTING_MEMORY_EMULATOR_MEMORY_H
 
-#include "crosscutting/typedefs.h"
+#include "crosscutting/memory/memory_mapped_io.h" // IWYU pragma: keep
 #include <cstddef>
 #include <memory>
 #include <vector>
 
 namespace emu::memory {
-    class MemoryMappedIo;
-}
 
-namespace emu::memory {
-
+    template<class A, class D>
     class EmulatorMemory {
     public:
-        EmulatorMemory();
+        EmulatorMemory()
+            : m_memory_mapper_is_attached(false) {
+        }
 
-        void add(const std::vector<u8> &to_add);
+        void add(const std::vector<D> &to_add) {
+            std::size_t current_size = m_memory.size();
 
-        void attach_memory_mapper(std::shared_ptr<MemoryMappedIo> memory_mapper);
+            for (std::size_t i = current_size, j = 0; i < current_size + to_add.size(); ++i, ++j) {
+                m_memory.push_back(to_add[j]);
+            }
+        }
 
-        std::size_t size();
+        void attach_memory_mapper(std::shared_ptr<MemoryMappedIo<A, D>> memory_mapper) {
+            m_memory_mapper = std::move(memory_mapper);
+            m_memory_mapper_is_attached = true;
+        }
 
-        EmulatorMemory slice(std::size_t from, std::size_t to);
+        std::size_t size() {
+            return m_memory.size();
+        }
 
-        void write(u16 address, u8 value);
+        /**
+         * Creates a slice of the memory. Does not copy any potential memory mapper.
+         *
+         * @param from is the index to start from
+         * @param to is the index to slice until
+         * @return a new EmulatorMemory object that contains the sliced memory
+         */
+        EmulatorMemory<A, D> slice(std::size_t from, std::size_t to) {
+            std::vector<D> data;
 
-        [[nodiscard]] u8 read(u16 address) const;
+            for (std::size_t i = from; i < to; ++i) {
+                data.push_back(m_memory[i]);
+            }
 
-        void direct_write(u16 address, u8 value);
+            EmulatorMemory sliced_memory;
+            sliced_memory.add(data);
 
-        [[nodiscard]] u8 direct_read(u16 address) const;
+            return sliced_memory;
+        }
 
-        std::vector<u8>::iterator begin();
+        void write(A address, D value) {
+            if (m_memory_mapper_is_attached) {
+                m_memory_mapper->write(address, value);
+            } else {
+                direct_write(address, value);
+            }
+        }
 
-        std::vector<u8>::iterator end();
+        [[nodiscard]] D read(A address) const {
+            if (m_memory_mapper_is_attached) {
+                return m_memory_mapper->read(address);
+            } else {
+                return direct_read(address);
+            }
+        }
 
-        [[nodiscard]] std::vector<u8>::const_iterator begin() const;
+        void direct_write(A address, D value) {
+            m_memory[address] = value;
+        }
 
-        [[nodiscard]] std::vector<u8>::const_iterator end() const;
+        [[nodiscard]] D direct_read(A address) const {
+            return m_memory[address];
+        }
+
+        typename std::vector<D>::iterator begin() {
+            return m_memory.begin();
+        }
+
+        typename std::vector<D>::iterator end() {
+            return m_memory.end();
+        }
+
+        typename std::vector<D>::const_iterator begin() const {
+            return m_memory.begin();
+        }
+
+        [[nodiscard]] typename std::vector<D>::const_iterator end() const {
+            return m_memory.end();
+        }
 
     private:
-        std::vector<u8> m_memory;
-        std::shared_ptr<MemoryMappedIo> m_memory_mapper;
+        std::vector<D> m_memory;
+        std::shared_ptr<MemoryMappedIo<A, D>> m_memory_mapper;
         bool m_memory_mapper_is_attached;
     };
 }

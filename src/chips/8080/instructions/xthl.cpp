@@ -11,7 +11,7 @@ namespace emu::i8080 {
     using emu::util::byte::low_byte;
     using emu::util::byte::to_u16;
 
-    void ex_msp_dd(u16 sp, EmulatorMemory &memory, u16 &reg) {
+    void ex_msp_dd(u16 sp, EmulatorMemory<u16, u8> &memory, u16 &reg) {
         const u16 previous_reg = reg;
         reg = to_u16(memory.read(sp + 1), memory.read(sp));
         memory.write(sp, low_byte(previous_reg));
@@ -33,7 +33,7 @@ namespace emu::i8080 {
      * @param sp1 is the second from the top of the stack, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void xthl(u16 sp, EmulatorMemory &memory, u8 &h_reg, u8 &l_reg, cyc &cycles) {
+    void xthl(u16 sp, EmulatorMemory<u16, u8> &memory, u8 &h_reg, u8 &l_reg, cyc &cycles) {
         u16 hl = to_u16(h_reg, l_reg);
         ex_msp_dd(sp, memory, hl);
         h_reg = high_byte(hl);
@@ -48,7 +48,7 @@ namespace emu::i8080 {
 
     TEST_CASE("8080: XTHL") {
         cyc cycles = 0;
-        EmulatorMemory memory;
+        EmulatorMemory<u16, u8> memory;
         memory.add({0x33, 0x44});
 
         SUBCASE("should exchange HL with top of the stack") {

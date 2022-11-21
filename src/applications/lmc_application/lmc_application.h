@@ -4,6 +4,7 @@
 #include "chips/z80/cpu.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/misc/emulator.h"
+#include "crosscutting/typedefs.h"
 #include <memory>
 #include <string>
 
@@ -26,7 +27,7 @@ namespace emu::applications::lmc {
 
     private:
         std::unique_ptr<Cpu> m_cpu;
-        EmulatorMemory m_memory;
+        EmulatorMemory<u16, u8> m_memory;
         std::string m_loaded_file;
 
         void load_file(const std::string &file);

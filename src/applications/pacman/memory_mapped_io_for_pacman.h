@@ -12,6 +12,7 @@ namespace emu::applications::pacman {
     class Settings;
 }
 namespace emu::memory {
+    template<class A, class D>
     class EmulatorMemory;
 }
 
@@ -22,9 +23,9 @@ namespace emu::applications::pacman {
     using emu::util::byte::low_nibble;
     using emu::wsg3::Voice;
 
-    class MemoryMappedIoForPacman : public MemoryMappedIo {
+    class MemoryMappedIoForPacman : public MemoryMappedIo<u16, u8> {
     public:
-        explicit MemoryMappedIoForPacman(EmulatorMemory &memory, Settings settings);
+        explicit MemoryMappedIoForPacman(EmulatorMemory<u16, u8> &memory, Settings settings);
 
         void write(u16 address, u8 value) override;
 
@@ -110,7 +111,7 @@ namespace emu::applications::pacman {
         static constexpr u16 address_watchdog_end = 0x50ff;
         static constexpr u16 address_pacman_memory_end = 0x50ff;
 
-        EmulatorMemory &m_memory;
+        EmulatorMemory<u16, u8> &m_memory;
 
         bool m_is_sound_enabled;
         bool m_is_aux_board_enabled;

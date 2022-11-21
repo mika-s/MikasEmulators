@@ -29,7 +29,7 @@ namespace emu::applications::cpm::z80 {
 
     private:
         std::unique_ptr<Cpu> m_cpu;
-        EmulatorMemory m_memory;
+        EmulatorMemory<u16, u8> m_memory;
         std::string m_loaded_file;
 
         void load_file(const std::string &file);
@@ -38,7 +38,7 @@ namespace emu::applications::cpm::z80 {
 
         static std::vector<u8> create_work_ram(std::size_t size);
 
-        static void patch_program(EmulatorMemory &program);
+        static void patch_program(EmulatorMemory<u16, u8> &program);
     };
 }
 

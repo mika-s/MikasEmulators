@@ -16,7 +16,7 @@ namespace emu::lmc {
      * @param address is the value to add to the accumulator register
      * @param memory is the memory
      */
-    void add(u8 &acc_reg, u8 address, const EmulatorMemory &memory) {
+    void add(u8 &acc_reg, u8 address, const EmulatorMemory<u16, u8> &memory) {
         acc_reg += memory.read(address);
     }
 }

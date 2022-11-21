@@ -58,7 +58,7 @@ namespace emu::applications::cpm::i8080 {
         return work_ram;
     }
 
-    void CpmApplication::patch_program(EmulatorMemory &program) {
+    void CpmApplication::patch_program(EmulatorMemory<u16, u8> &program) {
         program.write(0x0000, 0xd3);
         program.write(0x0005, 0xd3);
         program.write(0x0006, 0x01);

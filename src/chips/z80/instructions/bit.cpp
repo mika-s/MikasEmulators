@@ -86,7 +86,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void bit_MHL(unsigned int bit_number, u16 hl_reg, const EmulatorMemory &memory, Flags &flag_reg, cyc &cycles) {
+    void bit_MHL(unsigned int bit_number, u16 hl_reg, const EmulatorMemory<u16, u8> &memory, Flags &flag_reg, cyc &cycles) {
         assert(bit_number < 8);
 
         bit(bit_number, memory.read(hl_reg), flag_reg);
@@ -113,7 +113,7 @@ namespace emu::z80 {
      * @param memory is the memory
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void bit_MixyPd(unsigned int bit_number, u16 ixy_reg, u8 d, const EmulatorMemory &memory, Flags &flag_reg, cyc &cycles) {
+    void bit_MixyPd(unsigned int bit_number, u16 ixy_reg, u8 d, const EmulatorMemory<u16, u8> &memory, Flags &flag_reg, cyc &cycles) {
         assert(bit_number < 8);
 
         bit(bit_number, memory.read(ixy_reg + static_cast<i8>(d)), flag_reg);

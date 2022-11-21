@@ -32,7 +32,7 @@ namespace emu::i8080 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void cz(u16 &pc, u16 &sp, EmulatorMemory &memory, const NextWord &args, const Flags &flag_reg,
+    void cz(u16 &pc, u16 &sp, EmulatorMemory<u16, u8> &memory, const NextWord &args, const Flags &flag_reg,
             cyc &cycles) {
         cycles = 0;
 
@@ -56,7 +56,7 @@ namespace emu::i8080 {
         SUBCASE("should push current PC on the stack and change PC to the address in args when zero flag is set") {
             u16 pc = 0x100f;
             u16 sp = 0x2;
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add(std::vector<u8>{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
             NextWord args = {.farg = 0x2, .sarg = 0x0};
             Flags flag_reg;
@@ -72,7 +72,7 @@ namespace emu::i8080 {
         SUBCASE("should not do anything when the zero flag is unset") {
             u16 pc = 0x100f;
             u16 sp = 0x2;
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add(std::vector<u8>{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
             NextWord args = {.farg = 0x2, .sarg = 0x0};
             Flags flag_reg;
@@ -89,7 +89,7 @@ namespace emu::i8080 {
             cycles = 0;
             u16 pc = 0;
             u16 sp = 0x2;
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add(std::vector<u8>{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
             NextWord args = {.farg = 0x2, .sarg = 0x0};
             Flags flag_reg;
@@ -104,7 +104,7 @@ namespace emu::i8080 {
             cycles = 0;
             u16 pc = 0;
             u16 sp = 0x2;
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add(std::vector<u8>{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
             NextWord args = {.farg = 0x2, .sarg = 0x0};
             Flags flag_reg;

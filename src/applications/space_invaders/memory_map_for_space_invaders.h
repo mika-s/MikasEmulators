@@ -7,6 +7,7 @@
 #include <cstddef>
 
 namespace emu::memory {
+    template<class A, class D>
     class EmulatorMemory;
 }
 
@@ -16,9 +17,9 @@ namespace emu::applications::space_invaders {
     using emu::memory::MemoryMappedIo;
     using emu::util::byte::low_nibble;
 
-    class MemoryMapForSpaceInvaders : public MemoryMappedIo {
+    class MemoryMapForSpaceInvaders : public MemoryMappedIo<u16, u8> {
     public:
-        explicit MemoryMapForSpaceInvaders(EmulatorMemory &memory);
+        explicit MemoryMapForSpaceInvaders(EmulatorMemory<u16, u8> &memory);
 
         void write(u16 address, u8 value) override;
 
@@ -29,7 +30,7 @@ namespace emu::applications::space_invaders {
         static constexpr u16 address_rom_end = 0x1fff;
         static constexpr u16 address_ram_end = 0x3fff;
 
-        EmulatorMemory &m_memory;
+        EmulatorMemory<u16, u8> &m_memory;
     };
 }
 

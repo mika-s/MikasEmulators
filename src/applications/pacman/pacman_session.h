@@ -36,6 +36,7 @@ namespace emu::logging {
     class Logger;
 }
 namespace emu::memory {
+    template<class A, class D>
     class EmulatorMemory;
 }
 namespace emu::z80 {
@@ -72,7 +73,7 @@ namespace emu::applications::pacman {
                 std::shared_ptr<Input> input,
                 std::shared_ptr<Audio> audio,
                 std::shared_ptr<MemoryMappedIoForPacman> memory_mapped_io,
-                EmulatorMemory &memory
+                EmulatorMemory<u16, u8> &memory
         );
 
         ~PacmanSession() override;
@@ -113,7 +114,7 @@ namespace emu::applications::pacman {
         std::shared_ptr<Audio> m_audio;
         std::unique_ptr<Cpu> m_cpu;
 
-        EmulatorMemory &m_memory;
+        EmulatorMemory<u16, u8> &m_memory;
 
         std::shared_ptr<Logger> m_logger;
         std::shared_ptr<Debugger> m_debugger;

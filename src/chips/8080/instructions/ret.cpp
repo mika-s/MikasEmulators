@@ -21,7 +21,7 @@ namespace emu::i8080 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ret(u16 &pc, u16 &sp, const EmulatorMemory &memory, cyc &cycles) {
+    void ret(u16 &pc, u16 &sp, const EmulatorMemory<u16, u8> &memory, cyc &cycles) {
         execute_return(pc, sp, memory);
 
         cycles = 10;
@@ -35,7 +35,7 @@ namespace emu::i8080 {
         cyc cycles = 0;
         u16 pc = 0x100f;
         u16 sp = 0;
-        EmulatorMemory memory;
+        EmulatorMemory<u16, u8> memory;
         memory.add(std::vector<u8>{0xab, 0x01, 0x02, 0x03, 0x04, 0x05});
 
         SUBCASE("should pop PC off the stack") {

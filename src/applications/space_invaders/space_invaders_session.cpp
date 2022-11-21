@@ -46,7 +46,7 @@ namespace emu::applications::space_invaders {
             const RunStatus startup_runstatus,
             std::shared_ptr<Gui> gui,
             std::shared_ptr<Input> input,
-            EmulatorMemory &memory
+            EmulatorMemory<u16, u8> &memory
     )
         : m_is_in_debug_mode(false),
           m_is_stepping_instruction(false),
@@ -376,7 +376,7 @@ namespace emu::applications::space_invaders {
 
 
     std::vector<DisassembledLine> SpaceInvadersSession::disassemble_program() {
-        EmulatorMemory sliced_for_disassembly = m_memory.slice(0, 0x2000);
+        EmulatorMemory<u16, u8> sliced_for_disassembly = m_memory.slice(0, 0x2000);
 
         std::stringstream ss;
         Disassembler8080 disassembler(sliced_for_disassembly, ss);

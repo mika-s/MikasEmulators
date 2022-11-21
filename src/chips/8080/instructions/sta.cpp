@@ -29,7 +29,7 @@ namespace emu::i8080 {
      * @param args contains the argument with the address in memory to store the accumulator register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void sta(u8 &acc_reg, EmulatorMemory &memory, const NextWord &args, cyc &cycles) {
+    void sta(u8 &acc_reg, EmulatorMemory<u16, u8> &memory, const NextWord &args, cyc &cycles) {
         const u16 address = to_u16(args.sarg, args.farg);
 
         memory.write(address, acc_reg);
@@ -45,7 +45,7 @@ namespace emu::i8080 {
 
     TEST_CASE("8080: STA") {
         cyc cycles = 0;
-        EmulatorMemory memory;
+        EmulatorMemory<u16, u8> memory;
         memory.add(std::vector<u8>{0x00, 0x01, 0x02, 0x03, 0xfd, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
         u8 acc_reg = 0x45;
         NextWord args = {.farg = 0x3, .sarg = 0x0};

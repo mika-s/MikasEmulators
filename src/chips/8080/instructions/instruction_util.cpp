@@ -33,18 +33,18 @@ namespace emu::i8080 {
         flag_reg.handle_aux_borrow_flag(previous, value, cf);
     }
 
-    void execute_call(u16 &pc, u16 &sp, EmulatorMemory &memory, const NextWord &args) {
+    void execute_call(u16 &pc, u16 &sp, EmulatorMemory<u16, u8> &memory, const NextWord &args) {
         execute_call(pc, sp, memory, args.farg, args.sarg);
     }
 
-    void execute_call(u16 &pc, u16 &sp, EmulatorMemory &memory, u8 farg, u8 sarg) {
+    void execute_call(u16 &pc, u16 &sp, EmulatorMemory<u16, u8> &memory, u8 farg, u8 sarg) {
         memory.write(--sp, high_byte(pc));
         memory.write(--sp, low_byte(pc));
 
         pc = to_u16(sarg, farg);
     }
 
-    void execute_return(u16 &pc, u16 &sp, const EmulatorMemory &memory) {
+    void execute_return(u16 &pc, u16 &sp, const EmulatorMemory<u16, u8> &memory) {
         const u8 sarg = memory.read(sp++);
         const u8 farg = memory.read(sp++);
         pc = to_u16(farg, sarg);

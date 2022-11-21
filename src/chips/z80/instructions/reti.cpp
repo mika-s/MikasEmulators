@@ -3,6 +3,7 @@
 #include <iostream>
 
 namespace emu::memory {
+    template<class A, class D>
     class EmulatorMemory;
 }
 
@@ -22,7 +23,7 @@ namespace emu::z80 {
      * @param memory is the memory
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void reti(u16 &pc, u16 &sp, const EmulatorMemory &memory, cyc &cycles) {
+    void reti(u16 &pc, u16 &sp, const EmulatorMemory<u16, u8> &memory, cyc &cycles) {
         execute_return(pc, sp, memory);
         // TODO: Signal an I/O device that the interrupt routine is completed.
 

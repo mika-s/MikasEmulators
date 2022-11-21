@@ -9,6 +9,7 @@
 #include <string>
 
 namespace emu::memory {
+    template<class A, class D>
     class EmulatorMemory;
 }
 
@@ -52,7 +53,7 @@ namespace emu::z80 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void set_MHL(unsigned int bit_number, u16 hl_reg, EmulatorMemory &memory, cyc &cycles) {
+    void set_MHL(unsigned int bit_number, u16 hl_reg, EmulatorMemory<u16, u8> &memory, cyc &cycles) {
         assert(bit_number < 8);
 
         set_bit_in_memory(memory, hl_reg, bit_number);
@@ -75,7 +76,7 @@ namespace emu::z80 {
      * @param memory is the memory, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void set_MixyPd(unsigned int bit_number, u16 ixy_reg, u8 d, EmulatorMemory &memory, cyc &cycles) {
+    void set_MixyPd(unsigned int bit_number, u16 ixy_reg, u8 d, EmulatorMemory<u16, u8> &memory, cyc &cycles) {
         assert(bit_number < 8);
 
         set_bit_in_memory(memory, ixy_reg + static_cast<i8>(d), bit_number);

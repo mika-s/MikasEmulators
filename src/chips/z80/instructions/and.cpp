@@ -114,7 +114,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void and_MixyPd(u8 &acc_reg, u16 ixy_reg, const NextByte &args, EmulatorMemory &memory, Flags &flag_reg,
+    void and_MixyPd(u8 &acc_reg, u16 ixy_reg, const NextByte &args, EmulatorMemory<u16, u8> &memory, Flags &flag_reg,
                     cyc &cycles
     ) {
         const u16 address = ixy_reg + static_cast<i8>(args.farg);

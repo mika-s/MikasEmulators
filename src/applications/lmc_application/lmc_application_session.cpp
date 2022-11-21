@@ -1,6 +1,7 @@
 #include "lmc_application_session.h"
 #include "crosscutting/util/byte_util.h"
-#include "lmc/cpu.h"
+//#include "lmc/cpu.h"
+#include "z80/cpu.h"
 #include <iostream>
 #include <stdexcept>
 #include <utility>
@@ -11,7 +12,7 @@ namespace emu::applications::lmc {
 
     LmcApplicationSession::LmcApplicationSession(
             std::string loaded_file,
-            EmulatorMemory memory
+            EmulatorMemory<u16, u8> memory
     )
         : m_memory(std::move(memory)),
           m_loaded_file(std::move(loaded_file)),
@@ -67,7 +68,7 @@ namespace emu::applications::lmc {
         std::cout << e;
     }
 
-    void LmcApplicationSession::c_writestr(const EmulatorMemory &memory, u16 address) {
+    void LmcApplicationSession::c_writestr(const EmulatorMemory<u16, u8> &memory, u16 address) {
         do {
             std::cout << memory.read(address++);
         } while (memory.read(address) != '$');

@@ -11,7 +11,7 @@ namespace emu::z80 {
     using emu::util::string::hexify;
     using emu::util::string::hexify_wo_0x;
 
-    DisassemblerZ80::DisassemblerZ80(EmulatorMemory &memory, std::ostream &ostream)
+    DisassemblerZ80::DisassemblerZ80(EmulatorMemory<u16, u8> &memory, std::ostream &ostream)
         : m_memory(memory),
           m_memory_size(memory.size()),
           m_pc(0),

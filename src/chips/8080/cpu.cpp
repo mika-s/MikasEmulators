@@ -17,7 +17,7 @@ namespace emu::i8080 {
     using emu::util::string::hexify;
 
     Cpu::Cpu(
-            EmulatorMemory &memory,
+            EmulatorMemory<u16, u8> &memory,
             const u16 initial_pc
     )
         : m_is_halted(false),
@@ -917,7 +917,7 @@ namespace emu::i8080 {
         return to_u16(m_h_reg, m_l_reg);
     }
 
-    EmulatorMemory &Cpu::memory() {
+    EmulatorMemory<u16, u8> &Cpu::memory() {
         return m_memory;
     }
 

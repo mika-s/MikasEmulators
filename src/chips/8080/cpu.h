@@ -15,6 +15,7 @@ namespace emu::i8080 {
     class OutObserver;
 }
 namespace emu::memory {
+    template<class A, class D>
     class EmulatorMemory;
 }
 
@@ -27,7 +28,7 @@ namespace emu::i8080 {
     class Cpu {
     public:
         Cpu(
-                EmulatorMemory &memory,
+                EmulatorMemory<u16, u8> &memory,
                 u16 initial_pc
         );
 
@@ -51,7 +52,7 @@ namespace emu::i8080 {
 
         void remove_in_observer(InObserver *observer);
 
-        EmulatorMemory &memory();
+        EmulatorMemory<u16, u8> &memory();
 
         [[nodiscard]] u8 a() const;
 
@@ -90,7 +91,7 @@ namespace emu::i8080 {
         bool m_is_interrupted;
         u8 m_instruction_from_interruptor;
 
-        EmulatorMemory &m_memory;
+        EmulatorMemory<u16, u8> &m_memory;
         std::size_t m_memory_size;
 
         std::vector<u8> m_io_in;

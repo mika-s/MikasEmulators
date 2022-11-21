@@ -10,7 +10,7 @@ namespace emu::i8080 {
 
     using emu::util::string::hexify_wo_0x;
 
-    Disassembler8080::Disassembler8080(EmulatorMemory &memory, std::ostream &ostream)
+    Disassembler8080::Disassembler8080(EmulatorMemory<u16, u8> &memory, std::ostream &ostream)
         : m_memory(memory),
           m_memory_size(memory.size()),
           m_pc(0),

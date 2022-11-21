@@ -80,7 +80,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void inc_MHL(EmulatorMemory &memory, u16 address, Flags &flag_reg, cyc &cycles) {
+    void inc_MHL(EmulatorMemory<u16, u8> &memory, u16 address, Flags &flag_reg, cyc &cycles) {
         u8 value = memory.read(address);
         inc(value, flag_reg);
         memory.write(address, value);
@@ -210,7 +210,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void inc_MixyPd(u16 ixy_reg, const NextByte &args, EmulatorMemory &memory, Flags &flag_reg, cyc &cycles) {
+    void inc_MixyPd(u16 ixy_reg, const NextByte &args, EmulatorMemory<u16, u8> &memory, Flags &flag_reg, cyc &cycles) {
         const u16 address = ixy_reg + static_cast<i8>(args.farg);
         u8 value = memory.read(address);
 
@@ -422,7 +422,7 @@ namespace emu::z80 {
         SUBCASE("should use 11 cycles") {
             cyc cycles = 0;
             Flags flag_reg;
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add({0x01, 0x02});
 
             inc_MHL(memory, 0x0001, flag_reg, cycles);

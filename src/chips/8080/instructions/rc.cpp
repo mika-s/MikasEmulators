@@ -22,7 +22,7 @@ namespace emu::i8080 {
      * @param flag_reg is the flag register
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void rc(u16 &pc, u16 &sp, const EmulatorMemory &memory, const Flags &flag_reg, cyc &cycles) {
+    void rc(u16 &pc, u16 &sp, const EmulatorMemory<u16, u8> &memory, const Flags &flag_reg, cyc &cycles) {
         cycles = 0;
 
         if (flag_reg.is_carry_flag_set()) {
@@ -44,7 +44,7 @@ namespace emu::i8080 {
         SUBCASE("should pop PC off the stack when the carry flag is set") {
             u16 pc = 0x100f;
             u16 sp = 0;
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add(std::vector<u8>{0xab, 0x01, 0x02, 0x03, 0x04, 0x05});
             Flags flag_reg;
             flag_reg.set_carry_flag();
@@ -57,7 +57,7 @@ namespace emu::i8080 {
         SUBCASE("should not pop PC off the stack when the carry flag is unset") {
             u16 pc = 0x100f;
             u16 sp = 0;
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add(std::vector<u8>{0xab, 0x01, 0x02, 0x03, 0x04, 0x05});
             Flags flag_reg;
             flag_reg.clear_carry_flag();
@@ -71,7 +71,7 @@ namespace emu::i8080 {
             cycles = 0;
             u16 pc = 0;
             u16 sp = 0;
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add(std::vector<u8>{0x00, 0x01, 0x02, 0x03, 0x04, 0x05});
             Flags flag_reg;
 
@@ -84,7 +84,7 @@ namespace emu::i8080 {
             cycles = 0;
             u16 pc = 0;
             u16 sp = 0;
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add(std::vector<u8>{0x00, 0x01, 0x02, 0x03, 0x04, 0x05});
             Flags flag_reg;
             flag_reg.set_carry_flag();

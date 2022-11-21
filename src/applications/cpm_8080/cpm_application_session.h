@@ -20,7 +20,7 @@ namespace emu::applications::cpm::i8080 {
     public:
         CpmApplicationSession(
                 std::string loaded_file,
-                EmulatorMemory m_memory
+                EmulatorMemory<u16, u8> m_memory
         );
 
         void run() override;
@@ -38,7 +38,7 @@ namespace emu::applications::cpm::i8080 {
         static constexpr u8 C_WRITESTR = 9;
 
         std::unique_ptr<Cpu> m_cpu;
-        EmulatorMemory m_memory;
+        EmulatorMemory<u16, u8> m_memory;
         std::string m_loaded_file;
         bool m_is_finished;
 
@@ -49,7 +49,7 @@ namespace emu::applications::cpm::i8080 {
 
         static void c_write(u8 e);
 
-        static void c_writestr(const EmulatorMemory &memory, u16 address);
+        static void c_writestr(const EmulatorMemory<u16, u8> &memory, u16 address);
     };
 }
 

@@ -30,7 +30,7 @@ namespace emu::i8080 {
      * @param args contains the argument with the address to call
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void shld(u8 l_reg, u8 h_reg, EmulatorMemory &memory, const NextWord &args, cyc &cycles) {
+    void shld(u8 l_reg, u8 h_reg, EmulatorMemory<u16, u8> &memory, const NextWord &args, cyc &cycles) {
         const u16 l_address = to_u16(args.sarg, args.farg);
         const u16 h_address = l_address + 1;
 
@@ -50,7 +50,7 @@ namespace emu::i8080 {
         cyc cycles = 0;
         u8 l_reg = 0x22;
         u8 h_reg = 0x11;
-        EmulatorMemory memory;
+        EmulatorMemory<u16, u8> memory;
         memory.add(std::vector<u8>{0x00, 0xff, 0xaa, 0xbb, 0xcc, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
         NextWord args = {.farg = 0x2, .sarg = 0x0};
 

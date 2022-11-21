@@ -13,7 +13,7 @@ namespace emu::applications::pacman {
     using emu::z80::set_bit_in_memory;
     using emu::z80::unset_bit_in_memory;
 
-    MemoryMappedIoForPacman::MemoryMappedIoForPacman(EmulatorMemory &memory, Settings settings)
+    MemoryMappedIoForPacman::MemoryMappedIoForPacman(EmulatorMemory<u16, u8> &memory, Settings settings)
         : m_memory(memory),
           m_is_sound_enabled(false),
           m_is_aux_board_enabled(false),

@@ -26,7 +26,7 @@ namespace emu::i8080 {
      * @param memory is the memory
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void ldax(u8 &acc_reg, u8 reg1, u8 reg2, const EmulatorMemory &memory, cyc &cycles) {
+    void ldax(u8 &acc_reg, u8 reg1, u8 reg2, const EmulatorMemory<u16, u8> &memory, cyc &cycles) {
         acc_reg = memory.read(to_u16(reg1, reg2));
 
         cycles = 7;
@@ -40,7 +40,7 @@ namespace emu::i8080 {
     TEST_CASE("8080: LDAX") {
         cyc cycles = 0;
         u8 acc_reg = 0xe;
-        EmulatorMemory memory;
+        EmulatorMemory<u16, u8> memory;
         memory.add(std::vector<u8>{0x00, 0x01, 0x02, 0x03, 0xfd, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa});
         u8 reg1 = 0;
         u8 reg2 = 0x04;

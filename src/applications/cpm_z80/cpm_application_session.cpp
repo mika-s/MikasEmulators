@@ -11,7 +11,7 @@ namespace emu::applications::cpm::z80 {
 
     CpmApplicationSession::CpmApplicationSession(
             std::string loaded_file,
-            EmulatorMemory memory
+            EmulatorMemory<u16, u8> memory
     )
         : m_memory(std::move(memory)),
           m_loaded_file(std::move(loaded_file)),
@@ -67,7 +67,7 @@ namespace emu::applications::cpm::z80 {
         std::cout << e;
     }
 
-    void CpmApplicationSession::c_writestr(const EmulatorMemory &memory, u16 address) {
+    void CpmApplicationSession::c_writestr(const EmulatorMemory<u16, u8> &memory, u16 address) {
         do {
             std::cout << memory.read(address++);
         } while (memory.read(address) != '$');

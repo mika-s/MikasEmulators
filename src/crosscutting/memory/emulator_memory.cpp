@@ -1,95 +1,12 @@
 #include "emulator_memory.h"
 #include "doctest.h"
-#include "memory/memory_mapped_io.h"
 #include "typedefs.h"
-#include <utility>
 
 namespace emu::memory {
 
-    EmulatorMemory::EmulatorMemory()
-        : m_memory_mapper_is_attached(false) {
-    }
-
-    void EmulatorMemory::add(const std::vector<u8> &to_add) {
-        std::size_t current_size = m_memory.size();
-
-        for (std::size_t i = current_size, j = 0; i < current_size + to_add.size(); ++i, ++j) {
-            m_memory.push_back(to_add[j]);
-        }
-    }
-
-    void EmulatorMemory::attach_memory_mapper(std::shared_ptr<MemoryMappedIo> memory_mapper) {
-        m_memory_mapper = std::move(memory_mapper);
-        m_memory_mapper_is_attached = true;
-    }
-
-    std::size_t EmulatorMemory::size() {
-        return m_memory.size();
-    }
-
-    /**
-     * Creates a slice of the memory. Does not copy any potential memory mapper.
-     *
-     * @param from is the index to start from
-     * @param to is the index to slice until
-     * @return a new EmulatorMemory object that contains the sliced memory
-     */
-    EmulatorMemory EmulatorMemory::slice(std::size_t from, std::size_t to) {
-        std::vector<u8> data;
-
-        for (std::size_t i = from; i < to; ++i) {
-            data.push_back(m_memory[i]);
-        }
-
-        EmulatorMemory sliced_memory;
-        sliced_memory.add(data);
-
-        return sliced_memory;
-    }
-
-    void EmulatorMemory::write(u16 address, u8 value) {
-        if (m_memory_mapper_is_attached) {
-            m_memory_mapper->write(address, value);
-        } else {
-            direct_write(address, value);
-        }
-    }
-
-    void EmulatorMemory::direct_write(u16 address, u8 value) {
-        m_memory[address] = value;
-    }
-
-    u8 EmulatorMemory::read(u16 address) const {
-        if (m_memory_mapper_is_attached) {
-            return m_memory_mapper->read(address);
-        } else {
-            return direct_read(address);
-        }
-    }
-
-    u8 EmulatorMemory::direct_read(u16 address) const {
-        return m_memory[address];
-    }
-
-    std::vector<u8>::iterator EmulatorMemory::begin() {
-        return m_memory.begin();
-    }
-
-    std::vector<u8>::iterator EmulatorMemory::end() {
-        return m_memory.end();
-    }
-
-    std::vector<u8>::const_iterator EmulatorMemory::begin() const {
-        return m_memory.begin();
-    }
-
-    std::vector<u8>::const_iterator EmulatorMemory::end() const {
-        return m_memory.end();
-    }
-
     TEST_CASE("crosscutting: EmulatorMemory") {
         SUBCASE("should index properly after one added vector") {
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
 
             const std::vector<u8> input = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
@@ -102,7 +19,7 @@ namespace emu::memory {
         }
 
         SUBCASE("should index properly after two added vectors") {
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
 
             const std::vector<u8> input = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
@@ -121,7 +38,7 @@ namespace emu::memory {
         }
 
         SUBCASE("should index properly after two added vectors") {
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
 
             const std::vector<u8> input1 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
             const std::vector<u8> input2 = {11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
@@ -141,7 +58,7 @@ namespace emu::memory {
         }
 
         SUBCASE("should be possible to set with index") {
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
 
             const std::vector<u8> input = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
@@ -160,7 +77,7 @@ namespace emu::memory {
         }
 
         SUBCASE("should have a size method that returns size of memory") {
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
 
             const std::vector<u8> input1 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
             const std::vector<u8> input2 = {11, 12, 13, 14, 15};

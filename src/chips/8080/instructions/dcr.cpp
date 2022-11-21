@@ -52,7 +52,7 @@ namespace emu::i8080 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void dcr_m(EmulatorMemory &memory, u16 address, Flags &flag_reg, cyc &cycles) {
+    void dcr_m(EmulatorMemory<u16, u8> &memory, u16 address, Flags &flag_reg, cyc &cycles) {
         u8 value = memory.read(address);
 
         dcr(value, flag_reg);
@@ -160,7 +160,7 @@ namespace emu::i8080 {
         SUBCASE("should use 10 cycles when memory is involved") {
             cycles = 0;
             Flags flag_reg;
-            EmulatorMemory memory;
+            EmulatorMemory<u16, u8> memory;
             memory.add({0x10});
             u16 address = 0x0000;
 

@@ -13,6 +13,7 @@
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/misc/emulator.h"
 #include "crosscutting/misc/session.h"
+#include "crosscutting/typedefs.h"
 #include "crosscutting/util/file_util.h"
 #include "crosscutting/util/string_util.h"
 #include "doctest.h"
@@ -122,13 +123,13 @@ namespace emu::applications {
             const std::string &file_path = args[disassembly_file_path_argument];
 
             if (cpu == "8080") {
-                i8080::EmulatorMemory memory;
+                i8080::EmulatorMemory<u16, u8> memory;
                 memory.add(read_file_into_vector(file_path));
 
                 Disassembler8080 disassembler(memory, std::cout);
                 disassembler.disassemble();
             } else if (cpu == "Z80") {
-                z80::EmulatorMemory memory;
+                z80::EmulatorMemory<u16, u8> memory;
                 memory.add(read_file_into_vector(file_path));
 
                 DisassemblerZ80 disassembler(memory, std::cout);

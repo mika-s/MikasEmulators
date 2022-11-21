@@ -8,6 +8,7 @@
 #include <vector>
 
 namespace emu::memory {
+    template<class A, class D>
     class EmulatorMemory;
 }
 namespace emu::lmc {
@@ -26,7 +27,7 @@ namespace emu::lmc {
     class Cpu {
     public:
         Cpu(
-                EmulatorMemory &memory,
+                EmulatorMemory<u16, u8> &memory,
                 u8 initial_pc
         );
 
@@ -50,7 +51,7 @@ namespace emu::lmc {
 
         void remove_in_observer(InObserver *observer);
 
-        EmulatorMemory &memory();
+        EmulatorMemory<u16, u8> &memory();
 
         [[nodiscard]] u8 a() const;
 
@@ -63,7 +64,7 @@ namespace emu::lmc {
     private:
         bool m_is_halted;
 
-        EmulatorMemory &m_memory;
+        EmulatorMemory<u16, u8> &m_memory;
         std::size_t m_memory_size;
 
         std::vector<u8> m_io_in;

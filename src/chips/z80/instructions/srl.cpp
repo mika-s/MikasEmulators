@@ -63,7 +63,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void srl_MHL(EmulatorMemory &memory, u16 address, Flags &flag_reg, cyc &cycles) {
+    void srl_MHL(EmulatorMemory<u16, u8> &memory, u16 address, Flags &flag_reg, cyc &cycles) {
         u8 value = memory.read(address);
 
         srl(value, flag_reg);
@@ -88,7 +88,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void srl_MixyPd(u16 ixy_reg, u8 d, EmulatorMemory &memory, Flags &flag_reg, cyc &cycles) {
+    void srl_MixyPd(u16 ixy_reg, u8 d, EmulatorMemory<u16, u8> &memory, Flags &flag_reg, cyc &cycles) {
         const u16 address = ixy_reg + static_cast<i8>(d);
         u8 value = memory.read(address);
 
@@ -115,7 +115,7 @@ namespace emu::z80 {
      * @param flag_reg is the flag register, which will be mutated
      * @param cycles is the number of cycles variable, which will be mutated
      */
-    void srl_MixyPd_r(u8 &reg, u16 ixy_reg, u8 d, EmulatorMemory &memory, Flags &flag_reg, cyc &cycles) {
+    void srl_MixyPd_r(u8 &reg, u16 ixy_reg, u8 d, EmulatorMemory<u16, u8> &memory, Flags &flag_reg, cyc &cycles) {
         const u16 address = ixy_reg + static_cast<i8>(d);
         u8 value = memory.read(address);
 
