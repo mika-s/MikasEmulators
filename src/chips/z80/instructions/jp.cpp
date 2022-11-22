@@ -526,7 +526,7 @@ namespace emu::z80 {
     TEST_CASE("Z80: JP PO") {
         cyc cycles = 0;
 
-        SUBCASE("should jump when the Parity flag is unset") {
+        SUBCASE("should jump when the parity flag is unset") {
             u16 pc = 0;
             NextWord args = {.farg = 0x11, .sarg = 0x22};
             Flags flag_reg;

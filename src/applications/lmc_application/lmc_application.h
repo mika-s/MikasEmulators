@@ -1,7 +1,7 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_LMC_APPLICATION_H
 #define MIKA_EMULATORS_APPLICATIONS_LMC_APPLICATION_H
 
-#include "chips/z80/cpu.h"
+#include "chips/trivial/lmc/cpu.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/misc/emulator.h"
 #include "crosscutting/typedefs.h"
@@ -14,10 +14,10 @@ namespace emu::misc {
 
 namespace emu::applications::lmc {
 
+    using emu::lmc::Cpu;
+    using emu::memory::EmulatorMemory;
     using emu::misc::Emulator;
     using emu::misc::Session;
-    using emu::z80::Cpu;
-    using emu::z80::EmulatorMemory;
 
     class LmcApplication : public Emulator {
     public:
@@ -27,7 +27,7 @@ namespace emu::applications::lmc {
 
     private:
         std::unique_ptr<Cpu> m_cpu;
-        EmulatorMemory<u16, u8> m_memory;
+        EmulatorMemory<u8, u16> m_memory;
         std::string m_loaded_file;
 
         void load_file(const std::string &file);

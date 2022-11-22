@@ -12,8 +12,8 @@
 namespace emu::applications::cpm::i8080 {
 
     using emu::i8080::Cpu;
-    using emu::i8080::EmulatorMemory;
     using emu::i8080::OutObserver;
+    using emu::memory::EmulatorMemory;
     using emu::misc::Session;
 
     class CpmApplicationSession : public Session, public OutObserver {

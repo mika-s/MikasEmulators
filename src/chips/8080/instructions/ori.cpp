@@ -62,48 +62,10 @@ namespace emu::i8080 {
                     ori(acc_reg, args, flag_reg, cycles);
 
                     CHECK_EQ(acc_reg_counter | value, acc_reg);
-                }
-            }
-        }
-
-        SUBCASE("should always clear the carry flag") {
-            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (u8 value = 0; value < UINT8_MAX; ++value) {
-                    Flags flag_reg;
-                    NextByte args = {value};
-                    acc_reg = acc_reg_counter;
-
-                    ori(acc_reg, args, flag_reg, cycles);
-
-                    CHECK_EQ(false, flag_reg.is_carry_flag_set());
-                }
-            }
-        }
-
-        SUBCASE("should set the zero flag when zero and not set it otherwise") {
-            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (u8 value = 0; value < UINT8_MAX; ++value) {
-                    Flags flag_reg;
-                    NextByte args = {value};
-                    acc_reg = acc_reg_counter;
-
-                    ori(acc_reg, args, flag_reg, cycles);
-
                     CHECK_EQ(acc_reg == 0, flag_reg.is_zero_flag_set());
-                }
-            }
-        }
-
-        SUBCASE("should set the sign flag when above 127 and not set it otherwise") {
-            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (u8 value = 0; value < UINT8_MAX; ++value) {
-                    Flags flag_reg;
-                    NextByte args = {value};
-                    acc_reg = acc_reg_counter;
-
-                    ori(acc_reg, args, flag_reg, cycles);
-
                     CHECK_EQ(acc_reg > INT8_MAX, flag_reg.is_sign_flag_set());
+                    CHECK_EQ(false, flag_reg.is_carry_flag_set());
+                    CHECK_EQ(false, flag_reg.is_aux_carry_flag_set());
                 }
             }
         }
@@ -126,20 +88,6 @@ namespace emu::i8080 {
             ori(acc_reg, args, flag_reg, cycles);
 
             CHECK_EQ(false, flag_reg.is_parity_flag_set());
-        }
-
-        SUBCASE("should always unset aux carry") {
-            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (u8 value = 0; value < UINT8_MAX; ++value) {
-                    Flags flag_reg;
-                    NextByte args = {value};
-                    acc_reg = acc_reg_counter;
-
-                    ori(acc_reg, args, flag_reg, cycles);
-
-                    CHECK_EQ(false, flag_reg.is_aux_carry_flag_set());
-                }
-            }
         }
 
         SUBCASE("should use 7 cycles") {

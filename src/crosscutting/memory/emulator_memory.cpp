@@ -4,6 +4,10 @@
 
 namespace emu::memory {
 
+    void dummy() {
+        // To force the cpp file to be compiled and the tests to be registered.
+    }
+
     TEST_CASE("crosscutting: EmulatorMemory") {
         SUBCASE("should index properly after one added vector") {
             EmulatorMemory<u16, u8> memory;

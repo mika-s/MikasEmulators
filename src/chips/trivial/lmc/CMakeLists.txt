@@ -1,15 +1,15 @@
 set(SOURCES_LMC_CPP
         assembler.cpp
         cpu.cpp
+        flags.cpp
         unrecognized_assembly_exception.cpp
         instructions/add.cpp
         instructions/sub.cpp
+        instructions/bra.cpp
         instructions/brp.cpp
         instructions/brz.cpp
         instructions/hlt.cpp
-        instructions/inp.cpp
         instructions/lda.cpp
-        instructions/out.cpp
         instructions/sta.cpp
         instructions/sub.cpp
         )
@@ -17,6 +17,7 @@ set(SOURCES_LMC_CPP
 set(SOURCES_LMC_H
         assembler.h
         cpu.h
+        flags.h
         opcode.h
         unrecognized_assembly_exception.h
         instructions/instructions.h

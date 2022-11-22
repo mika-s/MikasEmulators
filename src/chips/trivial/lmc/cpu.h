@@ -4,6 +4,7 @@
 #include "crosscutting/memory/next_byte.h"
 #include "crosscutting/memory/next_word.h"
 #include "crosscutting/typedefs.h"
+#include "flags.h"
 #include <cstddef>
 #include <vector>
 
@@ -27,7 +28,7 @@ namespace emu::lmc {
     class Cpu {
     public:
         Cpu(
-                EmulatorMemory<u16, u8> &memory,
+                EmulatorMemory<u8, u16> &memory,
                 u8 initial_pc
         );
 
@@ -51,42 +52,37 @@ namespace emu::lmc {
 
         void remove_in_observer(InObserver *observer);
 
-        EmulatorMemory<u16, u8> &memory();
+        EmulatorMemory<u8, u16> &memory();
 
-        [[nodiscard]] u8 a() const;
+        [[nodiscard]] u16 a() const;
 
         [[nodiscard]] u8 pc() const;
 
-        [[nodiscard]] u8 sp() const;
-
-        void input(u8 port, u8 value);
+        void input(u16 value);
 
     private:
         bool m_is_halted;
 
-        EmulatorMemory<u16, u8> &m_memory;
+        EmulatorMemory<u8, u16> &m_memory;
         std::size_t m_memory_size;
 
         std::vector<u8> m_io_in;
         std::vector<u8> m_io_out;
 
-        u8 m_opcode;
-        u16 m_sp;
-        u16 m_pc;
-        u8 m_acc_reg;
+        u8 m_pc;
+        u16 m_acc_reg;
+        Flags m_flag_reg;
 
         std::vector<OutObserver *> m_out_observers;
         std::vector<InObserver *> m_in_observers;
 
-        NextByte get_next_byte();
+        u16 get_next_value();
 
-        NextWord get_next_word();
+        void notify_out_observers(u16 acc_reg);
 
-        void notify_out_observers(u8 port);
+        void notify_in_observers();
 
-        void notify_in_observers(u8 port);
-
-        void print_debug(u8 opcode);
+        void print_debug(u16 opcode);
     };
 }
 

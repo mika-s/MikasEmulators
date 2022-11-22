@@ -34,6 +34,6 @@ namespace emu::applications::lmc {
         const std::stringstream file_content = read_file(file);
         const std::vector<u16> code = Assembler::assemble(file_content);
 
-        //        m_memory.add(code);
+        m_memory.add(code);
     }
 }

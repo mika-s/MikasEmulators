@@ -17,7 +17,7 @@ namespace emu::misc {
 namespace emu::applications::cpm::i8080 {
 
     using emu::i8080::Cpu;
-    using emu::i8080::EmulatorMemory;
+    using emu::memory::EmulatorMemory;
     using emu::misc::Emulator;
     using emu::misc::Session;
 

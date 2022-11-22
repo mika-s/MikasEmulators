@@ -24,6 +24,7 @@ set(SOURCES_CROSSCUTTING_CPP
         memory/emulator_memory.cpp
         misc/governor.cpp
         misc/sdl_counter.cpp
+        misc/uinteger.cpp
         util/byte_util.cpp
         util/file_util.cpp
         util/gui_util.cpp
@@ -65,6 +66,7 @@ set(SOURCES_CROSSCUTTING_H
         misc/run_status.h
         misc/sdl_counter.h
         misc/session.h
+        misc/uinteger.h
         util/byte_util.h
         util/file_util.h
         util/gui_util.h

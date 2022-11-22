@@ -16,10 +16,10 @@ namespace emu::misc {
 
 namespace emu::applications::cpm::z80 {
 
+    using emu::memory::EmulatorMemory;
     using emu::misc::Emulator;
     using emu::misc::Session;
     using emu::z80::Cpu;
-    using emu::z80::EmulatorMemory;
 
     class CpmApplication : public Emulator {
     public:

@@ -9,7 +9,6 @@
 #include "opcode.h"
 #include <algorithm>
 #include <iostream>
-#include <string>
 
 namespace emu::lmc {
 
@@ -20,12 +19,12 @@ namespace emu::lmc {
     using emu::util::string::hexify;
 
     Cpu::Cpu(
-            EmulatorMemory<u16, u8> &memory,
+            EmulatorMemory<u8, u16> &memory,
             const u8 initial_pc
     ) : m_is_halted(false),
         m_memory(memory), m_memory_size(memory.size()),
-        m_opcode(0), m_sp(0xffff), m_pc(initial_pc),
-        m_acc_reg(0xff) {}
+        m_pc(initial_pc),
+        m_acc_reg(0) {}
 
     Cpu::~Cpu() {
         m_out_observers.clear();
@@ -59,9 +58,8 @@ namespace emu::lmc {
     }
 
     void Cpu::reset_state() {
-        m_acc_reg = 0xff;
+        m_acc_reg = 0;
         m_pc = 0;
-        m_sp = 0xffff;
         m_is_halted = false;
         std::fill(m_io_in.begin(), m_io_in.end(), 0);
         std::fill(m_io_out.begin(), m_io_out.end(), 0);
@@ -74,88 +72,116 @@ namespace emu::lmc {
         reset_state();
     }
 
-    Opcode find_opcode([[maybe_unused]] u8 raw_opcode) {
-        return Opcode::ADD;
+    Opcode find_opcode(u16 raw_opcode) {
+        if (raw_opcode == 0) {
+            return Opcode::HLT;
+        } else if (100 <= raw_opcode && raw_opcode <= 199) {
+            return Opcode::ADD;
+        } else if (200 <= raw_opcode && raw_opcode <= 299) {
+            return Opcode::SUB;
+        } else if (300 <= raw_opcode && raw_opcode <= 399) {
+            return Opcode::STA;
+        } else if (500 <= raw_opcode && raw_opcode <= 599) {
+            return Opcode::LDA;
+        } else if (600 <= raw_opcode && raw_opcode <= 699) {
+            return Opcode::BRA;
+        } else if (700 <= raw_opcode && raw_opcode <= 799) {
+            return Opcode::BRZ;
+        } else if (800 <= raw_opcode && raw_opcode <= 899) {
+            return Opcode::BRP;
+        } else if (raw_opcode == 901) {
+            return Opcode::INP;
+        } else if (raw_opcode <= 902) {
+            return Opcode::OUT;
+        } else {
+            throw UnrecognizedOpcodeException(raw_opcode);
+        }
+    }
+
+    u8 find_argument(u16 raw_opcode) {
+        return raw_opcode % 100;
     }
 
     cyc Cpu::next_instruction() {
-        u8 raw_opcode = 0;
-        Opcode opcode = find_opcode(raw_opcode);
+        u16 raw_opcode = get_next_value();
+        const Opcode opcode = find_opcode(raw_opcode);
+
+        print_debug(raw_opcode);
 
         switch (opcode) {
             case Opcode::ADD:
-                add(m_acc_reg, 0, m_memory);
+                add(m_acc_reg, find_argument(raw_opcode), m_memory);
                 break;
             case Opcode::SUB:
+                sub(m_acc_reg, find_argument(raw_opcode), m_memory, m_flag_reg);
                 break;
             case Opcode::STA:
+                sta(m_acc_reg, find_argument(raw_opcode), m_memory);
                 break;
             case Opcode::LDA:
+                lda(m_acc_reg, find_argument(raw_opcode), m_memory);
                 break;
             case Opcode::BRA:
+                bra(m_pc, find_argument(raw_opcode));
                 break;
             case Opcode::BRZ:
+                brz(m_acc_reg, m_pc, find_argument(raw_opcode));
                 break;
             case Opcode::BRP:
+                brp(m_pc, find_argument(raw_opcode), m_flag_reg);
                 break;
             case Opcode::INP:
+                notify_in_observers();
                 break;
             case Opcode::OUT:
+                notify_out_observers(m_acc_reg);
                 break;
             case Opcode::HLT:
+                hlt(m_is_halted);
                 break;
-            default:
-                throw UnrecognizedOpcodeException(raw_opcode);
         }
 
         return 0;
     }
 
-    NextByte Cpu::get_next_byte() {
-        return {
-                .farg = m_memory.read(m_pc++)};
+    u16 Cpu::get_next_value() {
+        return m_memory.read(m_pc++);
     }
 
-    NextWord Cpu::get_next_word() {
-        return {
-                .farg = m_memory.read(m_pc++),
-                .sarg = m_memory.read(m_pc++)};
-    }
-
-    EmulatorMemory<u16, u8> &Cpu::memory() {
+    EmulatorMemory<u8, u16> &Cpu::memory() {
         return m_memory;
+    }
+
+    u16 Cpu::a() const {
+        return m_acc_reg;
     }
 
     u8 Cpu::pc() const {
         return m_pc;
     }
 
-    u8 Cpu::sp() const {
-        return m_sp;
+    void Cpu::input(u16 value) {
+        m_acc_reg = value;
     }
 
-    u8 Cpu::a() const {
-        return m_acc_reg;
-    }
-
-    void Cpu::notify_out_observers(u8 port) {
+    void Cpu::notify_out_observers(u16 acc_reg) {
         for (OutObserver *observer: m_out_observers) {
-            observer->out_changed(port);
+            observer->out_changed(acc_reg);
         }
     }
 
-    void Cpu::notify_in_observers(u8 port) {
+    void Cpu::notify_in_observers() {
         for (InObserver *observer: m_in_observers) {
-            observer->in_requested(port);
+            observer->in_requested();
         }
     }
 
-    void Cpu::print_debug(u8 opcode) {
+    void Cpu::print_debug(u16 opcode) {
         if (false) {
-            std::cout << "pc=" << hexify(m_pc)
-                      << ",sp=" << hexify(m_sp)
-                      << ",op=" << hexify(opcode)
-                      << ",a=" << hexify(m_acc_reg)
+            std::cout << "pc=" << +m_pc
+                      << ",op=" << +opcode
+                      << ",a=" << +m_acc_reg
+                      << ",nf=" << m_flag_reg.is_negative_flag_set()
                       << "\n"
                       << std::flush;
         }

@@ -8,12 +8,12 @@
 
 namespace emu::memory {
 
+    void dummy();
+
     template<class A, class D>
     class EmulatorMemory {
     public:
-        EmulatorMemory()
-            : m_memory_mapper_is_attached(false) {
-        }
+        EmulatorMemory() = default;
 
         void add(const std::vector<D> &to_add) {
             std::size_t current_size = m_memory.size();
@@ -29,6 +29,7 @@ namespace emu::memory {
         }
 
         std::size_t size() {
+            dummy();
             return m_memory.size();
         }
 
@@ -84,7 +85,7 @@ namespace emu::memory {
             return m_memory.end();
         }
 
-        typename std::vector<D>::const_iterator begin() const {
+        [[nodiscard]] typename std::vector<D>::const_iterator begin() const {
             return m_memory.begin();
         }
 
@@ -95,7 +96,7 @@ namespace emu::memory {
     private:
         std::vector<D> m_memory;
         std::shared_ptr<MemoryMappedIo<A, D>> m_memory_mapper;
-        bool m_memory_mapper_is_attached;
+        bool m_memory_mapper_is_attached{false};
     };
 }
 

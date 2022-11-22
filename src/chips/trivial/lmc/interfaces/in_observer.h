@@ -9,7 +9,7 @@ namespace emu::lmc {
     public:
         virtual ~InObserver() = default;
 
-        virtual void in_requested(u8 port) = 0;
+        virtual void in_requested() = 0;
     };
 }
 

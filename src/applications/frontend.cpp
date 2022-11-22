@@ -104,6 +104,7 @@ namespace emu::applications {
 
     void Frontend::disassemble(const std::vector<std::string> &args, Options &options) {
         using emu::i8080::Disassembler8080;
+        using emu::memory::EmulatorMemory;
         using emu::util::file::read_file_into_vector;
         using emu::z80::DisassemblerZ80;
 
@@ -123,13 +124,13 @@ namespace emu::applications {
             const std::string &file_path = args[disassembly_file_path_argument];
 
             if (cpu == "8080") {
-                i8080::EmulatorMemory<u16, u8> memory;
+                EmulatorMemory<u16, u8> memory;
                 memory.add(read_file_into_vector(file_path));
 
                 Disassembler8080 disassembler(memory, std::cout);
                 disassembler.disassemble();
             } else if (cpu == "Z80") {
-                z80::EmulatorMemory<u16, u8> memory;
+                EmulatorMemory<u16, u8> memory;
                 memory.add(read_file_into_vector(file_path));
 
                 DisassemblerZ80 disassembler(memory, std::cout);
