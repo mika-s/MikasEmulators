@@ -1,6 +1,5 @@
 #include "chips/trivial/lmc/usings.h"
 #include "crosscutting/memory/emulator_memory.h"
-#include "crosscutting/misc/uinteger.h"
 #include "flags.h"
 
 namespace emu::lmc {
@@ -21,6 +20,6 @@ namespace emu::lmc {
     void sub(Data &acc_reg, Address address, const EmulatorMemory<Address, Data> &memory, Flags &flag_reg) {
         flag_reg.handle_negative_flag(acc_reg, memory.read(address));
 
-        acc_reg = acc_reg - memory.read(address);
+        acc_reg -= memory.read(address);
     }
 }

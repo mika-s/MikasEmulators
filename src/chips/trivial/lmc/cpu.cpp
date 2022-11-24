@@ -2,7 +2,7 @@
 #include "chips/trivial/lmc/usings.h"
 #include "crosscutting/exceptions/unrecognized_opcode_exception.h"
 #include "crosscutting/memory/emulator_memory.h"
-#include "crosscutting/typedefs.h"
+#include "crosscutting/misc/uinteger.h"
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
 #include "instructions/instructions.h"
@@ -73,34 +73,33 @@ namespace emu::lmc {
     }
 
     Opcode find_opcode(Data raw_opcode) {
-        u64 opcode = raw_opcode.underlying();
-        if (opcode == 0) {
+        if (raw_opcode == Data(0)) {
             return Opcode::HLT;
-        } else if (100 <= opcode && opcode <= 199) {
+        } else if (Data(100) <= raw_opcode && raw_opcode <= Data(199)) {
             return Opcode::ADD;
-        } else if (200 <= opcode && opcode <= 299) {
+        } else if (Data(200) <= raw_opcode && raw_opcode <= Data(299)) {
             return Opcode::SUB;
-        } else if (300 <= opcode && opcode <= 399) {
+        } else if (Data(300) <= raw_opcode && raw_opcode <= Data(399)) {
             return Opcode::STA;
-        } else if (500 <= opcode && opcode <= 599) {
+        } else if (Data(500) <= raw_opcode && raw_opcode <= Data(599)) {
             return Opcode::LDA;
-        } else if (600 <= opcode && opcode <= 699) {
+        } else if (Data(600) <= raw_opcode && raw_opcode <= Data(699)) {
             return Opcode::BRA;
-        } else if (700 <= opcode && opcode <= 799) {
+        } else if (Data(700) <= raw_opcode && raw_opcode <= Data(799)) {
             return Opcode::BRZ;
-        } else if (800 <= opcode && opcode <= 899) {
+        } else if (Data(800) <= raw_opcode && raw_opcode <= Data(899)) {
             return Opcode::BRP;
-        } else if (opcode == 901) {
+        } else if (raw_opcode == Data(901)) {
             return Opcode::INP;
-        } else if (opcode <= 902) {
+        } else if (raw_opcode <= Data(902)) {
             return Opcode::OUT;
         } else {
-            throw UnrecognizedOpcodeException(opcode);
+            throw UnrecognizedOpcodeException(raw_opcode.underlying());
         }
     }
 
     Address find_argument(Data raw_opcode) {
-        return Address(raw_opcode.underlying()); // TODO
+        return Address(raw_opcode.underlying());
     }
 
     void Cpu::next_instruction() {
@@ -177,9 +176,9 @@ namespace emu::lmc {
 
     void Cpu::print_debug([[maybe_unused]] Data opcode) {
         if (false) {
-            std::cout << "pc=" << m_pc.underlying()
-                      << ",op=" << opcode.underlying()
-                      << ",a=" << m_acc_reg.underlying()
+            std::cout << "pc=" << m_pc
+                      << ",op=" << opcode
+                      << ",a=" << m_acc_reg
                       << ",nf=" << m_flag_reg.is_negative_flag_set()
                       << "\n"
                       << std::flush;

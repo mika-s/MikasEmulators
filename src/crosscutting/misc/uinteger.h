@@ -3,6 +3,7 @@
 
 #include "crosscutting/typedefs.h"
 #include <cstddef>
+#include <ostream>
 #include <vector>
 
 namespace emu::misc {
@@ -23,7 +24,7 @@ namespace emu::misc {
         }
 
         UInteger<M> &operator++() {
-            ++m_value;
+            m_value = (m_value + 1) % M;
             return *this;
         }
 
@@ -31,6 +32,11 @@ namespace emu::misc {
             UInteger<M> ret = *this;
             this->operator++();
             return ret;
+        }
+
+        UInteger<M> &operator+=(const UInteger<M> &rhs) {
+            m_value = (m_value + rhs.m_value) % M;
+            return *this;
         }
 
         UInteger<M> operator-(const UInteger<M> rhs) const {
@@ -41,6 +47,60 @@ namespace emu::misc {
             } else {
                 return UInteger(m_value - rhs.m_value);
             }
+        }
+
+        UInteger<M> &operator--() {
+            if (m_value == 0) {
+                m_value = M - 1;
+                return *this;
+            } else {
+                m_value = (m_value - 1);
+            }
+
+            return *this;
+        }
+
+        UInteger<M> operator--(int) {
+            UInteger<M> ret = *this;
+            this->operator--();
+            return ret;
+        }
+
+        UInteger<M> &operator-=(const UInteger<M> &rhs) {
+            if (rhs.m_value > m_value) {
+                u64 new_value = rhs.m_value - m_value;
+                new_value = M - new_value;
+                m_value = new_value;
+            } else {
+                m_value -= rhs.m_value;
+            }
+
+            return *this;
+        }
+
+        bool operator==(const UInteger<M> &rhs) const {
+            return m_value == rhs.m_value;
+        }
+
+        bool operator<=(const UInteger<M> &rhs) const {
+            return m_value <= rhs.m_value;
+        }
+
+        bool operator>=(const UInteger<M> &rhs) const {
+            return m_value >= rhs.m_value;
+        }
+
+        bool operator<(const UInteger<M> &rhs) const {
+            return m_value < rhs.m_value;
+        }
+
+        bool operator>(const UInteger<M> &rhs) const {
+            return m_value > rhs.m_value;
+        }
+
+        friend std::ostream &operator<<(std::ostream &os, const UInteger<M> &rhs) {
+            os << rhs.m_value;
+            return os;
         }
 
         explicit operator std::vector<u64>::size_type() {
