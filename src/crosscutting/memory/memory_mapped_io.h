@@ -10,9 +10,9 @@ namespace emu::memory {
     public:
         virtual ~MemoryMappedIo() = default;
 
-        virtual u8 read(u16 address) = 0;
+        virtual D read(A address) = 0;
 
-        virtual void write(u16 address, u8 value) = 0;
+        virtual void write(A address, D value) = 0;
     };
 }
 

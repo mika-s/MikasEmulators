@@ -4,25 +4,29 @@
 #include "chips/trivial/lmc/cpu.h"
 #include "chips/trivial/lmc/interfaces/in_observer.h"
 #include "chips/trivial/lmc/interfaces/out_observer.h"
+#include "chips/trivial/lmc/usings.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/misc/session.h"
-#include "crosscutting/typedefs.h"
+#include "crosscutting/misc/uinteger.h"
 #include <memory>
 #include <string>
 
 namespace emu::applications::lmc {
 
+    using emu::lmc::Address;
     using emu::lmc::Cpu;
+    using emu::lmc::Data;
     using emu::lmc::InObserver;
     using emu::lmc::OutObserver;
     using emu::memory::EmulatorMemory;
     using emu::misc::Session;
+    using emu::misc::UInteger;
 
     class LmcApplicationSession : public Session, public OutObserver, public InObserver {
     public:
         LmcApplicationSession(
                 std::string loaded_file,
-                EmulatorMemory<u8, u16> m_memory
+                EmulatorMemory<Address, Data> m_memory
         );
 
         void run() override;
@@ -31,13 +35,13 @@ namespace emu::applications::lmc {
 
         void stop() override;
 
-        void out_changed(u16 acc_reg) override;
+        void out_changed(Data acc_reg) override;
 
         void in_requested() override;
 
     private:
         std::unique_ptr<Cpu> m_cpu;
-        EmulatorMemory<u8, u16> m_memory;
+        EmulatorMemory<Address, Data> m_memory;
         std::string m_loaded_file;
         bool m_is_finished;
 

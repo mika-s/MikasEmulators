@@ -70,11 +70,11 @@ namespace emu::memory {
         }
 
         void direct_write(A address, D value) {
-            m_memory[address] = value;
+            m_memory[static_cast<typename std::vector<D>::size_type>(address)] = value;
         }
 
         [[nodiscard]] D direct_read(A address) const {
-            return m_memory[address];
+            return m_memory[static_cast<typename std::vector<D>::size_type>(address)];
         }
 
         typename std::vector<D>::iterator begin() {

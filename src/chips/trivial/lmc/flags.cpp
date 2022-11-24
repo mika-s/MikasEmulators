@@ -1,7 +1,6 @@
 #include "flags.h"
+#include "chips/trivial/lmc/usings.h"
 #include "crosscutting/util/byte_util.h"
-#include "doctest.h"
-#include <cstdint>
 
 namespace emu::lmc {
 
@@ -16,8 +15,8 @@ namespace emu::lmc {
         clear_negative_flag();
     }
 
-    void Flags::handle_negative_flag(u16 previous, u16 value) {
-        if (previous < value) {
+    void Flags::handle_negative_flag(Data previous, Data value) {
+        if (previous.underlying() < value.underlying()) {
             set_negative_flag();
         } else {
             clear_negative_flag();

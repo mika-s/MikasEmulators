@@ -1,4 +1,6 @@
 #include "assembler.h"
+#include "chips/trivial/lmc/usings.h"
+#include "crosscutting/typedefs.h"
 #include "crosscutting/util/string_util.h"
 #include "unrecognized_assembly_exception.h"
 #include <string>
@@ -9,9 +11,9 @@ namespace emu::lmc {
     using emu::util::string::split;
     using emu::util::string::trim;
 
-    std::vector<u16> Assembler::assemble(const std::stringstream &code) {
+    std::vector<Data> Assembler::assemble(const std::stringstream &code) {
         std::vector<std::string> code_lines = split(code, "\n");
-        std::vector<u16> assembled_code;
+        std::vector<Data> assembled_code;
 
         for (const std::string &raw_line: code_lines) {
             std::string trimmed_line = std::string(trim(raw_line));
@@ -34,7 +36,7 @@ namespace emu::lmc {
                     throw UnrecognizedAssemblyException(trimmed_line, "address too large");
                 }
 
-                assembled_code.push_back(100 + static_cast<u8>(address));
+                assembled_code.emplace_back(100 + static_cast<u8>(address));
             } else if (trimmed_line.starts_with("SUB")) {
                 std::vector<std::string> add_line = split(trimmed_line_ss, " ");
                 if (add_line.size() != 2) {
@@ -46,7 +48,7 @@ namespace emu::lmc {
                     throw UnrecognizedAssemblyException(trimmed_line, "address too large");
                 }
 
-                assembled_code.push_back(200 + static_cast<u8>(address));
+                assembled_code.emplace_back(200 + static_cast<u8>(address));
             } else if (trimmed_line.starts_with("STA")) {
                 std::vector<std::string> add_line = split(trimmed_line_ss, " ");
                 if (add_line.size() != 2) {
@@ -58,7 +60,7 @@ namespace emu::lmc {
                     throw UnrecognizedAssemblyException(trimmed_line, "address too large");
                 }
 
-                assembled_code.push_back(300 + static_cast<u8>(address));
+                assembled_code.emplace_back(300 + static_cast<u8>(address));
             } else if (trimmed_line.starts_with("LDA")) {
                 std::vector<std::string> add_line = split(trimmed_line_ss, " ");
                 if (add_line.size() != 2) {
@@ -70,7 +72,7 @@ namespace emu::lmc {
                     throw UnrecognizedAssemblyException(trimmed_line, "address too large");
                 }
 
-                assembled_code.push_back(500 + static_cast<u8>(address));
+                assembled_code.emplace_back(500 + static_cast<u8>(address));
             } else if (trimmed_line.starts_with("BRA")) {
                 std::vector<std::string> add_line = split(trimmed_line_ss, " ");
                 if (add_line.size() != 2) {
@@ -82,7 +84,7 @@ namespace emu::lmc {
                     throw UnrecognizedAssemblyException(trimmed_line, "address too large");
                 }
 
-                assembled_code.push_back(600 + static_cast<u8>(address));
+                assembled_code.emplace_back(600 + static_cast<u8>(address));
             } else if (trimmed_line.starts_with("BRZ")) {
                 std::vector<std::string> add_line = split(trimmed_line_ss, " ");
                 if (add_line.size() != 2) {
@@ -94,7 +96,7 @@ namespace emu::lmc {
                     throw UnrecognizedAssemblyException(trimmed_line, "address too large");
                 }
 
-                assembled_code.push_back(700 + static_cast<u8>(address));
+                assembled_code.emplace_back(700 + static_cast<u8>(address));
             } else if (trimmed_line.starts_with("BRP")) {
                 std::vector<std::string> add_line = split(trimmed_line_ss, " ");
                 if (add_line.size() != 2) {
@@ -106,7 +108,7 @@ namespace emu::lmc {
                     throw UnrecognizedAssemblyException(trimmed_line, "address too large");
                 }
 
-                assembled_code.push_back(800 + static_cast<u8>(address));
+                assembled_code.emplace_back(800 + static_cast<u8>(address));
             } else if (trimmed_line.starts_with("INP")) {
                 std::vector<std::string> add_line = split(trimmed_line_ss, " ");
                 if (add_line.size() != 1) {
@@ -117,7 +119,7 @@ namespace emu::lmc {
                     throw UnrecognizedAssemblyException(trimmed_line);
                 }
 
-                assembled_code.push_back(901);
+                assembled_code.emplace_back(901);
             } else if (trimmed_line.starts_with("OUT")) {
                 std::vector<std::string> add_line = split(trimmed_line_ss, " ");
                 if (add_line.size() != 1) {
@@ -128,7 +130,7 @@ namespace emu::lmc {
                     throw UnrecognizedAssemblyException(trimmed_line);
                 }
 
-                assembled_code.push_back(902);
+                assembled_code.emplace_back(902);
             } else if (trimmed_line.starts_with("HLT")) {
                 std::vector<std::string> add_line = split(trimmed_line_ss, " ");
                 if (add_line.size() != 1) {
@@ -139,7 +141,7 @@ namespace emu::lmc {
                     throw UnrecognizedAssemblyException(trimmed_line);
                 }
 
-                assembled_code.push_back(0);
+                assembled_code.emplace_back(0);
             }
         }
 

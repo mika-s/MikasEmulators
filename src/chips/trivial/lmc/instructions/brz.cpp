@@ -1,4 +1,4 @@
-#include "crosscutting/typedefs.h"
+#include "chips/trivial/lmc/usings.h"
 
 namespace emu::lmc {
 
@@ -12,8 +12,8 @@ namespace emu::lmc {
      * @param pc is the program counter, which will be mutated
      * @param address is the address to the value in memory
      */
-    void brz(u16 acc_reg, u8 &pc, u8 address) {
-        if (acc_reg == 0) {
+    void brz(Data acc_reg, Address &pc, Address address) {
+        if (acc_reg.underlying() == 0) {
             pc = address;
         }
     }

@@ -1,4 +1,4 @@
-#include "crosscutting/typedefs.h"
+#include "chips/trivial/lmc/usings.h"
 
 namespace emu::lmc {
 
@@ -11,7 +11,7 @@ namespace emu::lmc {
      * @param pc is the program counter, which will be mutated
      * @param address is the address to the value in memory
      */
-    void bra(u8 &pc, u8 address) {
+    void bra(Address &pc, Address address) {
         pc = address;
     }
 }

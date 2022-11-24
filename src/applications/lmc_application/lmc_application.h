@@ -2,9 +2,10 @@
 #define MIKA_EMULATORS_APPLICATIONS_LMC_APPLICATION_H
 
 #include "chips/trivial/lmc/cpu.h"
+#include "chips/trivial/lmc/usings.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/misc/emulator.h"
-#include "crosscutting/typedefs.h"
+#include "crosscutting/misc/uinteger.h"
 #include <memory>
 #include <string>
 
@@ -14,10 +15,13 @@ namespace emu::misc {
 
 namespace emu::applications::lmc {
 
+    using emu::lmc::Address;
     using emu::lmc::Cpu;
+    using emu::lmc::Data;
     using emu::memory::EmulatorMemory;
     using emu::misc::Emulator;
     using emu::misc::Session;
+    using emu::misc::UInteger;
 
     class LmcApplication : public Emulator {
     public:
@@ -27,7 +31,7 @@ namespace emu::applications::lmc {
 
     private:
         std::unique_ptr<Cpu> m_cpu;
-        EmulatorMemory<u8, u16> m_memory;
+        EmulatorMemory<Address, Data> m_memory;
         std::string m_loaded_file;
 
         void load_file(const std::string &file);

@@ -1,6 +1,7 @@
 #ifndef MIKA_EMULATORS_CHIPS_LMC_FLAGS_H
 #define MIKA_EMULATORS_CHIPS_LMC_FLAGS_H
 
+#include "chips/trivial/lmc/usings.h"
 #include "crosscutting/typedefs.h"
 
 namespace emu::lmc {
@@ -11,7 +12,7 @@ namespace emu::lmc {
 
         void reset();
 
-        void handle_negative_flag(u16 previous, u16 value);
+        void handle_negative_flag(Data previous, Data value);
 
         [[nodiscard]] bool is_negative_flag_set() const;
 

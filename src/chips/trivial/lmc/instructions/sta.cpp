@@ -1,5 +1,5 @@
+#include "chips/trivial/lmc/usings.h"
 #include "crosscutting/memory/emulator_memory.h"
-#include "crosscutting/typedefs.h"
 
 namespace emu::lmc {
 
@@ -15,7 +15,7 @@ namespace emu::lmc {
      * @param address is the address to the value in memory
      * @param memory is the memory, which will be mutated
      */
-    void sta(u16 acc_reg, u8 address, EmulatorMemory<u8, u16> &memory) {
+    void sta(Data acc_reg, Address address, EmulatorMemory<Address, Data> &memory) {
         memory.write(address, acc_reg);
     }
 }

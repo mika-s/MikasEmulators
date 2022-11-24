@@ -1,10 +1,10 @@
+#include "chips/trivial/lmc/usings.h"
 #include "crosscutting/memory/emulator_memory.h"
-#include "crosscutting/typedefs.h"
+#include "crosscutting/misc/uinteger.h"
 
 namespace emu::lmc {
 
     using emu::memory::EmulatorMemory;
-
 
     /**
      * Add value in memory to the accumulator
@@ -16,7 +16,7 @@ namespace emu::lmc {
      * @param address is the address to the value in memory
      * @param memory is the memory
      */
-    void add(u16 &acc_reg, u8 address, const EmulatorMemory<u8, u16> &memory) {
-        acc_reg += memory.read(address);
+    void add(Data &acc_reg, Address address, const EmulatorMemory<Address, Data> &memory) {
+        acc_reg = acc_reg + memory.read(address);
     }
 }

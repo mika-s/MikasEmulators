@@ -19,6 +19,7 @@ set(SOURCES_LMC_H
         cpu.h
         flags.h
         opcode.h
+        usings.h
         unrecognized_assembly_exception.h
         instructions/instructions.h
         interfaces/gui_observer.h

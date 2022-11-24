@@ -1,6 +1,8 @@
 #include "cpu.h"
+#include "chips/trivial/lmc/usings.h"
 #include "crosscutting/exceptions/unrecognized_opcode_exception.h"
 #include "crosscutting/memory/emulator_memory.h"
+#include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
 #include "instructions/instructions.h"
@@ -19,8 +21,8 @@ namespace emu::lmc {
     using emu::util::string::hexify;
 
     Cpu::Cpu(
-            EmulatorMemory<u8, u16> &memory,
-            const u8 initial_pc
+            EmulatorMemory<Address, Data> &memory,
+            const Address initial_pc
     ) : m_is_halted(false),
         m_memory(memory), m_memory_size(memory.size()),
         m_pc(initial_pc),
@@ -54,15 +56,13 @@ namespace emu::lmc {
     }
 
     bool Cpu::can_run_next_instruction() const {
-        return m_pc < m_memory_size;
+        return m_pc.underlying() < m_memory_size;
     }
 
     void Cpu::reset_state() {
-        m_acc_reg = 0;
-        m_pc = 0;
+        m_acc_reg = Data(0);
+        m_pc = Address(0);
         m_is_halted = false;
-        std::fill(m_io_in.begin(), m_io_in.end(), 0);
-        std::fill(m_io_out.begin(), m_io_out.end(), 0);
     }
 
     void Cpu::start() {
@@ -72,38 +72,39 @@ namespace emu::lmc {
         reset_state();
     }
 
-    Opcode find_opcode(u16 raw_opcode) {
-        if (raw_opcode == 0) {
+    Opcode find_opcode(Data raw_opcode) {
+        u64 opcode = raw_opcode.underlying();
+        if (opcode == 0) {
             return Opcode::HLT;
-        } else if (100 <= raw_opcode && raw_opcode <= 199) {
+        } else if (100 <= opcode && opcode <= 199) {
             return Opcode::ADD;
-        } else if (200 <= raw_opcode && raw_opcode <= 299) {
+        } else if (200 <= opcode && opcode <= 299) {
             return Opcode::SUB;
-        } else if (300 <= raw_opcode && raw_opcode <= 399) {
+        } else if (300 <= opcode && opcode <= 399) {
             return Opcode::STA;
-        } else if (500 <= raw_opcode && raw_opcode <= 599) {
+        } else if (500 <= opcode && opcode <= 599) {
             return Opcode::LDA;
-        } else if (600 <= raw_opcode && raw_opcode <= 699) {
+        } else if (600 <= opcode && opcode <= 699) {
             return Opcode::BRA;
-        } else if (700 <= raw_opcode && raw_opcode <= 799) {
+        } else if (700 <= opcode && opcode <= 799) {
             return Opcode::BRZ;
-        } else if (800 <= raw_opcode && raw_opcode <= 899) {
+        } else if (800 <= opcode && opcode <= 899) {
             return Opcode::BRP;
-        } else if (raw_opcode == 901) {
+        } else if (opcode == 901) {
             return Opcode::INP;
-        } else if (raw_opcode <= 902) {
+        } else if (opcode <= 902) {
             return Opcode::OUT;
         } else {
-            throw UnrecognizedOpcodeException(raw_opcode);
+            throw UnrecognizedOpcodeException(opcode);
         }
     }
 
-    u8 find_argument(u16 raw_opcode) {
-        return raw_opcode % 100;
+    Address find_argument(Data raw_opcode) {
+        return Address(raw_opcode.underlying()); // TODO
     }
 
-    cyc Cpu::next_instruction() {
-        u16 raw_opcode = get_next_value();
+    void Cpu::next_instruction() {
+        Data raw_opcode = get_next_value();
         const Opcode opcode = find_opcode(raw_opcode);
 
         print_debug(raw_opcode);
@@ -140,31 +141,29 @@ namespace emu::lmc {
                 hlt(m_is_halted);
                 break;
         }
-
-        return 0;
     }
 
-    u16 Cpu::get_next_value() {
+    Data Cpu::get_next_value() {
         return m_memory.read(m_pc++);
     }
 
-    EmulatorMemory<u8, u16> &Cpu::memory() {
+    EmulatorMemory<Address, Data> &Cpu::memory() {
         return m_memory;
     }
 
-    u16 Cpu::a() const {
+    Data Cpu::a() const {
         return m_acc_reg;
     }
 
-    u8 Cpu::pc() const {
+    Address Cpu::pc() const {
         return m_pc;
     }
 
-    void Cpu::input(u16 value) {
+    void Cpu::input(Data value) {
         m_acc_reg = value;
     }
 
-    void Cpu::notify_out_observers(u16 acc_reg) {
+    void Cpu::notify_out_observers(Data acc_reg) {
         for (OutObserver *observer: m_out_observers) {
             observer->out_changed(acc_reg);
         }
@@ -176,11 +175,11 @@ namespace emu::lmc {
         }
     }
 
-    void Cpu::print_debug(u16 opcode) {
+    void Cpu::print_debug([[maybe_unused]] Data opcode) {
         if (false) {
-            std::cout << "pc=" << +m_pc
-                      << ",op=" << +opcode
-                      << ",a=" << +m_acc_reg
+            std::cout << "pc=" << m_pc.underlying()
+                      << ",op=" << opcode.underlying()
+                      << ",a=" << m_acc_reg.underlying()
                       << ",nf=" << m_flag_reg.is_negative_flag_set()
                       << "\n"
                       << std::flush;

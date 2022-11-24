@@ -1,9 +1,9 @@
 #ifndef MIKA_EMULATORS_CHIPS_LMC_CPU_H
 #define MIKA_EMULATORS_CHIPS_LMC_CPU_H
 
+#include "chips/trivial/lmc/usings.h"
 #include "crosscutting/memory/next_byte.h"
 #include "crosscutting/memory/next_word.h"
-#include "crosscutting/typedefs.h"
 #include "flags.h"
 #include <cstddef>
 #include <vector>
@@ -28,15 +28,15 @@ namespace emu::lmc {
     class Cpu {
     public:
         Cpu(
-                EmulatorMemory<u8, u16> &memory,
-                u8 initial_pc
+                EmulatorMemory<Address, Data> &memory,
+                Address initial_pc
         );
 
         ~Cpu();
 
         [[nodiscard]] bool can_run_next_instruction() const;
 
-        cyc next_instruction();
+        void next_instruction();
 
         void reset_state();
 
@@ -52,37 +52,34 @@ namespace emu::lmc {
 
         void remove_in_observer(InObserver *observer);
 
-        EmulatorMemory<u8, u16> &memory();
+        EmulatorMemory<Address, Data> &memory();
 
-        [[nodiscard]] u16 a() const;
+        [[nodiscard]] Data a() const;
 
-        [[nodiscard]] u8 pc() const;
+        [[nodiscard]] Address pc() const;
 
-        void input(u16 value);
+        void input(Data value);
 
     private:
         bool m_is_halted;
 
-        EmulatorMemory<u8, u16> &m_memory;
+        EmulatorMemory<Address, Data> &m_memory;
         std::size_t m_memory_size;
 
-        std::vector<u8> m_io_in;
-        std::vector<u8> m_io_out;
-
-        u8 m_pc;
-        u16 m_acc_reg;
+        Address m_pc;
+        Data m_acc_reg;
         Flags m_flag_reg;
 
         std::vector<OutObserver *> m_out_observers;
         std::vector<InObserver *> m_in_observers;
 
-        u16 get_next_value();
+        Data get_next_value();
 
-        void notify_out_observers(u16 acc_reg);
+        void notify_out_observers(Data acc_reg);
 
         void notify_in_observers();
 
-        void print_debug(u16 opcode);
+        void print_debug(Data opcode);
     };
 }
 

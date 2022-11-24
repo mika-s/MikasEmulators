@@ -1,24 +1,27 @@
 #include "lmc_application_session.h"
+#include "chips/trivial/lmc/usings.h"
+#include "crosscutting/misc/uinteger.h"
+#include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
 #include "lmc/cpu.h"
 #include <iostream>
 #include <stdexcept>
 #include <utility>
-#include "crosscutting/misc/uinteger.h"
 
 namespace emu::applications::lmc {
 
+    using emu::lmc::Address;
+    using emu::lmc::Data;
     using emu::util::byte::to_u16;
 
     LmcApplicationSession::LmcApplicationSession(
             std::string loaded_file,
-            EmulatorMemory<u8, u16> memory
+            EmulatorMemory<Address, Data> memory
     )
         : m_memory(std::move(memory)),
           m_loaded_file(std::move(loaded_file)),
           m_is_finished(false) {
         setup_cpu();
-        [[maybe_unused]] misc::UInteger<1000> test(200);
     }
 
     void LmcApplicationSession::run() {
@@ -41,8 +44,8 @@ namespace emu::applications::lmc {
         throw std::runtime_error("Stop is not implemented for LMC programs");
     }
 
-    void LmcApplicationSession::out_changed(u16 acc_reg) {
-        std::cout << acc_reg;
+    void LmcApplicationSession::out_changed(Data acc_reg) {
+        std::cout << acc_reg.underlying();
     }
 
     void LmcApplicationSession::in_requested() {
@@ -51,11 +54,11 @@ namespace emu::applications::lmc {
         u16 number;
         std::cin >> number;
 
-        m_cpu->input(number);
+        m_cpu->input(Data(number));
     }
 
     void LmcApplicationSession::setup_cpu() {
-        const u8 initial_pc = 0x0;
+        const Address initial_pc(0);
 
         m_cpu = std::make_unique<Cpu>(m_memory, initial_pc);
 

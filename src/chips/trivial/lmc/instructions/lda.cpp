@@ -1,5 +1,5 @@
+#include "chips/trivial/lmc/usings.h"
 #include "crosscutting/memory/emulator_memory.h"
-#include "crosscutting/typedefs.h"
 
 namespace emu::lmc {
 
@@ -15,7 +15,7 @@ namespace emu::lmc {
      * @param address is the address to the value in memory
      * @param memory is the memory
      */
-    void lda(u16 &acc_reg, u8 address, const EmulatorMemory<u8, u16> &memory) {
+    void lda(Data &acc_reg, Address address, const EmulatorMemory<Address, Data> &memory) {
         acc_reg = memory.read(address);
     }
 }

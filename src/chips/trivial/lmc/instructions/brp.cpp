@@ -1,4 +1,4 @@
-#include "crosscutting/typedefs.h"
+#include "chips/trivial/lmc/usings.h"
 #include "flags.h"
 
 namespace emu::lmc {
@@ -13,7 +13,7 @@ namespace emu::lmc {
      * @param address is the address to the value in memory
      * @param flag_reg is the flag register
      */
-    void brp(u8 &pc, u8 address, Flags flag_reg) {
+    void brp(Address &pc, Address address, Flags flag_reg) {
         if (!flag_reg.is_negative_flag_set()) {
             pc = address;
         }
