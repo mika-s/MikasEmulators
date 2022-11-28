@@ -23,14 +23,6 @@ namespace emu::lmc {
         m_code_lines = split(code, "\n");
     }
 
-    void Scanner::test_scanner() {
-        do {
-            read_next_token();
-        } while (current_token().kind() != TokenKind::Eof);
-        std::cout << "\n\n"
-                  << std::flush;
-    }
-
     Address Scanner::current_address() {
         return m_current_address;
     }
@@ -68,21 +60,13 @@ namespace emu::lmc {
         tokens_current_line.clear();
 
         if (m_real_line_no >= m_code_lines.size()) {
-            std::cout << m_logical_line_no + 1 << ": " << std::flush;
             tokens_current_line.emplace_back(TokenKind::Eof);
         } else if (m_code_lines[m_real_line_no].empty() || is_comment_line(m_code_lines[m_real_line_no])) {
         } else {
-            std::cout << m_logical_line_no + 1 << ": " << std::flush;
             read_tokens(m_code_lines[m_real_line_no]);
             tokens_current_line.emplace_back(TokenKind::Newline);
             ++m_logical_line_no;
         }
-
-        for (Token &token: tokens_current_line) {
-            std::cout << token << " " << std::flush;
-        }
-        std::cout << "\n"
-                  << std::flush;
 
         ++m_real_line_no;
     }
@@ -91,7 +75,7 @@ namespace emu::lmc {
         m_current_pos = 0;
 
         while (m_current_pos < line.length()) {
-            if (!(handle_single_character(line) || handle_number(line) || handle_keyword(line))) {
+            if (!(handle_single_character(line) || handle_number(line) || handle_keyword(line) || handle_inline_comment(line))) {
                 std::cerr << line << " (pos: " << m_current_pos << ")\n"
                           << std::flush;
                 exit(1);
@@ -162,6 +146,15 @@ namespace emu::lmc {
                 tokens_current_line.emplace_back(TokenKind::Label, keyword);
                 return true;
             }
+        } else {
+            return false;
+        }
+    }
+
+    bool Scanner::handle_inline_comment(const std::string &line) {
+        if (line[m_current_pos] == '/' && m_current_pos != line.size() - 1 && line[m_current_pos + 1] == '/') {
+            m_current_pos = line.length();
+            return true;
         } else {
             return false;
         }

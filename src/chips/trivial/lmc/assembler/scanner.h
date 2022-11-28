@@ -18,8 +18,6 @@ namespace emu::lmc {
 
         void skip(TokenKind next);
 
-        void test_scanner();
-
         Address current_address();
 
     private:
@@ -43,6 +41,8 @@ namespace emu::lmc {
         bool handle_number(const std::string &line);
 
         bool handle_keyword(const std::string &line);
+
+        bool handle_inline_comment(const std::string &line);
     };
 }
 

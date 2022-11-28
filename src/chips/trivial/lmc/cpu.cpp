@@ -73,7 +73,7 @@ namespace emu::lmc {
     }
 
     Opcode find_opcode(Data raw_opcode) {
-        if (raw_opcode == Data(0)) {
+        if (Data(0) <= raw_opcode && raw_opcode <= Data(99)) {
             return Opcode::HLT;
         } else if (Data(100) <= raw_opcode && raw_opcode <= Data(199)) {
             return Opcode::ADD;
