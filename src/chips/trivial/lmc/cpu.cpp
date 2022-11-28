@@ -56,7 +56,7 @@ namespace emu::lmc {
     }
 
     bool Cpu::can_run_next_instruction() const {
-        return m_pc.underlying() < m_memory_size;
+        return m_pc.underlying() < m_memory_size && !m_is_halted;
     }
 
     void Cpu::reset_state() {
@@ -93,6 +93,8 @@ namespace emu::lmc {
             return Opcode::INP;
         } else if (raw_opcode <= Data(902)) {
             return Opcode::OUT;
+        } else if (raw_opcode <= Data(922)) {
+            return Opcode::OTC;
         } else {
             throw UnrecognizedOpcodeException(raw_opcode.underlying());
         }
@@ -134,7 +136,10 @@ namespace emu::lmc {
                 notify_in_observers();
                 break;
             case Opcode::OUT:
-                notify_out_observers(m_acc_reg);
+                notify_out_observers(m_acc_reg, OutType::OUT);
+                break;
+            case Opcode::OTC:
+                notify_out_observers(m_acc_reg, OutType::OTC);
                 break;
             case Opcode::HLT:
                 hlt(m_is_halted);
@@ -162,9 +167,9 @@ namespace emu::lmc {
         m_acc_reg = value;
     }
 
-    void Cpu::notify_out_observers(Data acc_reg) {
+    void Cpu::notify_out_observers(Data acc_reg, OutType out_type) {
         for (OutObserver *observer: m_out_observers) {
-            observer->out_changed(acc_reg);
+            observer->out_changed(acc_reg, out_type);
         }
     }
 
@@ -174,7 +179,7 @@ namespace emu::lmc {
         }
     }
 
-    void Cpu::print_debug([[maybe_unused]] Data opcode) {
+    void Cpu::print_debug(Data opcode) {
         if (false) {
             std::cout << "pc=" << m_pc
                       << ",op=" << opcode

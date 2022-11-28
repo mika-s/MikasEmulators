@@ -13,6 +13,7 @@ namespace emu::lmc {
         BRP,
         INP,
         OUT,
+        OTC,
         HLT
     };
 }

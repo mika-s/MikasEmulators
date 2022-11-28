@@ -33,6 +33,10 @@ namespace emu::util::string {
     std::string prepend(std::string prefix, const char *txt);
 
     std::string append(std::string postfix, const char *txt);
+
+    bool is_alphanumeric(const std::string &str);
+
+    bool is_alpha(const std::string &str);
 }
 
 #endif //MIKA_EMULATORS_CROSSCUTTING_STRING_UTIL_H

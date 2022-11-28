@@ -1,3 +1,6 @@
+#ifndef MIKA_EMULATORS_CHIPS_LMC_INSTRUCTIONS_INSTRUCTIONS_H
+#define MIKA_EMULATORS_CHIPS_LMC_INSTRUCTIONS_INSTRUCTIONS_H
+
 #include "chips/trivial/lmc/usings.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "flags.h"
@@ -13,3 +16,5 @@ namespace emu::lmc {
     void brp(Address &pc, Address address, Flags flag_reg);
     void hlt(bool &is_halted);
 }
+
+#endif //MIKA_EMULATORS_CHIPS_LMC_INSTRUCTIONS_INSTRUCTIONS_H

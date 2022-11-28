@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
+#include <ctype.h>
 #include <fmt/core.h>
 #include <iomanip>
 #include <stdexcept>
@@ -146,5 +147,13 @@ namespace emu::util::string {
         out[strlen(txt) + postfix.size()] = '\0';
 
         return {out};
+    }
+
+    bool is_alphanumeric(const std::string &str) {
+        return std::find_if(str.begin(), str.end(), [](const char &c) { return isalnum(c); }) == str.end();
+    }
+
+    bool is_alpha(const std::string &str) {
+        return std::find_if(str.begin(), str.end(), [](const char &c) { return !isalpha(c); }) == str.end();
     }
 }

@@ -7,7 +7,7 @@
         SUB FIRST
         OUT
         HLT
-FIRST   DAT
+FIRST   DAT 1
 // Input three numbers.
 // Output the sum of the first two
 // and the third minus the first

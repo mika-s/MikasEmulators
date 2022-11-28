@@ -7,9 +7,16 @@
 
 namespace emu::lmc {
 
+    /**
+     * A simple assembler that parses the file line by line.
+     * It does not use a fancy parsing algorithm, just split etc.
+     */
     class Assembler {
     public:
         static std::vector<Data> assemble(const std::stringstream &code);
+
+    private:
+
     };
 }
 

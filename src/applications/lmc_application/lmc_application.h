@@ -6,8 +6,10 @@
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/misc/emulator.h"
 #include "crosscutting/misc/uinteger.h"
+#include <cstddef>
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace emu::misc {
     class Session;
@@ -30,11 +32,15 @@ namespace emu::applications::lmc {
         std::unique_ptr<Session> new_session() override;
 
     private:
+        static constexpr std::size_t memory_size = 100;
+
         std::unique_ptr<Cpu> m_cpu;
         EmulatorMemory<Address, Data> m_memory;
         std::string m_loaded_file;
 
         void load_file(const std::string &file);
+
+        std::vector<Data> create_work_ram(std::size_t size);
     };
 }
 

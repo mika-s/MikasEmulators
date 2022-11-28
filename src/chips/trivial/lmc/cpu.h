@@ -5,6 +5,7 @@
 #include "crosscutting/memory/next_byte.h"
 #include "crosscutting/memory/next_word.h"
 #include "flags.h"
+#include "out_type.h"
 #include <cstddef>
 #include <vector>
 
@@ -75,7 +76,7 @@ namespace emu::lmc {
 
         Data get_next_value();
 
-        void notify_out_observers(Data acc_reg);
+        void notify_out_observers(Data acc_reg, OutType out_type);
 
         void notify_in_observers();
 

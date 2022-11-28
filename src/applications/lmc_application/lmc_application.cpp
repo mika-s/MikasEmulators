@@ -1,10 +1,11 @@
 #include "lmc_application.h"
-#include "chips/trivial/lmc/assembler.h"
+#include "chips/trivial/lmc/assembler/assembler.h"
 #include "chips/trivial/lmc/usings.h"
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/file_util.h"
 #include "crosscutting/util/string_util.h"
 #include "lmc_application_session.h"
+#include <cassert>
 #include <iosfwd>
 #include <vector>
 
@@ -33,7 +34,26 @@ namespace emu::applications::lmc {
 
         const std::stringstream file_content = read_file(file);
         const std::vector<Data> code = Assembler::assemble(file_content);
+        std::vector<Data> remaining_memory;
+
+        if (code.size() < memory_size) {
+            remaining_memory = create_work_ram(memory_size - code.size());
+        }
+
+        assert(code.size() + remaining_memory.size() == memory_size);
 
         m_memory.add(code);
+        m_memory.add(remaining_memory);
+    }
+
+    std::vector<Data> LmcApplication::create_work_ram(std::size_t size) {
+        std::vector<Data> work_ram;
+
+        work_ram.reserve(size);
+        for (std::size_t i = 0; i < size; ++i) {
+            work_ram.emplace_back(0);
+        }
+
+        return work_ram;
     }
 }

@@ -272,7 +272,7 @@ namespace emu::applications {
         } else if (program == "CPUTEST") {
             return std::make_unique<cpm::i8080::CpmApplication>("roms/8080/CPUTEST.COM");
         } else if (program == "lmc_application") {
-            return std::make_unique<lmc::LmcApplication>("roms/trivial/lmc/add_sub_test.lmc");
+            return std::make_unique<lmc::LmcApplication>("roms/trivial/lmc/quine.lmc");
         } else {
             throw InvalidProgramArgumentsException(
                     "Illegal program argument when choosing emulator",
