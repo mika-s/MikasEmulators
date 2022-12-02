@@ -1,27 +1,26 @@
-#ifndef MIKA_EMULATORS_CHIPS_Z80_DISASSEMBLER_H
-#define MIKA_EMULATORS_CHIPS_Z80_DISASSEMBLER_H
+#ifndef MIKA_EMULATORS_CHIPS_8080_DISASSEMBLER_H
+#define MIKA_EMULATORS_CHIPS_8080_DISASSEMBLER_H
 
 #include "crosscutting/memory/next_byte.h"
 #include "crosscutting/memory/next_word.h"
 #include "crosscutting/typedefs.h"
 #include <cstddef>
 #include <iosfwd>
-#include <string>
 
 namespace emu::memory {
     template<class A, class D>
     class EmulatorMemory;
 }
 
-namespace emu::z80 {
+namespace emu::i8080 {
 
     using emu::memory::EmulatorMemory;
     using emu::memory::NextByte;
     using emu::memory::NextWord;
 
-    class DisassemblerZ80 {
+    class Disassembler {
     public:
-        DisassemblerZ80(EmulatorMemory<u16, u8> &memory, std::ostream &iostream);
+        Disassembler(EmulatorMemory<u16, u8> &memory, std::ostream &iostream);
 
         void disassemble();
 
@@ -34,18 +33,10 @@ namespace emu::z80 {
 
         void print_next_instruction();
 
-        void print_next_bits_instruction(u8 bits_opcode);
-
-        void print_next_ixy_instruction(u8 ixy_opcode, const std::string &ixy_reg);
-
-        void print_next_ixy_bits_instruction(NextWord args, const std::string &ixy_reg);
-
-        void print_next_extd_instruction(u8 extd_opcode);
-
         NextByte get_next_byte();
 
         NextWord get_next_word();
     };
 }
 
-#endif //MIKA_EMULATORS_CHIPS_Z80_DISASSEMBLER_H
+#endif //MIKA_EMULATORS_CHIPS_8080_DISASSEMBLER_H

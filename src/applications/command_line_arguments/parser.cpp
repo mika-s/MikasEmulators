@@ -27,9 +27,11 @@ namespace emu::applications::command_line_arguments {
                     case ParserStates::Command:
                         switch (scanner.current_token().kind()) {
                             case TokenKind::Equals:
+                                throw std::invalid_argument("Expected an application, not =");
                             case TokenKind::ShortOption:
                             case TokenKind::LongOption:
-                                throw std::invalid_argument("Expected a command, not options");
+                                m_state = ParserStates::MaybeOptions;
+                                break;
                             case TokenKind::Identifier:
                                 options.set_command(Identifier::parse(scanner));
                                 m_state = ParserStates::Application;

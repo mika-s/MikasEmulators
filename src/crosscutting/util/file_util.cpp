@@ -1,6 +1,7 @@
 #include "file_util.h"
 #include "crosscutting/exceptions/rom_file_not_found_exception.h"
 #include "typedefs.h"
+#include <filesystem>
 #include <fstream> // IWYU pragma: keep
 #include <sstream> // IWYU pragma: keep
 
@@ -20,6 +21,10 @@ namespace emu::util::file {
     }
 
     std::vector<u8> read_file_into_vector(const std::string &path) {
+        if (!std::filesystem::exists(path)) {
+            throw RomFileNotFoundException(path);
+        }
+
         std::streampos size;
         char *memory;
 

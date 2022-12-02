@@ -1,4 +1,4 @@
-#include "disassemblerZ80.h"
+#include "disassembler.h"
 #include "crosscutting/exceptions/unrecognized_opcode_exception.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/util/string_util.h"
@@ -11,7 +11,7 @@ namespace emu::z80 {
     using emu::util::string::hexify;
     using emu::util::string::hexify_wo_0x;
 
-    DisassemblerZ80::DisassemblerZ80(EmulatorMemory<u16, u8> &memory, std::ostream &ostream)
+    Disassembler::Disassembler(EmulatorMemory<u16, u8> &memory, std::ostream &ostream)
         : m_memory(memory),
           m_memory_size(memory.size()),
           m_pc(0),
@@ -19,13 +19,13 @@ namespace emu::z80 {
           m_ostream(ostream) {
     }
 
-    void DisassemblerZ80::disassemble() {
+    void Disassembler::disassemble() {
         while (m_pc < m_memory_size) {
             print_next_instruction();
         }
     }
 
-    void DisassemblerZ80::print_next_instruction() {
+    void Disassembler::print_next_instruction() {
         m_ostream << hexify_wo_0x(m_pc, 4) << "\t\t";
 
         m_opcode = get_next_byte().farg;
@@ -806,7 +806,7 @@ namespace emu::z80 {
         m_ostream << "\n";
     }
 
-    void DisassemblerZ80::print_next_bits_instruction(u8 bits_opcode) {
+    void Disassembler::print_next_bits_instruction(u8 bits_opcode) {
         switch (bits_opcode) {
             case RLC_B:
                 print_rlc(m_ostream, "B");
@@ -1582,7 +1582,7 @@ namespace emu::z80 {
         }
     }
 
-    void DisassemblerZ80::print_next_ixy_instruction(u8 ixy_opcode, const std::string &ixy_reg) {
+    void Disassembler::print_next_ixy_instruction(u8 ixy_opcode, const std::string &ixy_reg) {
         switch (ixy_opcode) {
             case INC_B_UNDOC:
                 print_inc_undocumented(m_ostream, "B");
@@ -2088,7 +2088,7 @@ namespace emu::z80 {
         }
     }
 
-    void DisassemblerZ80::print_next_ixy_bits_instruction(NextWord args, const std::string &ixy_reg) {
+    void Disassembler::print_next_ixy_bits_instruction(NextWord args, const std::string &ixy_reg) {
         u8 d = args.farg;
         u8 ixy_bits_opcode = args.sarg;
 
@@ -2233,7 +2233,7 @@ namespace emu::z80 {
         }
     }
 
-    void DisassemblerZ80::print_next_extd_instruction(u8 extd_opcode) {
+    void Disassembler::print_next_extd_instruction(u8 extd_opcode) {
         switch (extd_opcode) {
             case IN_B_C:
                 print_in_r_r(m_ostream, "B", "C");
@@ -2432,13 +2432,13 @@ namespace emu::z80 {
         }
     }
 
-    NextByte DisassemblerZ80::get_next_byte() {
+    NextByte Disassembler::get_next_byte() {
         return {
                 .farg = m_memory.read(m_pc++)
         };
     }
 
-    NextWord DisassemblerZ80::get_next_word() {
+    NextWord Disassembler::get_next_word() {
         return {
                 .farg = m_memory.read(m_pc++),
                 .sarg = m_memory.read(m_pc++)

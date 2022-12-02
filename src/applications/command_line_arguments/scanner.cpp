@@ -3,9 +3,7 @@
 #include "command_line_arguments/token_kind.h"
 #include <cassert>
 #include <cctype>
-#include <cstdlib>
 #include <fmt/core.h>
-#include <iostream>
 #include <stdexcept>
 #include <unordered_map>
 #include <utility>
@@ -57,9 +55,7 @@ namespace emu::applications::command_line_arguments {
 
         while (m_current_pos < line.length()) {
             if (!(handle_single_character(line) || handle_short_option(line) || handle_long_option(line) || handle_identifier(line))) {
-                std::cerr << line << " (pos: " << m_current_pos << ")\n"
-                          << std::flush;
-                exit(1);
+                throw std::invalid_argument(fmt::format("Unable to parse character(s) in position {} of arguments", m_current_pos));
             }
         }
     }

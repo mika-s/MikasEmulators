@@ -1,4 +1,4 @@
-#include "disassembler8080.h"
+#include "disassembler.h"
 #include "crosscutting/exceptions/unrecognized_opcode_exception.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/util/string_util.h"
@@ -10,7 +10,7 @@ namespace emu::i8080 {
 
     using emu::util::string::hexify_wo_0x;
 
-    Disassembler8080::Disassembler8080(EmulatorMemory<u16, u8> &memory, std::ostream &ostream)
+    Disassembler::Disassembler(EmulatorMemory<u16, u8> &memory, std::ostream &ostream)
         : m_memory(memory),
           m_memory_size(memory.size()),
           m_pc(0),
@@ -18,13 +18,13 @@ namespace emu::i8080 {
           m_ostream(ostream) {
     }
 
-    void Disassembler8080::disassemble() {
+    void Disassembler::disassemble() {
         while (m_pc < m_memory_size) {
             print_next_instruction();
         }
     }
 
-    void Disassembler8080::print_next_instruction() {
+    void Disassembler::print_next_instruction() {
         m_ostream << hexify_wo_0x(m_pc, 4) << "\t\t";
 
         m_opcode = get_next_byte().farg;
@@ -805,13 +805,13 @@ namespace emu::i8080 {
         m_ostream << "\n";
     }
 
-    NextByte Disassembler8080::get_next_byte() {
+    NextByte Disassembler::get_next_byte() {
         return {
                 .farg = m_memory.read(m_pc++)
         };
     }
 
-    NextWord Disassembler8080::get_next_word() {
+    NextWord Disassembler::get_next_word() {
         return {
                 .farg = m_memory.read(m_pc++),
                 .sarg = m_memory.read(m_pc++)

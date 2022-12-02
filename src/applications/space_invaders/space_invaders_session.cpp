@@ -2,7 +2,7 @@
 #include "8080/cpu.h"
 #include "8080/interfaces/gui_observer.h"
 #include "8080/shift_register.h"
-#include "chips/8080/disassembler8080.h"
+#include "chips/8080/disassembler.h"
 #include "crosscutting/debugging/debugger.h"
 #include "crosscutting/debugging/disassembled_line.h"
 #include "crosscutting/logging/logger.h"
@@ -32,7 +32,7 @@ namespace emu::applications::space_invaders {
     using emu::debugger::IoDebugContainer;
     using emu::debugger::MemoryDebugContainer;
     using emu::debugger::RegisterDebugContainer;
-    using emu::i8080::Disassembler8080;
+    using emu::i8080::Disassembler;
     using emu::i8080::RunStatus::FINISHED;
     using emu::i8080::RunStatus::NOT_RUNNING;
     using emu::i8080::RunStatus::PAUSED;
@@ -379,7 +379,7 @@ namespace emu::applications::space_invaders {
         EmulatorMemory<u16, u8> sliced_for_disassembly = m_memory.slice(0, 0x2000);
 
         std::stringstream ss;
-        Disassembler8080 disassembler(sliced_for_disassembly, ss);
+        Disassembler disassembler(sliced_for_disassembly, ss);
         disassembler.disassemble();
 
         std::vector<std::string> disassembled_program = split(ss, "\n");

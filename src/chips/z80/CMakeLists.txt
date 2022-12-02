@@ -1,6 +1,6 @@
 set(SOURCES_Z80_CPP
         cpu.cpp
-        disassemblerZ80.cpp
+        disassembler.cpp
         flags.cpp
         util.cpp
         instructions/adc.cpp
@@ -72,7 +72,7 @@ set(SOURCES_Z80_CPP
 
 set(SOURCES_Z80_H
         cpu.h
-        disassemblerZ80.h
+        disassembler.h
         flags.h
         util.h
         interrupt_mode.h

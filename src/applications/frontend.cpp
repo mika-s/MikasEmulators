@@ -10,8 +10,8 @@
 #include "applications/space_invaders/settings.h"
 #include "applications/space_invaders/space_invaders.h"
 #include "applications/space_invaders/usage.h"
-#include "chips/8080/disassembler8080.h"
-#include "chips/z80/disassemblerZ80.h"
+#include "chips/8080/disassembler.h"
+#include "chips/z80/disassembler.h"
 #include "crosscutting/exceptions/invalid_program_arguments_exception.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/misc/emulator.h"
@@ -93,10 +93,8 @@ namespace emu::applications {
     }
 
     void Frontend::disassemble(const Options &options) {
-        using emu::i8080::Disassembler8080;
         using emu::memory::EmulatorMemory;
         using emu::util::file::read_file_into_vector;
-        using emu::z80::DisassemblerZ80;
 
         if (options.is_asking_for_help().first) {
             print_disassemble_usage(options.short_executable_name());
@@ -134,13 +132,13 @@ namespace emu::applications {
                 EmulatorMemory<u16, u8> memory;
                 memory.add(read_file_into_vector(file_path));
 
-                Disassembler8080 disassembler(memory, std::cout);
+                i8080::Disassembler disassembler(memory, std::cout);
                 disassembler.disassemble();
             } else if (cpu == "Z80") {
                 EmulatorMemory<u16, u8> memory;
                 memory.add(read_file_into_vector(file_path));
 
-                DisassemblerZ80 disassembler(memory, std::cout);
+                z80::Disassembler disassembler(memory, std::cout);
                 disassembler.disassemble();
             } else {
                 throw InvalidProgramArgumentsException(

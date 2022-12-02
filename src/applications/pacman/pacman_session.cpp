@@ -1,5 +1,5 @@
 #include "pacman_session.h"
-#include "chips/z80/disassemblerZ80.h"
+#include "chips/z80/disassembler.h"
 #include "chips/z80/interrupt_mode.h"
 #include "crosscutting/debugging/debugger.h"
 #include "crosscutting/debugging/disassembled_line.h"
@@ -31,7 +31,7 @@ namespace emu::applications::pacman {
     using emu::debugger::RegisterDebugContainer;
     using emu::misc::sdl_get_ticks_high_performance;
     using emu::util::string::split;
-    using emu::z80::DisassemblerZ80;
+    using emu::z80::Disassembler;
     using emu::z80::InterruptMode;
     using emu::z80::RunStatus::FINISHED;
     using emu::z80::RunStatus::NOT_RUNNING;
@@ -390,7 +390,7 @@ namespace emu::applications::pacman {
         EmulatorMemory<u16, u8> sliced_for_disassembly = m_memory.slice(0, 0x3fff);
 
         std::stringstream ss;
-        DisassemblerZ80 disassembler(sliced_for_disassembly, ss);
+        Disassembler disassembler(sliced_for_disassembly, ss);
         disassembler.disassemble();
 
         std::vector<std::string> disassembled_program = split(ss, "\n");
