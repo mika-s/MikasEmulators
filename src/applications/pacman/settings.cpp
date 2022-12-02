@@ -12,7 +12,7 @@ namespace emu::applications::pacman {
 
     using emu::exceptions::InvalidProgramArgumentsException;
 
-    Settings Settings::from_options(Options &options) {
+    Settings Settings::from_options(const Options &options) {
         using namespace applications::pacman;
 
         Settings settings{
@@ -27,7 +27,7 @@ namespace emu::applications::pacman {
 
         std::unordered_map<std::string, std::vector<std::string>> opts = options.options();
 
-        for (auto &opt: opts["-d"]) {
+        for (auto &opt: opts["d"]) {
             switch (opt[0]) {
                 case 'n':
                     if (opt == "n=1") {

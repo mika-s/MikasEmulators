@@ -2,10 +2,11 @@
 #define MIKA_EMULATORS_APPLICATIONS_OPTIONS_H
 
 #include "crosscutting/gui/gui_type.h"
-#include <cstddef>
 #include <functional>
+#include <optional>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 namespace emu::applications {
@@ -14,30 +15,51 @@ namespace emu::applications {
 
     class Options {
     public:
-        explicit Options(std::vector<std::string> args, std::string short_executable_name);
+        explicit Options(std::vector<std::string> args);
 
-        std::vector<std::string> args();
+        std::vector<std::string> args() const;
 
-        std::string short_executable_name();
+        std::string short_executable_name() const;
 
-        GuiType gui_type(const std::function<void(const std::string &)> &print_usage);
+        GuiType gui_type(const std::function<void(const std::string &)> &print_usage) const;
 
-        bool is_asking_for_help();
+        std::pair<bool, std::string> is_asking_for_help() const;
 
-        std::unordered_map<std::string, std::vector<std::string>> options();
+        void set_is_asking_for_help(std::string reason);
+
+        std::string command() const;
+
+        void set_command(std::string command);
+
+        std::optional<std::string> application() const;
+
+        void set_application(std::string command);
+
+        std::optional<std::string> path() const;
+
+        void set_path(std::string path);
+
+        void add_option(const std::string &name);
+
+        void add_option(const std::string &name, const std::string &value);
+
+        std::unordered_map<std::string, std::vector<std::string>> options() const;
+
+        std::pair<bool, std::string> is_failed() const;
+
+        void fail(std::string reason);
 
     private:
-        const std::string dipswitch_flag = "-d";
-        const std::string gui_flag = "-g";
-        const std::string help_flag_short = "-h";
-        const std::string help_flag_long = "--help";
-
         std::vector<std::string> m_args;
+        std::string m_command;
+        std::optional<std::string> m_application;
+        std::optional<std::string> m_path;
         bool m_is_asking_for_help;
+        std::string m_is_asking_for_help_reason;
+        bool m_is_failed;
+        std::string m_failed_reason;
         std::string m_short_executable_name;
         std::unordered_map<std::string, std::vector<std::string>> m_options;
-
-        void parse_flag(const std::string &flag, std::vector<std::string> args, std::size_t arg_idx);
     };
 }
 

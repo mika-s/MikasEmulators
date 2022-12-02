@@ -60,8 +60,7 @@ namespace emu::util::string {
         return return_val;
     }
 
-    std::string find_short_executable_name(char *long_program_name) {
-        std::string name(long_program_name);
+    std::string find_short_executable_name(std::string name) {
         const std::string delimiter = "/";
 
         std::size_t pos;

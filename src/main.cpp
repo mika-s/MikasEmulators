@@ -1,5 +1,6 @@
 #define DOCTEST_CONFIG_IMPLEMENT
 
+#include "applications/command_line_arguments/command_line_arguments.h"
 #include "applications/frontend.h"
 #include "applications/options.h"
 #include "crosscutting/exceptions/invalid_program_arguments_exception.h"
@@ -10,10 +11,12 @@
 #include <functional>
 #include <iostream>
 #include <string>
+#include <utility>
 #include <vector>
 
 using emu::applications::Frontend;
 using emu::applications::Options;
+using emu::applications::command_line_arguments::CommandLineArguments;
 using emu::exceptions::InvalidProgramArgumentsException;
 using emu::exceptions::RomFileNotFoundException;
 using emu::util::string::find_short_executable_name;
@@ -30,10 +33,14 @@ std::vector<std::string> argv_to_vector(int argc, char *argv[]) {
 }
 
 int main(int argc, char *argv[]) {
-    std::string short_executable_name = find_short_executable_name(argv[0]);
+    std::string short_executable_name = find_short_executable_name(std::string(argv[0]));
     try {
         if (argc > 1) {
-            Options options(argv_to_vector(argc, argv), short_executable_name);
+            Options options = CommandLineArguments::find_options(argv_to_vector(argc, argv));
+            if (options.is_failed().first && !options.is_asking_for_help().first) {
+                throw InvalidProgramArgumentsException(options.is_failed().second, Frontend::print_main_usage);
+            }
+
             Frontend::run(options);
             SDL_Quit();
         } else {

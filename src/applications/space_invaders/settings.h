@@ -30,7 +30,7 @@ namespace emu::applications::space_invaders {
         BonusLifeAt m_bonus_life_at;
         CoinInfo m_coin_info;
 
-        static Settings from_options(Options &options);
+        static Settings from_options(const Options &options);
     };
 }
 

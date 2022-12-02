@@ -36,19 +36,6 @@ namespace emu::applications {
         static void print_run_usage(const std::string &program_name);
 
     private:
-        static constexpr unsigned int global_minimum_number_of_arguments = 2;
-        static constexpr unsigned int command_argument = 1;
-
-        static constexpr unsigned int run_minimum_number_of_arguments = 3;
-        static constexpr unsigned int run_program_argument = 2;
-
-        static constexpr unsigned int disassembly_minimum_number_of_arguments = 4;
-        static constexpr unsigned int disassembly_cpu_argument = 2;
-        static constexpr unsigned int disassembly_file_path_argument = 3;
-
-        static constexpr unsigned int test_minimum_number_of_arguments = 2;
-        static constexpr unsigned int test_number_of_arguments_when_no_cpus_provided = 2;
-
         static constexpr std::size_t padding_to_description = 22;
 
         static const inline std::vector<std::pair<std::string, std::string>> supported_programs = {
@@ -79,8 +66,8 @@ namespace emu::applications {
         };
 
         static const inline std::vector<std::pair<std::string, std::string>> test_examples = {
-                {"8080", "The unit tests for 8080 are run"},
-                {"8080 Z80", "The unit tests for 8080 and Z80 are run"},
+                {"--cpu=8080", "The unit tests for 8080 are run"},
+                {"--cpu=8080 --cpu=Z80", "The unit tests for 8080 and Z80 are run"},
                 {"", "All the unit tests are run"},
         };
 
@@ -97,17 +84,17 @@ namespace emu::applications {
                 {"lmc_application", lmc_application::print_usage},
         };
 
-        static void run(const std::vector<std::string> &args, Options &options);
+        static void run_program(const Options &options);
 
-        static void disassemble(const std::vector<std::string> &args, Options &options);
+        static void disassemble(const Options &options);
 
-        static void test(const std::vector<std::string> &args, Options &options);
+        static void test(const Options &options);
 
         static void print_disassemble_usage(const std::string &program_name);
 
         static void print_test_usage(const std::string &program_name);
 
-        static std::unique_ptr<Emulator> choose_emulator(const std::string &program, Options &options);
+        static std::unique_ptr<Emulator> choose_emulator(const std::string &program, const Options &options);
 
         static bool is_supporting(const std::string &program);
     };

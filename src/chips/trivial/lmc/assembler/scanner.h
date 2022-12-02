@@ -22,7 +22,6 @@ namespace emu::lmc {
 
     private:
         unsigned int m_real_line_no;
-        unsigned int m_logical_line_no;
         std::vector<std::string> m_code_lines;
         std::vector<Token> tokens_current_line;
         unsigned int m_current_pos = 0;

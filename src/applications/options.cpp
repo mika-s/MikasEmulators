@@ -2,6 +2,7 @@
 #include "crosscutting/exceptions/invalid_program_arguments_exception.h"
 #include "crosscutting/util/string_util.h"
 #include "frontend.h"
+#include <ext/alloc_traits.h>
 #include <utility>
 
 namespace emu::applications {
@@ -9,69 +10,108 @@ namespace emu::applications {
     using emu::exceptions::InvalidProgramArgumentsException;
     using emu::util::string::find_short_executable_name;
 
-    Options::Options(std::vector<std::string> args, std::string short_executable_name)
+    Options::Options(std::vector<std::string> args)
         : m_args(args),
           m_is_asking_for_help(false),
-          m_short_executable_name(std::move(short_executable_name)) {
-
-        for (std::size_t arg_idx = 0; arg_idx < args.size(); ++arg_idx) {
-            if (args[arg_idx] == dipswitch_flag) {
-                parse_flag(dipswitch_flag, args, arg_idx);
-            } else if (args[arg_idx] == gui_flag) {
-                parse_flag(gui_flag, args, arg_idx);
-            } else if (args[arg_idx] == help_flag_short || args[arg_idx] == help_flag_long) {
-                m_is_asking_for_help = true;
-            }
-        }
+          m_is_asking_for_help_reason(""),
+          m_is_failed(false),
+          m_failed_reason("") {
+        m_short_executable_name = find_short_executable_name(args[0]);
     }
 
-    std::vector<std::string> Options::args() {
+    std::vector<std::string> Options::args() const {
         return m_args;
     }
 
-    std::string Options::short_executable_name() {
+    std::string Options::short_executable_name() const {
         return m_short_executable_name;
     }
 
-    GuiType Options::gui_type(const std::function<void(const std::string &)> &print_usage) {
-        if (!m_options.contains("-g")) {
+    GuiType Options::gui_type(const std::function<void(const std::string &)> &print_usage) const {
+        if (!m_options.contains("g")) {
             return GuiType::ORDINARY;
         }
-        if (m_options["-g"].size() > 1) {
+        if (m_options.at("g").size() > 1) {
             throw InvalidProgramArgumentsException("-g flag should only be used once", print_usage);
-        } else if (m_options["-g"].empty()) {
+        } else if (m_options.at("g").empty()) {
             throw InvalidProgramArgumentsException("-g flag needs an additional argument", print_usage);
         }
 
-        if (m_options["-g"][0] == "ordinary") {
+        if (m_options.at("g")[0] == "ordinary") {
             return GuiType::ORDINARY;
-        } else if (m_options["-g"][0] == "debugging") {
+        } else if (m_options.at("g")[0] == "debugging") {
             return GuiType::DEBUGGING;
         } else {
             throw InvalidProgramArgumentsException("Unknown GUI type passed to the -g flag", print_usage);
         }
     }
 
-    bool Options::is_asking_for_help() {
-        return m_is_asking_for_help;
+    std::pair<bool, std::string> Options::is_asking_for_help() const {
+        return {m_is_asking_for_help, m_is_asking_for_help_reason};
     }
 
-    void Options::parse_flag(const std::string &flag, std::vector<std::string> args, std::size_t arg_idx) {
-        if (arg_idx == args.size() - 1) {
-            throw InvalidProgramArgumentsException(
-                    flag + " flag at the end of the line, without a value.", &Frontend::print_run_usage
-            );
-        }
+    void Options::set_is_asking_for_help(std::string reason) {
+        m_is_asking_for_help = true;
+        m_is_asking_for_help_reason = std::move(reason);
+    }
 
-        if (m_options.count(flag) == 0) {
+    std::string Options::command() const {
+        return m_command;
+    }
+
+    void Options::set_command(std::string command) {
+        m_command = std::move(command);
+    }
+
+    std::optional<std::string> Options::application() const {
+        return m_application;
+    }
+
+    void Options::set_application(std::string application) {
+        m_application = std::optional(application);
+    }
+
+    std::optional<std::string> Options::path() const {
+        return m_path;
+    }
+
+    void Options::set_path(std::string path) {
+        m_path = std::optional(path);
+    }
+
+    void Options::add_option(const std::string &name) {
+        if (m_options.count(name) == 0) {
             std::vector<std::string> vec;
-            vec.emplace_back(args[arg_idx + 1]);
-            m_options[flag] = vec;
-        } else {
-            m_options[flag].push_back(args[arg_idx + 1]);
+            m_options[name] = vec;
+            m_is_asking_for_help = m_is_asking_for_help || m_options.contains("help") || m_options.contains("h");
         }
     }
-    std::unordered_map<std::string, std::vector<std::string>> Options::options() {
+
+    void Options::add_option(const std::string &name, const std::string &value) {
+        if (m_options.count(name) == 0) {
+            std::vector<std::string> vec;
+            vec.emplace_back(value);
+            m_options[name] = vec;
+        } else {
+            m_options[name].push_back(value);
+        }
+
+        m_is_asking_for_help = m_is_asking_for_help || m_options.contains("help") || m_options.contains("h");
+    }
+
+    std::unordered_map<std::string, std::vector<std::string>> Options::options() const {
         return m_options;
+    }
+
+    std::pair<bool, std::string> Options::is_failed() const {
+        return {m_is_failed, m_failed_reason};
+    }
+
+    void Options::fail(std::string reason) {
+        if (!m_is_failed) {
+            m_is_failed = true;
+
+            m_failed_reason = std::move(reason);
+        }
     }
 }

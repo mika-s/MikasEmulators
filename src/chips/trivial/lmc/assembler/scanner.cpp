@@ -18,7 +18,6 @@ namespace emu::lmc {
 
     Scanner::Scanner(const std::stringstream &code)
         : m_real_line_no(0),
-          m_logical_line_no(0),
           m_current_address(0) {
         m_code_lines = split(code, "\n");
     }
@@ -65,7 +64,6 @@ namespace emu::lmc {
         } else {
             read_tokens(m_code_lines[m_real_line_no]);
             tokens_current_line.emplace_back(TokenKind::Newline);
-            ++m_logical_line_no;
         }
 
         ++m_real_line_no;

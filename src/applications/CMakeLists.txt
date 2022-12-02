@@ -2,6 +2,14 @@ set(SOURCES_APPLICATIONS_CPP
         frontend.cpp
         options.cpp
 
+        command_line_arguments/command_line_arguments.cpp
+        command_line_arguments/identifier.cpp
+        command_line_arguments/long_option.cpp
+        command_line_arguments/parser.cpp
+        command_line_arguments/scanner.cpp
+        command_line_arguments/short_option.cpp
+        command_line_arguments/token.cpp
+
         cpm_8080/cpm_application.cpp
         cpm_8080/cpm_application_session.cpp
         cpm_8080/usage.cpp
@@ -42,6 +50,15 @@ set(SOURCES_APPLICATIONS_CPP
 set(SOURCES_APPLICATIONS_H
         frontend.h
         options.h
+
+        command_line_arguments/command_line_arguments.h
+        command_line_arguments/identifier.h
+        command_line_arguments/long_option.h
+        command_line_arguments/parser.h
+        command_line_arguments/scanner.h
+        command_line_arguments/short_option.h
+        command_line_arguments/token.h
+        command_line_arguments/token_kind.h
 
         cpm_8080/cpm_application.h
         cpm_8080/cpm_application_session.h

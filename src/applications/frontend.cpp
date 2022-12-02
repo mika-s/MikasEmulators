@@ -1,14 +1,17 @@
 #include "frontend.h"
 #include "applications/cpm_8080/cpm_application.h"
+#include "applications/cpm_8080/usage.h"
 #include "applications/cpm_z80/cpm_application.h"
 #include "applications/lmc_application/lmc_application.h"
+#include "applications/lmc_application/usage.h"
 #include "applications/pacman/pacman.h"
 #include "applications/pacman/settings.h"
+#include "applications/pacman/usage.h"
 #include "applications/space_invaders/settings.h"
 #include "applications/space_invaders/space_invaders.h"
+#include "applications/space_invaders/usage.h"
 #include "chips/8080/disassembler8080.h"
 #include "chips/z80/disassemblerZ80.h"
-#include "cpm_8080/usage.h"
 #include "crosscutting/exceptions/invalid_program_arguments_exception.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/misc/emulator.h"
@@ -18,14 +21,12 @@
 #include "crosscutting/util/string_util.h"
 #include "doctest.h"
 #include "options.h"
-#include "pacman/usage.h"
-#include "space_invaders/usage.h"
 #include <algorithm>
 #include <cstdlib>
-#include <ext/alloc_traits.h>
 #include <fmt/core.h>
 #include <iostream>
 #include <iterator>
+#include <optional>
 
 namespace emu::applications {
 
@@ -33,22 +34,14 @@ namespace emu::applications {
     using emu::util::string::create_padding;
 
     void Frontend::run(Options &options) {
-        const std::vector<std::string> args = options.args();
-        if (args.size() < global_minimum_number_of_arguments) {
-            throw InvalidProgramArgumentsException(
-                    "Wrong number of arguments.",
-                    Frontend::print_main_usage
-            );
-        }
+        const std::string &command = options.command();
 
-        const std::string &command = args[command_argument];
-
-        if (command == "disassemble") {
-            disassemble(args, options);
-        } else if (command == "run") {
-            run(args, options);
+        if (command == "run") {
+            run_program(options);
+        } else if (command == "disassemble") {
+            disassemble(options);
         } else if (command == "test") {
-            test(args, options);
+            test(options);
         } else {
             throw InvalidProgramArgumentsException(
                     fmt::format("Unknown command: {}", command),
@@ -58,7 +51,7 @@ namespace emu::applications {
     }
 
     void Frontend::print_main_usage(const std::string &program_name) {
-        std::cout << "\nUsage: ./" << program_name << " COMMAND [ARGUMENTS] [FLAGS]\n\n";
+        std::cout << "\nUsage: ./" << program_name << " COMMAND [APPLICATION] [FLAGS] [PATH]\n\n";
         std::cout << "A collection of emulators\n\n";
 
         std::cout << "Commands:\n";
@@ -71,22 +64,19 @@ namespace emu::applications {
         std::cout << "\n\nRun './" << program_name << " COMMAND --help' for more information on a command.\n";
     }
 
-    void Frontend::run(const std::vector<std::string> &args, Options &options) {
-        if (args.size() < run_minimum_number_of_arguments) {
-            throw InvalidProgramArgumentsException(
-                    fmt::format(
-                            "Wrong number of arguments to run mode: {}. Minimum: {}",
-                            args.size(),
-                            run_minimum_number_of_arguments
-                    ),
-                    Frontend::print_run_usage
-            );
-        }
-
-        if (options.is_asking_for_help() && args.size() == run_minimum_number_of_arguments) {
+    void Frontend::run_program(const Options &options) {
+        if (options.is_asking_for_help().first && !options.application().has_value()) {
             print_run_usage(options.short_executable_name());
         } else {
-            const std::string &program = args[run_program_argument];
+            const std::optional<std::string> application_opt = options.application();
+            if (!application_opt.has_value()) {
+                throw InvalidProgramArgumentsException(
+                        "Game or program not provided",
+                        Frontend::print_run_usage
+                );
+            }
+
+            const std::string &program = application_opt.value();
             if (!is_supporting(program)) {
                 throw InvalidProgramArgumentsException(
                         fmt::format("Unsupported game or program: {}", program),
@@ -94,7 +84,7 @@ namespace emu::applications {
                 );
             }
 
-            if (options.is_asking_for_help()) {
+            if (options.is_asking_for_help().first) {
                 program_usages.at(program)(options.short_executable_name());
             } else {
                 choose_emulator(program, options)->new_session()->run();
@@ -102,26 +92,43 @@ namespace emu::applications {
         }
     }
 
-    void Frontend::disassemble(const std::vector<std::string> &args, Options &options) {
+    void Frontend::disassemble(const Options &options) {
         using emu::i8080::Disassembler8080;
         using emu::memory::EmulatorMemory;
         using emu::util::file::read_file_into_vector;
         using emu::z80::DisassemblerZ80;
 
-        if (options.is_asking_for_help()) {
+        if (options.is_asking_for_help().first) {
             print_disassemble_usage(options.short_executable_name());
-        } else if (args.size() < disassembly_minimum_number_of_arguments) {
-            throw InvalidProgramArgumentsException(
-                    fmt::format(
-                            "Wrong number of arguments to disassemble mode: {}. Minimum: {}",
-                            args.size(),
-                            disassembly_minimum_number_of_arguments
-                    ),
-                    Frontend::print_disassemble_usage
-            );
         } else {
-            const std::string &cpu = args[disassembly_cpu_argument];
-            const std::string &file_path = args[disassembly_file_path_argument];
+            std::unordered_map<std::string, std::vector<std::string>> opts = options.options();
+            if (!opts.contains("cpu")) {
+                throw InvalidProgramArgumentsException(
+                        "No CPUs provided",
+                        Frontend::print_disassemble_usage
+                );
+            }
+            const std::vector<std::string> &cpus = opts["cpu"];
+            if (cpus.empty()) {
+                throw InvalidProgramArgumentsException(
+                        "CPU has to be provided on the following format: --cpu=<CPU>",
+                        Frontend::print_disassemble_usage
+                );
+            } else if (cpus.size() > 1) {
+                throw InvalidProgramArgumentsException(
+                        "Only one CPU can be provided at a time",
+                        Frontend::print_disassemble_usage
+                );
+            }
+            const std::string &cpu = cpus[0];
+            if (!options.path().has_value()) {
+                throw InvalidProgramArgumentsException(
+                        "Path to a file has to be provided",
+                        Frontend::print_disassemble_usage
+                );
+            }
+
+            const std::string file_path = options.path().value();
 
             if (cpu == "8080") {
                 EmulatorMemory<u16, u8> memory;
@@ -144,32 +151,21 @@ namespace emu::applications {
         }
     }
 
-    void Frontend::test(const std::vector<std::string> &args, Options &options) {
-        if (args.size() < test_minimum_number_of_arguments) {
-            throw InvalidProgramArgumentsException(
-                    fmt::format(
-                            "Wrong number of arguments to test mode: {}. Minimum: {}",
-                            args.size(),
-                            test_minimum_number_of_arguments
-                    ),
-                    Frontend::print_test_usage
-            );
-        }
-
-        if (options.is_asking_for_help()) {
+    void Frontend::test(const Options &options) {
+        if (options.is_asking_for_help().first) {
             print_test_usage(options.short_executable_name());
         } else {
             doctest::Context context;
             context.addFilter("test-case", "crosscutting*");
+            std::unordered_map<std::string, std::vector<std::string>> opts = options.options();
 
-            if (args.size() == test_number_of_arguments_when_no_cpus_provided) {
+            if (!opts.contains("cpu")) {
                 context.addFilter("test-case", "8080*");
                 context.addFilter("test-case", "Z80*");
                 context.addFilter("test-case", "LMC*");
             } else {
-                for (std::size_t arg_idx = 1; arg_idx < args.size(); ++arg_idx) {
-                    const std::string cpu = args[arg_idx] + "*";
-                    context.addFilter("test-case", cpu.c_str());
+                for (std::string &cpu: opts["cpu"]) {
+                    context.addFilter("test-case", fmt::format("{}*", cpu).c_str());
                 }
             }
 
@@ -203,7 +199,7 @@ namespace emu::applications {
     }
 
     void Frontend::print_disassemble_usage(const std::string &program_name) {
-        std::cout << "\nUsage: ./" << program_name << " disassemble CPU FILE_PATH\n\n";
+        std::cout << "\nUsage: ./" << program_name << " disassemble --cpu=<CPU> FILE_PATH\n\n";
         std::cout << "Disassemble a file for a given CPU\n\n";
 
         std::cout << "CPUs:\n";
@@ -240,11 +236,11 @@ namespace emu::applications {
         for (auto &example_description: test_examples) {
             std::cout << "  " << example_description.second << ":\n";
             std::cout << "    "
-                      << "./" << program_name << " run test " << example_description.first << "\n\n";
+                      << "./" << program_name << " test " << example_description.first << "\n\n";
         }
     }
 
-    std::unique_ptr<Emulator> Frontend::choose_emulator(const std::string &program, Options &options) {
+    std::unique_ptr<Emulator> Frontend::choose_emulator(const std::string &program, const Options &options) {
         using namespace applications;
 
         if (program == "pacman") {
@@ -272,7 +268,14 @@ namespace emu::applications {
         } else if (program == "CPUTEST") {
             return std::make_unique<cpm::i8080::CpmApplication>("roms/8080/CPUTEST.COM");
         } else if (program == "lmc_application") {
-            return std::make_unique<lmc::LmcApplication>("roms/trivial/lmc/quine.lmc");
+            if (options.path().has_value()) {
+                return std::make_unique<lmc::LmcApplication>(options.path().value());
+            } else {
+                throw InvalidProgramArgumentsException(
+                        "You have to specify the path of the file to run",
+                        lmc_application::print_usage
+                );
+            }
         } else {
             throw InvalidProgramArgumentsException(
                     "Illegal program argument when choosing emulator",

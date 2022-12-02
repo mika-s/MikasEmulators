@@ -1,6 +1,5 @@
 # Todo
 
-- [ ] Better argument handling
 - [ ] Refactor to "sessions" for Space Invaders and the 8080 cpu
 - [ ] Memory watcher for the debugger
 - [ ] Disassembler syntax highlighting

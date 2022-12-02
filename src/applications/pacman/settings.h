@@ -58,7 +58,7 @@ namespace emu::applications::pacman {
         BoardTest m_board_test;
         CabinetMode m_cabinet_mode;
 
-        static Settings from_options(Options &options);
+        static Settings from_options(const Options &options);
     };
 }
 

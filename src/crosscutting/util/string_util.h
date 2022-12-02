@@ -22,7 +22,7 @@ namespace emu::util::string {
 
     std::string hexify_wo_0x(unsigned int val, int width);
 
-    std::string find_short_executable_name(char *long_program_name);
+    std::string find_short_executable_name(std::string name);
 
     std::string create_padding(std::size_t length_so_far, std::size_t expected_length);
 
