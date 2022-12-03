@@ -1,9 +1,9 @@
 #include "string_util.h"
 #include "crosscutting/typedefs.h"
 #include <algorithm>
+#include <cctype>
 #include <cstdlib>
 #include <cstring>
-#include <ctype.h>
 #include <fmt/core.h>
 #include <iomanip>
 #include <stdexcept>

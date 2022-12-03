@@ -15,6 +15,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <utility>
+#include <vector>
 
 namespace emu::applications::lmc {
 
@@ -199,26 +200,28 @@ namespace emu::applications::lmc {
 
     void LmcApplicationSession::setup_debugging() {
         m_debug_container.add_register(RegisterDebugContainer<Data>("A", [&]() { return m_cpu->a(); }));
-        m_debug_container.add_pc([&]() { return m_cpu->pc().underlying(); });
-//        m_debug_container.add_flag_register(FlagRegisterDebugContainer(
-//                "F",
-//                [&]() { return m_cpu->m_flag_reg; },
-//                {{"s", 7},
-//                 {"z", 6},
-//                 {"u", 5},
-//                 {"a", 4},
-//                 {"u", 3},
-//                 {"p", 2},
-//                 {"u", 1},
-//                 {"c", 0}}
-//        ));
-//        m_debug_container.add_memory(MemoryDebugContainer(
-//                [&]() { return memory(); }
-//        ));
-//        m_debug_container.add_disassembled_program(disassemble_program());
+        m_debug_container.add_pc([&]() { return m_cpu->pc(); });
+        //        m_debug_container.add_flag_register(FlagRegisterDebugContainer(
+        //                "F",
+        //                [&]() { return m_cpu->m_flag_reg; },
+        //                {{"s", 7},
+        //                 {"z", 6},
+        //                 {"u", 5},
+        //                 {"a", 4},
+        //                 {"u", 3},
+        //                 {"p", 2},
+        //                 {"u", 1},
+        //                 {"c", 0}}
+        //        ));
+        m_debug_container.add_memory(MemoryDebugContainer<Data>([&]() { return memory(); }));
+        //        m_debug_container.add_disassembled_program(disassemble_program());
 
         m_gui->attach_debugger(m_debugger);
         m_gui->attach_debug_container(m_debug_container);
         m_gui->attach_logger(m_logger);
+    }
+
+    std::vector<Data> LmcApplicationSession::memory() {
+        return {m_memory.begin(), m_memory.end()};
     }
 }

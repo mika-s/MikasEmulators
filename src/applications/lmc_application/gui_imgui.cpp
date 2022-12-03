@@ -91,9 +91,9 @@ namespace emu::applications::lmc {
     }
 
     void GuiImgui::attach_debug_container([[maybe_unused]] DebugContainer<Address, Data> &debug_container) {
-//        m_cpu_info.attach_debug_container(debug_container);
+        m_cpu_info.attach_debug_container(debug_container);
 //        m_disassembly.attach_debug_container(debug_container);
-//        m_memory_editor.attach_debug_container(debug_container);
+        m_memory_editor.attach_debug_container(debug_container);
     }
 
     void GuiImgui::attach_logger(std::shared_ptr<Logger> logger) {

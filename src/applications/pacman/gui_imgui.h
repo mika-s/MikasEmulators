@@ -99,9 +99,9 @@ namespace emu::applications::pacman {
 
         DebugLogPane m_log;
         DisassemblyPane m_disassembly;
-        CpuInfoPane m_cpu_info;
-        IoInfoPane m_io_info;
-        MemoryEditorPane m_memory_editor;
+        CpuInfoPane<u16, u8> m_cpu_info;
+        IoInfoPane<u16, u8> m_io_info;
+        MemoryEditorPane<u16, u8> m_memory_editor;
         TilemapPane m_tilemap;
         SpritemapPane m_spritemap;
         WaveformPane m_waveforms;

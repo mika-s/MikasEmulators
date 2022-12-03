@@ -229,12 +229,12 @@ namespace emu::debugger {
             return m_is_memory_set;
         }
 
-        void add_pc(const std::function<u16()> &value_retriever) {
+        void add_pc(const std::function<A()> &value_retriever) {
             m_pc_retriever = value_retriever;
             m_is_pc_set = true;
         }
 
-        [[nodiscard]] u16 pc() const {
+        [[nodiscard]] A pc() const {
             return m_pc_retriever();
         }
 
@@ -242,12 +242,12 @@ namespace emu::debugger {
             return m_is_pc_set;
         }
 
-        void add_sp(const std::function<u16()> &value_retriever) {
+        void add_sp(const std::function<A()> &value_retriever) {
             m_sp_retriever = value_retriever;
             m_is_sp_set = true;
         }
 
-        [[nodiscard]] u16 sp() const {
+        [[nodiscard]] A sp() const {
             return m_sp_retriever();
         }
 
@@ -355,10 +355,10 @@ namespace emu::debugger {
         MemoryDebugContainer<D> m_memory_retriever;
         bool m_is_memory_set{false};
 
-        std::function<u16()> m_pc_retriever;
+        std::function<A()> m_pc_retriever;
         bool m_is_pc_set{false};
 
-        std::function<u16()> m_sp_retriever;
+        std::function<A()> m_sp_retriever;
         bool m_is_sp_set{false};
 
         std::function<bool()> m_is_interrupted_retriever;

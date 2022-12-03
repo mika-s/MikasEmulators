@@ -8,6 +8,7 @@
 #include "crosscutting/gui/debugging_panes/memory_editor_pane.h"
 #include "crosscutting/gui/main_panes/terminal_pane.h"
 #include "crosscutting/misc/run_status.h"
+#include "crosscutting/misc/uinteger.h"
 #include "ui.h"
 #include <SDL_video.h>
 #include <memory>
@@ -80,8 +81,8 @@ namespace emu::applications::lmc {
 
         DebugLogPane m_log;
         DisassemblyPane m_disassembly;
-        CpuInfoPane m_cpu_info;
-        MemoryEditorPane m_memory_editor;
+        CpuInfoPane<Address, Data> m_cpu_info;
+        MemoryEditorPane<Address, Data> m_memory_editor;
         TerminalPane m_terminal;
 
         void notify_gui_observers_about_run_status(RunStatus new_status);

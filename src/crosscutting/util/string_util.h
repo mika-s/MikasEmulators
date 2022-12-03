@@ -1,8 +1,10 @@
 #ifndef MIKA_EMULATORS_CROSSCUTTING_STRING_UTIL_H
 #define MIKA_EMULATORS_CROSSCUTTING_STRING_UTIL_H
 
+#include "crosscutting/misc/uinteger.h"
 #include "crosscutting/typedefs.h"
 #include <cstddef>
+#include <iomanip>
 #include <sstream>
 #include <string>
 #include <string_view>
@@ -13,6 +15,14 @@ namespace emu::util::string {
     std::string hexify(u8 val);
 
     std::string hexify(u16 val);
+
+    template<std::size_t M>
+    std::string hexify(emu::misc::UInteger<M> val) {
+        std::stringstream ss;
+        ss << "0x" << std::setfill('0') << std::setw(4) << std::hex << val;
+
+        return ss.str();
+    }
 
     std::string hexify_wo_0x(u8 val);
 

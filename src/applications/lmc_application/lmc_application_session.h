@@ -15,6 +15,7 @@
 #include "crosscutting/typedefs.h"
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace emu::applications::lmc {
     class Ui;
@@ -117,6 +118,8 @@ namespace emu::applications::lmc {
         void setup_cpu();
 
         void setup_debugging();
+
+        std::vector<Data> memory();
     };
 }
 

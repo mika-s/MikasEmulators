@@ -373,7 +373,6 @@ namespace emu::applications::space_invaders {
         return {m_memory.begin(), m_memory.begin() + 0x3fff + 1};
     }
 
-
     std::vector<DisassembledLine> SpaceInvadersSession::disassemble_program() {
         EmulatorMemory<u16, u8> sliced_for_disassembly = m_memory.slice(0, 0x2000);
 

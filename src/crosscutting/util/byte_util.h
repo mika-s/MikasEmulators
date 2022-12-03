@@ -1,11 +1,20 @@
 #ifndef MIKA_EMULATORS_CROSSCUTTING_BYTE_UTIL_H
 #define MIKA_EMULATORS_CROSSCUTTING_BYTE_UTIL_H
 
+#include "crosscutting/misc/uinteger.h"
 #include "crosscutting/typedefs.h"
+#include <cstddef>
 
 namespace emu::util::byte {
 
+    using emu::misc::UInteger;
+
     bool is_bit_set(u8 variable, unsigned int bit_position);
+
+    template<std::size_t M>
+    bool is_bit_set(UInteger<M> variable, unsigned int bit_position) {
+        return (variable.underlying() >> bit_position) & 1;
+    }
 
     void set_bit(u8 &variable, unsigned int bit_position);
 

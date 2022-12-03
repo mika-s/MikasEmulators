@@ -6,11 +6,8 @@ set(SOURCES_CROSSCUTTING_CPP
         exceptions/invalid_program_arguments_exception.cpp
         exceptions/rom_file_not_found_exception.cpp
         exceptions/unrecognized_opcode_exception.cpp
-        gui/debugging_panes/cpu_info_pane.cpp
         gui/debugging_panes/debug_log_pane.cpp
         gui/debugging_panes/disassembly_pane.cpp
-        gui/debugging_panes/io_info_pane.cpp
-        gui/debugging_panes/memory_editor_pane.cpp
         gui/debugging_panes/spritemap_pane.cpp
         gui/debugging_panes/tilemap_pane.cpp
         gui/debugging_panes/waveform_pane.cpp
