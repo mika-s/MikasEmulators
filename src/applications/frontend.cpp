@@ -33,7 +33,7 @@ namespace emu::applications {
     using emu::exceptions::InvalidProgramArgumentsException;
     using emu::util::string::create_padding;
 
-    void Frontend::run(Options &options) {
+    void Frontend::run(const Options &options) {
         const std::string &command = options.command();
 
         if (command == "run") {
@@ -267,7 +267,10 @@ namespace emu::applications {
             return std::make_unique<cpm::i8080::CpmApplication>("roms/8080/CPUTEST.COM");
         } else if (program == "lmc_application") {
             if (options.path().has_value()) {
-                return std::make_unique<lmc::LmcApplication>(options.path().value());
+                return std::make_unique<lmc::LmcApplication>(
+                        options.path().value(),
+                        options.gui_type(lmc_application::print_usage)
+                );
             } else {
                 throw InvalidProgramArgumentsException(
                         "You have to specify the path of the file to run",

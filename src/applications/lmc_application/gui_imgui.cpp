@@ -1,16 +1,14 @@
 #include "gui_imgui.h"
-#include "8080/interfaces/gui_observer.h"
-#include "crosscutting/util/byte_util.h"
+#include "chips/trivial/lmc/interfaces/gui_observer.h"
 #include "glad/glad.h"
-#include "gui.h"
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_sdl.h"
+#include "ui.h"
 #include <SDL.h>
 #include <SDL_error.h>
 #include <SDL_log.h>
 #include <algorithm>
-#include <cstdint>
 #include <cstdlib>
 #include <string>
 #include <utility>
@@ -25,26 +23,22 @@ namespace emu::logging {
     class Logger;
 }
 
-namespace emu::applications::space_invaders {
+namespace emu::applications::lmc {
 
     using emu::misc::RunStatus::NOT_RUNNING;
     using emu::misc::RunStatus::PAUSED;
     using emu::misc::RunStatus::RUNNING;
     using emu::misc::RunStatus::STEPPING;
-    using emu::util::byte::is_bit_set;
 
     GuiImgui::GuiImgui()
         : m_win(nullptr),
           m_gl_context(nullptr),
-          m_screen_texture(0),
-          m_show_game(true),
+          m_show_terminal(true),
           m_show_game_info(true),
           m_show_cpu_info(true),
-          m_show_io_info(true),
           m_show_log(true),
           m_show_disassembly(true),
           m_show_memory_editor(true),
-          m_show_demo(false),
           m_is_in_debug_mode(false) {
         init();
     }
@@ -60,6 +54,9 @@ namespace emu::applications::space_invaders {
 
         m_win = nullptr;
         m_gl_context = nullptr;
+    }
+
+    void GuiImgui::to_terminal() {
     }
 
     void GuiImgui::add_gui_observer(GuiObserver &observer) {
@@ -91,7 +88,6 @@ namespace emu::applications::space_invaders {
 
     void GuiImgui::attach_debug_container(DebugContainer &debug_container) {
         m_cpu_info.attach_debug_container(debug_container);
-        m_io_info.attach_debug_container(debug_container);
         m_disassembly.attach_debug_container(debug_container);
         m_memory_editor.attach_debug_container(debug_container);
     }
@@ -138,7 +134,7 @@ namespace emu::applications::space_invaders {
 #endif
 
         m_win = SDL_CreateWindow(
-                "Space Invaders",
+                "Little Man Computer",
                 SDL_WINDOWPOS_CENTERED,
                 SDL_WINDOWPOS_CENTERED,
                 scaled_width,
@@ -166,7 +162,7 @@ namespace emu::applications::space_invaders {
         ImGui::CreateContext();
         ImGuiIO &io = ImGui::GetIO();
         (void) io;
-        io.IniFilename = "space-invaders_imgui.ini";
+        io.IniFilename = "lmc_imgui.ini";
         io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
         ImGui::StyleColorsDark();
@@ -176,20 +172,9 @@ namespace emu::applications::space_invaders {
 
         const ImVec4 background = ImVec4(35 / 255.0f, 35 / 255.0f, 35 / 255.0f, 1.00f);
         glClearColor(background.x, background.y, background.z, background.w);
-
-        glGenTextures(1, &m_screen_texture);
     }
 
-    void GuiImgui::update_screen(const std::vector<u8> &vram, RunStatus run_status) {
-        std::vector<u32> framebuffer = create_framebuffer(vram);
-
-        glBindTexture(GL_TEXTURE_2D, m_screen_texture);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, framebuffer.data());
-
-        glBindTexture(GL_TEXTURE_2D, 0);
-
+    void GuiImgui::update_screen(RunStatus run_status) {
         render(run_status);
     }
 
@@ -223,14 +208,12 @@ namespace emu::applications::space_invaders {
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Windows")) {
-                ImGui::MenuItem("Game", nullptr, &m_show_game);
-                ImGui::MenuItem("Game info", nullptr, &m_show_game_info);
+                ImGui::MenuItem("Terminal", nullptr, &m_show_terminal);
+                ImGui::MenuItem("Program info", nullptr, &m_show_game_info);
                 ImGui::MenuItem("CPU info", nullptr, &m_show_cpu_info);
-                ImGui::MenuItem("IO info", nullptr, &m_show_io_info);
                 ImGui::MenuItem("Log", nullptr, &m_show_log);
                 ImGui::MenuItem("Disassembly", nullptr, &m_show_disassembly);
                 ImGui::MenuItem("Memory editor", nullptr, &m_show_memory_editor);
-                ImGui::MenuItem("Demo", nullptr, &m_show_demo);
                 ImGui::EndMenu();
             }
 
@@ -249,8 +232,8 @@ namespace emu::applications::space_invaders {
         if (m_show_disassembly) {
             render_disassembly_window();
         }
-        if (m_show_game) {
-            render_game_window(run_status);
+        if (m_show_terminal) {
+            render_terminal_window(run_status);
         }
         if (m_show_game_info) {
             render_game_info_window();
@@ -258,14 +241,8 @@ namespace emu::applications::space_invaders {
         if (m_show_cpu_info) {
             render_cpu_info_window();
         }
-        if (m_show_io_info) {
-            render_io_info_window();
-        }
         if (m_show_memory_editor) {
             render_memory_editor_window();
-        }
-        if (m_show_demo) {
-            ImGui::ShowDemoWindow();
         }
 
         ImGui::End();
@@ -280,8 +257,8 @@ namespace emu::applications::space_invaders {
         render(STEPPING);
     }
 
-    void GuiImgui::render_game_window(RunStatus run_status) {
-        std::string prefix = "Game";
+    void GuiImgui::render_terminal_window(RunStatus run_status) {
+        std::string prefix = "Program";
         std::string id = "###" + prefix;
         std::string title;
         if (run_status == RUNNING) {
@@ -296,22 +273,11 @@ namespace emu::applications::space_invaders {
             title = "Unknown TODO" + id;
         }
 
-        ImGui::Begin(title.c_str(), &m_show_game);
-
-        const ImVec2 image_size = ImVec2(scaled_width, scaled_height);
-        ImGui::Image(
-                (void *) ((intptr_t) m_screen_texture), image_size,
-                ImVec2(0, 0),
-                ImVec2(1, 1),
-                ImColor(255, 255, 255, 255),
-                ImColor(0, 0, 0, 0)
-        );
-
-        ImGui::End();
+        m_terminal.draw(title.c_str(), &m_show_terminal);
     }
 
     void GuiImgui::render_game_info_window() {
-        ImGui::Begin("Game info", &m_show_game_info);
+        ImGui::Begin("Program info", &m_show_game_info);
 
         ImGui::Text("Avg %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
@@ -338,10 +304,6 @@ namespace emu::applications::space_invaders {
 
     void GuiImgui::render_cpu_info_window() {
         m_cpu_info.draw("CPU info", &m_show_cpu_info);
-    }
-
-    void GuiImgui::render_io_info_window() {
-        m_io_info.draw("IO info", &m_show_io_info);
     }
 
     void GuiImgui::render_log_window() {

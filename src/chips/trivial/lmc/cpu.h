@@ -57,6 +57,8 @@ namespace emu::lmc {
 
         [[nodiscard]] Data a() const;
 
+        [[nodiscard]] bool is_negative_flag_set() const;
+
         [[nodiscard]] Address pc() const;
 
         void input(Data value);

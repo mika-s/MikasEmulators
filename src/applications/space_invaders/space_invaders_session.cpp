@@ -1,6 +1,5 @@
 #include "space_invaders_session.h"
 #include "8080/cpu.h"
-#include "8080/interfaces/gui_observer.h"
 #include "8080/shift_register.h"
 #include "chips/8080/disassembler.h"
 #include "crosscutting/debugging/debugger.h"
@@ -33,12 +32,12 @@ namespace emu::applications::space_invaders {
     using emu::debugger::MemoryDebugContainer;
     using emu::debugger::RegisterDebugContainer;
     using emu::i8080::Disassembler;
-    using emu::i8080::RunStatus::FINISHED;
-    using emu::i8080::RunStatus::NOT_RUNNING;
-    using emu::i8080::RunStatus::PAUSED;
-    using emu::i8080::RunStatus::RUNNING;
-    using emu::i8080::RunStatus::STEPPING;
     using emu::misc::sdl_get_ticks_high_performance;
+    using emu::misc::RunStatus::FINISHED;
+    using emu::misc::RunStatus::NOT_RUNNING;
+    using emu::misc::RunStatus::PAUSED;
+    using emu::misc::RunStatus::RUNNING;
+    using emu::misc::RunStatus::STEPPING;
     using emu::util::string::split;
 
     SpaceInvadersSession::SpaceInvadersSession(
@@ -289,7 +288,7 @@ namespace emu::applications::space_invaders {
         m_gui->attach_logger(m_logger);
     }
 
-    void SpaceInvadersSession::run_status_changed(emu::i8080::RunStatus new_status) {
+    void SpaceInvadersSession::run_status_changed(emu::misc::RunStatus new_status) {
         m_run_status = new_status;
     }
 

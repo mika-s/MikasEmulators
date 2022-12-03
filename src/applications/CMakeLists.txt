@@ -18,6 +18,9 @@ set(SOURCES_APPLICATIONS_CPP
         cpm_z80/cpm_application_session.cpp
         cpm_z80/usage.cpp
 
+        lmc_application/tui_terminal.cpp
+        lmc_application/gui_imgui.cpp
+        lmc_application/input_imgui.cpp
         lmc_application/lmc_application.cpp
         lmc_application/lmc_application_session.cpp
         lmc_application/usage.cpp
@@ -68,9 +71,16 @@ set(SOURCES_APPLICATIONS_H
         cpm_z80/cpm_application_session.h
         cpm_z80/usage.h
 
+        lmc_application/ui.h
+        lmc_application/tui_terminal.h
+        lmc_application/gui_imgui.h
+        lmc_application/input_imgui.h
+        lmc_application/io_request.h
         lmc_application/lmc_application.h
         lmc_application/lmc_application_session.h
         lmc_application/usage.h
+        lmc_application/interfaces/input.h
+        lmc_application/interfaces/io_observer.h
 
         pacman/audio.h
         pacman/gui.h

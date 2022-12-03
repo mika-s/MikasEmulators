@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
     std::string short_executable_name = find_short_executable_name(std::string(argv[0]));
     try {
         if (argc > 1) {
-            Options options = CommandLineArguments::find_options(argv_to_vector(argc, argv));
+            const Options options = CommandLineArguments::find_options(argv_to_vector(argc, argv));
             if (options.is_failed().first && !options.is_asking_for_help().first) {
                 throw InvalidProgramArgumentsException(options.is_failed().second, Frontend::print_main_usage);
             }

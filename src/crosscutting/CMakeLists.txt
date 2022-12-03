@@ -20,6 +20,7 @@ set(SOURCES_CROSSCUTTING_CPP
         gui/graphics/palette.cpp
         gui/graphics/sprite.cpp
         gui/graphics/tile.cpp
+        gui/main_panes/terminal_pane.cpp
         logging/logger.cpp
         memory/emulator_memory.cpp
         misc/governor.cpp
@@ -55,6 +56,7 @@ set(SOURCES_CROSSCUTTING_H
         gui/graphics/palette.h
         gui/graphics/sprite.h
         gui/graphics/tile.h
+        gui/main_panes/terminal_pane.h
         logging/log_observer.h
         logging/logger.h
         memory/emulator_memory.h

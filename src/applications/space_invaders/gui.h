@@ -18,7 +18,7 @@ namespace emu::applications::space_invaders {
     using emu::gui::Color;
     using emu::gui::Framebuffer;
     using emu::i8080::GuiObserver;
-    using emu::i8080::RunStatus;
+    using emu::misc::RunStatus;
     using emu::logging::Logger;
     using emu::util::byte::is_bit_set;
     using emu::util::byte::to_u32;

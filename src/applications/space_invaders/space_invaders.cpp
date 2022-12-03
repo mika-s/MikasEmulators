@@ -18,7 +18,7 @@ namespace emu::misc {
 
 namespace emu::applications::space_invaders {
 
-    using emu::i8080::RunStatus;
+    using emu::misc::RunStatus;
     using emu::util::file::read_file_into_vector;
 
     SpaceInvaders::SpaceInvaders(const Settings &settings, const GuiType gui_type)

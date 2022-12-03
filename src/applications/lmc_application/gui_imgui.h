@@ -1,14 +1,13 @@
-#ifndef MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_GUI_IMGUI_H
-#define MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_GUI_IMGUI_H
+#ifndef MIKA_EMULATORS_APPLICATIONS_LMC_APPLICATION_GUI_IMGUI_H
+#define MIKA_EMULATORS_APPLICATIONS_LMC_APPLICATION_GUI_IMGUI_H
 
 #include "crosscutting/gui/debugging_panes/cpu_info_pane.h"
 #include "crosscutting/gui/debugging_panes/debug_log_pane.h"
 #include "crosscutting/gui/debugging_panes/disassembly_pane.h"
-#include "crosscutting/gui/debugging_panes/io_info_pane.h"
 #include "crosscutting/gui/debugging_panes/memory_editor_pane.h"
+#include "crosscutting/gui/main_panes/terminal_pane.h"
 #include "crosscutting/misc/run_status.h"
-#include "crosscutting/typedefs.h"
-#include "gui.h"
+#include "ui.h"
 #include <SDL_video.h>
 #include <memory>
 #include <vector>
@@ -19,35 +18,37 @@ namespace emu::debugger {
 namespace emu::debugger {
     class Debugger;
 }
-namespace emu::i8080 {
+namespace emu::lmc {
     class GuiObserver;
 }
 namespace emu::logging {
     class Logger;
 }
 
-namespace emu::applications::space_invaders {
+namespace emu::applications::lmc {
 
     using emu::gui::CpuInfoPane;
     using emu::gui::DebugLogPane;
     using emu::gui::DisassemblyPane;
-    using emu::gui::IoInfoPane;
     using emu::gui::MemoryEditorPane;
-    using emu::i8080::GuiObserver;
+    using emu::gui::TerminalPane;
+    using emu::lmc::GuiObserver;
     using emu::misc::RunStatus;
 
-    class GuiImgui : public Gui {
+    class GuiImgui : public Ui {
 
     public:
         GuiImgui();
 
         ~GuiImgui() override;
 
+        void to_terminal() override;
+
         void add_gui_observer(GuiObserver &observer) override;
 
         void remove_gui_observer(GuiObserver *observer) override;
 
-        void update_screen(const std::vector<u8> &vram, RunStatus run_status) override;
+        void update_screen(RunStatus run_status) override;
 
         void update_debug_only() override;
 
@@ -60,16 +61,13 @@ namespace emu::applications::space_invaders {
     private:
         SDL_Window *m_win;
         SDL_GLContext m_gl_context;
-        u32 m_screen_texture;
 
-        bool m_show_game;
+        bool m_show_terminal;
         bool m_show_game_info;
         bool m_show_cpu_info;
-        bool m_show_io_info;
         bool m_show_log;
         bool m_show_disassembly;
         bool m_show_memory_editor;
-        bool m_show_demo;
 
         bool m_is_in_debug_mode;
 
@@ -79,8 +77,8 @@ namespace emu::applications::space_invaders {
         DebugLogPane m_log;
         DisassemblyPane m_disassembly;
         CpuInfoPane m_cpu_info;
-        IoInfoPane m_io_info;
         MemoryEditorPane m_memory_editor;
+        TerminalPane m_terminal;
 
         void notify_gui_observers_about_run_status(RunStatus new_status);
 
@@ -90,13 +88,11 @@ namespace emu::applications::space_invaders {
 
         void render(RunStatus run_status);
 
-        void render_game_window(RunStatus run_status);
+        void render_terminal_window(RunStatus run_status);
 
         void render_game_info_window();
 
         void render_cpu_info_window();
-
-        void render_io_info_window();
 
         void render_log_window();
 
@@ -106,4 +102,4 @@ namespace emu::applications::space_invaders {
     };
 }
 
-#endif //MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_GUI_IMGUI_H
+#endif //MIKA_EMULATORS_APPLICATIONS_LMC_APPLICATION_GUI_IMGUI_H

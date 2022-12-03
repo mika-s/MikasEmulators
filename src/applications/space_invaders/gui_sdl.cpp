@@ -23,9 +23,9 @@ namespace emu::logging {
 
 namespace emu::applications::space_invaders {
 
-    using emu::i8080::RunStatus::NOT_RUNNING;
-    using emu::i8080::RunStatus::PAUSED;
-    using emu::i8080::RunStatus::RUNNING;
+    using emu::misc::RunStatus::NOT_RUNNING;
+    using emu::misc::RunStatus::PAUSED;
+    using emu::misc::RunStatus::RUNNING;
     using emu::util::byte::is_bit_set;
 
     GuiSdl::GuiSdl()

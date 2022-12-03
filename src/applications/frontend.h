@@ -29,7 +29,7 @@ namespace emu::applications {
 
     class Frontend {
     public:
-        static void run(Options &options);
+        static void run(const Options &options);
 
         static void print_main_usage(const std::string &program_name);
 

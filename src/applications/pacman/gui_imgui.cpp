@@ -365,7 +365,7 @@ namespace emu::applications::pacman {
     }
 
     void GuiImgui::render_game_info_pane() {
-        ImGui::Begin("Game info", &m_show_game);
+        ImGui::Begin("Game info", &m_show_game_info);
 
         ImGui::Text("Avg %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 

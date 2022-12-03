@@ -159,6 +159,10 @@ namespace emu::lmc {
         return m_acc_reg;
     }
 
+    bool Cpu::is_negative_flag_set() const {
+        return m_flag_reg.is_negative_flag_set();
+    }
+
     Address Cpu::pc() const {
         return m_pc;
     }
