@@ -3,7 +3,7 @@
 #include "crosscutting/util/string_util.h"
 #include "debugging/debug_container.h"
 #include "imgui.h"
-#include "typedefs.h"
+#include "crosscutting/typedefs.h"
 #include <string>
 #include <type_traits>
 #include <vector>
@@ -17,7 +17,7 @@ namespace emu::gui {
         : m_is_debug_container_set(false) {
     }
 
-    void CpuInfoPane::attach_debug_container(DebugContainer &debug_container) {
+    void CpuInfoPane::attach_debug_container(DebugContainer<u16, u8> &debug_container) {
         m_debug_container = debug_container;
         m_is_debug_container_set = true;
     }

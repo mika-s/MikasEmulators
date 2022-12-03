@@ -26,7 +26,7 @@ namespace emu::gui {
 
         void attach_debugger(std::shared_ptr<Debugger> debugger);
 
-        void attach_debug_container(DebugContainer &debug_container);
+        void attach_debug_container(DebugContainer<u16, u8> &debug_container);
 
         void attach_logger(std::shared_ptr<Logger> logger);
 
@@ -37,7 +37,7 @@ namespace emu::gui {
         static constexpr int address_base = 16;
 
         std::shared_ptr<Debugger> m_debugger;
-        DebugContainer m_debug_container;
+        DebugContainer<u16, u8> m_debug_container;
         bool m_is_debugger_set;
         bool m_is_debug_container_set;
         bool m_is_logger_set;

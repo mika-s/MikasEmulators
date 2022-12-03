@@ -1,5 +1,5 @@
 #include "waveform.h"
-#include "typedefs.h"
+#include "crosscutting/typedefs.h"
 #include <fmt/core.h>
 #include <stdexcept>
 #include <utility>

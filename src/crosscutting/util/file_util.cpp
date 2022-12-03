@@ -1,6 +1,6 @@
 #include "file_util.h"
 #include "crosscutting/exceptions/rom_file_not_found_exception.h"
-#include "typedefs.h"
+#include "crosscutting/typedefs.h"
 #include <filesystem>
 #include <fstream> // IWYU pragma: keep
 #include <sstream> // IWYU pragma: keep

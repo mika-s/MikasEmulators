@@ -1,6 +1,6 @@
 #include "breakpoint.h"
 #include "debugging/disassembled_line.h"
-#include "typedefs.h"
+#include "crosscutting/typedefs.h"
 #include <utility>
 
 namespace emu::debugger {

@@ -1,6 +1,6 @@
 #include "emulator_memory.h"
 #include "doctest.h"
-#include "typedefs.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::memory {
 

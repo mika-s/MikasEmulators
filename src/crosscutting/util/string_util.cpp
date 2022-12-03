@@ -1,5 +1,5 @@
 #include "string_util.h"
-#include "typedefs.h"
+#include "crosscutting/typedefs.h"
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>

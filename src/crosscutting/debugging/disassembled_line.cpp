@@ -1,5 +1,5 @@
 #include "disassembled_line.h"
-#include "typedefs.h"
+#include "crosscutting/typedefs.h"
 #include <cstddef>
 #include <stdexcept>
 #include <utility>

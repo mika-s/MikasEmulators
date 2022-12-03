@@ -12,6 +12,7 @@
 #include <vector>
 
 namespace emu::debugger {
+    template<class A, class D>
     class DebugContainer;
 }
 namespace emu::debugger {
@@ -67,7 +68,7 @@ namespace emu::applications::pacman {
 
         virtual void attach_debugger(std::shared_ptr<Debugger> debugger) = 0;
 
-        virtual void attach_debug_container(DebugContainer &debug_container) = 0;
+        virtual void attach_debug_container(DebugContainer<u16, u8> &debug_container) = 0;
 
         virtual void attach_logger(std::shared_ptr<Logger> logger) = 0;
 

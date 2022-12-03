@@ -2,6 +2,7 @@
 #define MIKA_EMULATORS_CROSSCUTTING_GUI_DEBUGGING_PANES_IO_INFO_PANE_H
 
 #include "crosscutting/debugging/debug_container.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::gui {
 
@@ -11,12 +12,12 @@ namespace emu::gui {
     public:
         IoInfoPane();
 
-        void attach_debug_container(DebugContainer &debug_container);
+        void attach_debug_container(DebugContainer<u16, u8> &debug_container);
 
         void draw(const char *title, bool *p_open = nullptr);
 
     private:
-        DebugContainer m_debug_container;
+        DebugContainer<u16, u8> m_debug_container;
         bool m_is_debug_container_set;
     };
 }

@@ -18,6 +18,7 @@
 #include <utility>
 
 namespace emu::debugger {
+    template<class A, class D>
     class DebugContainer;
 }
 namespace emu::debugger {
@@ -96,7 +97,7 @@ namespace emu::applications::pacman {
         m_disassembly.attach_debugger(debugger);
     }
 
-    void GuiImgui::attach_debug_container(DebugContainer &debug_container) {
+    void GuiImgui::attach_debug_container(DebugContainer<u16, u8> &debug_container) {
         m_cpu_info.attach_debug_container(debug_container);
         m_io_info.attach_debug_container(debug_container);
         m_disassembly.attach_debug_container(debug_container);

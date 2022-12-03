@@ -109,7 +109,7 @@ namespace emu::applications::space_invaders {
 
         std::shared_ptr<Logger> m_logger;
         std::shared_ptr<Debugger> m_debugger;
-        DebugContainer m_debug_container;
+        DebugContainer<u16, u8> m_debug_container;
         std::unordered_map<u8, u8> m_outputs_during_cycle;
 
         Governor m_governor;

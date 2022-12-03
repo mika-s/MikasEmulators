@@ -198,7 +198,7 @@ namespace emu::applications::lmc {
     }
 
     void LmcApplicationSession::setup_debugging() {
-        m_debug_container.add_register(RegisterDebugContainer("A", [&]() { return m_cpu->a().underlying(); })); // TODO: Generic
+        m_debug_container.add_register(RegisterDebugContainer<Data>("A", [&]() { return m_cpu->a(); }));
         m_debug_container.add_pc([&]() { return m_cpu->pc().underlying(); });
 //        m_debug_container.add_flag_register(FlagRegisterDebugContainer(
 //                "F",

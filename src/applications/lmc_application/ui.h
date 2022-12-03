@@ -2,6 +2,7 @@
 #define MIKA_EMULATORS_APPLICATIONS_LMC_APPLICATION_UI_H
 
 #include "chips/trivial/lmc/interfaces/gui_observer.h"
+#include "chips/trivial/lmc/usings.h"
 #include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/debugging/debugger.h"
 #include "crosscutting/gui/graphics/color.h"
@@ -15,6 +16,8 @@ namespace emu::applications::lmc {
 
     using emu::debugger::DebugContainer;
     using emu::debugger::Debugger;
+    using emu::lmc::Address;
+    using emu::lmc::Data;
     using emu::lmc::GuiObserver;
     using emu::logging::Logger;
     using emu::misc::RunStatus;
@@ -39,7 +42,7 @@ namespace emu::applications::lmc {
 
         virtual void attach_debugger(std::shared_ptr<Debugger> debugger) = 0;
 
-        virtual void attach_debug_container(DebugContainer &debug_container) = 0;
+        virtual void attach_debug_container(DebugContainer<Address, Data> &debug_container) = 0;
 
         virtual void attach_logger(std::shared_ptr<Logger> logger) = 0;
 

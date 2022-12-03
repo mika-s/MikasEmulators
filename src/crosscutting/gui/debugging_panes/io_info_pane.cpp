@@ -18,7 +18,7 @@ namespace emu::gui {
         : m_is_debug_container_set(false) {
     }
 
-    void IoInfoPane::attach_debug_container(DebugContainer &debug_container) {
+    void IoInfoPane::attach_debug_container(DebugContainer<u16, u8> &debug_container) {
         m_debug_container = debug_container;
         m_is_debug_container_set = true;
     }

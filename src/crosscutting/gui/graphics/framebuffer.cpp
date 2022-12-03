@@ -1,6 +1,6 @@
 #include "framebuffer.h"
 #include "gui/graphics/color.h"
-#include "typedefs.h"
+#include "crosscutting/typedefs.h"
 #include <algorithm>
 #include <ext/alloc_traits.h>
 #include <fmt/core.h>

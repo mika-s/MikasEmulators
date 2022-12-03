@@ -1,6 +1,6 @@
 #include "color.h"
 #include "crosscutting/util/byte_util.h"
-#include "typedefs.h"
+#include "crosscutting/typedefs.h"
 
 namespace emu::gui {
 

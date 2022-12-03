@@ -6,7 +6,7 @@
 #include "debugging/disassembled_line.h"
 #include "imgui.h"
 #include "logging/logger.h"
-#include "typedefs.h"
+#include "crosscutting/typedefs.h"
 #include <memory>
 #include <unordered_map>
 #include <utility>
@@ -35,7 +35,7 @@ namespace emu::gui {
         m_is_debugger_set = true;
     }
 
-    void DisassemblyPane::attach_debug_container(DebugContainer &debug_container) {
+    void DisassemblyPane::attach_debug_container(DebugContainer<u16, u8> &debug_container) {
         m_debug_container = debug_container;
         m_is_debug_container_set = true;
     }

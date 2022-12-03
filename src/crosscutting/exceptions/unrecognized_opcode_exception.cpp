@@ -1,6 +1,6 @@
 #include "unrecognized_opcode_exception.h"
 #include "crosscutting/util/string_util.h"
-#include "typedefs.h"
+#include "crosscutting/typedefs.h"
 #include <sstream>
 
 namespace emu::exceptions {

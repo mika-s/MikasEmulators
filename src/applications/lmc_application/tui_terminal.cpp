@@ -1,10 +1,10 @@
 #include "tui_terminal.h"
+#include "chips/trivial/lmc/usings.h"
 #include "ui.h"
 
 namespace emu::applications::lmc {
 
     void TuiTerminal::to_terminal() {
-
     }
 
     void TuiTerminal::add_gui_observer([[maybe_unused]] GuiObserver &observer) {
@@ -16,7 +16,7 @@ namespace emu::applications::lmc {
     void TuiTerminal::attach_debugger([[maybe_unused]] std::shared_ptr<Debugger> debugger) {
     }
 
-    void TuiTerminal::attach_debug_container([[maybe_unused]] DebugContainer &debug_container) {
+    void TuiTerminal::attach_debug_container([[maybe_unused]] DebugContainer<Address, Data> &debug_container) {
     }
 
     void TuiTerminal::attach_logger([[maybe_unused]] std::shared_ptr<Logger> logger) {

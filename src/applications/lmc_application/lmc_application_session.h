@@ -95,7 +95,7 @@ namespace emu::applications::lmc {
         std::string m_loaded_file;
         std::shared_ptr<Logger> m_logger;
         std::shared_ptr<Debugger> m_debugger;
-        DebugContainer m_debug_container;
+        DebugContainer<Address, Data> m_debug_container;
 
         Governor m_governor;
 

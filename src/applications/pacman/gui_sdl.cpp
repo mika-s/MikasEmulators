@@ -12,6 +12,7 @@
 #include <string>
 
 namespace emu::debugger {
+    template<class A, class D>
     class DebugContainer;
 }
 namespace emu::debugger {
@@ -63,7 +64,7 @@ namespace emu::applications::pacman {
     void GuiSdl::attach_debugger([[maybe_unused]] std::shared_ptr<Debugger> debugger) {
     }
 
-    void GuiSdl::attach_debug_container([[maybe_unused]] DebugContainer &debug_container) {
+    void GuiSdl::attach_debug_container([[maybe_unused]] DebugContainer<u16, u8> &debug_container) {
     }
 
     void GuiSdl::attach_logger([[maybe_unused]] std::shared_ptr<Logger> logger) {

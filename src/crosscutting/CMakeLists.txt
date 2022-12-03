@@ -2,7 +2,6 @@ set(SOURCES_CROSSCUTTING_CPP
         audio/waveform.cpp
         debugging/breakpoint.cpp
         debugging/debugger.cpp
-        debugging/debug_container.cpp
         debugging/disassembled_line.cpp
         exceptions/invalid_program_arguments_exception.cpp
         exceptions/rom_file_not_found_exception.cpp

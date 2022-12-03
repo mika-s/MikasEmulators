@@ -8,6 +8,7 @@
 #include <memory>
 #include <string>
 #include <tuple>
+#include <utility>
 #include <vector>
 
 namespace emu::gui {
@@ -23,218 +24,354 @@ namespace emu::debugger {
     using emu::gui::Tile;
     using emu::wsg3::Waveform;
 
+    template<class D>
     class RegisterDebugContainer {
     public:
         RegisterDebugContainer(
                 std::string name,
-                std::function<u8()> value_retriever_main
-        );
+                std::function<D()> value_retriever_main
+        ) : m_name(std::move(name)),
+            m_value_retriever_main(std::move(value_retriever_main)),
+            m_is_alternate_set(false) {
+        }
 
         RegisterDebugContainer(
                 std::string name,
-                std::function<u8()> value_retriever_main,
-                std::function<u8()> value_retriever_alternate
-        );
+                std::function<D()> value_retriever_main,
+                std::function<D()> value_retriever_alternate
+        ) : m_name(std::move(name)),
+            m_value_retriever_main(std::move(value_retriever_main)),
+            m_value_retriever_alternate(std::move(value_retriever_alternate)),
+            m_is_alternate_set(true) {
+        }
 
-        [[nodiscard]] std::string name() const;
+        [[nodiscard]] std::string name() const {
+            return m_name;
+        }
 
-        [[nodiscard]] u8 main() const;
+        [[nodiscard]] D main() const {
+            return m_value_retriever_main();
+        }
 
-        [[nodiscard]] u8 alternate() const;
+        [[nodiscard]] D alternate() const {
+            return m_value_retriever_alternate();
+        }
 
-        [[nodiscard]] bool is_alternate_set() const;
+        [[nodiscard]] bool is_alternate_set() const {
+            return m_is_alternate_set;
+        }
 
     private:
         std::string m_name;
-        std::function<u8()> m_value_retriever_main;
-        std::function<u8()> m_value_retriever_alternate;
+        std::function<D()> m_value_retriever_main;
+        std::function<D()> m_value_retriever_alternate;
         bool m_is_alternate_set;
     };
 
+    template<class D>
     class FlagRegisterDebugContainer {
     public:
-        FlagRegisterDebugContainer();
+        FlagRegisterDebugContainer() = default;
 
         FlagRegisterDebugContainer(
                 std::string name,
-                std::function<u8()> value_retriever,
+                std::function<D()> value_retriever,
                 std::vector<std::tuple<std::string, unsigned int>> flag_names
-        );
+        ) : m_name(std::move(name)),
+            m_value_retriever(std::move(value_retriever)),
+            m_flag_names(std::move(flag_names)) {
+        }
 
-        [[nodiscard]] std::string name() const;
+        [[nodiscard]] std::string name() const {
+            return m_name;
+        }
 
-        [[nodiscard]] u8 value() const;
+        [[nodiscard]] D value() const {
+            return m_value_retriever();
+        }
 
-        [[nodiscard]] std::vector<std::tuple<std::string, unsigned int>> flag_names() const;
+        [[nodiscard]] std::vector<std::tuple<std::string, unsigned int>> flag_names() const {
+            return m_flag_names;
+        }
 
     private:
         std::string m_name;
-        std::function<u8()> m_value_retriever;
+        std::function<D()> m_value_retriever;
         std::vector<std::tuple<std::string, unsigned int>> m_flag_names;
     };
 
+    template<class D>
     class IoDebugContainer {
     public:
         IoDebugContainer(
                 std::string name,
                 std::function<bool()> is_active_retriever,
-                std::function<u8()> value_retriever
-        );
+                std::function<D()> value_retriever
+        ) : m_name(std::move(name)),
+            m_is_active_retriever(std::move(is_active_retriever)),
+            m_value_retriever(std::move(value_retriever)),
+            m_is_divided_into_bits(false) {
+        }
 
         IoDebugContainer(
                 std::string name,
                 std::function<bool()> is_active_retriever,
-                std::function<u8()> value_retriever,
+                std::function<D()> value_retriever,
                 std::vector<std::tuple<std::string, unsigned int>> bit_names
-        );
+        ) : m_name(std::move(name)),
+            m_is_active_retriever(std::move(is_active_retriever)),
+            m_value_retriever(std::move(value_retriever)),
+            m_bit_names(std::move(bit_names)),
+            m_is_divided_into_bits(true) {
+        }
 
-        [[nodiscard]] std::string name() const;
+        [[nodiscard]] std::string name() const {
+            return m_name;
+        }
 
-        [[nodiscard]] bool is_active() const;
+        [[nodiscard]] bool is_active() const {
+            return m_is_active_retriever();
+        }
 
-        [[nodiscard]] u8 value() const;
+        [[nodiscard]] D value() const {
+            return m_value_retriever();
+        }
 
-        [[nodiscard]] bool is_divided_into_bits() const;
+        [[nodiscard]] bool is_divided_into_bits() const {
+            return m_is_divided_into_bits;
+        }
 
-        [[nodiscard]] std::vector<std::tuple<std::string, unsigned int>> bit_names() const;
+        [[nodiscard]] std::vector<std::tuple<std::string, unsigned int>> bit_names() const {
+            return m_bit_names;
+        }
 
     private:
         std::string m_name;
         std::function<bool()> m_is_active_retriever;
-        std::function<u8()> m_value_retriever;
+        std::function<D()> m_value_retriever;
         std::vector<std::tuple<std::string, unsigned int>> m_bit_names;
         bool m_is_divided_into_bits;
     };
 
+    template<class D>
     class MemoryDebugContainer {
     public:
-        MemoryDebugContainer();
+        MemoryDebugContainer() = default;
 
-        explicit MemoryDebugContainer(
-                std::function<std::vector<u8>()> value_retriever
-        );
+        explicit MemoryDebugContainer(std::function<std::vector<D>()> value_retriever) {
+            m_value_retriever = std::move(value_retriever);
+        }
 
-        [[nodiscard]] std::vector<u8> value() const;
+        [[nodiscard]] std::vector<D> value() const {
+            return m_value_retriever();
+        }
 
     private:
-        std::function<std::vector<u8>()> m_value_retriever;
+        std::function<std::vector<D>()> m_value_retriever;
     };
 
+    template<class A, class D>
     class DebugContainer {
     public:
-        DebugContainer();
+        DebugContainer() = default;
 
-        void add_register(const RegisterDebugContainer &reg);
+        void add_register(const RegisterDebugContainer<D> &reg) {
+            m_register_retrievers.emplace_back(reg);
+            if (reg.is_alternate_set()) {
+                m_has_alternate_registers = true;
+            }
+        }
 
-        std::vector<RegisterDebugContainer> registers();
+        std::vector<RegisterDebugContainer<D>> registers() {
+            return m_register_retrievers;
+        }
 
-        [[nodiscard]] bool has_alternate_registers() const;
+        [[nodiscard]] bool has_alternate_registers() const {
+            return m_has_alternate_registers;
+        }
 
-        void add_flag_register(const FlagRegisterDebugContainer &flag_reg);
+        void add_flag_register(const FlagRegisterDebugContainer<D> &flag_reg) {
+            m_flag_register_retriever = flag_reg;
+            m_is_flag_register_set = true;
+        }
 
-        [[nodiscard]] FlagRegisterDebugContainer flag_register() const;
+        [[nodiscard]] FlagRegisterDebugContainer<D> flag_register() const {
+            return m_flag_register_retriever;
+        }
 
-        [[nodiscard]] bool is_flag_register_set() const;
+        [[nodiscard]] bool is_flag_register_set() const {
+            return m_is_flag_register_set;
+        }
 
-        void add_io(const IoDebugContainer &io);
+        void add_io(const IoDebugContainer<D> &io) {
+            m_io_retrievers.emplace_back(io);
+            m_is_io_set = true;
+        }
 
-        [[nodiscard]] std::vector<IoDebugContainer> io() const;
+        [[nodiscard]] std::vector<IoDebugContainer<D>> io() const {
+            return m_io_retrievers;
+        }
 
-        [[nodiscard]] bool is_io_set() const;
+        [[nodiscard]] bool is_io_set() const {
+            return m_is_io_set;
+        }
 
-        void add_memory(const MemoryDebugContainer &memory);
+        void add_memory(const MemoryDebugContainer<D> &memory) {
+            m_memory_retriever = memory;
+            m_is_memory_set = true;
+        }
 
-        [[nodiscard]] MemoryDebugContainer memory() const;
+        [[nodiscard]] MemoryDebugContainer<D> memory() const {
+            return m_memory_retriever;
+        }
 
-        [[nodiscard]] bool is_memory_set() const;
+        [[nodiscard]] bool is_memory_set() const {
+            return m_is_memory_set;
+        }
 
-        void add_pc(const std::function<u16()> &value_retriever);
+        void add_pc(const std::function<u16()> &value_retriever) {
+            m_pc_retriever = value_retriever;
+            m_is_pc_set = true;
+        }
 
-        [[nodiscard]] u16 pc() const;
+        [[nodiscard]] u16 pc() const {
+            return m_pc_retriever();
+        }
 
-        [[nodiscard]] bool is_pc_set() const;
+        [[nodiscard]] bool is_pc_set() const {
+            return m_is_pc_set;
+        }
 
-        void add_sp(const std::function<u16()> &value_retriever);
+        void add_sp(const std::function<u16()> &value_retriever) {
+            m_sp_retriever = value_retriever;
+            m_is_sp_set = true;
+        }
 
-        [[nodiscard]] u16 sp() const;
+        [[nodiscard]] u16 sp() const {
+            return m_sp_retriever();
+        }
 
-        [[nodiscard]] bool is_sp_set() const;
+        [[nodiscard]] bool is_sp_set() const {
+            return m_is_sp_set;
+        }
 
-        void add_is_interrupted(const std::function<bool()> &value_retriever);
+        void add_is_interrupted(const std::function<bool()> &value_retriever) {
+            m_is_interrupted_retriever = value_retriever;
+            m_is_interrupted_set = true;
+        }
 
-        [[nodiscard]] bool is_interrupted() const;
+        [[nodiscard]] bool is_interrupted() const {
+            return m_is_interrupted_retriever();
+        }
 
-        [[nodiscard]] bool is_interrupted_set() const;
+        [[nodiscard]] bool is_interrupted_set() const {
+            return m_is_interrupted_set;
+        }
 
-        void add_interrupt_mode(const std::function<std::string()> &value_retriever);
+        void add_interrupt_mode(const std::function<std::string()> &value_retriever) {
+            m_interrupt_mode_retriever = value_retriever;
+            m_is_interrupt_mode_set = true;
+        }
 
-        [[nodiscard]] std::string interrupt_mode() const;
+        [[nodiscard]] std::string interrupt_mode() const {
+            return m_interrupt_mode_retriever();
+        }
 
-        [[nodiscard]] bool is_interrupt_mode_set() const;
+        [[nodiscard]] bool is_interrupt_mode_set() const {
+            return m_is_interrupt_mode_set;
+        }
 
-        void add_disassembled_program(std::vector<DisassembledLine> disassembled_program);
+        void add_disassembled_program(std::vector<DisassembledLine> disassembled_program) {
+            m_disassembled_program = std::move(disassembled_program);
+            m_is_disassembled_program_set = true;
+        }
 
-        std::vector<DisassembledLine> disassembled_program();
+        std::vector<DisassembledLine> disassembled_program() {
+            return m_disassembled_program;
+        }
 
-        [[nodiscard]] bool is_disassembled_program_set() const;
+        [[nodiscard]] bool is_disassembled_program_set() const {
+            return m_is_disassembled_program_set;
+        }
 
-        void add_tilemap(std::vector<std::vector<std::shared_ptr<Tile>>> tiles);
+        void add_tilemap(std::vector<std::vector<std::shared_ptr<Tile>>> tiles) {
+            m_tiles = std::move(tiles);
+            m_is_tilemap_set = true;
+        }
 
-        std::vector<std::vector<std::shared_ptr<Tile>>> tiles();
+        std::vector<std::vector<std::shared_ptr<Tile>>> tiles() {
+            return m_tiles;
+        }
 
-        [[nodiscard]] bool is_tilemap_set() const;
+        [[nodiscard]] bool is_tilemap_set() const {
+            return m_is_tilemap_set;
+        }
 
         void add_spritemap(const std::tuple<
                            std::vector<std::vector<std::shared_ptr<Sprite>>>,
                            std::vector<std::vector<std::shared_ptr<Sprite>>>,
                            std::vector<std::vector<std::shared_ptr<Sprite>>>,
-                           std::vector<std::vector<std::shared_ptr<Sprite>>>> &sprites);
+                           std::vector<std::vector<std::shared_ptr<Sprite>>>> &sprites) {
+            m_sprites = sprites;
+            m_is_spritemap_set = true;
+        }
 
         std::tuple<
                 std::vector<std::vector<std::shared_ptr<Sprite>>>,
                 std::vector<std::vector<std::shared_ptr<Sprite>>>,
                 std::vector<std::vector<std::shared_ptr<Sprite>>>,
                 std::vector<std::vector<std::shared_ptr<Sprite>>>>
-        sprites();
+        sprites() {
+            return m_sprites;
+        }
 
-        [[nodiscard]] bool is_spritemap_set() const;
+        [[nodiscard]] bool is_spritemap_set() const {
+            return m_is_spritemap_set;
+        }
 
-        void add_waveforms(const std::vector<Waveform> &waveforms);
+        void add_waveforms(const std::vector<Waveform> &waveforms) {
+            m_waveforms = waveforms;
+            m_is_waveforms_set = true;
+        }
 
-        std::vector<Waveform> waveforms();
+        std::vector<Waveform> waveforms() {
+            return m_waveforms;
+        }
 
-        [[nodiscard]] bool is_waveforms_set() const;
+        [[nodiscard]] bool is_waveforms_set() const {
+            return m_is_waveforms_set;
+        }
 
     private:
-        std::vector<RegisterDebugContainer> m_register_retrievers;
-        bool m_has_alternate_registers;
+        std::vector<RegisterDebugContainer<D>> m_register_retrievers;
+        bool m_has_alternate_registers{false};
 
-        FlagRegisterDebugContainer m_flag_register_retriever;
-        bool m_is_flag_register_set;
+        FlagRegisterDebugContainer<D> m_flag_register_retriever;
+        bool m_is_flag_register_set{false};
 
-        std::vector<IoDebugContainer> m_io_retrievers;
-        bool m_is_io_set;
+        std::vector<IoDebugContainer<D>> m_io_retrievers;
+        bool m_is_io_set{false};
 
-        MemoryDebugContainer m_memory_retriever;
-        bool m_is_memory_set;
+        MemoryDebugContainer<D> m_memory_retriever;
+        bool m_is_memory_set{false};
 
         std::function<u16()> m_pc_retriever;
-        bool m_is_pc_set;
+        bool m_is_pc_set{false};
 
         std::function<u16()> m_sp_retriever;
-        bool m_is_sp_set;
+        bool m_is_sp_set{false};
 
         std::function<bool()> m_is_interrupted_retriever;
-        bool m_is_interrupted_set;
+        bool m_is_interrupted_set{false};
 
         std::function<std::string()> m_interrupt_mode_retriever;
-        bool m_is_interrupt_mode_set;
+        bool m_is_interrupt_mode_set{false};
 
         std::vector<DisassembledLine> m_disassembled_program;
-        bool m_is_disassembled_program_set;
+        bool m_is_disassembled_program_set{false};
 
         std::vector<std::vector<std::shared_ptr<Tile>>> m_tiles;
-        bool m_is_tilemap_set;
+        bool m_is_tilemap_set{false};
 
         std::tuple<
                 std::vector<std::vector<std::shared_ptr<Sprite>>>,
@@ -242,10 +379,10 @@ namespace emu::debugger {
                 std::vector<std::vector<std::shared_ptr<Sprite>>>,
                 std::vector<std::vector<std::shared_ptr<Sprite>>>>
                 m_sprites;
-        bool m_is_spritemap_set;
+        bool m_is_spritemap_set{false};
 
         std::vector<Waveform> m_waveforms;
-        bool m_is_waveforms_set;
+        bool m_is_waveforms_set{false};
     };
 }
 

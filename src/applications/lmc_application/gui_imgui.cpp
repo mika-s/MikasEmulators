@@ -1,5 +1,6 @@
 #include "gui_imgui.h"
 #include "chips/trivial/lmc/interfaces/gui_observer.h"
+#include "chips/trivial/lmc/usings.h"
 #include "glad/glad.h"
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
@@ -14,6 +15,7 @@
 #include <utility>
 
 namespace emu::debugger {
+    template<class A, class D>
     class DebugContainer;
 }
 namespace emu::debugger {
@@ -25,6 +27,8 @@ namespace emu::logging {
 
 namespace emu::applications::lmc {
 
+    using emu::lmc::Address;
+    using emu::lmc::Data;
     using emu::misc::RunStatus::NOT_RUNNING;
     using emu::misc::RunStatus::PAUSED;
     using emu::misc::RunStatus::RUNNING;
@@ -86,10 +90,10 @@ namespace emu::applications::lmc {
         m_disassembly.attach_debugger(debugger);
     }
 
-    void GuiImgui::attach_debug_container(DebugContainer &debug_container) {
-        m_cpu_info.attach_debug_container(debug_container);
-        m_disassembly.attach_debug_container(debug_container);
-        m_memory_editor.attach_debug_container(debug_container);
+    void GuiImgui::attach_debug_container([[maybe_unused]] DebugContainer<Address, Data> &debug_container) {
+//        m_cpu_info.attach_debug_container(debug_container);
+//        m_disassembly.attach_debug_container(debug_container);
+//        m_memory_editor.attach_debug_container(debug_container);
     }
 
     void GuiImgui::attach_logger(std::shared_ptr<Logger> logger) {
