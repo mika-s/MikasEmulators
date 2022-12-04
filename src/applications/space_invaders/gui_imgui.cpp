@@ -213,7 +213,19 @@ namespace emu::applications::space_invaders {
         ImGui::SetNextWindowSize(ImVec2(static_cast<float>(window_width), static_cast<float>(window_height)), ImGuiCond_Always);
         ImGui::SetNextWindowBgAlpha(0.0f);
 
-        ImGui::Begin("Main window", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_MenuBar);
+        ImGui::Begin("Main window", nullptr,
+                     ImGuiWindowFlags_NoResize                        //
+                             | ImGuiWindowFlags_NoCollapse            //
+                             | ImGuiWindowFlags_NoMove                //
+                             | ImGuiWindowFlags_NoTitleBar            //
+                             | ImGuiWindowFlags_NoScrollbar           //
+                             | ImGuiWindowFlags_NoScrollWithMouse     //
+                             | ImGuiWindowFlags_NoBringToFrontOnFocus //
+                             | ImGuiWindowFlags_NoNavFocus            //
+                             | ImGuiWindowFlags_NoFocusOnAppearing    //
+                             | ImGuiWindowFlags_NoBackground          //
+                             | ImGuiWindowFlags_NoDocking             //
+                             | ImGuiWindowFlags_MenuBar);
         ImGui::PopStyleVar();
 
         if (ImGui::BeginMenuBar()) {

@@ -5,10 +5,11 @@
 #include "crosscutting/gui/debugging_panes/cpu_info_pane.h"
 #include "crosscutting/gui/debugging_panes/debug_log_pane.h"
 #include "crosscutting/gui/debugging_panes/disassembly_pane.h"
-#include "crosscutting/gui/debugging_panes/memory_editor_pane.h"
+#include "crosscutting/gui/main_panes/code_editor_pane.h"
 #include "crosscutting/gui/main_panes/terminal_pane.h"
 #include "crosscutting/misc/run_status.h"
 #include "crosscutting/misc/uinteger.h"
+#include "lmc_memory_editor.h"
 #include "ui.h"
 #include <SDL_video.h>
 #include <memory>
@@ -30,10 +31,10 @@ namespace emu::logging {
 
 namespace emu::applications::lmc {
 
+    using emu::gui::CodeEditorPane;
     using emu::gui::CpuInfoPane;
     using emu::gui::DebugLogPane;
     using emu::gui::DisassemblyPane;
-    using emu::gui::MemoryEditorPane;
     using emu::gui::TerminalPane;
     using emu::lmc::Address;
     using emu::lmc::Data;
@@ -67,6 +68,7 @@ namespace emu::applications::lmc {
         SDL_Window *m_win;
         SDL_GLContext m_gl_context;
 
+        bool m_show_code_editor;
         bool m_show_terminal;
         bool m_show_game_info;
         bool m_show_cpu_info;
@@ -82,7 +84,8 @@ namespace emu::applications::lmc {
         DebugLogPane m_log;
         DisassemblyPane m_disassembly;
         CpuInfoPane<Address, Data> m_cpu_info;
-        MemoryEditorPane<Address, Data> m_memory_editor;
+        LmcMemoryEditor m_memory_editor;
+        CodeEditorPane m_code_editor;
         TerminalPane m_terminal;
 
         void notify_gui_observers_about_run_status(RunStatus new_status);
@@ -92,6 +95,8 @@ namespace emu::applications::lmc {
         void init();
 
         void render(RunStatus run_status);
+
+        void render_code_editor();
 
         void render_terminal_window(RunStatus run_status);
 

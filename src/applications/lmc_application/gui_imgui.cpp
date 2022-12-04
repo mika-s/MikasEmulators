@@ -5,6 +5,7 @@
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_sdl.h"
+#include "lmc_application/lmc_memory_editor.h"
 #include "ui.h"
 #include <SDL.h>
 #include <SDL_error.h>
@@ -37,6 +38,7 @@ namespace emu::applications::lmc {
     GuiImgui::GuiImgui()
         : m_win(nullptr),
           m_gl_context(nullptr),
+          m_show_code_editor(true),
           m_show_terminal(true),
           m_show_game_info(true),
           m_show_cpu_info(true),
@@ -90,9 +92,9 @@ namespace emu::applications::lmc {
         m_disassembly.attach_debugger(debugger);
     }
 
-    void GuiImgui::attach_debug_container([[maybe_unused]] DebugContainer<Address, Data> &debug_container) {
+    void GuiImgui::attach_debug_container(DebugContainer<Address, Data> &debug_container) {
         m_cpu_info.attach_debug_container(debug_container);
-//        m_disassembly.attach_debug_container(debug_container);
+        //        m_disassembly.attach_debug_container(debug_container);
         m_memory_editor.attach_debug_container(debug_container);
     }
 
@@ -201,7 +203,19 @@ namespace emu::applications::lmc {
         ImGui::SetNextWindowSize(ImVec2(static_cast<float>(window_width), static_cast<float>(window_height)), ImGuiCond_Always);
         ImGui::SetNextWindowBgAlpha(0.0f);
 
-        ImGui::Begin("Main window", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_MenuBar);
+        ImGui::Begin("Main window", nullptr,
+                     ImGuiWindowFlags_NoResize                        //
+                             | ImGuiWindowFlags_NoCollapse            //
+                             | ImGuiWindowFlags_NoMove                //
+                             | ImGuiWindowFlags_NoTitleBar            //
+                             | ImGuiWindowFlags_NoScrollbar           //
+                             | ImGuiWindowFlags_NoScrollWithMouse     //
+                             | ImGuiWindowFlags_NoBringToFrontOnFocus //
+                             | ImGuiWindowFlags_NoNavFocus            //
+                             | ImGuiWindowFlags_NoFocusOnAppearing    //
+                             | ImGuiWindowFlags_NoBackground          //
+                             | ImGuiWindowFlags_NoDocking             //
+                             | ImGuiWindowFlags_MenuBar);
         ImGui::PopStyleVar();
 
         if (ImGui::BeginMenuBar()) {
@@ -212,6 +226,7 @@ namespace emu::applications::lmc {
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Windows")) {
+                ImGui::MenuItem("Code editor", nullptr, &m_show_code_editor);
                 ImGui::MenuItem("Terminal", nullptr, &m_show_terminal);
                 ImGui::MenuItem("Program info", nullptr, &m_show_game_info);
                 ImGui::MenuItem("CPU info", nullptr, &m_show_cpu_info);
@@ -236,6 +251,9 @@ namespace emu::applications::lmc {
         if (m_show_disassembly) {
             render_disassembly_window();
         }
+        if (m_show_code_editor) {
+            render_code_editor();
+        }
         if (m_show_terminal) {
             render_terminal_window(run_status);
         }
@@ -259,6 +277,10 @@ namespace emu::applications::lmc {
 
     void GuiImgui::update_debug_only() {
         render(STEPPING);
+    }
+
+    void GuiImgui::render_code_editor() {
+        m_code_editor.draw("Code editor", &m_show_code_editor);
     }
 
     void GuiImgui::render_terminal_window(RunStatus run_status) {

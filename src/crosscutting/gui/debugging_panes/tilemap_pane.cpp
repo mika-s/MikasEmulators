@@ -1,10 +1,10 @@
 #include "tilemap_pane.h"
+#include "crosscutting/typedefs.h"
 #include "debugging/debug_container.h"
 #include "glad/glad.h"
 #include "gui/graphics/color.h"
 #include "gui/graphics/framebuffer.h"
 #include "gui/graphics/tile.h"
-#include "crosscutting/typedefs.h"
 #include <cstddef>
 #include <cstdint>
 #include <ext/alloc_traits.h>
@@ -101,7 +101,8 @@ namespace emu::gui {
         glBindTexture(GL_TEXTURE_2D, tile_texture);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_framebuffers[m_chosen_palette_idx].to_output_vector().data());
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, //
+                     m_framebuffers[m_chosen_palette_idx].to_output_vector().data());
         glBindTexture(GL_TEXTURE_2D, 0);
 
         const ImVec2 image_size = ImVec2(scaled_width, scaled_height);

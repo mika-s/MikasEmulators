@@ -59,33 +59,7 @@ namespace emu::i8080 {
                     aci(acc_reg, args, flag_reg, cycles);
 
                     CHECK_EQ(static_cast<u8>(acc_reg_counter + value), acc_reg);
-                }
-            }
-        }
-
-        SUBCASE("should set the zero flag when zero and not set otherwise") {
-            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (u8 value = 0; value < UINT8_MAX; ++value) {
-                    Flags flag_reg;
-                    NextByte args = {value};
-                    acc_reg = acc_reg_counter;
-
-                    aci(acc_reg, args, flag_reg, cycles);
-
                     CHECK_EQ(acc_reg == 0, flag_reg.is_zero_flag_set());
-                }
-            }
-        }
-
-        SUBCASE("should set the sign flag when above 127 and not otherwise") {
-            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (u8 value = 0; value < UINT8_MAX; ++value) {
-                    Flags flag_reg;
-                    acc_reg = acc_reg_counter;
-                    NextByte args = {0x80};
-
-                    aci(acc_reg, args, flag_reg, cycles);
-
                     CHECK_EQ(acc_reg > INT8_MAX, flag_reg.is_sign_flag_set());
                 }
             }
@@ -137,7 +111,7 @@ namespace emu::i8080 {
 
         SUBCASE("should set the aux carry flag when carried out of fourth bit") {
             Flags flag_reg;
-            acc_reg = 0xF;
+            acc_reg = 0xf;
             NextByte args = {0x1};
 
             aci(acc_reg, args, flag_reg, cycles);
@@ -148,12 +122,12 @@ namespace emu::i8080 {
 
         SUBCASE("should not the set aux carry flag when not carried out of fourth bit") {
             Flags flag_reg;
-            acc_reg = 0xE;
+            acc_reg = 0xe;
             NextByte args = {0x1};
 
             aci(acc_reg, args, flag_reg, cycles);
 
-            CHECK_EQ(0xF, acc_reg);
+            CHECK_EQ(0xf, acc_reg);
             CHECK_EQ(false, flag_reg.is_aux_carry_flag_set());
         }
 

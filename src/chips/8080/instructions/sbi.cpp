@@ -52,6 +52,8 @@ namespace emu::i8080 {
                     sbi(acc_reg, args, flag_reg, cycles);
 
                     CHECK_EQ(static_cast<u8>(acc_reg_counter - value), acc_reg);
+                    CHECK_EQ(acc_reg == 0, flag_reg.is_zero_flag_set());
+                    CHECK_EQ(acc_reg > INT8_MAX, flag_reg.is_sign_flag_set());
                 }
             }
         }
@@ -65,34 +67,6 @@ namespace emu::i8080 {
             sbi(acc_reg, args, flag_reg, cycles);
 
             CHECK_EQ(0, acc_reg);
-        }
-
-        SUBCASE("should set the zero flag when zero and not set otherwise") {
-            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (u8 value = 0; value < UINT8_MAX; ++value) {
-                    Flags flag_reg;
-                    acc_reg = acc_reg_counter;
-                    NextByte args = {value};
-
-                    sbi(acc_reg, args, flag_reg, cycles);
-
-                    CHECK_EQ(acc_reg == 0, flag_reg.is_zero_flag_set());
-                }
-            }
-        }
-
-        SUBCASE("should set the sign flag when above 127 and not otherwise") {
-            for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-                for (u8 value = 0; value < UINT8_MAX; ++value) {
-                    Flags flag_reg;
-                    NextByte args = {value};
-                    acc_reg = acc_reg_counter;
-
-                    sbi(acc_reg, args, flag_reg, cycles);
-
-                    CHECK_EQ(acc_reg > INT8_MAX, flag_reg.is_sign_flag_set());
-                }
-            }
         }
 
         SUBCASE("should set the parity flag when even parity") {
