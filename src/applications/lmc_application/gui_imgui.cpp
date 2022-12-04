@@ -88,6 +88,18 @@ namespace emu::applications::lmc {
         }
     }
 
+    void GuiImgui::notify_gui_observers_about_source_code_change(const std::string &source_code) {
+        for (GuiObserver *observer: m_gui_observers) {
+            observer->source_code_changed(source_code);
+        }
+    }
+
+    void GuiImgui::notify_pane_observers_about_assemble_and_load_request() {
+        for (GuiObserver *observer: m_gui_observers) {
+            observer->assemble_and_load_request();
+        }
+    }
+
     void GuiImgui::attach_debugger(std::shared_ptr<Debugger> debugger) {
         m_disassembly.attach_debugger(debugger);
     }
@@ -96,6 +108,8 @@ namespace emu::applications::lmc {
         m_cpu_info.attach_debug_container(debug_container);
         //        m_disassembly.attach_debug_container(debug_container);
         m_memory_editor.attach_debug_container(debug_container);
+        m_code_editor.attach_debug_container(debug_container);
+        m_code_editor.add_pane_observer(*this);
     }
 
     void GuiImgui::attach_logger(std::shared_ptr<Logger> logger) {
@@ -342,5 +356,13 @@ namespace emu::applications::lmc {
 
     void GuiImgui::render_memory_editor_window() {
         m_memory_editor.draw("Memory editor", &m_show_memory_editor);
+    }
+
+    void GuiImgui::source_code_changed(const std::string &source_code) {
+        notify_gui_observers_about_source_code_change(source_code);
+    }
+
+    void GuiImgui::assemble_and_load_request() {
+        notify_pane_observers_about_assemble_and_load_request();
     }
 }

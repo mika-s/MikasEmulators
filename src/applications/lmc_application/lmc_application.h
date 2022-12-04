@@ -50,6 +50,7 @@ namespace emu::applications::lmc {
         std::shared_ptr<Input> m_input;
         RunStatus m_startup_runstatus;
         std::string m_loaded_file;
+        std::string m_file_content;
 
         void load_file(const std::string &file);
 

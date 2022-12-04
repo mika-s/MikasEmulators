@@ -10,6 +10,8 @@ namespace emu::lmc {
     public:
         Flags();
 
+        [[nodiscard]] u8 to_u8() const;
+
         void reset();
 
         void handle_negative_flag(Data previous, Data value);
@@ -17,8 +19,6 @@ namespace emu::lmc {
         [[nodiscard]] bool is_negative_flag_set() const;
 
     private:
-        static constexpr u16 max_value = 100;
-
         bool m_negative;
 
         void set_negative_flag();

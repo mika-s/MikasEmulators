@@ -33,6 +33,10 @@ namespace emu::memory {
             return m_memory.size();
         }
 
+        void clear() {
+            m_memory.clear();
+        }
+
         /**
          * Creates a slice of the memory. Does not copy any potential memory mapper.
          *

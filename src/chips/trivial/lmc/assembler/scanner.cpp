@@ -17,8 +17,13 @@ namespace emu::lmc {
     using emu::util::string::split;
 
     Scanner::Scanner(const std::stringstream &code)
+        : Scanner(code, false) {
+    }
+
+    Scanner::Scanner(const std::stringstream &code, bool is_debugging)
         : m_real_line_no(0),
-          m_current_address(0) {
+          m_current_address(0),
+          m_is_debugging(is_debugging) {
         m_code_lines = split(code, "\n");
     }
 
@@ -59,11 +64,25 @@ namespace emu::lmc {
         tokens_current_line.clear();
 
         if (m_real_line_no >= m_code_lines.size()) {
+            if (m_is_debugging) {
+                std::cout << m_real_line_no + 1 << ": " << std::flush;
+            }
             tokens_current_line.emplace_back(TokenKind::Eof);
         } else if (m_code_lines[m_real_line_no].empty() || is_comment_line(m_code_lines[m_real_line_no])) {
         } else {
+            if (m_is_debugging) {
+                std::cout << m_real_line_no + 1 << ": " << std::flush;
+            }
             read_tokens(m_code_lines[m_real_line_no]);
             tokens_current_line.emplace_back(TokenKind::Newline);
+        }
+
+        if (m_is_debugging) {
+            for (Token &token: tokens_current_line) {
+                std::cout << token << " " << std::flush;
+            }
+            std::cout << "\n"
+                      << std::flush;
         }
 
         ++m_real_line_no;
@@ -74,9 +93,7 @@ namespace emu::lmc {
 
         while (m_current_pos < line.length()) {
             if (!(handle_single_character(line) || handle_number(line) || handle_keyword(line) || handle_inline_comment(line))) {
-                std::cerr << line << " (pos: " << m_current_pos << ")\n"
-                          << std::flush;
-                exit(1);
+                throw std::invalid_argument(fmt::format("Unable to parse character(s) in position {} of arguments", m_current_pos));
             }
         }
     }
@@ -91,8 +108,9 @@ namespace emu::lmc {
                 tokens_current_line.emplace_back(TokenKind::Newline);
                 ++m_current_pos;
                 break;
+            case '\t':
             case ' ':
-                m_current_pos++;
+                ++m_current_pos;
                 break;
             default:
                 return false;

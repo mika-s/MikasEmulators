@@ -14,6 +14,8 @@ namespace emu::lmc {
     public:
         explicit Scanner(const std::stringstream &code);
 
+        explicit Scanner(const std::stringstream &code, bool is_debugging);
+
         Token current_token();
 
         void skip(TokenKind next);
@@ -26,6 +28,7 @@ namespace emu::lmc {
         std::vector<Token> tokens_current_line;
         unsigned int m_current_pos = 0;
         Address m_current_address;
+        bool m_is_debugging;
 
         void read_next_token();
 

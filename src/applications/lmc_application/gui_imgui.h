@@ -13,6 +13,7 @@
 #include "ui.h"
 #include <SDL_video.h>
 #include <memory>
+#include <string>
 #include <vector>
 
 namespace emu::debugger {
@@ -32,6 +33,7 @@ namespace emu::logging {
 namespace emu::applications::lmc {
 
     using emu::gui::CodeEditorPane;
+    using emu::gui::CodeEditorPaneObserver;
     using emu::gui::CpuInfoPane;
     using emu::gui::DebugLogPane;
     using emu::gui::DisassemblyPane;
@@ -41,7 +43,7 @@ namespace emu::applications::lmc {
     using emu::lmc::GuiObserver;
     using emu::misc::RunStatus;
 
-    class GuiImgui : public Ui {
+    class GuiImgui : public Ui, public CodeEditorPaneObserver {
 
     public:
         GuiImgui();
@@ -64,6 +66,10 @@ namespace emu::applications::lmc {
 
         void attach_logger(std::shared_ptr<Logger> logger) override;
 
+        void source_code_changed(const std::string &source_code) override;
+
+        void assemble_and_load_request() override;
+
     private:
         SDL_Window *m_win;
         SDL_GLContext m_gl_context;
@@ -85,12 +91,16 @@ namespace emu::applications::lmc {
         DisassemblyPane m_disassembly;
         CpuInfoPane<Address, Data> m_cpu_info;
         LmcMemoryEditor m_memory_editor;
-        CodeEditorPane m_code_editor;
+        CodeEditorPane<Address, Data> m_code_editor;
         TerminalPane m_terminal;
 
         void notify_gui_observers_about_run_status(RunStatus new_status);
 
         void notify_gui_observers_about_debug_mode();
+
+        void notify_gui_observers_about_source_code_change(const std::string &source_code);
+
+        void notify_pane_observers_about_assemble_and_load_request();
 
         void init();
 

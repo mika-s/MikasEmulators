@@ -12,6 +12,10 @@ namespace emu::lmc {
     Flags::Flags()
         : m_negative(false) {}
 
+    u8 Flags::to_u8() const {
+        return m_negative ? 1 : 0;
+    }
+
     void Flags::reset() {
         clear_negative_flag();
     }

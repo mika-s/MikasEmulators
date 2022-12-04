@@ -4,6 +4,7 @@
 #include "chips/trivial/lmc/usings.h"
 #include "crosscutting/memory/next_byte.h"
 #include "crosscutting/memory/next_word.h"
+#include "crosscutting/typedefs.h"
 #include "flags.h"
 #include "out_type.h"
 #include <cstddef>
@@ -57,7 +58,7 @@ namespace emu::lmc {
 
         [[nodiscard]] Data a() const;
 
-        [[nodiscard]] bool is_negative_flag_set() const;
+        [[nodiscard]] u8 f() const;
 
         [[nodiscard]] Address pc() const;
 

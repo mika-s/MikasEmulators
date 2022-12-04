@@ -40,13 +40,21 @@ namespace emu::applications::lmc {
     }
 
     std::unique_ptr<Session> LmcApplication::new_session() {
-        return std::make_unique<LmcApplicationSession>(m_startup_runstatus, m_gui, m_input, m_loaded_file, m_memory);
+        return std::make_unique<LmcApplicationSession>(
+                m_startup_runstatus,
+                m_gui,
+                m_input,
+                m_loaded_file,
+                m_file_content,
+                m_memory
+        );
     }
 
     void LmcApplication::load_file(const std::string &file) {
         m_loaded_file = file;
 
         const std::stringstream file_content = read_file(file);
+        m_file_content = file_content.str();
         const std::vector<Data> code = Assembler::assemble(file_content);
         std::vector<Data> remaining_memory;
 

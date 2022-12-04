@@ -1,7 +1,7 @@
 #include "lmc_memory_editor.h"
-#include "imgui.h"
 #include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/misc/uinteger.h"
+#include "imgui.h"
 #include "lmc/usings.h"
 #include <cstring>
 #include <fmt/core.h>
@@ -46,7 +46,7 @@ namespace emu::applications::lmc {
                     ImGui::TableNextRow();
                     for (std::size_t col = 0; col < cols; ++col) {
                         ImGui::TableSetColumnIndex(col);
-                        strcpy(m_values[address], fmt::format("{}", memory[address].underlying()).c_str());
+                        strncpy(m_values[address], fmt::format("{}", memory[address].underlying()).c_str(), max_chars);
                         ImGui::InputText(fmt::format("{}", address).c_str(), m_values[address], //
                                          IM_ARRAYSIZE(m_values[address]), ImGuiInputTextFlags_CharsDecimal | ImGuiInputTextFlags_ReadOnly);
                         //                        if (ImGui::IsItemDeactivatedAfterEdit()) {

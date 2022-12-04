@@ -62,7 +62,8 @@ namespace emu::applications::lmc {
                 std::shared_ptr<Ui> gui,
                 std::shared_ptr<Input> input,
                 std::string loaded_file,
-                EmulatorMemory<Address, Data> m_memory
+                std::string file_content,
+                EmulatorMemory<Address, Data> memory
         );
 
         ~LmcApplicationSession() override;
@@ -77,11 +78,24 @@ namespace emu::applications::lmc {
 
         void debug_mode_changed(bool is_in_debug_mode) override;
 
+        void source_code_changed(const std::string &source) override;
+
+        void assemble_and_load_request() override;
+
         void out_changed(Data acc_reg, OutType out_type) override;
 
         void in_requested() override;
 
     private:
+        static constexpr unsigned int program_size = 100;
+
+        // Game loop - begin
+        static constexpr long double fps = 60.0L;
+        static constexpr long double tick_limit = 1000.0L / fps;
+        static constexpr int cycles_per_ms = 2000;
+        static constexpr long double cycles_per_tick = cycles_per_ms * tick_limit;
+        // Game loop - end
+
         bool m_is_in_debug_mode;
         bool m_is_stepping_instruction;
         bool m_is_stepping_cycle;
@@ -94,18 +108,12 @@ namespace emu::applications::lmc {
         std::unique_ptr<Cpu> m_cpu;
         EmulatorMemory<Address, Data> m_memory;
         std::string m_loaded_file;
+        std::string m_file_content;
         std::shared_ptr<Logger> m_logger;
         std::shared_ptr<Debugger> m_debugger;
         DebugContainer<Address, Data> m_debug_container;
 
         Governor m_governor;
-
-        // Game loop - begin
-        static constexpr long double fps = 60.0L;
-        static constexpr long double tick_limit = 1000.0L / fps;
-        static constexpr int cycles_per_ms = 2000;
-        static constexpr long double cycles_per_tick = cycles_per_ms * tick_limit;
-        // Game loop - end
 
         void running(cyc &cycles);
 

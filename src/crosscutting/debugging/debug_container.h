@@ -342,6 +342,19 @@ namespace emu::debugger {
             return m_is_waveforms_set;
         }
 
+        void add_file_content(const std::function<std::string()> &value_retriever) {
+            m_file_content_retriever = value_retriever;
+            m_is_file_content_set = true;
+        }
+
+        [[nodiscard]] std::string file_content() const {
+            return m_file_content_retriever();
+        }
+
+        [[nodiscard]] bool is_file_content_set() const {
+            return m_is_file_content_set;
+        }
+
     private:
         std::vector<RegisterDebugContainer<D>> m_register_retrievers;
         bool m_has_alternate_registers{false};
@@ -383,6 +396,9 @@ namespace emu::debugger {
 
         std::vector<Waveform> m_waveforms;
         bool m_is_waveforms_set{false};
+
+        std::function<std::string()> m_file_content_retriever;
+        bool m_is_file_content_set{false};
     };
 }
 

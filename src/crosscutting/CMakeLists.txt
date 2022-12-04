@@ -16,7 +16,6 @@ set(SOURCES_CROSSCUTTING_CPP
         gui/graphics/palette.cpp
         gui/graphics/sprite.cpp
         gui/graphics/tile.cpp
-        gui/main_panes/code_editor_pane.cpp
         gui/main_panes/terminal_pane.cpp
         logging/logger.cpp
         memory/emulator_memory.cpp
