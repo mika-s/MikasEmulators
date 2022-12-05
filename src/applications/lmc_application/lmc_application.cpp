@@ -29,10 +29,12 @@ namespace emu::applications::lmc {
     LmcApplication::LmcApplication(const std::string &file, const GuiType gui_type) {
         load_file(file);
         if (gui_type == GuiType::DEBUGGING) {
+            m_is_only_run_once = false;
             m_gui = std::make_shared<GuiImgui>();
             m_input = std::make_shared<InputImgui>();
             m_startup_runstatus = RunStatus::PAUSED;
         } else {
+            m_is_only_run_once = true;
             m_gui = std::make_shared<TuiTerminal>();
             m_input = std::make_shared<InputImgui>();
             m_startup_runstatus = RunStatus::RUNNING;
@@ -41,6 +43,7 @@ namespace emu::applications::lmc {
 
     std::unique_ptr<Session> LmcApplication::new_session() {
         return std::make_unique<LmcApplicationSession>(
+                m_is_only_run_once,
                 m_startup_runstatus,
                 m_gui,
                 m_input,

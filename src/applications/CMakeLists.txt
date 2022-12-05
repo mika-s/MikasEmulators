@@ -79,6 +79,7 @@ set(SOURCES_APPLICATIONS_H
         lmc_application/lmc_application.h
         lmc_application/lmc_application_session.h
         lmc_application/lmc_memory_editor.h
+        lmc_application/terminal_input_state.h
         lmc_application/tui_terminal.h
         lmc_application/usage.h
         lmc_application/interfaces/input.h

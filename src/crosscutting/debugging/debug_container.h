@@ -175,6 +175,18 @@ namespace emu::debugger {
     public:
         DebugContainer() = default;
 
+        void set_decimal() {
+            m_is_decimal = true;
+        }
+
+        [[nodiscard]] bool is_decimal() const {
+            return m_is_decimal;
+        }
+
+        [[nodiscard]] bool is_hex() const {
+            return !m_is_decimal;
+        }
+
         void add_register(const RegisterDebugContainer<D> &reg) {
             m_register_retrievers.emplace_back(reg);
             if (reg.is_alternate_set()) {
@@ -356,6 +368,8 @@ namespace emu::debugger {
         }
 
     private:
+        bool m_is_decimal{false};
+
         std::vector<RegisterDebugContainer<D>> m_register_retrievers;
         bool m_has_alternate_registers{false};
 

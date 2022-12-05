@@ -1,17 +1,20 @@
 #include "gui_imgui.h"
-#include "chips/trivial/lmc/interfaces/gui_observer.h"
+#include "chips/trivial/lmc/interfaces/ui_observer.h"
+#include "chips/trivial/lmc/out_type.h"
 #include "chips/trivial/lmc/usings.h"
 #include "glad/glad.h"
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_sdl.h"
 #include "lmc_application/lmc_memory_editor.h"
+#include "lmc_application/terminal_input_state.h"
 #include "ui.h"
 #include <SDL.h>
 #include <SDL_error.h>
 #include <SDL_log.h>
 #include <algorithm>
 #include <cstdlib>
+#include <fmt/core.h>
 #include <string>
 #include <utility>
 
@@ -30,6 +33,7 @@ namespace emu::applications::lmc {
 
     using emu::lmc::Address;
     using emu::lmc::Data;
+    using emu::lmc::OutType;
     using emu::misc::RunStatus::NOT_RUNNING;
     using emu::misc::RunStatus::PAUSED;
     using emu::misc::RunStatus::RUNNING;
@@ -45,8 +49,12 @@ namespace emu::applications::lmc {
           m_show_log(true),
           m_show_disassembly(true),
           m_show_memory_editor(true),
-          m_is_in_debug_mode(false) {
+          m_is_in_debug_mode(false),
+          m_is_requesting_from_terminal(false) {
         init();
+
+        m_code_editor.add_pane_observer(*this);
+        m_terminal.add_pane_observer(*this);
     }
 
     GuiImgui::~GuiImgui() {
@@ -62,41 +70,56 @@ namespace emu::applications::lmc {
         m_gl_context = nullptr;
     }
 
-    void GuiImgui::to_terminal() {
+    void GuiImgui::to_terminal(Data acc_reg, OutType out_type) {
+        if (out_type == OutType::OUT) {
+            m_output.push_back(fmt::format("{}\n", acc_reg.underlying()));
+        } else {
+            m_output.push_back(fmt::format("{}", static_cast<char>(acc_reg.underlying())));
+        }
     }
 
-    void GuiImgui::add_gui_observer(GuiObserver &observer) {
+    void GuiImgui::from_terminal() {
+        m_is_requesting_from_terminal = true;
+    }
+
+    void GuiImgui::add_ui_observer(UiObserver &observer) {
         m_gui_observers.push_back(&observer);
     }
 
-    void GuiImgui::remove_gui_observer(GuiObserver *observer) {
+    void GuiImgui::remove_ui_observer(UiObserver *observer) {
         m_gui_observers.erase(
                 std::remove(m_gui_observers.begin(), m_gui_observers.end(), observer),
                 m_gui_observers.end()
         );
     }
 
-    void GuiImgui::notify_gui_observers_about_run_status(RunStatus new_status) {
-        for (GuiObserver *observer: m_gui_observers) {
+    void GuiImgui::notify_ui_observers_about_run_status(RunStatus new_status) {
+        for (UiObserver *observer: m_gui_observers) {
             observer->run_status_changed(new_status);
         }
     }
 
-    void GuiImgui::notify_gui_observers_about_debug_mode() {
-        for (GuiObserver *observer: m_gui_observers) {
+    void GuiImgui::notify_ui_observers_about_debug_mode() {
+        for (UiObserver *observer: m_gui_observers) {
             observer->debug_mode_changed(m_is_in_debug_mode);
         }
     }
 
-    void GuiImgui::notify_gui_observers_about_source_code_change(const std::string &source_code) {
-        for (GuiObserver *observer: m_gui_observers) {
+    void GuiImgui::notify_ui_observers_about_source_code_change(const std::string &source_code) {
+        for (UiObserver *observer: m_gui_observers) {
             observer->source_code_changed(source_code);
         }
     }
 
-    void GuiImgui::notify_pane_observers_about_assemble_and_load_request() {
-        for (GuiObserver *observer: m_gui_observers) {
+    void GuiImgui::notify_ui_observers_about_assemble_and_load_request() {
+        for (UiObserver *observer: m_gui_observers) {
             observer->assemble_and_load_request();
+        }
+    }
+
+    void GuiImgui::notify_ui_observers_about_input_from_terminal(Data input) {
+        for (UiObserver *observer: m_gui_observers) {
+            observer->input_from_terminal(input);
         }
     }
 
@@ -109,7 +132,6 @@ namespace emu::applications::lmc {
         //        m_disassembly.attach_debug_container(debug_container);
         m_memory_editor.attach_debug_container(debug_container);
         m_code_editor.attach_debug_container(debug_container);
-        m_code_editor.add_pane_observer(*this);
     }
 
     void GuiImgui::attach_logger(std::shared_ptr<Logger> logger) {
@@ -194,11 +216,11 @@ namespace emu::applications::lmc {
         glClearColor(background.x, background.y, background.z, background.w);
     }
 
-    void GuiImgui::update_screen(RunStatus run_status) {
-        render(run_status);
+    void GuiImgui::update_screen(RunStatus run_status, TerminalInputState terminal_input_state) {
+        render(run_status, terminal_input_state);
     }
 
-    void GuiImgui::render(RunStatus run_status) {
+    void GuiImgui::render(RunStatus run_status, TerminalInputState terminal_input_state) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         ImGui_ImplOpenGL3_NewFrame();
@@ -235,7 +257,7 @@ namespace emu::applications::lmc {
         if (ImGui::BeginMenuBar()) {
             if (ImGui::BeginMenu("File")) {
                 if (ImGui::MenuItem("Exit", "Alt+F4")) {
-                    notify_gui_observers_about_run_status(NOT_RUNNING);
+                    notify_ui_observers_about_run_status(NOT_RUNNING);
                 }
                 ImGui::EndMenu();
             }
@@ -269,7 +291,7 @@ namespace emu::applications::lmc {
             render_code_editor();
         }
         if (m_show_terminal) {
-            render_terminal_window(run_status);
+            render_terminal_window(run_status, terminal_input_state);
         }
         if (m_show_game_info) {
             render_game_info_window();
@@ -289,31 +311,37 @@ namespace emu::applications::lmc {
         SDL_GL_SwapWindow(m_win);
     }
 
-    void GuiImgui::update_debug_only() {
-        render(STEPPING);
+    void GuiImgui::update_debug_only(TerminalInputState terminal_input_state) {
+        render(STEPPING, terminal_input_state);
     }
 
     void GuiImgui::render_code_editor() {
         m_code_editor.draw("Code editor", &m_show_code_editor);
     }
 
-    void GuiImgui::render_terminal_window(RunStatus run_status) {
+    void GuiImgui::render_terminal_window(RunStatus run_status, TerminalInputState terminal_input_state) {
         std::string prefix = "Program";
         std::string id = "###" + prefix;
+        std::string terminal_status = "";
+        if (terminal_input_state == AWAITING_INPUT) {
+            terminal_status = " (awaiting input)";
+        }
         std::string title;
         if (run_status == RUNNING) {
-            title = prefix + id;
+            title = prefix + terminal_status + id;
         } else if (run_status == PAUSED) {
-            title = prefix + " - Paused" + id;
+            title = prefix + " - Paused" + terminal_status + id;
         } else if (run_status == NOT_RUNNING) {
-            title = prefix + " - Stopped" + id;
+            title = prefix + " - Stopped" + terminal_status + id;
         } else if (run_status == STEPPING) {
-            title = prefix + " - Stepping" + id;
+            title = prefix + " - Stepping" + terminal_status + id;
         } else {
-            title = "Unknown TODO" + id;
+            title = "Unknown TODO " + terminal_status + id;
         }
 
-        m_terminal.draw(title.c_str(), &m_show_terminal);
+
+
+        m_terminal.draw(title.c_str(), terminal_input_state == AWAITING_INPUT, m_output, &m_show_terminal);
     }
 
     void GuiImgui::render_game_info_window() {
@@ -324,19 +352,19 @@ namespace emu::applications::lmc {
         ImGui::Separator();
 
         if (ImGui::Button("Run")) {
-            notify_gui_observers_about_run_status(RUNNING);
+            notify_ui_observers_about_run_status(RUNNING);
         }
         ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
         if (ImGui::Button("Pause")) {
-            notify_gui_observers_about_run_status(PAUSED);
+            notify_ui_observers_about_run_status(PAUSED);
         }
         ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
         if (ImGui::Button("Stop")) {
-            notify_gui_observers_about_run_status(NOT_RUNNING);
+            notify_ui_observers_about_run_status(NOT_RUNNING);
         }
         ImGui::Separator();
         if (ImGui::Checkbox("Debug mode", &m_is_in_debug_mode)) {
-            notify_gui_observers_about_debug_mode();
+            notify_ui_observers_about_debug_mode();
         }
 
         ImGui::End();
@@ -359,10 +387,14 @@ namespace emu::applications::lmc {
     }
 
     void GuiImgui::source_code_changed(const std::string &source_code) {
-        notify_gui_observers_about_source_code_change(source_code);
+        notify_ui_observers_about_source_code_change(source_code);
     }
 
     void GuiImgui::assemble_and_load_request() {
-        notify_pane_observers_about_assemble_and_load_request();
+        notify_ui_observers_about_assemble_and_load_request();
+    }
+
+    void GuiImgui::input_sent(const std::string &input) {
+        notify_ui_observers_about_input_from_terminal(Data(std::stoi(input)));
     }
 }

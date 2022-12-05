@@ -44,6 +44,7 @@ namespace emu::applications::lmc {
     private:
         static constexpr std::size_t memory_size = 100;
 
+        bool m_is_only_run_once;
         std::unique_ptr<Cpu> m_cpu;
         EmulatorMemory<Address, Data> m_memory;
         std::shared_ptr<Ui> m_gui;

@@ -1,7 +1,7 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_LMC_APPLICATION_UI_H
 #define MIKA_EMULATORS_APPLICATIONS_LMC_APPLICATION_UI_H
 
-#include "chips/trivial/lmc/interfaces/gui_observer.h"
+#include "chips/trivial/lmc/interfaces/ui_observer.h"
 #include "chips/trivial/lmc/usings.h"
 #include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/debugging/debugger.h"
@@ -11,6 +11,8 @@
 #include "crosscutting/misc/run_status.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
+#include "lmc/out_type.h"
+#include "terminal_input_state.h"
 
 namespace emu::applications::lmc {
 
@@ -18,7 +20,8 @@ namespace emu::applications::lmc {
     using emu::debugger::Debugger;
     using emu::lmc::Address;
     using emu::lmc::Data;
-    using emu::lmc::GuiObserver;
+    using emu::lmc::OutType;
+    using emu::lmc::UiObserver;
     using emu::logging::Logger;
     using emu::misc::RunStatus;
     using emu::util::byte::is_bit_set;
@@ -30,15 +33,17 @@ namespace emu::applications::lmc {
 
         virtual ~Ui() = default;
 
-        virtual void to_terminal() = 0;
+        virtual void to_terminal(Data acc_reg, OutType out_type) = 0;
 
-        virtual void add_gui_observer(GuiObserver &observer) = 0;
+        virtual void from_terminal() = 0;
 
-        virtual void remove_gui_observer(GuiObserver *observer) = 0;
+        virtual void add_ui_observer(UiObserver &observer) = 0;
 
-        virtual void update_screen(RunStatus run_status) = 0;
+        virtual void remove_ui_observer(UiObserver *observer) = 0;
 
-        virtual void update_debug_only() = 0;
+        virtual void update_screen(RunStatus run_status, TerminalInputState terminal_input_state) = 0;
+
+        virtual void update_debug_only(TerminalInputState terminal_input_state) = 0;
 
         virtual void attach_debugger(std::shared_ptr<Debugger> debugger) = 0;
 

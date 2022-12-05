@@ -1,5 +1,5 @@
-#ifndef MIKA_EMULATORS_CHIPS_LMC_INTERFACES_GUI_OBSERVER_H
-#define MIKA_EMULATORS_CHIPS_LMC_INTERFACES_GUI_OBSERVER_H
+#ifndef MIKA_EMULATORS_CHIPS_LMC_INTERFACES_UI_OBSERVER_H
+#define MIKA_EMULATORS_CHIPS_LMC_INTERFACES_UI_OBSERVER_H
 
 #include "crosscutting/misc/run_status.h"
 #include <string>
@@ -8,9 +8,9 @@ namespace emu::lmc {
 
     using emu::misc::RunStatus;
 
-    class GuiObserver {
+    class UiObserver {
     public:
-        virtual ~GuiObserver() = default;
+        virtual ~UiObserver() = default;
 
         virtual void run_status_changed(RunStatus new_status) = 0;
 
@@ -19,7 +19,9 @@ namespace emu::lmc {
         virtual void source_code_changed(const std::string &source) = 0;
 
         virtual void assemble_and_load_request() = 0;
+
+        virtual void input_from_terminal(Data input) = 0;
     };
 }
 
-#endif //MIKA_EMULATORS_CHIPS_LMC_INTERFACES_GUI_OBSERVER_H
+#endif //MIKA_EMULATORS_CHIPS_LMC_INTERFACES_UI_OBSERVER_H

@@ -5,6 +5,7 @@
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
 #include "imgui.h"
+#include <ostream>
 #include <string>
 
 namespace emu::gui {
@@ -46,12 +47,24 @@ namespace emu::gui {
 
                     ImGui::Text("%s", name.c_str());
                     ImGui::SameLine(margin_title_right, ImGui::GetStyle().ItemInnerSpacing.x);
-                    ImGui::Text("%s", hexify(main).c_str());
+                    if (m_debug_container.is_decimal()) {
+                        std::stringstream ss;
+                        ss << main;
+                        ImGui::Text("%s", ss.str().c_str());
+                    } else {
+                        ImGui::Text("%s", hexify(main).c_str());
+                    }
 
                     if (reg.is_alternate_set()) {
                         const D alternate = reg.alternate();
                         ImGui::SameLine(margin_main_right, ImGui::GetStyle().ItemInnerSpacing.x);
-                        ImGui::Text("%s", hexify(alternate).c_str());
+                        if (m_debug_container.is_decimal()) {
+                            std::stringstream ss;
+                            ss << alternate;
+                            ImGui::Text("%s", ss.str().c_str());
+                        } else {
+                            ImGui::Text("%s", hexify(alternate).c_str());
+                        }
                     }
                 }
                 if (m_debug_container.is_flag_register_set()) {
@@ -61,7 +74,13 @@ namespace emu::gui {
                     ImGui::Separator();
                     ImGui::Text("%s", name.c_str());
                     ImGui::SameLine(margin_title_right, ImGui::GetStyle().ItemInnerSpacing.x);
-                    ImGui::Text("%s", hexify(value).c_str());
+                    if (m_debug_container.is_decimal()) {
+                        std::stringstream ss;
+                        ss << value;
+                        ImGui::Text("%s", ss.str().c_str());
+                    } else {
+                        ImGui::Text("%s", hexify(value).c_str());
+                    }
                     ImGui::SameLine(200.0f, ImGui::GetStyle().ItemInnerSpacing.x);
 
                     float offset = 0.0f;
@@ -77,13 +96,25 @@ namespace emu::gui {
                     ImGui::Separator();
                     ImGui::Text("PC:");
                     ImGui::SameLine(margin_title_right, ImGui::GetStyle().ItemInnerSpacing.x);
-                    ImGui::Text("%s", hexify(m_debug_container.pc()).c_str());
+                    if (m_debug_container.is_decimal()) {
+                        std::stringstream ss;
+                        ss << m_debug_container.pc();
+                        ImGui::Text("%s", ss.str().c_str());
+                    } else {
+                        ImGui::Text("%s", hexify(m_debug_container.pc()).c_str());
+                    }
                 }
                 if (m_debug_container.is_sp_set()) {
                     ImGui::Separator();
                     ImGui::Text("SP:");
                     ImGui::SameLine(margin_title_right, ImGui::GetStyle().ItemInnerSpacing.x);
-                    ImGui::Text("%s", hexify(m_debug_container.sp()).c_str());
+                    if (m_debug_container.is_decimal()) {
+                        std::stringstream ss;
+                        ss << m_debug_container.sp();
+                        ImGui::Text("%s", ss.str().c_str());
+                    } else {
+                        ImGui::Text("%s", hexify(m_debug_container.sp()).c_str());
+                    }
                 }
                 if (m_debug_container.is_interrupted_set()) {
                     ImGui::Separator();

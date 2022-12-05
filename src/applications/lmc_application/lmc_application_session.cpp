@@ -1,4 +1,6 @@
 #include "lmc_application_session.h"
+#include "chips/trivial/lmc/assembler/assembler.h"
+#include "chips/trivial/lmc/cpu.h"
 #include "chips/trivial/lmc/out_type.h"
 #include "chips/trivial/lmc/usings.h"
 #include "crosscutting/debugging/debugger.h"
@@ -9,8 +11,7 @@
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
 #include "interfaces/input.h"
-#include "lmc/assembler/assembler.h"
-#include "lmc/cpu.h"
+#include "terminal_input_state.h"
 #include "ui.h"
 #include <cstddef>
 #include <exception>
@@ -39,6 +40,7 @@ namespace emu::applications::lmc {
     using emu::util::byte::to_u16;
 
     LmcApplicationSession::LmcApplicationSession(
+            bool is_only_run_once,
             const RunStatus startup_runstatus,
             std::shared_ptr<Ui> gui,
             std::shared_ptr<Input> input,
@@ -46,10 +48,12 @@ namespace emu::applications::lmc {
             std::string file_content,
             EmulatorMemory<Address, Data> memory
     )
-        : m_is_in_debug_mode(false),
+        : m_is_only_run_once(is_only_run_once),
+          m_is_in_debug_mode(false),
           m_is_stepping_instruction(false),
           m_is_stepping_cycle(false),
           m_is_continuing_execution(false),
+          m_terminal_input_state(NOT_AWAITING_INPUT),
           m_startup_runstatus(startup_runstatus),
           m_run_status(NOT_RUNNING),
           m_gui(std::move(gui)),
@@ -63,11 +67,11 @@ namespace emu::applications::lmc {
         setup_cpu();
         setup_debugging();
 
-        m_gui->add_gui_observer(*this);
+        m_gui->add_ui_observer(*this);
     }
 
     LmcApplicationSession::~LmcApplicationSession() {
-        m_gui->remove_gui_observer(this);
+        m_gui->remove_ui_observer(this);
     }
 
     void LmcApplicationSession::run() {
@@ -82,7 +86,11 @@ namespace emu::applications::lmc {
 
         while (m_run_status == RUNNING || m_run_status == PAUSED || m_run_status == STEPPING) {
             if (m_run_status == RUNNING) {
-                running(cycles);
+                if (m_terminal_input_state == AWAITING_INPUT) {
+                    await_input_and_update();
+                } else {
+                    running(cycles);
+                }
             } else if (m_run_status == PAUSED) {
                 pausing();
             } else {
@@ -96,11 +104,11 @@ namespace emu::applications::lmc {
     void LmcApplicationSession::running(cyc &cycles) {
         if (m_governor.is_time_to_update()) {
             cycles = 0;
-            while (cycles < static_cast<cyc>(cycles_per_tick)) {
+            while (cycles < static_cast<cyc>(cycles_per_tick) && m_terminal_input_state == NOT_AWAITING_INPUT) {
                 if (m_cpu->can_run_next_instruction()) {
                     m_cpu->next_instruction();
                 } else {
-                    m_run_status = FINISHED;
+                    m_run_status = m_is_only_run_once ? FINISHED : PAUSED;
                 }
                 ++cycles;
                 if (m_is_in_debug_mode && m_debugger->has_breakpoint(m_cpu->pc().underlying())) {
@@ -111,14 +119,14 @@ namespace emu::applications::lmc {
             }
 
             m_input->read(m_run_status);
-            m_gui->update_screen(m_run_status);
+            m_gui->update_screen(m_run_status, m_terminal_input_state);
         }
     }
 
     void LmcApplicationSession::pausing() {
         if (m_governor.is_time_to_update()) {
             m_input->read(m_run_status);
-            m_gui->update_screen(m_run_status);
+            m_gui->update_screen(m_run_status, m_terminal_input_state);
         }
     }
 
@@ -129,7 +137,7 @@ namespace emu::applications::lmc {
         }
 
         cycles = 0;
-        while (cycles < static_cast<cyc>(cycles_per_tick / 2)) {
+        while (cycles < static_cast<cyc>(cycles_per_tick)) {
             m_cpu->next_instruction();
             ++cycles;
             if (!m_is_stepping_cycle && !m_is_continuing_execution) {
@@ -141,12 +149,23 @@ namespace emu::applications::lmc {
         }
 
         m_input->read(m_run_status);
-        m_gui->update_screen(m_run_status);
+        m_gui->update_screen(m_run_status, m_terminal_input_state);
 
         m_is_stepping_cycle = false;
         if (m_is_continuing_execution) {
             m_is_continuing_execution = false;
             m_run_status = RUNNING;
+        }
+    }
+
+    void LmcApplicationSession::await_input_and_update() {
+        while (m_terminal_input_state == AWAITING_INPUT) {
+            m_input->read(m_run_status);
+            if (m_run_status == NOT_RUNNING) {
+                return;
+            }
+
+            m_gui->update_screen(m_run_status, m_terminal_input_state);
         }
     }
 
@@ -157,7 +176,7 @@ namespace emu::applications::lmc {
                 return;
             }
 
-            m_gui->update_debug_only();
+            m_gui->update_debug_only(m_terminal_input_state);
         }
 
         m_is_stepping_instruction = false;
@@ -197,6 +216,10 @@ namespace emu::applications::lmc {
     void LmcApplicationSession::assemble_and_load_request() {
         m_logger->info("Trying to assemble and load source code...");
 
+        m_cpu->reset_state();
+        m_terminal_input_state = NOT_AWAITING_INPUT;
+        m_run_status = PAUSED;
+
         try {
             std::stringstream ss(m_file_content);
             const std::vector<Data> code = Assembler::assemble(ss);
@@ -221,21 +244,18 @@ namespace emu::applications::lmc {
         }
     }
 
+    void LmcApplicationSession::input_from_terminal(Data input) {
+        m_terminal_input_state = NOT_AWAITING_INPUT;
+        m_cpu->input(input);
+    }
+
     void LmcApplicationSession::out_changed(Data acc_reg, OutType out_type) {
-        if (out_type == OutType::OUT) {
-            std::cout << acc_reg.underlying() << "\n";
-        } else {
-            std::cout << static_cast<char>(acc_reg.underlying());
-        }
+        m_gui->to_terminal(acc_reg, out_type);
     }
 
     void LmcApplicationSession::in_requested() {
-        std::cout << "inp: " << std::flush;
-
-        u16 number;
-        std::cin >> number;
-
-        m_cpu->input(Data(number));
+        m_terminal_input_state = AWAITING_INPUT;
+        m_gui->from_terminal();
     }
 
     void LmcApplicationSession::setup_cpu() {
@@ -248,6 +268,7 @@ namespace emu::applications::lmc {
     }
 
     void LmcApplicationSession::setup_debugging() {
+        m_debug_container.set_decimal();
         m_debug_container.add_register(RegisterDebugContainer<Data>("A", [&]() { return m_cpu->a(); }));
         m_debug_container.add_pc([&]() { return m_cpu->pc(); });
         m_debug_container.add_flag_register(FlagRegisterDebugContainer<Data>(

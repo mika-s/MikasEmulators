@@ -1,9 +1,9 @@
 #ifndef MIKA_EMULATORS_APPLICATIONS_LMC_APPLICATION_SESSION_H
 #define MIKA_EMULATORS_APPLICATIONS_LMC_APPLICATION_SESSION_H
 
-#include "chips/trivial/lmc/interfaces/gui_observer.h"
 #include "chips/trivial/lmc/interfaces/in_observer.h"
 #include "chips/trivial/lmc/interfaces/out_observer.h"
+#include "chips/trivial/lmc/interfaces/ui_observer.h"
 #include "chips/trivial/lmc/out_type.h"
 #include "chips/trivial/lmc/usings.h"
 #include "crosscutting/debugging/debug_container.h"
@@ -13,6 +13,7 @@
 #include "crosscutting/misc/session.h"
 #include "crosscutting/misc/uinteger.h"
 #include "crosscutting/typedefs.h"
+#include "terminal_input_state.h"
 #include <memory>
 #include <string>
 #include <vector>
@@ -40,10 +41,10 @@ namespace emu::applications::lmc {
     using emu::lmc::Address;
     using emu::lmc::Cpu;
     using emu::lmc::Data;
-    using emu::lmc::GuiObserver;
     using emu::lmc::InObserver;
     using emu::lmc::OutObserver;
     using emu::lmc::OutType;
+    using emu::lmc::UiObserver;
     using emu::logging::Logger;
     using emu::memory::EmulatorMemory;
     using emu::misc::Governor;
@@ -53,11 +54,12 @@ namespace emu::applications::lmc {
 
     class LmcApplicationSession
         : public Session,
-          public GuiObserver,
+          public UiObserver,
           public OutObserver,
           public InObserver {
     public:
         LmcApplicationSession(
+                bool is_only_run_once,
                 const RunStatus startup_runstatus,
                 std::shared_ptr<Ui> gui,
                 std::shared_ptr<Input> input,
@@ -82,6 +84,8 @@ namespace emu::applications::lmc {
 
         void assemble_and_load_request() override;
 
+        void input_from_terminal(Data input) override;
+
         void out_changed(Data acc_reg, OutType out_type) override;
 
         void in_requested() override;
@@ -96,11 +100,13 @@ namespace emu::applications::lmc {
         static constexpr long double cycles_per_tick = cycles_per_ms * tick_limit;
         // Game loop - end
 
+        bool m_is_only_run_once;
         bool m_is_in_debug_mode;
         bool m_is_stepping_instruction;
         bool m_is_stepping_cycle;
         bool m_is_continuing_execution;
-        [[maybe_unused]] RunStatus m_startup_runstatus;
+        TerminalInputState m_terminal_input_state;
+        RunStatus m_startup_runstatus;
         RunStatus m_run_status;
 
         std::shared_ptr<Ui> m_gui;
@@ -120,6 +126,8 @@ namespace emu::applications::lmc {
         void pausing();
 
         void stepping(cyc &cycles);
+
+        void await_input_and_update();
 
         void await_input_and_update_debug();
 

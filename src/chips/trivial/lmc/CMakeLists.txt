@@ -67,7 +67,7 @@ set(SOURCES_LMC_H
         usings.h
         unrecognized_assembly_exception.h
         instructions/instructions.h
-        interfaces/gui_observer.h
+        interfaces/ui_observer.h
         interfaces/in_observer.h
         interfaces/out_observer.h
         )

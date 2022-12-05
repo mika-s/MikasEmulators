@@ -63,6 +63,7 @@ namespace emu::lmc {
         m_acc_reg = Data(0);
         m_pc = Address(0);
         m_is_halted = false;
+        m_flag_reg.reset();
     }
 
     void Cpu::start() {

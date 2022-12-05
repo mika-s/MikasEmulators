@@ -3,6 +3,7 @@
 
 #include "crosscutting/debugging/debug_container.h"
 #include "imgui.h"
+#include <algorithm>
 #include <iostream>
 
 namespace emu::gui {
@@ -51,7 +52,7 @@ namespace emu::gui {
                 ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4) ImColor::HSV(2 / 7.0f, 0.6f, 0.6f));
                 ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4) ImColor::HSV(2 / 7.0f, 0.7f, 0.7f));
                 ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4) ImColor::HSV(2 / 7.0f, 0.8f, 0.8f));
-                if (ImGui::Button("Assemble and load", ImVec2(200.0f, 25.0f))) {
+                if (ImGui::Button("Assemble, load and reset", ImVec2(300.0f, 25.0f))) {
                     notify_pane_observers_about_assemble_and_load_request();
                 }
                 ImGui::PopStyleColor(3);
