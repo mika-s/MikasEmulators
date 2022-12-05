@@ -49,8 +49,7 @@ namespace emu::applications::lmc {
           m_show_log(true),
           m_show_disassembly(true),
           m_show_memory_editor(true),
-          m_is_in_debug_mode(false),
-          m_is_requesting_from_terminal(false) {
+          m_is_in_debug_mode(false) {
         init();
 
         m_code_editor.add_pane_observer(*this);
@@ -79,7 +78,10 @@ namespace emu::applications::lmc {
     }
 
     void GuiImgui::from_terminal() {
-        m_is_requesting_from_terminal = true;
+    }
+
+    void GuiImgui::clear_terminal() {
+        m_output.clear();
     }
 
     void GuiImgui::add_ui_observer(UiObserver &observer) {
@@ -338,7 +340,6 @@ namespace emu::applications::lmc {
         } else {
             title = "Unknown TODO " + terminal_status + id;
         }
-
 
 
         m_terminal.draw(title.c_str(), terminal_input_state == AWAITING_INPUT, m_output, &m_show_terminal);

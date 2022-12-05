@@ -217,6 +217,7 @@ namespace emu::applications::lmc {
         m_logger->info("Trying to assemble and load source code...");
 
         m_cpu->reset_state();
+        m_gui->clear_terminal();
         m_terminal_input_state = NOT_AWAITING_INPUT;
         m_run_status = PAUSED;
 

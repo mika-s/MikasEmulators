@@ -58,6 +58,8 @@ namespace emu::applications::lmc {
 
         void from_terminal() override;
 
+        void clear_terminal() override;
+
         void add_ui_observer(UiObserver &observer) override;
 
         void remove_ui_observer(UiObserver *observer) override;
@@ -91,7 +93,6 @@ namespace emu::applications::lmc {
         bool m_show_memory_editor;
 
         bool m_is_in_debug_mode;
-        bool m_is_requesting_from_terminal;
 
         std::vector<UiObserver *> m_gui_observers;
         std::shared_ptr<Logger> m_logger;

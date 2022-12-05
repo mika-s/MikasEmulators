@@ -37,6 +37,8 @@ namespace emu::applications::lmc {
 
         void from_terminal() override;
 
+        void clear_terminal() override;
+
         void add_ui_observer(UiObserver &observer) override;
 
         void remove_ui_observer(UiObserver *observer) override;

@@ -28,6 +28,9 @@ namespace emu::applications::lmc {
         notify_ui_observers_about_input_from_terminal(Data(number));
     }
 
+    void TuiTerminal::clear_terminal() {
+    }
+
     void TuiTerminal::add_ui_observer(UiObserver &observer) {
         m_ui_observers.push_back(&observer);
     }

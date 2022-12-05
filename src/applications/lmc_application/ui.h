@@ -37,6 +37,8 @@ namespace emu::applications::lmc {
 
         virtual void from_terminal() = 0;
 
+        virtual void clear_terminal() = 0;
+
         virtual void add_ui_observer(UiObserver &observer) = 0;
 
         virtual void remove_ui_observer(UiObserver *observer) = 0;

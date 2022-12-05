@@ -41,6 +41,9 @@ namespace emu::gui {
         if (!is_awaiting_input) {
             input_flags |= ImGuiInputTextFlags_ReadOnly;
         }
+        if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && !ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0)) {
+            ImGui::SetKeyboardFocusHere(0);
+        }
         if (ImGui::InputText("Input", m_input_buffer, IM_ARRAYSIZE(m_input_buffer), input_flags)) {
             notify_pane_observers_about_new_input();
             strcpy(m_input_buffer, "\0");
