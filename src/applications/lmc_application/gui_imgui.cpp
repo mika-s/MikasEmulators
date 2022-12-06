@@ -131,7 +131,7 @@ namespace emu::applications::lmc {
         m_disassembly.attach_debugger(debugger);
     }
 
-    void GuiImgui::attach_debug_container(DebugContainer<Address, Data> &debug_container) {
+    void GuiImgui::attach_debug_container(std::shared_ptr<DebugContainer<Address, Data>> debug_container) {
         m_cpu_info.attach_debug_container(debug_container);
         m_disassembly.attach_debug_container(debug_container);
         m_memory_editor.attach_debug_container(debug_container);

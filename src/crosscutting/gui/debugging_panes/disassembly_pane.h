@@ -35,8 +35,8 @@ namespace emu::gui {
             m_is_debugger_set = true;
         }
 
-        void attach_debug_container(DebugContainer<A, D> &debug_container) {
-            m_debug_container = debug_container;
+        void attach_debug_container(std::shared_ptr<DebugContainer<A, D>> debug_container) {
+            m_debug_container = std::move(debug_container);
             m_is_debug_container_set = true;
         }
 
@@ -57,7 +57,7 @@ namespace emu::gui {
                 ImGui::Text("The debug container is not provided this pane.");
             } else if (!m_is_logger_set) {
                 ImGui::Text("The logger is not provided this pane.");
-            } else if (!m_debug_container.is_disassembled_program_set()) {
+            } else if (!m_debug_container->is_disassembled_program_set()) {
                 ImGui::Text("Disassembled program is not provided to this pane.");
             } else {
                 reset_temp_state();
@@ -76,12 +76,12 @@ namespace emu::gui {
         static constexpr int address_base = 16;
 
         std::shared_ptr<Debugger<A>> m_debugger;
-        DebugContainer<A, D> m_debug_container;
+        std::shared_ptr<DebugContainer<A, D>> m_debug_container;
+        std::shared_ptr<Logger> m_logger;
         bool m_is_debugger_set{false};
         bool m_is_debug_container_set{false};
         bool m_is_logger_set{false};
         std::vector<std::string> m_content;
-        std::shared_ptr<Logger> m_logger;
 
         char m_address_to_goto_str[max_address_size]{"00000000"}; // NOLINT
         A m_address_to_goto{0};
@@ -119,7 +119,7 @@ namespace emu::gui {
 
                                 ImGui::TableSetColumnIndex(0);
                                 ImGui::AlignTextToFramePadding();
-                                if (m_debug_container.is_decimal()) {
+                                if (m_debug_container->is_decimal()) {
                                     std::stringstream ss;
                                     ss << address;
                                     ImGui::Text("%s", ss.str().c_str());
@@ -141,7 +141,7 @@ namespace emu::gui {
                                 ImGui::TableSetColumnIndex(2);
                                 if (ImGui::Button("Delete")) {
                                     m_debugger->remove_breakpoint(address);
-                                    if (m_debug_container.is_decimal()) {
+                                    if (m_debug_container->is_decimal()) {
                                         std::stringstream ss;
                                         ss << address;
                                         m_logger->info("Removing breakpoint: %s", ss.str().c_str());
@@ -184,7 +184,7 @@ namespace emu::gui {
             if (ImGui::Button("Go to address")) {
                 m_is_going_to_address = true;
                 m_is_following_pc = false;
-                if (m_debug_container.is_decimal()) {
+                if (m_debug_container->is_decimal()) {
                     std::stringstream ss;
                     ss << m_address_to_goto;
                     m_logger->info("Going to address: %s", m_address_to_goto);
@@ -199,13 +199,16 @@ namespace emu::gui {
         }
 
         void draw_addresses() {
-            if (m_debug_container.is_disassembled_program_set()) {
-                const A pc = m_debug_container.pc();
+            if (m_debug_container->is_disassembled_program_set()) {
+                const A pc = m_debug_container->pc();
 
-                ImGui::BeginChild("disassembled_code_child", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y), //
-                                  false, ImGuiWindowFlags_HorizontalScrollbar);
+                ImGui::BeginChild(
+                        "disassembled_code_child",
+                        ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y),
+                        false, ImGuiWindowFlags_HorizontalScrollbar
+                );
 
-                for (auto &line: m_debug_container.disassembled_program()) {
+                for (auto &line: m_debug_container->disassembled_program()) {
                     const A address = line.address();
                     const std::string full_line = line.full_line();
                     const bool is_currently_looking_at_pc = address == pc;
@@ -233,7 +236,7 @@ namespace emu::gui {
                         if (ImGui::IsMouseDoubleClicked(0)) {
                             if (is_breakpoint) {
                                 m_debugger->remove_breakpoint(address);
-                                if (m_debug_container.is_decimal()) {
+                                if (m_debug_container->is_decimal()) {
                                     std::stringstream ss;
                                     ss << m_address_to_goto;
                                     m_logger->info("Removing breakpoint: %s", m_address_to_goto);
@@ -242,7 +245,7 @@ namespace emu::gui {
                                 }
                             } else {
                                 m_debugger->add_breakpoint(address, Breakpoint<A>(line));
-                                if (m_debug_container.is_decimal()) {
+                                if (m_debug_container->is_decimal()) {
                                     std::stringstream ss;
                                     ss << m_address_to_goto;
                                     m_logger->info("Adding breakpoint: %s", m_address_to_goto);

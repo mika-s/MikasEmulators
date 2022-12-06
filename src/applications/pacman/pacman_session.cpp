@@ -1,6 +1,7 @@
 #include "pacman_session.h"
 #include "chips/z80/disassembler.h"
 #include "chips/z80/interrupt_mode.h"
+#include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/debugging/debugger.h"
 #include "crosscutting/debugging/disassembled_line.h"
 #include "crosscutting/logging/logger.h"
@@ -193,47 +194,48 @@ namespace emu::applications::pacman {
     }
 
     void PacmanSession::setup_debugging() {
-        m_debug_container.add_register(RegisterDebugContainer<u8>(
+        m_debug_container = std::make_shared<DebugContainer<u16, u8>>();
+        m_debug_container->add_register(RegisterDebugContainer<u8>(
                 "A",
                 [&]() { return m_cpu->a(); },
                 [&]() { return m_cpu->a_p(); }
         ));
-        m_debug_container.add_register(RegisterDebugContainer<u8>(
+        m_debug_container->add_register(RegisterDebugContainer<u8>(
                 "B",
                 [&]() { return m_cpu->b(); },
                 [&]() { return m_cpu->b_p(); }
         ));
-        m_debug_container.add_register(RegisterDebugContainer<u8>(
+        m_debug_container->add_register(RegisterDebugContainer<u8>(
                 "C",
                 [&]() { return m_cpu->c(); },
                 [&]() { return m_cpu->c_p(); }
         ));
-        m_debug_container.add_register(RegisterDebugContainer<u8>(
+        m_debug_container->add_register(RegisterDebugContainer<u8>(
                 "D",
                 [&]() { return m_cpu->d(); },
                 [&]() { return m_cpu->d_p(); }
         ));
-        m_debug_container.add_register(RegisterDebugContainer<u8>(
+        m_debug_container->add_register(RegisterDebugContainer<u8>(
                 "E",
                 [&]() { return m_cpu->e(); },
                 [&]() { return m_cpu->e_p(); }
         ));
-        m_debug_container.add_register(RegisterDebugContainer<u8>(
+        m_debug_container->add_register(RegisterDebugContainer<u8>(
                 "H",
                 [&]() { return m_cpu->h(); },
                 [&]() { return m_cpu->h_p(); }
         ));
-        m_debug_container.add_register(RegisterDebugContainer<u8>(
+        m_debug_container->add_register(RegisterDebugContainer<u8>(
                 "L",
                 [&]() { return m_cpu->l(); },
                 [&]() { return m_cpu->l_p(); }
         ));
-        m_debug_container.add_register(RegisterDebugContainer<u8>("I", [&]() { return m_cpu->i(); }));
-        m_debug_container.add_register(RegisterDebugContainer<u8>("R", [&]() { return m_cpu->r(); }));
-        m_debug_container.add_pc([&]() { return m_cpu->pc(); });
-        m_debug_container.add_sp([&]() { return m_cpu->sp(); });
-        m_debug_container.add_is_interrupted([&]() { return m_cpu->is_interrupted(); });
-        m_debug_container.add_interrupt_mode([&]() {
+        m_debug_container->add_register(RegisterDebugContainer<u8>("I", [&]() { return m_cpu->i(); }));
+        m_debug_container->add_register(RegisterDebugContainer<u8>("R", [&]() { return m_cpu->r(); }));
+        m_debug_container->add_pc([&]() { return m_cpu->pc(); });
+        m_debug_container->add_sp([&]() { return m_cpu->sp(); });
+        m_debug_container->add_is_interrupted([&]() { return m_cpu->is_interrupted(); });
+        m_debug_container->add_interrupt_mode([&]() {
             switch (m_cpu->interrupt_mode()) {
                 case InterruptMode::ZERO:
                     return "0";
@@ -245,7 +247,7 @@ namespace emu::applications::pacman {
                     throw std::invalid_argument("Unhandled InterruptMode");
             }
         });
-        m_debug_container.add_flag_register(FlagRegisterDebugContainer<u8>(
+        m_debug_container->add_flag_register(FlagRegisterDebugContainer<u8>(
                 "F",
                 [&]() { return m_cpu->f(); },
                 {{"s", 7},
@@ -257,17 +259,17 @@ namespace emu::applications::pacman {
                  {"n", 1},
                  {"c", 0}}
         ));
-        m_debug_container.add_io(IoDebugContainer<u8>(
+        m_debug_container->add_io(IoDebugContainer<u8>(
                 "vblank return",
                 [&]() { return m_outputs_during_cycle.contains(out_port_vblank_interrupt_return); },
                 [&]() { return m_outputs_during_cycle[out_port_vblank_interrupt_return]; }
         ));
-        m_debug_container.add_io(IoDebugContainer<u8>(
+        m_debug_container->add_io(IoDebugContainer<u8>(
                 "coin counter",
                 [&]() { return true; },
                 [&]() { return m_memory_mapped_io->coin_counter(); }
         ));
-        m_debug_container.add_io(IoDebugContainer<u8>(
+        m_debug_container->add_io(IoDebugContainer<u8>(
                 "dipswitches",
                 [&]() { return true; },
                 [&]() { return m_memory_mapped_io->dipswitches(); },
@@ -280,7 +282,7 @@ namespace emu::applications::pacman {
                  {"difficulty (AH)", 6},
                  {"ghost names (AH)", 7}}
         ));
-        m_debug_container.add_io(IoDebugContainer<u8>(
+        m_debug_container->add_io(IoDebugContainer<u8>(
                 "in 0",
                 [&]() { return true; },
                 [&]() { return m_memory_mapped_io->in0_read(); },
@@ -293,7 +295,7 @@ namespace emu::applications::pacman {
                  {"coin 2 (AL)", 6},
                  {"service 1 (AL)", 7}}
         ));
-        m_debug_container.add_io(IoDebugContainer<u8>(
+        m_debug_container->add_io(IoDebugContainer<u8>(
                 "in 1",
                 [&]() { return true; },
                 [&]() { return m_memory_mapped_io->in1_read(); },
@@ -306,13 +308,13 @@ namespace emu::applications::pacman {
                  {"start 2 (AL)", 6},
                  {"cocktail (AL)", 7}}
         ));
-        m_debug_container.add_memory(MemoryDebugContainer<u8>(
+        m_debug_container->add_memory(MemoryDebugContainer<u8>(
                 [&]() { return memory(); }
         ));
-        m_debug_container.add_disassembled_program(disassemble_program());
-        m_debug_container.add_tilemap(m_gui->tiles());
-        m_debug_container.add_spritemap(m_gui->sprites());
-        m_debug_container.add_waveforms(m_audio->waveforms());
+        m_debug_container->add_disassembled_program(disassemble_program());
+        m_debug_container->add_tilemap(m_gui->tiles());
+        m_debug_container->add_spritemap(m_gui->sprites());
+        m_debug_container->add_waveforms(m_audio->waveforms());
 
         m_gui->attach_debugger(m_debugger);
         m_gui->attach_debug_container(m_debug_container);

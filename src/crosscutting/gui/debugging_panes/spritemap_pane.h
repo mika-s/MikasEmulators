@@ -20,7 +20,7 @@ namespace emu::gui {
     public:
         explicit SpritemapPane(int default_palette_idx = 0);
 
-        void attach_debug_container(DebugContainer<u16, u8> &debug_container);
+        void attach_debug_container(std::shared_ptr<DebugContainer<u16, u8>> debug_container);
 
         void draw(const char *title, u32 tile_texture, bool *p_open = nullptr);
 
@@ -33,7 +33,7 @@ namespace emu::gui {
         static constexpr int scaled_width = static_cast<int>(scale * static_cast<float>(width));
         static constexpr int scaled_height = static_cast<int>(scale * static_cast<float>(height));
 
-        DebugContainer<u16, u8> m_debug_container;
+        std::shared_ptr<DebugContainer<u16, u8>> m_debug_container;
         bool m_is_debug_container_set;
         std::vector<std::vector<Framebuffer>> m_framebuffers;
         int m_chosen_palette_idx;

@@ -16,7 +16,7 @@ namespace emu::applications::lmc {
     public:
         void draw(const char *title, bool *p_open = nullptr);
 
-        void attach_debug_container(DebugContainer<Address, Data> &debug_container);
+        void attach_debug_container(std::shared_ptr<DebugContainer<Address, Data>> debug_container);
 
     private:
         static constexpr unsigned int max_addresses = 100;
@@ -25,7 +25,7 @@ namespace emu::applications::lmc {
         static constexpr std::size_t cols = 10;
         static constexpr float box_width = 50.0f;
 
-        DebugContainer<Address, Data> m_debug_container;
+        std::shared_ptr<DebugContainer<Address, Data>> m_debug_container;
         bool m_is_debug_container_set{false};
 
         char m_values[max_addresses][max_chars]; // NOLINT

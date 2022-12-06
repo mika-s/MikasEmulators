@@ -45,8 +45,10 @@ namespace emu::gui {
             ImGui::SetKeyboardFocusHere(0);
         }
         if (ImGui::InputText("Input", m_input_buffer, IM_ARRAYSIZE(m_input_buffer), input_flags)) {
-            notify_pane_observers_about_new_input();
-            strcpy(m_input_buffer, "\0");
+            if (strlen(m_input_buffer) != 0) {
+                notify_pane_observers_about_new_input();
+                strcpy(m_input_buffer, "");
+            }
         }
 
         if (is_awaiting_input) {

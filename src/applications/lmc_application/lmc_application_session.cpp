@@ -4,6 +4,7 @@
 #include "chips/trivial/lmc/disassembler.h"
 #include "chips/trivial/lmc/out_type.h"
 #include "chips/trivial/lmc/usings.h"
+#include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/debugging/debugger.h"
 #include "crosscutting/debugging/disassembled_line.h"
 #include "crosscutting/logging/logger.h"
@@ -251,6 +252,8 @@ namespace emu::applications::lmc {
         } catch (std::exception &ex) {
             m_logger->info(ex.what());
         }
+
+        m_debug_container->add_disassembled_program(disassemble_program());
     }
 
     void LmcApplicationSession::input_from_terminal(Data input) {
@@ -277,17 +280,18 @@ namespace emu::applications::lmc {
     }
 
     void LmcApplicationSession::setup_debugging() {
-        m_debug_container.set_decimal();
-        m_debug_container.add_register(RegisterDebugContainer<Data>("A", [&]() { return m_cpu->a(); }));
-        m_debug_container.add_pc([&]() { return m_cpu->pc(); });
-        m_debug_container.add_flag_register(FlagRegisterDebugContainer<Data>(
+        m_debug_container = std::make_shared<DebugContainer<Address, Data>>();
+        m_debug_container->set_decimal();
+        m_debug_container->add_register(RegisterDebugContainer<Data>("A", [&]() { return m_cpu->a(); }));
+        m_debug_container->add_pc([&]() { return m_cpu->pc(); });
+        m_debug_container->add_flag_register(FlagRegisterDebugContainer<Data>(
                 "F",
                 [&]() { return Data(m_cpu->f()); },
                 {{"n", 0}}
         ));
-        m_debug_container.add_memory(MemoryDebugContainer<Data>([&]() { return memory(); }));
-        m_debug_container.add_disassembled_program(disassemble_program());
-        m_debug_container.add_file_content([&]() { return m_file_content; });
+        m_debug_container->add_memory(MemoryDebugContainer<Data>([&]() { return memory(); }));
+        m_debug_container->add_disassembled_program(disassemble_program());
+        m_debug_container->add_file_content([&]() { return m_file_content; });
 
         m_gui->attach_debugger(m_debugger);
         m_gui->attach_debug_container(m_debug_container);

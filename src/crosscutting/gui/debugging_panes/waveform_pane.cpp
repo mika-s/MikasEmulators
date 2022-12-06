@@ -12,7 +12,7 @@ namespace emu::gui {
 
     WaveformPane::WaveformPane() = default;
 
-    void WaveformPane::attach_debug_container(DebugContainer<u16, u8> &debug_container) {
+    void WaveformPane::attach_debug_container(std::shared_ptr<DebugContainer<u16, u8>> debug_container) {
         m_debug_container = debug_container;
         m_is_debug_container_set = true;
     }
@@ -25,11 +25,11 @@ namespace emu::gui {
 
         if (!m_is_debug_container_set) {
             ImGui::Text("The debug container is not provided this pane.");
-        } else if (!m_debug_container.is_waveforms_set()) {
+        } else if (!m_debug_container->is_waveforms_set()) {
             ImGui::Text("The waveforms are not provided to this pane.");
         } else {
             unsigned int waveform_idx = 0;
-            for (auto &waveform: m_debug_container.waveforms()) {
+            for (auto &waveform: m_debug_container->waveforms()) {
                 const std::vector<u8> samples = waveform.samples();
                 float samples_as_float[waveform.samples().size()]; //NOLINT
                 float max = 0.0f;

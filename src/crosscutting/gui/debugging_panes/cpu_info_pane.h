@@ -19,7 +19,7 @@ namespace emu::gui {
     public:
         CpuInfoPane() = default;
 
-        void attach_debug_container(DebugContainer<A, D> &debug_container) {
+        void attach_debug_container(std::shared_ptr<DebugContainer<A, D>> debug_container) {
             m_debug_container = debug_container;
             m_is_debug_container_set = true;
         }
@@ -35,19 +35,19 @@ namespace emu::gui {
             } else {
                 ImGui::Text("Registers:");
                 ImGui::Separator();
-                if (m_debug_container.has_alternate_registers()) {
+                if (m_debug_container->has_alternate_registers()) {
                     ImGui::SameLine(margin_title_right, ImGui::GetStyle().ItemInnerSpacing.x);
                     ImGui::Text("Main");
                     ImGui::SameLine(margin_main_right, ImGui::GetStyle().ItemInnerSpacing.x);
                     ImGui::Text("Alternate");
                 }
-                for (const auto &reg: m_debug_container.registers()) {
+                for (const auto &reg: m_debug_container->registers()) {
                     const std::string name = reg.name();
                     const D main = reg.main();
 
                     ImGui::Text("%s", name.c_str());
                     ImGui::SameLine(margin_title_right, ImGui::GetStyle().ItemInnerSpacing.x);
-                    if (m_debug_container.is_decimal()) {
+                    if (m_debug_container->is_decimal()) {
                         std::stringstream ss;
                         ss << main;
                         ImGui::Text("%s", ss.str().c_str());
@@ -58,7 +58,7 @@ namespace emu::gui {
                     if (reg.is_alternate_set()) {
                         const D alternate = reg.alternate();
                         ImGui::SameLine(margin_main_right, ImGui::GetStyle().ItemInnerSpacing.x);
-                        if (m_debug_container.is_decimal()) {
+                        if (m_debug_container->is_decimal()) {
                             std::stringstream ss;
                             ss << alternate;
                             ImGui::Text("%s", ss.str().c_str());
@@ -67,14 +67,14 @@ namespace emu::gui {
                         }
                     }
                 }
-                if (m_debug_container.is_flag_register_set()) {
-                    const std::string name = m_debug_container.flag_register().name();
-                    const D value = m_debug_container.flag_register().value();
+                if (m_debug_container->is_flag_register_set()) {
+                    const std::string name = m_debug_container->flag_register().name();
+                    const D value = m_debug_container->flag_register().value();
 
                     ImGui::Separator();
                     ImGui::Text("%s", name.c_str());
                     ImGui::SameLine(margin_title_right, ImGui::GetStyle().ItemInnerSpacing.x);
-                    if (m_debug_container.is_decimal()) {
+                    if (m_debug_container->is_decimal()) {
                         std::stringstream ss;
                         ss << value;
                         ImGui::Text("%s", ss.str().c_str());
@@ -84,7 +84,7 @@ namespace emu::gui {
                     ImGui::SameLine(200.0f, ImGui::GetStyle().ItemInnerSpacing.x);
 
                     float offset = 0.0f;
-                    for (const auto &bit: m_debug_container.flag_register().flag_names()) {
+                    for (const auto &bit: m_debug_container->flag_register().flag_names()) {
                         auto &[bit_name, bit_number] = bit;
                         ImGui::Text("%s", is_bit_set(value, bit_number) ? bit_name.c_str() : "-");
                         offset += 10.0f;
@@ -92,41 +92,41 @@ namespace emu::gui {
                     }
                     ImGui::NewLine();
                 }
-                if (m_debug_container.is_pc_set()) {
+                if (m_debug_container->is_pc_set()) {
                     ImGui::Separator();
                     ImGui::Text("PC:");
                     ImGui::SameLine(margin_title_right, ImGui::GetStyle().ItemInnerSpacing.x);
-                    if (m_debug_container.is_decimal()) {
+                    if (m_debug_container->is_decimal()) {
                         std::stringstream ss;
-                        ss << m_debug_container.pc();
+                        ss << m_debug_container->pc();
                         ImGui::Text("%s", ss.str().c_str());
                     } else {
-                        ImGui::Text("%s", hexify(m_debug_container.pc()).c_str());
+                        ImGui::Text("%s", hexify(m_debug_container->pc()).c_str());
                     }
                 }
-                if (m_debug_container.is_sp_set()) {
+                if (m_debug_container->is_sp_set()) {
                     ImGui::Separator();
                     ImGui::Text("SP:");
                     ImGui::SameLine(margin_title_right, ImGui::GetStyle().ItemInnerSpacing.x);
-                    if (m_debug_container.is_decimal()) {
+                    if (m_debug_container->is_decimal()) {
                         std::stringstream ss;
-                        ss << m_debug_container.sp();
+                        ss << m_debug_container->sp();
                         ImGui::Text("%s", ss.str().c_str());
                     } else {
-                        ImGui::Text("%s", hexify(m_debug_container.sp()).c_str());
+                        ImGui::Text("%s", hexify(m_debug_container->sp()).c_str());
                     }
                 }
-                if (m_debug_container.is_interrupted_set()) {
+                if (m_debug_container->is_interrupted_set()) {
                     ImGui::Separator();
                     ImGui::Text("Interrupted:");
                     ImGui::SameLine(margin_title_right, ImGui::GetStyle().ItemInnerSpacing.x);
-                    ImGui::Text("%i", m_debug_container.is_interrupted());
+                    ImGui::Text("%i", m_debug_container->is_interrupted());
                 }
-                if (m_debug_container.is_interrupt_mode_set()) {
+                if (m_debug_container->is_interrupt_mode_set()) {
                     ImGui::Separator();
                     ImGui::Text("Interrupt mode:");
                     ImGui::SameLine(margin_title_right, ImGui::GetStyle().ItemInnerSpacing.x);
-                    ImGui::Text("%s", m_debug_container.interrupt_mode().c_str());
+                    ImGui::Text("%s", m_debug_container->interrupt_mode().c_str());
                 }
             }
 
@@ -137,7 +137,7 @@ namespace emu::gui {
         static constexpr float margin_title_right = 120.0f;
         static constexpr float margin_main_right = 240.0f;
 
-        DebugContainer<A, D> m_debug_container;
+        std::shared_ptr<DebugContainer<A, D>> m_debug_container;
         bool m_is_debug_container_set{false};
     };
 }

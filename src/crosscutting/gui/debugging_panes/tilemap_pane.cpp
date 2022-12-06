@@ -10,6 +10,7 @@
 #include <ext/alloc_traits.h>
 #include <memory>
 #include <stdexcept>
+#include <utility>
 
 namespace emu::gui {
 
@@ -25,8 +26,8 @@ namespace emu::gui {
         }
     }
 
-    void TilemapPane::attach_debug_container(DebugContainer<u16, u8> &debug_container) {
-        m_debug_container = debug_container;
+    void TilemapPane::attach_debug_container(std::shared_ptr<DebugContainer<u16, u8>> debug_container) {
+        m_debug_container = std::move(debug_container);
         m_is_debug_container_set = true;
     }
 
@@ -38,7 +39,7 @@ namespace emu::gui {
 
         if (!m_is_debug_container_set) {
             ImGui::Text("The debug container is not provided this pane.");
-        } else if (!m_debug_container.is_tilemap_set()) {
+        } else if (!m_debug_container->is_tilemap_set()) {
             ImGui::Text("The tilemap is not provided to this pane.");
         } else {
             if (m_are_all_tiles_rendered) {
@@ -60,7 +61,7 @@ namespace emu::gui {
     }
 
     void TilemapPane::prepare_framebuffers() {
-        const std::size_t number_of_palettes = m_debug_container.tiles().size();
+        const std::size_t number_of_palettes = m_debug_container->tiles().size();
 
         for (std::size_t palette_idx = 0; palette_idx < number_of_palettes; ++palette_idx) {
             if (!prepare_framebuffer(palette_idx)) {
@@ -73,7 +74,7 @@ namespace emu::gui {
     }
 
     bool TilemapPane::prepare_framebuffer(unsigned int palette_idx) {
-        const std::vector<std::shared_ptr<Tile>> tiles = m_debug_container.tiles()[palette_idx];
+        const std::vector<std::shared_ptr<Tile>> tiles = m_debug_container->tiles()[palette_idx];
         const std::size_t number_of_tiles = tiles.size();
         const std::size_t tile_size = tiles[0]->size();
         const std::size_t rows = number_of_tiles / tiles_per_row;

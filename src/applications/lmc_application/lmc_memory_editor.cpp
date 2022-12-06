@@ -7,6 +7,7 @@
 #include <fmt/core.h>
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace emu::applications::lmc {
@@ -16,8 +17,8 @@ namespace emu::applications::lmc {
     using emu::lmc::Data;
     using emu::misc::UInteger;
 
-    void LmcMemoryEditor::attach_debug_container(DebugContainer<Address, Data> &debug_container) {
-        m_debug_container = debug_container;
+    void LmcMemoryEditor::attach_debug_container(std::shared_ptr<DebugContainer<Address, Data>> debug_container) {
+        m_debug_container = std::move(debug_container);
         m_is_debug_container_set = true;
     }
 
@@ -29,13 +30,13 @@ namespace emu::applications::lmc {
 
         if (!m_is_debug_container_set) {
             ImGui::Text("The debug container is not provided this pane.");
-        } else if (!m_debug_container.is_memory_set()) {
+        } else if (!m_debug_container->is_memory_set()) {
             ImGui::Text("Memory is not provided to this pane.");
         } else {
             const ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg //
                                           | ImGuiTableFlags_SizingFixedSame | ImGuiTableFlags_NoHostExtendX;
 
-            std::vector<Data> memory = m_debug_container.memory().value();
+            std::vector<Data> memory = m_debug_container->memory().value();
 
             if (ImGui::BeginTable("memory_editor", cols, flags)) {
                 unsigned int address = 0;

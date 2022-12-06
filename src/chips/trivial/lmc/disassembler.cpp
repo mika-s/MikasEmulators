@@ -20,7 +20,7 @@ namespace emu::lmc {
     }
 
     void Disassembler::disassemble() {
-        while (m_pc != Address(99)) {
+        while (m_pc < Address(99)) {
             print_next_instruction();
         }
     }
@@ -63,7 +63,11 @@ namespace emu::lmc {
                 m_ostream << "OTC";
                 break;
             case Opcode::HLT:
-                print_hlt(m_ostream);
+                if (raw_opcode > Data(0)) {
+                    m_ostream << "DAT " << raw_opcode;
+                } else {
+                    print_hlt(m_ostream);
+                }
                 break;
         }
 

@@ -14,7 +14,7 @@ namespace emu::gui {
     public:
         MemoryEditorPane() = default;
 
-        void attach_debug_container(DebugContainer<A, D> &debug_container) {
+        void attach_debug_container(std::shared_ptr<DebugContainer<A, D>> debug_container) {
             m_debug_container = debug_container;
             m_is_debug_container_set = true;
         }
@@ -27,12 +27,12 @@ namespace emu::gui {
 
             if (!m_is_debug_container_set) {
                 ImGui::Text("The debug container is not provided this pane.");
-            } else if (!m_debug_container.is_memory_set()) {
+            } else if (!m_debug_container->is_memory_set()) {
                 ImGui::Text("Memory is not provided to this pane.");
             } else {
                 m_memory_editor.DrawContents(
-                        m_debug_container.memory().value().data(),
-                        m_debug_container.memory().value().size()
+                        m_debug_container->memory().value().data(),
+                        m_debug_container->memory().value().size()
                 );
             }
 
@@ -41,7 +41,7 @@ namespace emu::gui {
 
     private:
         MemoryEditor m_memory_editor;
-        DebugContainer<A, D> m_debug_container;
+        std::shared_ptr<DebugContainer<A, D>> m_debug_container;
         bool m_is_debug_container_set{false};
     };
 }

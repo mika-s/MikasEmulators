@@ -22,8 +22,8 @@ namespace emu::gui {
     template<class A, class D>
     class CodeEditorPane {
     public:
-        void attach_debug_container(DebugContainer<A, D> &debug_container) {
-            m_debug_container = debug_container;
+        void attach_debug_container(std::shared_ptr<DebugContainer<A, D>> debug_container) {
+            m_debug_container = std::move(debug_container);
             m_is_debug_container_set = true;
         }
 
@@ -35,12 +35,12 @@ namespace emu::gui {
 
             if (!m_is_debug_container_set) {
                 ImGui::Text("The debug container is not provided this pane.");
-            } else if (!m_debug_container.is_file_content_set()) {
+            } else if (!m_debug_container->is_file_content_set()) {
                 ImGui::Text("The file content is not provided to this pane.");
             } else {
                 ImGui::BeginChild("scrolling", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
 
-                strncpy(buffer, m_debug_container.file_content().c_str(), buffer_size);
+                strncpy(buffer, m_debug_container->file_content().c_str(), buffer_size);
 
                 const ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
                 ImGui::InputTextMultiline("##code", buffer, IM_ARRAYSIZE(buffer), //
@@ -77,7 +77,7 @@ namespace emu::gui {
     private:
         static constexpr unsigned int buffer_size = 65536;
 
-        DebugContainer<A, D> m_debug_container;
+        std::shared_ptr<DebugContainer<A, D>> m_debug_container;
         bool m_is_debug_container_set{false};
 
         char buffer[buffer_size]; // NOLINT

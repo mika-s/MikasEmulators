@@ -5,6 +5,7 @@
 #include "crosscutting/typedefs.h"
 #include "disassembled_line.h"
 #include <functional>
+#include <iostream>
 #include <memory>
 #include <string>
 #include <tuple>

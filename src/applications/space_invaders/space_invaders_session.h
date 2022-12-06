@@ -6,7 +6,6 @@
 #include "chips/8080/interfaces/in_observer.h"
 #include "chips/8080/interfaces/out_observer.h"
 #include "cpu_io.h"
-#include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/misc/governor.h"
 #include "crosscutting/misc/run_status.h"
 #include "crosscutting/misc/session.h"
@@ -25,6 +24,10 @@ namespace emu::applications::space_invaders {
 }
 namespace emu::applications::space_invaders {
     class Settings;
+}
+namespace emu::debugger {
+    template<class A, class D>
+    class DebugContainer;
 }
 namespace emu::debugger {
     template<class A>
@@ -111,7 +114,7 @@ namespace emu::applications::space_invaders {
 
         std::shared_ptr<Logger> m_logger;
         std::shared_ptr<Debugger<u16>> m_debugger;
-        DebugContainer<u16, u8> m_debug_container;
+        std::shared_ptr<DebugContainer<u16, u8>> m_debug_container;
         std::unordered_map<u8, u8> m_outputs_during_cycle;
 
         Governor m_governor;

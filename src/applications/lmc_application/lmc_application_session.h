@@ -6,7 +6,6 @@
 #include "chips/trivial/lmc/interfaces/ui_observer.h"
 #include "chips/trivial/lmc/out_type.h"
 #include "chips/trivial/lmc/usings.h"
-#include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/misc/governor.h"
 #include "crosscutting/misc/run_status.h"
@@ -23,6 +22,10 @@ namespace emu::applications::lmc {
 }
 namespace emu::applications::lmc {
     class Input;
+}
+namespace emu::debugger {
+    template<class A, class D>
+    class DebugContainer;
 }
 namespace emu::debugger {
     template<class A>
@@ -123,7 +126,7 @@ namespace emu::applications::lmc {
         std::string m_file_content;
         std::shared_ptr<Logger> m_logger;
         std::shared_ptr<Debugger<Address>> m_debugger;
-        DebugContainer<Address, Data> m_debug_container;
+        std::shared_ptr<DebugContainer<Address, Data>> m_debug_container;
 
         Governor m_governor;
 

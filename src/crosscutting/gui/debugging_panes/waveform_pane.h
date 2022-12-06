@@ -12,14 +12,14 @@ namespace emu::gui {
     public:
         explicit WaveformPane();
 
-        void attach_debug_container(DebugContainer<u16, u8> &debug_container);
+        void attach_debug_container(std::shared_ptr<DebugContainer<u16, u8>> debug_container);
 
         void draw(const char *title, bool *p_open = nullptr);
 
     private:
         static constexpr float waveform_width = 80.0f;
 
-        DebugContainer<u16, u8> m_debug_container;
+        std::shared_ptr<DebugContainer<u16, u8>> m_debug_container;
         bool m_is_debug_container_set;
     };
 }

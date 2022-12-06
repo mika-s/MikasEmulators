@@ -55,7 +55,7 @@ namespace emu::applications::space_invaders {
 
         void attach_debugger(std::shared_ptr<Debugger<u16>> debugger) override;
 
-        void attach_debug_container(DebugContainer<u16, u8> &debug_container) override;
+        void attach_debug_container(std::shared_ptr<DebugContainer<u16, u8>> debug_container) override;
 
         void attach_logger(std::shared_ptr<Logger> logger) override;
 

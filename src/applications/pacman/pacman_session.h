@@ -3,7 +3,6 @@
 
 #include "chips/z80/interfaces/gui_observer.h"
 #include "chips/z80/interfaces/out_observer.h"
-#include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/misc/governor.h"
 #include "crosscutting/misc/run_status.h"
 #include "crosscutting/misc/session.h"
@@ -25,6 +24,10 @@ namespace emu::applications::pacman {
 }
 namespace emu::applications::pacman {
     class MemoryMappedIoForPacman;
+}
+namespace emu::debugger {
+    template<class A, class D>
+    class DebugContainer;
 }
 namespace emu::debugger {
     template<class A>
@@ -120,7 +123,7 @@ namespace emu::applications::pacman {
 
         std::shared_ptr<Logger> m_logger;
         std::shared_ptr<Debugger<u16>> m_debugger;
-        DebugContainer<u16, u8> m_debug_container;
+        std::shared_ptr<DebugContainer<u16, u8>> m_debug_container;
         std::unordered_map<u8, u8> m_outputs_during_cycle;
 
         Governor m_governor;

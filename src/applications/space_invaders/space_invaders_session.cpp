@@ -2,6 +2,7 @@
 #include "8080/cpu.h"
 #include "8080/shift_register.h"
 #include "chips/8080/disassembler.h"
+#include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/debugging/debugger.h"
 #include "crosscutting/debugging/disassembled_line.h"
 #include "crosscutting/logging/logger.h"
@@ -221,17 +222,18 @@ namespace emu::applications::space_invaders {
     }
 
     void SpaceInvadersSession::setup_debugging() {
-        m_debug_container.add_register(RegisterDebugContainer<u8>("A", [&]() { return m_cpu->a(); }));
-        m_debug_container.add_register(RegisterDebugContainer<u8>("B", [&]() { return m_cpu->b(); }));
-        m_debug_container.add_register(RegisterDebugContainer<u8>("C", [&]() { return m_cpu->c(); }));
-        m_debug_container.add_register(RegisterDebugContainer<u8>("D", [&]() { return m_cpu->d(); }));
-        m_debug_container.add_register(RegisterDebugContainer<u8>("E", [&]() { return m_cpu->e(); }));
-        m_debug_container.add_register(RegisterDebugContainer<u8>("H", [&]() { return m_cpu->h(); }));
-        m_debug_container.add_register(RegisterDebugContainer<u8>("L", [&]() { return m_cpu->l(); }));
-        m_debug_container.add_pc([&]() { return m_cpu->pc(); });
-        m_debug_container.add_sp([&]() { return m_cpu->sp(); });
-        m_debug_container.add_is_interrupted([&]() { return m_cpu->is_interrupted(); });
-        m_debug_container.add_flag_register(FlagRegisterDebugContainer<u8>(
+        m_debug_container = std::make_shared<DebugContainer<u16, u8>>();
+        m_debug_container->add_register(RegisterDebugContainer<u8>("A", [&]() { return m_cpu->a(); }));
+        m_debug_container->add_register(RegisterDebugContainer<u8>("B", [&]() { return m_cpu->b(); }));
+        m_debug_container->add_register(RegisterDebugContainer<u8>("C", [&]() { return m_cpu->c(); }));
+        m_debug_container->add_register(RegisterDebugContainer<u8>("D", [&]() { return m_cpu->d(); }));
+        m_debug_container->add_register(RegisterDebugContainer<u8>("E", [&]() { return m_cpu->e(); }));
+        m_debug_container->add_register(RegisterDebugContainer<u8>("H", [&]() { return m_cpu->h(); }));
+        m_debug_container->add_register(RegisterDebugContainer<u8>("L", [&]() { return m_cpu->l(); }));
+        m_debug_container->add_pc([&]() { return m_cpu->pc(); });
+        m_debug_container->add_sp([&]() { return m_cpu->sp(); });
+        m_debug_container->add_is_interrupted([&]() { return m_cpu->is_interrupted(); });
+        m_debug_container->add_flag_register(FlagRegisterDebugContainer<u8>(
                 "F",
                 [&]() { return m_cpu->f(); },
                 {{"s", 7},
@@ -243,22 +245,22 @@ namespace emu::applications::space_invaders {
                  {"u", 1},
                  {"c", 0}}
         ));
-        m_debug_container.add_io(IoDebugContainer<u8>(
+        m_debug_container->add_io(IoDebugContainer<u8>(
                 "shift (change offset)",
                 [&]() { return m_outputs_during_cycle.contains(out_port_shift_offset); },
                 [&]() { return m_outputs_during_cycle[out_port_shift_offset]; }
         ));
-        m_debug_container.add_io(IoDebugContainer<u8>(
+        m_debug_container->add_io(IoDebugContainer<u8>(
                 "shift (do shift)",
                 [&]() { return m_outputs_during_cycle.contains(out_port_do_shift); },
                 [&]() { return m_outputs_during_cycle[out_port_do_shift]; }
         ));
-        m_debug_container.add_io(IoDebugContainer<u8>(
+        m_debug_container->add_io(IoDebugContainer<u8>(
                 "watchdog",
                 [&]() { return m_outputs_during_cycle.contains(out_port_watchdog); },
                 [&]() { return m_outputs_during_cycle[out_port_watchdog]; }
         ));
-        m_debug_container.add_io(IoDebugContainer<u8>(
+        m_debug_container->add_io(IoDebugContainer<u8>(
                 "out sound 1",
                 [&]() { return m_outputs_during_cycle.contains(out_port_sound_1); },
                 [&]() { return m_outputs_during_cycle[out_port_sound_1]; },
@@ -268,7 +270,7 @@ namespace emu::applications::space_invaders {
                  {"invader_die", 3},
                  {"extended_play", 4}}
         ));
-        m_debug_container.add_io(IoDebugContainer<u8>(
+        m_debug_container->add_io(IoDebugContainer<u8>(
                 "out sound 2",
                 [&]() { return m_outputs_during_cycle.contains(out_port_sound_2); },
                 [&]() { return m_outputs_during_cycle[out_port_sound_2]; },
@@ -278,10 +280,10 @@ namespace emu::applications::space_invaders {
                  {"fleet_movement_4", 3},
                  {"ufo_hit", 4}}
         ));
-        m_debug_container.add_memory(MemoryDebugContainer<u8>(
+        m_debug_container->add_memory(MemoryDebugContainer<u8>(
                 [&]() { return memory(); }
         ));
-        m_debug_container.add_disassembled_program(disassemble_program());
+        m_debug_container->add_disassembled_program(disassemble_program());
 
         m_gui->attach_debugger(m_debugger);
         m_gui->attach_debug_container(m_debug_container);

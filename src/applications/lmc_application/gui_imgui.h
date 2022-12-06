@@ -71,7 +71,7 @@ namespace emu::applications::lmc {
 
         void attach_debugger(std::shared_ptr<Debugger<Address>> debugger) override;
 
-        void attach_debug_container(DebugContainer<Address, Data> &debug_container) override;
+        void attach_debug_container(std::shared_ptr<DebugContainer<Address, Data>> debug_container) override;
 
         void attach_logger(std::shared_ptr<Logger> logger) override;
 

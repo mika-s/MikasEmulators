@@ -49,7 +49,7 @@ namespace emu::applications::lmc {
 
         virtual void attach_debugger(std::shared_ptr<Debugger<Address>> debugger) = 0;
 
-        virtual void attach_debug_container(DebugContainer<Address, Data> &debug_container) = 0;
+        virtual void attach_debug_container(std::shared_ptr<DebugContainer<Address, Data>> debug_container) = 0;
 
         virtual void attach_logger(std::shared_ptr<Logger> logger) = 0;
 
