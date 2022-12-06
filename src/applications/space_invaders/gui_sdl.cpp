@@ -16,6 +16,7 @@ namespace emu::debugger {
     class DebugContainer;
 }
 namespace emu::debugger {
+    template<class A>
     class Debugger;
 }
 namespace emu::logging {
@@ -64,7 +65,7 @@ namespace emu::applications::space_invaders {
         }
     }
 
-    void GuiSdl::attach_debugger([[maybe_unused]] std::shared_ptr<Debugger> debugger) {
+    void GuiSdl::attach_debugger([[maybe_unused]] std::shared_ptr<Debugger<u16>> debugger) {
     }
 
     void GuiSdl::attach_debug_container([[maybe_unused]] DebugContainer<u16, u8> &debug_container) {

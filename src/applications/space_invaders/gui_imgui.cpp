@@ -13,6 +13,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <string>
+#include <unordered_map>
 #include <utility>
 
 namespace emu::debugger {
@@ -20,6 +21,7 @@ namespace emu::debugger {
     class DebugContainer;
 }
 namespace emu::debugger {
+    template<class A>
     class Debugger;
 }
 namespace emu::logging {
@@ -86,7 +88,7 @@ namespace emu::applications::space_invaders {
         }
     }
 
-    void GuiImgui::attach_debugger(std::shared_ptr<Debugger> debugger) {
+    void GuiImgui::attach_debugger(std::shared_ptr<Debugger<u16>> debugger) {
         m_disassembly.attach_debugger(debugger);
     }
 

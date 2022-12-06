@@ -39,7 +39,7 @@ namespace emu::applications::space_invaders {
 
         virtual void update_debug_only() = 0;
 
-        virtual void attach_debugger(std::shared_ptr<Debugger> debugger) = 0;
+        virtual void attach_debugger(std::shared_ptr<Debugger<u16>> debugger) = 0;
 
         virtual void attach_debug_container(DebugContainer<u16, u8> &debug_container) = 0;
 

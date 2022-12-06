@@ -10,8 +10,8 @@
 #include "crosscutting/gui/main_panes/terminal_pane.h"
 #include "crosscutting/misc/run_status.h"
 #include "crosscutting/misc/uinteger.h"
-#include "terminal_input_state.h"
 #include "lmc_memory_editor.h"
+#include "terminal_input_state.h"
 #include "ui.h"
 #include <SDL_video.h>
 #include <memory>
@@ -23,6 +23,7 @@ namespace emu::debugger {
     class DebugContainer;
 }
 namespace emu::debugger {
+    template<class A>
     class Debugger;
 }
 namespace emu::lmc {
@@ -68,7 +69,7 @@ namespace emu::applications::lmc {
 
         void update_debug_only(TerminalInputState terminal_input_state) override;
 
-        void attach_debugger(std::shared_ptr<Debugger> debugger) override;
+        void attach_debugger(std::shared_ptr<Debugger<Address>> debugger) override;
 
         void attach_debug_container(DebugContainer<Address, Data> &debug_container) override;
 
@@ -98,7 +99,7 @@ namespace emu::applications::lmc {
         std::shared_ptr<Logger> m_logger;
 
         DebugLogPane m_log;
-        DisassemblyPane m_disassembly;
+        DisassemblyPane<Address, Data> m_disassembly;
         CpuInfoPane<Address, Data> m_cpu_info;
         LmcMemoryEditor m_memory_editor;
         CodeEditorPane<Address, Data> m_code_editor;

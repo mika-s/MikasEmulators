@@ -293,12 +293,12 @@ namespace emu::debugger {
             return m_is_interrupt_mode_set;
         }
 
-        void add_disassembled_program(std::vector<DisassembledLine> disassembled_program) {
+        void add_disassembled_program(std::vector<DisassembledLine<A>> disassembled_program) {
             m_disassembled_program = std::move(disassembled_program);
             m_is_disassembled_program_set = true;
         }
 
-        std::vector<DisassembledLine> disassembled_program() {
+        std::vector<DisassembledLine<A>> disassembled_program() {
             return m_disassembled_program;
         }
 
@@ -394,7 +394,7 @@ namespace emu::debugger {
         std::function<std::string()> m_interrupt_mode_retriever;
         bool m_is_interrupt_mode_set{false};
 
-        std::vector<DisassembledLine> m_disassembled_program;
+        std::vector<DisassembledLine<A>> m_disassembled_program;
         bool m_is_disassembled_program_set{false};
 
         std::vector<std::vector<std::shared_ptr<Tile>>> m_tiles;

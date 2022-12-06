@@ -16,6 +16,7 @@
 #include <cstdlib>
 #include <fmt/core.h>
 #include <string>
+#include <unordered_map>
 #include <utility>
 
 namespace emu::debugger {
@@ -23,6 +24,7 @@ namespace emu::debugger {
     class DebugContainer;
 }
 namespace emu::debugger {
+    template<class A>
     class Debugger;
 }
 namespace emu::logging {
@@ -125,13 +127,13 @@ namespace emu::applications::lmc {
         }
     }
 
-    void GuiImgui::attach_debugger(std::shared_ptr<Debugger> debugger) {
+    void GuiImgui::attach_debugger(std::shared_ptr<Debugger<Address>> debugger) {
         m_disassembly.attach_debugger(debugger);
     }
 
     void GuiImgui::attach_debug_container(DebugContainer<Address, Data> &debug_container) {
         m_cpu_info.attach_debug_container(debug_container);
-        //        m_disassembly.attach_debug_container(debug_container);
+        m_disassembly.attach_debug_container(debug_container);
         m_memory_editor.attach_debug_container(debug_container);
         m_code_editor.attach_debug_container(debug_container);
     }

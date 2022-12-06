@@ -1,5 +1,7 @@
 #include "chips/trivial/lmc/usings.h"
+#include "crosscutting/misc/uinteger.h"
 #include "flags.h"
+#include <iostream>
 
 namespace emu::lmc {
 
@@ -17,5 +19,10 @@ namespace emu::lmc {
         if (!flag_reg.is_negative_flag_set()) {
             pc = address;
         }
+    }
+
+    void print_brp(std::ostream &ostream, Address address) {
+        ostream << "BRP "
+                << address;
     }
 }

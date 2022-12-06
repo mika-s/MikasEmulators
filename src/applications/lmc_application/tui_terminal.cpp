@@ -42,7 +42,7 @@ namespace emu::applications::lmc {
         );
     }
 
-    void TuiTerminal::attach_debugger([[maybe_unused]] std::shared_ptr<Debugger> debugger) {
+    void TuiTerminal::attach_debugger([[maybe_unused]] std::shared_ptr<Debugger<Address>> debugger) {
     }
 
     void TuiTerminal::attach_debug_container([[maybe_unused]] DebugContainer<Address, Data> &debug_container) {

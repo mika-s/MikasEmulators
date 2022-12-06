@@ -6,8 +6,8 @@
 #include "crosscutting/memory/next_word.h"
 #include "crosscutting/typedefs.h"
 #include "flags.h"
+#include "opcode.h"
 #include "out_type.h"
-#include <cstddef>
 #include <vector>
 
 namespace emu::memory {
@@ -68,7 +68,6 @@ namespace emu::lmc {
         bool m_is_halted;
 
         EmulatorMemory<Address, Data> &m_memory;
-        std::size_t m_memory_size;
 
         Address m_pc;
         Data m_acc_reg;
@@ -78,6 +77,10 @@ namespace emu::lmc {
         std::vector<InObserver *> m_in_observers;
 
         Data get_next_value();
+
+        static Address find_argument(Data raw_opcode);
+
+        static Opcode find_opcode(Data raw_opcode);
 
         void notify_out_observers(Data acc_reg, OutType out_type);
 

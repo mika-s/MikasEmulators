@@ -3,6 +3,8 @@
 
 #include "crosscutting/typedefs.h"
 #include <cstddef>
+#include <cstdlib>
+#include <iomanip>
 #include <ostream>
 #include <vector>
 
@@ -98,8 +100,17 @@ namespace emu::misc {
             return m_value > rhs.m_value;
         }
 
+        /* From Stack Overflow: https://stackoverflow.com/a/1498561/8574934
+         * By user Brad: https://stackoverflow.com/users/180638/brad
+         * Under licence CC BY-SA 2.5: https://creativecommons.org/licenses/by-sa/2.5/ */
+        static int num_digits(int x) {
+            x = abs(x);
+            return (x < 10 ? 1 : (x < 100 ? 2 : (x < 1000 ? 3 : (x < 10000 ? 4 : (x < 100000 ? 5 : (x < 1000000 ? 6 : (x < 10000000 ? 7 : (x < 100000000 ? 8 : (x < 1000000000 ? 9 : 10)))))))));
+        }
+
         friend std::ostream &operator<<(std::ostream &os, const UInteger<M> &rhs) {
-            os << rhs.m_value;
+            int num = num_digits(static_cast<int>(M));
+            os << std::setw(num) << std::setfill('0') << rhs.m_value;
             return os;
         }
 

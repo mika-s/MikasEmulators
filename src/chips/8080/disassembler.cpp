@@ -8,6 +8,7 @@
 
 namespace emu::i8080 {
 
+    using emu::exceptions::UnrecognizedOpcodeException;
     using emu::util::string::hexify_wo_0x;
 
     Disassembler::Disassembler(EmulatorMemory<u16, u8> &memory, std::ostream &ostream)
@@ -799,7 +800,7 @@ namespace emu::i8080 {
                 print_rst(m_ostream, 7);
                 break;
             default:
-                throw emu::exceptions::UnrecognizedOpcodeException(m_opcode);
+                throw UnrecognizedOpcodeException(m_opcode);
         }
 
         m_ostream << "\n";

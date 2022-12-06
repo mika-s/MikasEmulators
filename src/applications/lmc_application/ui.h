@@ -47,7 +47,7 @@ namespace emu::applications::lmc {
 
         virtual void update_debug_only(TerminalInputState terminal_input_state) = 0;
 
-        virtual void attach_debugger(std::shared_ptr<Debugger> debugger) = 0;
+        virtual void attach_debugger(std::shared_ptr<Debugger<Address>> debugger) = 0;
 
         virtual void attach_debug_container(DebugContainer<Address, Data> &debug_container) = 0;
 

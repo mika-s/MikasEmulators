@@ -1,22 +1,27 @@
 #include "lmc_application_session.h"
 #include "chips/trivial/lmc/assembler/assembler.h"
 #include "chips/trivial/lmc/cpu.h"
+#include "chips/trivial/lmc/disassembler.h"
 #include "chips/trivial/lmc/out_type.h"
 #include "chips/trivial/lmc/usings.h"
 #include "crosscutting/debugging/debugger.h"
+#include "crosscutting/debugging/disassembled_line.h"
 #include "crosscutting/logging/logger.h"
 #include "crosscutting/misc/run_status.h"
 #include "crosscutting/misc/sdl_counter.h"
 #include "crosscutting/misc/uinteger.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
+#include "crosscutting/util/string_util.h"
 #include "interfaces/input.h"
 #include "terminal_input_state.h"
 #include "ui.h"
+#include <algorithm>
 #include <cstddef>
 #include <exception>
 #include <functional>
 #include <iostream>
+#include <iterator>
 #include <stdexcept>
 #include <tuple>
 #include <utility>
@@ -24,12 +29,14 @@
 
 namespace emu::applications::lmc {
 
+    using emu::debugger::DisassembledLine;
     using emu::debugger::FlagRegisterDebugContainer;
     using emu::debugger::MemoryDebugContainer;
     using emu::debugger::RegisterDebugContainer;
     using emu::lmc::Address;
     using emu::lmc::Assembler;
     using emu::lmc::Data;
+    using emu::lmc::Disassembler;
     using emu::lmc::OutType;
     using emu::misc::sdl_get_ticks_high_performance;
     using emu::misc::RunStatus::FINISHED;
@@ -38,6 +45,7 @@ namespace emu::applications::lmc {
     using emu::misc::RunStatus::RUNNING;
     using emu::misc::RunStatus::STEPPING;
     using emu::util::byte::to_u16;
+    using emu::util::string::split;
 
     LmcApplicationSession::LmcApplicationSession(
             bool is_only_run_once,
@@ -62,7 +70,7 @@ namespace emu::applications::lmc {
           m_loaded_file(std::move(loaded_file)),
           m_file_content(std::move(file_content)),
           m_logger(std::make_shared<Logger>()),
-          m_debugger(std::make_shared<Debugger>()),
+          m_debugger(std::make_shared<Debugger<Address>>()),
           m_governor(Governor(tick_limit, sdl_get_ticks_high_performance)) {
         setup_cpu();
         setup_debugging();
@@ -111,7 +119,7 @@ namespace emu::applications::lmc {
                     m_run_status = m_is_only_run_once ? FINISHED : PAUSED;
                 }
                 ++cycles;
-                if (m_is_in_debug_mode && m_debugger->has_breakpoint(m_cpu->pc().underlying())) {
+                if (m_is_in_debug_mode && m_debugger->has_breakpoint(m_cpu->pc())) {
                     m_logger->info("Breakpoint hit: 0x%04x", m_cpu->pc());
                     m_run_status = STEPPING;
                     return;
@@ -278,7 +286,7 @@ namespace emu::applications::lmc {
                 {{"n", 0}}
         ));
         m_debug_container.add_memory(MemoryDebugContainer<Data>([&]() { return memory(); }));
-        //        m_debug_container.add_disassembled_program(disassemble_program());
+        m_debug_container.add_disassembled_program(disassemble_program());
         m_debug_container.add_file_content([&]() { return m_file_content; });
 
         m_gui->attach_debugger(m_debugger);
@@ -288,5 +296,27 @@ namespace emu::applications::lmc {
 
     std::vector<Data> LmcApplicationSession::memory() {
         return {m_memory.begin(), m_memory.end()};
+    }
+
+    std::vector<DisassembledLine<Address>> LmcApplicationSession::disassemble_program() {
+        std::stringstream ss;
+        Disassembler disassembler(m_memory, ss);
+        disassembler.disassemble();
+
+        std::vector<std::string> disassembled_program = split(ss, "\n");
+
+        disassembled_program.erase(
+                std::remove_if(disassembled_program.begin(), disassembled_program.end(), [](const std::string &s) { return s.empty(); })
+        );
+
+        std::vector<DisassembledLine<Address>> lines;
+        std::transform(
+                disassembled_program.begin(),
+                disassembled_program.end(),
+                std::back_inserter(lines),
+                [](const std::string &line) { return DisassembledLine<Address>(line); }
+        );
+
+        return lines;
     }
 }

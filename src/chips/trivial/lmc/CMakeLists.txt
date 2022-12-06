@@ -23,6 +23,7 @@ set(SOURCES_LMC_CPP
         assembler/scanner.cpp
         assembler/token.cpp
         cpu.cpp
+        disassembler.cpp
         flags.cpp
         unrecognized_assembly_exception.cpp
         instructions/add.cpp
@@ -62,6 +63,7 @@ set(SOURCES_LMC_H
         assembler/token.h
         assembler/token_kind.h
         cpu.h
+        disassembler.h
         flags.h
         opcode.h
         usings.h

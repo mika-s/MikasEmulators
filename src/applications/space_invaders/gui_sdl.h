@@ -14,6 +14,7 @@ namespace emu::debugger {
     class DebugContainer;
 }
 namespace emu::debugger {
+    template<class A>
     class Debugger;
 }
 namespace emu::i8080 {
@@ -42,7 +43,7 @@ namespace emu::applications::space_invaders {
 
         void update_debug_only() override;
 
-        void attach_debugger(std::shared_ptr<Debugger> debugger) override;
+        void attach_debugger(std::shared_ptr<Debugger<u16>> debugger) override;
 
         void attach_debug_container(DebugContainer<u16, u8> &debug_container) override;
 

@@ -16,6 +16,7 @@ namespace emu::debugger {
     class DebugContainer;
 }
 namespace emu::debugger {
+    template<class A>
     class Debugger;
 }
 namespace emu::gui {
@@ -66,7 +67,7 @@ namespace emu::applications::pacman {
 
         virtual void update_debug_only() = 0;
 
-        virtual void attach_debugger(std::shared_ptr<Debugger> debugger) = 0;
+        virtual void attach_debugger(std::shared_ptr<Debugger<u16>> debugger) = 0;
 
         virtual void attach_debug_container(DebugContainer<u16, u8> &debug_container) = 0;
 
@@ -90,8 +91,8 @@ namespace emu::applications::pacman {
                 std::vector<std::vector<std::shared_ptr<Sprite>>>,
                 std::vector<std::vector<std::shared_ptr<Sprite>>>,
                 std::vector<std::vector<std::shared_ptr<Sprite>>>,
-                std::vector<std::vector<std::shared_ptr<Sprite>>>
-        > sprites();
+                std::vector<std::vector<std::shared_ptr<Sprite>>>>
+        sprites();
 
     protected:
         static constexpr int tile_size = 8;

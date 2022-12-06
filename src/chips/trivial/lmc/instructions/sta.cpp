@@ -1,5 +1,7 @@
 #include "chips/trivial/lmc/usings.h"
 #include "crosscutting/memory/emulator_memory.h"
+#include "crosscutting/misc/uinteger.h"
+#include <iostream>
 
 namespace emu::lmc {
 
@@ -17,5 +19,10 @@ namespace emu::lmc {
      */
     void sta(Data acc_reg, Address address, EmulatorMemory<Address, Data> &memory) {
         memory.write(address, acc_reg);
+    }
+
+    void print_sta(std::ostream &ostream, Address address) {
+        ostream << "STA "
+                << address;
     }
 }

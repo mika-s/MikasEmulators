@@ -3,6 +3,7 @@
 
 #include "chips/trivial/lmc/usings.h"
 #include "crosscutting/debugging/debug_container.h"
+#include "crosscutting/misc/uinteger.h"
 #include <cstddef>
 
 namespace emu::applications::lmc {

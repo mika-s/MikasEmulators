@@ -1,4 +1,6 @@
 #include "chips/trivial/lmc/usings.h"
+#include "crosscutting/misc/uinteger.h"
+#include <iostream>
 
 namespace emu::lmc {
 
@@ -16,5 +18,10 @@ namespace emu::lmc {
         if (acc_reg.underlying() == 0) {
             pc = address;
         }
+    }
+
+    void print_brz(std::ostream &ostream, Address address) {
+        ostream << "BRZ "
+                << address;
     }
 }

@@ -24,7 +24,7 @@ namespace emu::lmc {
             EmulatorMemory<Address, Data> &memory,
             const Address initial_pc
     ) : m_is_halted(false),
-        m_memory(memory), m_memory_size(memory.size()),
+        m_memory(memory),
         m_pc(initial_pc),
         m_acc_reg(0) {}
 
@@ -56,7 +56,7 @@ namespace emu::lmc {
     }
 
     bool Cpu::can_run_next_instruction() const {
-        return m_pc.underlying() < m_memory_size && !m_is_halted;
+        return m_pc != Address(99) && !m_is_halted;
     }
 
     void Cpu::reset_state() {
@@ -71,38 +71,6 @@ namespace emu::lmc {
 
     void Cpu::stop() {
         reset_state();
-    }
-
-    Opcode find_opcode(Data raw_opcode) {
-        if (Data(0) <= raw_opcode && raw_opcode <= Data(99)) {
-            return Opcode::HLT;
-        } else if (Data(100) <= raw_opcode && raw_opcode <= Data(199)) {
-            return Opcode::ADD;
-        } else if (Data(200) <= raw_opcode && raw_opcode <= Data(299)) {
-            return Opcode::SUB;
-        } else if (Data(300) <= raw_opcode && raw_opcode <= Data(399)) {
-            return Opcode::STA;
-        } else if (Data(500) <= raw_opcode && raw_opcode <= Data(599)) {
-            return Opcode::LDA;
-        } else if (Data(600) <= raw_opcode && raw_opcode <= Data(699)) {
-            return Opcode::BRA;
-        } else if (Data(700) <= raw_opcode && raw_opcode <= Data(799)) {
-            return Opcode::BRZ;
-        } else if (Data(800) <= raw_opcode && raw_opcode <= Data(899)) {
-            return Opcode::BRP;
-        } else if (raw_opcode == Data(901)) {
-            return Opcode::INP;
-        } else if (raw_opcode <= Data(902)) {
-            return Opcode::OUT;
-        } else if (raw_opcode <= Data(922)) {
-            return Opcode::OTC;
-        } else {
-            throw UnrecognizedOpcodeException(raw_opcode.underlying());
-        }
-    }
-
-    Address find_argument(Data raw_opcode) {
-        return Address(raw_opcode.underlying());
     }
 
     void Cpu::next_instruction() {
@@ -170,6 +138,38 @@ namespace emu::lmc {
 
     void Cpu::input(Data value) {
         m_acc_reg = value;
+    }
+
+    Address Cpu::find_argument(Data raw_opcode) {
+        return Address(raw_opcode.underlying());
+    }
+
+    Opcode Cpu::find_opcode(Data raw_opcode) {
+        if (Data(0) <= raw_opcode && raw_opcode <= Data(99)) {
+            return Opcode::HLT;
+        } else if (Data(100) <= raw_opcode && raw_opcode <= Data(199)) {
+            return Opcode::ADD;
+        } else if (Data(200) <= raw_opcode && raw_opcode <= Data(299)) {
+            return Opcode::SUB;
+        } else if (Data(300) <= raw_opcode && raw_opcode <= Data(399)) {
+            return Opcode::STA;
+        } else if (Data(500) <= raw_opcode && raw_opcode <= Data(599)) {
+            return Opcode::LDA;
+        } else if (Data(600) <= raw_opcode && raw_opcode <= Data(699)) {
+            return Opcode::BRA;
+        } else if (Data(700) <= raw_opcode && raw_opcode <= Data(799)) {
+            return Opcode::BRZ;
+        } else if (Data(800) <= raw_opcode && raw_opcode <= Data(899)) {
+            return Opcode::BRP;
+        } else if (raw_opcode == Data(901)) {
+            return Opcode::INP;
+        } else if (raw_opcode <= Data(902)) {
+            return Opcode::OUT;
+        } else if (raw_opcode <= Data(922)) {
+            return Opcode::OTC;
+        } else {
+            throw UnrecognizedOpcodeException(raw_opcode.underlying());
+        }
     }
 
     void Cpu::notify_out_observers(Data acc_reg, OutType out_type) {

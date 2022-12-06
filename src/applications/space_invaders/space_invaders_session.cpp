@@ -58,7 +58,7 @@ namespace emu::applications::space_invaders {
           m_input(std::move(input)),
           m_memory(memory),
           m_logger(std::make_shared<Logger>()),
-          m_debugger(std::make_shared<Debugger>()),
+          m_debugger(std::make_shared<Debugger<u16>>()),
           m_governor(Governor(tick_limit, sdl_get_ticks_high_performance)) {
         setup_cpu();
         setup_debugging();
@@ -373,7 +373,7 @@ namespace emu::applications::space_invaders {
         return {m_memory.begin(), m_memory.begin() + 0x3fff + 1};
     }
 
-    std::vector<DisassembledLine> SpaceInvadersSession::disassemble_program() {
+    std::vector<DisassembledLine<u16>> SpaceInvadersSession::disassemble_program() {
         EmulatorMemory<u16, u8> sliced_for_disassembly = m_memory.slice(0, 0x2000);
 
         std::stringstream ss;
@@ -386,12 +386,12 @@ namespace emu::applications::space_invaders {
                 std::remove_if(disassembled_program.begin(), disassembled_program.end(), [](const std::string &s) { return s.empty(); })
         );
 
-        std::vector<DisassembledLine> lines;
+        std::vector<DisassembledLine<u16>> lines;
         std::transform(
                 disassembled_program.begin(),
                 disassembled_program.end(),
                 std::back_inserter(lines),
-                [](const std::string &line) { return DisassembledLine(line); }
+                [](const std::string &line) { return DisassembledLine<u16>(line); }
         );
 
         return lines;

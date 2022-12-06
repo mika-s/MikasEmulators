@@ -27,9 +27,11 @@ namespace emu::applications::pacman {
     class MemoryMappedIoForPacman;
 }
 namespace emu::debugger {
+    template<class A>
     class Debugger;
 }
 namespace emu::debugger {
+    template<class A>
     class DisassembledLine;
 }
 namespace emu::logging {
@@ -117,7 +119,7 @@ namespace emu::applications::pacman {
         EmulatorMemory<u16, u8> &m_memory;
 
         std::shared_ptr<Logger> m_logger;
-        std::shared_ptr<Debugger> m_debugger;
+        std::shared_ptr<Debugger<u16>> m_debugger;
         DebugContainer<u16, u8> m_debug_container;
         std::unordered_map<u8, u8> m_outputs_during_cycle;
 
@@ -143,7 +145,7 @@ namespace emu::applications::pacman {
 
         std::vector<u8> memory();
 
-        std::vector<DisassembledLine> disassemble_program();
+        std::vector<DisassembledLine<u16>> disassemble_program();
     };
 }
 

@@ -15,6 +15,15 @@ namespace emu::lmc {
     void brz(Data acc_reg, Address &pc, Address address);
     void brp(Address &pc, Address address, Flags flag_reg);
     void hlt(bool &is_halted);
+
+    void print_add(std::ostream &ostream, Address address);
+    void print_bra(std::ostream &ostream, Address address);
+    void print_brp(std::ostream &ostream, Address address);
+    void print_brz(std::ostream &ostream, Address address);
+    void print_hlt(std::ostream &ostream);
+    void print_lda(std::ostream &ostream, Address address);
+    void print_sta(std::ostream &ostream, Address address);
+    void print_sub(std::ostream &ostream, Address address);
 }
 
 #endif //MIKA_EMULATORS_CHIPS_LMC_INSTRUCTIONS_INSTRUCTIONS_H

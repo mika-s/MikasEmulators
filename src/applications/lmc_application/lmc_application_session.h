@@ -25,7 +25,12 @@ namespace emu::applications::lmc {
     class Input;
 }
 namespace emu::debugger {
+    template<class A>
     class Debugger;
+}
+namespace emu::debugger {
+    template<class A>
+    class DisassembledLine;
 }
 namespace emu::lmc {
     class Cpu;
@@ -38,6 +43,7 @@ namespace emu::applications::lmc {
 
     using emu::debugger::DebugContainer;
     using emu::debugger::Debugger;
+    using emu::debugger::DisassembledLine;
     using emu::lmc::Address;
     using emu::lmc::Cpu;
     using emu::lmc::Data;
@@ -116,7 +122,7 @@ namespace emu::applications::lmc {
         std::string m_loaded_file;
         std::string m_file_content;
         std::shared_ptr<Logger> m_logger;
-        std::shared_ptr<Debugger> m_debugger;
+        std::shared_ptr<Debugger<Address>> m_debugger;
         DebugContainer<Address, Data> m_debug_container;
 
         Governor m_governor;
@@ -136,6 +142,8 @@ namespace emu::applications::lmc {
         void setup_debugging();
 
         std::vector<Data> memory();
+
+        std::vector<DisassembledLine<Address>> disassemble_program();
     };
 }
 

@@ -1,3 +1,5 @@
+#include <iostream>
+
 namespace emu::lmc {
 
     /**
@@ -10,5 +12,9 @@ namespace emu::lmc {
      */
     void hlt(bool &is_halted) {
         is_halted = true;
+    }
+
+    void print_hlt(std::ostream &ostream) {
+        ostream << "HLT";
     }
 }

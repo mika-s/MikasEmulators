@@ -14,6 +14,7 @@ namespace emu::debugger {
     class DebugContainer;
 }
 namespace emu::debugger {
+    template<class A>
     class Debugger;
 }
 namespace emu::lmc {
@@ -47,7 +48,7 @@ namespace emu::applications::lmc {
 
         void update_debug_only(TerminalInputState terminal_input_state) override;
 
-        void attach_debugger(std::shared_ptr<Debugger> debugger) override;
+        void attach_debugger(std::shared_ptr<Debugger<Address>> debugger) override;
 
         void attach_debug_container(DebugContainer<Address, Data> &debug_container) override;
 

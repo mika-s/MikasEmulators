@@ -1,4 +1,6 @@
 #include "chips/trivial/lmc/usings.h"
+#include "crosscutting/misc/uinteger.h"
+#include <iostream>
 
 namespace emu::lmc {
 
@@ -13,5 +15,10 @@ namespace emu::lmc {
      */
     void bra(Address &pc, Address address) {
         pc = address;
+    }
+
+    void print_bra(std::ostream &ostream, Address address) {
+        ostream << "BRA "
+                << address;
     }
 }
