@@ -20,11 +20,11 @@
 #include <utility>
 
 namespace emu::debugger {
-    template<class A, class D>
+    template<class A, class D, std::size_t B>
     class DebugContainer;
 }
 namespace emu::debugger {
-    template<class A>
+    template<class A, std::size_t B>
     class Debugger;
 }
 namespace emu::logging {
@@ -127,11 +127,11 @@ namespace emu::applications::lmc {
         }
     }
 
-    void GuiImgui::attach_debugger(std::shared_ptr<Debugger<Address>> debugger) {
+    void GuiImgui::attach_debugger(std::shared_ptr<Debugger<Address, 10>> debugger) {
         m_disassembly.attach_debugger(debugger);
     }
 
-    void GuiImgui::attach_debug_container(std::shared_ptr<DebugContainer<Address, Data>> debug_container) {
+    void GuiImgui::attach_debug_container(std::shared_ptr<DebugContainer<Address, Data, 10>> debug_container) {
         m_cpu_info.attach_debug_container(debug_container);
         m_disassembly.attach_debug_container(debug_container);
         m_memory_editor.attach_debug_container(debug_container);

@@ -13,6 +13,7 @@
 #include "crosscutting/misc/uinteger.h"
 #include "crosscutting/typedefs.h"
 #include "terminal_input_state.h"
+#include <cstddef>
 #include <memory>
 #include <string>
 #include <vector>
@@ -24,15 +25,15 @@ namespace emu::applications::lmc {
     class Input;
 }
 namespace emu::debugger {
-    template<class A, class D>
+    template<class A, class D, std::size_t B>
     class DebugContainer;
 }
 namespace emu::debugger {
-    template<class A>
+    template<class A, std::size_t B>
     class Debugger;
 }
 namespace emu::debugger {
-    template<class A>
+    template<class A, std::size_t B>
     class DisassembledLine;
 }
 namespace emu::lmc {
@@ -125,8 +126,8 @@ namespace emu::applications::lmc {
         std::string m_loaded_file;
         std::string m_file_content;
         std::shared_ptr<Logger> m_logger;
-        std::shared_ptr<Debugger<Address>> m_debugger;
-        std::shared_ptr<DebugContainer<Address, Data>> m_debug_container;
+        std::shared_ptr<Debugger<Address, 10>> m_debugger;
+        std::shared_ptr<DebugContainer<Address, Data, 10>> m_debug_container;
 
         Governor m_governor;
 
@@ -146,7 +147,7 @@ namespace emu::applications::lmc {
 
         std::vector<Data> memory();
 
-        std::vector<DisassembledLine<Address>> disassemble_program();
+        std::vector<DisassembledLine<Address, 10>> disassemble_program();
     };
 }
 

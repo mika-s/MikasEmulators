@@ -6,15 +6,16 @@
 #include "crosscutting/misc/run_status.h"
 #include "lmc_application/terminal_input_state.h"
 #include "ui.h"
+#include <cstddef>
 #include <memory>
 #include <vector>
 
 namespace emu::debugger {
-    template<class A, class D>
+    template<class A, class D, std::size_t B>
     class DebugContainer;
 }
 namespace emu::debugger {
-    template<class A>
+    template<class A, std::size_t B>
     class Debugger;
 }
 namespace emu::lmc {
@@ -48,9 +49,9 @@ namespace emu::applications::lmc {
 
         void update_debug_only(TerminalInputState terminal_input_state) override;
 
-        void attach_debugger(std::shared_ptr<Debugger<Address>> debugger) override;
+        void attach_debugger(std::shared_ptr<Debugger<Address, 10>> debugger) override;
 
-        void attach_debug_container(std::shared_ptr<DebugContainer<Address, Data>> debug_container) override;
+        void attach_debug_container(std::shared_ptr<DebugContainer<Address, Data, 10>> debug_container) override;
 
         void attach_logger(std::shared_ptr<Logger> logger) override;
 

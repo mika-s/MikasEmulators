@@ -9,12 +9,12 @@ namespace emu::gui {
 
     using emu::debugger::DebugContainer;
 
-    template<class A, class D>
+    template<class A, class D, std::size_t B>
     class MemoryEditorPane {
     public:
         MemoryEditorPane() = default;
 
-        void attach_debug_container(std::shared_ptr<DebugContainer<A, D>> debug_container) {
+        void attach_debug_container(std::shared_ptr<DebugContainer<A, D, B>> debug_container) {
             m_debug_container = debug_container;
             m_is_debug_container_set = true;
         }
@@ -41,7 +41,7 @@ namespace emu::gui {
 
     private:
         MemoryEditor m_memory_editor;
-        std::shared_ptr<DebugContainer<A, D>> m_debug_container;
+        std::shared_ptr<DebugContainer<A, D, B>> m_debug_container;
         bool m_is_debug_container_set{false};
     };
 }

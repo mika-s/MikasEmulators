@@ -5,13 +5,13 @@
 #include <string>
 
 namespace emu::debugger {
-    template<class A>
+    template<class A, std::size_t B>
     class DisassembledLine;
 }
 
 namespace emu::debugger {
 
-    template<class A>
+    template<class A, std::size_t B>
     class Breakpoint {
     public:
         Breakpoint(A address, std::string line)
@@ -19,7 +19,7 @@ namespace emu::debugger {
               m_line(std::move(line)) {
         }
 
-        explicit Breakpoint(DisassembledLine<A> line)
+        explicit Breakpoint(DisassembledLine<A, B> line)
             : Breakpoint(line.address(), line.full_line()) {
         }
 

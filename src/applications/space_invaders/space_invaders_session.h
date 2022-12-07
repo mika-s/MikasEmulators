@@ -12,6 +12,7 @@
 #include "crosscutting/typedefs.h"
 #include "interfaces/io_observer.h"
 #include "space_invaders/io_request.h"
+#include <cstddef>
 #include <memory>
 #include <unordered_map>
 #include <vector>
@@ -26,15 +27,15 @@ namespace emu::applications::space_invaders {
     class Settings;
 }
 namespace emu::debugger {
-    template<class A, class D>
+    template<class A, class D, std::size_t B>
     class DebugContainer;
 }
 namespace emu::debugger {
-    template<class A>
+    template<class A, std::size_t B>
     class Debugger;
 }
 namespace emu::debugger {
-    template<class A>
+    template<class A, std::size_t B>
     class DisassembledLine;
 }
 namespace emu::i8080 {
@@ -113,8 +114,8 @@ namespace emu::applications::space_invaders {
         EmulatorMemory<u16, u8> &m_memory;
 
         std::shared_ptr<Logger> m_logger;
-        std::shared_ptr<Debugger<u16>> m_debugger;
-        std::shared_ptr<DebugContainer<u16, u8>> m_debug_container;
+        std::shared_ptr<Debugger<u16, 16>> m_debugger;
+        std::shared_ptr<DebugContainer<u16, u8, 16>> m_debug_container;
         std::unordered_map<u8, u8> m_outputs_during_cycle;
 
         Governor m_governor;
@@ -158,7 +159,7 @@ namespace emu::applications::space_invaders {
 
         std::vector<u8> memory();
 
-        std::vector<DisassembledLine<u16>> disassemble_program();
+        std::vector<DisassembledLine<u16, 16>> disassemble_program();
     };
 }
 

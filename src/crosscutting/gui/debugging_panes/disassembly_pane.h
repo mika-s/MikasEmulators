@@ -11,7 +11,7 @@
 #include <vector>
 
 namespace emu::debugger {
-    template<class A>
+    template<class A, std::size_t B>
     class Debugger;
 }
 namespace emu::logging {
@@ -25,17 +25,17 @@ namespace emu::gui {
     using emu::debugger::Debugger;
     using emu::logging::Logger;
 
-    template<class A, class D>
+    template<class A, class D, std::size_t B>
     class DisassemblyPane {
     public:
         DisassemblyPane() = default;
 
-        void attach_debugger(std::shared_ptr<Debugger<A>> debugger) {
+        void attach_debugger(std::shared_ptr<Debugger<A, B>> debugger) {
             m_debugger = std::move(debugger);
             m_is_debugger_set = true;
         }
 
-        void attach_debug_container(std::shared_ptr<DebugContainer<A, D>> debug_container) {
+        void attach_debug_container(std::shared_ptr<DebugContainer<A, D, B>> debug_container) {
             m_debug_container = std::move(debug_container);
             m_is_debug_container_set = true;
         }
@@ -75,8 +75,8 @@ namespace emu::gui {
         static constexpr int max_address_size = 9;
         static constexpr int address_base = 16;
 
-        std::shared_ptr<Debugger<A>> m_debugger;
-        std::shared_ptr<DebugContainer<A, D>> m_debug_container;
+        std::shared_ptr<Debugger<A, B>> m_debugger;
+        std::shared_ptr<DebugContainer<A, D, B>> m_debug_container;
         std::shared_ptr<Logger> m_logger;
         bool m_is_debugger_set{false};
         bool m_is_debug_container_set{false};
@@ -244,7 +244,7 @@ namespace emu::gui {
                                     m_logger->info("Removing breakpoint: 0x%04x", address);
                                 }
                             } else {
-                                m_debugger->add_breakpoint(address, Breakpoint<A>(line));
+                                m_debugger->add_breakpoint(address, Breakpoint<A, B>(line));
                                 if (m_debug_container->is_decimal()) {
                                     std::stringstream ss;
                                     ss << m_address_to_goto;

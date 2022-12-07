@@ -10,15 +10,16 @@
 #include "crosscutting/typedefs.h"
 #include "gui.h"
 #include <SDL_video.h>
+#include <cstddef>
 #include <memory>
 #include <vector>
 
 namespace emu::debugger {
-    template<class A, class D>
+    template<class A, class D, std::size_t B>
     class DebugContainer;
 }
 namespace emu::debugger {
-    template<class A>
+    template<class A, std::size_t B>
     class Debugger;
 }
 namespace emu::i8080 {
@@ -53,9 +54,9 @@ namespace emu::applications::space_invaders {
 
         void update_debug_only() override;
 
-        void attach_debugger(std::shared_ptr<Debugger<u16>> debugger) override;
+        void attach_debugger(std::shared_ptr<Debugger<u16, 16>> debugger) override;
 
-        void attach_debug_container(std::shared_ptr<DebugContainer<u16, u8>> debug_container) override;
+        void attach_debug_container(std::shared_ptr<DebugContainer<u16, u8, 16>> debug_container) override;
 
         void attach_logger(std::shared_ptr<Logger> logger) override;
 
@@ -79,10 +80,10 @@ namespace emu::applications::space_invaders {
         std::shared_ptr<Logger> m_logger;
 
         DebugLogPane m_log;
-        DisassemblyPane<u16, u8> m_disassembly;
-        CpuInfoPane<u16, u8> m_cpu_info;
-        IoInfoPane<u16, u8> m_io_info;
-        MemoryEditorPane<u16, u8> m_memory_editor;
+        DisassemblyPane<u16, u8, 16> m_disassembly;
+        CpuInfoPane<u16, u8, 16> m_cpu_info;
+        IoInfoPane<u16, u8, 16> m_io_info;
+        MemoryEditorPane<u16, u8, 16> m_memory_editor;
 
         void notify_gui_observers_about_run_status(RunStatus new_status);
 

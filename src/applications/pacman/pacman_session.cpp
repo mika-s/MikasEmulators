@@ -61,7 +61,7 @@ namespace emu::applications::pacman {
           m_audio(std::move(audio)),
           m_memory(memory),
           m_logger(std::make_shared<Logger>()),
-          m_debugger(std::make_shared<Debugger<u16>>()),
+          m_debugger(std::make_shared<Debugger<u16, 16>>()),
           m_governor(Governor(tick_limit, sdl_get_ticks_high_performance)) {
         setup_cpu();
         setup_debugging();
@@ -194,7 +194,7 @@ namespace emu::applications::pacman {
     }
 
     void PacmanSession::setup_debugging() {
-        m_debug_container = std::make_shared<DebugContainer<u16, u8>>();
+        m_debug_container = std::make_shared<DebugContainer<u16, u8, 16>>();
         m_debug_container->add_register(RegisterDebugContainer<u8>(
                 "A",
                 [&]() { return m_cpu->a(); },
@@ -388,7 +388,7 @@ namespace emu::applications::pacman {
         return {m_memory.begin(), m_memory.end()};
     }
 
-    std::vector<DisassembledLine<u16>> PacmanSession::disassemble_program() {
+    std::vector<DisassembledLine<u16, 16>> PacmanSession::disassemble_program() {
         EmulatorMemory<u16, u8> sliced_for_disassembly = m_memory.slice(0, 0x3fff);
 
         std::stringstream ss;
@@ -401,12 +401,12 @@ namespace emu::applications::pacman {
                 std::remove_if(disassembled_program.begin(), disassembled_program.end(), [](const std::string &s) { return s.empty(); })
         );
 
-        std::vector<DisassembledLine<u16>> lines;
+        std::vector<DisassembledLine<u16, 16>> lines;
         std::transform(
                 disassembled_program.begin(),
                 disassembled_program.end(),
                 std::back_inserter(lines),
-                [](const std::string &line) { return DisassembledLine<u16>(line); }
+                [](const std::string &line) { return DisassembledLine<u16, 16>(line); }
         );
 
         return lines;

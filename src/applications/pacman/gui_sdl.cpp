@@ -12,11 +12,11 @@
 #include <string>
 
 namespace emu::debugger {
-    template<class A, class D>
+    template<class A, class D, std::size_t B>
     class DebugContainer;
 }
 namespace emu::debugger {
-    template<class A>
+    template<class A, std::size_t B>
     class Debugger;
 }
 namespace emu::logging {
@@ -62,10 +62,10 @@ namespace emu::applications::pacman {
         }
     }
 
-    void GuiSdl::attach_debugger([[maybe_unused]] std::shared_ptr<Debugger<u16>> debugger) {
+    void GuiSdl::attach_debugger([[maybe_unused]] std::shared_ptr<Debugger<u16, 16>> debugger) {
     }
 
-    void GuiSdl::attach_debug_container([[maybe_unused]] std::shared_ptr<DebugContainer<u16, u8>> debug_container) {
+    void GuiSdl::attach_debug_container([[maybe_unused]] std::shared_ptr<DebugContainer<u16, u8, 16>> debug_container) {
     }
 
     void GuiSdl::attach_logger([[maybe_unused]] std::shared_ptr<Logger> logger) {

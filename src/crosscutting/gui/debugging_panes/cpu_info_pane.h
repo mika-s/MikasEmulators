@@ -14,13 +14,13 @@ namespace emu::gui {
     using emu::util::byte::is_bit_set;
     using emu::util::string::hexify;
 
-    template<class A, class D>
+    template<class A, class D, std::size_t B>
     class CpuInfoPane {
     public:
         CpuInfoPane() = default;
 
-        void attach_debug_container(std::shared_ptr<DebugContainer<A, D>> debug_container) {
-            m_debug_container = debug_container;
+        void attach_debug_container(std::shared_ptr<DebugContainer<A, D, B>> debug_container) {
+            m_debug_container = std::move(debug_container);
             m_is_debug_container_set = true;
         }
 
@@ -137,7 +137,7 @@ namespace emu::gui {
         static constexpr float margin_title_right = 120.0f;
         static constexpr float margin_main_right = 240.0f;
 
-        std::shared_ptr<DebugContainer<A, D>> m_debug_container;
+        std::shared_ptr<DebugContainer<A, D, B>> m_debug_container;
         bool m_is_debug_container_set{false};
     };
 }

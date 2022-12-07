@@ -19,10 +19,10 @@ namespace emu::gui {
         virtual void assemble_and_load_request() = 0;
     };
 
-    template<class A, class D>
+    template<class A, class D, std::size_t B>
     class CodeEditorPane {
     public:
-        void attach_debug_container(std::shared_ptr<DebugContainer<A, D>> debug_container) {
+        void attach_debug_container(std::shared_ptr<DebugContainer<A, D, B>> debug_container) {
             m_debug_container = std::move(debug_container);
             m_is_debug_container_set = true;
         }
@@ -77,7 +77,7 @@ namespace emu::gui {
     private:
         static constexpr unsigned int buffer_size = 65536;
 
-        std::shared_ptr<DebugContainer<A, D>> m_debug_container;
+        std::shared_ptr<DebugContainer<A, D, B>> m_debug_container;
         bool m_is_debug_container_set{false};
 
         char buffer[buffer_size]; // NOLINT

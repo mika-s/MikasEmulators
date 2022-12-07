@@ -6,14 +6,15 @@
 #include <cstddef>
 #include <fmt/core.h>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace emu::gui {
 
     WaveformPane::WaveformPane() = default;
 
-    void WaveformPane::attach_debug_container(std::shared_ptr<DebugContainer<u16, u8>> debug_container) {
-        m_debug_container = debug_container;
+    void WaveformPane::attach_debug_container(std::shared_ptr<DebugContainer<u16, u8, 16>> debug_container) {
+        m_debug_container = std::move(debug_container);
         m_is_debug_container_set = true;
     }
 

@@ -71,7 +71,7 @@ namespace emu::applications::lmc {
           m_loaded_file(std::move(loaded_file)),
           m_file_content(std::move(file_content)),
           m_logger(std::make_shared<Logger>()),
-          m_debugger(std::make_shared<Debugger<Address>>()),
+          m_debugger(std::make_shared<Debugger<Address, 10>>()),
           m_governor(Governor(tick_limit, sdl_get_ticks_high_performance)) {
         setup_cpu();
         setup_debugging();
@@ -280,8 +280,7 @@ namespace emu::applications::lmc {
     }
 
     void LmcApplicationSession::setup_debugging() {
-        m_debug_container = std::make_shared<DebugContainer<Address, Data>>();
-        m_debug_container->set_decimal();
+        m_debug_container = std::make_shared<DebugContainer<Address, Data, 10>>();
         m_debug_container->add_register(RegisterDebugContainer<Data>("A", [&]() { return m_cpu->a(); }));
         m_debug_container->add_pc([&]() { return m_cpu->pc(); });
         m_debug_container->add_flag_register(FlagRegisterDebugContainer<Data>(
@@ -302,7 +301,7 @@ namespace emu::applications::lmc {
         return {m_memory.begin(), m_memory.end()};
     }
 
-    std::vector<DisassembledLine<Address>> LmcApplicationSession::disassemble_program() {
+    std::vector<DisassembledLine<Address, 10>> LmcApplicationSession::disassemble_program() {
         std::stringstream ss;
         Disassembler disassembler(m_memory, ss);
         disassembler.disassemble();
@@ -313,12 +312,12 @@ namespace emu::applications::lmc {
                 std::remove_if(disassembled_program.begin(), disassembled_program.end(), [](const std::string &s) { return s.empty(); })
         );
 
-        std::vector<DisassembledLine<Address>> lines;
+        std::vector<DisassembledLine<Address, 10>> lines;
         std::transform(
                 disassembled_program.begin(),
                 disassembled_program.end(),
                 std::back_inserter(lines),
-                [](const std::string &line) { return DisassembledLine<Address>(line); }
+                [](const std::string &line) { return DisassembledLine<Address, 10>(line); }
         );
 
         return lines;

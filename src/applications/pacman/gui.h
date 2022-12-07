@@ -7,16 +7,17 @@
 #include "crosscutting/misc/run_status.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
+#include <cstddef>
 #include <memory>
 #include <tuple>
 #include <vector>
 
 namespace emu::debugger {
-    template<class A, class D>
+    template<class A, class D, std::size_t B>
     class DebugContainer;
 }
 namespace emu::debugger {
-    template<class A>
+    template<class A, std::size_t B>
     class Debugger;
 }
 namespace emu::gui {
@@ -67,9 +68,9 @@ namespace emu::applications::pacman {
 
         virtual void update_debug_only() = 0;
 
-        virtual void attach_debugger(std::shared_ptr<Debugger<u16>> debugger) = 0;
+        virtual void attach_debugger(std::shared_ptr<Debugger<u16, 16>> debugger) = 0;
 
-        virtual void attach_debug_container(std::shared_ptr<DebugContainer<u16, u8>> debug_container) = 0;
+        virtual void attach_debug_container(std::shared_ptr<DebugContainer<u16, u8, 16>> debug_container) = 0;
 
         virtual void attach_logger(std::shared_ptr<Logger> logger) = 0;
 

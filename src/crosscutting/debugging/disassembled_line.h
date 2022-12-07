@@ -6,7 +6,7 @@
 #include <string>
 
 namespace emu::debugger {
-    template<class A>
+    template<class A, std::size_t B>
     class DisassembledLine {
     public:
         explicit DisassembledLine(const std::string &raw_line)
@@ -28,8 +28,6 @@ namespace emu::debugger {
         }
 
     private:
-        static constexpr int address_base = 16;
-
         A m_address;
         std::string m_full_line;
 
@@ -48,7 +46,7 @@ namespace emu::debugger {
                 throw std::runtime_error("Programming error: no elements in split disassembler line");
             }
 
-            return A(std::stoi(split[0], nullptr, address_base));
+            return A(std::stoi(split[0], nullptr, B));
         }
     };
 }

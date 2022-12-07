@@ -171,21 +171,20 @@ namespace emu::debugger {
         std::function<std::vector<D>()> m_value_retriever;
     };
 
-    template<class A, class D>
+    /**
+     * Contains the data that is used in the debugging panes.
+     *
+     * @tparam A is the address type
+     * @tparam D is the data type
+     * @tparam B is the base (hex or decimal)
+     */
+    template<class A, class D, std::size_t B>
     class DebugContainer {
     public:
         DebugContainer() = default;
 
-        void set_decimal() {
-            m_is_decimal = true;
-        }
-
-        [[nodiscard]] bool is_decimal() const {
-            return m_is_decimal;
-        }
-
-        [[nodiscard]] bool is_hex() const {
-            return !m_is_decimal;
+        bool is_decimal() {
+            return B == 10;
         }
 
         void add_register(const RegisterDebugContainer<D> &reg) {
@@ -294,12 +293,12 @@ namespace emu::debugger {
             return m_is_interrupt_mode_set;
         }
 
-        void add_disassembled_program(std::vector<DisassembledLine<A>> disassembled_program) {
+        void add_disassembled_program(std::vector<DisassembledLine<A, B>> disassembled_program) {
             m_disassembled_program = std::move(disassembled_program);
             m_is_disassembled_program_set = true;
         }
 
-        std::vector<DisassembledLine<A>> disassembled_program() {
+        std::vector<DisassembledLine<A, B>> disassembled_program() {
             return m_disassembled_program;
         }
 
@@ -369,8 +368,6 @@ namespace emu::debugger {
         }
 
     private:
-        bool m_is_decimal{false};
-
         std::vector<RegisterDebugContainer<D>> m_register_retrievers;
         bool m_has_alternate_registers{false};
 
@@ -395,7 +392,7 @@ namespace emu::debugger {
         std::function<std::string()> m_interrupt_mode_retriever;
         bool m_is_interrupt_mode_set{false};
 
-        std::vector<DisassembledLine<A>> m_disassembled_program;
+        std::vector<DisassembledLine<A, B>> m_disassembled_program;
         bool m_is_disassembled_program_set{false};
 
         std::vector<std::vector<std::shared_ptr<Tile>>> m_tiles;

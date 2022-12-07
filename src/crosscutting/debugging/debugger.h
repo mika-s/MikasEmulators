@@ -24,10 +24,10 @@ namespace emu::debugger {
         }
     };
 
-    template<class A>
+    template<class A, std::size_t B>
     class Debugger {
     public:
-        void add_breakpoint(A breakpoint_address, Breakpoint<A> breakpoint) {
+        void add_breakpoint(A breakpoint_address, Breakpoint<A, B> breakpoint) {
             m_breakpoints.insert_or_assign(breakpoint_address, std::move(breakpoint));
         }
 
@@ -35,7 +35,7 @@ namespace emu::debugger {
             m_breakpoints.erase(breakpoint_address);
         }
 
-        std::unordered_map<A, Breakpoint<A>, KeyHasher> &breakpoints() {
+        std::unordered_map<A, Breakpoint<A, B>, KeyHasher> &breakpoints() {
             return m_breakpoints;
         }
 
@@ -48,7 +48,7 @@ namespace emu::debugger {
         }
 
     private:
-        std::unordered_map<A, Breakpoint<A>, KeyHasher> m_breakpoints;
+        std::unordered_map<A, Breakpoint<A, B>, KeyHasher> m_breakpoints;
     };
 }
 

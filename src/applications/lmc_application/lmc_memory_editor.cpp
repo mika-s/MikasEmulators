@@ -17,7 +17,7 @@ namespace emu::applications::lmc {
     using emu::lmc::Data;
     using emu::misc::UInteger;
 
-    void LmcMemoryEditor::attach_debug_container(std::shared_ptr<DebugContainer<Address, Data>> debug_container) {
+    void LmcMemoryEditor::attach_debug_container(std::shared_ptr<DebugContainer<Address, Data, 10>> debug_container) {
         m_debug_container = std::move(debug_container);
         m_is_debug_container_set = true;
     }

@@ -1,13 +1,17 @@
 #ifndef MIKA_EMULATORS_CROSSCUTTING_GUI_DEBUGGING_PANES_SPRITEMAP_PANE_H
 #define MIKA_EMULATORS_CROSSCUTTING_GUI_DEBUGGING_PANES_SPRITEMAP_PANE_H
 
-#include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/gui/graphics/framebuffer.h"
 #include "crosscutting/typedefs.h"
 #include "imgui.h"
+#include <cstddef>
 #include <memory>
 #include <vector>
 
+namespace emu::debugger {
+    template<class A, class D, std::size_t B>
+    class DebugContainer;
+}
 namespace emu::gui {
     class Sprite;
 }
@@ -20,7 +24,7 @@ namespace emu::gui {
     public:
         explicit SpritemapPane(int default_palette_idx = 0);
 
-        void attach_debug_container(std::shared_ptr<DebugContainer<u16, u8>> debug_container);
+        void attach_debug_container(std::shared_ptr<DebugContainer<u16, u8, 16>> debug_container);
 
         void draw(const char *title, u32 tile_texture, bool *p_open = nullptr);
 
@@ -33,7 +37,7 @@ namespace emu::gui {
         static constexpr int scaled_width = static_cast<int>(scale * static_cast<float>(width));
         static constexpr int scaled_height = static_cast<int>(scale * static_cast<float>(height));
 
-        std::shared_ptr<DebugContainer<u16, u8>> m_debug_container;
+        std::shared_ptr<DebugContainer<u16, u8, 16>> m_debug_container;
         bool m_is_debug_container_set;
         std::vector<std::vector<Framebuffer>> m_framebuffers;
         int m_chosen_palette_idx;

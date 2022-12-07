@@ -14,16 +14,17 @@
 #include "terminal_input_state.h"
 #include "ui.h"
 #include <SDL_video.h>
+#include <cstddef>
 #include <memory>
 #include <string>
 #include <vector>
 
 namespace emu::debugger {
-    template<class A, class D>
+    template<class A, class D, std::size_t B>
     class DebugContainer;
 }
 namespace emu::debugger {
-    template<class A>
+    template<class A, std::size_t B>
     class Debugger;
 }
 namespace emu::lmc {
@@ -69,9 +70,9 @@ namespace emu::applications::lmc {
 
         void update_debug_only(TerminalInputState terminal_input_state) override;
 
-        void attach_debugger(std::shared_ptr<Debugger<Address>> debugger) override;
+        void attach_debugger(std::shared_ptr<Debugger<Address, 10>> debugger) override;
 
-        void attach_debug_container(std::shared_ptr<DebugContainer<Address, Data>> debug_container) override;
+        void attach_debug_container(std::shared_ptr<DebugContainer<Address, Data, 10>> debug_container) override;
 
         void attach_logger(std::shared_ptr<Logger> logger) override;
 
@@ -99,10 +100,10 @@ namespace emu::applications::lmc {
         std::shared_ptr<Logger> m_logger;
 
         DebugLogPane m_log;
-        DisassemblyPane<Address, Data> m_disassembly;
-        CpuInfoPane<Address, Data> m_cpu_info;
+        DisassemblyPane<Address, Data, 10> m_disassembly;
+        CpuInfoPane<Address, Data, 10> m_cpu_info;
         LmcMemoryEditor m_memory_editor;
-        CodeEditorPane<Address, Data> m_code_editor;
+        CodeEditorPane<Address, Data, 10> m_code_editor;
         TerminalPane m_terminal;
 
         std::vector<std::string> m_output;
