@@ -5,11 +5,12 @@
 
 namespace emu::applications::command_line_arguments {
 
-    std::string Identifier::parse(Scanner &scanner) {
-        std::string literal = scanner.current_token().string_literal();
+std::string Identifier::parse(Scanner& scanner)
+{
+    std::string literal = scanner.current_token().string_literal();
 
-        scanner.skip(TokenKind::Identifier);
+    scanner.skip(TokenKind::Identifier);
 
-        return literal;
-    }
+    return literal;
+}
 }

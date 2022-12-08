@@ -1,5 +1,4 @@
-#ifndef MIKA_EMULATORS_CHIPS_LMC_ASSEMBLER_LMC_LDA_H
-#define MIKA_EMULATORS_CHIPS_LMC_ASSEMBLER_LMC_LDA_H
+#pragma once
 
 #include "instruction_interface.h"
 #include "lmc_operand.h"
@@ -7,28 +6,26 @@
 #include <memory>
 
 namespace emu::lmc {
-    class Scanner;
+class Scanner;
 }
 namespace emu::lmc {
-    class Environment;
+class Environment;
 }
 
 namespace emu::lmc {
 
-    class LmcLda : public InstructionInterface {
+class LmcLda : public InstructionInterface {
 
-    public:
-        explicit LmcLda(LmcOperand operand);
+public:
+    explicit LmcLda(LmcOperand operand);
 
-        Data eval() override;
+    Data eval() override;
 
-        static std::unique_ptr<InstructionInterface> parse(Scanner &scanner, Environment &environment);
+    static std::unique_ptr<InstructionInterface> parse(Scanner& scanner, Environment& environment);
 
-    private:
-        static const inline Data opcode = Data(500);
+private:
+    static const inline Data opcode = Data(500);
 
-        LmcOperand m_operand;
-    };
+    LmcOperand m_operand;
+};
 }
-
-#endif //MIKA_EMULATORS_CHIPS_LMC_ASSEMBLER_LMC_LDA_H

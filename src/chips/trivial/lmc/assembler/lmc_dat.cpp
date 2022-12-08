@@ -6,33 +6,36 @@
 #include <memory>
 
 namespace emu::lmc {
-    class InstructionInterface;
+class InstructionInterface;
 }
 
 namespace emu::lmc {
 
-    LmcDat::LmcDat(std::optional<LmcInteger> operand)
-        : m_operand(operand) {
+LmcDat::LmcDat(std::optional<LmcInteger> operand)
+    : m_operand(operand)
+{
+}
+
+Data LmcDat::eval()
+{
+    if (m_operand.has_value()) {
+        return m_operand->eval();
+    } else {
+        return Data(0);
+    }
+}
+
+std::unique_ptr<InstructionInterface> LmcDat::parse(Scanner& scanner)
+{
+    scanner.skip(TokenKind::Dat);
+
+    std::optional<LmcInteger> operand;
+    if (scanner.current_token().kind() == TokenKind::Integer) {
+        operand = std::optional(LmcInteger::parse(scanner));
+    } else {
+        operand = std::nullopt;
     }
 
-    Data LmcDat::eval() {
-        if (m_operand.has_value()) {
-            return m_operand->eval();
-        } else {
-            return Data(0);
-        }
-    }
-
-    std::unique_ptr<InstructionInterface> LmcDat::parse(Scanner &scanner) {
-        scanner.skip(TokenKind::Dat);
-
-        std::optional<LmcInteger> operand;
-        if (scanner.current_token().kind() == TokenKind::Integer) {
-            operand = std::optional(LmcInteger::parse(scanner));
-        } else {
-            operand = std::nullopt;
-        }
-
-        return std::make_unique<LmcDat>(operand);
-    }
+    return std::make_unique<LmcDat>(operand);
+}
 }

@@ -3,9 +3,10 @@
 
 namespace emu::debugger {
 
-    BasicBlock::BasicBlock() = default;
+BasicBlock::BasicBlock() = default;
 
-    BasicBlock::BasicBlock(std::vector<DisassembledLine> lines)
-        : m_lines(std::move(lines)) {
-    }
+BasicBlock::BasicBlock(std::vector<DisassembledLine> lines)
+    : m_lines(std::move(lines))
+{
+}
 }

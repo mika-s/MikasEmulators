@@ -72,7 +72,7 @@ add_library(Crosscutting STATIC ${SOURCES_CROSSCUTTING_CPP} ${SOURCES_CROSSCUTTI
 target_link_libraries(Crosscutting PRIVATE Glad SDL2::Main SDL2::Image ImGui Doctest)
 target_include_directories(Crosscutting PUBLIC ../)
 
-if(iwyu_path)
+if (iwyu_path)
     set_property(TARGET Crosscutting PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
-endif()
+endif ()
 

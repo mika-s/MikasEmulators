@@ -1,5 +1,4 @@
-#ifndef MIKA_EMULATORS_APPLICATIONS_COMMAND_LINE_ARGUMENTS_TOKEN_H
-#define MIKA_EMULATORS_APPLICATIONS_COMMAND_LINE_ARGUMENTS_TOKEN_H
+#pragma once
 
 #include "token_kind.h"
 #include <iostream>
@@ -8,32 +7,31 @@
 
 namespace emu::applications::command_line_arguments {
 
-    class Token {
-    public:
-        explicit Token(TokenKind kind);
+class Token {
+public:
+    explicit Token(TokenKind kind);
 
-        explicit Token(TokenKind kind, std::string literal);
+    explicit Token(TokenKind kind, std::string literal);
 
-        [[nodiscard]] TokenKind kind() const;
+    [[nodiscard]] TokenKind kind() const;
 
-        [[nodiscard]] std::string string_literal() const;
+    [[nodiscard]] std::string string_literal() const;
 
-        friend std::ostream &operator<<(std::ostream &os, const Token &rhs) {
-            os << TokenKind_as_string.at(rhs.m_kind);
-            if (rhs.m_kind == TokenKind::ShortOption) {
-                os << "(" << rhs.m_string_literal << ")";
-            } else if (rhs.m_kind == TokenKind::LongOption) {
-                os << "(" << rhs.m_string_literal << ")";
-            } else if (rhs.m_kind == TokenKind::Identifier) {
-                os << "(" << rhs.m_string_literal << ")";
-            }
-            return os;
+    friend std::ostream& operator<<(std::ostream& os, Token const& rhs)
+    {
+        os << TokenKind_as_string.at(rhs.m_kind);
+        if (rhs.m_kind == TokenKind::ShortOption) {
+            os << "(" << rhs.m_string_literal << ")";
+        } else if (rhs.m_kind == TokenKind::LongOption) {
+            os << "(" << rhs.m_string_literal << ")";
+        } else if (rhs.m_kind == TokenKind::Identifier) {
+            os << "(" << rhs.m_string_literal << ")";
         }
+        return os;
+    }
 
-    private:
-        TokenKind m_kind;
-        std::string m_string_literal;
-    };
+private:
+    TokenKind m_kind;
+    std::string m_string_literal;
+};
 }
-
-#endif //MIKA_EMULATORS_APPLICATIONS_COMMAND_LINE_ARGUMENTS_TOKEN_H

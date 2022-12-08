@@ -1,31 +1,28 @@
-#ifndef MIKA_EMULATORS_CROSSCUTTING_LOGGING_LOGGER_H
-#define MIKA_EMULATORS_CROSSCUTTING_LOGGING_LOGGER_H
+#pragma once
 
 #include <cstdarg>
 #include <vector>
 
 namespace emu::logging {
-    class LogObserver;
+class LogObserver;
 }
 
 namespace emu::logging {
 
-    class Logger {
+class Logger {
 
-    public:
-        Logger();
+public:
+    Logger();
 
-        void add_log_observer(LogObserver &observer);
+    void add_log_observer(LogObserver& observer);
 
-        [[maybe_unused]] void remove_log_observer(LogObserver *observer);
+    [[maybe_unused]] void remove_log_observer(LogObserver* observer);
 
-        void info(const char *fmt, ...);
+    void info(char const* fmt, ...);
 
-    private:
-        std::vector<LogObserver *> m_log_observers;
+private:
+    std::vector<LogObserver*> m_log_observers;
 
-        void notify_log_observers(const char *fmt, va_list args);
-    };
+    void notify_log_observers(char const* fmt, va_list args);
+};
 }
-
-#endif //MIKA_EMULATORS_CROSSCUTTING_LOGGING_LOGGER_H

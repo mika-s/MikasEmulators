@@ -5,38 +5,46 @@
 
 namespace emu::lmc {
 
-    using emu::util::byte::borrow_from;
-    using emu::util::byte::carried_out_of;
-    using emu::util::byte::is_bit_set;
+using emu::util::byte::borrow_from;
+using emu::util::byte::carried_out_of;
+using emu::util::byte::is_bit_set;
 
-    Flags::Flags()
-        : m_negative(false) {}
+Flags::Flags()
+    : m_negative(false)
+{
+}
 
-    u8 Flags::to_u8() const {
-        return m_negative ? 1 : 0;
-    }
+u8 Flags::to_u8() const
+{
+    return m_negative ? 1 : 0;
+}
 
-    void Flags::reset() {
+void Flags::reset()
+{
+    clear_negative_flag();
+}
+
+void Flags::handle_negative_flag(Data previous, Data value)
+{
+    if (previous < value) {
+        set_negative_flag();
+    } else {
         clear_negative_flag();
     }
+}
 
-    void Flags::handle_negative_flag(Data previous, Data value) {
-        if (previous < value) {
-            set_negative_flag();
-        } else {
-            clear_negative_flag();
-        }
-    }
+void Flags::set_negative_flag()
+{
+    m_negative = true;
+}
 
-    void Flags::set_negative_flag() {
-        m_negative = true;
-    }
+void Flags::clear_negative_flag()
+{
+    m_negative = false;
+}
 
-    void Flags::clear_negative_flag() {
-        m_negative = false;
-    }
-
-    bool Flags::is_negative_flag_set() const {
-        return m_negative;
-    }
+bool Flags::is_negative_flag_set() const
+{
+    return m_negative;
+}
 }

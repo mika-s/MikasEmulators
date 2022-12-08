@@ -9,18 +9,19 @@
 
 namespace emu::applications::command_line_arguments {
 
-    void ShortOption::parse(Scanner &scanner, Options &options) {
-        const std::string name_literal = scanner.current_token().string_literal();
-        scanner.skip(TokenKind::ShortOption);
+void ShortOption::parse(Scanner& scanner, Options& options)
+{
+    const std::string name_literal = scanner.current_token().string_literal();
+    scanner.skip(TokenKind::ShortOption);
 
-        if (scanner.current_token().kind() == TokenKind::Identifier) {
-            const std::string value_literal = scanner.current_token().string_literal();
+    if (scanner.current_token().kind() == TokenKind::Identifier) {
+        const std::string value_literal = scanner.current_token().string_literal();
 
-            scanner.skip(TokenKind::Identifier);
+        scanner.skip(TokenKind::Identifier);
 
-            options.add_option(name_literal, value_literal);
-        } else {
-            throw std::invalid_argument(fmt::format("Option -{} requires a value after it", name_literal));
-        }
+        options.add_option(name_literal, value_literal);
+    } else {
+        throw std::invalid_argument(fmt::format("Option -{} requires a value after it", name_literal));
     }
+}
 }

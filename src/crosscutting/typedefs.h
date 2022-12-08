@@ -1,5 +1,4 @@
-#ifndef MIKA_EMULATORS_CROSSCUTTING_TYPEDEFS_H
-#define MIKA_EMULATORS_CROSSCUTTING_TYPEDEFS_H
+#pragma once
 
 #include <cstdint>
 
@@ -14,5 +13,3 @@ using u32 = std::uint32_t;
 using u64 [[maybe_unused]] = std::uint64_t;
 
 using cyc = std::uint64_t;
-
-#endif //MIKA_EMULATORS_CROSSCUTTING_TYPEDEFS_H

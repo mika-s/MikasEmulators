@@ -1,5 +1,4 @@
-#ifndef MIKA_EMULATORS_CROSSCUTTING_INVALID_PROGRAM_ARGUMENTS_EXCEPTION_H
-#define MIKA_EMULATORS_CROSSCUTTING_INVALID_PROGRAM_ARGUMENTS_EXCEPTION_H
+#pragma once
 
 #include <functional>
 #include <stdexcept>
@@ -7,23 +6,20 @@
 
 namespace emu::exceptions {
 
-    class InvalidProgramArgumentsException : public std::runtime_error {
-    public:
-        explicit InvalidProgramArgumentsException(
-                const std::string &message,
-                std::function<void(const std::string &program_name)> usage_function
-        );
+class InvalidProgramArgumentsException : public std::runtime_error {
+public:
+    explicit InvalidProgramArgumentsException(
+        std::string const& message,
+        std::function<void(std::string const& program_name)> usage_function);
 
-        [[nodiscard]] const char *what() const noexcept override;
+    [[nodiscard]] char const* what() const noexcept override;
 
-        [[nodiscard]] const std::function<void(const std::string &program_name)> &usage_function() const;
+    [[nodiscard]] std::function<void(const std::string& program_name)> const& usage_function() const;
 
-    private:
-        void make_message(const std::string &message);
+private:
+    void make_message(std::string const& message);
 
-        std::string m_message;
-        std::function<void(const std::string &program_name)> m_usage_function;
-    };
+    std::string m_message;
+    std::function<void(std::string const& program_name)> m_usage_function;
+};
 }
-
-#endif //MIKA_EMULATORS_CROSSCUTTING_INVALID_PROGRAM_ARGUMENTS_EXCEPTION_H

@@ -1,19 +1,16 @@
-#ifndef MIKA_EMULATORS_CROSSCUTTING_MEMORY_MEMORY_MAPPED_IO_H
-#define MIKA_EMULATORS_CROSSCUTTING_MEMORY_MEMORY_MAPPED_IO_H
+#pragma once
 
 #include "crosscutting/typedefs.h"
 
 namespace emu::memory {
 
-    template<class A, class D>
-    class MemoryMappedIo {
-    public:
-        virtual ~MemoryMappedIo() = default;
+template<class A, class D>
+class MemoryMappedIo {
+public:
+    virtual ~MemoryMappedIo() = default;
 
-        virtual D read(A address) = 0;
+    virtual D read(A address) = 0;
 
-        virtual void write(A address, D value) = 0;
-    };
+    virtual void write(A address, D value) = 0;
+};
 }
-
-#endif //MIKA_EMULATORS_CROSSCUTTING_MEMORY_MEMORY_MAPPED_IO_H

@@ -1,5 +1,4 @@
-#ifndef MIKA_EMULATORS_APPLICATIONS_PACMAN_PACMAN_H
-#define MIKA_EMULATORS_APPLICATIONS_PACMAN_PACMAN_H
+#pragma once
 
 #include "crosscutting/gui/gui_type.h"
 #include "crosscutting/memory/emulator_memory.h"
@@ -11,65 +10,62 @@
 #include <vector>
 
 namespace emu::applications::pacman {
-    class Audio;
+class Audio;
 }
 namespace emu::applications::pacman {
-    class Gui;
+class Gui;
 }
 namespace emu::applications::pacman {
-    class Input;
+class Input;
 }
 namespace emu::applications::pacman {
-    class MemoryMappedIoForPacman;
+class MemoryMappedIoForPacman;
 }
 namespace emu::applications::pacman {
-    class Settings;
+class Settings;
 }
 namespace emu::misc {
-    class Session;
+class Session;
 }
 
 namespace emu::applications::pacman {
 
-    using emu::gui::GuiType;
-    using emu::misc::Emulator;
+using emu::gui::GuiType;
+using emu::misc::Emulator;
 
-    class Pacman : public Emulator {
-    public:
-        Pacman(
-                const Settings &settings,
-                const GuiType gui_type
-        );
+class Pacman : public Emulator {
+public:
+    Pacman(
+        Settings const& settings,
+        const GuiType gui_type);
 
-        std::unique_ptr<Session> new_session() override;
+    std::unique_ptr<Session> new_session() override;
 
-    private:
-        EmulatorMemory<u16, u8> m_memory;
-        EmulatorMemory<u16, u8> m_color_rom;
-        EmulatorMemory<u16, u8> m_palette_rom;
-        EmulatorMemory<u16, u8> m_tile_rom;
-        EmulatorMemory<u16, u8> m_sprite_rom;
-        EmulatorMemory<u16, u8> m_sound_rom1;
-        EmulatorMemory<u16, u8> m_sound_rom2;
-        std::shared_ptr<MemoryMappedIoForPacman> m_memory_mapped_io;
+private:
+    EmulatorMemory<u16, u8> m_memory;
+    EmulatorMemory<u16, u8> m_color_rom;
+    EmulatorMemory<u16, u8> m_palette_rom;
+    EmulatorMemory<u16, u8> m_tile_rom;
+    EmulatorMemory<u16, u8> m_sprite_rom;
+    EmulatorMemory<u16, u8> m_sound_rom1;
+    EmulatorMemory<u16, u8> m_sound_rom2;
+    std::shared_ptr<MemoryMappedIoForPacman> m_memory_mapped_io;
 
-        std::shared_ptr<Gui> m_gui;
-        std::shared_ptr<Input> m_input;
-        std::shared_ptr<Audio> m_audio;
-        RunStatus m_startup_runstatus;
+    std::shared_ptr<Gui> m_gui;
+    std::shared_ptr<Input> m_input;
+    std::shared_ptr<Audio> m_audio;
+    RunStatus m_startup_runstatus;
 
-        void load_files();
+    void load_files();
 
-        static std::vector<u8> create_tile_ram();
+    static std::vector<u8> create_tile_ram();
 
-        static std::vector<u8> create_palette_ram();
+    static std::vector<u8> create_palette_ram();
 
-        static std::vector<u8> create_ram();
+    static std::vector<u8> create_ram();
 
-        static std::vector<u8> create_sprite_ram();
+    static std::vector<u8> create_sprite_ram();
 
-        static std::vector<u8> create_memory_mapped_io();
-    };
+    static std::vector<u8> create_memory_mapped_io();
+};
 }
-
-#endif //MIKA_EMULATORS_APPLICATIONS_PACMAN_PACMAN_H

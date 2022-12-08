@@ -22,7 +22,8 @@ using emu::exceptions::RomFileNotFoundException;
 using emu::util::string::find_short_executable_name;
 
 // NOLINTNEXTLINE(modernize-avoid-c-arrays)
-std::vector<std::string> argv_to_vector(int argc, char *argv[]) {
+std::vector<std::string> argv_to_vector(int argc, char* argv[])
+{
     std::vector<std::string> args;
 
     for (int i = 0; i < argc; ++i) {
@@ -32,7 +33,8 @@ std::vector<std::string> argv_to_vector(int argc, char *argv[]) {
     return args;
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[])
+{
     std::string short_executable_name = find_short_executable_name(std::string(argv[0]));
     try {
         if (argc > 1) {
@@ -46,11 +48,11 @@ int main(int argc, char *argv[]) {
         } else {
             Frontend::print_main_usage(short_executable_name);
         }
-    } catch (InvalidProgramArgumentsException &ex) {
+    } catch (InvalidProgramArgumentsException& ex) {
         std::cout << ex.what() << "\n";
         ex.usage_function()(short_executable_name);
         return 1;
-    } catch (RomFileNotFoundException &ex) {
+    } catch (RomFileNotFoundException& ex) {
         std::cout << ex.what() << "\n";
         SDL_Quit();
         return 2;

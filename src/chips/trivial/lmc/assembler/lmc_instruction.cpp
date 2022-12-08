@@ -23,50 +23,51 @@
 
 namespace emu::lmc {
 
-    LmcInstruction::LmcInstruction(std::unique_ptr<InstructionInterface> instruction)
-        : m_instruction(std::move(instruction)) {
-    }
+LmcInstruction::LmcInstruction(std::unique_ptr<InstructionInterface> instruction)
+    : m_instruction(std::move(instruction))
+{
+}
 
-    Data LmcInstruction::eval() {
-        return m_instruction->eval();
-    }
+Data LmcInstruction::eval()
+{
+    return m_instruction->eval();
+}
 
-    std::unique_ptr<LmcInstruction> LmcInstruction::parse(Scanner &scanner, Environment &environment) {
-        const Token current_token = scanner.current_token();
+std::unique_ptr<LmcInstruction> LmcInstruction::parse(Scanner& scanner, Environment& environment)
+{
+    const Token current_token = scanner.current_token();
 
-        switch (current_token.kind()) {
-            case TokenKind::Add:
-                return std::make_unique<LmcInstruction>(LmcAdd::parse(scanner, environment));
-            case TokenKind::Sub:
-                return std::make_unique<LmcInstruction>(LmcSub::parse(scanner, environment));
-            case TokenKind::Sta:
-                return std::make_unique<LmcInstruction>(LmcSta::parse(scanner, environment));
-            case TokenKind::Lda:
-                return std::make_unique<LmcInstruction>(LmcLda::parse(scanner, environment));
-            case TokenKind::Bra:
-                return std::make_unique<LmcInstruction>(LmcBra::parse(scanner, environment));
-            case TokenKind::Brz:
-                return std::make_unique<LmcInstruction>(LmcBrz::parse(scanner, environment));
-            case TokenKind::Brp:
-                return std::make_unique<LmcInstruction>(LmcBrp::parse(scanner, environment));
-            case TokenKind::Inp:
-                return std::make_unique<LmcInstruction>(LmcInp::parse(scanner));
-            case TokenKind::Out:
-                return std::make_unique<LmcInstruction>(LmcOut::parse(scanner));
-            case TokenKind::Otc:
-                return std::make_unique<LmcInstruction>(LmcOtc::parse(scanner));
-            case TokenKind::Cob:
-            case TokenKind::Hlt:
-                return std::make_unique<LmcInstruction>(LmcHlt::parse(scanner));
-            case TokenKind::Dat:
-                return std::make_unique<LmcInstruction>(LmcDat::parse(scanner));
-            default:
-                throw std::invalid_argument(
-                        fmt::format(
-                                "Invalid token when parsing instruction. Received {}.",
-                                TokenKind_as_string.at(current_token.kind())
-                        )
-                );
-        }
+    switch (current_token.kind()) {
+    case TokenKind::Add:
+        return std::make_unique<LmcInstruction>(LmcAdd::parse(scanner, environment));
+    case TokenKind::Sub:
+        return std::make_unique<LmcInstruction>(LmcSub::parse(scanner, environment));
+    case TokenKind::Sta:
+        return std::make_unique<LmcInstruction>(LmcSta::parse(scanner, environment));
+    case TokenKind::Lda:
+        return std::make_unique<LmcInstruction>(LmcLda::parse(scanner, environment));
+    case TokenKind::Bra:
+        return std::make_unique<LmcInstruction>(LmcBra::parse(scanner, environment));
+    case TokenKind::Brz:
+        return std::make_unique<LmcInstruction>(LmcBrz::parse(scanner, environment));
+    case TokenKind::Brp:
+        return std::make_unique<LmcInstruction>(LmcBrp::parse(scanner, environment));
+    case TokenKind::Inp:
+        return std::make_unique<LmcInstruction>(LmcInp::parse(scanner));
+    case TokenKind::Out:
+        return std::make_unique<LmcInstruction>(LmcOut::parse(scanner));
+    case TokenKind::Otc:
+        return std::make_unique<LmcInstruction>(LmcOtc::parse(scanner));
+    case TokenKind::Cob:
+    case TokenKind::Hlt:
+        return std::make_unique<LmcInstruction>(LmcHlt::parse(scanner));
+    case TokenKind::Dat:
+        return std::make_unique<LmcInstruction>(LmcDat::parse(scanner));
+    default:
+        throw std::invalid_argument(
+            fmt::format(
+                "Invalid token when parsing instruction. Received {}.",
+                TokenKind_as_string.at(current_token.kind())));
     }
+}
 }

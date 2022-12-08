@@ -1,5 +1,4 @@
-#ifndef MIKA_EMULATORS_APPLICATIONS_LMC_APPLICATION_H
-#define MIKA_EMULATORS_APPLICATIONS_LMC_APPLICATION_H
+#pragma once
 
 #include "chips/trivial/lmc/cpu.h"
 #include "chips/trivial/lmc/usings.h"
@@ -14,49 +13,47 @@
 #include <vector>
 
 namespace emu::applications::lmc {
-    class Ui;
+class Ui;
 }
 namespace emu::applications::lmc {
-    class Input;
+class Input;
 }
 namespace emu::misc {
-    class Session;
+class Session;
 }
 
 namespace emu::applications::lmc {
 
-    using emu::gui::GuiType;
-    using emu::lmc::Address;
-    using emu::lmc::Cpu;
-    using emu::lmc::Data;
-    using emu::memory::EmulatorMemory;
-    using emu::misc::Emulator;
-    using emu::misc::RunStatus;
-    using emu::misc::Session;
-    using emu::misc::UInteger;
+using emu::gui::GuiType;
+using emu::lmc::Address;
+using emu::lmc::Cpu;
+using emu::lmc::Data;
+using emu::memory::EmulatorMemory;
+using emu::misc::Emulator;
+using emu::misc::RunStatus;
+using emu::misc::Session;
+using emu::misc::UInteger;
 
-    class LmcApplication : public Emulator {
-    public:
-        explicit LmcApplication(const std::string &file, const GuiType gui_type);
+class LmcApplication : public Emulator {
+public:
+    explicit LmcApplication(std::string const& file, const GuiType gui_type);
 
-        std::unique_ptr<Session> new_session() override;
+    std::unique_ptr<Session> new_session() override;
 
-    private:
-        static constexpr std::size_t memory_size = 100;
+private:
+    static constexpr std::size_t memory_size = 100;
 
-        bool m_is_only_run_once;
-        std::unique_ptr<Cpu> m_cpu;
-        EmulatorMemory<Address, Data> m_memory;
-        std::shared_ptr<Ui> m_gui;
-        std::shared_ptr<Input> m_input;
-        RunStatus m_startup_runstatus;
-        std::string m_loaded_file;
-        std::string m_file_content;
+    bool m_is_only_run_once;
+    std::unique_ptr<Cpu> m_cpu;
+    EmulatorMemory<Address, Data> m_memory;
+    std::shared_ptr<Ui> m_gui;
+    std::shared_ptr<Input> m_input;
+    RunStatus m_startup_runstatus;
+    std::string m_loaded_file;
+    std::string m_file_content;
 
-        void load_file(const std::string &file);
+    void load_file(std::string const& file);
 
-        std::vector<Data> create_work_ram(std::size_t size);
-    };
+    std::vector<Data> create_work_ram(std::size_t size);
+};
 }
-
-#endif //MIKA_EMULATORS_APPLICATIONS_LMC_APPLICATION_H

@@ -7,111 +7,128 @@
 
 namespace emu::applications {
 
-    using emu::exceptions::InvalidProgramArgumentsException;
-    using emu::util::string::find_short_executable_name;
+using emu::exceptions::InvalidProgramArgumentsException;
+using emu::util::string::find_short_executable_name;
 
-    Options::Options(std::vector<std::string> args)
-        : m_args(args),
-          m_is_asking_for_help(false),
-          m_is_asking_for_help_reason(""),
-          m_is_failed(false),
-          m_failed_reason("") {
-        m_short_executable_name = find_short_executable_name(args[0]);
+Options::Options(std::vector<std::string> args)
+    : m_args(args)
+    , m_is_asking_for_help(false)
+    , m_is_asking_for_help_reason("")
+    , m_is_failed(false)
+    , m_failed_reason("")
+{
+    m_short_executable_name = find_short_executable_name(args[0]);
+}
+
+std::vector<std::string> Options::args() const
+{
+    return m_args;
+}
+
+std::string Options::short_executable_name() const
+{
+    return m_short_executable_name;
+}
+
+GuiType Options::gui_type(std::function<void(const std::string&)> const& print_usage) const
+{
+    if (!m_options.contains("g")) {
+        return GuiType::ORDINARY;
+    }
+    if (m_options.at("g").size() > 1) {
+        throw InvalidProgramArgumentsException("-g flag should only be used once", print_usage);
+    } else if (m_options.at("g").empty()) {
+        throw InvalidProgramArgumentsException("-g flag needs an additional argument", print_usage);
     }
 
-    std::vector<std::string> Options::args() const {
-        return m_args;
+    if (m_options.at("g")[0] == "ordinary") {
+        return GuiType::ORDINARY;
+    } else if (m_options.at("g")[0] == "debugging") {
+        return GuiType::DEBUGGING;
+    } else {
+        throw InvalidProgramArgumentsException("Unknown GUI type passed to the -g flag", print_usage);
     }
+}
 
-    std::string Options::short_executable_name() const {
-        return m_short_executable_name;
-    }
+std::pair<bool, std::string> Options::is_asking_for_help() const
+{
+    return { m_is_asking_for_help, m_is_asking_for_help_reason };
+}
 
-    GuiType Options::gui_type(const std::function<void(const std::string &)> &print_usage) const {
-        if (!m_options.contains("g")) {
-            return GuiType::ORDINARY;
-        }
-        if (m_options.at("g").size() > 1) {
-            throw InvalidProgramArgumentsException("-g flag should only be used once", print_usage);
-        } else if (m_options.at("g").empty()) {
-            throw InvalidProgramArgumentsException("-g flag needs an additional argument", print_usage);
-        }
+void Options::set_is_asking_for_help(std::string reason)
+{
+    m_is_asking_for_help = true;
+    m_is_asking_for_help_reason = std::move(reason);
+}
 
-        if (m_options.at("g")[0] == "ordinary") {
-            return GuiType::ORDINARY;
-        } else if (m_options.at("g")[0] == "debugging") {
-            return GuiType::DEBUGGING;
-        } else {
-            throw InvalidProgramArgumentsException("Unknown GUI type passed to the -g flag", print_usage);
-        }
-    }
+std::string Options::command() const
+{
+    return m_command;
+}
 
-    std::pair<bool, std::string> Options::is_asking_for_help() const {
-        return {m_is_asking_for_help, m_is_asking_for_help_reason};
-    }
+void Options::set_command(std::string command)
+{
+    m_command = std::move(command);
+}
 
-    void Options::set_is_asking_for_help(std::string reason) {
-        m_is_asking_for_help = true;
-        m_is_asking_for_help_reason = std::move(reason);
-    }
+std::optional<std::string> Options::application() const
+{
+    return m_application;
+}
 
-    std::string Options::command() const {
-        return m_command;
-    }
+void Options::set_application(std::string application)
+{
+    m_application = std::optional(application);
+}
 
-    void Options::set_command(std::string command) {
-        m_command = std::move(command);
-    }
+std::optional<std::string> Options::path() const
+{
+    return m_path;
+}
 
-    std::optional<std::string> Options::application() const {
-        return m_application;
-    }
+void Options::set_path(std::string path)
+{
+    m_path = std::optional(path);
+}
 
-    void Options::set_application(std::string application) {
-        m_application = std::optional(application);
-    }
-
-    std::optional<std::string> Options::path() const {
-        return m_path;
-    }
-
-    void Options::set_path(std::string path) {
-        m_path = std::optional(path);
-    }
-
-    void Options::add_option(const std::string &name) {
-        if (m_options.count(name) == 0) {
-            std::vector<std::string> vec;
-            m_options[name] = vec;
-            m_is_asking_for_help = m_is_asking_for_help || m_options.contains("help") || m_options.contains("h");
-        }
-    }
-
-    void Options::add_option(const std::string &name, const std::string &value) {
-        if (m_options.count(name) == 0) {
-            std::vector<std::string> vec;
-            vec.emplace_back(value);
-            m_options[name] = vec;
-        } else {
-            m_options[name].push_back(value);
-        }
-
+void Options::add_option(std::string const& name)
+{
+    if (m_options.count(name) == 0) {
+        std::vector<std::string> vec;
+        m_options[name] = vec;
         m_is_asking_for_help = m_is_asking_for_help || m_options.contains("help") || m_options.contains("h");
     }
+}
 
-    std::unordered_map<std::string, std::vector<std::string>> Options::options() const {
-        return m_options;
+void Options::add_option(std::string const& name, std::string const& value)
+{
+    if (m_options.count(name) == 0) {
+        std::vector<std::string> vec;
+        vec.emplace_back(value);
+        m_options[name] = vec;
+    } else {
+        m_options[name].push_back(value);
     }
 
-    std::pair<bool, std::string> Options::is_failed() const {
-        return {m_is_failed, m_failed_reason};
-    }
+    m_is_asking_for_help = m_is_asking_for_help || m_options.contains("help") || m_options.contains("h");
+}
 
-    void Options::fail(std::string reason) {
-        if (!m_is_failed) {
-            m_is_failed = true;
+std::unordered_map<std::string, std::vector<std::string>> Options::options() const
+{
+    return m_options;
+}
 
-            m_failed_reason = std::move(reason);
-        }
+std::pair<bool, std::string> Options::is_failed() const
+{
+    return { m_is_failed, m_failed_reason };
+}
+
+void Options::fail(std::string reason)
+{
+    if (!m_is_failed) {
+        m_is_failed = true;
+
+        m_failed_reason = std::move(reason);
     }
+}
 }

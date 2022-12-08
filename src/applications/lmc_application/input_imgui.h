@@ -1,5 +1,4 @@
-#ifndef MIKA_EMULATORS_APPLICATIONS_LMC_APPLICATION_INPUT_IMGUI_H
-#define MIKA_EMULATORS_APPLICATIONS_LMC_APPLICATION_INPUT_IMGUI_H
+#pragma once
 
 #include "crosscutting/misc/run_status.h"
 #include "interfaces/input.h"
@@ -8,33 +7,31 @@
 #include <vector>
 
 namespace emu::applications::lmc {
-    class IoObserver;
+class IoObserver;
 }
 
 namespace emu::applications::lmc {
 
-    using emu::misc::RunStatus;
+using emu::misc::RunStatus;
 
-    class InputImgui : public Input {
-    public:
-        void read(RunStatus &run_status) override;
+class InputImgui : public Input {
+public:
+    void read(RunStatus& run_status) override;
 
-        void read_debug_only(RunStatus &run_status) override;
+    void read_debug_only(RunStatus& run_status) override;
 
-        void add_io_observer(IoObserver &observer) override;
+    void add_io_observer(IoObserver& observer) override;
 
-        void remove_io_observer(IoObserver *observer) override;
+    void remove_io_observer(IoObserver* observer) override;
 
-    private:
-        static constexpr SDL_Scancode pause = SDL_SCANCODE_PAUSE;
-        static constexpr SDL_Scancode step_instruction = SDL_SCANCODE_F7;
-        static constexpr SDL_Scancode step_cycle = SDL_SCANCODE_F8;
-        static constexpr SDL_Scancode continue_running = SDL_SCANCODE_F9;
+private:
+    static constexpr SDL_Scancode pause = SDL_SCANCODE_PAUSE;
+    static constexpr SDL_Scancode step_instruction = SDL_SCANCODE_F7;
+    static constexpr SDL_Scancode step_cycle = SDL_SCANCODE_F8;
+    static constexpr SDL_Scancode continue_running = SDL_SCANCODE_F9;
 
-        std::vector<IoObserver *> m_io_observers;
+    std::vector<IoObserver*> m_io_observers;
 
-        void notify_io_observers(IoRequest request);
-    };
+    void notify_io_observers(IoRequest request);
+};
 }
-
-#endif //MIKA_EMULATORS_APPLICATIONS_LMC_APPLICATION_INPUT_IMGUI_H

@@ -1,5 +1,4 @@
-#ifndef MIKA_EMULATORS_APPLICATIONS_OPTIONS_H
-#define MIKA_EMULATORS_APPLICATIONS_OPTIONS_H
+#pragma once
 
 #include "crosscutting/gui/gui_type.h"
 #include <functional>
@@ -11,56 +10,54 @@
 
 namespace emu::applications {
 
-    using emu::gui::GuiType;
+using emu::gui::GuiType;
 
-    class Options {
-    public:
-        explicit Options(std::vector<std::string> args);
+class Options {
+public:
+    explicit Options(std::vector<std::string> args);
 
-        std::vector<std::string> args() const;
+    std::vector<std::string> args() const;
 
-        std::string short_executable_name() const;
+    std::string short_executable_name() const;
 
-        GuiType gui_type(const std::function<void(const std::string &)> &print_usage) const;
+    GuiType gui_type(std::function<void(const std::string&)> const& print_usage) const;
 
-        std::pair<bool, std::string> is_asking_for_help() const;
+    std::pair<bool, std::string> is_asking_for_help() const;
 
-        void set_is_asking_for_help(std::string reason);
+    void set_is_asking_for_help(std::string reason);
 
-        std::string command() const;
+    std::string command() const;
 
-        void set_command(std::string command);
+    void set_command(std::string command);
 
-        std::optional<std::string> application() const;
+    std::optional<std::string> application() const;
 
-        void set_application(std::string command);
+    void set_application(std::string command);
 
-        std::optional<std::string> path() const;
+    std::optional<std::string> path() const;
 
-        void set_path(std::string path);
+    void set_path(std::string path);
 
-        void add_option(const std::string &name);
+    void add_option(std::string const& name);
 
-        void add_option(const std::string &name, const std::string &value);
+    void add_option(std::string const& name, std::string const& value);
 
-        std::unordered_map<std::string, std::vector<std::string>> options() const;
+    std::unordered_map<std::string, std::vector<std::string>> options() const;
 
-        std::pair<bool, std::string> is_failed() const;
+    std::pair<bool, std::string> is_failed() const;
 
-        void fail(std::string reason);
+    void fail(std::string reason);
 
-    private:
-        std::vector<std::string> m_args;
-        std::string m_command;
-        std::optional<std::string> m_application;
-        std::optional<std::string> m_path;
-        bool m_is_asking_for_help;
-        std::string m_is_asking_for_help_reason;
-        bool m_is_failed;
-        std::string m_failed_reason;
-        std::string m_short_executable_name;
-        std::unordered_map<std::string, std::vector<std::string>> m_options;
-    };
+private:
+    std::vector<std::string> m_args;
+    std::string m_command;
+    std::optional<std::string> m_application;
+    std::optional<std::string> m_path;
+    bool m_is_asking_for_help;
+    std::string m_is_asking_for_help_reason;
+    bool m_is_failed;
+    std::string m_failed_reason;
+    std::string m_short_executable_name;
+    std::unordered_map<std::string, std::vector<std::string>> m_options;
+};
 }
-
-#endif //MIKA_EMULATORS_APPLICATIONS_OPTIONS_H

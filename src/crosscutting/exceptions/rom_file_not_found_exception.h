@@ -1,22 +1,19 @@
-#ifndef MIKA_EMULATORS_CROSSCUTTING_ROM_FILE_NOT_FOUND_EXCEPTION_H
-#define MIKA_EMULATORS_CROSSCUTTING_ROM_FILE_NOT_FOUND_EXCEPTION_H
+#pragma once
 
 #include <stdexcept>
 #include <string>
 
 namespace emu::exceptions {
 
-    class RomFileNotFoundException : public std::runtime_error {
-    public:
-        explicit RomFileNotFoundException(const std::string &message);
+class RomFileNotFoundException : public std::runtime_error {
+public:
+    explicit RomFileNotFoundException(std::string const& message);
 
-        [[nodiscard]] const char *what() const noexcept override;
+    [[nodiscard]] char const* what() const noexcept override;
 
-    private:
-        void make_message(const std::string &message);
+private:
+    void make_message(std::string const& message);
 
-        std::string m_message;
-    };
+    std::string m_message;
+};
 }
-
-#endif //MIKA_EMULATORS_CROSSCUTTING_ROM_FILE_NOT_FOUND_EXCEPTION_H

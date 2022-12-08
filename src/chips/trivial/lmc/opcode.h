@@ -1,21 +1,18 @@
-#ifndef MIKA_EMULATORS_CHIPS_LMC_OPCODES_H
-#define MIKA_EMULATORS_CHIPS_LMC_OPCODES_H
+#pragma once
 
 namespace emu::lmc {
 
-    enum class Opcode {
-        ADD,
-        SUB,
-        STA,
-        LDA,
-        BRA,
-        BRZ,
-        BRP,
-        INP,
-        OUT,
-        OTC,
-        HLT
-    };
+enum class Opcode {
+    ADD,
+    SUB,
+    STA,
+    LDA,
+    BRA,
+    BRZ,
+    BRP,
+    INP,
+    OUT,
+    OTC,
+    HLT
+};
 }
-
-#endif //MIKA_EMULATORS_CHIPS_LMC_OPCODES_H

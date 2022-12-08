@@ -1,16 +1,13 @@
-#ifndef MIKA_EMULATORS_CHIPS_LMC_INTERFACES_IN_OBSERVER_H
-#define MIKA_EMULATORS_CHIPS_LMC_INTERFACES_IN_OBSERVER_H
+#pragma once
 
 #include "crosscutting/typedefs.h"
 
 namespace emu::lmc {
 
-    class InObserver {
-    public:
-        virtual ~InObserver() = default;
+class InObserver {
+public:
+    virtual ~InObserver() = default;
 
-        virtual void in_requested() = 0;
-    };
+    virtual void in_requested() = 0;
+};
 }
-
-#endif //MIKA_EMULATORS_CHIPS_LMC_INTERFACES_IN_OBSERVER_H

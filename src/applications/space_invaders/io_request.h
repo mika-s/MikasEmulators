@@ -1,14 +1,11 @@
-#ifndef MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_IO_REQUEST_H
-#define MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_IO_REQUEST_H
+#pragma once
 
 namespace emu::applications::space_invaders {
 
-    enum IoRequest {
-        STEP_INSTRUCTION,
-        STEP_CYCLE,
-        CONTINUE_EXECUTION,
-        TOGGLE_MUTE,
-    };
+enum IoRequest {
+    STEP_INSTRUCTION,
+    STEP_CYCLE,
+    CONTINUE_EXECUTION,
+    TOGGLE_MUTE,
+};
 }
-
-#endif //MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_IO_REQUEST_H

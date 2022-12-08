@@ -3,24 +3,28 @@
 
 namespace emu::lmc {
 
-    UnrecognizedAssemblyException::UnrecognizedAssemblyException(const std::string &assembly)
-        : runtime_error("Unrecognized assembly") {
-        make_message(assembly);
-    }
+UnrecognizedAssemblyException::UnrecognizedAssemblyException(std::string const& assembly)
+    : runtime_error("Unrecognized assembly")
+{
+    make_message(assembly);
+}
 
-    UnrecognizedAssemblyException::UnrecognizedAssemblyException(const std::string &assembly, const std::string &extra_message)
-        : runtime_error("Unrecognized assembly (" + extra_message + ")") {
-        make_message(assembly);
-    }
+UnrecognizedAssemblyException::UnrecognizedAssemblyException(std::string const& assembly, std::string const& extra_message)
+    : runtime_error("Unrecognized assembly (" + extra_message + ")")
+{
+    make_message(assembly);
+}
 
-    const char *UnrecognizedAssemblyException::what() const noexcept {
-        return m_message.c_str();
-    }
+char const* UnrecognizedAssemblyException::what() const noexcept
+{
+    return m_message.c_str();
+}
 
-    void UnrecognizedAssemblyException::make_message(const std::string &assembly) {
-        std::stringstream ss;
-        ss << runtime_error::what() << ": code = " << assembly;
+void UnrecognizedAssemblyException::make_message(std::string const& assembly)
+{
+    std::stringstream ss;
+    ss << runtime_error::what() << ": code = " << assembly;
 
-        m_message = ss.str();
-    }
+    m_message = ss.str();
+}
 }

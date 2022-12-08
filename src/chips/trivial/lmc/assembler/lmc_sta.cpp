@@ -6,26 +6,29 @@
 #include <utility>
 
 namespace emu::lmc {
-    class Environment;
+class Environment;
 }
 namespace emu::lmc {
-    class InstructionInterface;
+class InstructionInterface;
 }
 
 namespace emu::lmc {
 
-    LmcSta::LmcSta(LmcOperand operand)
-        : m_operand(std::move(operand)) {
-    }
+LmcSta::LmcSta(LmcOperand operand)
+    : m_operand(std::move(operand))
+{
+}
 
-    Data LmcSta::eval() {
-        return opcode + m_operand.eval();
-    }
+Data LmcSta::eval()
+{
+    return opcode + m_operand.eval();
+}
 
-    std::unique_ptr<InstructionInterface> LmcSta::parse(Scanner &scanner, Environment &environment) {
-        scanner.skip(TokenKind::Sta);
-        LmcOperand operand = LmcOperand::parse(scanner, environment);
+std::unique_ptr<InstructionInterface> LmcSta::parse(Scanner& scanner, Environment& environment)
+{
+    scanner.skip(TokenKind::Sta);
+    LmcOperand operand = LmcOperand::parse(scanner, environment);
 
-        return std::make_unique<LmcSta>(operand);
-    }
+    return std::make_unique<LmcSta>(operand);
+}
 }

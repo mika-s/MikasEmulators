@@ -1,5 +1,4 @@
-#ifndef MIKA_EMULATORS_APPLICATIONS_LMC_APPLICATION_UI_H
-#define MIKA_EMULATORS_APPLICATIONS_LMC_APPLICATION_UI_H
+#pragma once
 
 #include "chips/trivial/lmc/interfaces/ui_observer.h"
 #include "chips/trivial/lmc/usings.h"
@@ -16,50 +15,48 @@
 
 namespace emu::applications::lmc {
 
-    using emu::debugger::DebugContainer;
-    using emu::debugger::Debugger;
-    using emu::lmc::Address;
-    using emu::lmc::Data;
-    using emu::lmc::OutType;
-    using emu::lmc::UiObserver;
-    using emu::logging::Logger;
-    using emu::misc::RunStatus;
-    using emu::util::byte::is_bit_set;
-    using emu::util::byte::to_u32;
+using emu::debugger::DebugContainer;
+using emu::debugger::Debugger;
+using emu::lmc::Address;
+using emu::lmc::Data;
+using emu::lmc::OutType;
+using emu::lmc::UiObserver;
+using emu::logging::Logger;
+using emu::misc::RunStatus;
+using emu::util::byte::is_bit_set;
+using emu::util::byte::to_u32;
 
-    class Ui {
-    public:
-        Ui() = default;
+class Ui {
+public:
+    Ui() = default;
 
-        virtual ~Ui() = default;
+    virtual ~Ui() = default;
 
-        virtual void to_terminal(Data acc_reg, OutType out_type) = 0;
+    virtual void to_terminal(Data acc_reg, OutType out_type) = 0;
 
-        virtual void from_terminal() = 0;
+    virtual void from_terminal() = 0;
 
-        virtual void clear_terminal() = 0;
+    virtual void clear_terminal() = 0;
 
-        virtual void add_ui_observer(UiObserver &observer) = 0;
+    virtual void add_ui_observer(UiObserver& observer) = 0;
 
-        virtual void remove_ui_observer(UiObserver *observer) = 0;
+    virtual void remove_ui_observer(UiObserver* observer) = 0;
 
-        virtual void update_screen(RunStatus run_status, TerminalInputState terminal_input_state) = 0;
+    virtual void update_screen(RunStatus run_status, TerminalInputState terminal_input_state) = 0;
 
-        virtual void update_debug_only(TerminalInputState terminal_input_state) = 0;
+    virtual void update_debug_only(TerminalInputState terminal_input_state) = 0;
 
-        virtual void attach_debugger(std::shared_ptr<Debugger<Address, 10>> debugger) = 0;
+    virtual void attach_debugger(std::shared_ptr<Debugger<Address, 10>> debugger) = 0;
 
-        virtual void attach_debug_container(std::shared_ptr<DebugContainer<Address, Data, 10>> debug_container) = 0;
+    virtual void attach_debug_container(std::shared_ptr<DebugContainer<Address, Data, 10>> debug_container) = 0;
 
-        virtual void attach_logger(std::shared_ptr<Logger> logger) = 0;
+    virtual void attach_logger(std::shared_ptr<Logger> logger) = 0;
 
-    protected:
-        static constexpr float scale = 4.0;
-        static constexpr int width = 224;
-        static constexpr int height = 256;
-        static constexpr int scaled_width = static_cast<int>(scale * static_cast<float>(width));
-        static constexpr int scaled_height = static_cast<int>(scale * static_cast<float>(height));
-    };
+protected:
+    static constexpr float scale = 4.0;
+    static constexpr int width = 224;
+    static constexpr int height = 256;
+    static constexpr int scaled_width = static_cast<int>(scale * static_cast<float>(width));
+    static constexpr int scaled_height = static_cast<int>(scale * static_cast<float>(height));
+};
 }
-
-#endif //MIKA_EMULATORS_APPLICATIONS_LMC_APPLICATION_UI_H

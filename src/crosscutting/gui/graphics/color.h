@@ -1,37 +1,34 @@
-#ifndef MIKA_EMULATORS_CROSSCUTTING_GUI_GRAPHICS_COLOR_H
-#define MIKA_EMULATORS_CROSSCUTTING_GUI_GRAPHICS_COLOR_H
+#pragma once
 
 #include "crosscutting/typedefs.h"
 
 namespace emu::gui {
-    class Color {
-    public:
-        Color(u8 alpha, u8 red, u8 green, u8 blue);
+class Color {
+public:
+    Color(u8 alpha, u8 red, u8 green, u8 blue);
 
-        [[nodiscard]] bool is_transparent() const;
+    [[nodiscard]] bool is_transparent() const;
 
-        u32 to_u32();
+    u32 to_u32();
 
-        static Color black();
+    static Color black();
 
-        static Color transparent();
+    static Color transparent();
 
-        static Color white();
+    static Color white();
 
-        static Color red();
+    static Color red();
 
-        static Color green();
+    static Color green();
 
-        static Color blue();
+    static Color blue();
 
-        static Color yellow();
+    static Color yellow();
 
-    private:
-        u8 m_alpha;
-        u8 m_red;
-        u8 m_green;
-        u8 m_blue;
-    };
+private:
+    u8 m_alpha;
+    u8 m_red;
+    u8 m_green;
+    u8 m_blue;
+};
 }
-
-#endif //MIKA_EMULATORS_CROSSCUTTING_GUI_GRAPHICS_COLOR_H

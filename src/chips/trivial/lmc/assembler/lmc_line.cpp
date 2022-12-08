@@ -9,26 +9,29 @@
 #include <utility>
 
 namespace emu::lmc {
-    class Environment;
+class Environment;
 }
 
 namespace emu::lmc {
 
-    LmcLine::LmcLine(std::optional<LmcLabel> label, std::unique_ptr<LmcInstruction> instruction)
-        : m_label(std::move(label)),
-          m_instruction(std::move(instruction)) {
-    }
+LmcLine::LmcLine(std::optional<LmcLabel> label, std::unique_ptr<LmcInstruction> instruction)
+    : m_label(std::move(label))
+    , m_instruction(std::move(instruction))
+{
+}
 
-    Data LmcLine::eval() {
-        return m_instruction->eval();
-    }
+Data LmcLine::eval()
+{
+    return m_instruction->eval();
+}
 
-    LmcLine LmcLine::parse(Scanner &scanner, Environment &environment) {
-        std::optional<LmcLabel> label = LmcLabel::parse(scanner, environment);
-        std::unique_ptr<LmcInstruction> instruction = LmcInstruction::parse(scanner, environment);
+LmcLine LmcLine::parse(Scanner& scanner, Environment& environment)
+{
+    std::optional<LmcLabel> label = LmcLabel::parse(scanner, environment);
+    std::unique_ptr<LmcInstruction> instruction = LmcInstruction::parse(scanner, environment);
 
-        scanner.skip(TokenKind::Newline);
+    scanner.skip(TokenKind::Newline);
 
-        return {label, std::move(instruction)};
-    }
+    return { label, std::move(instruction) };
+}
 }

@@ -6,27 +6,30 @@
 #include <utility>
 
 namespace emu::lmc {
-    class Environment;
+class Environment;
 }
 namespace emu::lmc {
-    class InstructionInterface;
+class InstructionInterface;
 }
 
 namespace emu::lmc {
 
-    LmcBrz::LmcBrz(LmcOperand operand)
-        : m_operand(std::move(operand)) {
-    }
+LmcBrz::LmcBrz(LmcOperand operand)
+    : m_operand(std::move(operand))
+{
+}
 
-    Data LmcBrz::eval() {
-        return opcode + m_operand.eval();
-    }
+Data LmcBrz::eval()
+{
+    return opcode + m_operand.eval();
+}
 
-    std::unique_ptr<InstructionInterface> LmcBrz::parse(Scanner &scanner, Environment &environment) {
-        scanner.skip(TokenKind::Brz);
+std::unique_ptr<InstructionInterface> LmcBrz::parse(Scanner& scanner, Environment& environment)
+{
+    scanner.skip(TokenKind::Brz);
 
-        LmcOperand operand = LmcOperand::parse(scanner, environment);
+    LmcOperand operand = LmcOperand::parse(scanner, environment);
 
-        return std::make_unique<LmcBrz>(operand);
-    }
+    return std::make_unique<LmcBrz>(operand);
+}
 }

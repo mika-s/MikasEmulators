@@ -6,12 +6,13 @@
 
 namespace emu::lmc {
 
-    std::vector<Data> Assembler::assemble(const std::stringstream &code) {
-        Scanner scanner(code);
-        Environment environment;
-        LmcProgram program = LmcProgram::parse(scanner, environment);
-        std::vector<Data> assembled_code = program.eval();
+std::vector<Data> Assembler::assemble(std::stringstream const& code)
+{
+    Scanner scanner(code);
+    Environment environment;
+    LmcProgram program = LmcProgram::parse(scanner, environment);
+    std::vector<Data> assembled_code = program.eval();
 
-        return assembled_code;
-    }
+    return assembled_code;
+}
 }

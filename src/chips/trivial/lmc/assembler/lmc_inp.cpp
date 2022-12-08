@@ -4,20 +4,22 @@
 #include <memory>
 
 namespace emu::lmc {
-    class InstructionInterface;
+class InstructionInterface;
 }
 
 namespace emu::lmc {
 
-    LmcInp::LmcInp() = default;
+LmcInp::LmcInp() = default;
 
-    Data LmcInp::eval() {
-        return opcode;
-    }
+Data LmcInp::eval()
+{
+    return opcode;
+}
 
-    std::unique_ptr<InstructionInterface> LmcInp::parse(Scanner &scanner) {
-        scanner.skip(TokenKind::Inp);
+std::unique_ptr<InstructionInterface> LmcInp::parse(Scanner& scanner)
+{
+    scanner.skip(TokenKind::Inp);
 
-        return std::make_unique<LmcInp>();
-    }
+    return std::make_unique<LmcInp>();
+}
 }

@@ -1,12 +1,9 @@
-#ifndef MIKA_EMULATORS_CROSSCUTTING_GUI_GUI_TYPE_H
-#define MIKA_EMULATORS_CROSSCUTTING_GUI_GUI_TYPE_H
+#pragma once
 
 namespace emu::gui {
 
-    enum GuiType {
-        ORDINARY,
-        DEBUGGING
-    };
+enum GuiType {
+    ORDINARY,
+    DEBUGGING
+};
 }
-
-#endif //MIKA_EMULATORS_CROSSCUTTING_GUI_GUI_TYPE_H

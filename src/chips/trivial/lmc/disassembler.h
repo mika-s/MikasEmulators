@@ -1,38 +1,35 @@
-#ifndef MIKA_EMULATORS_CHIPS_TRIVIAL_LMC_DISASSEMBLER_H
-#define MIKA_EMULATORS_CHIPS_TRIVIAL_LMC_DISASSEMBLER_H
+#pragma once
 
 #include "opcode.h"
 #include "usings.h"
 #include <iosfwd>
 
 namespace emu::memory {
-    template<class A, class D>
-    class EmulatorMemory;
+template<class A, class D>
+class EmulatorMemory;
 }
 
 namespace emu::lmc {
 
-    using emu::memory::EmulatorMemory;
+using emu::memory::EmulatorMemory;
 
-    class Disassembler {
-    public:
-        Disassembler(EmulatorMemory<Address, Data> &memory, std::ostream &iostream);
+class Disassembler {
+public:
+    Disassembler(EmulatorMemory<Address, Data>& memory, std::ostream& iostream);
 
-        void disassemble();
+    void disassemble();
 
-    private:
-        EmulatorMemory<Address, Data> &m_memory;
-        Address m_pc;
-        std::ostream &m_ostream;
+private:
+    EmulatorMemory<Address, Data>& m_memory;
+    Address m_pc;
+    std::ostream& m_ostream;
 
-        void print_next_instruction();
+    void print_next_instruction();
 
-        Data get_next_value();
+    Data get_next_value();
 
-        static Address find_argument(Data raw_opcode);
+    static Address find_argument(Data raw_opcode);
 
-        static Opcode find_opcode(Data raw_opcode);
-    };
+    static Opcode find_opcode(Data raw_opcode);
+};
 }
-
-#endif //MIKA_EMULATORS_CHIPS_TRIVIAL_LMC_DISASSEMBLER_H

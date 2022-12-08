@@ -8,20 +8,23 @@
 
 namespace emu::lmc {
 
-    LmcLabelArgument::LmcLabelArgument(std::string literal, Environment &environment)
-        : m_literal(std::move(literal)),
-          m_environment(environment) {
-    }
+LmcLabelArgument::LmcLabelArgument(std::string literal, Environment& environment)
+    : m_literal(std::move(literal))
+    , m_environment(environment)
+{
+}
 
-    Address LmcLabelArgument::eval() {
-        return m_environment.get_address_given_label(m_literal);
-    }
+Address LmcLabelArgument::eval()
+{
+    return m_environment.get_address_given_label(m_literal);
+}
 
-    LmcLabelArgument LmcLabelArgument::parse(Scanner &scanner, Environment &environment) {
-        Token current_token = scanner.current_token();
-        const std::string label = current_token.label_literal();
-        scanner.skip(TokenKind::Label);
+LmcLabelArgument LmcLabelArgument::parse(Scanner& scanner, Environment& environment)
+{
+    Token current_token = scanner.current_token();
+    const std::string label = current_token.label_literal();
+    scanner.skip(TokenKind::Label);
 
-        return {LmcLabelArgument(label, environment)};
-    }
+    return { LmcLabelArgument(label, environment) };
+}
 }

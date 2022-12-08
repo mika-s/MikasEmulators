@@ -6,32 +6,35 @@
 #include <utility>
 
 namespace emu::lmc {
-    class Environment;
+class Environment;
 }
 
 namespace emu::lmc {
 
-    LmcProgram::LmcProgram(std::vector<LmcLine> lines)
-        : m_lines(std::move(lines)) {
+LmcProgram::LmcProgram(std::vector<LmcLine> lines)
+    : m_lines(std::move(lines))
+{
+}
+
+std::vector<Data> LmcProgram::eval()
+{
+    std::vector<Data> data;
+
+    for (LmcLine& line : m_lines) {
+        data.push_back(line.eval());
     }
 
-    std::vector<Data> LmcProgram::eval() {
-        std::vector<Data> data;
+    return data;
+}
 
-        for (LmcLine &line: m_lines) {
-            data.push_back(line.eval());
-        }
+LmcProgram LmcProgram::parse(Scanner& scanner, Environment& environment)
+{
+    std::vector<LmcLine> lines;
 
-        return data;
+    while (scanner.current_token().kind() != TokenKind::Eof) {
+        lines.emplace_back(LmcLine::parse(scanner, environment));
     }
 
-    LmcProgram LmcProgram::parse(Scanner &scanner, Environment &environment) {
-        std::vector<LmcLine> lines;
-
-        while (scanner.current_token().kind() != TokenKind::Eof) {
-            lines.emplace_back(LmcLine::parse(scanner, environment));
-        }
-
-        return LmcProgram(std::move(lines));
-    }
+    return LmcProgram(std::move(lines));
+}
 }

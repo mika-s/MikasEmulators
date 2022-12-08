@@ -87,6 +87,6 @@ add_library(Z80 STATIC ${SOURCES_Z80_CPP} ${SOURCES_Z80_H})
 target_link_libraries(Z80 PRIVATE Doctest Crosscutting)
 target_include_directories(Z80 PUBLIC ../)
 
-if(iwyu_path)
+if (iwyu_path)
     set_property(TARGET Z80 PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
-endif()
+endif ()

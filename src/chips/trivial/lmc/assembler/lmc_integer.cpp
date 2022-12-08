@@ -5,18 +5,21 @@
 
 namespace emu::lmc {
 
-    LmcInteger::LmcInteger(int literal)
-        : m_literal(literal) {
-    }
+LmcInteger::LmcInteger(int literal)
+    : m_literal(literal)
+{
+}
 
-    Data LmcInteger::eval() {
-        return Data(m_literal);
-    }
+Data LmcInteger::eval()
+{
+    return Data(m_literal);
+}
 
-    LmcInteger LmcInteger::parse(Scanner &scanner) {
-        int literal = scanner.current_token().int_literal();
-        scanner.skip(TokenKind::Integer);
+LmcInteger LmcInteger::parse(Scanner& scanner)
+{
+    int literal = scanner.current_token().int_literal();
+    scanner.skip(TokenKind::Integer);
 
-        return LmcInteger(literal);
-    }
+    return LmcInteger(literal);
+}
 }

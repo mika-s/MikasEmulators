@@ -1,11 +1,8 @@
-#ifndef MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_USAGE_H
-#define MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_USAGE_H
+#pragma once
 
 #include <string>
 
 namespace emu::applications::space_invaders {
 
-    void print_usage(const std::string &program_name);
+void print_usage(std::string const& program_name);
 }
-
-#endif //MIKA_EMULATORS_APPLICATIONS_SPACE_INVADERS_USAGE_H

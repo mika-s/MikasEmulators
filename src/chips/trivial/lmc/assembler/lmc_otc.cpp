@@ -3,20 +3,22 @@
 #include "assembler/token_kind.h"
 
 namespace emu::lmc {
-    class InstructionInterface;
+class InstructionInterface;
 }
 
 namespace emu::lmc {
 
-    LmcOtc::LmcOtc() = default;
+LmcOtc::LmcOtc() = default;
 
-    Data LmcOtc::eval() {
-        return opcode;
-    }
+Data LmcOtc::eval()
+{
+    return opcode;
+}
 
-    std::unique_ptr<InstructionInterface> LmcOtc::parse(Scanner &scanner) {
-        scanner.skip(TokenKind::Otc);
+std::unique_ptr<InstructionInterface> LmcOtc::parse(Scanner& scanner)
+{
+    scanner.skip(TokenKind::Otc);
 
-        return std::make_unique<LmcOtc>();
-    }
+    return std::make_unique<LmcOtc>();
+}
 }

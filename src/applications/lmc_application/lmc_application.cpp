@@ -14,71 +14,74 @@
 #include <vector>
 
 namespace emu::misc {
-    class Session;
+class Session;
 }
 
 namespace emu::applications::lmc {
 
-    using emu::gui::GuiType;
-    using emu::lmc::Assembler;
-    using emu::lmc::Data;
-    using emu::util::byte::to_u16;
-    using emu::util::file::read_file;
-    using emu::util::string::split;
+using emu::gui::GuiType;
+using emu::lmc::Assembler;
+using emu::lmc::Data;
+using emu::util::byte::to_u16;
+using emu::util::file::read_file;
+using emu::util::string::split;
 
-    LmcApplication::LmcApplication(const std::string &file, const GuiType gui_type) {
-        load_file(file);
-        if (gui_type == GuiType::DEBUGGING) {
-            m_is_only_run_once = false;
-            m_gui = std::make_shared<GuiImgui>();
-            m_input = std::make_shared<InputImgui>();
-            m_startup_runstatus = RunStatus::PAUSED;
-        } else {
-            m_is_only_run_once = true;
-            m_gui = std::make_shared<TuiTerminal>();
-            m_input = std::make_shared<InputImgui>();
-            m_startup_runstatus = RunStatus::RUNNING;
-        }
+LmcApplication::LmcApplication(std::string const& file, const GuiType gui_type)
+{
+    load_file(file);
+    if (gui_type == GuiType::DEBUGGING) {
+        m_is_only_run_once = false;
+        m_gui = std::make_shared<GuiImgui>();
+        m_input = std::make_shared<InputImgui>();
+        m_startup_runstatus = RunStatus::PAUSED;
+    } else {
+        m_is_only_run_once = true;
+        m_gui = std::make_shared<TuiTerminal>();
+        m_input = std::make_shared<InputImgui>();
+        m_startup_runstatus = RunStatus::RUNNING;
+    }
+}
+
+std::unique_ptr<Session> LmcApplication::new_session()
+{
+    return std::make_unique<LmcApplicationSession>(
+        m_is_only_run_once,
+        m_startup_runstatus,
+        m_gui,
+        m_input,
+        m_loaded_file,
+        m_file_content,
+        m_memory);
+}
+
+void LmcApplication::load_file(std::string const& file)
+{
+    m_loaded_file = file;
+
+    const std::stringstream file_content = read_file(file);
+    m_file_content = file_content.str();
+    const std::vector<Data> code = Assembler::assemble(file_content);
+    std::vector<Data> remaining_memory;
+
+    if (code.size() < memory_size) {
+        remaining_memory = create_work_ram(memory_size - code.size());
     }
 
-    std::unique_ptr<Session> LmcApplication::new_session() {
-        return std::make_unique<LmcApplicationSession>(
-                m_is_only_run_once,
-                m_startup_runstatus,
-                m_gui,
-                m_input,
-                m_loaded_file,
-                m_file_content,
-                m_memory
-        );
+    assert(code.size() + remaining_memory.size() == memory_size);
+
+    m_memory.add(code);
+    m_memory.add(remaining_memory);
+}
+
+std::vector<Data> LmcApplication::create_work_ram(std::size_t size)
+{
+    std::vector<Data> work_ram;
+
+    work_ram.reserve(size);
+    for (std::size_t i = 0; i < size; ++i) {
+        work_ram.emplace_back(0);
     }
 
-    void LmcApplication::load_file(const std::string &file) {
-        m_loaded_file = file;
-
-        const std::stringstream file_content = read_file(file);
-        m_file_content = file_content.str();
-        const std::vector<Data> code = Assembler::assemble(file_content);
-        std::vector<Data> remaining_memory;
-
-        if (code.size() < memory_size) {
-            remaining_memory = create_work_ram(memory_size - code.size());
-        }
-
-        assert(code.size() + remaining_memory.size() == memory_size);
-
-        m_memory.add(code);
-        m_memory.add(remaining_memory);
-    }
-
-    std::vector<Data> LmcApplication::create_work_ram(std::size_t size) {
-        std::vector<Data> work_ram;
-
-        work_ram.reserve(size);
-        for (std::size_t i = 0; i < size; ++i) {
-            work_ram.emplace_back(0);
-        }
-
-        return work_ram;
-    }
+    return work_ram;
+}
 }

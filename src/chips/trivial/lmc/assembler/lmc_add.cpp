@@ -6,27 +6,30 @@
 #include <utility>
 
 namespace emu::lmc {
-    class Environment;
+class Environment;
 }
 namespace emu::lmc {
-    class InstructionInterface;
+class InstructionInterface;
 }
 
 namespace emu::lmc {
 
-    LmcAdd::LmcAdd(LmcOperand operand)
-        : m_operand(std::move(operand)) {
-    }
+LmcAdd::LmcAdd(LmcOperand operand)
+    : m_operand(std::move(operand))
+{
+}
 
-    Data LmcAdd::eval() {
-        return opcode + m_operand.eval();
-    }
+Data LmcAdd::eval()
+{
+    return opcode + m_operand.eval();
+}
 
-    std::unique_ptr<InstructionInterface> LmcAdd::parse(Scanner &scanner, Environment &environment) {
-        scanner.skip(TokenKind::Add);
+std::unique_ptr<InstructionInterface> LmcAdd::parse(Scanner& scanner, Environment& environment)
+{
+    scanner.skip(TokenKind::Add);
 
-        LmcOperand operand = LmcOperand::parse(scanner, environment);
+    LmcOperand operand = LmcOperand::parse(scanner, environment);
 
-        return std::make_unique<LmcAdd>(operand);
-    }
+    return std::make_unique<LmcAdd>(operand);
+}
 }

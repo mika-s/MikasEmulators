@@ -1,5 +1,4 @@
-#ifndef MIKA_EMULATORS_CHIPS_LMC_ASSEMBLER_H
-#define MIKA_EMULATORS_CHIPS_LMC_ASSEMBLER_H
+#pragma once
 
 #include "chips/trivial/lmc/usings.h"
 #include <sstream>
@@ -7,17 +6,14 @@
 
 namespace emu::lmc {
 
-    /**
-     * A simple assembler that parses the file line by line.
-     * It does not use a fancy parsing algorithm, just split etc.
-     */
-    class Assembler {
-    public:
-        static std::vector<Data> assemble(const std::stringstream &code);
+/**
+ * A simple assembler that parses the file line by line.
+ * It does not use a fancy parsing algorithm, just split etc.
+ */
+class Assembler {
+public:
+    static std::vector<Data> assemble(std::stringstream const& code);
 
-    private:
-
-    };
+private:
+};
 }
-
-#endif //MIKA_EMULATORS_CHIPS_LMC_ASSEMBLER_H
