@@ -25,6 +25,7 @@ void Disassembler::disassemble()
     while (m_pc < Address(99)) {
         print_next_instruction();
     }
+    print_next_instruction();
 }
 
 void Disassembler::print_next_instruction()

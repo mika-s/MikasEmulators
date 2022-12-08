@@ -62,7 +62,7 @@ void Cpu::remove_in_observer(InObserver* observer)
 
 bool Cpu::can_run_next_instruction() const
 {
-    return m_pc != Address(99) && !m_is_halted;
+    return m_pc < Address(99) && !m_is_halted;
 }
 
 void Cpu::reset_state()
@@ -204,7 +204,7 @@ void Cpu::notify_in_observers()
     }
 }
 
-void Cpu::print_debug(Data opcode)
+void Cpu::print_debug([[maybe_unused]] Data opcode)
 {
     if (false) {
         std::cout << "pc=" << m_pc

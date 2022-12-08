@@ -124,7 +124,7 @@ void LmcApplicationSession::running(cyc& cycles)
             }
             ++cycles;
             if (m_is_in_debug_mode && m_debugger->has_breakpoint(m_cpu->pc())) {
-                m_logger->info("Breakpoint hit: 0x%04x", m_cpu->pc());
+                m_logger->info("Breakpoint hit: %03d", m_cpu->pc());
                 m_run_status = STEPPING;
                 return;
             }

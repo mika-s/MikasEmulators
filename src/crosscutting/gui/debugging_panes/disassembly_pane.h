@@ -241,8 +241,8 @@ private:
                             m_debugger->remove_breakpoint(address);
                             if (m_debug_container->is_decimal()) {
                                 std::stringstream ss;
-                                ss << m_address_to_goto;
-                                m_logger->info("Removing breakpoint: %s", m_address_to_goto);
+                                ss << address;
+                                m_logger->info("Removing breakpoint: %s", ss.str().c_str());
                             } else {
                                 m_logger->info("Removing breakpoint: 0x%04x", address);
                             }
@@ -250,8 +250,8 @@ private:
                             m_debugger->add_breakpoint(address, Breakpoint<A, B>(line));
                             if (m_debug_container->is_decimal()) {
                                 std::stringstream ss;
-                                ss << m_address_to_goto;
-                                m_logger->info("Adding breakpoint: %s", m_address_to_goto);
+                                ss << address;
+                                m_logger->info("Adding breakpoint: %s", ss.str().c_str());
                             } else {
                                 m_logger->info("Adding breakpoint: 0x%04x", address);
                             }
