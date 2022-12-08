@@ -162,6 +162,14 @@ void InputImgui::read(RunStatus& run_status, std::shared_ptr<MemoryMappedIoForPa
             default:
                 break;
             }
+        } else {
+            switch (read_input_event.type) {
+            case SDL_QUIT:
+                run_status = RunStatus::NOT_RUNNING;
+                break;
+            default:
+                break;
+            }
         }
     }
 }
@@ -201,6 +209,14 @@ void InputImgui::read_debug_only(RunStatus& run_status)
                 default:
                     break;
                 }
+                break;
+            default:
+                break;
+            }
+        } else {
+            switch (read_input_event.type) {
+            case SDL_QUIT:
+                run_status = NOT_RUNNING;
                 break;
             default:
                 break;

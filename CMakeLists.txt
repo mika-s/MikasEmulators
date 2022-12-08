@@ -2,7 +2,11 @@
 
 cmake_minimum_required(VERSION 3.21)
 
-project(emulator LANGUAGES CXX C)
+project(emulator
+        DESCRIPTION "A collection of emulators"
+        HOMEPAGE_URL "https://github.com/mika-s/MikasEmulators"
+        LANGUAGES CXX C
+        )
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_STANDARD 20)
