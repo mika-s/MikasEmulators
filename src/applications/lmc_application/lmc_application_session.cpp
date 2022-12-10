@@ -15,6 +15,7 @@
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
 #include "interfaces/input.h"
+#include "io_request.h"
 #include "terminal_input_state.h"
 #include "ui.h"
 #include <algorithm>
@@ -57,10 +58,6 @@ LmcApplicationSession::LmcApplicationSession(
     std::string file_content,
     EmulatorMemory<Address, Data> memory)
     : m_is_only_run_once(is_only_run_once)
-    , m_is_in_debug_mode(false)
-    , m_is_stepping_instruction(false)
-    , m_is_stepping_cycle(false)
-    , m_is_continuing_execution(false)
     , m_terminal_input_state(NOT_AWAITING_INPUT)
     , m_startup_runstatus(startup_runstatus)
     , m_run_status(NOT_RUNNING)
@@ -77,11 +74,15 @@ LmcApplicationSession::LmcApplicationSession(
     setup_debugging();
 
     m_gui->add_ui_observer(*this);
+    m_input->add_io_observer(*this);
 }
 
 LmcApplicationSession::~LmcApplicationSession()
 {
     m_gui->remove_ui_observer(this);
+    m_input->remove_io_observer(this);
+    m_cpu->remove_out_observer(this);
+    m_cpu->remove_in_observer(this);
 }
 
 void LmcApplicationSession::run()
@@ -152,7 +153,12 @@ void LmcApplicationSession::stepping(cyc& cycles)
 
     cycles = 0;
     while (cycles < static_cast<cyc>(cycles_per_tick)) {
-        m_cpu->next_instruction();
+        if (m_cpu->can_run_next_instruction()) {
+            m_cpu->next_instruction();
+        } else {
+            m_run_status = PAUSED;
+            return;
+        }
         ++cycles;
         if (!m_is_stepping_cycle && !m_is_continuing_execution) {
             await_input_and_update_debug();
@@ -340,4 +346,26 @@ std::vector<DisassembledLine<Address, 10>> LmcApplicationSession::disassemble_pr
 
     return lines;
 }
+
+void LmcApplicationSession::io_changed(IoRequest request)
+{
+    switch (request) {
+    case STEP_INSTRUCTION:
+        if (m_is_in_debug_mode && m_run_status == STEPPING) {
+            m_is_stepping_instruction = true;
+        }
+        break;
+    case STEP_CYCLE:
+        if (m_is_in_debug_mode && m_run_status == STEPPING) {
+            m_is_stepping_cycle = true;
+        }
+        break;
+    case CONTINUE_EXECUTION:
+        if (m_is_in_debug_mode && m_run_status == STEPPING) {
+            m_is_continuing_execution = true;
+        }
+        break;
+    }
+}
+
 }

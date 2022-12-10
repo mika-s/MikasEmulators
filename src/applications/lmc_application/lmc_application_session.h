@@ -11,6 +11,8 @@
 #include "crosscutting/misc/session.h"
 #include "crosscutting/misc/uinteger.h"
 #include "crosscutting/typedefs.h"
+#include "interfaces/io_observer.h"
+#include "io_request.h"
 #include "terminal_input_state.h"
 #include <cstddef>
 #include <memory>
@@ -44,6 +46,7 @@ class Logger;
 
 namespace emu::applications::lmc {
 
+using emu::applications::lmc::IoObserver;
 using emu::debugger::DebugContainer;
 using emu::debugger::Debugger;
 using emu::debugger::DisassembledLine;
@@ -65,7 +68,8 @@ class LmcApplicationSession
     : public Session
     , public UiObserver
     , public OutObserver
-    , public InObserver {
+    , public InObserver
+    , public IoObserver {
 public:
     LmcApplicationSession(
         bool is_only_run_once,
@@ -98,6 +102,8 @@ public:
 
     void in_requested() override;
 
+    void io_changed(IoRequest request) override;
+
 private:
     static constexpr unsigned int program_size = 100;
 
@@ -108,11 +114,11 @@ private:
     static constexpr long double cycles_per_tick = cycles_per_ms * tick_limit;
     // Game loop - end
 
-    bool m_is_only_run_once;
-    bool m_is_in_debug_mode;
-    bool m_is_stepping_instruction;
-    bool m_is_stepping_cycle;
-    bool m_is_continuing_execution;
+    bool m_is_only_run_once{false};
+    bool m_is_in_debug_mode{false};
+    bool m_is_stepping_instruction{false};
+    bool m_is_stepping_cycle{false};
+    bool m_is_continuing_execution{false};
     TerminalInputState m_terminal_input_state;
     RunStatus m_startup_runstatus;
     RunStatus m_run_status;
