@@ -8,6 +8,7 @@
 
 namespace emu::applications::space_invaders {
 class CpuIo;
+class GuiIo;
 }
 namespace emu::applications::space_invaders {
 class IoObserver;
@@ -19,9 +20,9 @@ using emu::misc::RunStatus;
 
 class InputSdl : public Input {
 public:
-    void read(RunStatus& run_status, CpuIo& cpu_io) override;
+    void read(CpuIo& cpu_io, GuiIo& gui_io) override;
 
-    void read_debug_only(RunStatus& run_status) override;
+    void read_debug_only(GuiIo& gui_io) override;
 
     void add_io_observer(IoObserver& observer) override;
 

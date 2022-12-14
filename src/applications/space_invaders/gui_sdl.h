@@ -7,6 +7,7 @@
 #include <SDL_video.h>
 #include <cstddef>
 #include <memory>
+#include <string>
 #include <vector>
 
 namespace emu::debugger {
@@ -39,7 +40,7 @@ public:
 
     void remove_gui_observer(GuiObserver* observer) override;
 
-    void update_screen(std::vector<u8> const& vram, RunStatus run_status) override;
+    void update_screen(std::vector<u8> const& vram, std::string const& game_window_subtitle) override;
 
     void update_debug_only() override;
 
@@ -55,8 +56,6 @@ private:
     SDL_Texture* m_texture;
 
     std::vector<GuiObserver*> m_gui_observers;
-
-    void notify_gui_observers(RunStatus new_status);
 
     void init();
 };

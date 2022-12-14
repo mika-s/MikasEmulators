@@ -7,33 +7,30 @@
 #include "cpu_io.h"
 #include "crosscutting/misc/governor.h"
 #include "crosscutting/misc/run_status.h"
+#include "crosscutting/misc/sdl_counter.h"
 #include "crosscutting/misc/session.h"
 #include "crosscutting/typedefs.h"
+#include "gui_io.h"
 #include "interfaces/io_observer.h"
-#include "space_invaders/io_request.h"
+#include "interfaces/state_manager.h"
+#include "io_request.h"
 #include <cstddef>
+#include <functional>
 #include <memory>
 #include <unordered_map>
 #include <vector>
 
 namespace emu::applications::space_invaders {
 class Gui;
-}
-namespace emu::applications::space_invaders {
 class Input;
-}
-namespace emu::applications::space_invaders {
 class Settings;
+class State;
 }
 namespace emu::debugger {
 template<class A, class D, std::size_t B>
 class DebugContainer;
-}
-namespace emu::debugger {
 template<class A, std::size_t B>
 class Debugger;
-}
-namespace emu::debugger {
 template<class A, std::size_t B>
 class DisassembledLine;
 }
@@ -61,6 +58,7 @@ using emu::logging::Logger;
 using emu::memory::EmulatorMemory;
 using emu::misc::Governor;
 using emu::misc::RunStatus;
+using emu::misc::sdl_get_ticks_high_performance;
 using emu::misc::Session;
 
 class SpaceInvadersSession
@@ -68,7 +66,8 @@ class SpaceInvadersSession
     , public GuiObserver
     , public OutObserver
     , public InObserver
-    , public IoObserver {
+    , public IoObserver
+    , public StateManager {
 public:
     SpaceInvadersSession(
         Settings const& settings,
@@ -95,34 +94,22 @@ public:
 
     void io_changed(IoRequest request) override;
 
+    void change_state(std::shared_ptr<State> new_state) override;
+
+    std::shared_ptr<State> paused_state() override;
+
+    std::shared_ptr<State> running_state() override;
+
+    std::shared_ptr<State> stepping_state() override;
+
+    std::shared_ptr<State> stopped_state() override;
+
+    std::shared_ptr<State> current_state() override;
+
 private:
-    bool m_is_in_debug_mode;
-    bool m_is_stepping_instruction;
-    bool m_is_stepping_cycle;
-    bool m_is_continuing_execution;
-    RunStatus m_startup_runstatus;
-    RunStatus m_run_status;
-
-    CpuIo m_cpu_io;
-    std::shared_ptr<Gui> m_gui;
-    std::shared_ptr<Input> m_input;
-    std::unique_ptr<Cpu> m_cpu;
-    Audio m_audio;
-
-    EmulatorMemory<u16, u8>& m_memory;
-
-    std::shared_ptr<Logger> m_logger;
-    std::shared_ptr<Debugger<u16, 16>> m_debugger;
-    std::shared_ptr<DebugContainer<u16, u8, 16>> m_debug_container;
-    std::unordered_map<u8, u8> m_outputs_during_cycle;
-
-    Governor m_governor;
-
     // Game loop - begin
     static constexpr long double fps = 60.0L;
     static constexpr long double tick_limit = 1000.0L / fps;
-    static constexpr int cycles_per_ms = 2000;
-    static constexpr long double cycles_per_tick = cycles_per_ms * tick_limit;
     // Game loop - end
 
     // IO - begin
@@ -138,22 +125,35 @@ private:
     static constexpr u8 out_port_watchdog = 6;
     // IO - end
 
-    static constexpr unsigned int rst_1_i8080 = 0xcf;
-    static constexpr unsigned int rst_2_i8080 = 0xd7;
+    bool m_is_in_debug_mode { false };
+    RunStatus m_startup_runstatus;
+    RunStatus m_run_status { RunStatus::NOT_RUNNING };
 
-    void running(cyc& cycles);
+    CpuIo m_cpu_io { CpuIo(0, 0b00001000, 0) };
+    GuiIo m_gui_io;
+    std::shared_ptr<Gui> m_gui;
+    std::shared_ptr<Input> m_input;
+    std::shared_ptr<Cpu> m_cpu;
+    Audio m_audio;
 
-    void pausing();
+    EmulatorMemory<u16, u8>& m_memory;
 
-    void stepping(cyc& cycles);
+    std::shared_ptr<Logger> m_logger;
+    std::shared_ptr<Debugger<u16, 16>> m_debugger;
+    std::shared_ptr<DebugContainer<u16, u8, 16>> m_debug_container;
+    std::unordered_map<u8, u8> m_outputs_during_cycle;
 
-    void await_input_and_update_debug();
+    Governor m_governor { Governor(tick_limit, sdl_get_ticks_high_performance) };
+
+    std::shared_ptr<State> m_current_state;
+    std::shared_ptr<State> m_running_state;
+    std::shared_ptr<State> m_paused_state;
+    std::shared_ptr<State> m_stepping_state;
+    std::shared_ptr<State> m_stopped_state;
 
     void setup_cpu();
 
     void setup_debugging();
-
-    std::vector<u8> vram();
 
     std::vector<u8> memory();
 

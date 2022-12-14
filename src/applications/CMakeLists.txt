@@ -49,6 +49,10 @@ set(SOURCES_APPLICATIONS_CPP
         space_invaders/space_invaders_session.cpp
         space_invaders/settings.cpp
         space_invaders/usage.cpp
+        space_invaders/states/paused_state.cpp
+        space_invaders/states/running_state.cpp
+        space_invaders/states/stepping_state.cpp
+        space_invaders/states/stopped_state.cpp
         )
 
 set(SOURCES_APPLICATIONS_H
@@ -104,6 +108,7 @@ set(SOURCES_APPLICATIONS_H
         space_invaders/cpu_io.h
         space_invaders/gui.h
         space_invaders/gui_imgui.h
+        space_invaders/gui_io.h
         space_invaders/gui_sdl.h
         space_invaders/input_imgui.h
         space_invaders/input_sdl.h
@@ -116,6 +121,12 @@ set(SOURCES_APPLICATIONS_H
         space_invaders/usage.h
         space_invaders/interfaces/input.h
         space_invaders/interfaces/io_observer.h
+        space_invaders/interfaces/state.h
+        space_invaders/interfaces/state_manager.h
+        space_invaders/states/paused_state.h
+        space_invaders/states/running_state.h
+        space_invaders/states/stepping_state.h
+        space_invaders/states/stopped_state.h
         )
 
 add_library(Applications STATIC ${SOURCES_APPLICATIONS_H} ${SOURCES_APPLICATIONS_CPP})

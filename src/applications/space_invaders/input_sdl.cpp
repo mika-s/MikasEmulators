@@ -1,8 +1,9 @@
 #include "input_sdl.h"
+#include "cpu_io.h"
 #include "crosscutting/util/byte_util.h"
-#include "space_invaders/cpu_io.h"
-#include "space_invaders/interfaces/io_observer.h"
-#include "space_invaders/io_request.h"
+#include "gui_io.h"
+#include "interfaces/io_observer.h"
+#include "io_request.h"
 #include <SDL_events.h>
 #include <SDL_keyboard.h>
 #include <algorithm>
@@ -52,14 +53,14 @@ void InputSdl::notify_io_observers(IoRequest request)
         6	P2 joystick right
         7	dipswitch coin info 1:off,0:on
 */
-void InputSdl::read(RunStatus& run_status, CpuIo& cpu_io)
+void InputSdl::read(CpuIo& cpu_io, GuiIo& gui_io)
 {
     SDL_Event read_input_event;
 
     while (SDL_PollEvent(&read_input_event) != 0) {
         switch (read_input_event.type) {
         case SDL_QUIT:
-            run_status = RunStatus::NOT_RUNNING;
+            gui_io.m_is_quitting = true;
             break;
         case SDL_KEYUP:
             switch (read_input_event.key.keysym.scancode) {
@@ -100,14 +101,10 @@ void InputSdl::read(RunStatus& run_status, CpuIo& cpu_io)
         case SDL_KEYDOWN:
             switch (read_input_event.key.keysym.scancode) {
             case mute:
-                notify_io_observers(IoRequest::TOGGLE_MUTE);
+                notify_io_observers(TOGGLE_MUTE);
                 break;
             case pause:
-                if (run_status == RunStatus::PAUSED) {
-                    run_status = RunStatus::RUNNING;
-                } else if (run_status == RunStatus::RUNNING) {
-                    run_status = RunStatus::PAUSED;
-                }
+                gui_io.m_is_toggling_pause = true;
                 break;
             case insert_coin:
                 set_bit(cpu_io.m_in_port1, 0);
@@ -149,5 +146,5 @@ void InputSdl::read(RunStatus& run_status, CpuIo& cpu_io)
     }
 }
 
-void InputSdl::read_debug_only([[maybe_unused]] RunStatus& run_status) { }
+void InputSdl::read_debug_only([[maybe_unused]] GuiIo& gui_io) { }
 }

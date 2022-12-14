@@ -1,5 +1,6 @@
 #include "input_imgui.h"
 #include "crosscutting/util/byte_util.h"
+#include "gui_io.h"
 #include "imgui.h"
 #include "imgui_impl_sdl.h"
 #include "space_invaders/cpu_io.h"
@@ -59,7 +60,7 @@ void InputImgui::notify_io_observers(IoRequest request)
         6	P2 joystick right
         7	dipswitch coin info 1:off,0:on
 */
-void InputImgui::read(RunStatus& run_status, CpuIo& cpu_io)
+void InputImgui::read(CpuIo& cpu_io, GuiIo& gui_io)
 {
     SDL_Event read_input_event;
 
@@ -71,7 +72,7 @@ void InputImgui::read(RunStatus& run_status, CpuIo& cpu_io)
         if (!io.WantCaptureKeyboard) {
             switch (read_input_event.type) {
             case SDL_QUIT:
-                run_status = RunStatus::NOT_RUNNING;
+                gui_io.m_is_quitting = true;
                 break;
             case SDL_KEYUP:
                 switch (read_input_event.key.keysym.scancode) {
@@ -112,14 +113,10 @@ void InputImgui::read(RunStatus& run_status, CpuIo& cpu_io)
             case SDL_KEYDOWN:
                 switch (read_input_event.key.keysym.scancode) {
                 case mute:
-                    notify_io_observers(IoRequest::TOGGLE_MUTE);
+                    notify_io_observers(TOGGLE_MUTE);
                     break;
                 case pause:
-                    if (run_status == RunStatus::PAUSED) {
-                        run_status = RunStatus::RUNNING;
-                    } else if (run_status == RunStatus::RUNNING) {
-                        run_status = RunStatus::PAUSED;
-                    }
+                    gui_io.m_is_toggling_pause = true;
                     break;
                 case insert_coin:
                     set_bit(cpu_io.m_in_port1, 0);
@@ -161,7 +158,7 @@ void InputImgui::read(RunStatus& run_status, CpuIo& cpu_io)
         } else {
             switch (read_input_event.type) {
             case SDL_QUIT:
-                run_status = RunStatus::NOT_RUNNING;
+                gui_io.m_is_quitting = true;
                 break;
             default:
                 break;
@@ -170,7 +167,7 @@ void InputImgui::read(RunStatus& run_status, CpuIo& cpu_io)
     }
 }
 
-void InputImgui::read_debug_only(RunStatus& run_status)
+void InputImgui::read_debug_only(GuiIo& gui_io)
 {
     SDL_Event read_input_event;
 
@@ -182,25 +179,21 @@ void InputImgui::read_debug_only(RunStatus& run_status)
         if (!io.WantCaptureKeyboard) {
             switch (read_input_event.type) {
             case SDL_QUIT:
-                run_status = NOT_RUNNING;
+                gui_io.m_is_quitting = true;
                 break;
             case SDL_KEYDOWN:
                 switch (read_input_event.key.keysym.scancode) {
                 case pause:
-                    if (run_status == PAUSED) {
-                        run_status = STEPPING;
-                    } else if (run_status == STEPPING) {
-                        run_status = PAUSED;
-                    }
+                    gui_io.m_is_toggling_pause = true;
                     break;
                 case step_instruction:
-                    notify_io_observers(STEP_INSTRUCTION);
+                    gui_io.m_is_stepping_instruction = true;
                     break;
                 case step_cycle:
-                    notify_io_observers(STEP_CYCLE);
+                    gui_io.m_is_stepping_cycle = true;
                     break;
                 case continue_running:
-                    notify_io_observers(CONTINUE_EXECUTION);
+                    gui_io.m_is_continuing_execution = true;
                     break;
                 default:
                     break;
@@ -212,7 +205,7 @@ void InputImgui::read_debug_only(RunStatus& run_status)
         } else {
             switch (read_input_event.type) {
             case SDL_QUIT:
-                run_status = RunStatus::NOT_RUNNING;
+                gui_io.m_is_quitting = true;
                 break;
             default:
                 break;

@@ -62,13 +62,6 @@ void GuiSdl::remove_gui_observer(GuiObserver* observer)
         m_gui_observers.end());
 }
 
-void GuiSdl::notify_gui_observers(RunStatus new_status)
-{
-    for (GuiObserver* observer : m_gui_observers) {
-        observer->run_status_changed(new_status);
-    }
-}
-
 void GuiSdl::attach_debugger([[maybe_unused]] std::shared_ptr<Debugger<u16, 16>> debugger)
 {
 }
@@ -120,7 +113,7 @@ void GuiSdl::init()
     }
 }
 
-void GuiSdl::update_screen(std::vector<u8> const& vram, RunStatus run_status)
+void GuiSdl::update_screen(std::vector<u8> const& vram, std::string const& game_window_subtitle)
 {
     std::vector<u32> framebuffer = create_framebuffer(vram);
 
@@ -133,14 +126,7 @@ void GuiSdl::update_screen(std::vector<u8> const& vram, RunStatus run_status)
         memcpy(pixels, framebuffer.data(), static_cast<std::size_t>(pitch * height));
     }
 
-    std::string title;
-    if (run_status == RUNNING) {
-        title = "Space Invaders";
-    } else if (run_status == PAUSED) {
-        title = "Space Invaders - Paused";
-    } else if (run_status == NOT_RUNNING) {
-        title = "Space Invaders - Stopped";
-    }
+    const std::string title = game_window_subtitle.empty() ? "Space Invaders" : "Space Invaders - " + game_window_subtitle;
 
     SDL_SetWindowTitle(m_win, title.c_str());
     SDL_UnlockTexture(m_texture);

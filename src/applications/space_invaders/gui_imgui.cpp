@@ -190,7 +190,7 @@ void GuiImgui::init()
     glGenTextures(1, &m_screen_texture);
 }
 
-void GuiImgui::update_screen(std::vector<u8> const& vram, RunStatus run_status)
+void GuiImgui::update_screen(std::vector<u8> const& vram, std::string const& game_window_subtitle)
 {
     std::vector<u32> framebuffer = create_framebuffer(vram);
 
@@ -201,10 +201,10 @@ void GuiImgui::update_screen(std::vector<u8> const& vram, RunStatus run_status)
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    render(run_status);
+    render(game_window_subtitle);
 }
 
-void GuiImgui::render(RunStatus run_status)
+void GuiImgui::render(std::string const& game_window_subtitle)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -273,7 +273,7 @@ void GuiImgui::render(RunStatus run_status)
         render_disassembly_window();
     }
     if (m_show_game) {
-        render_game_window(run_status);
+        render_game_window(game_window_subtitle);
     }
     if (m_show_game_info) {
         render_game_info_window();
@@ -301,25 +301,14 @@ void GuiImgui::render(RunStatus run_status)
 
 void GuiImgui::update_debug_only()
 {
-    render(STEPPING);
+    render("Stepping");
 }
 
-void GuiImgui::render_game_window(RunStatus run_status)
+void GuiImgui::render_game_window(std::string const& game_window_subtitle)
 {
-    std::string prefix = "Game";
-    std::string id = "###" + prefix;
-    std::string title;
-    if (run_status == RUNNING) {
-        title = prefix + id;
-    } else if (run_status == PAUSED) {
-        title = prefix + " - Paused" + id;
-    } else if (run_status == NOT_RUNNING) {
-        title = prefix + " - Stopped" + id;
-    } else if (run_status == STEPPING) {
-        title = prefix + " - Stepping" + id;
-    } else {
-        title = "Unknown TODO" + id;
-    }
+    const std::string prefix = "Game";
+    const std::string id = "###" + prefix;
+    const std::string title = game_window_subtitle.empty() ? prefix + id : prefix + " - " + game_window_subtitle + id;
 
     ImGui::Begin(title.c_str(), &m_show_game);
 
