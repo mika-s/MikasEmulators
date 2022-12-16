@@ -75,14 +75,14 @@ private:
     static inline std::string s_game_window_subtitle = "";
 
     // Game loop - begin
-    static constexpr long double fps = 60.0L;
-    static constexpr long double tick_limit = 1000.0L / fps;
-    static constexpr int cycles_per_ms = 2000;
-    static constexpr long double cycles_per_tick = cycles_per_ms * tick_limit;
+    static constexpr long double s_fps = 60.0L;
+    static constexpr long double s_tick_limit = 1000.0L / s_fps;
+    static constexpr int s_cycles_per_ms = 2000;
+    static constexpr long double s_cycles_per_tick = s_cycles_per_ms * s_tick_limit;
     // Game loop - end
 
-    static constexpr unsigned int rst_1_i8080 = 0xcf;
-    static constexpr unsigned int rst_2_i8080 = 0xd7;
+    static constexpr unsigned int s_rst_1_i8080 = 0xcf;
+    static constexpr unsigned int s_rst_2_i8080 = 0xd7;
 
     StateManager& m_state_manager;
 

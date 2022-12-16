@@ -35,11 +35,11 @@ public:
     std::vector<Waveform> waveforms();
 
 private:
-    static constexpr unsigned int samples_per_waveform = 32;
-    static constexpr int sdl_frequency = 44100;
-    static constexpr int fps = 60;
-    static constexpr float resampling_ratio = static_cast<float>(Wsg3::frequency) / static_cast<float>(sdl_frequency);
-    static constexpr int samples_per_frame = sdl_frequency / fps;
+    static constexpr unsigned int s_samples_per_waveform = 32;
+    static constexpr int s_sdl_frequency = 44100;
+    static constexpr int s_fps = 60;
+    static constexpr float s_resampling_ratio = static_cast<float>(Wsg3::s_frequency) / static_cast<float>(s_sdl_frequency);
+    static constexpr int s_samples_per_frame = s_sdl_frequency / s_fps;
 
     unsigned int m_volume = 20;
 

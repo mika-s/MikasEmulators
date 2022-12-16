@@ -55,43 +55,43 @@ void InputImgui::read(RunStatus& run_status, std::shared_ptr<MemoryMappedIoForPa
                 break;
             case SDL_KEYUP:
                 switch (read_input_event.key.keysym.scancode) {
-                case credit:
+                case s_credit:
                     memory_mapped_io->in0_read(7, true);
                     break;
-                case insert_coin_p1:
+                case s_insert_coin_p1:
                     memory_mapped_io->in0_read(5, true);
                     break;
-                case insert_coin_p2:
+                case s_insert_coin_p2:
                     memory_mapped_io->in0_read(6, true);
                     break;
-                case p1_start:
+                case s_p1_start:
                     memory_mapped_io->in1_read(5, true);
                     break;
-                case p1_up:
+                case s_p1_up:
                     memory_mapped_io->in0_read(0, true);
                     break;
-                case p1_down:
+                case s_p1_down:
                     memory_mapped_io->in0_read(3, true);
                     break;
-                case p1_left:
+                case s_p1_left:
                     memory_mapped_io->in0_read(1, true);
                     break;
-                case p1_right:
+                case s_p1_right:
                     memory_mapped_io->in0_read(2, true);
                     break;
-                case p2_start:
+                case s_p2_start:
                     memory_mapped_io->in1_read(6, true);
                     break;
-                case p2_up:
+                case s_p2_up:
                     memory_mapped_io->in1_read(0, true);
                     break;
-                case p2_down:
+                case s_p2_down:
                     memory_mapped_io->in1_read(3, true);
                     break;
-                case p2_left:
+                case s_p2_left:
                     memory_mapped_io->in1_read(1, true);
                     break;
-                case p2_right:
+                case s_p2_right:
                     memory_mapped_io->in1_read(2, true);
                     break;
                 default:
@@ -100,59 +100,59 @@ void InputImgui::read(RunStatus& run_status, std::shared_ptr<MemoryMappedIoForPa
                 break;
             case SDL_KEYDOWN:
                 switch (read_input_event.key.keysym.scancode) {
-                case tile_debug:
+                case s_tile_debug:
                     notify_io_observers(IoRequest::TOGGLE_TILE_DEBUG);
                     break;
-                case sprite_debug:
+                case s_sprite_debug:
                     notify_io_observers(IoRequest::TOGGLE_SPRITE_DEBUG);
                     break;
-                case mute:
+                case s_mute:
                     notify_io_observers(IoRequest::TOGGLE_MUTE);
                     break;
-                case pause:
+                case s_pause:
                     if (run_status == RunStatus::PAUSED) {
                         run_status = RunStatus::RUNNING;
                     } else if (run_status == RunStatus::RUNNING) {
                         run_status = RunStatus::PAUSED;
                     }
                     break;
-                case credit:
+                case s_credit:
                     memory_mapped_io->in0_read(7, false);
                     break;
-                case insert_coin_p1:
+                case s_insert_coin_p1:
                     memory_mapped_io->in0_read(5, false);
                     break;
-                case insert_coin_p2:
+                case s_insert_coin_p2:
                     memory_mapped_io->in0_read(6, false);
                     break;
-                case p1_start:
+                case s_p1_start:
                     memory_mapped_io->in1_read(5, false);
                     break;
-                case p1_up:
+                case s_p1_up:
                     memory_mapped_io->in0_read(0, false);
                     break;
-                case p1_down:
+                case s_p1_down:
                     memory_mapped_io->in0_read(3, false);
                     break;
-                case p1_left:
+                case s_p1_left:
                     memory_mapped_io->in0_read(1, false);
                     break;
-                case p1_right:
+                case s_p1_right:
                     memory_mapped_io->in0_read(2, false);
                     break;
-                case p2_start:
+                case s_p2_start:
                     memory_mapped_io->in1_read(6, false);
                     break;
-                case p2_up:
+                case s_p2_up:
                     memory_mapped_io->in1_read(0, false);
                     break;
-                case p2_down:
+                case s_p2_down:
                     memory_mapped_io->in1_read(3, false);
                     break;
-                case p2_left:
+                case s_p2_left:
                     memory_mapped_io->in1_read(1, false);
                     break;
-                case p2_right:
+                case s_p2_right:
                     memory_mapped_io->in1_read(2, false);
                     break;
                 default:
@@ -190,20 +190,20 @@ void InputImgui::read_debug_only(RunStatus& run_status)
                 break;
             case SDL_KEYDOWN:
                 switch (read_input_event.key.keysym.scancode) {
-                case pause:
+                case s_pause:
                     if (run_status == PAUSED) {
                         run_status = STEPPING;
                     } else if (run_status == STEPPING) {
                         run_status = PAUSED;
                     }
                     break;
-                case step_instruction:
+                case s_step_instruction:
                     notify_io_observers(STEP_INSTRUCTION);
                     break;
-                case step_cycle:
+                case s_step_cycle:
                     notify_io_observers(STEP_CYCLE);
                     break;
-                case continue_running:
+                case s_continue_running:
                     notify_io_observers(CONTINUE_EXECUTION);
                     break;
                 default:

@@ -24,6 +24,6 @@ public:
     void parse(Scanner& scanner, Options& options);
 
 private:
-    [[maybe_unused]] ParserStates m_state;
+    ParserStates m_state;
 };
 }

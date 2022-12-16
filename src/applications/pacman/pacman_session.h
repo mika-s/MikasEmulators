@@ -97,11 +97,11 @@ public:
     void io_changed(IoRequest request) override;
 
 private:
-    static constexpr long double fps = 60.0L;
-    static constexpr long double tick_limit = 1000.0L / fps;
-    static constexpr int cycles_per_ms = 3072;
-    static constexpr long double cycles_per_tick = cycles_per_ms * tick_limit;
-    static constexpr int out_port_vblank_interrupt_return = 0;
+    static constexpr long double s_fps = 60.0L;
+    static constexpr long double s_tick_limit = 1000.0L / s_fps;
+    static constexpr int s_cycles_per_ms = 3072;
+    static constexpr long double s_cycles_per_tick = s_cycles_per_ms * s_tick_limit;
+    static constexpr int s_out_port_vblank_interrupt_return = 0;
 
     bool m_is_in_debug_mode;
     bool m_is_stepping_instruction;

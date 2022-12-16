@@ -110,7 +110,7 @@ public:
     void input(u8 port, u8 value);
 
 private:
-    static constexpr unsigned int number_of_io_ports = 256;
+    static constexpr unsigned int s_number_of_io_ports = 256;
 
     bool m_is_halted;
 

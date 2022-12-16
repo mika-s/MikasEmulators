@@ -85,8 +85,8 @@ void GuiSdl::init()
         "Space Invaders",
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
-        scaled_width,
-        scaled_height,
+        s_scaled_width,
+        s_scaled_height,
         SDL_WINDOW_RESIZABLE);
     if (!m_win) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error creating SDL window: %s", SDL_GetError());
@@ -100,12 +100,12 @@ void GuiSdl::init()
         exit(1);
     }
 
-    if (SDL_RenderSetScale(m_rend, scale, scale) != 0) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error setting renderer scale in SDL: %s", SDL_GetError());
+    if (SDL_RenderSetScale(m_rend, s_scale, s_scale) != 0) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error setting renderer s_scale in SDL: %s", SDL_GetError());
         exit(1);
     }
 
-    m_texture = SDL_CreateTexture(m_rend, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STREAMING, width, height);
+    m_texture = SDL_CreateTexture(m_rend, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STREAMING, s_width, s_height);
 
     if (!m_texture) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error creating SDL texture: %s", SDL_GetError());
@@ -123,7 +123,7 @@ void GuiSdl::update_screen(std::vector<u8> const& vram, std::string const& game_
     if (SDL_LockTexture(m_texture, nullptr, &pixels, &pitch) != 0) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error while unlocking SDL texture: %s", SDL_GetError());
     } else {
-        memcpy(pixels, framebuffer.data(), static_cast<std::size_t>(pitch * height));
+        memcpy(pixels, framebuffer.data(), static_cast<std::size_t>(pitch * s_height));
     }
 
     const std::string title = game_window_subtitle.empty() ? "Space Invaders" : "Space Invaders - " + game_window_subtitle;

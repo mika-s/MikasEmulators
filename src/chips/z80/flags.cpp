@@ -35,33 +35,33 @@ void Flags::reset()
 
 u8 Flags::to_u8() const
 {
-    const u8 s = (m_sign ? 1 : 0) << sign_flag_bit_number;
-    const u8 z = (m_zero ? 1 : 0) << zero_flag_bit_number;
-    const u8 y = (m_y_unused_flag ? 1 : 0) << y_flag_bit_number;
-    const u8 h = (m_half_carry ? 1 : 0) << half_carry_flag_bit_number;
-    const u8 x = (m_x_unused_flag ? 1 : 0) << x_flag_bit_number;
-    const u8 pv = (m_parity_overflow ? 1 : 0) << parity_overflow_flag_bit_number;
-    const u8 n = (m_add_subtract ? 1 : 0) << add_subtract_bit_number;
-    const u8 c = (m_carry ? 1 : 0) << carry_flag_bit_number;
+    const u8 s = (m_sign ? 1 : 0) << s_sign_flag_bit_number;
+    const u8 z = (m_zero ? 1 : 0) << s_zero_flag_bit_number;
+    const u8 y = (m_y_unused_flag ? 1 : 0) << s_y_flag_bit_number;
+    const u8 h = (m_half_carry ? 1 : 0) << s_half_carry_flag_bit_number;
+    const u8 x = (m_x_unused_flag ? 1 : 0) << s_x_flag_bit_number;
+    const u8 pv = (m_parity_overflow ? 1 : 0) << s_parity_overflow_flag_bit_number;
+    const u8 n = (m_add_subtract ? 1 : 0) << s_add_subtract_bit_number;
+    const u8 c = (m_carry ? 1 : 0) << s_carry_flag_bit_number;
 
     return s | z | y | h | x | pv | n | c;
 }
 
 void Flags::from_u8(u8 value)
 {
-    m_sign = is_bit_set(value, sign_flag_bit_number);
-    m_zero = is_bit_set(value, zero_flag_bit_number);
-    m_y_unused_flag = is_bit_set(value, y_flag_bit_number);
-    m_half_carry = is_bit_set(value, half_carry_flag_bit_number);
-    m_x_unused_flag = is_bit_set(value, x_flag_bit_number);
-    m_parity_overflow = is_bit_set(value, parity_overflow_flag_bit_number);
-    m_add_subtract = is_bit_set(value, add_subtract_bit_number);
-    m_carry = is_bit_set(value, carry_flag_bit_number);
+    m_sign = is_bit_set(value, s_sign_flag_bit_number);
+    m_zero = is_bit_set(value, s_zero_flag_bit_number);
+    m_y_unused_flag = is_bit_set(value, s_y_flag_bit_number);
+    m_half_carry = is_bit_set(value, s_half_carry_flag_bit_number);
+    m_x_unused_flag = is_bit_set(value, s_x_flag_bit_number);
+    m_parity_overflow = is_bit_set(value, s_parity_overflow_flag_bit_number);
+    m_add_subtract = is_bit_set(value, s_add_subtract_bit_number);
+    m_carry = is_bit_set(value, s_carry_flag_bit_number);
 }
 
 void Flags::handle_carry_flag(u8 previous, int to_add, bool cf)
 {
-    if (carried_out_of(msb, previous, to_add, cf)) {
+    if (carried_out_of(s_msb, previous, to_add, cf)) {
         set_carry_flag();
     } else {
         clear_carry_flag();
@@ -79,7 +79,7 @@ void Flags::handle_carry_flag(u16 previous, u16 to_add)
 
 void Flags::handle_borrow_flag(u8 previous, int to_subtract, bool cf)
 {
-    if (borrow_from(msb + 1, previous, to_subtract, cf)) {
+    if (borrow_from(s_msb + 1, previous, to_subtract, cf)) {
         set_carry_flag();
     } else {
         clear_carry_flag();
@@ -88,7 +88,7 @@ void Flags::handle_borrow_flag(u8 previous, int to_subtract, bool cf)
 
 void Flags::handle_borrow_flag(u16 previous, int to_subtract, bool cf)
 {
-    if (borrow_from(msb_u16 + 1, previous, to_subtract, cf)) {
+    if (borrow_from(s_msb_u16 + 1, previous, to_subtract, cf)) {
         set_carry_flag();
     } else {
         clear_carry_flag();
@@ -97,7 +97,7 @@ void Flags::handle_borrow_flag(u16 previous, int to_subtract, bool cf)
 
 void Flags::handle_half_carry_flag(u8 previous, u8 to_add, bool cf)
 {
-    if (carried_out_of(msb_first_nibble, previous, to_add, cf)) {
+    if (carried_out_of(s_msb_first_nibble, previous, to_add, cf)) {
         set_half_carry_flag();
     } else {
         clear_half_carry_flag();
@@ -106,7 +106,7 @@ void Flags::handle_half_carry_flag(u8 previous, u8 to_add, bool cf)
 
 void Flags::handle_half_carry_flag(u16 previous, u16 to_add, bool cf)
 {
-    if (carried_out_of(msb_first_nibble_u16, previous, to_add, cf)) {
+    if (carried_out_of(s_msb_first_nibble_u16, previous, to_add, cf)) {
         set_half_carry_flag();
     } else {
         clear_half_carry_flag();
@@ -115,7 +115,7 @@ void Flags::handle_half_carry_flag(u16 previous, u16 to_add, bool cf)
 
 void Flags::handle_half_borrow_flag(u8 previous, u8 to_subtract, bool cf)
 {
-    if (borrow_from(msb_first_nibble + 1, previous, to_subtract, cf)) {
+    if (borrow_from(s_msb_first_nibble + 1, previous, to_subtract, cf)) {
         set_half_carry_flag();
     } else {
         clear_half_carry_flag();
@@ -178,13 +178,13 @@ void Flags::handle_sign_flag(u16 number)
 
 void Flags::handle_xy_flags(u8 number)
 {
-    if (is_bit_set(number, y_flag_bit_number)) {
+    if (is_bit_set(number, s_y_flag_bit_number)) {
         set_y_flag();
     } else {
         clear_y_flag();
     }
 
-    if (is_bit_set(number, x_flag_bit_number)) {
+    if (is_bit_set(number, s_x_flag_bit_number)) {
         set_x_flag();
     } else {
         clear_x_flag();
@@ -205,7 +205,7 @@ bool Flags::should_parity_flag_be_set(u8 number)
 
 bool Flags::should_overflow_flag_be_set(u8 previous, u8 to_add, bool cf)
 {
-    return carried_out_of(msb, previous, to_add, cf) != carried_out_of(msb - 1, previous, to_add, cf);
+    return carried_out_of(s_msb, previous, to_add, cf) != carried_out_of(s_msb - 1, previous, to_add, cf);
 }
 
 void Flags::set_zero_flag()

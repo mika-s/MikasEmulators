@@ -6,6 +6,7 @@
 #include <vector>
 
 namespace emu::applications::space_invaders {
+
 class Audio {
 
 public:
@@ -34,13 +35,13 @@ private:
      *   bit 4 = Extended play        SX4
      *   bit 5 = AMP enable           SX5
      */
-    static constexpr unsigned int ufo = 0;
-    static constexpr unsigned int shot = 1;
-    static constexpr unsigned int flash = 2;
-    static constexpr unsigned int invader_die = 3;
-    static constexpr unsigned int extended_play = 4;
-    static constexpr unsigned int amp_enable = 5; // not implemented
-    static constexpr unsigned int no_sound = 255;
+    static constexpr unsigned int s_ufo = 0;
+    static constexpr unsigned int s_shot = 1;
+    static constexpr unsigned int s_flash = 2;
+    static constexpr unsigned int s_invader_die = 3;
+    static constexpr unsigned int s_extended_play = 4;
+    static constexpr unsigned int s_amp_enable = 5; // not implemented
+    static constexpr unsigned int s_no_sound = 255;
 
     /* Port 5:
      *   bit 0 = Fleet movement 1     SX6 4.raw
@@ -49,11 +50,11 @@ private:
      *   bit 3 = Fleet movement 4     SX9 7.raw
      *   bit 4 = UFO Hit              SX10 8.raw
      */
-    static constexpr unsigned int fleet_movement_1 = 0;
-    static constexpr unsigned int fleet_movement_2 = 1;
-    static constexpr unsigned int fleet_movement_3 = 2;
-    static constexpr unsigned int fleet_movement_4 = 3;
-    static constexpr unsigned int ufo_hit = 4;
+    static constexpr unsigned int s_fleet_movement_1 = 0;
+    static constexpr unsigned int s_fleet_movement_2 = 1;
+    static constexpr unsigned int s_fleet_movement_3 = 2;
+    static constexpr unsigned int s_fleet_movement_4 = 3;
+    static constexpr unsigned int s_ufo_hit = 4;
 
     SDL_AudioDeviceID m_audio_device;
     std::size_t m_ufo_x = 0;

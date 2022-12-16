@@ -16,10 +16,10 @@ MemoryMapForSpaceInvaders::MemoryMapForSpaceInvaders(EmulatorMemory<u16, u8>& me
  */
 void MemoryMapForSpaceInvaders::write(u16 address, u8 value)
 {
-    address &= address_mask;
+    address &= s_address_mask;
 
-    if (address <= address_rom_end) {
-    } else if (address <= address_ram_end) {
+    if (address <= s_address_rom_end) {
+    } else if (address <= s_address_ram_end) {
         m_memory.direct_write(address, value);
     } else {
     }
@@ -33,9 +33,9 @@ void MemoryMapForSpaceInvaders::write(u16 address, u8 value)
  */
 u8 MemoryMapForSpaceInvaders::read(u16 address)
 {
-    address &= address_mask;
+    address &= s_address_mask;
 
-    if (address <= address_ram_end) {
+    if (address <= s_address_ram_end) {
         return m_memory.direct_read(address);
     } else {
         return 0;

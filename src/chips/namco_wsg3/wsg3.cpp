@@ -11,11 +11,11 @@ Wsg3::Wsg3(std::vector<Waveform> waveforms)
     : m_waveforms(std::move(waveforms))
 {
 
-    if (m_waveforms.size() != expected_number_of_waveforms) {
+    if (m_waveforms.size() != s_expected_number_of_waveforms) {
         throw std::invalid_argument(
             fmt::format(
                 "Expected number of waveforms is {}, but number of waveforms provided is {}",
-                expected_number_of_waveforms,
+                s_expected_number_of_waveforms,
                 m_waveforms.size()));
     }
 }
@@ -27,19 +27,19 @@ std::vector<Waveform> Wsg3::waveforms()
 
 std::vector<i16> Wsg3::next_tick(std::vector<Voice>& voices)
 {
-    if (voices.size() != expected_number_of_voices) {
+    if (voices.size() != s_expected_number_of_voices) {
         throw std::invalid_argument(
             fmt::format(
                 "Expected number of voices is {}, but number of voices provided is {}",
-                expected_number_of_voices,
+                s_expected_number_of_voices,
                 voices.size()));
     }
 
     std::vector<i16> buffer;
-    for (unsigned int i = 0; i < buffer_size; ++i) {
+    for (unsigned int i = 0; i < s_buffer_size; ++i) {
         i16 sample = 0;
         for (auto& voice : voices) {
-            voice.accumulator((voice.frequency() + voice.accumulator()) & mask_for_20_bit);
+            voice.accumulator((voice.frequency() + voice.accumulator()) & s_mask_for_20_bit);
             const u32 sample_idx = voice.accumulator() >> 15;
             i16 voice_sample = m_waveforms[voice.waveform_number()].samples()[sample_idx];
             voice_sample *= voice.volume();

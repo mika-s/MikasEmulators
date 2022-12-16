@@ -80,4 +80,55 @@ void print_ldd(std::ostream& ostream)
 {
     ostream << "LDD";
 }
+
+TEST_CASE("Z80: LDD")
+{
+    SUBCASE("should load memory at DE with value in HL and then decrement")
+    {
+        u8 b_reg = 0;
+        u8 c_reg = 100;
+        u8 d_reg = 0;
+        u8 e_reg = 2;
+        u8 h_reg = 0;
+        u8 l_reg = 6;
+        u8 acc_reg = 0;
+        EmulatorMemory<u16, u8> memory;
+        memory.add({ 0x01, 0x42, 0x5a, 0xbb, 0xc3, 0x10, 0x00 });
+        Flags flag_reg;
+        cyc cycles;
+
+        ldd(b_reg, c_reg, d_reg, e_reg, h_reg, l_reg, acc_reg, memory, flag_reg, cycles);
+
+        CHECK_EQ(99, to_u16(b_reg, c_reg));
+        CHECK_EQ(1, to_u16(d_reg, e_reg));
+        CHECK_EQ(5, to_u16(h_reg, l_reg));
+        CHECK_EQ(0x00, memory.read(2));
+        CHECK_EQ(0x00, memory.read(6));
+        CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
+        CHECK_EQ(false, flag_reg.is_add_subtract_flag_set());
+        CHECK_EQ(to_u16(b_reg, c_reg) != 0, flag_reg.is_parity_overflow_flag_set());
+
+        ldd(b_reg, c_reg, d_reg, e_reg, h_reg, l_reg, acc_reg, memory, flag_reg, cycles);
+
+        CHECK_EQ(98, to_u16(b_reg, c_reg));
+        CHECK_EQ(0, to_u16(d_reg, e_reg));
+        CHECK_EQ(4, to_u16(h_reg, l_reg));
+        CHECK_EQ(0x10, memory.read(1));
+        CHECK_EQ(0x10, memory.read(5));
+        CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
+        CHECK_EQ(false, flag_reg.is_add_subtract_flag_set());
+        CHECK_EQ(to_u16(b_reg, c_reg) != 0, flag_reg.is_parity_overflow_flag_set());
+
+        ldd(b_reg, c_reg, d_reg, e_reg, h_reg, l_reg, acc_reg, memory, flag_reg, cycles);
+
+        CHECK_EQ(97, to_u16(b_reg, c_reg));
+        CHECK_EQ(0xffff, to_u16(d_reg, e_reg));
+        CHECK_EQ(3, to_u16(h_reg, l_reg));
+        CHECK_EQ(0xc3, memory.read(0));
+        CHECK_EQ(0xc3, memory.read(4));
+        CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
+        CHECK_EQ(false, flag_reg.is_add_subtract_flag_set());
+        CHECK_EQ(to_u16(b_reg, c_reg) != 0, flag_reg.is_parity_overflow_flag_set());
+    }
+}
 }

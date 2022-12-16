@@ -13,11 +13,11 @@ CpuIo::CpuIo(u8 in_port0, u8 in_port1, u8 in_port2)
 void CpuIo::set_dipswitches(Settings const& settings)
 {
     if (settings.m_coin_info == CoinInfo::Off) {
-        m_in_port2 |= (1U << dipswitch_coin_info);
+        m_in_port2 |= (1U << s_dipswitch_coin_info);
     }
 
     if (settings.m_bonus_life_at == BonusLifeAt::_1000) {
-        m_in_port2 |= (1U << dipswitch_bonus_life);
+        m_in_port2 |= (1U << s_dipswitch_bonus_life);
     }
 
     switch (settings.m_number_of_lives) {

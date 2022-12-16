@@ -83,7 +83,7 @@ void RunningState::perform(cyc& cycles)
 
     if (m_governor.is_time_to_update()) {
         cycles = 0;
-        while (cycles < static_cast<cyc>(cycles_per_tick / 2)) {
+        while (cycles < static_cast<cyc>(s_cycles_per_tick / 2)) {
             cycles += m_cpu->next_instruction();
             if (m_is_in_debug_mode && m_debugger->has_breakpoint(m_cpu->pc())) {
                 m_logger->info("Breakpoint hit: 0x%04x", m_cpu->pc());
@@ -93,11 +93,11 @@ void RunningState::perform(cyc& cycles)
         }
 
         if (m_cpu->is_inta()) {
-            m_cpu->interrupt(rst_1_i8080);
+            m_cpu->interrupt(s_rst_1_i8080);
         }
 
         cycles = 0;
-        while (cycles < static_cast<cyc>(cycles_per_tick / 2)) {
+        while (cycles < static_cast<cyc>(s_cycles_per_tick / 2)) {
             cycles += m_cpu->next_instruction();
             if (m_is_in_debug_mode && m_debugger->has_breakpoint(m_cpu->pc())) {
                 m_logger->info("Breakpoint hit: 0x%04x", m_cpu->pc());
@@ -120,7 +120,7 @@ void RunningState::perform(cyc& cycles)
         m_gui->update_screen(vram(), s_game_window_subtitle);
 
         if (m_cpu->is_inta()) {
-            m_cpu->interrupt(rst_2_i8080);
+            m_cpu->interrupt(s_rst_2_i8080);
         }
     }
 }

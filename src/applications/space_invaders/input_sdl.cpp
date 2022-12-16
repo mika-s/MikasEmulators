@@ -46,7 +46,7 @@ void InputSdl::notify_io_observers(IoRequest request)
 
     Read 2
     BIT	0,1	dipswitch number of lives (0:3,1:4,2:5,3:6)
-        2	tilt 'button'
+        2	s_tilt 'button'
         3	dipswitch bonus life at 1:1000,0:1500
         4	P2 shoot button
         5	P2 joystick left
@@ -64,34 +64,34 @@ void InputSdl::read(CpuIo& cpu_io, GuiIo& gui_io)
             break;
         case SDL_KEYUP:
             switch (read_input_event.key.keysym.scancode) {
-            case insert_coin:
+            case s_insert_coin:
                 unset_bit(cpu_io.m_in_port1, 0);
                 break;
-            case tilt:
+            case s_tilt:
                 unset_bit(cpu_io.m_in_port2, 2);
                 break;
-            case p1_start:
+            case s_p1_start:
                 unset_bit(cpu_io.m_in_port1, 2);
                 break;
-            case p1_shoot:
+            case s_p1_shoot:
                 unset_bit(cpu_io.m_in_port1, 4);
                 break;
-            case p1_left:
+            case s_p1_left:
                 unset_bit(cpu_io.m_in_port1, 5);
                 break;
-            case p1_right:
+            case s_p1_right:
                 unset_bit(cpu_io.m_in_port1, 6);
                 break;
-            case p2_start:
+            case s_p2_start:
                 unset_bit(cpu_io.m_in_port1, 1);
                 break;
-            case p2_shoot:
+            case s_p2_shoot:
                 unset_bit(cpu_io.m_in_port2, 4);
                 break;
-            case p2_left:
+            case s_p2_left:
                 unset_bit(cpu_io.m_in_port2, 5);
                 break;
-            case p2_right:
+            case s_p2_right:
                 unset_bit(cpu_io.m_in_port2, 6);
                 break;
             default:
@@ -100,40 +100,40 @@ void InputSdl::read(CpuIo& cpu_io, GuiIo& gui_io)
             break;
         case SDL_KEYDOWN:
             switch (read_input_event.key.keysym.scancode) {
-            case mute:
+            case s_mute:
                 notify_io_observers(TOGGLE_MUTE);
                 break;
-            case pause:
+            case s_pause:
                 gui_io.m_is_toggling_pause = true;
                 break;
-            case insert_coin:
+            case s_insert_coin:
                 set_bit(cpu_io.m_in_port1, 0);
                 break;
-            case tilt:
+            case s_tilt:
                 set_bit(cpu_io.m_in_port2, 2);
                 break;
-            case p1_start:
+            case s_p1_start:
                 set_bit(cpu_io.m_in_port1, 2);
                 break;
-            case p1_shoot:
+            case s_p1_shoot:
                 set_bit(cpu_io.m_in_port1, 4);
                 break;
-            case p1_left:
+            case s_p1_left:
                 set_bit(cpu_io.m_in_port1, 5);
                 break;
-            case p1_right:
+            case s_p1_right:
                 set_bit(cpu_io.m_in_port1, 6);
                 break;
-            case p2_start:
+            case s_p2_start:
                 set_bit(cpu_io.m_in_port1, 1);
                 break;
-            case p2_shoot:
+            case s_p2_shoot:
                 set_bit(cpu_io.m_in_port2, 4);
                 break;
-            case p2_left:
+            case s_p2_left:
                 set_bit(cpu_io.m_in_port2, 5);
                 break;
-            case p2_right:
+            case s_p2_right:
                 set_bit(cpu_io.m_in_port2, 6);
                 break;
             default:

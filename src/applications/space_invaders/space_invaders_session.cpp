@@ -178,34 +178,34 @@ void SpaceInvadersSession::setup_debugging()
             { "c", 0 } }));
     m_debug_container->add_io(IoDebugContainer<u8>(
         "shift (change offset)",
-        [&]() { return m_outputs_during_cycle.contains(out_port_shift_offset); },
-        [&]() { return m_outputs_during_cycle[out_port_shift_offset]; }));
+        [&]() { return m_outputs_during_cycle.contains(s_out_port_shift_offset); },
+        [&]() { return m_outputs_during_cycle[s_out_port_shift_offset]; }));
     m_debug_container->add_io(IoDebugContainer<u8>(
         "shift (do shift)",
-        [&]() { return m_outputs_during_cycle.contains(out_port_do_shift); },
-        [&]() { return m_outputs_during_cycle[out_port_do_shift]; }));
+        [&]() { return m_outputs_during_cycle.contains(s_out_port_do_shift); },
+        [&]() { return m_outputs_during_cycle[s_out_port_do_shift]; }));
     m_debug_container->add_io(IoDebugContainer<u8>(
         "watchdog",
-        [&]() { return m_outputs_during_cycle.contains(out_port_watchdog); },
-        [&]() { return m_outputs_during_cycle[out_port_watchdog]; }));
+        [&]() { return m_outputs_during_cycle.contains(s_out_port_watchdog); },
+        [&]() { return m_outputs_during_cycle[s_out_port_watchdog]; }));
     m_debug_container->add_io(IoDebugContainer<u8>(
         "out sound 1",
-        [&]() { return m_outputs_during_cycle.contains(out_port_sound_1); },
-        [&]() { return m_outputs_during_cycle[out_port_sound_1]; },
-        { { "ufo", 0 },
-            { "shot", 1 },
-            { "flash", 2 },
-            { "invader_die", 3 },
-            { "extended_play", 4 } }));
+        [&]() { return m_outputs_during_cycle.contains(s_out_port_sound_1); },
+        [&]() { return m_outputs_during_cycle[s_out_port_sound_1]; },
+        { { "s_ufo", 0 },
+            { "s_shot", 1 },
+            { "s_flash", 2 },
+            { "s_invader_die", 3 },
+            { "s_extended_play", 4 } }));
     m_debug_container->add_io(IoDebugContainer<u8>(
         "out sound 2",
-        [&]() { return m_outputs_during_cycle.contains(out_port_sound_2); },
-        [&]() { return m_outputs_during_cycle[out_port_sound_2]; },
-        { { "fleet_movement_1", 0 },
-            { "fleet_movement_2", 1 },
-            { "fleet_movement_3", 2 },
-            { "fleet_movement_4", 3 },
-            { "ufo_hit", 4 } }));
+        [&]() { return m_outputs_during_cycle.contains(s_out_port_sound_2); },
+        [&]() { return m_outputs_during_cycle[s_out_port_sound_2]; },
+        { { "s_fleet_movement_1", 0 },
+            { "s_fleet_movement_2", 1 },
+            { "s_fleet_movement_3", 2 },
+            { "s_fleet_movement_4", 3 },
+            { "s_ufo_hit", 4 } }));
     m_debug_container->add_memory(MemoryDebugContainer<u8>(
         [&]() { return memory(); }));
     m_debug_container->add_disassembled_program(disassemble_program());
@@ -244,17 +244,17 @@ void SpaceInvadersSession::debug_mode_changed(bool is_in_debug_mode)
 void SpaceInvadersSession::in_requested(u8 port)
 {
     switch (port) {
-    case in_port_unused:
-        m_cpu->input(in_port_unused, m_cpu_io.m_in_port0);
+    case s_in_port_unused:
+        m_cpu->input(s_in_port_unused, m_cpu_io.m_in_port0);
         break;
-    case in_port_1:
-        m_cpu->input(in_port_1, m_cpu_io.m_in_port1);
+    case s_in_port_1:
+        m_cpu->input(s_in_port_1, m_cpu_io.m_in_port1);
         break;
-    case in_port_2:
-        m_cpu->input(in_port_2, m_cpu_io.m_in_port2);
+    case s_in_port_2:
+        m_cpu->input(s_in_port_2, m_cpu_io.m_in_port2);
         break;
-    case in_port_read_shift:
-        m_cpu->input(in_port_read_shift, m_cpu_io.m_shift_register.read());
+    case s_in_port_read_shift:
+        m_cpu->input(s_in_port_read_shift, m_cpu_io.m_shift_register.read());
         break;
     default:
         throw std::runtime_error("Illegal input port for Space Invaders");
@@ -270,19 +270,19 @@ void SpaceInvadersSession::out_changed(u8 port)
     }
 
     switch (port) {
-    case out_port_shift_offset:
+    case s_out_port_shift_offset:
         m_cpu_io.m_shift_register.change_offset(m_cpu->a());
         break;
-    case out_port_sound_1:
+    case s_out_port_sound_1:
         m_audio.play_sound_port_1(m_cpu->a());
         break;
-    case out_port_do_shift:
+    case s_out_port_do_shift:
         m_cpu_io.m_shift_register.shift(m_cpu->a());
         break;
-    case out_port_sound_2:
+    case s_out_port_sound_2:
         m_audio.play_sound_port_2(m_cpu->a());
         break;
-    case out_port_watchdog:
+    case s_out_port_watchdog:
         break;
     default:
         throw std::runtime_error("Illegal output port for Space Invaders");

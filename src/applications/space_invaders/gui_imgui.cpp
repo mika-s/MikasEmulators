@@ -152,15 +152,15 @@ void GuiImgui::init()
         "Space Invaders",
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
-        scaled_width,
-        scaled_height,
+        s_scaled_width,
+        s_scaled_height,
         SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_MAXIMIZED);
     if (!m_win) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error creating SDL window: %s", SDL_GetError());
         exit(1);
     }
 
-    SDL_SetWindowMinimumSize(m_win, width, height);
+    SDL_SetWindowMinimumSize(m_win, s_width, s_height);
     m_gl_context = SDL_GL_CreateContext(m_win);
     SDL_GL_MakeCurrent(m_win, m_gl_context);
     SDL_GL_SetSwapInterval(1);
@@ -170,7 +170,7 @@ void GuiImgui::init()
         exit(1);
     }
 
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, s_width, s_height);
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -197,7 +197,7 @@ void GuiImgui::update_screen(std::vector<u8> const& vram, std::string const& gam
     glBindTexture(GL_TEXTURE_2D, m_screen_texture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, framebuffer.data());
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, s_width, s_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, framebuffer.data());
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -312,7 +312,7 @@ void GuiImgui::render_game_window(std::string const& game_window_subtitle)
 
     ImGui::Begin(title.c_str(), &m_show_game);
 
-    const ImVec2 image_size = ImVec2(scaled_width, scaled_height);
+    const ImVec2 image_size = ImVec2(s_scaled_width, s_scaled_height);
     ImGui::Image(
         (void*)((intptr_t)m_screen_texture), image_size,
         ImVec2(0, 0),

@@ -63,11 +63,11 @@ void LmcApplication::load_file(std::string const& file)
     const std::vector<Data> code = Assembler::assemble(file_content);
     std::vector<Data> remaining_memory;
 
-    if (code.size() < memory_size) {
-        remaining_memory = create_work_ram(memory_size - code.size());
+    if (code.size() < s_memory_size) {
+        remaining_memory = create_work_ram(s_memory_size - code.size());
     }
 
-    assert(code.size() + remaining_memory.size() == memory_size);
+    assert(code.size() + remaining_memory.size() == s_memory_size);
 
     m_memory.add(code);
     m_memory.add(remaining_memory);

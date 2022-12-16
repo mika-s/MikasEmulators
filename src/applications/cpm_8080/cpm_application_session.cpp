@@ -44,14 +44,14 @@ void CpmApplicationSession::stop()
 
 void CpmApplicationSession::out_changed(u8 port)
 {
-    if (port == finished_port) {
+    if (port == s_finished_port) {
         m_is_finished = true;
-    } else if (port == output_port) {
+    } else if (port == s_output_port) {
         const u8 operation = m_cpu->c();
 
-        if (operation == C_WRITE) {
+        if (operation == s_C_WRITE) {
             c_write(m_cpu->e());
-        } else if (operation == C_WRITESTR) {
+        } else if (operation == s_C_WRITESTR) {
             c_writestr(m_cpu->memory(), to_u16(m_cpu->d(), m_cpu->e()));
         }
     } else {

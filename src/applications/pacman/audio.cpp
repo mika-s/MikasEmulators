@@ -28,7 +28,7 @@ Audio::Audio(
     }
 
     SDL_AudioSpec audio_spec {
-        .freq = sdl_frequency,
+        .freq = s_sdl_frequency,
         .format = AUDIO_S16SYS,
         .channels = 1,
         .silence = 0,
@@ -66,8 +66,8 @@ void Audio::handle_sound(bool is_sound_enabled, std::vector<Voice>& voices)
 
     const std::vector<i16> buffer = m_sound_chip.next_tick(voices);
 
-    for (int i = 0; i < samples_per_frame; i++) {
-        const u16 sample = buffer[resampling_ratio * static_cast<float>(i)] * m_volume * (m_is_muted ? 0 : 1);
+    for (int i = 0; i < s_samples_per_frame; i++) {
+        const u16 sample = buffer[s_resampling_ratio * static_cast<float>(i)] * m_volume * (m_is_muted ? 0 : 1);
         SDL_QueueAudio(m_audio_device, &sample, 1 * sizeof(i16));
     }
 }
@@ -101,7 +101,7 @@ std::vector<Waveform> Audio::load_waveforms_from_roms(
 
     for (u8 byte : sound_rom1) {
         samples.push_back(byte);
-        if (samples.size() == samples_per_waveform) {
+        if (samples.size() == s_samples_per_waveform) {
             waveforms.emplace_back(samples);
             samples.clear();
         }
@@ -111,7 +111,7 @@ std::vector<Waveform> Audio::load_waveforms_from_roms(
 
     for (u8 byte : sound_rom2) {
         samples.push_back(byte);
-        if (samples.size() == samples_per_waveform) {
+        if (samples.size() == s_samples_per_waveform) {
             waveforms.emplace_back(samples);
             samples.clear();
         }

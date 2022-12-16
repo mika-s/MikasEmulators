@@ -25,7 +25,7 @@ using emu::util::byte::to_u32;
 class Gui {
 public:
     Gui()
-        : m_framebuffer(Framebuffer(height, width, Color(0xff, 0, 128, 255)))
+        : m_framebuffer(Framebuffer(s_height, s_width, Color(0xff, 0, 128, 255)))
     {
     }
 
@@ -46,23 +46,23 @@ public:
     virtual void attach_logger(std::shared_ptr<Logger> logger) = 0;
 
 protected:
-    static constexpr int bits_in_byte = 8;
-    static constexpr float scale = 4.0;
-    static constexpr int width = 224;
-    static constexpr int height = 256;
-    static constexpr int scaled_width = static_cast<int>(scale * static_cast<float>(width));
-    static constexpr int scaled_height = static_cast<int>(scale * static_cast<float>(height));
+    static constexpr int s_bits_in_byte = 8;
+    static constexpr float s_scale = 4.0;
+    static constexpr int s_width = 224;
+    static constexpr int s_height = 256;
+    static constexpr int s_scaled_width = static_cast<int>(s_scale * static_cast<float>(s_width));
+    static constexpr int s_scaled_height = static_cast<int>(s_scale * static_cast<float>(s_height));
 
     Framebuffer m_framebuffer;
 
     std::vector<u32> create_framebuffer(std::vector<u8> const& vram)
     {
-        for (int i = 0; i < height * width / bits_in_byte; ++i) {
-            int const y = i * bits_in_byte / height;
-            int const base_x = (i * bits_in_byte) % height;
+        for (int i = 0; i < s_height * s_width / s_bits_in_byte; ++i) {
+            int const y = i * s_bits_in_byte / s_height;
+            int const base_x = (i * s_bits_in_byte) % s_height;
             const u8 current_byte = vram[static_cast<std::size_t>(i)];
 
-            for (u8 bit = 0; bit < bits_in_byte; ++bit) {
+            for (u8 bit = 0; bit < s_bits_in_byte; ++bit) {
                 int px = base_x + bit;
                 int py = y;
                 bool const is_pixel_lit = is_bit_set(current_byte, bit);
@@ -86,7 +86,7 @@ protected:
 
                 int const temp_x = px;
                 px = py;
-                py = -temp_x + height - 1;
+                py = -temp_x + s_height - 1;
 
                 m_framebuffer.set(
                     static_cast<unsigned int>(py),

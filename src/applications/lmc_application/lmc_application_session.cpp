@@ -68,7 +68,7 @@ LmcApplicationSession::LmcApplicationSession(
     , m_file_content(std::move(file_content))
     , m_logger(std::make_shared<Logger>())
     , m_debugger(std::make_shared<Debugger<Address, 10>>())
-    , m_governor(Governor(tick_limit, sdl_get_ticks_high_performance))
+    , m_governor(Governor(s_tick_limit, sdl_get_ticks_high_performance))
 {
     setup_cpu();
     setup_debugging();
@@ -117,7 +117,7 @@ void LmcApplicationSession::running(cyc& cycles)
 {
     if (m_governor.is_time_to_update()) {
         cycles = 0;
-        while (cycles < static_cast<cyc>(cycles_per_tick) && m_terminal_input_state == NOT_AWAITING_INPUT) {
+        while (cycles < static_cast<cyc>(s_cycles_per_tick) && m_terminal_input_state == NOT_AWAITING_INPUT) {
             if (m_cpu->can_run_next_instruction()) {
                 m_cpu->next_instruction();
             } else {
@@ -152,7 +152,7 @@ void LmcApplicationSession::stepping(cyc& cycles)
     }
 
     cycles = 0;
-    while (cycles < static_cast<cyc>(cycles_per_tick)) {
+    while (cycles < static_cast<cyc>(s_cycles_per_tick)) {
         if (m_cpu->can_run_next_instruction()) {
             m_cpu->next_instruction();
         } else {
@@ -266,7 +266,7 @@ void LmcApplicationSession::assemble_and_load_request()
             m_logger->info("Ok");
         } else {
             m_memory.clear();
-            m_memory.add({ code.begin(), code.begin() + program_size });
+            m_memory.add({ code.begin(), code.begin() + s_program_size });
             m_logger->info("The program is too large: truncating it");
         }
     } catch (std::exception& ex) {

@@ -61,7 +61,7 @@ PacmanSession::PacmanSession(
     , m_memory(memory)
     , m_logger(std::make_shared<Logger>())
     , m_debugger(std::make_shared<Debugger<u16, 16>>())
-    , m_governor(Governor(tick_limit, sdl_get_ticks_high_performance))
+    , m_governor(Governor(s_tick_limit, sdl_get_ticks_high_performance))
 {
     setup_cpu();
     setup_debugging();
@@ -107,7 +107,7 @@ void PacmanSession::running(cyc& cycles)
 
     if (m_governor.is_time_to_update()) {
         cycles = 0;
-        while (cycles < static_cast<cyc>(cycles_per_tick)) {
+        while (cycles < static_cast<cyc>(s_cycles_per_tick)) {
             cycles += m_cpu->next_instruction();
             if (m_is_in_debug_mode && m_debugger->has_breakpoint(m_cpu->pc())) {
                 m_logger->info("Breakpoint hit: 0x%04x", m_cpu->pc());
@@ -144,7 +144,7 @@ void PacmanSession::stepping(cyc& cycles)
     }
 
     cycles = 0;
-    while (cycles < static_cast<cyc>(cycles_per_tick)) {
+    while (cycles < static_cast<cyc>(s_cycles_per_tick)) {
         cycles += m_cpu->next_instruction();
         if (!m_is_stepping_cycle && !m_is_continuing_execution) {
             await_input_and_update_debug();
@@ -263,8 +263,8 @@ void PacmanSession::setup_debugging()
             { "c", 0 } }));
     m_debug_container->add_io(IoDebugContainer<u8>(
         "vblank return",
-        [&]() { return m_outputs_during_cycle.contains(out_port_vblank_interrupt_return); },
-        [&]() { return m_outputs_during_cycle[out_port_vblank_interrupt_return]; }));
+        [&]() { return m_outputs_during_cycle.contains(s_out_port_vblank_interrupt_return); },
+        [&]() { return m_outputs_during_cycle[s_out_port_vblank_interrupt_return]; }));
     m_debug_container->add_io(IoDebugContainer<u8>(
         "coin counter",
         [&]() { return true; },
@@ -335,7 +335,7 @@ void PacmanSession::out_changed(u8 port)
         m_outputs_during_cycle[port] |= m_cpu->a();
     }
 
-    if (port == out_port_vblank_interrupt_return) {
+    if (port == s_out_port_vblank_interrupt_return) {
         m_vblank_interrupt_return = m_cpu->a();
     } else {
         throw std::runtime_error("Illegal output port for Pacman");

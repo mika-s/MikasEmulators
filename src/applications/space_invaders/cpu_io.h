@@ -23,7 +23,7 @@ public:
     ShiftRegister m_shift_register;
 
 private:
-    static constexpr int dipswitch_bonus_life = 3;
-    static constexpr int dipswitch_coin_info = 7;
+    static constexpr int s_dipswitch_bonus_life = 3;
+    static constexpr int s_dipswitch_coin_info = 7;
 };
 }

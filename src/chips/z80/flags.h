@@ -99,19 +99,19 @@ public:
     void clear_x_flag();
 
 private:
-    static constexpr unsigned int msb_u16 = 15;
-    static constexpr unsigned int msb = 7;
-    static constexpr unsigned int msb_first_nibble = 3;
-    static constexpr unsigned int msb_first_nibble_u16 = 11;
+    static constexpr unsigned int s_msb_u16 = 15;
+    static constexpr unsigned int s_msb = 7;
+    static constexpr unsigned int s_msb_first_nibble = 3;
+    static constexpr unsigned int s_msb_first_nibble_u16 = 11;
 
-    static constexpr unsigned int sign_flag_bit_number = 7;
-    static constexpr unsigned int zero_flag_bit_number = 6;
-    static constexpr unsigned int y_flag_bit_number = 5;
-    static constexpr unsigned int half_carry_flag_bit_number = 4;
-    static constexpr unsigned int x_flag_bit_number = 3;
-    static constexpr unsigned int parity_overflow_flag_bit_number = 2;
-    static constexpr unsigned int add_subtract_bit_number = 1;
-    static constexpr unsigned int carry_flag_bit_number = 0;
+    static constexpr unsigned int s_sign_flag_bit_number = 7;
+    static constexpr unsigned int s_zero_flag_bit_number = 6;
+    static constexpr unsigned int s_y_flag_bit_number = 5;
+    static constexpr unsigned int s_half_carry_flag_bit_number = 4;
+    static constexpr unsigned int s_x_flag_bit_number = 3;
+    static constexpr unsigned int s_parity_overflow_flag_bit_number = 2;
+    static constexpr unsigned int s_add_subtract_bit_number = 1;
+    static constexpr unsigned int s_carry_flag_bit_number = 0;
 
     bool m_zero;
     bool m_sign;

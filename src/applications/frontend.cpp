@@ -57,8 +57,8 @@ void Frontend::print_main_usage(std::string const& program_name)
 
     std::cout << "Commands:\n";
 
-    for (auto& command_description : command_descriptions) {
-        std::string padding = create_padding(command_description.first.size(), padding_to_description);
+    for (auto& command_description : s_command_descriptions) {
+        std::string padding = create_padding(command_description.first.size(), s_padding_to_description);
         std::cout << "  " << command_description.first << padding << command_description.second << "\n";
     }
 
@@ -85,7 +85,7 @@ void Frontend::run_program(Options const& options)
         }
 
         if (options.is_asking_for_help().first) {
-            program_usages.at(program)(options.short_executable_name());
+            s_program_usages.at(program)(options.short_executable_name());
         } else {
             choose_emulator(program, options)->new_session()->run();
         }
@@ -181,8 +181,8 @@ void Frontend::print_run_usage(std::string const& program_name)
 
     std::cout << "Applications:\n";
 
-    for (auto& program_description : supported_programs) {
-        std::string padding = create_padding(program_description.first.size(), padding_to_description);
+    for (auto& program_description : s_supported_programs) {
+        std::string padding = create_padding(program_description.first.size(), s_padding_to_description);
         if (program_description.first == "NEWLINE") {
             std::cout << "\n";
         } else {
@@ -201,8 +201,8 @@ void Frontend::print_disassemble_usage(std::string const& program_name)
 
     std::cout << "CPUs:\n";
 
-    for (auto& cpu_description : supported_cpus) {
-        std::string padding = create_padding(cpu_description.first.size(), padding_to_description);
+    for (auto& cpu_description : s_supported_cpus) {
+        std::string padding = create_padding(cpu_description.first.size(), s_padding_to_description);
         if (cpu_description.first == "NEWLINE") {
             std::cout << "\n";
         } else {
@@ -218,8 +218,8 @@ void Frontend::print_test_usage(std::string const& program_name)
 
     std::cout << "CPUs:\n";
 
-    for (auto& cpu_description : supported_cpus) {
-        std::string padding = create_padding(cpu_description.first.size(), padding_to_description);
+    for (auto& cpu_description : s_supported_cpus) {
+        std::string padding = create_padding(cpu_description.first.size(), s_padding_to_description);
         if (cpu_description.first == "NEWLINE") {
             std::cout << "\n";
         } else {
@@ -231,7 +231,7 @@ void Frontend::print_test_usage(std::string const& program_name)
                  "CPU is provided.\nThe crosscutting unit tests are always run.\n";
     std::cout << "\nExamples:\n";
 
-    for (auto& example_description : test_examples) {
+    for (auto& example_description : s_test_examples) {
         std::cout << "  " << example_description.second << ":\n";
         std::cout << "    "
                   << "./" << program_name << " test " << example_description.first << "\n\n";
@@ -285,8 +285,8 @@ bool Frontend::is_supporting(std::string const& program)
 {
     std::vector<std::string> program_names;
     std::transform(
-        supported_programs.begin(),
-        supported_programs.end(),
+        s_supported_programs.begin(),
+        s_supported_programs.end(),
         std::back_inserter(program_names),
         [](std::pair<std::string, std::string> const& program_description) { return program_description.first; });
     std::vector<std::string> program_names_filtered;

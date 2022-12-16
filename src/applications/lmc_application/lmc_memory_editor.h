@@ -22,15 +22,15 @@ public:
     void attach_debug_container(std::shared_ptr<DebugContainer<Address, Data, 10>> debug_container);
 
 private:
-    static constexpr unsigned int max_addresses = 100;
-    static constexpr unsigned int max_chars = 4;
-    static constexpr std::size_t rows = 10;
-    static constexpr std::size_t cols = 10;
-    static constexpr float box_width = 50.0f;
+    static constexpr unsigned int s_max_addresses = 100;
+    static constexpr unsigned int s_max_chars = 4;
+    static constexpr std::size_t s_rows = 10;
+    static constexpr std::size_t s_cols = 10;
+    static constexpr float s_box_width = 50.0f;
 
     std::shared_ptr<DebugContainer<Address, Data, 10>> m_debug_container;
     bool m_is_debug_container_set { false };
 
-    char m_values[max_addresses][max_chars]; // NOLINT
+    char m_values[s_max_addresses][s_max_chars]; // NOLINT
 };
 }

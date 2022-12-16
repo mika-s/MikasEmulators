@@ -64,24 +64,24 @@ Audio::~Audio()
 
 void Audio::play_sound_port_1(u8 acc_reg)
 {
-    if (is_rising_edge(acc_reg, ufo)) {
+    if (is_rising_edge(acc_reg, s_ufo)) {
         m_is_ufo_sound_on = true;
     }
-    if (is_falling_edge(acc_reg, ufo)) { // the UFO sound is looped, and disabled by a falling edge
+    if (is_falling_edge(acc_reg, s_ufo)) { // the UFO sound is looped, and disabled by a falling edge
         SDL_LockAudioDevice(m_audio_device);
         m_is_ufo_sound_on = false;
         SDL_UnlockAudioDevice(m_audio_device);
     }
-    if (is_rising_edge(acc_reg, shot)) {
+    if (is_rising_edge(acc_reg, s_shot)) {
         m_is_shot_sound_on = true;
     }
-    if (is_rising_edge(acc_reg, flash)) {
+    if (is_rising_edge(acc_reg, s_flash)) {
         m_is_flash_sound_on = true;
     }
-    if (is_rising_edge(acc_reg, invader_die)) {
+    if (is_rising_edge(acc_reg, s_invader_die)) {
         m_is_invader_die_sound_on = true;
     }
-    if (is_rising_edge(acc_reg, extended_play)) {
+    if (is_rising_edge(acc_reg, s_extended_play)) {
         m_is_extended_play_sound_on = true;
     }
 
@@ -90,19 +90,19 @@ void Audio::play_sound_port_1(u8 acc_reg)
 
 void Audio::play_sound_port_2(u8 acc_reg)
 {
-    if (is_rising_edge(acc_reg, fleet_movement_1)) {
+    if (is_rising_edge(acc_reg, s_fleet_movement_1)) {
         m_is_fleet_movement_1_sound_on = true;
     }
-    if (is_rising_edge(acc_reg, fleet_movement_2)) {
+    if (is_rising_edge(acc_reg, s_fleet_movement_2)) {
         m_is_fleet_movement_2_sound_on = true;
     }
-    if (is_rising_edge(acc_reg, fleet_movement_3)) {
+    if (is_rising_edge(acc_reg, s_fleet_movement_3)) {
         m_is_fleet_movement_3_sound_on = true;
     }
-    if (is_rising_edge(acc_reg, fleet_movement_4)) {
+    if (is_rising_edge(acc_reg, s_fleet_movement_4)) {
         m_is_fleet_movement_4_sound_on = true;
     }
-    if (is_rising_edge(acc_reg, ufo_hit)) {
+    if (is_rising_edge(acc_reg, s_ufo_hit)) {
         m_is_ufo_hit_sound_on = true;
     }
 }

@@ -35,9 +35,9 @@ public:
     static void print_run_usage(std::string const& program_name);
 
 private:
-    static constexpr std::size_t padding_to_description = 22;
+    static constexpr std::size_t s_padding_to_description = 22;
 
-    static const inline std::vector<std::pair<std::string, std::string>> supported_programs = {
+    static const inline std::vector<std::pair<std::string, std::string>> s_supported_programs = {
         { "pacman", "Midway Pacman for Z80" },
         { "prelim", "The prelim CP/M-based test binary for Z80" },
         { "zexall", "The zexall CP/M-based test binary for Z80" },
@@ -52,25 +52,25 @@ private:
         { "lmc_application", "LMC applications" },
     };
 
-    static const inline std::vector<std::pair<std::string, std::string>> supported_cpus = {
+    static const inline std::vector<std::pair<std::string, std::string>> s_supported_cpus = {
         { "8080", "The Intel 8080 8-bit microprocessor" },
         { "Z80", "The Zilog Z80 8-bit microprocessor" },
         { "LMC", "The Little Man Computer instructional model" },
     };
 
-    static const inline std::vector<std::pair<std::string, std::string>> command_descriptions = {
+    static const inline std::vector<std::pair<std::string, std::string>> s_command_descriptions = {
         { "run", "Run an application" },
         { "disassemble", "Disassemble a binary" },
         { "test", "Run unit tests" },
     };
 
-    static const inline std::vector<std::pair<std::string, std::string>> test_examples = {
+    static const inline std::vector<std::pair<std::string, std::string>> s_test_examples = {
         { "--cpu=8080", "The unit tests for 8080 are run" },
         { "--cpu=8080 --cpu=Z80", "The unit tests for 8080 and Z80 are run" },
         { "", "All the unit tests are run" },
     };
 
-    static const inline std::unordered_map<std::string, std::function<void(std::string const&)>> program_usages = {
+    static const inline std::unordered_map<std::string, std::function<void(std::string const&)>> s_program_usages = {
         { "pacman", pacman::print_usage },
         { "prelim", cpm::z80::print_usage },
         { "zexall", cpm::z80::print_usage },

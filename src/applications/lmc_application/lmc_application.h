@@ -41,7 +41,7 @@ public:
     std::unique_ptr<Session> new_session() override;
 
 private:
-    static constexpr std::size_t memory_size = 100;
+    static constexpr std::size_t s_memory_size = 100;
 
     bool m_is_only_run_once;
     std::unique_ptr<Cpu> m_cpu;

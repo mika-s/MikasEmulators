@@ -53,10 +53,10 @@ public:
     virtual void attach_logger(std::shared_ptr<Logger> logger) = 0;
 
 protected:
-    static constexpr float scale = 4.0;
-    static constexpr int width = 224;
-    static constexpr int height = 256;
-    static constexpr int scaled_width = static_cast<int>(scale * static_cast<float>(width));
-    static constexpr int scaled_height = static_cast<int>(scale * static_cast<float>(height));
+    static constexpr float s_scale = 4.0;
+    static constexpr int s_width = 224;
+    static constexpr int s_height = 256;
+    static constexpr int s_scaled_width = static_cast<int>(s_scale * static_cast<float>(s_width));
+    static constexpr int s_scaled_height = static_cast<int>(s_scale * static_cast<float>(s_height));
 };
 }

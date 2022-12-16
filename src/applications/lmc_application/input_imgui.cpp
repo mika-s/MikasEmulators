@@ -59,7 +59,7 @@ void InputImgui::read(RunStatus& run_status)
                 break;
             case SDL_KEYDOWN:
                 switch (read_input_event.key.keysym.scancode) {
-                case pause:
+                case s_pause:
                     if (run_status == RunStatus::PAUSED) {
                         run_status = RunStatus::RUNNING;
                     } else if (run_status == RunStatus::RUNNING) {
@@ -101,20 +101,20 @@ void InputImgui::read_debug_only(RunStatus& run_status)
                 break;
             case SDL_KEYDOWN:
                 switch (read_input_event.key.keysym.scancode) {
-                case pause:
+                case s_pause:
                     if (run_status == PAUSED) {
                         run_status = STEPPING;
                     } else if (run_status == STEPPING) {
                         run_status = PAUSED;
                     }
                     break;
-                case step_instruction:
+                case s_step_instruction:
                     notify_io_observers(STEP_INSTRUCTION);
                     break;
-                case step_cycle:
+                case s_step_cycle:
                     notify_io_observers(STEP_CYCLE);
                     break;
-                case continue_running:
+                case s_continue_running:
                     notify_io_observers(CONTINUE_EXECUTION);
                     break;
                 default:

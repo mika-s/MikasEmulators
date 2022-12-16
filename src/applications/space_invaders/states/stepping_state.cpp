@@ -71,7 +71,7 @@ void SteppingState::perform(cyc& cycles)
     }
 
     cycles = 0;
-    while (cycles < static_cast<cyc>(cycles_per_tick / 2)) {
+    while (cycles < static_cast<cyc>(s_cycles_per_tick / 2)) {
         cycles += m_cpu->next_instruction();
         if (!m_is_stepping_cycle) {
             if (await_input_and_update_debug()) {
@@ -81,11 +81,11 @@ void SteppingState::perform(cyc& cycles)
     }
 
     if (m_cpu->is_inta()) {
-        m_cpu->interrupt(rst_1_i8080);
+        m_cpu->interrupt(s_rst_1_i8080);
     }
 
     cycles = 0;
-    while (cycles < static_cast<cyc>(cycles_per_tick / 2)) {
+    while (cycles < static_cast<cyc>(s_cycles_per_tick / 2)) {
         cycles += m_cpu->next_instruction();
         if (!m_is_stepping_cycle) {
             if (await_input_and_update_debug()) {
@@ -108,7 +108,7 @@ void SteppingState::perform(cyc& cycles)
     m_gui->update_screen(vram(), s_game_window_subtitle);
 
     if (m_cpu->is_inta()) {
-        m_cpu->interrupt(rst_2_i8080);
+        m_cpu->interrupt(s_rst_2_i8080);
     }
 
     m_is_stepping_cycle = false;

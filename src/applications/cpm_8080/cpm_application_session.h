@@ -15,7 +15,8 @@ using emu::i8080::OutObserver;
 using emu::memory::EmulatorMemory;
 using emu::misc::Session;
 
-class CpmApplicationSession : public Session
+class CpmApplicationSession
+    : public Session
     , public OutObserver {
 public:
     CpmApplicationSession(
@@ -31,10 +32,10 @@ public:
     void out_changed(u8 port) override;
 
 private:
-    static constexpr u8 finished_port = 0;
-    static constexpr u8 output_port = 1;
-    static constexpr u8 C_WRITE = 2;
-    static constexpr u8 C_WRITESTR = 9;
+    static constexpr u8 s_finished_port = 0;
+    static constexpr u8 s_output_port = 1;
+    static constexpr u8 s_C_WRITE = 2;
+    static constexpr u8 s_C_WRITESTR = 9;
 
     std::unique_ptr<Cpu> m_cpu;
     EmulatorMemory<u16, u8> m_memory;

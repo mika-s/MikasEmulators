@@ -29,21 +29,21 @@ public:
     void remove_io_observer(IoObserver* observer) override;
 
 private:
-    static constexpr SDL_Scancode mute = SDL_SCANCODE_M;
-    static constexpr SDL_Scancode pause = SDL_SCANCODE_PAUSE;
+    static constexpr SDL_Scancode s_mute = SDL_SCANCODE_M;
+    static constexpr SDL_Scancode s_pause = SDL_SCANCODE_PAUSE;
 
-    static constexpr SDL_Scancode insert_coin = SDL_SCANCODE_C;
-    static constexpr SDL_Scancode tilt = SDL_SCANCODE_T;
+    static constexpr SDL_Scancode s_insert_coin = SDL_SCANCODE_C;
+    static constexpr SDL_Scancode s_tilt = SDL_SCANCODE_T;
 
-    static constexpr SDL_Scancode p1_start = SDL_SCANCODE_RETURN;
-    static constexpr SDL_Scancode p1_shoot = SDL_SCANCODE_W;
-    static constexpr SDL_Scancode p1_left = SDL_SCANCODE_A;
-    static constexpr SDL_Scancode p1_right = SDL_SCANCODE_D;
+    static constexpr SDL_Scancode s_p1_start = SDL_SCANCODE_RETURN;
+    static constexpr SDL_Scancode s_p1_shoot = SDL_SCANCODE_W;
+    static constexpr SDL_Scancode s_p1_left = SDL_SCANCODE_A;
+    static constexpr SDL_Scancode s_p1_right = SDL_SCANCODE_D;
 
-    static constexpr SDL_Scancode p2_start = SDL_SCANCODE_RSHIFT;
-    static constexpr SDL_Scancode p2_shoot = SDL_SCANCODE_UP;
-    static constexpr SDL_Scancode p2_left = SDL_SCANCODE_LEFT;
-    static constexpr SDL_Scancode p2_right = SDL_SCANCODE_RIGHT;
+    static constexpr SDL_Scancode s_p2_start = SDL_SCANCODE_RSHIFT;
+    static constexpr SDL_Scancode s_p2_shoot = SDL_SCANCODE_UP;
+    static constexpr SDL_Scancode s_p2_left = SDL_SCANCODE_LEFT;
+    static constexpr SDL_Scancode s_p2_right = SDL_SCANCODE_RIGHT;
 
     std::vector<IoObserver*> m_io_observers;
 

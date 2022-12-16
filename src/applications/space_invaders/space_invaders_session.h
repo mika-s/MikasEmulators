@@ -108,21 +108,21 @@ public:
 
 private:
     // Game loop - begin
-    static constexpr long double fps = 60.0L;
-    static constexpr long double tick_limit = 1000.0L / fps;
+    static constexpr long double s_fps = 60.0L;
+    static constexpr long double s_tick_limit = 1000.0L / s_fps;
     // Game loop - end
 
     // IO - begin
-    static constexpr u8 in_port_unused = 0;
-    static constexpr u8 in_port_1 = 1;
-    static constexpr u8 in_port_2 = 2;
-    static constexpr u8 in_port_read_shift = 3;
+    static constexpr u8 s_in_port_unused = 0;
+    static constexpr u8 s_in_port_1 = 1;
+    static constexpr u8 s_in_port_2 = 2;
+    static constexpr u8 s_in_port_read_shift = 3;
 
-    static constexpr u8 out_port_shift_offset = 2;
-    static constexpr u8 out_port_sound_1 = 3;
-    static constexpr u8 out_port_do_shift = 4;
-    static constexpr u8 out_port_sound_2 = 5;
-    static constexpr u8 out_port_watchdog = 6;
+    static constexpr u8 s_out_port_shift_offset = 2;
+    static constexpr u8 s_out_port_sound_1 = 3;
+    static constexpr u8 s_out_port_do_shift = 4;
+    static constexpr u8 s_out_port_sound_2 = 5;
+    static constexpr u8 s_out_port_watchdog = 6;
     // IO - end
 
     bool m_is_in_debug_mode { false };
@@ -143,7 +143,7 @@ private:
     std::shared_ptr<DebugContainer<u16, u8, 16>> m_debug_container;
     std::unordered_map<u8, u8> m_outputs_during_cycle;
 
-    Governor m_governor { Governor(tick_limit, sdl_get_ticks_high_performance) };
+    Governor m_governor { Governor(s_tick_limit, sdl_get_ticks_high_performance) };
 
     std::shared_ptr<State> m_current_state;
     std::shared_ptr<State> m_running_state;

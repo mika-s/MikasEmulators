@@ -95,58 +95,58 @@ public:
     sprites();
 
 protected:
-    static constexpr int tile_size = 8;
-    static constexpr int bytes_per_tile = 16;
+    static constexpr int s_tile_size = 8;
+    static constexpr int s_bytes_per_tile = 16;
 
-    static constexpr int sprite_size = 16;
-    static constexpr int bytes_per_sprite = 64;
-    static constexpr int number_of_sprites = 8;
-    static constexpr u16 sprite_ram_address_offset = 0x4ff0;
+    static constexpr int s_sprite_size = 16;
+    static constexpr int s_bytes_per_sprite = 64;
+    static constexpr int s_number_of_sprites = 8;
+    static constexpr u16 s_sprite_ram_address_offset = 0x4ff0;
 
     // Debugging
-    static constexpr unsigned int tile_offset_row_high_number = 0;
-    static constexpr unsigned int tile_offset_col_high_number = 1;
-    static constexpr unsigned int tile_offset_row_low_number = 0;
-    static constexpr unsigned int tile_offset_col_low_number = 4;
-    static constexpr unsigned int sprite_offset_row_high_number = 0;
-    static constexpr unsigned int sprite_offset_col_high_number = 3;
-    static constexpr unsigned int sprite_offset_row_low_number = 0;
-    static constexpr unsigned int sprite_offset_col_low_number = 7;
-    static constexpr unsigned int sprite_offset_row_rotation_number = 9;
-    static constexpr unsigned int sprite_offset_col_rotation_number = 5;
-    static constexpr unsigned int sprite_number_of_rotations = 4;
+    static constexpr unsigned int s_tile_offset_row_high_number = 0;
+    static constexpr unsigned int s_tile_offset_col_high_number = 1;
+    static constexpr unsigned int s_tile_offset_row_low_number = 0;
+    static constexpr unsigned int s_tile_offset_col_low_number = 4;
+    static constexpr unsigned int s_sprite_offset_row_high_number = 0;
+    static constexpr unsigned int s_sprite_offset_col_high_number = 3;
+    static constexpr unsigned int s_sprite_offset_row_low_number = 0;
+    static constexpr unsigned int s_sprite_offset_col_low_number = 7;
+    static constexpr unsigned int s_sprite_offset_row_rotation_number = 9;
+    static constexpr unsigned int s_sprite_offset_col_rotation_number = 5;
+    static constexpr unsigned int s_sprite_number_of_rotations = 4;
 
     // Border
-    static constexpr int border_size_in_tiles = 2;
-    static constexpr int width_invisible_border = border_size_in_tiles * tile_size;
-    static constexpr int width_both_borders = 2 * width_invisible_border;
+    static constexpr int s_border_size_in_tiles = 2;
+    static constexpr int s_width_invisible_border = s_border_size_in_tiles * s_tile_size;
+    static constexpr int s_width_both_borders = 2 * s_width_invisible_border;
 
     // Visible area
-    static constexpr u16 playarea_start_address_offset = 0x0040;
-    static constexpr u16 playarea_stop_address_offset = 0x03bf;
-    static constexpr u16 topbar_r1_start_address_offset = 0x03df;
-    static constexpr u16 topbar_r1_stop_address_offset = 0x03c0;
-    static constexpr u16 topbar_r2_start_address_offset = 0x03ff;
-    static constexpr u16 topbar_r2_stop_address_offset = 0x03e0;
-    static constexpr u16 bottombar_r1_start_address_offset = 0x001f;
-    static constexpr u16 bottombar_r1_stop_address_offset = 0x0000;
-    static constexpr u16 bottombar_r2_start_address_offset = 0x003f;
-    static constexpr u16 bottombar_r2_stop_address_offset = 0x0020;
-    static constexpr int visible_area_start_row = 2;
-    static constexpr int visible_area_width_in_tiles = 28;
-    static constexpr int width_visible_area = visible_area_width_in_tiles * tile_size;
-    static constexpr int visible_area_height_in_tiles = 36;
-    static constexpr int height_visible_area = visible_area_height_in_tiles * tile_size;
-    static constexpr int bottombar_start_row = 34;
-    static constexpr int play_area_height_in_tiles = 32;
+    static constexpr u16 s_playarea_start_address_offset = 0x0040;
+    static constexpr u16 s_playarea_stop_address_offset = 0x03bf;
+    static constexpr u16 s_topbar_r1_start_address_offset = 0x03df;
+    static constexpr u16 s_topbar_r1_stop_address_offset = 0x03c0;
+    static constexpr u16 s_topbar_r2_start_address_offset = 0x03ff;
+    static constexpr u16 s_topbar_r2_stop_address_offset = 0x03e0;
+    static constexpr u16 s_bottombar_r1_start_address_offset = 0x001f;
+    static constexpr u16 s_bottombar_r1_stop_address_offset = 0x0000;
+    static constexpr u16 s_bottombar_r2_start_address_offset = 0x003f;
+    static constexpr u16 s_bottombar_r2_stop_address_offset = 0x0020;
+    static constexpr int s_visible_area_start_row = 2;
+    static constexpr int s_visible_area_width_in_tiles = 28;
+    static constexpr int s_width_visible_area = s_visible_area_width_in_tiles * s_tile_size;
+    static constexpr int s_visible_area_height_in_tiles = 36;
+    static constexpr int s_height_visible_area = s_visible_area_height_in_tiles * s_tile_size;
+    static constexpr int s_bottombar_start_row = 34;
+    static constexpr int s_play_area_height_in_tiles = 32;
 
-    // Final width and height
-    static constexpr int width = width_visible_area + width_both_borders;
-    static constexpr int height = height_visible_area;
+    // Final s_width and s_height
+    static constexpr int s_width = s_width_visible_area + s_width_both_borders;
+    static constexpr int s_height = s_height_visible_area;
 
-    static constexpr float scale = 4.0;
-    static constexpr int scaled_width = static_cast<int>(scale * static_cast<float>(width));
-    static constexpr int scaled_height = static_cast<int>(scale * static_cast<float>(height));
+    static constexpr float s_scale = 4.0;
+    static constexpr int s_scaled_width = static_cast<int>(s_scale * static_cast<float>(s_width));
+    static constexpr int s_scaled_height = static_cast<int>(s_scale * static_cast<float>(s_height));
 
     bool m_has_loaded_color_rom = false;
     bool m_has_loaded_palette_rom = false;
