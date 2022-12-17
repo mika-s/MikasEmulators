@@ -9,7 +9,6 @@
 #include "crosscutting/typedefs.h"
 #include "gui_io.h"
 #include "interfaces/io_observer.h"
-#include "pacman/interfaces/state_manager.h"
 #include "pacman/io_request.h"
 #include <cstddef>
 #include <functional>
@@ -22,7 +21,7 @@ class Audio;
 class Gui;
 class Input;
 class MemoryMappedIoForPacman;
-class State;
+class StateContext;
 }
 namespace emu::debugger {
 template<class A, std::size_t B>
@@ -65,8 +64,7 @@ class PacmanSession
     : public Session
     , public GuiObserver
     , public OutObserver
-    , public IoObserver
-    , public StateManager {
+    , public IoObserver {
 public:
     PacmanSession(
         const RunStatus startup_runstatus,
@@ -91,18 +89,6 @@ public:
     void out_changed(u8 port) override;
 
     void io_changed(IoRequest request) override;
-
-    void change_state(std::shared_ptr<State> new_state) override;
-
-    std::shared_ptr<State> paused_state() override;
-
-    std::shared_ptr<State> running_state() override;
-
-    std::shared_ptr<State> stepping_state() override;
-
-    std::shared_ptr<State> stopped_state() override;
-
-    std::shared_ptr<State> current_state() override;
 
 private:
     static constexpr long double s_fps = 60.0L;
@@ -132,11 +118,7 @@ private:
 
     Governor m_governor { Governor(s_tick_limit, sdl_get_ticks_high_performance) };
 
-    std::shared_ptr<State> m_current_state;
-    std::shared_ptr<State> m_running_state;
-    std::shared_ptr<State> m_paused_state;
-    std::shared_ptr<State> m_stepping_state;
-    std::shared_ptr<State> m_stopped_state;
+    std::shared_ptr<StateContext> m_state_context;
 
     void setup_cpu();
 

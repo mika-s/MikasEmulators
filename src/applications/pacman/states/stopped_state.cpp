@@ -1,13 +1,14 @@
 #include "stopped_state.h"
+#include <utility>
 
 namespace emu::applications::pacman {
-class StateManager;
+class StateContext;
 }
 
 namespace emu::applications::pacman {
 
-StoppedState::StoppedState(StateManager& state_manager)
-    : m_state_manager(state_manager)
+StoppedState::StoppedState(std::shared_ptr<StateContext> state_context)
+    : m_ctx(std::move(state_context))
 {
 }
 

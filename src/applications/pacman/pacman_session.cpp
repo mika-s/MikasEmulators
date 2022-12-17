@@ -14,6 +14,7 @@
 #include "pacman/memory_mapped_io_for_pacman.h"
 #include "states/paused_state.h"
 #include "states/running_state.h"
+#include "states/state_context.h"
 #include "states/stepping_state.h"
 #include "states/stopped_state.h"
 #include "z80/cpu.h"
@@ -63,8 +64,7 @@ PacmanSession::PacmanSession(
     m_gui->add_gui_observer(*this);
     m_input->add_io_observer(*this);
 
-    m_running_state = std::make_shared<RunningState>(
-        *this,
+    m_state_context = std::make_shared<StateContext>(
         m_gui_io,
         m_gui,
         m_input,
@@ -79,34 +79,15 @@ PacmanSession::PacmanSession(
         m_outputs_during_cycle,
         m_governor,
         m_is_in_debug_mode);
-    m_paused_state = std::make_shared<PausedState>(
-        *this,
-        m_gui_io,
-        m_gui,
-        m_input,
-        m_memory,
-        m_memory_mapped_io,
-        m_governor);
-    m_stepping_state = std::make_shared<SteppingState>(
-        *this,
-        m_gui_io,
-        m_gui,
-        m_input,
-        m_audio,
-        m_cpu,
-        m_memory,
-        m_memory_mapped_io,
-        m_vblank_interrupt_return,
-        m_logger,
-        m_debugger,
-        m_debug_container,
-        m_outputs_during_cycle);
-    m_stopped_state = std::make_shared<StoppedState>(*this);
+    m_state_context->set_running_state(std::make_shared<RunningState>(m_state_context));
+    m_state_context->set_paused_state(std::make_shared<PausedState>(m_state_context));
+    m_state_context->set_stepping_state(std::make_shared<SteppingState>(m_state_context));
+    m_state_context->set_stopped_state(std::make_shared<StoppedState>(m_state_context));
 
     if (startup_runstatus == PAUSED) {
-        m_current_state = m_paused_state;
+        m_state_context->change_state(m_state_context->paused_state());
     } else {
-        m_current_state = m_running_state;
+        m_state_context->change_state(m_state_context->running_state());
     }
 }
 
@@ -127,8 +108,8 @@ void PacmanSession::run()
 
     cyc cycles;
 
-    while (!m_current_state->is_exit_state()) {
-        m_current_state->perform(cycles);
+    while (!m_state_context->current_state()->is_exit_state()) {
+        m_state_context->current_state()->perform(cycles);
     }
 
     m_run_status = FINISHED;
@@ -273,16 +254,16 @@ void PacmanSession::run_status_changed(RunStatus new_status)
     m_run_status = new_status;
     switch (m_run_status) {
     case NOT_RUNNING:
-        change_state(stopped_state());
+        m_state_context->change_state(m_state_context->stopped_state());
         break;
     case RUNNING:
-        change_state(running_state());
+        m_state_context->change_state(m_state_context->running_state());
         break;
     case PAUSED:
-        change_state(paused_state());
+        m_state_context->change_state(m_state_context->paused_state());
         break;
     case FINISHED:
-        change_state(stopped_state());
+        m_state_context->change_state(m_state_context->stopped_state());
         break;
     case STEPPING:
         break;
@@ -324,36 +305,6 @@ void PacmanSession::io_changed(IoRequest request)
     default:
         break;
     }
-}
-
-void PacmanSession::change_state(std::shared_ptr<State> new_state)
-{
-    m_current_state = new_state;
-}
-
-std::shared_ptr<State> PacmanSession::paused_state()
-{
-    return m_paused_state;
-}
-
-std::shared_ptr<State> PacmanSession::running_state()
-{
-    return m_running_state;
-}
-
-std::shared_ptr<State> PacmanSession::stepping_state()
-{
-    return m_stepping_state;
-}
-
-std::shared_ptr<State> PacmanSession::stopped_state()
-{
-    return m_stopped_state;
-}
-
-std::shared_ptr<State> PacmanSession::current_state()
-{
-    return m_current_state;
 }
 
 std::vector<u8> PacmanSession::memory()

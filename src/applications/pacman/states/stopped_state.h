@@ -2,10 +2,11 @@
 
 #include "crosscutting/typedefs.h"
 #include "pacman/interfaces/state.h"
+#include <memory>
 #include <string>
 
 namespace emu::applications::pacman {
-class StateManager;
+class StateContext;
 }
 
 namespace emu::applications::pacman {
@@ -13,7 +14,7 @@ namespace emu::applications::pacman {
 class StoppedState : public State {
 
 public:
-    explicit StoppedState(StateManager& state_manager);
+    explicit StoppedState(std::shared_ptr<StateContext> state_context);
 
     bool is_exit_state() override;
 
@@ -30,7 +31,7 @@ public:
 private:
     static inline std::string s_game_window_subtitle = "Stopped";
 
-    [[maybe_unused]] StateManager& m_state_manager;
+    [[maybe_unused]] std::shared_ptr<StateContext> m_ctx;
 };
 
 }
