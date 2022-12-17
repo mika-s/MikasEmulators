@@ -37,6 +37,10 @@ set(SOURCES_APPLICATIONS_CPP
         pacman/pacman_session.cpp
         pacman/settings.cpp
         pacman/usage.cpp
+        pacman/states/paused_state.cpp
+        pacman/states/running_state.cpp
+        pacman/states/stepping_state.cpp
+        pacman/states/stopped_state.cpp
 
         space_invaders/audio.cpp
         space_invaders/cpu_io.cpp
@@ -103,6 +107,12 @@ set(SOURCES_APPLICATIONS_H
         pacman/usage.h
         pacman/interfaces/input.h
         pacman/interfaces/io_observer.h
+        pacman/interfaces/state.h
+        pacman/interfaces/state_manager.h
+        pacman/states/paused_state.h
+        pacman/states/running_state.h
+        pacman/states/stepping_state.h
+        pacman/states/stopped_state.h
 
         space_invaders/audio.h
         space_invaders/cpu_io.h

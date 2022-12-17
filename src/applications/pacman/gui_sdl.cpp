@@ -1,7 +1,6 @@
 #include "gui_sdl.h"
 #include "crosscutting/util/byte_util.h"
 #include "pacman/gui.h"
-#include "z80/interfaces/gui_observer.h"
 #include <SDL.h>
 #include <SDL_error.h>
 #include <SDL_log.h>
@@ -57,13 +56,6 @@ void GuiSdl::remove_gui_observer(GuiObserver* observer)
     m_gui_observers.erase(
         std::remove(m_gui_observers.begin(), m_gui_observers.end(), observer),
         m_gui_observers.end());
-}
-
-void GuiSdl::notify_gui_observers(RunStatus new_status)
-{
-    for (GuiObserver* observer : m_gui_observers) {
-        observer->run_status_changed(new_status);
-    }
 }
 
 void GuiSdl::attach_debugger([[maybe_unused]] std::shared_ptr<Debugger<u16, 16>> debugger)
@@ -129,8 +121,8 @@ void GuiSdl::update_screen(
     std::vector<u8> const& tile_ram,
     std::vector<u8> const& sprite_ram,
     std::vector<u8> const& palette_ram,
-    RunStatus run_status,
-    bool is_screen_flipped)
+    bool is_screen_flipped,
+    std::string const& game_window_subtitle)
 {
     std::vector<u32> framebuffer = create_framebuffer(tile_ram, sprite_ram, palette_ram, is_screen_flipped);
 
@@ -143,14 +135,7 @@ void GuiSdl::update_screen(
         memcpy(pixels, framebuffer.data(), pitch * s_height);
     }
 
-    std::string title;
-    if (run_status == RunStatus::RUNNING) {
-        title = "Pacman";
-    } else if (run_status == RunStatus::PAUSED) {
-        title = "Pacman - Paused";
-    } else if (run_status == RunStatus::NOT_RUNNING) {
-        title = "Pacman - Stopped";
-    }
+    const std::string title = game_window_subtitle.empty() ? "Pacman" : "Pacman - " + game_window_subtitle;
 
     SDL_SetWindowTitle(m_win, title.c_str());
     SDL_UnlockTexture(m_texture);

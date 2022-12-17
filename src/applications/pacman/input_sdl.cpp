@@ -32,14 +32,14 @@ void InputSdl::notify_io_observers(IoRequest request)
     }
 }
 
-void InputSdl::read(RunStatus& run_status, std::shared_ptr<MemoryMappedIoForPacman> memory_mapped_io)
+void InputSdl::read(GuiIo& gui_io, std::shared_ptr<MemoryMappedIoForPacman> memory_mapped_io)
 {
     SDL_Event read_input_event;
 
     while (SDL_PollEvent(&read_input_event) != 0) {
         switch (read_input_event.type) {
         case SDL_QUIT:
-            run_status = RunStatus::NOT_RUNNING;
+            gui_io.m_is_quitting = true;
             break;
         case SDL_KEYUP:
             switch (read_input_event.key.keysym.scancode) {
@@ -92,11 +92,7 @@ void InputSdl::read(RunStatus& run_status, std::shared_ptr<MemoryMappedIoForPacm
                 notify_io_observers(IoRequest::TOGGLE_MUTE);
                 break;
             case s_pause:
-                if (run_status == RunStatus::PAUSED) {
-                    run_status = RunStatus::RUNNING;
-                } else if (run_status == RunStatus::RUNNING) {
-                    run_status = RunStatus::PAUSED;
-                }
+                gui_io.m_is_toggling_pause = true;
                 break;
             case s_credit:
                 memory_mapped_io->in0_read(7, false);
@@ -147,5 +143,5 @@ void InputSdl::read(RunStatus& run_status, std::shared_ptr<MemoryMappedIoForPacm
     }
 }
 
-void InputSdl::read_debug_only([[maybe_unused]] RunStatus& run_status) { }
+void InputSdl::read_debug_only([[maybe_unused]] GuiIo& gui_io) { }
 }

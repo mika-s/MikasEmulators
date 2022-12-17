@@ -18,9 +18,9 @@ namespace emu::applications::pacman {
 
 class InputSdl : public Input {
 public:
-    void read(RunStatus& run_status, std::shared_ptr<MemoryMappedIoForPacman> memory_mapped_io) override;
+    void read(GuiIo& gui_io, std::shared_ptr<MemoryMappedIoForPacman> memory_mapped_io) override;
 
-    void read_debug_only(RunStatus& run_status) override;
+    void read_debug_only(GuiIo& gui_io) override;
 
     void add_io_observer(IoObserver& observer) override;
 

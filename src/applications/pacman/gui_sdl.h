@@ -1,12 +1,12 @@
 #pragma once
 
-#include "crosscutting/misc/run_status.h"
 #include "crosscutting/typedefs.h"
 #include "gui.h"
 #include <SDL_render.h>
 #include <SDL_video.h>
 #include <cstddef>
 #include <memory>
+#include <string>
 #include <vector>
 
 namespace emu::debugger {
@@ -40,8 +40,8 @@ public:
         std::vector<u8> const& tile_ram,
         std::vector<u8> const& sprite_ram,
         std::vector<u8> const& palette_ram,
-        RunStatus run_status,
-        bool is_screen_flipped) override;
+        bool is_screen_flipped,
+        std::string const& game_window_subtitle) override;
 
     void update_debug_only() override;
 
@@ -61,8 +61,6 @@ private:
     SDL_Texture* m_texture;
 
     std::vector<GuiObserver*> m_gui_observers;
-
-    void notify_gui_observers(RunStatus new_status);
 
     void init();
 };

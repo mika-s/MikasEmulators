@@ -8,6 +8,7 @@
 #include "crosscutting/util/byte_util.h"
 #include <cstddef>
 #include <memory>
+#include <string>
 #include <tuple>
 #include <vector>
 
@@ -61,8 +62,8 @@ public:
         std::vector<u8> const& tile_ram,
         std::vector<u8> const& sprite_ram,
         std::vector<u8> const& palette_ram,
-        RunStatus run_status,
-        bool is_screen_flipped)
+        bool is_screen_flipped,
+        std::string const& game_window_subtitle)
         = 0;
 
     virtual void update_debug_only() = 0;

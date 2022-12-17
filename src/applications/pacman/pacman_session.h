@@ -4,36 +4,31 @@
 #include "chips/z80/interfaces/out_observer.h"
 #include "crosscutting/misc/governor.h"
 #include "crosscutting/misc/run_status.h"
+#include "crosscutting/misc/sdl_counter.h"
 #include "crosscutting/misc/session.h"
 #include "crosscutting/typedefs.h"
+#include "gui_io.h"
 #include "interfaces/io_observer.h"
+#include "pacman/interfaces/state_manager.h"
 #include "pacman/io_request.h"
 #include <cstddef>
+#include <functional>
 #include <memory>
 #include <unordered_map>
 #include <vector>
 
 namespace emu::applications::pacman {
 class Audio;
-}
-namespace emu::applications::pacman {
 class Gui;
-}
-namespace emu::applications::pacman {
 class Input;
-}
-namespace emu::applications::pacman {
 class MemoryMappedIoForPacman;
-}
-namespace emu::debugger {
-template<class A, class D, std::size_t B>
-class DebugContainer;
+class State;
 }
 namespace emu::debugger {
 template<class A, std::size_t B>
 class Debugger;
-}
-namespace emu::debugger {
+template<class A, class D, std::size_t B>
+class DebugContainer;
 template<class A, std::size_t B>
 class DisassembledLine;
 }
@@ -46,8 +41,6 @@ class EmulatorMemory;
 }
 namespace emu::z80 {
 class Cpu;
-}
-namespace emu::z80 {
 class InObserver;
 }
 
@@ -59,18 +52,21 @@ using emu::debugger::DisassembledLine;
 using emu::logging::Logger;
 using emu::memory::EmulatorMemory;
 using emu::misc::Governor;
+using emu::misc::sdl_get_ticks_high_performance;
 using emu::misc::Session;
 using emu::z80::Cpu;
 using emu::z80::GuiObserver;
 using emu::z80::InObserver;
 using emu::z80::OutObserver;
 using emu::z80::RunStatus;
+using emu::z80::RunStatus::NOT_RUNNING;
 
 class PacmanSession
     : public Session
     , public GuiObserver
     , public OutObserver
-    , public IoObserver {
+    , public IoObserver
+    , public StateManager {
 public:
     PacmanSession(
         const RunStatus startup_runstatus,
@@ -96,6 +92,18 @@ public:
 
     void io_changed(IoRequest request) override;
 
+    void change_state(std::shared_ptr<State> new_state) override;
+
+    std::shared_ptr<State> paused_state() override;
+
+    std::shared_ptr<State> running_state() override;
+
+    std::shared_ptr<State> stepping_state() override;
+
+    std::shared_ptr<State> stopped_state() override;
+
+    std::shared_ptr<State> current_state() override;
+
 private:
     static constexpr long double s_fps = 60.0L;
     static constexpr long double s_tick_limit = 1000.0L / s_fps;
@@ -103,20 +111,17 @@ private:
     static constexpr long double s_cycles_per_tick = s_cycles_per_ms * s_tick_limit;
     static constexpr int s_out_port_vblank_interrupt_return = 0;
 
-    bool m_is_in_debug_mode;
-    bool m_is_stepping_instruction;
-    bool m_is_stepping_cycle;
-    bool m_is_continuing_execution;
-    RunStatus m_startup_runstatus;
-    RunStatus m_run_status;
+    bool m_is_in_debug_mode { false };
+    RunStatus m_run_status { NOT_RUNNING };
 
-    u8 m_vblank_interrupt_return;
+    u8 m_vblank_interrupt_return { 0 };
 
+    GuiIo m_gui_io;
     std::shared_ptr<MemoryMappedIoForPacman> m_memory_mapped_io;
     std::shared_ptr<Gui> m_gui;
     std::shared_ptr<Input> m_input;
     std::shared_ptr<Audio> m_audio;
-    std::unique_ptr<Cpu> m_cpu;
+    std::shared_ptr<Cpu> m_cpu;
 
     EmulatorMemory<u16, u8>& m_memory;
 
@@ -125,25 +130,17 @@ private:
     std::shared_ptr<DebugContainer<u16, u8, 16>> m_debug_container;
     std::unordered_map<u8, u8> m_outputs_during_cycle;
 
-    Governor m_governor;
+    Governor m_governor { Governor(s_tick_limit, sdl_get_ticks_high_performance) };
 
-    void running(cyc& cycles);
-
-    void pausing();
-
-    void stepping(cyc& cycles);
-
-    void await_input_and_update_debug();
+    std::shared_ptr<State> m_current_state;
+    std::shared_ptr<State> m_running_state;
+    std::shared_ptr<State> m_paused_state;
+    std::shared_ptr<State> m_stepping_state;
+    std::shared_ptr<State> m_stopped_state;
 
     void setup_cpu();
 
     void setup_debugging();
-
-    std::vector<u8> tile_ram();
-
-    std::vector<u8> sprite_ram();
-
-    std::vector<u8> palette_ram();
 
     std::vector<u8> memory();
 

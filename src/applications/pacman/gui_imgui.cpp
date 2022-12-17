@@ -219,8 +219,8 @@ void GuiImgui::update_screen(
     std::vector<u8> const& tile_ram,
     std::vector<u8> const& sprite_ram,
     std::vector<u8> const& palette_ram,
-    RunStatus run_status,
-    bool is_screen_flipped)
+    bool is_screen_flipped,
+    std::string const& game_window_subtitle)
 {
     std::vector<u32> framebuffer = create_framebuffer(tile_ram, sprite_ram, palette_ram, is_screen_flipped);
 
@@ -230,10 +230,10 @@ void GuiImgui::update_screen(
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, s_width, s_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, framebuffer.data());
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    render(run_status);
+    render(game_window_subtitle);
 }
 
-void GuiImgui::render(RunStatus run_status)
+void GuiImgui::render(std::string const& game_window_subtitle)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -305,7 +305,7 @@ void GuiImgui::render(RunStatus run_status)
         render_disassembly_pane();
     }
     if (m_show_game) {
-        render_game_pane(run_status);
+        render_game_pane(game_window_subtitle);
     }
     if (m_show_game_info) {
         render_game_info_pane();
@@ -342,25 +342,14 @@ void GuiImgui::render(RunStatus run_status)
 
 void GuiImgui::update_debug_only()
 {
-    render(STEPPING);
+    render("Stepping");
 }
 
-void GuiImgui::render_game_pane(RunStatus run_status)
+void GuiImgui::render_game_pane(std::string const& game_window_subtitle)
 {
-    std::string prefix = "Game";
-    std::string id = "###" + prefix;
-    std::string title;
-    if (run_status == RUNNING) {
-        title = prefix + id;
-    } else if (run_status == PAUSED) {
-        title = prefix + " - Paused" + id;
-    } else if (run_status == NOT_RUNNING) {
-        title = prefix + " - Stopped" + id;
-    } else if (run_status == STEPPING) {
-        title = prefix + " - Stepping" + id;
-    } else {
-        title = "Unknown TODO" + id;
-    }
+    const std::string prefix = "Game";
+    const std::string id = "###" + prefix;
+    const std::string title = game_window_subtitle.empty() ? prefix + id : prefix + " - " + game_window_subtitle + id;
 
     ImGui::Begin(title.c_str(), &m_show_game);
 

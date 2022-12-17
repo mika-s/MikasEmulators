@@ -14,6 +14,7 @@
 #include <SDL_video.h>
 #include <cstddef>
 #include <memory>
+#include <string>
 #include <vector>
 
 namespace emu::debugger {
@@ -58,8 +59,8 @@ public:
         std::vector<u8> const& tile_ram,
         std::vector<u8> const& sprite_ram,
         std::vector<u8> const& palette_ram,
-        RunStatus run_status,
-        bool is_screen_flipped) override;
+        bool is_screen_flipped,
+        std::string const& game_window_subtitle) override;
 
     void update_debug_only() override;
 
@@ -112,9 +113,9 @@ private:
 
     void init();
 
-    void render(RunStatus run_status);
+    void render(std::string const& game_window_subtitle);
 
-    void render_game_pane(RunStatus run_status);
+    void render_game_pane(std::string const& game_window_subtitle);
 
     void render_game_info_pane();
 

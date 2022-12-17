@@ -6,16 +6,19 @@
 #include "crosscutting/debugging/disassembled_line.h"
 #include "crosscutting/logging/logger.h"
 #include "crosscutting/memory/emulator_memory.h"
-#include "crosscutting/misc/sdl_counter.h"
 #include "crosscutting/util/string_util.h"
+#include "interfaces/state.h"
 #include "pacman/audio.h"
 #include "pacman/gui.h"
 #include "pacman/interfaces/input.h"
 #include "pacman/memory_mapped_io_for_pacman.h"
+#include "states/paused_state.h"
+#include "states/running_state.h"
+#include "states/stepping_state.h"
+#include "states/stopped_state.h"
 #include "z80/cpu.h"
 #include "z80/interfaces/gui_observer.h"
 #include <algorithm>
-#include <functional>
 #include <iostream>
 #include <iterator>
 #include <memory>
@@ -30,7 +33,6 @@ using emu::debugger::FlagRegisterDebugContainer;
 using emu::debugger::IoDebugContainer;
 using emu::debugger::MemoryDebugContainer;
 using emu::debugger::RegisterDebugContainer;
-using emu::misc::sdl_get_ticks_high_performance;
 using emu::util::string::split;
 using emu::z80::Disassembler;
 using emu::z80::InterruptMode;
@@ -47,27 +49,65 @@ PacmanSession::PacmanSession(
     std::shared_ptr<Audio> audio,
     std::shared_ptr<MemoryMappedIoForPacman> memory_mapped_io,
     EmulatorMemory<u16, u8>& memory)
-    : m_is_in_debug_mode(false)
-    , m_is_stepping_instruction(false)
-    , m_is_stepping_cycle(false)
-    , m_is_continuing_execution(false)
-    , m_startup_runstatus(startup_runstatus)
-    , m_run_status(NOT_RUNNING)
-    , m_vblank_interrupt_return(0)
-    , m_memory_mapped_io(std::move(memory_mapped_io))
+    : m_memory_mapped_io(std::move(memory_mapped_io))
     , m_gui(std::move(gui))
     , m_input(std::move(input))
     , m_audio(std::move(audio))
     , m_memory(memory)
     , m_logger(std::make_shared<Logger>())
     , m_debugger(std::make_shared<Debugger<u16, 16>>())
-    , m_governor(Governor(s_tick_limit, sdl_get_ticks_high_performance))
 {
     setup_cpu();
     setup_debugging();
 
     m_gui->add_gui_observer(*this);
     m_input->add_io_observer(*this);
+
+    m_running_state = std::make_shared<RunningState>(
+        *this,
+        m_gui_io,
+        m_gui,
+        m_input,
+        m_audio,
+        m_cpu,
+        m_memory,
+        m_memory_mapped_io,
+        m_vblank_interrupt_return,
+        m_logger,
+        m_debugger,
+        m_debug_container,
+        m_outputs_during_cycle,
+        m_governor,
+        m_is_in_debug_mode);
+    m_paused_state = std::make_shared<PausedState>(
+        *this,
+        m_gui_io,
+        m_gui,
+        m_input,
+        m_memory,
+        m_memory_mapped_io,
+        m_governor);
+    m_stepping_state = std::make_shared<SteppingState>(
+        *this,
+        m_gui_io,
+        m_gui,
+        m_input,
+        m_audio,
+        m_cpu,
+        m_memory,
+        m_memory_mapped_io,
+        m_vblank_interrupt_return,
+        m_logger,
+        m_debugger,
+        m_debug_container,
+        m_outputs_during_cycle);
+    m_stopped_state = std::make_shared<StoppedState>(*this);
+
+    if (startup_runstatus == PAUSED) {
+        m_current_state = m_paused_state;
+    } else {
+        m_current_state = m_running_state;
+    }
 }
 
 PacmanSession::~PacmanSession()
@@ -84,103 +124,14 @@ void PacmanSession::run()
     }
 
     m_cpu->start();
-    m_run_status = m_startup_runstatus;
 
     cyc cycles;
 
-    while (m_run_status == RUNNING || m_run_status == PAUSED || m_run_status == STEPPING) {
-        if (m_run_status == RUNNING) {
-            running(cycles);
-        } else if (m_run_status == PAUSED) {
-            pausing();
-        } else {
-            stepping(cycles);
-        }
+    while (!m_current_state->is_exit_state()) {
+        m_current_state->perform(cycles);
     }
 
     m_run_status = FINISHED;
-}
-
-void PacmanSession::running(cyc& cycles)
-{
-    m_outputs_during_cycle.clear();
-
-    if (m_governor.is_time_to_update()) {
-        cycles = 0;
-        while (cycles < static_cast<cyc>(s_cycles_per_tick)) {
-            cycles += m_cpu->next_instruction();
-            if (m_is_in_debug_mode && m_debugger->has_breakpoint(m_cpu->pc())) {
-                m_logger->info("Breakpoint hit: 0x%04x", m_cpu->pc());
-                m_run_status = STEPPING;
-                return;
-            }
-        }
-
-        if (m_memory_mapped_io->is_interrupt_enabled()) {
-            m_cpu->interrupt(m_vblank_interrupt_return);
-
-            m_input->read(m_run_status, m_memory_mapped_io);
-            m_gui->update_screen(tile_ram(), sprite_ram(), palette_ram(), m_run_status, m_memory_mapped_io->is_screen_flipped());
-            m_audio->handle_sound(m_memory_mapped_io->is_sound_enabled(), m_memory_mapped_io->voices());
-        }
-    }
-}
-
-void PacmanSession::pausing()
-{
-    if (m_governor.is_time_to_update()) {
-        m_input->read(m_run_status, m_memory_mapped_io);
-        m_gui->update_screen(tile_ram(), sprite_ram(), palette_ram(), m_run_status, m_memory_mapped_io->is_screen_flipped());
-    }
-}
-
-void PacmanSession::stepping(cyc& cycles)
-{
-    m_outputs_during_cycle.clear();
-
-    await_input_and_update_debug();
-    if (m_run_status == NOT_RUNNING) {
-        return;
-    }
-
-    cycles = 0;
-    while (cycles < static_cast<cyc>(s_cycles_per_tick)) {
-        cycles += m_cpu->next_instruction();
-        if (!m_is_stepping_cycle && !m_is_continuing_execution) {
-            await_input_and_update_debug();
-        }
-        if (m_run_status == NOT_RUNNING) {
-            return;
-        }
-    }
-
-    if (m_memory_mapped_io->is_interrupt_enabled()) {
-        m_cpu->interrupt(m_vblank_interrupt_return);
-
-        m_input->read(m_run_status, m_memory_mapped_io);
-        m_gui->update_screen(tile_ram(), sprite_ram(), palette_ram(), m_run_status, m_memory_mapped_io->is_screen_flipped());
-        m_audio->handle_sound(m_memory_mapped_io->is_sound_enabled(), m_memory_mapped_io->voices());
-    }
-
-    m_is_stepping_cycle = false;
-    if (m_is_continuing_execution) {
-        m_is_continuing_execution = false;
-        m_run_status = RUNNING;
-    }
-}
-
-void PacmanSession::await_input_and_update_debug()
-{
-    while (!m_is_stepping_instruction && !m_is_stepping_cycle && !m_is_continuing_execution) {
-        m_input->read_debug_only(m_run_status);
-        if (m_run_status == NOT_RUNNING) {
-            return;
-        }
-
-        m_gui->update_debug_only();
-    }
-
-    m_is_stepping_instruction = false;
 }
 
 void PacmanSession::pause()
@@ -197,7 +148,7 @@ void PacmanSession::setup_cpu()
 {
     const u16 initial_pc = 0;
 
-    m_cpu = std::make_unique<Cpu>(m_memory, initial_pc);
+    m_cpu = std::make_shared<Cpu>(m_memory, initial_pc);
 
     m_cpu->add_out_observer(*this);
 }
@@ -320,6 +271,22 @@ void PacmanSession::setup_debugging()
 void PacmanSession::run_status_changed(RunStatus new_status)
 {
     m_run_status = new_status;
+    switch (m_run_status) {
+    case NOT_RUNNING:
+        change_state(stopped_state());
+        break;
+    case RUNNING:
+        change_state(running_state());
+        break;
+    case PAUSED:
+        change_state(paused_state());
+        break;
+    case FINISHED:
+        change_state(stopped_state());
+        break;
+    case STEPPING:
+        break;
+    }
 }
 
 void PacmanSession::debug_mode_changed(bool is_in_debug_mode)
@@ -345,21 +312,6 @@ void PacmanSession::out_changed(u8 port)
 void PacmanSession::io_changed(IoRequest request)
 {
     switch (request) {
-    case STEP_INSTRUCTION:
-        if (m_is_in_debug_mode) {
-            m_is_stepping_instruction = true;
-        }
-        break;
-    case STEP_CYCLE:
-        if (m_is_in_debug_mode) {
-            m_is_stepping_cycle = true;
-        }
-        break;
-    case CONTINUE_EXECUTION:
-        if (m_is_in_debug_mode) {
-            m_is_continuing_execution = true;
-        }
-        break;
     case TOGGLE_MUTE:
         m_audio->toggle_mute();
         break;
@@ -369,22 +321,39 @@ void PacmanSession::io_changed(IoRequest request)
     case TOGGLE_SPRITE_DEBUG:
         m_gui->toggle_sprite_debug();
         break;
+    default:
+        break;
     }
 }
 
-std::vector<u8> PacmanSession::tile_ram()
+void PacmanSession::change_state(std::shared_ptr<State> new_state)
 {
-    return { m_memory.begin() + 0x4000, m_memory.begin() + 0x43ff + 1 };
+    m_current_state = new_state;
 }
 
-std::vector<u8> PacmanSession::palette_ram()
+std::shared_ptr<State> PacmanSession::paused_state()
 {
-    return { m_memory.begin() + 0x4400, m_memory.begin() + 0x47ff + 1 };
+    return m_paused_state;
 }
 
-std::vector<u8> PacmanSession::sprite_ram()
+std::shared_ptr<State> PacmanSession::running_state()
 {
-    return { m_memory.begin() + 0x4ff0, m_memory.begin() + 0x506f + 1 };
+    return m_running_state;
+}
+
+std::shared_ptr<State> PacmanSession::stepping_state()
+{
+    return m_stepping_state;
+}
+
+std::shared_ptr<State> PacmanSession::stopped_state()
+{
+    return m_stopped_state;
+}
+
+std::shared_ptr<State> PacmanSession::current_state()
+{
+    return m_current_state;
 }
 
 std::vector<u8> PacmanSession::memory()
