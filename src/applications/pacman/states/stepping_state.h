@@ -1,10 +1,8 @@
 #pragma once
 
+#include "applications/pacman/gui.h"
+#include "applications/pacman/interfaces/state.h"
 #include "crosscutting/typedefs.h"
-#include "pacman/audio.h"
-#include "pacman/gui.h"
-#include "pacman/interfaces/state.h"
-#include "pacman/memory_mapped_io_for_pacman.h"
 #include <cstddef>
 #include <memory>
 #include <string>
@@ -12,9 +10,10 @@
 #include <vector>
 
 namespace emu::applications::pacman {
-class CpuIo;
+class Audio;
 class GuiIo;
 class Input;
+class MemoryMappedIoForPacman;
 class StateManager;
 }
 namespace emu::debugger {

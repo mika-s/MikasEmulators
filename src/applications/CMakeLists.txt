@@ -57,6 +57,7 @@ set(SOURCES_APPLICATIONS_CPP
         space_invaders/states/running_state.cpp
         space_invaders/states/stepping_state.cpp
         space_invaders/states/stopped_state.cpp
+        space_invaders/states/state_context.cpp
         )
 
 set(SOURCES_APPLICATIONS_H
@@ -132,11 +133,11 @@ set(SOURCES_APPLICATIONS_H
         space_invaders/interfaces/input.h
         space_invaders/interfaces/io_observer.h
         space_invaders/interfaces/state.h
-        space_invaders/interfaces/state_manager.h
         space_invaders/states/paused_state.h
         space_invaders/states/running_state.h
         space_invaders/states/stepping_state.h
         space_invaders/states/stopped_state.h
+        space_invaders/states/state_context.h
         )
 
 add_library(Applications STATIC ${SOURCES_APPLICATIONS_H} ${SOURCES_APPLICATIONS_CPP})

@@ -141,7 +141,7 @@ protected:
     static constexpr int s_bottombar_start_row = 34;
     static constexpr int s_play_area_height_in_tiles = 32;
 
-    // Final s_width and s_height
+    // Final width and height
     static constexpr int s_width = s_width_visible_area + s_width_both_borders;
     static constexpr int s_height = s_height_visible_area;
 

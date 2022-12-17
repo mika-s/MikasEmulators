@@ -1,6 +1,5 @@
 #pragma once
 
-#include "crosscutting/misc/run_status.h"
 #include "interfaces/input.h"
 #include "io_request.h"
 #include <SDL_scancode.h>
@@ -8,9 +7,8 @@
 #include <vector>
 
 namespace emu::applications::pacman {
+class GuiIo;
 class IoObserver;
-}
-namespace emu::applications::pacman {
 class MemoryMappedIoForPacman;
 }
 

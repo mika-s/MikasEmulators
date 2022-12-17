@@ -1,23 +1,24 @@
 #include "space_invaders_session.h"
-#include "8080/cpu.h"
-#include "8080/shift_register.h"
+#include "audio.h"
+#include "chips/8080/cpu.h"
 #include "chips/8080/disassembler.h"
+#include "chips/8080/shift_register.h"
+#include "cpu_io.h"
 #include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/debugging/debugger.h"
 #include "crosscutting/debugging/disassembled_line.h"
 #include "crosscutting/logging/logger.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/util/string_util.h"
+#include "gui.h"
+#include "interfaces/input.h"
+#include "interfaces/state.h"
 #include "io_request.h"
-#include "space_invaders/audio.h"
-#include "space_invaders/cpu_io.h"
-#include "space_invaders/gui.h"
-#include "space_invaders/interfaces/input.h"
-#include "space_invaders/interfaces/state.h"
-#include "space_invaders/states/paused_state.h"
-#include "space_invaders/states/running_state.h"
-#include "space_invaders/states/stepping_state.h"
-#include "space_invaders/states/stopped_state.h"
+#include "states/paused_state.h"
+#include "states/running_state.h"
+#include "states/state_context.h"
+#include "states/stepping_state.h"
+#include "states/stopped_state.h"
 #include <algorithm>
 #include <iostream>
 #include <iterator>
@@ -50,8 +51,7 @@ SpaceInvadersSession::SpaceInvadersSession(
     std::shared_ptr<Gui> gui,
     std::shared_ptr<Input> input,
     EmulatorMemory<u16, u8>& memory)
-    : m_startup_runstatus(startup_runstatus)
-    , m_gui(std::move(gui))
+    : m_gui(std::move(gui))
     , m_input(std::move(input))
     , m_memory(memory)
     , m_logger(std::make_shared<Logger>())
@@ -64,8 +64,7 @@ SpaceInvadersSession::SpaceInvadersSession(
     m_gui->add_gui_observer(*this);
     m_input->add_io_observer(*this);
 
-    m_running_state = std::make_shared<RunningState>(
-        *this,
+    m_state_context = std::make_shared<StateContext>(
         m_cpu_io,
         m_gui_io,
         m_gui,
@@ -78,32 +77,15 @@ SpaceInvadersSession::SpaceInvadersSession(
         m_outputs_during_cycle,
         m_governor,
         m_is_in_debug_mode);
-    m_paused_state = std::make_shared<PausedState>(
-        *this,
-        m_cpu_io,
-        m_gui_io,
-        m_gui,
-        m_input,
-        m_memory,
-        m_governor);
-    m_stepping_state = std::make_shared<SteppingState>(
-        *this,
-        m_cpu_io,
-        m_gui_io,
-        m_gui,
-        m_input,
-        m_cpu,
-        m_memory,
-        m_logger,
-        m_debugger,
-        m_debug_container,
-        m_outputs_during_cycle);
-    m_stopped_state = std::make_shared<StoppedState>(*this);
+    m_state_context->set_running_state(std::make_shared<RunningState>(m_state_context));
+    m_state_context->set_paused_state(std::make_shared<PausedState>(m_state_context));
+    m_state_context->set_stepping_state(std::make_shared<SteppingState>(m_state_context));
+    m_state_context->set_stopped_state(std::make_shared<StoppedState>(m_state_context));
 
     if (startup_runstatus == PAUSED) {
-        m_current_state = m_paused_state;
+        m_state_context->change_state(m_state_context->paused_state());
     } else {
-        m_current_state = m_running_state;
+        m_state_context->change_state(m_state_context->running_state());
     }
 }
 
@@ -125,8 +107,8 @@ void SpaceInvadersSession::run()
 
     cyc cycles;
 
-    while (!m_current_state->is_exit_state()) {
-        m_current_state->perform(cycles);
+    while (!m_state_context->current_state()->is_exit_state()) {
+        m_state_context->current_state()->perform(cycles);
     }
 
     m_run_status = FINISHED;
@@ -134,12 +116,12 @@ void SpaceInvadersSession::run()
 
 void SpaceInvadersSession::pause()
 {
-    m_current_state = m_paused_state;
+    m_state_context->change_state(m_state_context->paused_state());
 }
 
 void SpaceInvadersSession::stop()
 {
-    m_current_state = m_stopped_state;
+    m_state_context->change_state(m_state_context->stopped_state());
 }
 
 void SpaceInvadersSession::setup_cpu()
@@ -220,16 +202,16 @@ void SpaceInvadersSession::run_status_changed(RunStatus new_status)
     m_run_status = new_status;
     switch (m_run_status) {
     case NOT_RUNNING:
-        change_state(stopped_state());
+        m_state_context->change_state(m_state_context->stopped_state());
         break;
     case RUNNING:
-        change_state(running_state());
+        m_state_context->change_state(m_state_context->running_state());
         break;
     case PAUSED:
-        change_state(paused_state());
+        m_state_context->change_state(m_state_context->paused_state());
         break;
     case FINISHED:
-        change_state(stopped_state());
+        m_state_context->change_state(m_state_context->stopped_state());
         break;
     case STEPPING:
         break;
@@ -298,36 +280,6 @@ void SpaceInvadersSession::io_changed(IoRequest request)
     default:
         break;
     }
-}
-
-void SpaceInvadersSession::change_state(std::shared_ptr<State> new_state)
-{
-    m_current_state = new_state;
-}
-
-std::shared_ptr<State> SpaceInvadersSession::paused_state()
-{
-    return m_paused_state;
-}
-
-std::shared_ptr<State> SpaceInvadersSession::running_state()
-{
-    return m_running_state;
-}
-
-std::shared_ptr<State> SpaceInvadersSession::stepping_state()
-{
-    return m_stepping_state;
-}
-
-std::shared_ptr<State> SpaceInvadersSession::stopped_state()
-{
-    return m_stopped_state;
-}
-
-std::shared_ptr<State> SpaceInvadersSession::current_state()
-{
-    return m_current_state;
 }
 
 std::vector<u8> SpaceInvadersSession::memory()

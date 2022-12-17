@@ -1,6 +1,4 @@
 #include "gui_sdl.h"
-#include "8080/interfaces/gui_observer.h"
-#include "crosscutting/util/byte_util.h"
 #include "gui.h"
 #include <SDL.h>
 #include <SDL_error.h>
@@ -14,8 +12,6 @@
 namespace emu::debugger {
 template<class A, class D, std::size_t B>
 class DebugContainer;
-}
-namespace emu::debugger {
 template<class A, std::size_t B>
 class Debugger;
 }
@@ -24,11 +20,6 @@ class Logger;
 }
 
 namespace emu::applications::space_invaders {
-
-using emu::misc::RunStatus::NOT_RUNNING;
-using emu::misc::RunStatus::PAUSED;
-using emu::misc::RunStatus::RUNNING;
-using emu::util::byte::is_bit_set;
 
 GuiSdl::GuiSdl()
     : m_win(nullptr)

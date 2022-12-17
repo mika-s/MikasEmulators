@@ -1,11 +1,13 @@
 #include "stepping_state.h"
+#include "applications/pacman/audio.h"
+#include "applications/pacman/gui.h"
+#include "applications/pacman/gui_io.h"
+#include "applications/pacman/interfaces/input.h"
+#include "applications/pacman/interfaces/state_manager.h"
+#include "applications/pacman/memory_mapped_io_for_pacman.h"
 #include "chips/z80/cpu.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/typedefs.h"
-#include "pacman/gui.h"
-#include "pacman/gui_io.h"
-#include "pacman/interfaces/input.h"
-#include "pacman/interfaces/state_manager.h"
 #include <utility>
 
 namespace emu::applications::pacman {
