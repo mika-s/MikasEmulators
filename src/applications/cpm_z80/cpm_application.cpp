@@ -63,11 +63,18 @@ std::vector<u8> CpmApplication::create_work_ram(std::size_t size)
     return work_ram;
 }
 
+/** Print results to the terminal
+ *
+ * @param program is the program in binary format, which will be mutated
+ */
 void CpmApplication::patch_program(EmulatorMemory<u16, u8>& program)
 {
-    program.write(0x0000, 0xd3);
-    program.write(0x0005, 0xd3);
+    // Finished with tests:
+    program.write(0x0000, 0xd3);    // OUT 0x00
+
+    // BDOS call point (0x0005)
+    program.write(0x0005, 0xd3);    // OUT 0x01
     program.write(0x0006, 0x01);
-    program.write(0x0007, 0xc9);
+    program.write(0x0007, 0xc9);    // RET
 }
 }

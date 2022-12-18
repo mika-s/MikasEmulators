@@ -7,5 +7,6 @@ CMakeUserPresets.json
 helpers/ref_emulator_dir
 helpers/cfg/output/
 helpers/cfg/test_source_code.txt
-roms/8080/space_invaders/
-roms/z80/pacman/
+roms/8080/*/
+roms/z80/*/
+
