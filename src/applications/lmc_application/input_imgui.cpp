@@ -1,43 +1,13 @@
 #include "input_imgui.h"
-#include "crosscutting/util/byte_util.h"
+#include "gui_io.h"
 #include "imgui.h"
 #include "imgui_impl_sdl.h"
-#include "interfaces/input.h"
-#include "interfaces/io_observer.h"
-#include "io_request.h"
 #include <SDL_events.h>
 #include <SDL_keyboard.h>
-#include <algorithm>
 
 namespace emu::applications::lmc {
 
-using emu::misc::RunStatus::NOT_RUNNING;
-using emu::misc::RunStatus::PAUSED;
-using emu::misc::RunStatus::RUNNING;
-using emu::misc::RunStatus::STEPPING;
-using emu::util::byte::set_bit;
-using emu::util::byte::unset_bit;
-
-void InputImgui::add_io_observer(IoObserver& observer)
-{
-    m_io_observers.push_back(&observer);
-}
-
-void InputImgui::remove_io_observer(IoObserver* observer)
-{
-    m_io_observers.erase(
-        std::remove(m_io_observers.begin(), m_io_observers.end(), observer),
-        m_io_observers.end());
-}
-
-void InputImgui::notify_io_observers(IoRequest request)
-{
-    for (IoObserver* observer : m_io_observers) {
-        observer->io_changed(request);
-    }
-}
-
-void InputImgui::read(RunStatus& run_status)
+void InputImgui::read(GuiIo& gui_io)
 {
     SDL_Event read_input_event;
 
@@ -49,7 +19,7 @@ void InputImgui::read(RunStatus& run_status)
         if (!io.WantCaptureKeyboard) {
             switch (read_input_event.type) {
             case SDL_QUIT:
-                run_status = RunStatus::NOT_RUNNING;
+                gui_io.m_is_quitting = true;
                 break;
             case SDL_KEYUP:
                 switch (read_input_event.key.keysym.scancode) {
@@ -60,11 +30,7 @@ void InputImgui::read(RunStatus& run_status)
             case SDL_KEYDOWN:
                 switch (read_input_event.key.keysym.scancode) {
                 case s_pause:
-                    if (run_status == RunStatus::PAUSED) {
-                        run_status = RunStatus::RUNNING;
-                    } else if (run_status == RunStatus::RUNNING) {
-                        run_status = RunStatus::PAUSED;
-                    }
+                    gui_io.m_is_toggling_pause = true;
                     break;
                 default:
                     break;
@@ -76,7 +42,7 @@ void InputImgui::read(RunStatus& run_status)
         } else {
             switch (read_input_event.type) {
             case SDL_QUIT:
-                run_status = RunStatus::NOT_RUNNING;
+                gui_io.m_is_quitting = true;
                 break;
             default:
                 break;
@@ -85,7 +51,7 @@ void InputImgui::read(RunStatus& run_status)
     }
 }
 
-void InputImgui::read_debug_only(RunStatus& run_status)
+void InputImgui::read_debug_only(GuiIo& gui_io)
 {
     SDL_Event read_input_event;
 
@@ -97,25 +63,18 @@ void InputImgui::read_debug_only(RunStatus& run_status)
         if (!io.WantCaptureKeyboard) {
             switch (read_input_event.type) {
             case SDL_QUIT:
-                run_status = NOT_RUNNING;
+                gui_io.m_is_quitting = true;
                 break;
             case SDL_KEYDOWN:
                 switch (read_input_event.key.keysym.scancode) {
                 case s_pause:
-                    if (run_status == PAUSED) {
-                        run_status = STEPPING;
-                    } else if (run_status == STEPPING) {
-                        run_status = PAUSED;
-                    }
+                    gui_io.m_is_toggling_pause = true;
                     break;
                 case s_step_instruction:
-                    notify_io_observers(STEP_INSTRUCTION);
-                    break;
-                case s_step_cycle:
-                    notify_io_observers(STEP_CYCLE);
+                    gui_io.m_is_stepping_instruction = true;
                     break;
                 case s_continue_running:
-                    notify_io_observers(CONTINUE_EXECUTION);
+                    gui_io.m_is_continuing_execution = true;
                     break;
                 default:
                     break;
@@ -127,7 +86,7 @@ void InputImgui::read_debug_only(RunStatus& run_status)
         } else {
             switch (read_input_event.type) {
             case SDL_QUIT:
-                run_status = NOT_RUNNING;
+                gui_io.m_is_quitting = true;
                 break;
             default:
                 break;

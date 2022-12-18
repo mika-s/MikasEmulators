@@ -58,11 +58,11 @@ void TuiTerminal::attach_logger([[maybe_unused]] std::shared_ptr<Logger> logger)
 {
 }
 
-void TuiTerminal::update_screen([[maybe_unused]] RunStatus run_status, [[maybe_unused]] TerminalInputState terminal_input_state)
+void TuiTerminal::update_screen([[maybe_unused]] bool is_awaiting_input, [[maybe_unused]] std::string const& game_window_subtitle)
 {
 }
 
-void TuiTerminal::update_debug_only([[maybe_unused]] TerminalInputState terminal_input_state)
+void TuiTerminal::update_debug_only([[maybe_unused]] bool is_awaiting_input)
 {
 }
 

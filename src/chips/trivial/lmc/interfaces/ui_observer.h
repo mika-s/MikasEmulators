@@ -1,5 +1,6 @@
 #pragma once
 
+#include "chips/trivial/lmc/usings.h"
 #include "crosscutting/misc/run_status.h"
 #include <string>
 

@@ -10,7 +10,6 @@
 #include "crosscutting/misc/run_status.h"
 #include "crosscutting/misc/uinteger.h"
 #include "lmc_memory_editor.h"
-#include "terminal_input_state.h"
 #include "ui.h"
 #include <SDL_video.h>
 #include <cstddef>
@@ -67,9 +66,9 @@ public:
 
     void remove_ui_observer(UiObserver* observer) override;
 
-    void update_screen(RunStatus run_status, TerminalInputState terminal_input_state) override;
+    void update_screen(bool is_awaiting_input, std::string const& game_window_subtitle) override;
 
-    void update_debug_only(TerminalInputState terminal_input_state) override;
+    void update_debug_only(bool is_awaiting_input) override;
 
     void attach_debugger(std::shared_ptr<Debugger<Address, 10>> debugger) override;
 
@@ -121,11 +120,11 @@ private:
 
     void init();
 
-    void render(RunStatus run_status, TerminalInputState terminal_input_state);
+    void render(bool is_awaiting_input, std::string const& game_window_subtitle);
 
     void render_code_editor();
 
-    void render_terminal_window(RunStatus run_status, TerminalInputState terminal_input_state);
+    void render_terminal_window(bool is_awaiting_input, std::string const& game_window_subtitle);
 
     void render_game_info_window();
 

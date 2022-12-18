@@ -6,8 +6,7 @@
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_sdl.h"
-#include "lmc_application/lmc_memory_editor.h"
-#include "lmc_application/terminal_input_state.h"
+#include "lmc_memory_editor.h"
 #include "ui.h"
 #include <SDL.h>
 #include <SDL_error.h>
@@ -36,6 +35,7 @@ namespace emu::applications::lmc {
 using emu::lmc::Address;
 using emu::lmc::Data;
 using emu::lmc::OutType;
+using emu::misc::RunStatus;
 using emu::misc::RunStatus::NOT_RUNNING;
 using emu::misc::RunStatus::PAUSED;
 using emu::misc::RunStatus::RUNNING;
@@ -233,12 +233,12 @@ void GuiImgui::init()
     glClearColor(background.x, background.y, background.z, background.w);
 }
 
-void GuiImgui::update_screen(RunStatus run_status, TerminalInputState terminal_input_state)
+void GuiImgui::update_screen(bool is_awaiting_input, std::string const& game_window_subtitle)
 {
-    render(run_status, terminal_input_state);
+    render(is_awaiting_input, game_window_subtitle);
 }
 
-void GuiImgui::render(RunStatus run_status, TerminalInputState terminal_input_state)
+void GuiImgui::render(bool is_awaiting_input, std::string const& game_window_subtitle)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -309,7 +309,7 @@ void GuiImgui::render(RunStatus run_status, TerminalInputState terminal_input_st
         render_code_editor();
     }
     if (m_show_terminal) {
-        render_terminal_window(run_status, terminal_input_state);
+        render_terminal_window(is_awaiting_input, game_window_subtitle);
     }
     if (m_show_game_info) {
         render_game_info_window();
@@ -329,9 +329,9 @@ void GuiImgui::render(RunStatus run_status, TerminalInputState terminal_input_st
     SDL_GL_SwapWindow(m_win);
 }
 
-void GuiImgui::update_debug_only(TerminalInputState terminal_input_state)
+void GuiImgui::update_debug_only(bool is_awaiting_input)
 {
-    render(STEPPING, terminal_input_state);
+    render(is_awaiting_input, "Stepping");
 }
 
 void GuiImgui::render_code_editor()
@@ -339,28 +339,18 @@ void GuiImgui::render_code_editor()
     m_code_editor.draw("Code editor", &m_show_code_editor);
 }
 
-void GuiImgui::render_terminal_window(RunStatus run_status, TerminalInputState terminal_input_state)
+void GuiImgui::render_terminal_window(bool is_awaiting_input, std::string const& game_window_subtitle)
 {
-    std::string prefix = "Program";
-    std::string id = "###" + prefix;
+    const std::string prefix = "Program";
+    const std::string id = "###" + prefix;
     std::string terminal_status = "";
-    if (terminal_input_state == AWAITING_INPUT) {
+    if (is_awaiting_input) {
         terminal_status = " (awaiting input)";
     }
-    std::string title;
-    if (run_status == RUNNING) {
-        title = prefix + terminal_status + id;
-    } else if (run_status == PAUSED) {
-        title = prefix + " - Paused" + terminal_status + id;
-    } else if (run_status == NOT_RUNNING) {
-        title = prefix + " - Stopped" + terminal_status + id;
-    } else if (run_status == STEPPING) {
-        title = prefix + " - Stepping" + terminal_status + id;
-    } else {
-        title = "Unknown TODO " + terminal_status + id;
-    }
+    const std::string title = game_window_subtitle.empty() ? prefix + terminal_status + id
+                                                           : prefix + " - " + game_window_subtitle + terminal_status + id;
 
-    m_terminal.draw(title.c_str(), terminal_input_state == AWAITING_INPUT, m_output, &m_show_terminal);
+    m_terminal.draw(title.c_str(), is_awaiting_input, m_output, &m_show_terminal);
 }
 
 void GuiImgui::render_game_info_window()

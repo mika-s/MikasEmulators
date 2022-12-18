@@ -11,7 +11,6 @@
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
 #include "lmc/out_type.h"
-#include "terminal_input_state.h"
 
 namespace emu::applications::lmc {
 
@@ -42,9 +41,9 @@ public:
 
     virtual void remove_ui_observer(UiObserver* observer) = 0;
 
-    virtual void update_screen(RunStatus run_status, TerminalInputState terminal_input_state) = 0;
+    virtual void update_screen(bool is_awaiting_input, std::string const& game_window_subtitle) = 0;
 
-    virtual void update_debug_only(TerminalInputState terminal_input_state) = 0;
+    virtual void update_debug_only(bool is_awaiting_input) = 0;
 
     virtual void attach_debugger(std::shared_ptr<Debugger<Address, 10>> debugger) = 0;
 

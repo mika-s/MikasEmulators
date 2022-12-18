@@ -9,19 +9,21 @@
 #include "crosscutting/debugging/disassembled_line.h"
 #include "crosscutting/logging/logger.h"
 #include "crosscutting/misc/run_status.h"
-#include "crosscutting/misc/sdl_counter.h"
 #include "crosscutting/misc/uinteger.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
-#include "interfaces/input.h"
-#include "io_request.h"
-#include "terminal_input_state.h"
+#include "interfaces/state.h"
+#include "states/paused_state.h"
+#include "states/running_awaiting_input_state.h"
+#include "states/running_state.h"
+#include "states/state_context.h"
+#include "states/stepping_state.h"
+#include "states/stopped_state.h"
 #include "ui.h"
 #include <algorithm>
 #include <cstddef>
 #include <exception>
-#include <functional>
 #include <iostream>
 #include <iterator>
 #include <stdexcept>
@@ -40,7 +42,6 @@ using emu::lmc::Assembler;
 using emu::lmc::Data;
 using emu::lmc::Disassembler;
 using emu::lmc::OutType;
-using emu::misc::sdl_get_ticks_high_performance;
 using emu::misc::RunStatus::FINISHED;
 using emu::misc::RunStatus::NOT_RUNNING;
 using emu::misc::RunStatus::PAUSED;
@@ -58,29 +59,49 @@ LmcApplicationSession::LmcApplicationSession(
     std::string file_content,
     EmulatorMemory<Address, Data> memory)
     : m_is_only_run_once(is_only_run_once)
-    , m_terminal_input_state(NOT_AWAITING_INPUT)
-    , m_startup_runstatus(startup_runstatus)
     , m_run_status(NOT_RUNNING)
-    , m_gui(std::move(gui))
+    , m_ui(std::move(gui))
     , m_input(std::move(input))
     , m_memory(std::move(memory))
     , m_loaded_file(std::move(loaded_file))
     , m_file_content(std::move(file_content))
     , m_logger(std::make_shared<Logger>())
     , m_debugger(std::make_shared<Debugger<Address, 10>>())
-    , m_governor(Governor(s_tick_limit, sdl_get_ticks_high_performance))
 {
     setup_cpu();
     setup_debugging();
 
-    m_gui->add_ui_observer(*this);
-    m_input->add_io_observer(*this);
+    m_ui->add_ui_observer(*this);
+
+    m_state_context = std::make_shared<StateContext>(
+        m_gui_io,
+        m_ui,
+        m_input,
+        m_cpu,
+        m_memory,
+        m_logger,
+        m_debugger,
+        m_debug_container,
+        m_governor,
+        m_is_only_run_once,
+        m_is_awaiting_input,
+        m_is_in_debug_mode);
+    m_state_context->set_running_state(std::make_shared<RunningState>(m_state_context));
+    m_state_context->set_running_awaiting_input_state(std::make_shared<RunningAwaitingInputState>(m_state_context));
+    m_state_context->set_paused_state(std::make_shared<PausedState>(m_state_context));
+    m_state_context->set_stepping_state(std::make_shared<SteppingState>(m_state_context));
+    m_state_context->set_stopped_state(std::make_shared<StoppedState>(m_state_context));
+
+    if (startup_runstatus == PAUSED) {
+        m_state_context->change_state(m_state_context->paused_state());
+    } else {
+        m_state_context->change_state(m_state_context->running_state());
+    }
 }
 
 LmcApplicationSession::~LmcApplicationSession()
 {
-    m_gui->remove_ui_observer(this);
-    m_input->remove_io_observer(this);
+    m_ui->remove_ui_observer(this);
     m_cpu->remove_out_observer(this);
     m_cpu->remove_in_observer(this);
 }
@@ -92,116 +113,14 @@ void LmcApplicationSession::run()
     }
 
     m_cpu->start();
-    m_run_status = m_startup_runstatus;
 
     cyc cycles;
 
-    while (m_run_status == RUNNING || m_run_status == PAUSED || m_run_status == STEPPING) {
-        if (m_run_status == RUNNING) {
-            if (m_terminal_input_state == AWAITING_INPUT) {
-                await_input_and_update();
-            } else {
-                running(cycles);
-            }
-        } else if (m_run_status == PAUSED) {
-            pausing();
-        } else {
-            stepping(cycles);
-        }
+    while (!m_state_context->current_state()->is_exit_state()) {
+        m_state_context->current_state()->perform(cycles);
     }
 
     m_run_status = FINISHED;
-}
-
-void LmcApplicationSession::running(cyc& cycles)
-{
-    if (m_governor.is_time_to_update()) {
-        cycles = 0;
-        while (cycles < static_cast<cyc>(s_cycles_per_tick) && m_terminal_input_state == NOT_AWAITING_INPUT) {
-            if (m_cpu->can_run_next_instruction()) {
-                m_cpu->next_instruction();
-            } else {
-                m_run_status = m_is_only_run_once ? FINISHED : PAUSED;
-            }
-            ++cycles;
-            if (m_is_in_debug_mode && m_debugger->has_breakpoint(m_cpu->pc())) {
-                m_logger->info("Breakpoint hit: %03d", m_cpu->pc());
-                m_run_status = STEPPING;
-                return;
-            }
-        }
-
-        m_input->read(m_run_status);
-        m_gui->update_screen(m_run_status, m_terminal_input_state);
-    }
-}
-
-void LmcApplicationSession::pausing()
-{
-    if (m_governor.is_time_to_update()) {
-        m_input->read(m_run_status);
-        m_gui->update_screen(m_run_status, m_terminal_input_state);
-    }
-}
-
-void LmcApplicationSession::stepping(cyc& cycles)
-{
-    await_input_and_update_debug();
-    if (m_run_status == NOT_RUNNING) {
-        return;
-    }
-
-    cycles = 0;
-    while (cycles < static_cast<cyc>(s_cycles_per_tick)) {
-        if (m_cpu->can_run_next_instruction()) {
-            m_cpu->next_instruction();
-        } else {
-            m_run_status = PAUSED;
-            return;
-        }
-        ++cycles;
-        if (!m_is_stepping_cycle && !m_is_continuing_execution) {
-            await_input_and_update_debug();
-        }
-        if (m_run_status == NOT_RUNNING) {
-            return;
-        }
-    }
-
-    m_input->read(m_run_status);
-    m_gui->update_screen(m_run_status, m_terminal_input_state);
-
-    m_is_stepping_cycle = false;
-    if (m_is_continuing_execution) {
-        m_is_continuing_execution = false;
-        m_run_status = RUNNING;
-    }
-}
-
-void LmcApplicationSession::await_input_and_update()
-{
-    while (m_terminal_input_state == AWAITING_INPUT) {
-        m_input->read(m_run_status);
-        if (m_run_status == NOT_RUNNING) {
-            return;
-        }
-
-        m_gui->update_screen(m_run_status, m_terminal_input_state);
-    }
-}
-
-void LmcApplicationSession::await_input_and_update_debug()
-{
-    while (!m_is_stepping_instruction && !m_is_stepping_cycle && !m_is_continuing_execution) {
-        m_input->read_debug_only(m_run_status);
-        if (m_run_status == NOT_RUNNING) {
-            return;
-        }
-
-        m_gui->update_debug_only(m_terminal_input_state);
-    }
-
-    m_is_stepping_instruction = false;
 }
 
 void LmcApplicationSession::pause()
@@ -217,6 +136,22 @@ void LmcApplicationSession::stop()
 void LmcApplicationSession::run_status_changed(RunStatus new_status)
 {
     m_run_status = new_status;
+    switch (m_run_status) {
+    case NOT_RUNNING:
+        m_state_context->change_state(m_state_context->stopped_state());
+        break;
+    case RUNNING:
+        m_state_context->change_state(m_state_context->running_state());
+        break;
+    case PAUSED:
+        m_state_context->change_state(m_state_context->paused_state());
+        break;
+    case FINISHED:
+        m_state_context->change_state(m_state_context->stopped_state());
+        break;
+    case STEPPING:
+        break;
+    }
 }
 
 void LmcApplicationSession::debug_mode_changed(bool is_in_debug_mode)
@@ -246,9 +181,8 @@ void LmcApplicationSession::assemble_and_load_request()
     m_logger->info("Trying to assemble and load source code...");
 
     m_cpu->reset_state();
-    m_gui->clear_terminal();
-    m_terminal_input_state = NOT_AWAITING_INPUT;
-    m_run_status = PAUSED;
+    m_ui->clear_terminal();
+    m_state_context->change_state(m_state_context->paused_state());
 
     try {
         std::stringstream ss(m_file_content);
@@ -278,26 +212,26 @@ void LmcApplicationSession::assemble_and_load_request()
 
 void LmcApplicationSession::input_from_terminal(Data input)
 {
-    m_terminal_input_state = NOT_AWAITING_INPUT;
+    m_state_context->m_is_awaiting_input = false;
     m_cpu->input(input);
 }
 
 void LmcApplicationSession::out_changed(Data acc_reg, OutType out_type)
 {
-    m_gui->to_terminal(acc_reg, out_type);
+    m_ui->to_terminal(acc_reg, out_type);
 }
 
 void LmcApplicationSession::in_requested()
 {
-    m_terminal_input_state = AWAITING_INPUT;
-    m_gui->from_terminal();
+    m_state_context->m_is_awaiting_input = true;
+    m_ui->from_terminal();
 }
 
 void LmcApplicationSession::setup_cpu()
 {
     const Address initial_pc(0);
 
-    m_cpu = std::make_unique<Cpu>(m_memory, initial_pc);
+    m_cpu = std::make_shared<Cpu>(m_memory, initial_pc);
 
     m_cpu->add_out_observer(*this);
     m_cpu->add_in_observer(*this);
@@ -316,9 +250,9 @@ void LmcApplicationSession::setup_debugging()
     m_debug_container->add_disassembled_program(disassemble_program());
     m_debug_container->add_file_content([&]() { return m_file_content; });
 
-    m_gui->attach_debugger(m_debugger);
-    m_gui->attach_debug_container(m_debug_container);
-    m_gui->attach_logger(m_logger);
+    m_ui->attach_debugger(m_debugger);
+    m_ui->attach_debug_container(m_debug_container);
+    m_ui->attach_logger(m_logger);
 }
 
 std::vector<Data> LmcApplicationSession::memory()
@@ -345,27 +279,6 @@ std::vector<DisassembledLine<Address, 10>> LmcApplicationSession::disassemble_pr
         [](std::string const& line) { return DisassembledLine<Address, 10>(line); });
 
     return lines;
-}
-
-void LmcApplicationSession::io_changed(IoRequest request)
-{
-    switch (request) {
-    case STEP_INSTRUCTION:
-        if (m_is_in_debug_mode && m_run_status == STEPPING) {
-            m_is_stepping_instruction = true;
-        }
-        break;
-    case STEP_CYCLE:
-        if (m_is_in_debug_mode && m_run_status == STEPPING) {
-            m_is_stepping_cycle = true;
-        }
-        break;
-    case CONTINUE_EXECUTION:
-        if (m_is_in_debug_mode && m_run_status == STEPPING) {
-            m_is_continuing_execution = true;
-        }
-        break;
-    }
 }
 
 }

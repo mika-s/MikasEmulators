@@ -25,6 +25,12 @@ set(SOURCES_APPLICATIONS_CPP
         lmc_application/tui_terminal.cpp
         lmc_application/lmc_memory_editor.cpp
         lmc_application/usage.cpp
+        lmc_application/states/paused_state.cpp
+        lmc_application/states/running_state.cpp
+        lmc_application/states/running_awaiting_input_state.cpp
+        lmc_application/states/stepping_state.cpp
+        lmc_application/states/stopped_state.cpp
+        lmc_application/states/state_context.cpp
 
         pacman/audio.cpp
         pacman/gui.cpp
@@ -85,15 +91,19 @@ set(SOURCES_APPLICATIONS_H
         lmc_application/ui.h
         lmc_application/gui_imgui.h
         lmc_application/input_imgui.h
-        lmc_application/io_request.h
         lmc_application/lmc_application.h
         lmc_application/lmc_application_session.h
         lmc_application/lmc_memory_editor.h
-        lmc_application/terminal_input_state.h
         lmc_application/tui_terminal.h
         lmc_application/usage.h
         lmc_application/interfaces/input.h
-        lmc_application/interfaces/io_observer.h
+        lmc_application/interfaces/state.h
+        lmc_application/states/paused_state.h
+        lmc_application/states/running_state.h
+        lmc_application/states/running_awaiting_input_state.h
+        lmc_application/states/stepping_state.h
+        lmc_application/states/stopped_state.h
+        lmc_application/states/state_context.h
 
         pacman/audio.h
         pacman/gui.h

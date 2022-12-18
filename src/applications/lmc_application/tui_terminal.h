@@ -3,10 +3,10 @@
 #include "chips/trivial/lmc/out_type.h"
 #include "chips/trivial/lmc/usings.h"
 #include "crosscutting/misc/run_status.h"
-#include "lmc_application/terminal_input_state.h"
 #include "ui.h"
 #include <cstddef>
 #include <memory>
+#include <string>
 #include <vector>
 
 namespace emu::debugger {
@@ -44,9 +44,9 @@ public:
 
     void remove_ui_observer(UiObserver* observer) override;
 
-    void update_screen(RunStatus run_status, TerminalInputState terminal_input_state) override;
+    void update_screen(bool is_awaiting_input, std::string const& game_window_subtitle) override;
 
-    void update_debug_only(TerminalInputState terminal_input_state) override;
+    void update_debug_only(bool is_awaiting_input) override;
 
     void attach_debugger(std::shared_ptr<Debugger<Address, 10>> debugger) override;
 

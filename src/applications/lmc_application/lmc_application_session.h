@@ -8,32 +8,26 @@
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/misc/governor.h"
 #include "crosscutting/misc/run_status.h"
+#include "crosscutting/misc/sdl_counter.h"
 #include "crosscutting/misc/session.h"
 #include "crosscutting/misc/uinteger.h"
-#include "crosscutting/typedefs.h"
-#include "interfaces/io_observer.h"
-#include "io_request.h"
-#include "terminal_input_state.h"
+#include "gui_io.h"
 #include <cstddef>
+#include <functional>
 #include <memory>
 #include <string>
 #include <vector>
 
 namespace emu::applications::lmc {
-class Ui;
-}
-namespace emu::applications::lmc {
 class Input;
+class StateContext;
+class Ui;
 }
 namespace emu::debugger {
 template<class A, class D, std::size_t B>
 class DebugContainer;
-}
-namespace emu::debugger {
 template<class A, std::size_t B>
 class Debugger;
-}
-namespace emu::debugger {
 template<class A, std::size_t B>
 class DisassembledLine;
 }
@@ -46,7 +40,6 @@ class Logger;
 
 namespace emu::applications::lmc {
 
-using emu::applications::lmc::IoObserver;
 using emu::debugger::DebugContainer;
 using emu::debugger::Debugger;
 using emu::debugger::DisassembledLine;
@@ -61,6 +54,7 @@ using emu::logging::Logger;
 using emu::memory::EmulatorMemory;
 using emu::misc::Governor;
 using emu::misc::RunStatus;
+using emu::misc::sdl_get_ticks_high_performance;
 using emu::misc::Session;
 using emu::misc::UInteger;
 
@@ -68,8 +62,7 @@ class LmcApplicationSession
     : public Session
     , public UiObserver
     , public OutObserver
-    , public InObserver
-    , public IoObserver {
+    , public InObserver {
 public:
     LmcApplicationSession(
         bool is_only_run_once,
@@ -102,8 +95,6 @@ public:
 
     void in_requested() override;
 
-    void io_changed(IoRequest request) override;
-
 private:
     static constexpr unsigned int s_program_size = 100;
 
@@ -116,16 +107,13 @@ private:
 
     bool m_is_only_run_once { false };
     bool m_is_in_debug_mode { false };
-    bool m_is_stepping_instruction { false };
-    bool m_is_stepping_cycle { false };
-    bool m_is_continuing_execution { false };
-    TerminalInputState m_terminal_input_state;
-    RunStatus m_startup_runstatus;
+    bool m_is_awaiting_input { false };
     RunStatus m_run_status;
 
-    std::shared_ptr<Ui> m_gui;
+    GuiIo m_gui_io;
+    std::shared_ptr<Ui> m_ui;
     std::shared_ptr<Input> m_input;
-    std::unique_ptr<Cpu> m_cpu;
+    std::shared_ptr<Cpu> m_cpu;
     EmulatorMemory<Address, Data> m_memory;
     std::string m_loaded_file;
     std::string m_file_content;
@@ -133,17 +121,9 @@ private:
     std::shared_ptr<Debugger<Address, 10>> m_debugger;
     std::shared_ptr<DebugContainer<Address, Data, 10>> m_debug_container;
 
-    Governor m_governor;
+    Governor m_governor { Governor(s_tick_limit, sdl_get_ticks_high_performance) };
 
-    void running(cyc& cycles);
-
-    void pausing();
-
-    void stepping(cyc& cycles);
-
-    void await_input_and_update();
-
-    void await_input_and_update_debug();
+    std::shared_ptr<StateContext> m_state_context;
 
     void setup_cpu();
 
