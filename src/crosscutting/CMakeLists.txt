@@ -58,7 +58,6 @@ set(SOURCES_CROSSCUTTING_H
         memory/next_word.h
         misc/emulator.h
         misc/governor.h
-        misc/run_status.h
         misc/sdl_counter.h
         misc/session.h
         misc/uinteger.h

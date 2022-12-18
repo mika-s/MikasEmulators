@@ -1,14 +1,14 @@
 #pragma once
 
 #include "interfaces/input.h"
-#include "io_request.h"
+#include "key_request.h"
 #include <SDL_scancode.h>
 #include <memory>
 #include <vector>
 
 namespace emu::applications::pacman {
 class GuiIo;
-class IoObserver;
+class KeyObserver;
 class MemoryMappedIoForPacman;
 }
 
@@ -20,9 +20,9 @@ public:
 
     void read_debug_only(GuiIo& gui_io) override;
 
-    void add_io_observer(IoObserver& observer) override;
+    void add_io_observer(KeyObserver& observer) override;
 
-    void remove_io_observer(IoObserver* observer) override;
+    void remove_io_observer(KeyObserver* observer) override;
 
 private:
     static constexpr SDL_Scancode s_mute = SDL_SCANCODE_M;
@@ -44,7 +44,7 @@ private:
     static constexpr SDL_Scancode s_p2_left = SDL_SCANCODE_LEFT;
     static constexpr SDL_Scancode s_p2_right = SDL_SCANCODE_RIGHT;
 
-    std::vector<IoObserver*> m_io_observers;
+    std::vector<KeyObserver*> m_io_observers;
 
     void notify_io_observers(IoRequest request);
 };

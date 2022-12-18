@@ -1,6 +1,5 @@
 #pragma once
 
-#include "crosscutting/misc/run_status.h"
 #include "crosscutting/typedefs.h"
 #include "gui.h"
 #include <SDL_render.h>
@@ -10,6 +9,9 @@
 #include <string>
 #include <vector>
 
+namespace emu::applications::space_invaders {
+class GuiObserver;
+}
 namespace emu::debugger {
 template<class A, class D, std::size_t B>
 class DebugContainer;
@@ -18,17 +20,13 @@ namespace emu::debugger {
 template<class A, std::size_t B>
 class Debugger;
 }
-namespace emu::i8080 {
-class GuiObserver;
-}
 namespace emu::logging {
 class Logger;
 }
 
 namespace emu::applications::space_invaders {
 
-using emu::i8080::GuiObserver;
-using emu::misc::RunStatus;
+using emu::applications::space_invaders::GuiObserver;
 
 class GuiSdl : public Gui {
 public:

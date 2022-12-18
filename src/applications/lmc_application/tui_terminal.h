@@ -2,13 +2,15 @@
 
 #include "chips/trivial/lmc/out_type.h"
 #include "chips/trivial/lmc/usings.h"
-#include "crosscutting/misc/run_status.h"
 #include "ui.h"
 #include <cstddef>
 #include <memory>
 #include <string>
 #include <vector>
 
+namespace emu::applications::lmc {
+class UiObserver;
+}
 namespace emu::debugger {
 template<class A, class D, std::size_t B>
 class DebugContainer;
@@ -16,9 +18,6 @@ class DebugContainer;
 namespace emu::debugger {
 template<class A, std::size_t B>
 class Debugger;
-}
-namespace emu::lmc {
-class UiObserver;
 }
 namespace emu::logging {
 class Logger;
@@ -29,7 +28,6 @@ namespace emu::applications::lmc {
 using emu::lmc::Address;
 using emu::lmc::Data;
 using emu::lmc::OutType;
-using emu::misc::RunStatus;
 
 class TuiTerminal : public Ui {
 

@@ -3,7 +3,6 @@
 #include "crosscutting/gui/gui_type.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/misc/emulator.h"
-#include "crosscutting/misc/run_status.h"
 #include "crosscutting/typedefs.h"
 #include "pacman_session.h"
 #include <memory>
@@ -54,7 +53,7 @@ private:
     std::shared_ptr<Gui> m_gui;
     std::shared_ptr<Input> m_input;
     std::shared_ptr<Audio> m_audio;
-    RunStatus m_startup_runstatus;
+    bool m_is_starting_paused;
 
     void load_files();
 

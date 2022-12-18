@@ -1,11 +1,12 @@
 #include "gui_imgui.h"
-#include "chips/trivial/lmc/interfaces/ui_observer.h"
 #include "chips/trivial/lmc/out_type.h"
 #include "chips/trivial/lmc/usings.h"
 #include "glad/glad.h"
+#include "gui_request.h"
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_sdl.h"
+#include "interfaces/ui_observer.h"
 #include "lmc_memory_editor.h"
 #include "ui.h"
 #include <SDL.h>
@@ -35,11 +36,6 @@ namespace emu::applications::lmc {
 using emu::lmc::Address;
 using emu::lmc::Data;
 using emu::lmc::OutType;
-using emu::misc::RunStatus;
-using emu::misc::RunStatus::NOT_RUNNING;
-using emu::misc::RunStatus::PAUSED;
-using emu::misc::RunStatus::RUNNING;
-using emu::misc::RunStatus::STEPPING;
 
 GuiImgui::GuiImgui()
     : m_win(nullptr)
@@ -103,38 +99,10 @@ void GuiImgui::remove_ui_observer(UiObserver* observer)
         m_gui_observers.end());
 }
 
-void GuiImgui::notify_ui_observers_about_run_status(RunStatus new_status)
+void GuiImgui::notify_gui_observers(GuiRequest request)
 {
     for (UiObserver* observer : m_gui_observers) {
-        observer->run_status_changed(new_status);
-    }
-}
-
-void GuiImgui::notify_ui_observers_about_debug_mode()
-{
-    for (UiObserver* observer : m_gui_observers) {
-        observer->debug_mode_changed(m_is_in_debug_mode);
-    }
-}
-
-void GuiImgui::notify_ui_observers_about_source_code_change(std::string const& source_code)
-{
-    for (UiObserver* observer : m_gui_observers) {
-        observer->source_code_changed(source_code);
-    }
-}
-
-void GuiImgui::notify_ui_observers_about_assemble_and_load_request()
-{
-    for (UiObserver* observer : m_gui_observers) {
-        observer->assemble_and_load_request();
-    }
-}
-
-void GuiImgui::notify_ui_observers_about_input_from_terminal(Data input)
-{
-    for (UiObserver* observer : m_gui_observers) {
-        observer->input_from_terminal(input);
+        observer->gui_request(request);
     }
 }
 
@@ -276,7 +244,7 @@ void GuiImgui::render(bool is_awaiting_input, std::string const& game_window_sub
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("File")) {
             if (ImGui::MenuItem("Exit", "Alt+F4")) {
-                notify_ui_observers_about_run_status(NOT_RUNNING);
+                notify_gui_observers({ .m_type = GuiRequestType::STOP });
             }
             ImGui::EndMenu();
         }
@@ -362,19 +330,19 @@ void GuiImgui::render_game_info_window()
     ImGui::Separator();
 
     if (ImGui::Button("Run")) {
-        notify_ui_observers_about_run_status(RUNNING);
+        notify_gui_observers({ .m_type = GuiRequestType::RUN });
     }
     ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
     if (ImGui::Button("Pause")) {
-        notify_ui_observers_about_run_status(PAUSED);
+        notify_gui_observers({ .m_type = GuiRequestType::PAUSE });
     }
     ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
     if (ImGui::Button("Stop")) {
-        notify_ui_observers_about_run_status(NOT_RUNNING);
+        notify_gui_observers({ .m_type = GuiRequestType::STOP });
     }
     ImGui::Separator();
     if (ImGui::Checkbox("Debug mode", &m_is_in_debug_mode)) {
-        notify_ui_observers_about_debug_mode();
+        notify_gui_observers({ .m_type = GuiRequestType::DEBUG_MODE, .m_bool_payload = m_is_in_debug_mode });
     }
 
     ImGui::End();
@@ -402,16 +370,16 @@ void GuiImgui::render_memory_editor_window()
 
 void GuiImgui::source_code_changed(std::string const& source_code)
 {
-    notify_ui_observers_about_source_code_change(source_code);
+    notify_gui_observers({ .m_type = GuiRequestType::SOURCE_CODE, .m_string_payload = source_code });
 }
 
 void GuiImgui::assemble_and_load_request()
 {
-    notify_ui_observers_about_assemble_and_load_request();
+    notify_gui_observers({ .m_type = GuiRequestType::ASSEMBLE_AND_LOAD, .m_bool_payload = m_is_in_debug_mode });
 }
 
 void GuiImgui::input_sent(std::string const& input)
 {
-    notify_ui_observers_about_input_from_terminal(Data(std::stoi(input)));
+    notify_gui_observers({ .m_type = GuiRequestType::INPUT_FROM_TERMINAL, .m_data_payload = Data(std::stoi(input)) });
 }
 }

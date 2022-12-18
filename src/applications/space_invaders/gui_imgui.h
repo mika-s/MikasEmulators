@@ -5,7 +5,6 @@
 #include "crosscutting/gui/debugging_panes/disassembly_pane.h"
 #include "crosscutting/gui/debugging_panes/io_info_pane.h"
 #include "crosscutting/gui/debugging_panes/memory_editor_pane.h"
-#include "crosscutting/misc/run_status.h"
 #include "crosscutting/typedefs.h"
 #include "gui.h"
 #include <SDL_video.h>
@@ -14,6 +13,10 @@
 #include <string>
 #include <vector>
 
+namespace emu::applications::space_invaders {
+class GuiObserver;
+struct GuiRequest;
+}
 namespace emu::debugger {
 template<class A, class D, std::size_t B>
 class DebugContainer;
@@ -21,9 +24,6 @@ class DebugContainer;
 namespace emu::debugger {
 template<class A, std::size_t B>
 class Debugger;
-}
-namespace emu::i8080 {
-class GuiObserver;
 }
 namespace emu::logging {
 class Logger;
@@ -36,8 +36,6 @@ using emu::gui::DebugLogPane;
 using emu::gui::DisassemblyPane;
 using emu::gui::IoInfoPane;
 using emu::gui::MemoryEditorPane;
-using emu::i8080::GuiObserver;
-using emu::misc::RunStatus;
 
 class GuiImgui : public Gui {
 
@@ -85,9 +83,7 @@ private:
     IoInfoPane<u16, u8, 16> m_io_info;
     MemoryEditorPane<u16, u8, 16> m_memory_editor;
 
-    void notify_gui_observers_about_run_status(RunStatus new_status);
-
-    void notify_gui_observers_about_debug_mode();
+    void notify_gui_observers(GuiRequest request);
 
     void init();
 

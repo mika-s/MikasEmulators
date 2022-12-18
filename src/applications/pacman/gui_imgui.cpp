@@ -1,13 +1,13 @@
 #include "gui_imgui.h"
 #include "crosscutting/gui/graphics/framebuffer.h"
 #include "crosscutting/logging/logger.h"
-#include "crosscutting/util/byte_util.h"
 #include "glad/glad.h"
+#include "gui_request.h"
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_sdl.h"
+#include "interfaces/gui_observer.h"
 #include "pacman/gui.h"
-#include "z80/interfaces/gui_observer.h"
 #include <SDL.h>
 #include <SDL_error.h>
 #include <SDL_log.h>
@@ -28,13 +28,6 @@ class Debugger;
 }
 
 namespace emu::applications::pacman {
-
-using emu::misc::RunStatus;
-using emu::misc::RunStatus::NOT_RUNNING;
-using emu::misc::RunStatus::PAUSED;
-using emu::misc::RunStatus::RUNNING;
-using emu::misc::RunStatus::STEPPING;
-using emu::util::byte::is_bit_set;
 
 GuiImgui::GuiImgui()
     : m_win(nullptr)
@@ -86,17 +79,10 @@ void GuiImgui::remove_gui_observer(GuiObserver* observer)
         m_gui_observers.end());
 }
 
-void GuiImgui::notify_gui_observers_about_run_status(RunStatus new_status)
+void GuiImgui::notify_gui_observers(GuiRequest request)
 {
     for (GuiObserver* observer : m_gui_observers) {
-        observer->run_status_changed(new_status);
-    }
-}
-
-void GuiImgui::notify_gui_observers_about_debug_mode()
-{
-    for (GuiObserver* observer : m_gui_observers) {
-        observer->debug_mode_changed(m_is_in_debug_mode);
+        observer->gui_request(request);
     }
 }
 
@@ -271,7 +257,7 @@ void GuiImgui::render(std::string const& game_window_subtitle)
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("File")) {
             if (ImGui::MenuItem("Exit", "Alt+F4")) {
-                notify_gui_observers_about_run_status(NOT_RUNNING);
+                notify_gui_observers({ .m_type = GuiRequestType::STOP });
             }
             ImGui::EndMenu();
         }
@@ -373,19 +359,19 @@ void GuiImgui::render_game_info_pane()
     ImGui::Separator();
 
     if (ImGui::Button("Run")) {
-        notify_gui_observers_about_run_status(RUNNING);
+        notify_gui_observers({ .m_type = GuiRequestType::RUN });
     }
     ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
     if (ImGui::Button("Pause")) {
-        notify_gui_observers_about_run_status(PAUSED);
+        notify_gui_observers({ .m_type = GuiRequestType::PAUSE });
     }
     ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
     if (ImGui::Button("Stop")) {
-        notify_gui_observers_about_run_status(NOT_RUNNING);
+        notify_gui_observers({ .m_type = GuiRequestType::STOP });
     }
     ImGui::Separator();
     if (ImGui::Checkbox("Debug mode", &m_is_in_debug_mode)) {
-        notify_gui_observers_about_debug_mode();
+        notify_gui_observers({ .m_type = GuiRequestType::DEBUG_MODE, .m_payload = m_is_in_debug_mode });
     }
 
     ImGui::End();

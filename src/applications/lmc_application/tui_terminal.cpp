@@ -2,8 +2,9 @@
 #include "chips/trivial/lmc/usings.h"
 #include "crosscutting/misc/uinteger.h"
 #include "crosscutting/typedefs.h"
-#include "lmc/interfaces/ui_observer.h"
 #include "lmc/out_type.h"
+#include "lmc_application/gui_request.h"
+#include "lmc_application/interfaces/ui_observer.h"
 #include "ui.h"
 #include <algorithm>
 #include <iostream>
@@ -69,7 +70,7 @@ void TuiTerminal::update_debug_only([[maybe_unused]] bool is_awaiting_input)
 void TuiTerminal::notify_ui_observers_about_input_from_terminal(Data input)
 {
     for (UiObserver* observer : m_ui_observers) {
-        observer->input_from_terminal(input);
+        observer->gui_request({ .m_type = GuiRequestType::INPUT_FROM_TERMINAL, .m_data_payload = input });
     }
 }
 }

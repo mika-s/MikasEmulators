@@ -1,15 +1,14 @@
 #pragma once
 
-#include "chips/z80/interfaces/gui_observer.h"
 #include "chips/z80/interfaces/out_observer.h"
 #include "crosscutting/misc/governor.h"
-#include "crosscutting/misc/run_status.h"
 #include "crosscutting/misc/sdl_counter.h"
 #include "crosscutting/misc/session.h"
 #include "crosscutting/typedefs.h"
 #include "gui_io.h"
-#include "interfaces/io_observer.h"
-#include "io_request.h"
+#include "interfaces/gui_observer.h"
+#include "interfaces/key_observer.h"
+#include "key_request.h"
 #include <cstddef>
 #include <functional>
 #include <memory>
@@ -22,6 +21,7 @@ class Gui;
 class Input;
 class MemoryMappedIoForPacman;
 class StateContext;
+struct GuiRequest;
 }
 namespace emu::debugger {
 template<class A, std::size_t B>
@@ -45,6 +45,7 @@ class InObserver;
 
 namespace emu::applications::pacman {
 
+using emu::applications::pacman::GuiObserver;
 using emu::debugger::DebugContainer;
 using emu::debugger::Debugger;
 using emu::debugger::DisassembledLine;
@@ -54,20 +55,17 @@ using emu::misc::Governor;
 using emu::misc::sdl_get_ticks_high_performance;
 using emu::misc::Session;
 using emu::z80::Cpu;
-using emu::z80::GuiObserver;
 using emu::z80::InObserver;
 using emu::z80::OutObserver;
-using emu::z80::RunStatus;
-using emu::z80::RunStatus::NOT_RUNNING;
 
 class PacmanSession
     : public Session
     , public GuiObserver
     , public OutObserver
-    , public IoObserver {
+    , public KeyObserver {
 public:
     PacmanSession(
-        const RunStatus startup_runstatus,
+        bool is_starting_paused,
         std::shared_ptr<Gui> gui,
         std::shared_ptr<Input> input,
         std::shared_ptr<Audio> audio,
@@ -82,13 +80,11 @@ public:
 
     void stop() override;
 
-    void run_status_changed(RunStatus new_status) override;
-
-    void debug_mode_changed(bool is_in_debug_mode) override;
+    void gui_request(GuiRequest request) override;
 
     void out_changed(u8 port) override;
 
-    void io_changed(IoRequest request) override;
+    void key_pressed(IoRequest request) override;
 
 private:
     static constexpr long double s_fps = 60.0L;
@@ -98,7 +94,6 @@ private:
     static constexpr int s_out_port_vblank_interrupt_return = 0;
 
     bool m_is_in_debug_mode { false };
-    RunStatus m_run_status { NOT_RUNNING };
 
     u8 m_vblank_interrupt_return { 0 };
 

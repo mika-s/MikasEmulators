@@ -78,7 +78,6 @@ set(SOURCES_Z80_H
         interrupt_mode.h
         instructions/instruction_util.h
         instructions/instructions.h
-        interfaces/gui_observer.h
         interfaces/in_observer.h
         interfaces/out_observer.h
         )

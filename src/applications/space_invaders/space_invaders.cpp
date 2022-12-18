@@ -18,7 +18,6 @@ class Session;
 
 namespace emu::applications::space_invaders {
 
-using emu::misc::RunStatus;
 using emu::util::file::read_file_into_vector;
 
 SpaceInvaders::SpaceInvaders(Settings const& settings, const GuiType gui_type)
@@ -27,11 +26,11 @@ SpaceInvaders::SpaceInvaders(Settings const& settings, const GuiType gui_type)
     if (gui_type == GuiType::DEBUGGING) {
         m_gui = std::make_shared<GuiImgui>();
         m_input = std::make_shared<InputImgui>();
-        m_startup_runstatus = RunStatus::PAUSED;
+        m_is_starting_paused = true;
     } else {
         m_gui = std::make_shared<GuiSdl>();
         m_input = std::make_shared<InputSdl>();
-        m_startup_runstatus = RunStatus::RUNNING;
+        m_is_starting_paused = false;
     }
 
     load_files();
@@ -42,7 +41,7 @@ SpaceInvaders::SpaceInvaders(Settings const& settings, const GuiType gui_type)
 
 std::unique_ptr<Session> SpaceInvaders::new_session()
 {
-    return std::make_unique<SpaceInvadersSession>(m_settings, m_startup_runstatus, m_gui, m_input, m_memory);
+    return std::make_unique<SpaceInvadersSession>(m_settings, m_is_starting_paused, m_gui, m_input, m_memory);
 }
 
 void SpaceInvaders::load_files()

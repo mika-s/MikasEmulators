@@ -2,7 +2,7 @@
 
 namespace emu::applications::space_invaders {
 
-enum IoRequest {
+enum KeyRequest {
     TOGGLE_MUTE,
 };
 

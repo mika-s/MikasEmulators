@@ -1,8 +1,7 @@
 #pragma once
 
-#include "crosscutting/misc/run_status.h"
 #include "interfaces/input.h"
-#include "io_request.h"
+#include "key_request.h"
 #include <SDL_scancode.h>
 #include <vector>
 
@@ -11,12 +10,10 @@ class CpuIo;
 class GuiIo;
 }
 namespace emu::applications::space_invaders {
-class IoObserver;
+class KeyObserver;
 }
 
 namespace emu::applications::space_invaders {
-
-using emu::misc::RunStatus;
 
 class InputSdl : public Input {
 public:
@@ -24,9 +21,9 @@ public:
 
     void read_debug_only(GuiIo& gui_io) override;
 
-    void add_io_observer(IoObserver& observer) override;
+    void add_io_observer(KeyObserver& observer) override;
 
-    void remove_io_observer(IoObserver* observer) override;
+    void remove_io_observer(KeyObserver* observer) override;
 
 private:
     static constexpr SDL_Scancode s_mute = SDL_SCANCODE_M;
@@ -45,8 +42,8 @@ private:
     static constexpr SDL_Scancode s_p2_left = SDL_SCANCODE_LEFT;
     static constexpr SDL_Scancode s_p2_right = SDL_SCANCODE_RIGHT;
 
-    std::vector<IoObserver*> m_io_observers;
+    std::vector<KeyObserver*> m_io_observers;
 
-    void notify_io_observers(IoRequest request);
+    void notify_io_observers(KeyRequest request);
 };
 }

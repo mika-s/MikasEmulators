@@ -11,9 +11,10 @@
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/util/string_util.h"
 #include "gui.h"
+#include "gui_request.h"
 #include "interfaces/input.h"
 #include "interfaces/state.h"
-#include "io_request.h"
+#include "key_request.h"
 #include "states/paused_state.h"
 #include "states/running_state.h"
 #include "states/state_context.h"
@@ -38,16 +39,11 @@ using emu::debugger::IoDebugContainer;
 using emu::debugger::MemoryDebugContainer;
 using emu::debugger::RegisterDebugContainer;
 using emu::i8080::Disassembler;
-using emu::misc::RunStatus::FINISHED;
-using emu::misc::RunStatus::NOT_RUNNING;
-using emu::misc::RunStatus::PAUSED;
-using emu::misc::RunStatus::RUNNING;
-using emu::misc::RunStatus::STEPPING;
 using emu::util::string::split;
 
 SpaceInvadersSession::SpaceInvadersSession(
     Settings const& settings,
-    const RunStatus startup_runstatus,
+    bool is_starting_paused,
     std::shared_ptr<Gui> gui,
     std::shared_ptr<Input> input,
     EmulatorMemory<u16, u8>& memory)
@@ -82,7 +78,7 @@ SpaceInvadersSession::SpaceInvadersSession(
     m_state_context->set_stepping_state(std::make_shared<SteppingState>(m_state_context));
     m_state_context->set_stopped_state(std::make_shared<StoppedState>(m_state_context));
 
-    if (startup_runstatus == PAUSED) {
+    if (is_starting_paused) {
         m_state_context->change_state(m_state_context->paused_state());
     } else {
         m_state_context->change_state(m_state_context->running_state());
@@ -99,10 +95,6 @@ SpaceInvadersSession::~SpaceInvadersSession()
 
 void SpaceInvadersSession::run()
 {
-    if (m_run_status == FINISHED) {
-        throw std::invalid_argument("Programming error: the session has finished and cannot be transition_to_run one more time");
-    }
-
     m_cpu->start();
 
     cyc cycles;
@@ -110,8 +102,6 @@ void SpaceInvadersSession::run()
     while (!m_state_context->current_state()->is_exit_state()) {
         m_state_context->current_state()->perform(cycles);
     }
-
-    m_run_status = FINISHED;
 }
 
 void SpaceInvadersSession::pause()
@@ -174,20 +164,20 @@ void SpaceInvadersSession::setup_debugging()
         "out sound 1",
         [&]() { return m_outputs_during_cycle.contains(s_out_port_sound_1); },
         [&]() { return m_outputs_during_cycle[s_out_port_sound_1]; },
-        { { "s_ufo", 0 },
-            { "s_shot", 1 },
-            { "s_flash", 2 },
-            { "s_invader_die", 3 },
-            { "s_extended_play", 4 } }));
+        { { "ufo", 0 },
+            { "shot", 1 },
+            { "flash", 2 },
+            { "invader_die", 3 },
+            { "extended_play", 4 } }));
     m_debug_container->add_io(IoDebugContainer<u8>(
         "out sound 2",
         [&]() { return m_outputs_during_cycle.contains(s_out_port_sound_2); },
         [&]() { return m_outputs_during_cycle[s_out_port_sound_2]; },
-        { { "s_fleet_movement_1", 0 },
-            { "s_fleet_movement_2", 1 },
-            { "s_fleet_movement_3", 2 },
-            { "s_fleet_movement_4", 3 },
-            { "s_ufo_hit", 4 } }));
+        { { "fleet_movement_1", 0 },
+            { "fleet_movement_2", 1 },
+            { "fleet_movement_3", 2 },
+            { "fleet_movement_4", 3 },
+            { "ufo_hit", 4 } }));
     m_debug_container->add_memory(MemoryDebugContainer<u8>(
         [&]() { return memory(); }));
     m_debug_container->add_disassembled_program(disassemble_program());
@@ -197,30 +187,22 @@ void SpaceInvadersSession::setup_debugging()
     m_gui->attach_logger(m_logger);
 }
 
-void SpaceInvadersSession::run_status_changed(RunStatus new_status)
+void SpaceInvadersSession::gui_request(GuiRequest request)
 {
-    m_run_status = new_status;
-    switch (m_run_status) {
-    case NOT_RUNNING:
-        m_state_context->change_state(m_state_context->stopped_state());
-        break;
-    case RUNNING:
+    switch (request.m_type) {
+    case RUN:
         m_state_context->change_state(m_state_context->running_state());
         break;
-    case PAUSED:
+    case PAUSE:
         m_state_context->change_state(m_state_context->paused_state());
         break;
-    case FINISHED:
+    case STOP:
         m_state_context->change_state(m_state_context->stopped_state());
         break;
-    case STEPPING:
+    case DEBUG_MODE:
+        m_is_in_debug_mode = request.m_payload;
         break;
     }
-}
-
-void SpaceInvadersSession::debug_mode_changed(bool is_in_debug_mode)
-{
-    m_is_in_debug_mode = is_in_debug_mode;
 }
 
 void SpaceInvadersSession::in_requested(u8 port)
@@ -271,7 +253,7 @@ void SpaceInvadersSession::out_changed(u8 port)
     }
 }
 
-void SpaceInvadersSession::io_changed(IoRequest request)
+void SpaceInvadersSession::key_pressed(KeyRequest request)
 {
     switch (request) {
     case TOGGLE_MUTE:

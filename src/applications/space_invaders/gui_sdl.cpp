@@ -9,6 +9,9 @@
 #include <cstring>
 #include <string>
 
+namespace emu::applications::space_invaders {
+class GuiObserver;
+}
 namespace emu::debugger {
 template<class A, class D, std::size_t B>
 class DebugContainer;

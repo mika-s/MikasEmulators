@@ -2,7 +2,6 @@
 #include "audio.h"
 #include "chips/z80/cpu.h"
 #include "chips/z80/disassembler.h"
-#include "chips/z80/interfaces/gui_observer.h"
 #include "chips/z80/interrupt_mode.h"
 #include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/debugging/debugger.h"
@@ -11,9 +10,10 @@
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/util/string_util.h"
 #include "gui.h"
+#include "gui_request.h"
 #include "interfaces/input.h"
 #include "interfaces/state.h"
-#include "io_request.h"
+#include "key_request.h"
 #include "memory_mapped_io_for_pacman.h"
 #include "states/paused_state.h"
 #include "states/running_state.h"
@@ -38,14 +38,9 @@ using emu::debugger::RegisterDebugContainer;
 using emu::util::string::split;
 using emu::z80::Disassembler;
 using emu::z80::InterruptMode;
-using emu::z80::RunStatus::FINISHED;
-using emu::z80::RunStatus::NOT_RUNNING;
-using emu::z80::RunStatus::PAUSED;
-using emu::z80::RunStatus::RUNNING;
-using emu::z80::RunStatus::STEPPING;
 
 PacmanSession::PacmanSession(
-    const RunStatus startup_runstatus,
+    bool is_starting_paused,
     std::shared_ptr<Gui> gui,
     std::shared_ptr<Input> input,
     std::shared_ptr<Audio> audio,
@@ -85,7 +80,7 @@ PacmanSession::PacmanSession(
     m_state_context->set_stepping_state(std::make_shared<SteppingState>(m_state_context));
     m_state_context->set_stopped_state(std::make_shared<StoppedState>(m_state_context));
 
-    if (startup_runstatus == PAUSED) {
+    if (is_starting_paused) {
         m_state_context->change_state(m_state_context->paused_state());
     } else {
         m_state_context->change_state(m_state_context->running_state());
@@ -101,10 +96,6 @@ PacmanSession::~PacmanSession()
 
 void PacmanSession::run()
 {
-    if (m_run_status == FINISHED) {
-        throw std::invalid_argument("Programming error: the session has finished and cannot be run one more time");
-    }
-
     m_cpu->start();
 
     cyc cycles;
@@ -112,18 +103,16 @@ void PacmanSession::run()
     while (!m_state_context->current_state()->is_exit_state()) {
         m_state_context->current_state()->perform(cycles);
     }
-
-    m_run_status = FINISHED;
 }
 
 void PacmanSession::pause()
 {
-    m_run_status = PAUSED;
+    m_state_context->change_state(m_state_context->paused_state());
 }
 
 void PacmanSession::stop()
 {
-    m_run_status = FINISHED;
+    m_state_context->change_state(m_state_context->stopped_state());
 }
 
 void PacmanSession::setup_cpu()
@@ -250,30 +239,22 @@ void PacmanSession::setup_debugging()
     m_gui->attach_logger(m_logger);
 }
 
-void PacmanSession::run_status_changed(RunStatus new_status)
+void PacmanSession::gui_request(GuiRequest request)
 {
-    m_run_status = new_status;
-    switch (m_run_status) {
-    case NOT_RUNNING:
-        m_state_context->change_state(m_state_context->stopped_state());
-        break;
-    case RUNNING:
+    switch (request.m_type) {
+    case RUN:
         m_state_context->change_state(m_state_context->running_state());
         break;
-    case PAUSED:
+    case PAUSE:
         m_state_context->change_state(m_state_context->paused_state());
         break;
-    case FINISHED:
+    case STOP:
         m_state_context->change_state(m_state_context->stopped_state());
         break;
-    case STEPPING:
+    case DEBUG_MODE:
+        m_is_in_debug_mode = request.m_payload;
         break;
     }
-}
-
-void PacmanSession::debug_mode_changed(bool is_in_debug_mode)
-{
-    m_is_in_debug_mode = is_in_debug_mode;
 }
 
 void PacmanSession::out_changed(u8 port)
@@ -291,7 +272,7 @@ void PacmanSession::out_changed(u8 port)
     }
 }
 
-void PacmanSession::io_changed(IoRequest request)
+void PacmanSession::key_pressed(IoRequest request)
 {
     switch (request) {
     case TOGGLE_MUTE:

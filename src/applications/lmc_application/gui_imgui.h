@@ -7,7 +7,6 @@
 #include "crosscutting/gui/debugging_panes/disassembly_pane.h"
 #include "crosscutting/gui/main_panes/code_editor_pane.h"
 #include "crosscutting/gui/main_panes/terminal_pane.h"
-#include "crosscutting/misc/run_status.h"
 #include "crosscutting/misc/uinteger.h"
 #include "lmc_memory_editor.h"
 #include "ui.h"
@@ -17,6 +16,10 @@
 #include <string>
 #include <vector>
 
+namespace emu::applications::lmc {
+class UiObserver;
+struct GuiRequest;
+}
 namespace emu::debugger {
 template<class A, class D, std::size_t B>
 class DebugContainer;
@@ -24,9 +27,6 @@ class DebugContainer;
 namespace emu::debugger {
 template<class A, std::size_t B>
 class Debugger;
-}
-namespace emu::lmc {
-class UiObserver;
 }
 namespace emu::logging {
 class Logger;
@@ -44,8 +44,6 @@ using emu::gui::TerminalPaneObserver;
 using emu::lmc::Address;
 using emu::lmc::Data;
 using emu::lmc::OutType;
-using emu::lmc::UiObserver;
-using emu::misc::RunStatus;
 
 class GuiImgui : public Ui
     , public CodeEditorPaneObserver
@@ -108,15 +106,7 @@ private:
 
     std::vector<std::string> m_output;
 
-    void notify_ui_observers_about_run_status(RunStatus new_status);
-
-    void notify_ui_observers_about_debug_mode();
-
-    void notify_ui_observers_about_source_code_change(std::string const& source_code);
-
-    void notify_ui_observers_about_assemble_and_load_request();
-
-    void notify_ui_observers_about_input_from_terminal(Data input);
+    void notify_gui_observers(GuiRequest request);
 
     void init();
 

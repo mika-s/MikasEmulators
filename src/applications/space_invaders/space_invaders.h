@@ -3,7 +3,6 @@
 #include "crosscutting/gui/gui_type.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/misc/emulator.h"
-#include "crosscutting/misc/run_status.h"
 #include "crosscutting/typedefs.h"
 #include "settings.h"
 #include "space_invaders_session.h"
@@ -27,7 +26,6 @@ namespace emu::applications::space_invaders {
 
 using emu::gui::GuiType;
 using emu::misc::Emulator;
-using emu::misc::RunStatus;
 
 class SpaceInvaders : public Emulator {
 public:
@@ -42,7 +40,7 @@ private:
     EmulatorMemory<u16, u8> m_memory;
     std::shared_ptr<Gui> m_gui;
     std::shared_ptr<Input> m_input;
-    RunStatus m_startup_runstatus;
+    bool m_is_starting_paused;
     std::shared_ptr<MemoryMapForSpaceInvaders> m_memory_mapped_io;
 
     void load_files();

@@ -2,16 +2,15 @@
 
 #include "chips/trivial/lmc/interfaces/in_observer.h"
 #include "chips/trivial/lmc/interfaces/out_observer.h"
-#include "chips/trivial/lmc/interfaces/ui_observer.h"
 #include "chips/trivial/lmc/out_type.h"
 #include "chips/trivial/lmc/usings.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/misc/governor.h"
-#include "crosscutting/misc/run_status.h"
 #include "crosscutting/misc/sdl_counter.h"
 #include "crosscutting/misc/session.h"
 #include "crosscutting/misc/uinteger.h"
 #include "gui_io.h"
+#include "interfaces/ui_observer.h"
 #include <cstddef>
 #include <functional>
 #include <memory>
@@ -22,6 +21,7 @@ namespace emu::applications::lmc {
 class Input;
 class StateContext;
 class Ui;
+struct GuiRequest;
 }
 namespace emu::debugger {
 template<class A, class D, std::size_t B>
@@ -40,6 +40,7 @@ class Logger;
 
 namespace emu::applications::lmc {
 
+using emu::applications::lmc::UiObserver;
 using emu::debugger::DebugContainer;
 using emu::debugger::Debugger;
 using emu::debugger::DisassembledLine;
@@ -49,11 +50,9 @@ using emu::lmc::Data;
 using emu::lmc::InObserver;
 using emu::lmc::OutObserver;
 using emu::lmc::OutType;
-using emu::lmc::UiObserver;
 using emu::logging::Logger;
 using emu::memory::EmulatorMemory;
 using emu::misc::Governor;
-using emu::misc::RunStatus;
 using emu::misc::sdl_get_ticks_high_performance;
 using emu::misc::Session;
 using emu::misc::UInteger;
@@ -66,7 +65,7 @@ class LmcApplicationSession
 public:
     LmcApplicationSession(
         bool is_only_run_once,
-        const RunStatus startup_runstatus,
+        bool is_starting_paused,
         std::shared_ptr<Ui> gui,
         std::shared_ptr<Input> input,
         std::string loaded_file,
@@ -81,15 +80,7 @@ public:
 
     void stop() override;
 
-    void run_status_changed(RunStatus new_status) override;
-
-    void debug_mode_changed(bool is_in_debug_mode) override;
-
-    void source_code_changed(std::string const& source) override;
-
-    void assemble_and_load_request() override;
-
-    void input_from_terminal(Data input) override;
+    void gui_request(GuiRequest request) override;
 
     void out_changed(Data acc_reg, OutType out_type) override;
 
@@ -108,7 +99,6 @@ private:
     bool m_is_only_run_once { false };
     bool m_is_in_debug_mode { false };
     bool m_is_awaiting_input { false };
-    RunStatus m_run_status;
 
     GuiIo m_gui_io;
     std::shared_ptr<Ui> m_ui;
@@ -130,6 +120,10 @@ private:
     void setup_debugging();
 
     std::vector<Data> memory();
+
+    void assemble_and_load_request();
+
+    void input_from_terminal(Data input);
 
     std::vector<DisassembledLine<Address, 10>> disassemble_program();
 };

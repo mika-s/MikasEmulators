@@ -5,7 +5,6 @@
 #include "crosscutting/gui/gui_type.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/misc/emulator.h"
-#include "crosscutting/misc/run_status.h"
 #include "crosscutting/misc/uinteger.h"
 #include <cstddef>
 #include <memory>
@@ -30,7 +29,6 @@ using emu::lmc::Cpu;
 using emu::lmc::Data;
 using emu::memory::EmulatorMemory;
 using emu::misc::Emulator;
-using emu::misc::RunStatus;
 using emu::misc::Session;
 using emu::misc::UInteger;
 
@@ -48,7 +46,7 @@ private:
     EmulatorMemory<Address, Data> m_memory;
     std::shared_ptr<Ui> m_gui;
     std::shared_ptr<Input> m_input;
-    RunStatus m_startup_runstatus;
+    bool m_is_starting_paused;
     std::string m_loaded_file;
     std::string m_file_content;
 

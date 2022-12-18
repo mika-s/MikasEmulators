@@ -1,11 +1,8 @@
 #pragma once
 
 #include "applications/lmc_application/gui_io.h"
-#include "crosscutting/misc/run_status.h"
 
 namespace emu::applications::lmc {
-
-using emu::misc::RunStatus;
 
 class Input {
 public:

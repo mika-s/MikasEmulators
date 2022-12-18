@@ -1,5 +1,4 @@
 #include "gui_sdl.h"
-#include "crosscutting/util/byte_util.h"
 #include "pacman/gui.h"
 #include <SDL.h>
 #include <SDL_error.h>
@@ -10,6 +9,9 @@
 #include <cstring>
 #include <string>
 
+namespace emu::applications::pacman {
+class GuiObserver;
+}
 namespace emu::debugger {
 template<class A, class D, std::size_t B>
 class DebugContainer;
@@ -23,8 +25,6 @@ class Logger;
 }
 
 namespace emu::applications::pacman {
-
-using emu::util::byte::is_bit_set;
 
 GuiSdl::GuiSdl()
     : m_win(nullptr)

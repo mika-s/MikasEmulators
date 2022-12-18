@@ -33,12 +33,12 @@ LmcApplication::LmcApplication(std::string const& file, const GuiType gui_type)
         m_is_only_run_once = false;
         m_gui = std::make_shared<GuiImgui>();
         m_input = std::make_shared<InputImgui>();
-        m_startup_runstatus = RunStatus::PAUSED;
+        m_is_starting_paused = true;
     } else {
         m_is_only_run_once = true;
         m_gui = std::make_shared<TuiTerminal>();
         m_input = std::make_shared<InputImgui>();
-        m_startup_runstatus = RunStatus::RUNNING;
+        m_is_starting_paused = false;
     }
 }
 
@@ -46,7 +46,7 @@ std::unique_ptr<Session> LmcApplication::new_session()
 {
     return std::make_unique<LmcApplicationSession>(
         m_is_only_run_once,
-        m_startup_runstatus,
+        m_is_starting_paused,
         m_gui,
         m_input,
         m_loaded_file,

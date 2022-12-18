@@ -1,7 +1,7 @@
 #include "input_sdl.h"
 #include "gui_io.h"
-#include "interfaces/io_observer.h"
-#include "io_request.h"
+#include "interfaces/key_observer.h"
+#include "key_request.h"
 #include "memory_mapped_io_for_pacman.h"
 #include <SDL_events.h>
 #include <SDL_keyboard.h>
@@ -9,12 +9,12 @@
 
 namespace emu::applications::pacman {
 
-void InputSdl::add_io_observer(IoObserver& observer)
+void InputSdl::add_io_observer(KeyObserver& observer)
 {
     m_io_observers.push_back(&observer);
 }
 
-void InputSdl::remove_io_observer(IoObserver* observer)
+void InputSdl::remove_io_observer(KeyObserver* observer)
 {
     m_io_observers.erase(
         std::remove(m_io_observers.begin(), m_io_observers.end(), observer),
@@ -23,8 +23,8 @@ void InputSdl::remove_io_observer(IoObserver* observer)
 
 void InputSdl::notify_io_observers(IoRequest request)
 {
-    for (IoObserver* observer : m_io_observers) {
-        observer->io_changed(request);
+    for (KeyObserver* observer : m_io_observers) {
+        observer->key_pressed(request);
     }
 }
 

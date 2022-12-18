@@ -3,7 +3,6 @@
 #include "crosscutting/gui/graphics/color.h"
 #include "crosscutting/gui/graphics/framebuffer.h"
 #include "crosscutting/gui/graphics/palette.h"
-#include "crosscutting/misc/run_status.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
 #include <cstddef>
@@ -12,6 +11,9 @@
 #include <tuple>
 #include <vector>
 
+namespace emu::applications::pacman {
+class GuiObserver;
+}
 namespace emu::debugger {
 template<class A, class D, std::size_t B>
 class DebugContainer;
@@ -29,9 +31,6 @@ class Tile;
 namespace emu::logging {
 class Logger;
 }
-namespace emu::z80 {
-class GuiObserver;
-}
 
 namespace emu::applications::pacman {
 
@@ -43,10 +42,8 @@ using emu::gui::Palette;
 using emu::gui::Sprite;
 using emu::gui::Tile;
 using emu::logging::Logger;
-using emu::misc::RunStatus;
 using emu::util::byte::is_bit_set;
 using emu::util::byte::to_u32;
-using emu::z80::GuiObserver;
 
 class Gui {
 public:

@@ -9,6 +9,9 @@
 #include <string>
 #include <vector>
 
+namespace emu::applications::pacman {
+class GuiObserver;
+}
 namespace emu::debugger {
 template<class A, class D, std::size_t B>
 class DebugContainer;
@@ -19,9 +22,6 @@ class Debugger;
 }
 namespace emu::logging {
 class Logger;
-}
-namespace emu::z80 {
-class GuiObserver;
 }
 
 namespace emu::applications::pacman {

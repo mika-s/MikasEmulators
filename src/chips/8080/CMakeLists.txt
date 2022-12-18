@@ -92,7 +92,6 @@ set(SOURCES_8080_H
         shift_register.h
         instructions/instruction_util.h
         instructions/instructions.h
-        interfaces/gui_observer.h
         interfaces/in_observer.h
         interfaces/out_observer.h
         )

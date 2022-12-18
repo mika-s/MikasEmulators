@@ -96,6 +96,7 @@ set(SOURCES_APPLICATIONS_H
         lmc_application/lmc_memory_editor.h
         lmc_application/tui_terminal.h
         lmc_application/usage.h
+        lmc_application/interfaces/ui_observer.h
         lmc_application/interfaces/input.h
         lmc_application/interfaces/state.h
         lmc_application/states/paused_state.h
@@ -111,14 +112,15 @@ set(SOURCES_APPLICATIONS_H
         pacman/gui_sdl.h
         pacman/input_imgui.h
         pacman/input_sdl.h
-        pacman/io_request.h
+        pacman/key_request.h
         pacman/memory_mapped_io_for_pacman.h
         pacman/pacman.h
         pacman/pacman_session.h
         pacman/settings.h
         pacman/usage.h
+        pacman/interfaces/gui_observer.h
         pacman/interfaces/input.h
-        pacman/interfaces/io_observer.h
+        pacman/interfaces/key_observer.h
         pacman/interfaces/state.h
         pacman/states/paused_state.h
         pacman/states/running_state.h
@@ -134,15 +136,16 @@ set(SOURCES_APPLICATIONS_H
         space_invaders/gui_sdl.h
         space_invaders/input_imgui.h
         space_invaders/input_sdl.h
-        space_invaders/io_request.h
+        space_invaders/key_request.h
         space_invaders/memory_map_for_space_invaders.h
         space_invaders/sounds.h
         space_invaders/space_invaders.h
         space_invaders/space_invaders_session.h
         space_invaders/settings.h
         space_invaders/usage.h
+        space_invaders/interfaces/gui_observer.h
         space_invaders/interfaces/input.h
-        space_invaders/interfaces/io_observer.h
+        space_invaders/interfaces/key_observer.h
         space_invaders/interfaces/state.h
         space_invaders/states/paused_state.h
         space_invaders/states/running_state.h

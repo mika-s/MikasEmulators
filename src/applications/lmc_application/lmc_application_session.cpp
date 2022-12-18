@@ -8,11 +8,11 @@
 #include "crosscutting/debugging/debugger.h"
 #include "crosscutting/debugging/disassembled_line.h"
 #include "crosscutting/logging/logger.h"
-#include "crosscutting/misc/run_status.h"
 #include "crosscutting/misc/uinteger.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
+#include "gui_request.h"
 #include "interfaces/state.h"
 #include "states/paused_state.h"
 #include "states/running_awaiting_input_state.h"
@@ -26,7 +26,6 @@
 #include <exception>
 #include <iostream>
 #include <iterator>
-#include <stdexcept>
 #include <tuple>
 #include <utility>
 #include <vector>
@@ -42,24 +41,18 @@ using emu::lmc::Assembler;
 using emu::lmc::Data;
 using emu::lmc::Disassembler;
 using emu::lmc::OutType;
-using emu::misc::RunStatus::FINISHED;
-using emu::misc::RunStatus::NOT_RUNNING;
-using emu::misc::RunStatus::PAUSED;
-using emu::misc::RunStatus::RUNNING;
-using emu::misc::RunStatus::STEPPING;
 using emu::util::byte::to_u16;
 using emu::util::string::split;
 
 LmcApplicationSession::LmcApplicationSession(
     bool is_only_run_once,
-    const RunStatus startup_runstatus,
+    bool is_starting_paused,
     std::shared_ptr<Ui> gui,
     std::shared_ptr<Input> input,
     std::string loaded_file,
     std::string file_content,
     EmulatorMemory<Address, Data> memory)
     : m_is_only_run_once(is_only_run_once)
-    , m_run_status(NOT_RUNNING)
     , m_ui(std::move(gui))
     , m_input(std::move(input))
     , m_memory(std::move(memory))
@@ -92,7 +85,7 @@ LmcApplicationSession::LmcApplicationSession(
     m_state_context->set_stepping_state(std::make_shared<SteppingState>(m_state_context));
     m_state_context->set_stopped_state(std::make_shared<StoppedState>(m_state_context));
 
-    if (startup_runstatus == PAUSED) {
+    if (is_starting_paused) {
         m_state_context->change_state(m_state_context->paused_state());
     } else {
         m_state_context->change_state(m_state_context->running_state());
@@ -108,10 +101,6 @@ LmcApplicationSession::~LmcApplicationSession()
 
 void LmcApplicationSession::run()
 {
-    if (m_run_status == FINISHED) {
-        throw std::invalid_argument("Programming error: the session has finished and cannot be run one more time");
-    }
-
     m_cpu->start();
 
     cyc cycles;
@@ -119,49 +108,43 @@ void LmcApplicationSession::run()
     while (!m_state_context->current_state()->is_exit_state()) {
         m_state_context->current_state()->perform(cycles);
     }
-
-    m_run_status = FINISHED;
 }
 
 void LmcApplicationSession::pause()
 {
-    throw std::runtime_error("Pause is not implemented for LMC programs");
+    m_state_context->change_state(m_state_context->paused_state());
 }
 
 void LmcApplicationSession::stop()
 {
-    throw std::runtime_error("Stop is not implemented for LMC programs");
+    m_state_context->change_state(m_state_context->stopped_state());
 }
 
-void LmcApplicationSession::run_status_changed(RunStatus new_status)
+void LmcApplicationSession::gui_request(GuiRequest request)
 {
-    m_run_status = new_status;
-    switch (m_run_status) {
-    case NOT_RUNNING:
-        m_state_context->change_state(m_state_context->stopped_state());
-        break;
-    case RUNNING:
+    switch (request.m_type) {
+    case RUN:
         m_state_context->change_state(m_state_context->running_state());
         break;
-    case PAUSED:
+    case PAUSE:
         m_state_context->change_state(m_state_context->paused_state());
         break;
-    case FINISHED:
+    case STOP:
         m_state_context->change_state(m_state_context->stopped_state());
         break;
-    case STEPPING:
+    case DEBUG_MODE:
+        m_is_in_debug_mode = request.m_bool_payload;
+        break;
+    case SOURCE_CODE:
+        m_file_content = request.m_string_payload;
+        break;
+    case ASSEMBLE_AND_LOAD:
+        assemble_and_load_request();
+        break;
+    case INPUT_FROM_TERMINAL:
+        input_from_terminal(request.m_data_payload);
         break;
     }
-}
-
-void LmcApplicationSession::debug_mode_changed(bool is_in_debug_mode)
-{
-    m_is_in_debug_mode = is_in_debug_mode;
-}
-
-void LmcApplicationSession::source_code_changed(std::string const& source)
-{
-    m_file_content = source;
 }
 
 std::vector<Data> create_work_ram(std::size_t size)

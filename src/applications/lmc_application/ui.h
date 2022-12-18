@@ -1,15 +1,14 @@
 #pragma once
 
-#include "chips/trivial/lmc/interfaces/ui_observer.h"
 #include "chips/trivial/lmc/usings.h"
 #include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/debugging/debugger.h"
 #include "crosscutting/gui/graphics/color.h"
 #include "crosscutting/gui/graphics/framebuffer.h"
 #include "crosscutting/logging/logger.h"
-#include "crosscutting/misc/run_status.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
+#include "interfaces/ui_observer.h"
 #include "lmc/out_type.h"
 
 namespace emu::applications::lmc {
@@ -19,9 +18,7 @@ using emu::debugger::Debugger;
 using emu::lmc::Address;
 using emu::lmc::Data;
 using emu::lmc::OutType;
-using emu::lmc::UiObserver;
 using emu::logging::Logger;
-using emu::misc::RunStatus;
 using emu::util::byte::is_bit_set;
 using emu::util::byte::to_u32;
 

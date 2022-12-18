@@ -1,14 +1,13 @@
 #pragma once
 
-#include "chips/8080/interfaces/gui_observer.h"
 #include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/debugging/debugger.h"
 #include "crosscutting/gui/graphics/color.h"
 #include "crosscutting/gui/graphics/framebuffer.h"
 #include "crosscutting/logging/logger.h"
-#include "crosscutting/misc/run_status.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
+#include "space_invaders/interfaces/gui_observer.h"
 
 namespace emu::applications::space_invaders {
 
@@ -16,9 +15,7 @@ using emu::debugger::DebugContainer;
 using emu::debugger::Debugger;
 using emu::gui::Color;
 using emu::gui::Framebuffer;
-using emu::i8080::GuiObserver;
 using emu::logging::Logger;
-using emu::misc::RunStatus;
 using emu::util::byte::is_bit_set;
 using emu::util::byte::to_u32;
 

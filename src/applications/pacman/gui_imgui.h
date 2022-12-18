@@ -8,7 +8,6 @@
 #include "crosscutting/gui/debugging_panes/spritemap_pane.h"
 #include "crosscutting/gui/debugging_panes/tilemap_pane.h"
 #include "crosscutting/gui/debugging_panes/waveform_pane.h"
-#include "crosscutting/misc/run_status.h"
 #include "crosscutting/typedefs.h"
 #include "gui.h"
 #include <SDL_video.h>
@@ -17,6 +16,10 @@
 #include <string>
 #include <vector>
 
+namespace emu::applications::pacman {
+class GuiObserver;
+struct GuiRequest;
+}
 namespace emu::debugger {
 template<class A, class D, std::size_t B>
 class DebugContainer;
@@ -27,9 +30,6 @@ class Debugger;
 }
 namespace emu::logging {
 class Logger;
-}
-namespace emu::z80 {
-class GuiObserver;
 }
 
 namespace emu::applications::pacman {
@@ -42,7 +42,6 @@ using emu::gui::MemoryEditorPane;
 using emu::gui::SpritemapPane;
 using emu::gui::TilemapPane;
 using emu::gui::WaveformPane;
-using emu::misc::RunStatus;
 
 class GuiImgui : public Gui {
 
@@ -107,9 +106,7 @@ private:
     SpritemapPane m_spritemap;
     WaveformPane m_waveforms;
 
-    void notify_gui_observers_about_run_status(RunStatus new_status);
-
-    void notify_gui_observers_about_debug_mode();
+    void notify_gui_observers(GuiRequest request);
 
     void init();
 

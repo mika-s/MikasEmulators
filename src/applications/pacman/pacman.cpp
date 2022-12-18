@@ -6,7 +6,6 @@
 #include "gui_sdl.h"
 #include "input_imgui.h"
 #include "input_sdl.h"
-#include "interfaces/input.h"
 #include "memory_mapped_io_for_pacman.h"
 #include "pacman_session.h"
 #include "settings.h" // IWYU pragma: keep
@@ -27,11 +26,11 @@ Pacman::Pacman(Settings const& settings, const GuiType gui_type)
     if (gui_type == GuiType::DEBUGGING) {
         m_gui = std::make_shared<GuiImgui>();
         m_input = std::make_shared<InputImgui>();
-        m_startup_runstatus = RunStatus::PAUSED;
+        m_is_starting_paused = true;
     } else {
         m_gui = std::make_shared<GuiSdl>();
         m_input = std::make_shared<InputSdl>();
-        m_startup_runstatus = RunStatus::RUNNING;
+        m_is_starting_paused = false;
     }
 
     load_files();
@@ -43,7 +42,7 @@ Pacman::Pacman(Settings const& settings, const GuiType gui_type)
 std::unique_ptr<Session> Pacman::new_session()
 {
     return std::make_unique<PacmanSession>(
-        m_startup_runstatus,
+        m_is_starting_paused,
         m_gui,
         m_input,
         m_audio,

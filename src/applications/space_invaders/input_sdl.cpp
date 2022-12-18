@@ -2,8 +2,8 @@
 #include "cpu_io.h"
 #include "crosscutting/util/byte_util.h"
 #include "gui_io.h"
-#include "interfaces/io_observer.h"
-#include "io_request.h"
+#include "interfaces/key_observer.h"
+#include "key_request.h"
 #include <SDL_events.h>
 #include <SDL_keyboard.h>
 #include <algorithm>
@@ -13,22 +13,22 @@ namespace emu::applications::space_invaders {
 using emu::util::byte::set_bit;
 using emu::util::byte::unset_bit;
 
-void InputSdl::add_io_observer(IoObserver& observer)
+void InputSdl::add_io_observer(KeyObserver& observer)
 {
     m_io_observers.push_back(&observer);
 }
 
-void InputSdl::remove_io_observer(IoObserver* observer)
+void InputSdl::remove_io_observer(KeyObserver* observer)
 {
     m_io_observers.erase(
         std::remove(m_io_observers.begin(), m_io_observers.end(), observer),
         m_io_observers.end());
 }
 
-void InputSdl::notify_io_observers(IoRequest request)
+void InputSdl::notify_io_observers(KeyRequest request)
 {
-    for (IoObserver* observer : m_io_observers) {
-        observer->io_changed(request);
+    for (KeyObserver* observer : m_io_observers) {
+        observer->key_pressed(request);
     }
 }
 
