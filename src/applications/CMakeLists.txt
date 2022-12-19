@@ -65,6 +65,21 @@ set(SOURCES_APPLICATIONS_CPP
         space_invaders/states/stepping_state.cpp
         space_invaders/states/stopped_state.cpp
         space_invaders/states/state_context.cpp
+
+        zxspectrum_48k/gui_imgui.cpp
+        zxspectrum_48k/gui_sdl.cpp
+        zxspectrum_48k/input_imgui.cpp
+        zxspectrum_48k/input_sdl.cpp
+        zxspectrum_48k/memory_map_for_zxspectrum_48k
+        zxspectrum_48k/zxspectrum_48k.cpp
+        zxspectrum_48k/zxspectrum_48k_session.cpp
+        zxspectrum_48k/settings.cpp
+        zxspectrum_48k/usage.cpp
+        zxspectrum_48k/states/paused_state.cpp
+        zxspectrum_48k/states/running_state.cpp
+        zxspectrum_48k/states/stepping_state.cpp
+        zxspectrum_48k/states/stopped_state.cpp
+        zxspectrum_48k/states/state_context.cpp
         )
 
 set(SOURCES_APPLICATIONS_H
@@ -152,6 +167,28 @@ set(SOURCES_APPLICATIONS_H
         space_invaders/states/stepping_state.h
         space_invaders/states/stopped_state.h
         space_invaders/states/state_context.h
+
+        zxspectrum_48k/gui.h
+        zxspectrum_48k/gui_imgui.h
+        zxspectrum_48k/gui_io.h
+        zxspectrum_48k/gui_sdl.h
+        zxspectrum_48k/input_imgui.h
+        zxspectrum_48k/input_sdl.h
+        zxspectrum_48k/key_request.h
+        zxspectrum_48k/memory_map_for_zxspectrum_48k.h
+        zxspectrum_48k/zxspectrum_48k.h
+        zxspectrum_48k/zxspectrum_48k_session.h
+        zxspectrum_48k/settings.h
+        zxspectrum_48k/usage.h
+        zxspectrum_48k/interfaces/gui_observer.h
+        zxspectrum_48k/interfaces/input.h
+        zxspectrum_48k/interfaces/key_observer.h
+        zxspectrum_48k/interfaces/state.h
+        zxspectrum_48k/states/paused_state.h
+        zxspectrum_48k/states/running_state.h
+        zxspectrum_48k/states/stepping_state.h
+        zxspectrum_48k/states/stopped_state.h
+        zxspectrum_48k/states/state_context.h
         )
 
 add_library(Applications STATIC ${SOURCES_APPLICATIONS_H} ${SOURCES_APPLICATIONS_CPP})
