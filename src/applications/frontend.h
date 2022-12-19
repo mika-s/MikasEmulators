@@ -5,6 +5,7 @@
 #include "applications/lmc_application/usage.h"
 #include "applications/pacman/usage.h"
 #include "applications/space_invaders/usage.h"
+#include "applications/zxspectrum_48k/usage.h"
 #include "crosscutting/gui/gui_type.h"
 #include <cstddef>
 #include <functional>
@@ -39,6 +40,7 @@ private:
 
     static const inline std::vector<std::pair<std::string, std::string>> s_supported_programs = {
         { "pacman", "Midway Pacman for Z80" },
+        { "zx-spectrum-48k", "ZX Spectrum 48k with Z80" },
         { "prelim", "The prelim CP/M-based test binary for Z80" },
         { "zexall", "The zexall CP/M-based test binary for Z80" },
         { "zexdoc", "The zexdoc CP/M-based test binary for Z80" },
@@ -72,6 +74,7 @@ private:
 
     static const inline std::unordered_map<std::string, std::function<void(std::string const&)>> s_program_usages = {
         { "pacman", pacman::print_usage },
+        { "zx-spectrum-48k", zxspectrum_48k::print_usage },
         { "prelim", cpm::z80::print_usage },
         { "zexall", cpm::z80::print_usage },
         { "zexdoc", cpm::z80::print_usage },

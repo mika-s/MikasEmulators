@@ -70,7 +70,7 @@ set(SOURCES_APPLICATIONS_CPP
         zxspectrum_48k/gui_sdl.cpp
         zxspectrum_48k/input_imgui.cpp
         zxspectrum_48k/input_sdl.cpp
-        zxspectrum_48k/memory_map_for_zxspectrum_48k
+        zxspectrum_48k/memory_map_for_zxspectrum_48k.cpp
         zxspectrum_48k/zxspectrum_48k.cpp
         zxspectrum_48k/zxspectrum_48k_session.cpp
         zxspectrum_48k/settings.cpp

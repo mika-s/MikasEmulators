@@ -10,6 +10,9 @@
 #include "applications/space_invaders/settings.h"
 #include "applications/space_invaders/space_invaders.h"
 #include "applications/space_invaders/usage.h"
+#include "applications/zxspectrum_48k/settings.h"
+#include "applications/zxspectrum_48k/usage.h"
+#include "applications/zxspectrum_48k/zxspectrum_48k.h"
 #include "chips/8080/disassembler.h"
 #include "chips/z80/disassembler.h"
 #include "crosscutting/exceptions/invalid_program_arguments_exception.h"
@@ -246,6 +249,10 @@ std::unique_ptr<Emulator> Frontend::choose_emulator(std::string const& program, 
         return std::make_unique<pacman::Pacman>(
             pacman::Settings::from_options(options),
             options.gui_type(pacman::print_usage));
+    } else if (program == "zx-spectrum-48k") {
+        return std::make_unique<zxspectrum_48k::ZxSpectrum48k>(
+            zxspectrum_48k::Settings::from_options(options),
+            options.gui_type(zxspectrum_48k::print_usage));
     } else if (program == "prelim") {
         return std::make_unique<cpm::z80::CpmApplication>("roms/z80/prelim.com");
     } else if (program == "zexall") {

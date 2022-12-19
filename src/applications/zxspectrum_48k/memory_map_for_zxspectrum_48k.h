@@ -26,8 +26,8 @@ public:
 
 private:
     static constexpr std::size_t s_address_mask = 0x3fff;
-    static constexpr u16 s_address_rom_end = 0x1fff;
-    static constexpr u16 s_address_ram_end = 0x3fff;
+    static constexpr u16 s_address_rom_end = 0x3fff;
+    static constexpr u16 s_address_ram_end = 0xff57;
 
     EmulatorMemory<u16, u8>& m_memory;
 };
