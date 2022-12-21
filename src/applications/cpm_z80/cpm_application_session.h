@@ -29,7 +29,7 @@ public:
 
     void stop() override;
 
-    void out_changed(u8 port) override;
+    void out_changed(u16 port) override;
 
 private:
     static constexpr u8 s_finished_port = 0;

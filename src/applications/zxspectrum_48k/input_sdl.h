@@ -6,6 +6,7 @@
 #include <vector>
 
 namespace emu::applications::zxspectrum_48k {
+class CpuIo;
 class GuiIo;
 }
 namespace emu::applications::zxspectrum_48k {
@@ -16,9 +17,9 @@ namespace emu::applications::zxspectrum_48k {
 
 class InputSdl : public Input {
 public:
-    void read(GuiIo& gui_io) override;
+    void read(CpuIo& cpu_io, GuiIo& gui_io) override;
 
-    void read_debug_only(GuiIo& gui_io) override;
+    void read_debug_only(CpuIo& cpu_io, GuiIo& gui_io) override;
 
     void add_io_observer(KeyObserver& observer) override;
 

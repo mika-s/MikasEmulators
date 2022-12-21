@@ -82,7 +82,7 @@ public:
 
     void gui_request(GuiRequest request) override;
 
-    void out_changed(u8 port) override;
+    void out_changed(u16 port) override;
 
     void key_pressed(IoRequest request) override;
 

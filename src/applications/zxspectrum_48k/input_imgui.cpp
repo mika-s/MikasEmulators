@@ -10,6 +10,10 @@
 #include <algorithm>
 
 namespace emu::applications::zxspectrum_48k {
+class CpuIo;
+}
+
+namespace emu::applications::zxspectrum_48k {
 
 using emu::util::byte::set_bit;
 using emu::util::byte::unset_bit;
@@ -33,7 +37,7 @@ void InputImgui::notify_io_observers(KeyRequest request)
     }
 }
 
-void InputImgui::read(GuiIo& gui_io)
+void InputImgui::read([[maybe_unused]] CpuIo& cpu_io, GuiIo& gui_io)
 {
     SDL_Event read_input_event;
 
@@ -55,6 +59,9 @@ void InputImgui::read(GuiIo& gui_io)
                 break;
             case SDL_KEYDOWN:
                 switch (read_input_event.key.keysym.scancode) {
+                case s_pause:
+                    gui_io.m_is_toggling_pause = true;
+                    break;
                 default:
                     break;
                 }
@@ -74,7 +81,7 @@ void InputImgui::read(GuiIo& gui_io)
     }
 }
 
-void InputImgui::read_debug_only(GuiIo& gui_io)
+void InputImgui::read_debug_only([[maybe_unused]] CpuIo& cpu_io, GuiIo& gui_io)
 {
     SDL_Event read_input_event;
 

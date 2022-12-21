@@ -257,7 +257,7 @@ void PacmanSession::gui_request(GuiRequest request)
     }
 }
 
-void PacmanSession::out_changed(u8 port)
+void PacmanSession::out_changed(u16 port)
 {
     if (!m_outputs_during_cycle.contains(port)) {
         m_outputs_during_cycle[port] = m_cpu->a();

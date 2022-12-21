@@ -7,6 +7,7 @@
 #include <unordered_map>
 
 namespace emu::applications::zxspectrum_48k {
+class CpuIo;
 class GuiIo;
 class Input;
 class State;
@@ -40,6 +41,7 @@ using emu::misc::Governor;
 class StateContext {
 public:
     explicit StateContext(
+        CpuIo& cpu_io,
         GuiIo& gui_io,
         std::shared_ptr<Gui> gui,
         std::shared_ptr<Input> input,
@@ -54,6 +56,7 @@ public:
 
     bool& m_is_in_debug_mode;
 
+    CpuIo& m_cpu_io;
     GuiIo& m_gui_io;
     std::shared_ptr<Gui> m_gui;
     std::shared_ptr<Input> m_input;

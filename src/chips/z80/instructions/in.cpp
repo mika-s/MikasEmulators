@@ -1,5 +1,6 @@
 #include "crosscutting/memory/next_byte.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
 #include "doctest.h"
 #include "flags.h"
@@ -10,6 +11,7 @@
 namespace emu::z80 {
 
 using emu::memory::NextByte;
+using emu::util::byte::to_u16;
 using emu::util::string::hexify_wo_0x;
 
 /**
@@ -43,14 +45,15 @@ void in_A_n(u8& acc_reg, NextByte const& args, std::vector<u8> io, cyc& cycles)
  * </ul>
  *
  * @param reg is a register, which will be mutated
+ * @param b_reg is the B register
  * @param c_reg is the C register
  * @param io is the IO addresses
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void in_r_C(u8& reg, u8 c_reg, std::vector<u8> io, Flags& flag_reg, cyc& cycles)
+void in_r_C(u8& reg, u8 b_reg, u8 c_reg, std::vector<u8> io, Flags& flag_reg, cyc& cycles)
 {
-    reg = io[c_reg];
+    reg = io[to_u16(b_reg, c_reg)];
 
     flag_reg.handle_sign_flag(reg);
     flag_reg.handle_zero_flag(reg);

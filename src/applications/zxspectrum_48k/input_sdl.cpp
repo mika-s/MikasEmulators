@@ -8,6 +8,10 @@
 #include <algorithm>
 
 namespace emu::applications::zxspectrum_48k {
+class CpuIo;
+}
+
+namespace emu::applications::zxspectrum_48k {
 
 using emu::util::byte::set_bit;
 using emu::util::byte::unset_bit;
@@ -31,7 +35,7 @@ void InputSdl::notify_io_observers(KeyRequest request)
     }
 }
 
-void InputSdl::read(GuiIo& gui_io)
+void InputSdl::read([[maybe_unused]] CpuIo& cpu_io, GuiIo& gui_io)
 {
     SDL_Event read_input_event;
 
@@ -61,5 +65,5 @@ void InputSdl::read(GuiIo& gui_io)
     }
 }
 
-void InputSdl::read_debug_only([[maybe_unused]] GuiIo& gui_io) { }
+void InputSdl::read_debug_only([[maybe_unused]] CpuIo& cpu_io, [[maybe_unused]] GuiIo& gui_io) { }
 }

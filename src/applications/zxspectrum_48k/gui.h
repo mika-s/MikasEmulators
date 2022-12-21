@@ -45,8 +45,8 @@ public:
 protected:
     static constexpr int s_bits_in_byte = 8;
     static constexpr float s_scale = 4.0;
-    static constexpr int s_width = 224;
-    static constexpr int s_height = 256;
+    static constexpr int s_width = 256;
+    static constexpr int s_height = 192;
     static constexpr int s_scaled_width = static_cast<int>(s_scale * static_cast<float>(s_width));
     static constexpr int s_scaled_height = static_cast<int>(s_scale * static_cast<float>(s_height));
 

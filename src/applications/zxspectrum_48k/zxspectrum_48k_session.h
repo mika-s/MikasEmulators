@@ -1,9 +1,8 @@
 #pragma once
 
-// #include "audio.h"
 #include "chips/z80/interfaces/in_observer.h"
 #include "chips/z80/interfaces/out_observer.h"
-// #include "cpu_io.h"
+#include "cpu_io.h"
 #include "crosscutting/misc/governor.h"
 #include "crosscutting/misc/sdl_counter.h"
 #include "crosscutting/misc/session.h"
@@ -82,9 +81,9 @@ public:
 
     void gui_request(GuiRequest request) override;
 
-    void in_requested(u8 port) override;
+    void in_requested(u16 port) override;
 
-    void out_changed(u8 port) override;
+    void out_changed(u16 port) override;
 
     void key_pressed(KeyRequest request) override;
 
@@ -95,26 +94,16 @@ private:
     // Game loop - end
 
     // IO - begin
-    static constexpr u8 s_in_port_unused = 0;
-    static constexpr u8 s_in_port_1 = 1;
-    static constexpr u8 s_in_port_2 = 2;
-    static constexpr u8 s_in_port_read_shift = 3;
-
-    static constexpr u8 s_out_port_shift_offset = 2;
-    static constexpr u8 s_out_port_sound_1 = 3;
-    static constexpr u8 s_out_port_do_shift = 4;
-    static constexpr u8 s_out_port_sound_2 = 5;
-    static constexpr u8 s_out_port_watchdog = 6;
+    static constexpr u8 s_port_0xf5 = 0xfe;
     // IO - end
 
     bool m_is_in_debug_mode { false };
 
-    //    CpuIo m_cpu_io { CpuIo(0, 0b00001000, 0) };
+    CpuIo m_cpu_io;
     GuiIo m_gui_io;
     std::shared_ptr<Gui> m_gui;
     std::shared_ptr<Input> m_input;
     std::shared_ptr<Cpu> m_cpu;
-    //    Audio m_audio;
 
     EmulatorMemory<u16, u8>& m_memory;
 

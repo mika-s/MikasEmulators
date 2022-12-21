@@ -11,6 +11,7 @@ namespace emu::applications::zxspectrum_48k {
 using emu::misc::Governor;
 
 StateContext::StateContext(
+    CpuIo& cpu_io,
     GuiIo& gui_io,
     std::shared_ptr<Gui> gui,
     std::shared_ptr<Input> input,
@@ -23,6 +24,7 @@ StateContext::StateContext(
     Governor& governor,
     bool& is_in_debug_mode)
     : m_is_in_debug_mode(is_in_debug_mode)
+    , m_cpu_io(cpu_io)
     , m_gui_io(gui_io)
     , m_gui(std::move(gui))
     , m_input(std::move(input))

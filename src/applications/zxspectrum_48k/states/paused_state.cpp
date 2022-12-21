@@ -40,7 +40,7 @@ void PausedState::transition_to_step()
 void PausedState::perform([[maybe_unused]] cyc& cycles)
 {
     if (m_ctx->m_governor.is_time_to_update()) {
-        m_ctx->m_input->read(m_ctx->m_gui_io);
+        m_ctx->m_input->read(m_ctx->m_cpu_io, m_ctx->m_gui_io);
         if (m_ctx->m_gui_io.m_is_quitting) {
             m_ctx->m_gui_io.m_is_quitting = false;
             transition_to_stop();

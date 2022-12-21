@@ -8,6 +8,6 @@ class OutObserver {
 public:
     virtual ~OutObserver() = default;
 
-    virtual void out_changed(u8 port) = 0;
+    virtual void out_changed(u16 port) = 0;
 };
 }

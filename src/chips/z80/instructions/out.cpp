@@ -1,5 +1,6 @@
 #include "crosscutting/memory/next_byte.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
 #include "doctest.h"
 #include <iostream>
@@ -9,6 +10,7 @@
 namespace emu::z80 {
 
 using emu::memory::NextByte;
+using emu::util::byte::to_u16;
 using emu::util::string::hexify_wo_0x;
 
 /**
@@ -41,14 +43,15 @@ void out_n_A(u8 acc_reg, NextByte const& args, std::vector<u8>& io, cyc& cycles)
  *   <li>Condition bits affected: none</li>
  * </ul>
  *
+ * @param b_reg is the B register
  * @param c_reg is the C register
  * @param reg is the register that will be stored in IO
  * @param io is the IO addresses, which might be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void out_C_r(u8 c_reg, u8 reg, std::vector<u8>& io, cyc& cycles)
+void out_C_r(u8 b_reg, u8 c_reg, u8 reg, std::vector<u8>& io, cyc& cycles)
 {
-    io[c_reg] = reg;
+    io[to_u16(b_reg, c_reg)] = reg;
 
     cycles = 12;
 }

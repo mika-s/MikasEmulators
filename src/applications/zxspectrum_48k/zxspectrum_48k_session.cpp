@@ -1,6 +1,7 @@
 #include "zxspectrum_48k_session.h"
 #include "chips/z80/cpu.h"
 #include "chips/z80/disassembler.h"
+#include "cpu_io.h"
 #include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/debugging/debugger.h"
 #include "crosscutting/debugging/disassembled_line.h"
@@ -20,6 +21,7 @@
 #include <algorithm>
 #include <iostream>
 #include <iterator>
+#include <stdexcept>
 #include <string>
 #include <tuple>
 #include <utility>
@@ -56,6 +58,7 @@ ZxSpectrum48kSession::ZxSpectrum48kSession(
     m_input->add_io_observer(*this);
 
     m_state_context = std::make_shared<StateContext>(
+        m_cpu_io,
         m_gui_io,
         m_gui,
         m_input,
@@ -143,35 +146,9 @@ void ZxSpectrum48kSession::setup_debugging()
             { "u", 1 },
             { "c", 0 } }));
     m_debug_container->add_io(IoDebugContainer<u8>(
-        "shift (change offset)",
-        [&]() { return m_outputs_during_cycle.contains(s_out_port_shift_offset); },
-        [&]() { return m_outputs_during_cycle[s_out_port_shift_offset]; }));
-    m_debug_container->add_io(IoDebugContainer<u8>(
-        "shift (do shift)",
-        [&]() { return m_outputs_during_cycle.contains(s_out_port_do_shift); },
-        [&]() { return m_outputs_during_cycle[s_out_port_do_shift]; }));
-    m_debug_container->add_io(IoDebugContainer<u8>(
-        "watchdog",
-        [&]() { return m_outputs_during_cycle.contains(s_out_port_watchdog); },
-        [&]() { return m_outputs_during_cycle[s_out_port_watchdog]; }));
-    m_debug_container->add_io(IoDebugContainer<u8>(
-        "out sound 1",
-        [&]() { return m_outputs_during_cycle.contains(s_out_port_sound_1); },
-        [&]() { return m_outputs_during_cycle[s_out_port_sound_1]; },
-        { { "ufo", 0 },
-            { "shot", 1 },
-            { "flash", 2 },
-            { "invader_die", 3 },
-            { "extended_play", 4 } }));
-    m_debug_container->add_io(IoDebugContainer<u8>(
-        "out sound 2",
-        [&]() { return m_outputs_during_cycle.contains(s_out_port_sound_2); },
-        [&]() { return m_outputs_during_cycle[s_out_port_sound_2]; },
-        { { "fleet_movement_1", 0 },
-            { "fleet_movement_2", 1 },
-            { "fleet_movement_3", 2 },
-            { "fleet_movement_4", 3 },
-            { "ufo_hit", 4 } }));
+        "0xfe",
+        [&]() { return m_outputs_during_cycle.contains(s_port_0xf5); },
+        [&]() { return m_outputs_during_cycle[s_port_0xf5]; }));
     m_debug_container->add_memory(MemoryDebugContainer<u8>(
         [&]() { return memory(); }));
     m_debug_container->add_disassembled_program(disassemble_program());
@@ -199,27 +176,18 @@ void ZxSpectrum48kSession::gui_request(GuiRequest request)
     }
 }
 
-void ZxSpectrum48kSession::in_requested([[maybe_unused]] u8 port)
+void ZxSpectrum48kSession::in_requested([[maybe_unused]] u16 port)
 {
-    //    switch (port) {
-    //    case s_in_port_unused:
-    //        m_cpu->input(s_in_port_unused, m_cpu_io.m_in_port0);
-    //        break;
-    //    case s_in_port_1:
-    //        m_cpu->input(s_in_port_1, m_cpu_io.m_in_port1);
-    //        break;
-    //    case s_in_port_2:
-    //        m_cpu->input(s_in_port_2, m_cpu_io.m_in_port2);
-    //        break;
-    //    case s_in_port_read_shift:
-    //        m_cpu->input(s_in_port_read_shift, m_cpu_io.m_shift_register.read());
-    //        break;
-    //    default:
-    //        throw std::runtime_error("Illegal input port for Space Invaders");
-    //    }
+    switch (port) {
+    case s_port_0xf5:
+        m_cpu->input(s_port_0xf5, m_cpu_io.m_out_port0xfe);
+        break;
+    default:
+        throw std::runtime_error("Illegal input port for Space Invaders");
+    }
 }
 
-void ZxSpectrum48kSession::out_changed(u8 port)
+void ZxSpectrum48kSession::out_changed(u16 port)
 {
     if (!m_outputs_during_cycle.contains(port)) {
         m_outputs_during_cycle[port] = m_cpu->a();
@@ -227,24 +195,13 @@ void ZxSpectrum48kSession::out_changed(u8 port)
         m_outputs_during_cycle[port] |= m_cpu->a();
     }
 
-    //    switch (port) {
-    //    case s_out_port_shift_offset:
-    //        m_cpu_io.m_shift_register.change_offset(m_cpu->a());
-    //        break;
-    //    case s_out_port_sound_1:
-    //        m_audio.play_sound_port_1(m_cpu->a());
-    //        break;
-    //    case s_out_port_do_shift:
-    //        m_cpu_io.m_shift_register.shift(m_cpu->a());
-    //        break;
-    //    case s_out_port_sound_2:
-    //        m_audio.play_sound_port_2(m_cpu->a());
-    //        break;
-    //    case s_out_port_watchdog:
-    //        break;
-    //    default:
-    //        throw std::runtime_error("Illegal output port for Space Invaders");
-    //    }
+    switch (port) {
+    case s_port_0xf5:
+        m_cpu_io.m_in_port0xfe = m_cpu->a();
+        break;
+    default:
+        throw std::runtime_error("Illegal output port for Space Invaders");
+    }
 }
 
 void ZxSpectrum48kSession::key_pressed([[maybe_unused]] KeyRequest request)

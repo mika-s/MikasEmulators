@@ -60,7 +60,7 @@ void RunningState::perform(cyc& cycles)
             }
         }
 
-        m_ctx->m_input->read(m_ctx->m_gui_io);
+        m_ctx->m_input->read(m_ctx->m_cpu_io, m_ctx->m_gui_io);
         if (m_ctx->m_gui_io.m_is_quitting) {
             m_ctx->m_gui_io.m_is_quitting = false;
             transition_to_stop();

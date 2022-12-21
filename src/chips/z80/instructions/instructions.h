@@ -892,7 +892,7 @@ void exx(u8& b_reg, u8& c_reg, u8& b_p_reg, u8& c_p_reg, u8& d_reg, u8& e_reg, u
 void halt(bool& is_halted, cyc& cycles);
 void im(InterruptMode& interrupt_mode, InterruptMode value, cyc& cycles);
 void in_A_n(u8& acc_reg, NextByte const& args, std::vector<u8> io, cyc& cycles);
-void in_r_C(u8& reg, u8 c_reg, std::vector<u8> io, Flags& flag_reg, cyc& cycles);
+void in_r_C(u8& reg, u8 b_reg, u8 c_reg, std::vector<u8> io, Flags& flag_reg, cyc& cycles);
 void inc_r(u8& reg, Flags& flag_reg, cyc& cycles);
 void inc_r_undoc(u8& reg, Flags& flag_reg, cyc& cycles);
 void inc_ss(u8& reg1, u8& reg2, cyc& cycles);
@@ -971,7 +971,7 @@ void or_MHL(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles);
 void or_MixyPd(u8& acc_reg, u16 ixy_reg, NextByte const& args, EmulatorMemory<u16, u8>& memory, Flags& flag_reg, cyc& cycles);
 void or_ixy_h_or_l(u8& acc_reg, u8 ixy_reg_h_or_l, Flags& flag_reg, cyc& cycles);
 void out_n_A(u8 acc_reg, NextByte const& args, std::vector<u8>& io, cyc& cycles);
-void out_C_r(u8 c_reg, u8 reg, std::vector<u8>& io, cyc& cycles);
+void out_C_r(u8 b_reg, u8 c_reg, u8 reg, std::vector<u8>& io, cyc& cycles);
 void outd(u8& b_reg, u8 c_reg, u8& h_reg, u8& l_reg, EmulatorMemory<u16, u8>& memory, Flags& flag_reg, std::vector<u8> io, cyc& cycles);
 void otdr(u16& pc, u8& b_reg, u8 c_reg, u8& h_reg, u8& l_reg, EmulatorMemory<u16, u8>& memory, Flags& flag_reg, std::vector<u8> io, cyc& cycles);
 void otir(u16& pc, u8& b_reg, u8 c_reg, u8& h_reg, u8& l_reg, EmulatorMemory<u16, u8>& memory, Flags& flag_reg, std::vector<u8> io, cyc& cycles);

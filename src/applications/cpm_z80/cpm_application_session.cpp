@@ -42,7 +42,7 @@ void CpmApplicationSession::stop()
     throw std::runtime_error("Stop is not implemented for CP/M programs");
 }
 
-void CpmApplicationSession::out_changed(u8 port)
+void CpmApplicationSession::out_changed(u16 port)
 {
     if (port == s_finished_port) {
         m_is_finished = true;

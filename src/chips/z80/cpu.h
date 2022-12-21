@@ -6,6 +6,7 @@
 #include "flags.h"
 #include "interrupt_mode.h"
 #include <cstddef>
+#include <cstdint>
 #include <vector>
 
 namespace emu::memory {
@@ -107,10 +108,10 @@ public:
 
     void nmi_interrupt();
 
-    void input(u8 port, u8 value);
+    void input(u16 port, u8 value);
 
 private:
-    static constexpr unsigned int s_number_of_io_ports = 256;
+    static constexpr unsigned int s_number_of_io_ports = UINT16_MAX;
 
     bool m_is_halted;
 

@@ -66,6 +66,7 @@ set(SOURCES_APPLICATIONS_CPP
         space_invaders/states/stopped_state.cpp
         space_invaders/states/state_context.cpp
 
+        zxspectrum_48k/cpu_io.cpp
         zxspectrum_48k/gui_imgui.cpp
         zxspectrum_48k/gui_sdl.cpp
         zxspectrum_48k/input_imgui.cpp
@@ -168,6 +169,7 @@ set(SOURCES_APPLICATIONS_H
         space_invaders/states/stopped_state.h
         space_invaders/states/state_context.h
 
+        zxspectrum_48k/cpu_io.h
         zxspectrum_48k/gui.h
         zxspectrum_48k/gui_imgui.h
         zxspectrum_48k/gui_io.h
