@@ -29,7 +29,7 @@ using emu::util::string::hexify_wo_0x;
  */
 void out_n_A(u8 acc_reg, NextByte const& args, std::vector<u8>& io, cyc& cycles)
 {
-    io[args.farg] = acc_reg;
+    io[to_u16(acc_reg, args.farg)] = acc_reg;
 
     cycles = 11;
 }

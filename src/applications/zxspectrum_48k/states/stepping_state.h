@@ -60,6 +60,8 @@ private:
     bool await_input_and_update_debug();
 
     std::vector<u8> vram();
+
+    std::vector<u8> color_ram();
 };
 
 }

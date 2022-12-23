@@ -1,5 +1,6 @@
 #include "zxspectrum_48k.h"
 #include "crosscutting/util/file_util.h"
+#include "gui.h"
 #include "gui_imgui.h"
 #include "gui_sdl.h"
 #include "input_imgui.h"
@@ -37,6 +38,7 @@ ZxSpectrum48k::ZxSpectrum48k(Settings const& settings, const GuiType gui_type)
 
     m_memory_mapped_io = std::make_shared<MemoryMapForZxSpectrum48k>(m_memory);
     m_memory.attach_memory_mapper(m_memory_mapped_io);
+    m_gui->create_table();
 }
 
 std::unique_ptr<Session> ZxSpectrum48k::new_session()

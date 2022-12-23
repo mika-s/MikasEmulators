@@ -51,13 +51,18 @@ void PausedState::perform([[maybe_unused]] cyc& cycles)
             return;
         }
 
-        m_ctx->m_gui->update_screen(vram(), s_game_window_subtitle);
+        m_ctx->m_gui->update_screen(vram(), color_ram(), s_game_window_subtitle);
     }
 }
 
 std::vector<u8> PausedState::vram()
 {
     return { m_ctx->m_memory.begin() + 0x4000, m_ctx->m_memory.begin() + 0x57ff + 1 };
+}
+
+std::vector<u8> PausedState::color_ram()
+{
+    return { m_ctx->m_memory.begin() + 0x5800, m_ctx->m_memory.begin() + 0x5aff + 1 };
 }
 
 }

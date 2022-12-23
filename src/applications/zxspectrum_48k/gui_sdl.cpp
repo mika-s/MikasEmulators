@@ -107,9 +107,9 @@ void GuiSdl::init()
     }
 }
 
-void GuiSdl::update_screen(std::vector<u8> const& vram, std::string const& game_window_subtitle)
+void GuiSdl::update_screen(std::vector<u8> const& vram, std::vector<u8> const& color_ram, std::string const& game_window_subtitle)
 {
-    std::vector<u32> framebuffer = create_framebuffer(vram);
+    std::vector<u32> framebuffer = create_framebuffer(vram, color_ram);
 
     void* pixels = nullptr;
     int pitch = 0;

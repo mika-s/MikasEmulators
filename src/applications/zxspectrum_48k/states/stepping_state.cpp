@@ -71,7 +71,7 @@ void SteppingState::perform(cyc& cycles)
         return;
     }
 
-    m_ctx->m_gui->update_screen(vram(), s_game_window_subtitle);
+    m_ctx->m_gui->update_screen(vram(), color_ram(), s_game_window_subtitle);
 
     if (m_ctx->m_cpu->is_inta()) {
         m_ctx->m_cpu->interrupt(1);
@@ -115,6 +115,11 @@ bool SteppingState::await_input_and_update_debug()
 std::vector<u8> SteppingState::vram()
 {
     return { m_ctx->m_memory.begin() + 0x4000, m_ctx->m_memory.begin() + 0x57ff + 1 };
+}
+
+std::vector<u8> SteppingState::color_ram()
+{
+    return { m_ctx->m_memory.begin() + 0x5800, m_ctx->m_memory.begin() + 0x5aff + 1 };
 }
 
 }

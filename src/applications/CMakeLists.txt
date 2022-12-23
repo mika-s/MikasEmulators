@@ -67,6 +67,7 @@ set(SOURCES_APPLICATIONS_CPP
         space_invaders/states/state_context.cpp
 
         zxspectrum_48k/cpu_io.cpp
+        zxspectrum_48k/gui.cpp
         zxspectrum_48k/gui_imgui.cpp
         zxspectrum_48k/gui_sdl.cpp
         zxspectrum_48k/input_imgui.cpp

@@ -48,7 +48,7 @@ public:
 
     void remove_gui_observer(GuiObserver* observer) override;
 
-    void update_screen(std::vector<u8> const& vram, std::string const& game_window_subtitle) override;
+    void update_screen(std::vector<u8> const& vram, std::vector<u8> const& color_ram, std::string const& game_window_subtitle) override;
 
     void update_debug_only() override;
 
