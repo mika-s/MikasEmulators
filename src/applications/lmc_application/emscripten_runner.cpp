@@ -14,7 +14,6 @@ using emu::gui::GuiType;
 // NOLINTNEXTLINE(modernize-avoid-c-arrays)
 int main(int argc, char* argv[])
 {
-    std::cout << "Starting LMC\n";
     try {
         std::make_unique<LmcApplication>("initial.lmc", GuiType::DEBUGGING)
             ->new_session()
@@ -32,6 +31,5 @@ int main(int argc, char* argv[])
         return 2;
     }
 
-    std::cout << "Stopping LMC\n";
     return 0;
 }

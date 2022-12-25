@@ -1,7 +1,12 @@
 #include "gui_imgui.h"
 #include "chips/trivial/lmc/out_type.h"
 #include "chips/trivial/lmc/usings.h"
+#ifdef __EMSCRIPTEN__
+#include <GL/gl.h>
+#include <GLES3/gl3.h>
+#else
 #include "glad/glad.h"
+#endif
 #include "gui_request.h"
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
@@ -139,7 +144,13 @@ void GuiImgui::init()
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
     std::string glsl_version;
-#ifdef __APPLE__
+#ifdef __EMSCRIPTEN__
+    glsl_version = "#version 300 es";
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+#elif __APPLE__
     // GL 3.2 Core + GLSL 150
     glsl_version = "#version 150";
     SDL_GL_SetAttribute( // required on Mac OS
@@ -174,14 +185,21 @@ void GuiImgui::init()
     }
 
     SDL_SetWindowMinimumSize(m_win, s_width, s_height);
+
     m_gl_context = SDL_GL_CreateContext(m_win);
+    if (!m_gl_context) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error creating context: %s", SDL_GetError());
+        exit(1);
+    }
     SDL_GL_MakeCurrent(m_win, m_gl_context);
     SDL_GL_SetSwapInterval(1);
 
+#ifndef __EMSCRIPTEN__
     if (!gladLoadGLLoader(static_cast<GLADloadproc>(SDL_GL_GetProcAddress))) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error initializing glad");
         exit(1);
     }
+#endif
 
     glViewport(0, 0, s_width, s_height);
 

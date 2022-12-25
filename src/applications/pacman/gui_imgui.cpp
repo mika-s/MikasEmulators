@@ -172,6 +172,10 @@ void GuiImgui::init()
 
     SDL_SetWindowMinimumSize(m_win, s_width, s_height);
     m_gl_context = SDL_GL_CreateContext(m_win);
+    if (!m_gl_context) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error creating context: %s", SDL_GetError());
+        exit(1);
+    }
     SDL_GL_MakeCurrent(m_win, m_gl_context);
     SDL_GL_SetSwapInterval(1);
 

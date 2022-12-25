@@ -29,6 +29,9 @@
 #include <tuple>
 #include <utility>
 #include <vector>
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 
 namespace emu::applications::lmc {
 
@@ -99,15 +102,31 @@ LmcApplicationSession::~LmcApplicationSession()
     m_cpu->remove_in_observer(this);
 }
 
+std::function<void()> loop;
+void main_loop() {
+    loop();
+}
+
 void LmcApplicationSession::run()
 {
     m_cpu->start();
 
     cyc cycles;
 
+#ifdef __EMSCRIPTEN__
+    loop = [&] {
+        m_state_context->current_state()->perform(cycles);
+        if (m_state_context->current_state()->is_exit_state()) {
+            std::cout << "Exit\n";
+            exit(0);
+        }
+    };
+    emscripten_set_main_loop(main_loop, 60, true);
+#else
     while (!m_state_context->current_state()->is_exit_state()) {
         m_state_context->current_state()->perform(cycles);
     }
+#endif
 }
 
 void LmcApplicationSession::pause()
