@@ -1,10 +1,10 @@
 #include "tui_terminal.h"
+#include "applications/lmc_application/gui_request.h"
+#include "applications/lmc_application/interfaces/ui_observer.h"
+#include "chips/trivial/lmc/out_type.h"
 #include "chips/trivial/lmc/usings.h"
 #include "crosscutting/misc/uinteger.h"
 #include "crosscutting/typedefs.h"
-#include "lmc/out_type.h"
-#include "lmc_application/gui_request.h"
-#include "lmc_application/interfaces/ui_observer.h"
 #include "ui.h"
 #include <algorithm>
 #include <iostream>

@@ -1,7 +1,7 @@
 #include "debug_log_pane.h"
+#include "crosscutting/logging//logger.h"
 #include "crosscutting/util/string_util.h"
-#include "logging/logger.h"
-#include <bits/chrono.h>
+#include <chrono>
 #include <fmt/chrono.h> // IWYU pragma: keep
 #include <fmt/core.h>
 #include <string>

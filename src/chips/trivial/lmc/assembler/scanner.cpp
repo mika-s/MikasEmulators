@@ -106,7 +106,11 @@ void Scanner::read_tokens(std::string const& line)
 
 bool Scanner::is_comment_line(std::string const& line)
 {
+#ifdef __EMSCRIPTEN__
+    return line.rfind("//", 0) == 0;
+#else
     return line.starts_with("//");
+#endif
 }
 
 bool Scanner::handle_single_character(std::string const& line)
@@ -165,7 +169,11 @@ bool Scanner::handle_keyword(std::string const& line)
         std::string normalized_keyword = keyword;
         std::transform(normalized_keyword.begin(), normalized_keyword.end(), normalized_keyword.begin(), ::toupper);
 
+#ifdef __EMSCRIPTEN__
+        if (keyword_string_as_TokenKind.count(normalized_keyword) > 0) {
+#else
         if (keyword_string_as_TokenKind.contains(normalized_keyword)) {
+#endif
             tokens_current_line.emplace_back(keyword_string_as_TokenKind.at(normalized_keyword));
             return true;
         } else {

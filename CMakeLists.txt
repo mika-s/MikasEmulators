@@ -52,7 +52,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 
 if(iwyu_path)
   message(STATUS "Found include-what-you-use. Applying it to the project.")
-  set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
+  set(iwyu_path_and_options ${iwyu_path} -Xiwyu --mapping_file=${PROJECT_SOURCE_DIR}/iwyu.imp)
+  set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path_and_options})
 endif()
 
 # ------------------------ Copy files to working directory

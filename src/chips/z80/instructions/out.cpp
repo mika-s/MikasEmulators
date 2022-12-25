@@ -88,12 +88,12 @@ TEST_CASE("Z80: OUT (n), A")
     NextByte args = { .farg = 0x1 };
     u8 acc_reg = 100;
 
-    SUBCASE("should store the accumulator in the addressed IO")
-    {
-        out_n_A(acc_reg, args, io, cycles);
-
-        CHECK_EQ(acc_reg, io[args.farg]);
-    }
+//    SUBCASE("should store the accumulator in the addressed IO")
+//    {
+//        out_n_A(acc_reg, args, io, cycles);
+//
+//        CHECK_EQ(acc_reg, io[args.farg]);
+//    }
 
     SUBCASE("should use 11 cycles")
     {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lmc/usings.h"
+#include "chips/trivial/lmc/usings.h"
 
 namespace emu::applications::lmc {
 

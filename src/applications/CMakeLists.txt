@@ -202,5 +202,6 @@ target_link_libraries(Applications PRIVATE
 target_include_directories(Applications PUBLIC ../)
 
 if (iwyu_path)
-    set_property(TARGET Applications PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
+    set(iwyu_path_and_options ${iwyu_path} -Xiwyu --mapping_file=${PROJECT_SOURCE_DIR}/iwyu.imp)
+    set_property(TARGET Applications PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path_and_options})
 endif ()

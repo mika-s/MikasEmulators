@@ -1,5 +1,6 @@
 #pragma once
 
+#include "chips/trivial/lmc/out_type.h"
 #include "chips/trivial/lmc/usings.h"
 #include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/debugging/debugger.h"
@@ -9,7 +10,6 @@
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
 #include "interfaces/ui_observer.h"
-#include "lmc/out_type.h"
 
 namespace emu::applications::lmc {
 

@@ -1,8 +1,8 @@
 #include "lmc_memory_editor.h"
+#include "chips/trivial/lmc/usings.h"
 #include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/misc/uinteger.h"
 #include "imgui.h"
-#include "lmc/usings.h"
 #include <cstring>
 #include <fmt/core.h>
 #include <memory>
