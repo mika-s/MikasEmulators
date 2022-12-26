@@ -49,7 +49,9 @@ void RunningState::transition_to_step()
 
 void RunningState::perform(cyc& cycles)
 {
+#ifndef __EMSCRIPTEN__
     if (m_ctx->m_governor.is_time_to_update()) {
+#endif
         cycles = 0;
         while (cycles < static_cast<cyc>(s_cycles_per_tick) && !m_ctx->m_is_awaiting_input) {
             if (m_ctx->m_cpu->can_run_next_instruction()) {
@@ -91,6 +93,8 @@ void RunningState::perform(cyc& cycles)
         }
 
         m_ctx->m_ui->update_screen(m_ctx->m_is_awaiting_input, s_game_window_subtitle);
+#ifndef __EMSCRIPTEN__
     }
+#endif
 }
 }

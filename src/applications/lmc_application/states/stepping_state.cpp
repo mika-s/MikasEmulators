@@ -49,8 +49,37 @@ void SteppingState::transition_to_step()
 {
 }
 
-void SteppingState::perform(cyc& cycles)
+void SteppingState::perform([[maybe_unused]] cyc& cycles)
 {
+#ifndef __EMSCRIPTEN__
+    if (await_input_and_update_debug()) {
+        return;
+    }
+    if (!m_ctx->m_gui_io.m_is_stepping_instruction) {
+        return;
+    }
+
+    if (m_ctx->m_cpu->can_run_next_instruction()) {
+        m_ctx->m_cpu->next_instruction();
+    } else {
+        transition_to_pause();
+        return;
+    }
+
+    m_ctx->m_input->read(m_ctx->m_gui_io);
+
+    if (m_ctx->m_gui_io.m_is_quitting) {
+        m_ctx->m_gui_io.m_is_quitting = false;
+        transition_to_stop();
+        return;
+    } else if (m_ctx->m_gui_io.m_is_toggling_pause) {
+        m_ctx->m_gui_io.m_is_toggling_pause = false;
+        transition_to_run();
+        return;
+    }
+
+    m_ctx->m_ui->update_screen(m_ctx->m_is_awaiting_input, s_game_window_subtitle);
+#else
     if (await_input_and_update_debug()) {
         return;
     }
@@ -82,10 +111,34 @@ void SteppingState::perform(cyc& cycles)
     }
 
     m_ctx->m_ui->update_screen(m_ctx->m_is_awaiting_input, s_game_window_subtitle);
+#endif
 }
 
 bool SteppingState::await_input_and_update_debug()
 {
+#ifndef __EMSCRIPTEN__
+    m_ctx->m_input->read_debug_only(m_ctx->m_gui_io);
+
+    if (m_ctx->m_gui_io.m_is_quitting) {
+        m_ctx->m_gui_io.m_is_quitting = false;
+        transition_to_stop();
+        return true;
+    } else if (m_ctx->m_gui_io.m_is_toggling_pause) {
+        m_ctx->m_gui_io.m_is_toggling_pause = false;
+        transition_to_pause();
+        return true;
+    } else if (m_ctx->m_gui_io.m_is_stepping_instruction) {
+        m_ctx->m_gui_io.m_is_stepping_instruction = false;
+    } else if (m_ctx->m_gui_io.m_is_continuing_execution) {
+        m_ctx->m_gui_io.m_is_continuing_execution = false;
+        transition_to_run();
+        return true;
+    }
+
+    m_ctx->m_ui->update_debug_only(m_ctx->m_is_awaiting_input);
+
+    return false;
+#else
     while (true) {
         m_ctx->m_input->read_debug_only(m_ctx->m_gui_io);
 
@@ -110,5 +163,6 @@ bool SteppingState::await_input_and_update_debug()
     }
 
     return false;
+#endif
 }
 }

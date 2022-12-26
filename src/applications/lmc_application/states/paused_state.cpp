@@ -43,7 +43,9 @@ void PausedState::transition_to_step()
 
 void PausedState::perform([[maybe_unused]] cyc& cycles)
 {
+#ifndef __EMSCRIPTEN__
     if (m_ctx->m_governor.is_time_to_update()) {
+#endif
         m_ctx->m_input->read(m_ctx->m_gui_io);
 
         if (m_ctx->m_gui_io.m_is_quitting) {
@@ -61,6 +63,8 @@ void PausedState::perform([[maybe_unused]] cyc& cycles)
         }
 
         m_ctx->m_ui->update_screen(m_ctx->m_is_awaiting_input, s_game_window_subtitle);
+#ifndef __EMSCRIPTEN__
     }
+#endif
 }
 }

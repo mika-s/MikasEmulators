@@ -1,12 +1,11 @@
 mkdir -p build/emscripten/lmc/
 
 emcc \
-  libs/glad/src/glad.c \
   libs/imgui/imgui.cpp \
   libs/imgui/imgui_demo.cpp \
   libs/imgui/imgui_draw.cpp \
   libs/imgui/imgui_impl_opengl3.cpp \
-  libs/imgui/imgui_impl_sdl.cpp \
+  libs/imgui/imgui_impl_sdl_emscripten.cpp \
   libs/imgui/imgui_tables.cpp \
   libs/imgui/imgui_widgets.cpp \
   src/applications/lmc_application/emscripten_runner.cpp \
@@ -76,6 +75,7 @@ emcc \
   -s USE_SDL=2 \
   -s MAX_WEBGL_VERSION=2 \
   -o build/emscripten/lmc/lmc.js \
+  -s ASYNCIFY -s 'ASYNCIFY_IMPORTS=[\"copy,paste\"]' -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' \
   -O2 \
   --preload-file src/applications/lmc_application/emscripten_assets@/
 

@@ -117,8 +117,7 @@ void LmcApplicationSession::run()
     loop = [&] {
         m_state_context->current_state()->perform(cycles);
         if (m_state_context->current_state()->is_exit_state()) {
-            std::cout << "Exit\n";
-            exit(0);
+            emscripten_cancel_main_loop();
         }
     };
     emscripten_set_main_loop(main_loop, 60, true);

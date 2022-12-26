@@ -10,7 +10,11 @@
 #include "gui_request.h"
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
+#ifdef __EMSCRIPTEN__
+#include "imgui_impl_sdl_emscripten.h"
+#else
 #include "imgui_impl_sdl.h"
+#endif
 #include "interfaces/ui_observer.h"
 #include "lmc_memory_editor.h"
 #include "ui.h"
