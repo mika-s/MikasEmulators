@@ -51,13 +51,14 @@ void SteppingState::transition_to_step()
 
 void SteppingState::perform([[maybe_unused]] cyc& cycles)
 {
-#ifndef __EMSCRIPTEN__
+#ifdef __EMSCRIPTEN__
     if (await_input_and_update_debug()) {
         return;
     }
     if (!m_ctx->m_gui_io.m_is_stepping_instruction) {
         return;
     }
+    m_ctx->m_gui_io.m_is_stepping_instruction = false;
 
     if (m_ctx->m_cpu->can_run_next_instruction()) {
         m_ctx->m_cpu->next_instruction();
@@ -116,7 +117,7 @@ void SteppingState::perform([[maybe_unused]] cyc& cycles)
 
 bool SteppingState::await_input_and_update_debug()
 {
-#ifndef __EMSCRIPTEN__
+#ifdef __EMSCRIPTEN__
     m_ctx->m_input->read_debug_only(m_ctx->m_gui_io);
 
     if (m_ctx->m_gui_io.m_is_quitting) {
@@ -128,7 +129,7 @@ bool SteppingState::await_input_and_update_debug()
         transition_to_pause();
         return true;
     } else if (m_ctx->m_gui_io.m_is_stepping_instruction) {
-        m_ctx->m_gui_io.m_is_stepping_instruction = false;
+        return false;
     } else if (m_ctx->m_gui_io.m_is_continuing_execution) {
         m_ctx->m_gui_io.m_is_continuing_execution = false;
         transition_to_run();

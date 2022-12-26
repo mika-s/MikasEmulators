@@ -16,8 +16,14 @@ public:
     void read_debug_only(GuiIo& gui_io) override;
 
 private:
+#ifdef __EMSCRIPTEN__
+    static constexpr SDL_Scancode s_pause = SDL_SCANCODE_PAUSE;
+    static constexpr SDL_Scancode s_step_instruction = SDL_SCANCODE_PAGEUP;
+    static constexpr SDL_Scancode s_continue_running = SDL_SCANCODE_PAGEDOWN;
+#else
     static constexpr SDL_Scancode s_pause = SDL_SCANCODE_PAUSE;
     static constexpr SDL_Scancode s_step_instruction = SDL_SCANCODE_F7;
     static constexpr SDL_Scancode s_continue_running = SDL_SCANCODE_F9;
+#endif
 };
 }
