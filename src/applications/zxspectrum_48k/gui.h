@@ -45,7 +45,12 @@ public:
 
     virtual void remove_gui_observer(GuiObserver* observer) = 0;
 
-    virtual void update_screen(std::vector<u8> const& vram, std::vector<u8> const& color_ram, std::string const& game_window_subtitle) = 0;
+    virtual void update_screen(
+        std::vector<u8> const& vram,
+        std::vector<u8> const& color_ram,
+        u8 border_color,
+        std::string const& game_window_subtitle)
+        = 0;
 
     virtual void update_debug_only() = 0;
 
@@ -86,7 +91,6 @@ protected:
         Color(0xff, s_br, s_br, s_br)  // white
     };
 
-    static constexpr int s_bits_in_byte = 8;
     static constexpr int s_width_in_attribute_blocks = 32;
     static constexpr int s_height_in_attribute_blocks = 24;
     static constexpr int s_attribute_blocks_pixel_width = 8;
@@ -107,13 +111,16 @@ protected:
     static constexpr int s_scaled_width = static_cast<int>(s_scale * static_cast<float>(s_width));
     static constexpr int s_scaled_height = static_cast<int>(s_scale * static_cast<float>(s_height));
 
+    static constexpr u16 s_vram_offset = 0x4000;
+    static constexpr u16 s_color_ram_offset = 0x5800;
+
     bool m_has_created_table { false };
 
     Framebuffer m_framebuffer { Framebuffer(s_height, s_width, Color(0xff, 0, 128, 255)) };
 
     std::vector<int> m_lookup_table;
 
-    static void draw_edges(Framebuffer& framebuffer);
+    static void draw_borders(Framebuffer& framebuffer, u8 border_color);
 
     Color find_ink(u8 value, bool is_bright);
 
@@ -129,6 +136,6 @@ protected:
 
     void draw_attribute_blocks(Framebuffer& framebuffer, std::vector<u8> const& vram, std::vector<u8> const& color_ram);
 
-    std::vector<u32> create_framebuffer(std::vector<u8> const& vram, std::vector<u8> const& color_ram);
+    std::vector<u32> create_framebuffer(std::vector<u8> const& vram, std::vector<u8> const& color_ram, u8 border_color);
 };
 }

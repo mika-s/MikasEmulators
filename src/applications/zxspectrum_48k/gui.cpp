@@ -13,29 +13,31 @@ void Gui::create_table()
     m_has_created_table = true;
 }
 
-void Gui::draw_edges(Framebuffer& framebuffer)
+void Gui::draw_borders(Framebuffer& framebuffer, u8 border_color)
 {
+    const Color color = s_ordinary_colors[border_color];
+
     for (int row = 0; row < s_height; row++) {
         for (int col = 0; col < s_width_both_borders / 2; col++) {
-            framebuffer.set(row, col, Color::black());
+            framebuffer.set(row, col, color);
         }
     }
 
     for (int row = 0; row < s_height; row++) {
         for (int col = s_width - s_width_both_borders / 2; col < s_width; col++) {
-            framebuffer.set(row, col, Color::black());
+            framebuffer.set(row, col, color);
         }
     }
 
     for (int row = 0; row < s_height_both_borders / 2; row++) {
         for (int col = 0; col < s_width; col++) {
-            framebuffer.set(row, col, Color::black());
+            framebuffer.set(row, col, color);
         }
     }
 
     for (int row = s_height - s_height_both_borders / 2; row < s_height; row++) {
         for (int col = 0; col < s_width; col++) {
-            framebuffer.set(row, col, Color::black());
+            framebuffer.set(row, col, color);
         }
     }
 }
@@ -80,7 +82,7 @@ u16 Gui::display_address_from_xy(u8 row, u8 col, u8 pixel_line)
 
     const u16 address = (0 << 15) | (1 << 14) | (0 << 13) | a12 | a11 | a7 | a6 | a5 | a10 | a9 | a8 | a4 | a3 | a2 | a1 | a0;
 
-    return address - 0x4000;
+    return address - s_vram_offset;
 }
 
 u16 Gui::attribute_address_from_xy(u8 row, u8 col) {
@@ -97,7 +99,7 @@ u16 Gui::attribute_address_from_xy(u8 row, u8 col) {
 
     const u16 address = (0 << 15) | (1 << 14) | (0 << 13) | (1 << 12) | (1 << 11) | (0 << 10) | a12 | a11 | a10 | a9 | a8 | a4 | a3 | a2 | a1 | a0;
 
-    return address - 0x5800;
+    return address - s_color_ram_offset;
 }
 
 void Gui::draw_attribute_blocks(Framebuffer& framebuffer, std::vector<u8> const& vram, std::vector<u8> const& color_ram)
@@ -124,13 +126,13 @@ void Gui::draw_attribute_blocks(Framebuffer& framebuffer, std::vector<u8> const&
     }
 }
 
-std::vector<u32> Gui::create_framebuffer(std::vector<u8> const& vram, std::vector<u8> const& color_ram)
+std::vector<u32> Gui::create_framebuffer(std::vector<u8> const& vram, std::vector<u8> const& color_ram, u8 border_color)
 {
     if (!m_has_created_table) {
         throw std::runtime_error("Programming error: The lookup tables have to be made first. Run create_table() first.");
     }
 
-    draw_edges(m_framebuffer);
+    draw_borders(m_framebuffer, border_color);
     draw_attribute_blocks(m_framebuffer, vram, color_ram);
 
     return m_framebuffer.to_output_vector();

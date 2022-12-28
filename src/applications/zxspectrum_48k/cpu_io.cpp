@@ -2,8 +2,8 @@
 
 namespace emu::applications::zxspectrum_48k {
 
-CpuIo::CpuIo()
+u8 CpuIo::border_color()
 {
+    return m_out_port0xfe & s_border_color_mask;
 }
-
 }

@@ -161,8 +161,8 @@ void ZxSpectrum48kSession::setup_debugging()
             { "c", 0 } }));
     m_debug_container->add_io(IoDebugContainer<u8>(
         "0xfe",
-        [&]() { return m_outputs_during_cycle.contains(s_port_0xf5); },
-        [&]() { return m_outputs_during_cycle[s_port_0xf5]; }));
+        [&]() { return m_outputs_during_cycle.contains(s_port_0xfe); },
+        [&]() { return m_outputs_during_cycle[s_port_0xfe]; }));
     m_debug_container->add_memory(MemoryDebugContainer<u8>(
         [&]() { return memory(); }));
     m_debug_container->add_disassembled_program(disassemble_program());
@@ -193,11 +193,11 @@ void ZxSpectrum48kSession::gui_request(GuiRequest request)
 void ZxSpectrum48kSession::in_requested([[maybe_unused]] u16 port)
 {
     switch (port) {
-    case s_port_0xf5:
-        m_cpu->input(s_port_0xf5, m_cpu_io.m_out_port0xfe);
+    case s_port_0xfe:
+        m_cpu->input(s_port_0xfe, m_cpu_io.m_out_port0xfe);
         break;
     default:
-        throw std::runtime_error("Illegal input port for Space Invaders");
+        throw std::runtime_error("Illegal input port for ZX Spectrum 48k");
     }
 }
 
@@ -210,11 +210,11 @@ void ZxSpectrum48kSession::out_changed(u16 port)
     }
 
     switch (port) {
-    case s_port_0xf5:
+    case s_port_0xfe:
         m_cpu_io.m_in_port0xfe = m_cpu->a();
         break;
     default:
-        throw std::runtime_error("Illegal output port for Space Invaders");
+        throw std::runtime_error("Illegal output port for ZX Spectrum 48k");
     }
 }
 

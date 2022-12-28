@@ -94,7 +94,7 @@ private:
     // Game loop - end
 
     // IO - begin
-    static constexpr u8 s_port_0xf5 = 0xfe;
+    static constexpr u8 s_port_0xfe = 0xfe;
     // IO - end
 
     bool m_is_in_debug_mode { false };

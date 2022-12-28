@@ -1,14 +1,15 @@
 #include "running_state.h"
+#include "applications/zxspectrum_48k/cpu_io.h"
+#include "applications/zxspectrum_48k/gui.h"
+#include "applications/zxspectrum_48k/gui_io.h"
+#include "applications/zxspectrum_48k/interfaces/input.h"
+#include "applications/zxspectrum_48k/states/state_context.h"
 #include "chips/z80/cpu.h"
 #include "crosscutting/debugging/debugger.h"
 #include "crosscutting/logging/logger.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/misc/governor.h"
 #include "crosscutting/typedefs.h"
-#include "zxspectrum_48k/gui.h"
-#include "zxspectrum_48k/gui_io.h"
-#include "zxspectrum_48k/interfaces/input.h"
-#include "zxspectrum_48k/states/state_context.h"
 #include <unordered_map>
 #include <utility>
 
@@ -71,7 +72,7 @@ void RunningState::perform(cyc& cycles)
             return;
         }
 
-        m_ctx->m_gui->update_screen(vram(), color_ram(), s_game_window_subtitle);
+        m_ctx->m_gui->update_screen(vram(), color_ram(), m_ctx->m_cpu_io.border_color(), s_game_window_subtitle);
 
         if (m_ctx->m_cpu->is_inta()) {
             m_ctx->m_cpu->interrupt(0xff);

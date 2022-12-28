@@ -1,4 +1,5 @@
 #include "stepping_state.h"
+#include "applications/zxspectrum_48k/cpu_io.h"
 #include "applications/zxspectrum_48k/gui.h"
 #include "applications/zxspectrum_48k/gui_io.h"
 #include "applications/zxspectrum_48k/interfaces/input.h"
@@ -71,7 +72,7 @@ void SteppingState::perform(cyc& cycles)
         return;
     }
 
-    m_ctx->m_gui->update_screen(vram(), color_ram(), s_game_window_subtitle);
+    m_ctx->m_gui->update_screen(vram(), color_ram(), m_ctx->m_cpu_io.border_color(), s_game_window_subtitle);
 
     if (m_ctx->m_cpu->is_inta()) {
         m_ctx->m_cpu->interrupt(0xff);

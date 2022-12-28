@@ -181,9 +181,13 @@ void GuiImgui::init()
     glGenTextures(1, &m_screen_texture);
 }
 
-void GuiImgui::update_screen(std::vector<u8> const& vram, std::vector<u8> const& color_ram, std::string const& game_window_subtitle)
+void GuiImgui::update_screen(
+    std::vector<u8> const& vram,
+    std::vector<u8> const& color_ram,
+    u8 border_color,
+    std::string const& game_window_subtitle)
 {
-    std::vector<u32> framebuffer = create_framebuffer(vram, color_ram);
+    const std::vector<u32> framebuffer = create_framebuffer(vram, color_ram, border_color);
 
     glBindTexture(GL_TEXTURE_2D, m_screen_texture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
