@@ -58,28 +58,45 @@ public:
 protected:
     static constexpr int s_flash_bit = 7;
     static constexpr int s_bright_bit = 6;
-    static constexpr unsigned int s_paper_mask = 0b00000111;
-    static constexpr unsigned int s_ink_mask = 0b00111000;
-    static constexpr unsigned int s_ink_shift = 3;
+    static constexpr unsigned int s_ink_mask = 0b00000111;
+    static constexpr unsigned int s_paper_mask = 0b00111000;
+    static constexpr unsigned int s_paper_shift = 3;
+    static constexpr u8 s_or = 0xd0;
+    static constexpr u8 s_br = 0xff;
 
-    static const inline std::vector<Color> s_colors = {
-        Color(0xff, 0, 0, 0),
-        Color(0xff, 0, 0, 0xff),
-        Color(0xff, 0xff, 0, 0),
-        Color(0xff, 0xff, 0, 0xff),
-        Color(0xff, 0, 0xff, 0),
-        Color(0xff, 0, 0xff, 0xff),
-        Color(0xff, 0xff, 0xff, 0),
-        Color(0xff, 0xff, 0xff, 0xff)
+    static const inline std::vector<Color> s_ordinary_colors = {
+        Color(0xff, 0x00, 0x00, 0x00), // black
+        Color(0xff, 0x00, 0x00, s_or), // blue
+        Color(0xff, s_or, 0x00, 0x00), // red
+        Color(0xff, s_or, 0x00, s_or), // magenta
+        Color(0xff, 0x00, s_or, 0x00), // green
+        Color(0xff, 0x00, s_or, s_or), // cyan
+        Color(0xff, s_or, s_or, 0x00), // yellow
+        Color(0xff, s_or, s_or, s_or)  // white
+    };
+
+    static const inline std::vector<Color> s_bright_colors = {
+        Color(0xff, 0x00, 0x00, 0x00), // black
+        Color(0xff, 0x00, 0x00, s_br), // blue
+        Color(0xff, s_br, 0x00, 0x00), // red
+        Color(0xff, s_br, 0x00, s_br), // magenta
+        Color(0xff, 0x00, s_br, 0x00), // green
+        Color(0xff, 0x00, s_br, s_br), // cyan
+        Color(0xff, s_br, s_br, 0x00), // yellow
+        Color(0xff, s_br, s_br, s_br)  // white
     };
 
     static constexpr int s_bits_in_byte = 8;
     static constexpr int s_width_in_attribute_blocks = 32;
     static constexpr int s_height_in_attribute_blocks = 24;
     static constexpr int s_attribute_blocks_pixel_width = 8;
-    static constexpr int s_width_both_borders = 64;
+    static constexpr int s_width_left_border = 32;
+    static constexpr int s_width_right_border = 32;
+    static constexpr int s_width_both_borders = s_width_left_border + s_width_right_border;
     static constexpr int s_width_visible_area = 256; // 32 * 8
-    static constexpr int s_height_both_borders = 48;
+    static constexpr int s_height_top_border = 24;
+    static constexpr int s_height_bottom_border = 24;
+    static constexpr int s_height_both_borders = s_height_top_border + s_height_bottom_border;
     static constexpr int s_height_visible_area = 192; // 24 * 8
 
     // Final width and height
@@ -97,6 +114,18 @@ protected:
     std::vector<int> m_lookup_table;
 
     static void draw_edges(Framebuffer& framebuffer);
+
+    Color find_ink(u8 value, bool is_bright);
+
+    Color find_paper(u8 value, bool is_bright);
+
+    bool find_flash_mode(u8 value);
+
+    bool find_bright_mode(u8 value);
+
+    u16 display_address_from_xy(u8 row, u8 col, u8 pixel_line);
+
+    u16 attribute_address_from_xy(u8 row, u8 col);
 
     void draw_attribute_blocks(Framebuffer& framebuffer, std::vector<u8> const& vram, std::vector<u8> const& color_ram);
 

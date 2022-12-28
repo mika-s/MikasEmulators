@@ -1,6 +1,7 @@
 #include "zxspectrum_48k_session.h"
 #include "chips/z80/cpu.h"
 #include "chips/z80/disassembler.h"
+#include "chips/z80/interrupt_mode.h"
 #include "cpu_io.h"
 #include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/debugging/debugger.h"
@@ -38,6 +39,7 @@ using emu::debugger::MemoryDebugContainer;
 using emu::debugger::RegisterDebugContainer;
 using emu::util::string::split;
 using emu::z80::Disassembler;
+using emu::z80::InterruptMode;
 
 ZxSpectrum48kSession::ZxSpectrum48kSession(
     [[maybe_unused]] Settings const& settings,
@@ -134,6 +136,18 @@ void ZxSpectrum48kSession::setup_debugging()
     m_debug_container->add_pc([&]() { return m_cpu->pc(); });
     m_debug_container->add_sp([&]() { return m_cpu->sp(); });
     m_debug_container->add_is_interrupted([&]() { return m_cpu->is_interrupted(); });
+    m_debug_container->add_interrupt_mode([&]() {
+        switch (m_cpu->interrupt_mode()) {
+        case InterruptMode::ZERO:
+            return "0";
+        case InterruptMode::ONE:
+            return "1";
+        case InterruptMode::TWO:
+            return "2";
+        default:
+            throw std::invalid_argument("Unhandled InterruptMode");
+        }
+    });
     m_debug_container->add_flag_register(FlagRegisterDebugContainer<u8>(
         "F",
         [&]() { return m_cpu->f(); },

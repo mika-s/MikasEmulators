@@ -3,7 +3,6 @@
 #include "crosscutting/memory/memory_mapped_io.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
-#include <cstddef>
 
 namespace emu::memory {
 template<class A, class D>
@@ -25,7 +24,6 @@ public:
     u8 read(u16 address) override;
 
 private:
-    static constexpr std::size_t s_address_mask = 0x3fff;
     static constexpr u16 s_address_rom_end = 0x3fff;
     static constexpr u16 s_address_ram_end = 0xff57;
 
