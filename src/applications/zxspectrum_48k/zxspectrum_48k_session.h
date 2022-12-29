@@ -89,12 +89,14 @@ public:
 
 private:
     // Game loop - begin
-    static constexpr long double s_fps = 60.0L;
+    static constexpr long double s_fps = 50.0L;
     static constexpr long double s_tick_limit = 1000.0L / s_fps;
     // Game loop - end
 
     // IO - begin
     static constexpr u8 s_port_0xfe = 0xfe;
+    static constexpr unsigned int s_mic_bit = 3;
+    static constexpr unsigned int s_beep_bit = 4;
     // IO - end
 
     bool m_is_in_debug_mode { false };

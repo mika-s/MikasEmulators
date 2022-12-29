@@ -175,7 +175,7 @@ private:
 
     void notify_out_observers(u8 port);
 
-    void notify_in_observers(u8 port);
+    void notify_in_observers(u16 port);
 
     [[nodiscard]] u16 address_in_HL() const;
 

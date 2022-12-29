@@ -66,8 +66,9 @@ void in_r_C(u8& reg, u8 b_reg, u8 c_reg, std::vector<u8> io, Flags& flag_reg, cy
 
 void print_in(std::ostream& ostream, NextByte const& args)
 {
-    ostream << "IN "
-            << hexify_wo_0x(args.farg);
+    ostream << "IN A, ("
+            << hexify_wo_0x(args.farg)
+            << ")";
 }
 
 void print_in_undocumented(std::ostream& ostream, std::string const& dest)
@@ -86,7 +87,7 @@ void print_in_r_r(std::ostream& ostream, std::string const& dest, std::string co
             << ")";
 }
 
-TEST_CASE("Z80: IN A, [n]")
+TEST_CASE("Z80: IN A, (n)")
 {
     cyc cycles = 0;
     std::vector<u8> io = { 0, 2, 4, 6, 8, 10 };

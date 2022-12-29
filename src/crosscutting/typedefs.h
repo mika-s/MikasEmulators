@@ -10,6 +10,6 @@ using i64 [[maybe_unused]] = std::int64_t;
 using u8 = std::uint8_t;
 using u16 = std::uint16_t;
 using u32 = std::uint32_t;
-using u64 [[maybe_unused]] = std::uint64_t;
+using u64 = std::uint64_t;
 
 using cyc = std::uint64_t;

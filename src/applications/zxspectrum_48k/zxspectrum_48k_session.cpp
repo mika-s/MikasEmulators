@@ -8,6 +8,7 @@
 #include "crosscutting/debugging/disassembled_line.h"
 #include "crosscutting/logging/logger.h"
 #include "crosscutting/memory/emulator_memory.h"
+#include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
 #include "gui.h"
 #include "gui_request.h"
@@ -20,7 +21,7 @@
 #include "states/stepping_state.h"
 #include "states/stopped_state.h"
 #include <algorithm>
-#include <iostream>
+#include <iosfwd>
 #include <iterator>
 #include <stdexcept>
 #include <string>
@@ -37,6 +38,9 @@ using emu::debugger::FlagRegisterDebugContainer;
 using emu::debugger::IoDebugContainer;
 using emu::debugger::MemoryDebugContainer;
 using emu::debugger::RegisterDebugContainer;
+using emu::util::byte::high_byte;
+using emu::util::byte::is_bit_set;
+using emu::util::string::hexify;
 using emu::util::string::split;
 using emu::z80::Disassembler;
 using emu::z80::InterruptMode;
@@ -163,6 +167,10 @@ void ZxSpectrum48kSession::setup_debugging()
         "0xfe",
         [&]() { return m_outputs_during_cycle.contains(s_port_0xfe); },
         [&]() { return m_outputs_during_cycle[s_port_0xfe]; }));
+    m_debug_container->add_io(IoDebugContainer<u8>(
+        "LAST-K",
+        [&]() { return true; },
+        [&]() { return memory().at(0x5c08); }));
     m_debug_container->add_memory(MemoryDebugContainer<u8>(
         [&]() { return memory(); }));
     m_debug_container->add_disassembled_program(disassemble_program());
@@ -190,14 +198,27 @@ void ZxSpectrum48kSession::gui_request(GuiRequest request)
     }
 }
 
-void ZxSpectrum48kSession::in_requested([[maybe_unused]] u16 port)
+void ZxSpectrum48kSession::in_requested(u16 port)
 {
-    switch (port) {
-    case s_port_0xfe:
-        m_cpu->input(s_port_0xfe, m_cpu_io.m_out_port0xfe);
-        break;
-    default:
-        throw std::runtime_error("Illegal input port for ZX Spectrum 48k");
+    if (!is_bit_set(port, 0)) {
+        u8 hi = high_byte(port);
+        if (hi == 0xfe) {
+            m_cpu->input(util::byte::to_u16(0xfe, s_port_0xfe), m_cpu_io.keyboard_input(0xfefe));
+        } else if (hi == 0xfd) {
+            m_cpu->input(util::byte::to_u16(0xfd, s_port_0xfe), m_cpu_io.keyboard_input(0xfdfe));
+        } else if (hi == 0xfb) {
+            m_cpu->input(util::byte::to_u16(0xfb, s_port_0xfe), m_cpu_io.keyboard_input(0xfbfe));
+        } else if (hi == 0xf7) {
+            m_cpu->input(util::byte::to_u16(0xf7, s_port_0xfe), m_cpu_io.keyboard_input(0xf7fe));
+        } else if (hi == 0xef) {
+            m_cpu->input(util::byte::to_u16(0xef, s_port_0xfe), m_cpu_io.keyboard_input(0xeffe));
+        } else if (hi == 0xdf) {
+            m_cpu->input(util::byte::to_u16(0xdf, s_port_0xfe), m_cpu_io.keyboard_input(0xdffe));
+        } else if (hi == 0xbf) {
+            m_cpu->input(util::byte::to_u16(0xbf, s_port_0xfe), m_cpu_io.keyboard_input(0xbffe));
+        } else if (hi == 0x7f) {
+            m_cpu->input(util::byte::to_u16(0x7f, s_port_0xfe), m_cpu_io.keyboard_input(0x7ffe));
+        }
     }
 }
 
@@ -209,9 +230,15 @@ void ZxSpectrum48kSession::out_changed(u16 port)
         m_outputs_during_cycle[port] |= m_cpu->a();
     }
 
-    switch (port) {
+    switch (port) { // NOLINT
     case s_port_0xfe:
-        m_cpu_io.m_in_port0xfe = m_cpu->a();
+        m_cpu_io.m_out_port0xfe = m_cpu->a();
+        if (is_bit_set(m_cpu_io.m_out_port0xfe, s_mic_bit)) {
+            // MIC out
+        }
+        if (is_bit_set(m_cpu_io.m_out_port0xfe, s_beep_bit)) {
+            // m_audio.beep();
+        }
         break;
     default:
         throw std::runtime_error("Illegal output port for ZX Spectrum 48k");

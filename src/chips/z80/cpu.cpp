@@ -835,7 +835,7 @@ cyc Cpu::next_instruction()
         break;
     case IN: {
         NextByte args = get_next_byte();
-        notify_in_observers(args.farg);
+        notify_in_observers(to_u16(m_acc_reg, args.farg));
         in_A_n(m_acc_reg, args, m_io_in, cycles);
         break;
     }
@@ -2399,8 +2399,8 @@ void Cpu::next_extd_instruction(u8 extd_opcode, cyc& cycles)
 
     switch (extd_opcode) {
     case IN_B_C: {
+        notify_in_observers(to_u16(m_b_reg, m_c_reg));
         in_r_C(m_b_reg, m_b_reg, m_c_reg, m_io_in, m_flag_reg, cycles);
-        notify_in_observers(m_c_reg);
         break;
     }
     case OUT_C_B: {
@@ -2440,8 +2440,8 @@ void Cpu::next_extd_instruction(u8 extd_opcode, cyc& cycles)
         ld_I_A(m_i_reg, m_acc_reg, cycles);
         break;
     case IN_C_C: {
+        notify_in_observers(to_u16(m_b_reg, m_c_reg));
         in_r_C(m_c_reg, m_b_reg, m_c_reg, m_io_in, m_flag_reg, cycles);
-        notify_in_observers(m_c_reg);
         break;
     }
     case OUT_C_C: {
@@ -2462,8 +2462,8 @@ void Cpu::next_extd_instruction(u8 extd_opcode, cyc& cycles)
         ld_R_A(m_r_reg, m_acc_reg, cycles);
         break;
     case IN_D_C: {
+        notify_in_observers(to_u16(m_b_reg, m_c_reg));
         in_r_C(m_d_reg, m_b_reg, m_c_reg, m_io_in, m_flag_reg, cycles);
-        notify_in_observers(m_c_reg);
         break;
     }
     case OUT_C_D: {
@@ -2482,8 +2482,8 @@ void Cpu::next_extd_instruction(u8 extd_opcode, cyc& cycles)
         im(m_interrupt_mode, InterruptMode::ONE, cycles);
         break;
     case IN_A_C: {
+        notify_in_observers(to_u16(m_b_reg, m_c_reg));
         in_r_C(m_acc_reg, m_b_reg, m_c_reg, m_io_in, m_flag_reg, cycles);
-        notify_in_observers(m_c_reg);
         break;
     }
     case OUT_C_A: {
@@ -2495,8 +2495,8 @@ void Cpu::next_extd_instruction(u8 extd_opcode, cyc& cycles)
         ld_A_I(m_acc_reg, m_i_reg, m_flag_reg, m_iff2, cycles);
         break;
     case IN_E_C: {
+        notify_in_observers(to_u16(m_b_reg, m_c_reg));
         in_r_C(m_e_reg, m_b_reg, m_c_reg, m_io_in, m_flag_reg, cycles);
-        notify_in_observers(m_c_reg);
         break;
     }
     case OUT_C_E: {
@@ -2518,8 +2518,8 @@ void Cpu::next_extd_instruction(u8 extd_opcode, cyc& cycles)
         ld_A_R(m_acc_reg, m_r_reg, m_flag_reg, m_iff2, cycles);
         break;
     case IN_H_C: {
+        notify_in_observers(to_u16(m_b_reg, m_c_reg));
         in_r_C(m_h_reg, m_b_reg, m_c_reg, m_io_in, m_flag_reg, cycles);
-        notify_in_observers(m_c_reg);
         break;
     }
     case OUT_C_H: {
@@ -2537,8 +2537,8 @@ void Cpu::next_extd_instruction(u8 extd_opcode, cyc& cycles)
         rrd(m_acc_reg, m_memory, address_in_HL(), m_flag_reg, cycles);
         break;
     case IN_L_C: {
+        notify_in_observers(to_u16(m_b_reg, m_c_reg));
         in_r_C(m_l_reg, m_b_reg, m_c_reg, m_io_in, m_flag_reg, cycles);
-        notify_in_observers(m_c_reg);
         break;
     }
     case OUT_C_L: {
@@ -2557,8 +2557,8 @@ void Cpu::next_extd_instruction(u8 extd_opcode, cyc& cycles)
         break;
     case IN_C: {
         u8 throwaway;
+        notify_in_observers(to_u16(m_b_reg, m_c_reg));
         in_r_C(throwaway, m_b_reg, m_c_reg, m_io_in, m_flag_reg, cycles);
-        notify_in_observers(m_c_reg);
         break;
     }
     case OUT_C_0: {
@@ -2853,7 +2853,7 @@ void Cpu::notify_out_observers(u8 port)
     }
 }
 
-void Cpu::notify_in_observers(u8 port)
+void Cpu::notify_in_observers(u16 port)
 {
     for (InObserver* observer : m_in_observers) {
         observer->in_requested(port);
