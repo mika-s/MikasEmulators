@@ -25,9 +25,6 @@ class Logger;
 namespace emu::applications::space_invaders {
 
 GuiSdl::GuiSdl()
-    : m_win(nullptr)
-    , m_rend(nullptr)
-    , m_texture(nullptr)
 {
     init();
 }

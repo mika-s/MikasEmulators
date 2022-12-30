@@ -31,18 +31,6 @@ class Logger;
 namespace emu::applications::space_invaders {
 
 GuiImgui::GuiImgui()
-    : m_win(nullptr)
-    , m_gl_context(nullptr)
-    , m_screen_texture(0)
-    , m_show_game(true)
-    , m_show_game_info(true)
-    , m_show_cpu_info(true)
-    , m_show_io_info(true)
-    , m_show_log(true)
-    , m_show_disassembly(true)
-    , m_show_memory_editor(true)
-    , m_show_demo(false)
-    , m_is_in_debug_mode(false)
 {
     init();
 }

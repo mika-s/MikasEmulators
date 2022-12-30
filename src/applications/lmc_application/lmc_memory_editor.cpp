@@ -38,7 +38,7 @@ void LmcMemoryEditor::draw(char const* title, bool* p_open)
         const ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg //
             | ImGuiTableFlags_SizingFixedSame | ImGuiTableFlags_NoHostExtendX;
 
-        std::vector<Data> memory = m_debug_container->memory().value();
+        const std::vector<Data> memory = m_debug_container->memory().value();
 
         if (ImGui::BeginTable("memory_editor", s_cols, flags)) {
             unsigned int address = 0;

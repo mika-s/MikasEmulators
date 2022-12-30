@@ -10,6 +10,7 @@
 #include <vector>
 
 namespace emu::applications::zxspectrum_48k {
+class CpuIo;
 class GuiObserver;
 }
 namespace emu::debugger {
@@ -57,6 +58,8 @@ public:
     virtual void attach_debugger(std::shared_ptr<Debugger<u16, 16>> debugger) = 0;
 
     virtual void attach_debug_container(std::shared_ptr<DebugContainer<u16, u8, 16>> debug_container) = 0;
+
+    virtual void attach_cpu_io(CpuIo const* cpu_io) = 0;
 
     virtual void attach_logger(std::shared_ptr<Logger> logger) = 0;
 

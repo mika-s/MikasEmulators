@@ -10,6 +10,7 @@
 #include <vector>
 
 namespace emu::applications::zxspectrum_48k {
+class CpuIo;
 class GuiObserver;
 }
 namespace emu::debugger {
@@ -49,6 +50,8 @@ public:
     void attach_debugger(std::shared_ptr<Debugger<u16, 16>> debugger) override;
 
     void attach_debug_container(std::shared_ptr<DebugContainer<u16, u8, 16>> debug_container) override;
+
+    void attach_cpu_io(CpuIo const* cpu_io) override;
 
     void attach_logger(std::shared_ptr<Logger> logger) override;
 

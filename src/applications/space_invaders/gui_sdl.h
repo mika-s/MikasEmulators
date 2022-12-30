@@ -49,9 +49,9 @@ public:
     void attach_logger(std::shared_ptr<Logger> logger) override;
 
 private:
-    SDL_Window* m_win;
-    SDL_Renderer* m_rend;
-    SDL_Texture* m_texture;
+    SDL_Window* m_win { nullptr };
+    SDL_Renderer* m_rend { nullptr };
+    SDL_Texture* m_texture { nullptr };
 
     std::vector<GuiObserver*> m_gui_observers;
 

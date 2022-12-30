@@ -40,6 +40,7 @@ using emu::debugger::MemoryDebugContainer;
 using emu::debugger::RegisterDebugContainer;
 using emu::util::byte::high_byte;
 using emu::util::byte::is_bit_set;
+using emu::util::byte::to_u16;
 using emu::util::string::hexify;
 using emu::util::string::split;
 using emu::z80::Disassembler;
@@ -177,6 +178,7 @@ void ZxSpectrum48kSession::setup_debugging()
 
     m_gui->attach_debugger(m_debugger);
     m_gui->attach_debug_container(m_debug_container);
+    m_gui->attach_cpu_io(&m_cpu_io);
     m_gui->attach_logger(m_logger);
 }
 
@@ -201,24 +203,7 @@ void ZxSpectrum48kSession::gui_request(GuiRequest request)
 void ZxSpectrum48kSession::in_requested(u16 port)
 {
     if (!is_bit_set(port, 0)) {
-        u8 hi = high_byte(port);
-        if (hi == 0xfe) {
-            m_cpu->input(util::byte::to_u16(0xfe, s_port_0xfe), m_cpu_io.keyboard_input(0xfefe));
-        } else if (hi == 0xfd) {
-            m_cpu->input(util::byte::to_u16(0xfd, s_port_0xfe), m_cpu_io.keyboard_input(0xfdfe));
-        } else if (hi == 0xfb) {
-            m_cpu->input(util::byte::to_u16(0xfb, s_port_0xfe), m_cpu_io.keyboard_input(0xfbfe));
-        } else if (hi == 0xf7) {
-            m_cpu->input(util::byte::to_u16(0xf7, s_port_0xfe), m_cpu_io.keyboard_input(0xf7fe));
-        } else if (hi == 0xef) {
-            m_cpu->input(util::byte::to_u16(0xef, s_port_0xfe), m_cpu_io.keyboard_input(0xeffe));
-        } else if (hi == 0xdf) {
-            m_cpu->input(util::byte::to_u16(0xdf, s_port_0xfe), m_cpu_io.keyboard_input(0xdffe));
-        } else if (hi == 0xbf) {
-            m_cpu->input(util::byte::to_u16(0xbf, s_port_0xfe), m_cpu_io.keyboard_input(0xbffe));
-        } else if (hi == 0x7f) {
-            m_cpu->input(util::byte::to_u16(0x7f, s_port_0xfe), m_cpu_io.keyboard_input(0x7ffe));
-        }
+        m_cpu->input(port, m_cpu_io.keyboard_input(port));
     }
 }
 

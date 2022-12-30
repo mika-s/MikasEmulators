@@ -3,6 +3,8 @@
 #include "interfaces/input.h"
 #include "key_request.h"
 #include <SDL_scancode.h>
+#include <functional>
+#include <string>
 #include <vector>
 
 namespace emu::applications::zxspectrum_48k {
@@ -82,6 +84,10 @@ private:
 
     std::vector<KeyObserver*> m_io_observers;
 
+    std::vector<std::function<void()>> m_cancel_last_keypress;
+
     void notify_io_observers(KeyRequest request);
+
+    void handle_text(CpuIo& cpu_io, std::string text);
 };
 }

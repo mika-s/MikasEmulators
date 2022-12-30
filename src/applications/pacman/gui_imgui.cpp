@@ -30,25 +30,6 @@ class Debugger;
 namespace emu::applications::pacman {
 
 GuiImgui::GuiImgui()
-    : m_win(nullptr)
-    , m_gl_context(nullptr)
-    , m_screen_texture(0)
-    , m_tile_texture(0)
-    , m_sprite_texture(0)
-    , m_show_game(true)
-    , m_show_game_info(true)
-    , m_show_cpu_info(true)
-    , m_show_io_info(true)
-    , m_show_log(true)
-    , m_show_disassembly(true)
-    , m_show_memory_editor(true)
-    , m_show_tilemap(true)
-    , m_show_spritemap(true)
-    , m_show_waveforms(true)
-    , m_show_demo(false)
-    , m_is_in_debug_mode(false)
-    , m_tilemap(1)
-    , m_spritemap(1)
 {
     init();
 }

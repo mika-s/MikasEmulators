@@ -10,6 +10,7 @@
 #include <string>
 
 namespace emu::applications::zxspectrum_48k {
+class CpuIo;
 class GuiObserver;
 }
 namespace emu::debugger {
@@ -61,6 +62,10 @@ void GuiSdl::attach_debugger([[maybe_unused]] std::shared_ptr<Debugger<u16, 16>>
 }
 
 void GuiSdl::attach_debug_container([[maybe_unused]] std::shared_ptr<DebugContainer<u16, u8, 16>> debug_container)
+{
+}
+
+void GuiSdl::attach_cpu_io([[maybe_unused]] CpuIo const* cpu_io)
 {
 }
 

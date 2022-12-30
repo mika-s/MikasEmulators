@@ -59,20 +59,20 @@ public:
     void attach_logger(std::shared_ptr<Logger> logger) override;
 
 private:
-    SDL_Window* m_win;
-    SDL_GLContext m_gl_context;
-    u32 m_screen_texture;
+    SDL_Window* m_win { nullptr };
+    SDL_GLContext m_gl_context { nullptr };
+    u32 m_screen_texture { 0 };
 
-    bool m_show_game;
-    bool m_show_game_info;
-    bool m_show_cpu_info;
-    bool m_show_io_info;
-    bool m_show_log;
-    bool m_show_disassembly;
-    bool m_show_memory_editor;
-    bool m_show_demo;
+    bool m_show_game { true };
+    bool m_show_game_info { true };
+    bool m_show_cpu_info { true };
+    bool m_show_io_info { true };
+    bool m_show_log { true };
+    bool m_show_disassembly { true };
+    bool m_show_memory_editor { true };
+    bool m_show_demo { false };
 
-    bool m_is_in_debug_mode;
+    bool m_is_in_debug_mode { false };
 
     std::vector<GuiObserver*> m_gui_observers;
     std::shared_ptr<Logger> m_logger;

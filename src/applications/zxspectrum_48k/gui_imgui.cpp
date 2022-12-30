@@ -5,7 +5,8 @@
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_sdl.h"
-#include "zxspectrum_48k/interfaces/gui_observer.h"
+#include "interfaces/gui_observer.h"
+#include "keyboard_pane.h"
 #include <SDL.h>
 #include <SDL_error.h>
 #include <SDL_log.h>
@@ -16,6 +17,9 @@
 #include <unordered_map>
 #include <utility>
 
+namespace emu::applications::zxspectrum_48k {
+class CpuIo;
+}
 namespace emu::debugger {
 template<class A, class D, std::size_t B>
 class DebugContainer;
@@ -31,18 +35,6 @@ class Logger;
 namespace emu::applications::zxspectrum_48k {
 
 GuiImgui::GuiImgui()
-    : m_win(nullptr)
-    , m_gl_context(nullptr)
-    , m_screen_texture(0)
-    , m_show_game(true)
-    , m_show_game_info(true)
-    , m_show_cpu_info(true)
-    , m_show_io_info(true)
-    , m_show_log(true)
-    , m_show_disassembly(true)
-    , m_show_memory_editor(true)
-    , m_show_demo(false)
-    , m_is_in_debug_mode(false)
 {
     init();
 }
@@ -91,6 +83,11 @@ void GuiImgui::attach_debug_container(std::shared_ptr<DebugContainer<u16, u8, 16
     m_io_info.attach_debug_container(debug_container);
     m_disassembly.attach_debug_container(debug_container);
     m_memory_editor.attach_debug_container(debug_container);
+}
+
+void GuiImgui::attach_cpu_io(CpuIo const* cpu_io)
+{
+    m_keyboard_info.attach_cpu_io(cpu_io);
 }
 
 void GuiImgui::attach_logger(std::shared_ptr<Logger> logger)
@@ -249,6 +246,7 @@ void GuiImgui::render(std::string const& game_window_subtitle)
             ImGui::MenuItem("Log", nullptr, &m_show_log);
             ImGui::MenuItem("Disassembly", nullptr, &m_show_disassembly);
             ImGui::MenuItem("Memory editor", nullptr, &m_show_memory_editor);
+            ImGui::MenuItem("Keyboard", nullptr, &m_show_keyboard_info);
             ImGui::MenuItem("Demo", nullptr, &m_show_demo);
             ImGui::EndMenu();
         }
@@ -281,6 +279,9 @@ void GuiImgui::render(std::string const& game_window_subtitle)
     }
     if (m_show_memory_editor) {
         render_memory_editor_window();
+    }
+    if (m_show_keyboard_info) {
+        render_keyboard_window();
     }
     if (m_show_demo) {
         ImGui::ShowDemoWindow();
@@ -368,5 +369,10 @@ void GuiImgui::render_disassembly_window()
 void GuiImgui::render_memory_editor_window()
 {
     m_memory_editor.draw("Memory editor", &m_show_memory_editor);
+}
+
+void GuiImgui::render_keyboard_window()
+{
+    m_keyboard_info.draw("Keyboard", &m_show_keyboard_info);
 }
 }

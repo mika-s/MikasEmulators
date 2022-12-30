@@ -74,25 +74,25 @@ public:
     void toggle_sprite_debug() override;
 
 private:
-    SDL_Window* m_win;
-    SDL_GLContext m_gl_context;
-    u32 m_screen_texture;
-    u32 m_tile_texture;
-    u32 m_sprite_texture;
+    SDL_Window* m_win { nullptr };
+    SDL_GLContext m_gl_context { nullptr };
+    u32 m_screen_texture { 0 };
+    u32 m_tile_texture { 0 };
+    u32 m_sprite_texture { 0 };
 
-    bool m_show_game;
-    bool m_show_game_info;
-    bool m_show_cpu_info;
-    bool m_show_io_info;
-    bool m_show_log;
-    bool m_show_disassembly;
-    bool m_show_memory_editor;
-    bool m_show_tilemap;
-    bool m_show_spritemap;
-    bool m_show_waveforms;
-    bool m_show_demo;
+    bool m_show_game { true };
+    bool m_show_game_info { true };
+    bool m_show_cpu_info { true };
+    bool m_show_io_info { true };
+    bool m_show_log { true };
+    bool m_show_disassembly { true };
+    bool m_show_memory_editor { true };
+    bool m_show_tilemap { true };
+    bool m_show_spritemap { true };
+    bool m_show_waveforms { true };
+    bool m_show_demo { false };
 
-    bool m_is_in_debug_mode;
+    bool m_is_in_debug_mode { false };
 
     std::vector<GuiObserver*> m_gui_observers;
     std::shared_ptr<Logger> m_logger;
@@ -102,8 +102,8 @@ private:
     CpuInfoPane<u16, u8, 16> m_cpu_info;
     IoInfoPane<u16, u8, 16> m_io_info;
     MemoryEditorPane<u16, u8, 16> m_memory_editor;
-    TilemapPane m_tilemap;
-    SpritemapPane m_spritemap;
+    TilemapPane m_tilemap { 1 };
+    SpritemapPane m_spritemap { 1 };
     WaveformPane m_waveforms;
 
     void notify_gui_observers(GuiRequest request);

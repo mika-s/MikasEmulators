@@ -27,9 +27,6 @@ class Logger;
 namespace emu::applications::pacman {
 
 GuiSdl::GuiSdl()
-    : m_win(nullptr)
-    , m_rend(nullptr)
-    , m_texture(nullptr)
 {
     init();
 }

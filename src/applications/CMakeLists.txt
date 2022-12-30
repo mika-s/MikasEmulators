@@ -72,6 +72,7 @@ set(SOURCES_APPLICATIONS_CPP
         zxspectrum_48k/gui_sdl.cpp
         zxspectrum_48k/input_imgui.cpp
         zxspectrum_48k/input_sdl.cpp
+        zxspectrum_48k/keyboard_pane.cpp
         zxspectrum_48k/memory_map_for_zxspectrum_48k.cpp
         zxspectrum_48k/zxspectrum_48k.cpp
         zxspectrum_48k/zxspectrum_48k_session.cpp
@@ -178,6 +179,7 @@ set(SOURCES_APPLICATIONS_H
         zxspectrum_48k/input_imgui.h
         zxspectrum_48k/input_sdl.h
         zxspectrum_48k/key_request.h
+        zxspectrum_48k/keyboard_pane.h
         zxspectrum_48k/memory_map_for_zxspectrum_48k.h
         zxspectrum_48k/zxspectrum_48k.h
         zxspectrum_48k/zxspectrum_48k_session.h
