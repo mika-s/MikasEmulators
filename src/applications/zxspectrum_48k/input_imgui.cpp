@@ -37,8 +37,18 @@ void InputImgui::notify_io_observers(KeyRequest request)
     }
 }
 
-void InputImgui::handle_text(CpuIo& cpu_io, std::string text)
+void InputImgui::cancel_shift(CpuIo& cpu_io)
 {
+    set_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
+    m_cancel_last_keypress.emplace_back([&] { unset_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit); });
+}
+
+void InputImgui::handle_text(CpuIo& cpu_io, std::string text, bool is_shift_pressed)
+{
+    if (is_shift_pressed) {
+        cancel_shift(cpu_io);
+    }
+
     switch (text[0]) {
     case 'z':
         unset_bit(cpu_io.m_keyboard[0xfefe], s_Z_bit);
@@ -492,6 +502,71 @@ void InputImgui::read(CpuIo& cpu_io, GuiIo& gui_io)
             case SDL_QUIT:
                 gui_io.m_is_quitting = true;
                 break;
+            case SDL_TEXTINPUT:
+                handle_text(cpu_io, std::string(read_input_event.text.text), io.KeyShift);
+                break;
+            case SDL_KEYDOWN:
+                switch (read_input_event.key.keysym.scancode) {
+                case s_pause:
+                    gui_io.m_is_toggling_pause = true;
+                    break;
+                case SDL_SCANCODE_RETURN:
+                    unset_bit(cpu_io.m_keyboard[0xbffe], s_ENTER_bit);
+                    break;
+                case SDL_SCANCODE_BACKSPACE:
+                    unset_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
+                    unset_bit(cpu_io.m_keyboard[0xeffe], s_0_bit);
+                    break;
+                case SDL_SCANCODE_LSHIFT:
+                    unset_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
+                    break;
+                case SDL_SCANCODE_LALT:
+                    unset_bit(cpu_io.m_keyboard[0x7ffe], s_SYM_bit);
+                    break;
+                case SDL_SCANCODE_LEFT:
+                    unset_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
+                    unset_bit(cpu_io.m_keyboard[0xf7fe], s_5_bit);
+                    break;
+                case SDL_SCANCODE_DOWN:
+                    unset_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
+                    unset_bit(cpu_io.m_keyboard[0xeffe], s_6_bit);
+                    break;
+                case SDL_SCANCODE_UP:
+                    unset_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
+                    unset_bit(cpu_io.m_keyboard[0xeffe], s_7_bit);
+                    break;
+                case SDL_SCANCODE_RIGHT:
+                    unset_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
+                    unset_bit(cpu_io.m_keyboard[0xeffe], s_8_bit);
+                    break;
+                case SDL_SCANCODE_F1:
+                    unset_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
+                    unset_bit(cpu_io.m_keyboard[0xf7fe], s_1_bit);
+                    break;
+                case SDL_SCANCODE_CAPSLOCK:
+                    unset_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
+                    unset_bit(cpu_io.m_keyboard[0xf7fe], s_2_bit);
+                    break;
+                case SDL_SCANCODE_F3:
+                    unset_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
+                    unset_bit(cpu_io.m_keyboard[0xf7fe], s_3_bit);
+                    break;
+                case SDL_SCANCODE_F4:
+                    unset_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
+                    unset_bit(cpu_io.m_keyboard[0xf7fe], s_4_bit);
+                    break;
+                case SDL_SCANCODE_F9:
+                    unset_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
+                    unset_bit(cpu_io.m_keyboard[0xeffe], s_9_bit);
+                    break;
+                case SDL_SCANCODE_RGUI:
+                    unset_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
+                    unset_bit(cpu_io.m_keyboard[0x7ffe], s_SYM_bit);
+                    break;
+                default:
+                    break;
+                }
+                break;
             case SDL_KEYUP:
                 switch (read_input_event.key.keysym.scancode) {
                 case SDL_SCANCODE_RETURN:
@@ -501,9 +576,9 @@ void InputImgui::read(CpuIo& cpu_io, GuiIo& gui_io)
                     set_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
                     set_bit(cpu_io.m_keyboard[0xeffe], s_0_bit);
                     break;
-//                case SDL_SCANCODE_LSHIFT:
-//                    set_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
-//                    break;
+                case SDL_SCANCODE_LSHIFT:
+                    set_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
+                    break;
                 case SDL_SCANCODE_LALT:
                     set_bit(cpu_io.m_keyboard[0x7ffe], s_SYM_bit);
                     break;
@@ -555,71 +630,6 @@ void InputImgui::read(CpuIo& cpu_io, GuiIo& gui_io)
                     m_cancel_last_keypress.clear();
                 } break;
                 }
-                break;
-            case SDL_KEYDOWN:
-                switch (read_input_event.key.keysym.scancode) {
-                case s_pause:
-                    gui_io.m_is_toggling_pause = true;
-                    break;
-                case SDL_SCANCODE_RETURN:
-                    unset_bit(cpu_io.m_keyboard[0xbffe], s_ENTER_bit);
-                    break;
-                case SDL_SCANCODE_BACKSPACE:
-                    unset_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
-                    unset_bit(cpu_io.m_keyboard[0xeffe], s_0_bit);
-                    break;
-//                case SDL_SCANCODE_LSHIFT:
-//                    unset_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
-//                    break;
-                case SDL_SCANCODE_LALT:
-                    unset_bit(cpu_io.m_keyboard[0x7ffe], s_SYM_bit);
-                    break;
-                case SDL_SCANCODE_LEFT:
-                    unset_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
-                    unset_bit(cpu_io.m_keyboard[0xf7fe], s_5_bit);
-                    break;
-                case SDL_SCANCODE_DOWN:
-                    unset_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
-                    unset_bit(cpu_io.m_keyboard[0xeffe], s_6_bit);
-                    break;
-                case SDL_SCANCODE_UP:
-                    unset_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
-                    unset_bit(cpu_io.m_keyboard[0xeffe], s_7_bit);
-                    break;
-                case SDL_SCANCODE_RIGHT:
-                    unset_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
-                    unset_bit(cpu_io.m_keyboard[0xeffe], s_8_bit);
-                    break;
-                case SDL_SCANCODE_F1:
-                    unset_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
-                    unset_bit(cpu_io.m_keyboard[0xf7fe], s_1_bit);
-                    break;
-                case SDL_SCANCODE_CAPSLOCK:
-                    unset_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
-                    unset_bit(cpu_io.m_keyboard[0xf7fe], s_2_bit);
-                    break;
-                case SDL_SCANCODE_F3:
-                    unset_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
-                    unset_bit(cpu_io.m_keyboard[0xf7fe], s_3_bit);
-                    break;
-                case SDL_SCANCODE_F4:
-                    unset_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
-                    unset_bit(cpu_io.m_keyboard[0xf7fe], s_4_bit);
-                    break;
-                case SDL_SCANCODE_F9:
-                    unset_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
-                    unset_bit(cpu_io.m_keyboard[0xeffe], s_9_bit);
-                    break;
-                case SDL_SCANCODE_RGUI:
-                    unset_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
-                    unset_bit(cpu_io.m_keyboard[0x7ffe], s_SYM_bit);
-                    break;
-                default:
-                    break;
-                }
-                break;
-            case SDL_TEXTINPUT:
-                handle_text(cpu_io, std::string(read_input_event.text.text));
                 break;
             default:
                 break;

@@ -239,8 +239,8 @@ void GuiImgui::render(std::string const& game_window_subtitle)
             ImGui::EndMenu();
         }
         if (ImGui::BeginMenu("Windows")) {
-            ImGui::MenuItem("Game", nullptr, &m_show_game);
-            ImGui::MenuItem("Game info", nullptr, &m_show_game_info);
+            ImGui::MenuItem("Screen", nullptr, &m_show_game);
+            ImGui::MenuItem("Program info", nullptr, &m_show_game_info);
             ImGui::MenuItem("CPU info", nullptr, &m_show_cpu_info);
             ImGui::MenuItem("IO info", nullptr, &m_show_io_info);
             ImGui::MenuItem("Log", nullptr, &m_show_log);
@@ -302,7 +302,7 @@ void GuiImgui::update_debug_only()
 
 void GuiImgui::render_game_window(std::string const& game_window_subtitle)
 {
-    const std::string prefix = "Game";
+    const std::string prefix = "Screen";
     const std::string id = "###" + prefix;
     const std::string title = game_window_subtitle.empty() ? prefix + id : prefix + " - " + game_window_subtitle + id;
 
@@ -321,7 +321,7 @@ void GuiImgui::render_game_window(std::string const& game_window_subtitle)
 
 void GuiImgui::render_game_info_window()
 {
-    ImGui::Begin("Game info", &m_show_game_info);
+    ImGui::Begin("Program info", &m_show_game_info);
 
     ImGui::Text("Avg %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 

@@ -79,4 +79,6 @@ emcc \
   -O2 \
   --preload-file src/applications/lmc_application/emscripten_assets@/
 
+# fmt has been made header only here. fmt headers copied to ~/include.
+
 cp src/applications/lmc_application/emscripten_assets/lmc.html build/emscripten/lmc/

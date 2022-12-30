@@ -88,6 +88,8 @@ private:
 
     void notify_io_observers(KeyRequest request);
 
-    void handle_text(CpuIo& cpu_io, std::string text);
+    void cancel_shift(CpuIo& cpu_io);
+
+    void handle_text(CpuIo& cpu_io, std::string text, bool is_shift_pressed);
 };
 }

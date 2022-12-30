@@ -13,6 +13,7 @@ notice.
 - [Z80](documentation/chips/z80.md)
     - [Pacman](documentation/applications/pacman.md)
     - [CP/M](documentation/applications/cpm.md) (WIP)
+    - [ZX Spectrum 48K](documentation/applications/zx_spectrum.md) (WIP)
 
 **Trivial architectures:**
 
