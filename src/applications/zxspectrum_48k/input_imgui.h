@@ -3,7 +3,6 @@
 #include "interfaces/input.h"
 #include "key_request.h"
 #include <SDL_scancode.h>
-#include <functional>
 #include <string>
 #include <vector>
 
@@ -83,8 +82,6 @@ private:
     static constexpr unsigned int s_B_bit = 4;
 
     std::vector<KeyObserver*> m_io_observers;
-
-    std::vector<std::function<void()>> m_cancel_last_keypress;
 
     void notify_io_observers(KeyRequest request);
 

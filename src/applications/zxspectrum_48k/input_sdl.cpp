@@ -552,10 +552,6 @@ void InputSdl::read(CpuIo& cpu_io, GuiIo& gui_io)
                 unset_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
                 unset_bit(cpu_io.m_keyboard[0xeffe], s_9_bit);
                 break;
-            case SDL_SCANCODE_RGUI:
-                unset_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
-                unset_bit(cpu_io.m_keyboard[0x7ffe], s_SYM_bit);
-                break;
             default:
                 break;
             }
@@ -610,10 +606,6 @@ void InputSdl::read(CpuIo& cpu_io, GuiIo& gui_io)
             case SDL_SCANCODE_F9:
                 set_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
                 set_bit(cpu_io.m_keyboard[0xeffe], s_9_bit);
-                break;
-            case SDL_SCANCODE_RGUI:
-                set_bit(cpu_io.m_keyboard[0xfefe], s_SHIFT_bit);
-                set_bit(cpu_io.m_keyboard[0x7ffe], s_SYM_bit);
                 break;
             default: {
                 // Reset text input

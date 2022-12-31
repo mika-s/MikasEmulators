@@ -32,8 +32,6 @@ The keymap for debugging:
 | <kbd>F7</kbd>        | Step instruction    |
 | <kbd>F8</kbd>        | Step cycle          |
 | <kbd>F9</kbd>        | Continue execution  |
-| <kbd>PAGE UP</kbd>   | Toggle tile debug   |
-| <kbd>PAGE DOWN</kbd> | Toggle sprite debug |
 
 </td>
 </tr>

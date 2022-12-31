@@ -17,9 +17,8 @@ MemoryMapForZxSpectrum48k::MemoryMapForZxSpectrum48k(EmulatorMemory<u16, u8>& me
 void MemoryMapForZxSpectrum48k::write(u16 address, u8 value)
 {
     if (address <= s_address_rom_end) {
-    } else if (address <= s_address_ram_end) {
-        m_memory.direct_write(address, value);
     } else {
+        m_memory.direct_write(address, value);
     }
 }
 
@@ -31,10 +30,6 @@ void MemoryMapForZxSpectrum48k::write(u16 address, u8 value)
  */
 u8 MemoryMapForZxSpectrum48k::read(u16 address)
 {
-    if (address <= s_address_ram_end) {
-        return m_memory.direct_read(address);
-    } else {
-        return 0;
-    }
+    return m_memory.direct_read(address);
 }
 }

@@ -230,15 +230,15 @@ void ZxSpectrum48kSession::out_changed(u16 port)
     }
 }
 
-void ZxSpectrum48kSession::key_pressed([[maybe_unused]] KeyRequest request)
+void ZxSpectrum48kSession::key_pressed(KeyRequest request)
 {
-    //    switch (request) {
-    //    case TOGGLE_MUTE:
-    //        m_audio.toggle_mute();
-    //        break;
-    //    default:
-    //        break;
-    //    }
+    switch (request) {
+    case TOGGLE_MUTE:
+        //            m_audio.toggle_mute();
+        break;
+    default:
+        break;
+    }
 }
 
 std::vector<u8> ZxSpectrum48kSession::memory()
