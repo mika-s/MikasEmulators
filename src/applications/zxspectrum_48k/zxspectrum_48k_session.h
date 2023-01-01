@@ -1,5 +1,6 @@
 #pragma once
 
+#include "audio.h"
 #include "chips/z80/interfaces/in_observer.h"
 #include "chips/z80/interfaces/out_observer.h"
 #include "cpu_io.h"
@@ -106,6 +107,7 @@ private:
     std::shared_ptr<Gui> m_gui;
     std::shared_ptr<Input> m_input;
     std::shared_ptr<Cpu> m_cpu;
+    Audio m_audio;
 
     EmulatorMemory<u16, u8>& m_memory;
 

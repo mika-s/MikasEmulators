@@ -66,6 +66,7 @@ set(SOURCES_APPLICATIONS_CPP
         space_invaders/states/stopped_state.cpp
         space_invaders/states/state_context.cpp
 
+        zxspectrum_48k/audio.cpp
         zxspectrum_48k/cpu_io.cpp
         zxspectrum_48k/gui.cpp
         zxspectrum_48k/gui_imgui.cpp
@@ -75,9 +76,11 @@ set(SOURCES_APPLICATIONS_CPP
         zxspectrum_48k/keyboard_pane.cpp
         zxspectrum_48k/memory_map_for_zxspectrum_48k.cpp
         zxspectrum_48k/zxspectrum_48k.cpp
+        zxspectrum_48k/zxspectrum_48k_print_header_session.cpp
         zxspectrum_48k/zxspectrum_48k_session.cpp
         zxspectrum_48k/settings.cpp
         zxspectrum_48k/usage.cpp
+        zxspectrum_48k/formats/z80_format.cpp
         zxspectrum_48k/states/paused_state.cpp
         zxspectrum_48k/states/running_state.cpp
         zxspectrum_48k/states/stepping_state.cpp
@@ -171,6 +174,7 @@ set(SOURCES_APPLICATIONS_H
         space_invaders/states/stopped_state.h
         space_invaders/states/state_context.h
 
+        zxspectrum_48k/audio.h
         zxspectrum_48k/cpu_io.h
         zxspectrum_48k/gui.h
         zxspectrum_48k/gui_imgui.h
@@ -182,6 +186,7 @@ set(SOURCES_APPLICATIONS_H
         zxspectrum_48k/keyboard_pane.h
         zxspectrum_48k/memory_map_for_zxspectrum_48k.h
         zxspectrum_48k/zxspectrum_48k.h
+        zxspectrum_48k/zxspectrum_48k_print_header_session.h
         zxspectrum_48k/zxspectrum_48k_session.h
         zxspectrum_48k/settings.h
         zxspectrum_48k/usage.h
@@ -189,6 +194,7 @@ set(SOURCES_APPLICATIONS_H
         zxspectrum_48k/interfaces/input.h
         zxspectrum_48k/interfaces/key_observer.h
         zxspectrum_48k/interfaces/state.h
+        zxspectrum_48k/formats/z80_format.h
         zxspectrum_48k/states/paused_state.h
         zxspectrum_48k/states/running_state.h
         zxspectrum_48k/states/stepping_state.h

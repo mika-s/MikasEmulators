@@ -11,11 +11,7 @@
 
 namespace emu::applications::space_invaders {
 class Gui;
-}
-namespace emu::applications::space_invaders {
 class Input;
-}
-namespace emu::applications::space_invaders {
 class MemoryMapForSpaceInvaders;
 }
 namespace emu::misc {

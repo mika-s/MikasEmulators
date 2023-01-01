@@ -20,10 +20,6 @@ public:
 
     void change_volume(unsigned int new_volume);
 
-    void mute();
-
-    void unmute();
-
     void toggle_mute();
 
 private:
@@ -69,20 +65,20 @@ private:
     std::size_t m_fleet_movement_4_x = 0;
     std::size_t m_ufo_hit_x = 0;
 
-    bool m_is_ufo_sound_on;
-    bool m_is_shot_sound_on;
-    bool m_is_flash_sound_on;
-    bool m_is_invader_die_sound_on;
-    bool m_is_extended_play_sound_on;
-    bool m_is_fleet_movement_1_sound_on;
-    bool m_is_fleet_movement_2_sound_on;
-    bool m_is_fleet_movement_3_sound_on;
-    bool m_is_fleet_movement_4_sound_on;
-    bool m_is_ufo_hit_sound_on;
+    bool m_is_ufo_sound_on { false };
+    bool m_is_shot_sound_on { false };
+    bool m_is_flash_sound_on { false };
+    bool m_is_invader_die_sound_on { false };
+    bool m_is_extended_play_sound_on { false };
+    bool m_is_fleet_movement_1_sound_on { false };
+    bool m_is_fleet_movement_2_sound_on { false };
+    bool m_is_fleet_movement_3_sound_on { false };
+    bool m_is_fleet_movement_4_sound_on { false };
+    bool m_is_ufo_hit_sound_on { false };
 
-    bool m_is_muted;
+    bool m_is_muted { false };
 
-    u8 m_last_acc_reg;
+    u8 m_last_acc_reg { 0 };
 
     unsigned int m_volume = 5000;
 

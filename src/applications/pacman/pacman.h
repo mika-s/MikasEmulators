@@ -10,17 +10,9 @@
 
 namespace emu::applications::pacman {
 class Audio;
-}
-namespace emu::applications::pacman {
 class Gui;
-}
-namespace emu::applications::pacman {
 class Input;
-}
-namespace emu::applications::pacman {
 class MemoryMappedIoForPacman;
-}
-namespace emu::applications::pacman {
 class Settings;
 }
 namespace emu::misc {

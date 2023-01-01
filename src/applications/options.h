@@ -49,15 +49,15 @@ public:
     void fail(std::string reason);
 
 private:
-    std::vector<std::string> m_args;
-    std::string m_command;
+    std::vector<std::string> m_args { "" };
+    std::string m_command { "" };
     std::optional<std::string> m_application;
     std::optional<std::string> m_path;
-    bool m_is_asking_for_help;
-    std::string m_is_asking_for_help_reason;
-    bool m_is_failed;
-    std::string m_failed_reason;
-    std::string m_short_executable_name;
+    bool m_is_asking_for_help { false };
+    std::string m_is_asking_for_help_reason { "" };
+    bool m_is_failed { false };
+    std::string m_failed_reason { "" };
+    std::string m_short_executable_name { "" };
     std::unordered_map<std::string, std::vector<std::string>> m_options;
 };
 }

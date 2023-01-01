@@ -12,20 +12,7 @@ namespace emu::applications::space_invaders {
 using emu::util::byte::is_bit_set;
 
 Audio::Audio()
-    : m_is_ufo_sound_on(false)
-    , m_is_shot_sound_on(false)
-    , m_is_flash_sound_on(false)
-    , m_is_invader_die_sound_on(false)
-    , m_is_extended_play_sound_on(false)
-    , m_is_fleet_movement_1_sound_on(false)
-    , m_is_fleet_movement_2_sound_on(false)
-    , m_is_fleet_movement_3_sound_on(false)
-    , m_is_fleet_movement_4_sound_on(false)
-    , m_is_ufo_hit_sound_on(false)
-    , m_is_muted(false)
-    , m_last_acc_reg(0)
 {
-
     if (SDL_Init(SDL_INIT_AUDIO) != 0) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error initializing SDL audio: %s", SDL_GetError());
         exit(1);
@@ -111,20 +98,6 @@ void Audio::change_volume(unsigned int new_volume)
 {
     SDL_LockAudioDevice(m_audio_device);
     m_volume = new_volume;
-    SDL_UnlockAudioDevice(m_audio_device);
-}
-
-void Audio::mute()
-{
-    SDL_LockAudioDevice(m_audio_device);
-    m_is_muted = true;
-    SDL_UnlockAudioDevice(m_audio_device);
-}
-
-void Audio::unmute()
-{
-    SDL_LockAudioDevice(m_audio_device);
-    m_is_muted = false;
     SDL_UnlockAudioDevice(m_audio_device);
 }
 

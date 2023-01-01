@@ -1,4 +1,5 @@
 #include "zxspectrum_48k_session.h"
+#include "audio.h"
 #include "chips/z80/cpu.h"
 #include "chips/z80/disassembler.h"
 #include "chips/z80/interrupt_mode.h"
@@ -222,7 +223,7 @@ void ZxSpectrum48kSession::out_changed(u16 port)
             // MIC out
         }
         if (is_bit_set(m_cpu_io.m_out_port0xfe, s_beep_bit)) {
-            // m_audio.beep();
+            m_audio.beep();
         }
         break;
     default:
@@ -234,7 +235,7 @@ void ZxSpectrum48kSession::key_pressed(KeyRequest request)
 {
     switch (request) {
     case TOGGLE_MUTE:
-        //            m_audio.toggle_mute();
+        m_audio.toggle_mute();
         break;
     default:
         break;

@@ -26,10 +26,6 @@ public:
 
     void handle_sound(bool is_sound_enabled, std::vector<Voice>& voices);
 
-    void mute();
-
-    void unmute();
-
     void toggle_mute();
 
     std::vector<Waveform> waveforms();
@@ -46,7 +42,7 @@ private:
     SDL_AudioDeviceID m_audio_device;
     Wsg3 m_sound_chip;
 
-    bool m_is_muted;
+    bool m_is_muted { false };
 
     std::vector<Waveform> load_waveforms_from_roms(
         std::vector<u8> const& sound_rom1,

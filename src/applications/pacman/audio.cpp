@@ -19,7 +19,6 @@ Audio::Audio(
     std::vector<u8> const& sound_rom1,
     std::vector<u8> const& sound_rom2)
     : m_sound_chip(Wsg3(load_waveforms_from_roms(sound_rom1, sound_rom2)))
-    , m_is_muted(false)
 {
 
     if (SDL_Init(SDL_INIT_AUDIO) != 0) {
@@ -70,16 +69,6 @@ void Audio::handle_sound(bool is_sound_enabled, std::vector<Voice>& voices)
         const u16 sample = buffer[s_resampling_ratio * static_cast<float>(i)] * m_volume * (m_is_muted ? 0 : 1);
         SDL_QueueAudio(m_audio_device, &sample, 1 * sizeof(i16));
     }
-}
-
-void Audio::mute()
-{
-    m_is_muted = true;
-}
-
-void Audio::unmute()
-{
-    m_is_muted = false;
 }
 
 void Audio::toggle_mute()

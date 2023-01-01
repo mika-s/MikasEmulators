@@ -12,10 +12,6 @@ using emu::util::string::find_short_executable_name;
 
 Options::Options(std::vector<std::string> args)
     : m_args(args)
-    , m_is_asking_for_help(false)
-    , m_is_asking_for_help_reason("")
-    , m_is_failed(false)
-    , m_failed_reason("")
 {
     m_short_executable_name = find_short_executable_name(args[0]);
 }
@@ -30,7 +26,7 @@ std::string Options::short_executable_name() const
     return m_short_executable_name;
 }
 
-GuiType Options::gui_type(std::function<void(const std::string&)> const& print_usage) const
+GuiType Options::gui_type(std::function<void(std::string const&)> const& print_usage) const
 {
     if (!m_options.contains("g")) {
         return GuiType::ORDINARY;

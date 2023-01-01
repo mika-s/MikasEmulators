@@ -1,18 +1,19 @@
 #include "zxspectrum_48k.h"
 #include "crosscutting/util/file_util.h"
+#include "formats/z80_format.h"
 #include "gui.h"
 #include "gui_imgui.h"
 #include "gui_sdl.h"
 #include "input_imgui.h"
 #include "input_sdl.h"
 #include "memory_map_for_zxspectrum_48k.h"
+#include "settings.h"
+#include "zxspectrum_48k_print_header_session.h"
 #include "zxspectrum_48k_session.h"
 #include <cstddef>
 #include <string>
+#include <utility>
 
-namespace emu::applications::zxspectrum_48k {
-class Settings;
-}
 namespace emu::misc {
 class Session;
 }
@@ -21,8 +22,22 @@ namespace emu::applications::zxspectrum_48k {
 
 using emu::util::file::read_file_into_vector;
 
-ZxSpectrum48k::ZxSpectrum48k(Settings const& settings, const GuiType gui_type)
-    : m_settings(settings)
+ZxSpectrum48k::ZxSpectrum48k(Settings settings, const GuiType gui_type)
+    : m_settings(std::move(settings))
+{
+    if (m_settings.m_is_printing_header_only) {
+        setup_printing_session();
+    } else {
+        setup_ordinary_session(gui_type);
+    }
+}
+
+void ZxSpectrum48k::setup_printing_session()
+{
+    m_format = std::make_shared<Z80Format>(m_settings.m_snapshot_file);
+}
+
+void ZxSpectrum48k::setup_ordinary_session(const GuiType gui_type)
 {
     if (gui_type == GuiType::DEBUGGING) {
         m_gui = std::make_shared<GuiImgui>();
@@ -43,7 +58,11 @@ ZxSpectrum48k::ZxSpectrum48k(Settings const& settings, const GuiType gui_type)
 
 std::unique_ptr<Session> ZxSpectrum48k::new_session()
 {
-    return std::make_unique<ZxSpectrum48kSession>(m_settings, m_is_starting_paused, m_gui, m_input, m_memory);
+    if (m_settings.m_is_printing_header_only) {
+        return std::make_unique<ZxSpectrum48kPrintHeaderSession>(m_format);
+    } else {
+        return std::make_unique<ZxSpectrum48kSession>(m_settings, m_is_starting_paused, m_gui, m_input, m_memory);
+    }
 }
 
 void ZxSpectrum48k::load_files()
