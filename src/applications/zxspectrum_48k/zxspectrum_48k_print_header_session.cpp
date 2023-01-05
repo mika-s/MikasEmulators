@@ -1,11 +1,11 @@
 #include "zxspectrum_48k_print_header_session.h"
-#include "applications/zxspectrum_48k/interfaces/printable_format.h"
+#include "applications/zxspectrum_48k/interfaces/format.h"
 #include <memory>
 #include <utility>
 
 namespace emu::applications::zxspectrum_48k {
 
-ZxSpectrum48kPrintHeaderSession::ZxSpectrum48kPrintHeaderSession(std::shared_ptr<PrintableFormat> format)
+ZxSpectrum48kPrintHeaderSession::ZxSpectrum48kPrintHeaderSession(std::shared_ptr<Format> format)
     : m_format(std::move(format))
 {
 }

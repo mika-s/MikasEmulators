@@ -76,6 +76,7 @@ set(SOURCES_Z80_H
         flags.h
         util.h
         interrupt_mode.h
+        manual_state.h
         instructions/instruction_util.h
         instructions/instructions.h
         interfaces/in_observer.h

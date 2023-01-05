@@ -35,6 +35,7 @@ class DisassembledLine;
 }
 namespace emu::z80 {
 class Cpu;
+struct ManualState;
 }
 namespace emu::logging {
 class Logger;
@@ -57,6 +58,7 @@ using emu::misc::Session;
 using emu::z80::Cpu;
 using emu::z80::InObserver;
 using emu::z80::OutObserver;
+using emu::z80::ManualState;
 
 class ZxSpectrum48kSession
     : public Session
@@ -71,6 +73,14 @@ public:
         std::shared_ptr<Gui> gui,
         std::shared_ptr<Input> input,
         EmulatorMemory<u16, u8>& memory);
+
+    ZxSpectrum48kSession(
+        Settings const& settings,
+        bool is_starting_paused,
+        std::shared_ptr<Gui> gui,
+        std::shared_ptr<Input> input,
+        EmulatorMemory<u16, u8>& memory,
+        ManualState initial_cpu_state);
 
     ~ZxSpectrum48kSession() override;
 

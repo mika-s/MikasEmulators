@@ -6,6 +6,7 @@
 #include "gui_sdl.h"
 #include "input_imgui.h"
 #include "input_sdl.h"
+#include "interfaces/format.h"
 #include "memory_map_for_zxspectrum_48k.h"
 #include "settings.h"
 #include "zxspectrum_48k_print_header_session.h"
@@ -25,7 +26,7 @@ using emu::util::file::read_file_into_vector;
 ZxSpectrum48k::ZxSpectrum48k(Settings settings, const GuiType gui_type)
     : m_settings(std::move(settings))
 {
-    if (m_settings.m_is_printing_header_only) {
+    if (m_settings.m_is_only_printing_header) {
         setup_printing_session();
     } else {
         setup_ordinary_session(gui_type);
@@ -51,6 +52,10 @@ void ZxSpectrum48k::setup_ordinary_session(const GuiType gui_type)
 
     load_files();
 
+    if (!m_settings.m_snapshot_file.empty()) {
+        load_snapshot();
+    }
+
     m_memory_mapped_io = std::make_shared<MemoryMapForZxSpectrum48k>(m_memory);
     m_memory.attach_memory_mapper(m_memory_mapped_io);
     m_gui->create_table();
@@ -58,8 +63,10 @@ void ZxSpectrum48k::setup_ordinary_session(const GuiType gui_type)
 
 std::unique_ptr<Session> ZxSpectrum48k::new_session()
 {
-    if (m_settings.m_is_printing_header_only) {
+    if (m_settings.m_is_only_printing_header) {
         return std::make_unique<ZxSpectrum48kPrintHeaderSession>(m_format);
+    } else if (!m_settings.m_snapshot_file.empty()) {
+        return std::make_unique<ZxSpectrum48kSession>(m_settings, m_is_starting_paused, m_gui, m_input, m_memory, m_format->to_cpu_state());
     } else {
         return std::make_unique<ZxSpectrum48kSession>(m_settings, m_is_starting_paused, m_gui, m_input, m_memory);
     }
@@ -76,6 +83,13 @@ void ZxSpectrum48k::load_files()
     m_memory.add(create_reserved1());                           // $5cc0-$5cca: reserved
     m_memory.add(create_ram());                                 // $5ccb-$ff57: RAM
     m_memory.add(create_reserved2());                           // $ff58-$ffff: reserved
+}
+
+void ZxSpectrum48k::load_snapshot()
+{
+
+    m_format = std::make_shared<Z80Format>(m_settings.m_snapshot_file);
+    m_format->to_memory(m_memory);
 }
 
 std::vector<u8> create_empty_vector(std::size_t size)

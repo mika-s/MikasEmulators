@@ -3,6 +3,7 @@ set(SOURCES_CROSSCUTTING_CPP
         exceptions/invalid_program_arguments_exception.cpp
         exceptions/rom_file_not_found_exception.cpp
         exceptions/unrecognized_opcode_exception.cpp
+        exceptions/unsupported_exception.cpp
         gui/debugging_panes/debug_log_pane.cpp
         gui/debugging_panes/spritemap_pane.cpp
         gui/debugging_panes/tilemap_pane.cpp
@@ -34,6 +35,7 @@ set(SOURCES_CROSSCUTTING_H
         exceptions/invalid_program_arguments_exception.h
         exceptions/rom_file_not_found_exception.h
         exceptions/unrecognized_opcode_exception.h
+        exceptions/unsupported_exception.h
         gui/gui_type.h
         gui/debugging_panes/disassembly_pane.h
         gui/debugging_panes/cpu_info_pane.h

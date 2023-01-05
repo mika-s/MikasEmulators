@@ -3,6 +3,7 @@
 #include "chips/z80/cpu.h"
 #include "chips/z80/disassembler.h"
 #include "chips/z80/interrupt_mode.h"
+#include "chips/z80/manual_state.h"
 #include "cpu_io.h"
 #include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/debugging/debugger.h"
@@ -88,6 +89,18 @@ ZxSpectrum48kSession::ZxSpectrum48kSession(
     } else {
         m_state_context->change_state(m_state_context->running_state());
     }
+}
+
+ZxSpectrum48kSession::ZxSpectrum48kSession(
+    Settings const& settings,
+    bool is_starting_paused,
+    std::shared_ptr<Gui> gui,
+    std::shared_ptr<Input> input,
+    EmulatorMemory<u16, u8>& memory,
+    ManualState initial_cpu_state)
+    : ZxSpectrum48kSession(settings, is_starting_paused, std::move(gui), std::move(input), memory)
+{
+    m_cpu->set_state_manually(initial_cpu_state);
 }
 
 ZxSpectrum48kSession::~ZxSpectrum48kSession()
@@ -203,6 +216,7 @@ void ZxSpectrum48kSession::gui_request(GuiRequest request)
 
 void ZxSpectrum48kSession::in_requested(u16 port)
 {
+    // Should take 12.5 cycles instead of 11, when accessing 0xFE.
     if (!is_bit_set(port, 0)) {
         m_cpu->input(port, m_cpu_io.keyboard_input(port));
     }

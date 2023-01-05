@@ -15,9 +15,8 @@ class EmulatorMemory;
 }
 namespace emu::z80 {
 class InObserver;
-}
-namespace emu::z80 {
 class OutObserver;
+struct ManualState;
 }
 
 namespace emu::z80 {
@@ -43,6 +42,8 @@ public:
     void start();
 
     void stop();
+
+    void set_state_manually(ManualState new_state);
 
     void add_out_observer(OutObserver& observer);
 
@@ -113,13 +114,13 @@ public:
 private:
     static constexpr unsigned int s_number_of_io_ports = UINT16_MAX;
 
-    bool m_is_halted;
+    bool m_is_halted { false };
 
-    bool m_iff1;
-    bool m_iff2;
-    bool m_is_interrupted;
-    bool m_is_nmi_interrupted;
-    u8 m_instruction_from_interruptor;
+    bool m_iff1 { false };
+    bool m_iff2 { false };
+    bool m_is_interrupted { false };
+    bool m_is_nmi_interrupted { false };
+    u8 m_instruction_from_interruptor { 0 };
 
     EmulatorMemory<u16, u8>& m_memory;
     std::size_t m_memory_size;
@@ -127,30 +128,30 @@ private:
     std::vector<u8> m_io_in;
     std::vector<u8> m_io_out;
 
-    u8 m_opcode;
-    u16 m_sp;
+    u8 m_opcode { 0 };
+    u16 m_sp { 0xffff };
     u16 m_pc;
-    u8 m_acc_reg;
-    u8 m_acc_p_reg;
-    u8 m_b_reg;
-    u8 m_b_p_reg;
-    u8 m_c_reg;
-    u8 m_c_p_reg;
-    u8 m_d_reg;
-    u8 m_d_p_reg;
-    u8 m_e_reg;
-    u8 m_e_p_reg;
-    u8 m_h_reg;
-    u8 m_h_p_reg;
-    u8 m_l_reg;
-    u8 m_l_p_reg;
-    u16 m_ix_reg;
-    u16 m_iy_reg;
-    u8 m_i_reg;
-    u8 m_r_reg;
+    u8 m_acc_reg { 0xff };
+    u8 m_acc_p_reg { 0 };
+    u8 m_b_reg { 0 };
+    u8 m_b_p_reg { 0 };
+    u8 m_c_reg { 0 };
+    u8 m_c_p_reg { 0 };
+    u8 m_d_reg { 0 };
+    u8 m_d_p_reg { 0 };
+    u8 m_e_reg { 0 };
+    u8 m_e_p_reg { 0 };
+    u8 m_h_reg { 0 };
+    u8 m_h_p_reg { 0 };
+    u8 m_l_reg { 0 };
+    u8 m_l_p_reg { 0 };
+    u16 m_ix_reg { 0 };
+    u16 m_iy_reg { 0 };
+    u8 m_i_reg { 0 };
+    u8 m_r_reg { 0 };
     Flags m_flag_reg;
     Flags m_flag_p_reg;
-    InterruptMode m_interrupt_mode;
+    InterruptMode m_interrupt_mode { InterruptMode::ZERO };
 
     std::vector<OutObserver*> m_out_observers;
     std::vector<InObserver*> m_in_observers;

@@ -7,7 +7,7 @@ namespace emu::exceptions {
 InvalidProgramArgumentsException::InvalidProgramArgumentsException(
     std::string const& msg,
     std::function<void(std::string const& program_name)> usage_function)
-    : runtime_error("Error in program arguments: ")
+    : std::runtime_error("Error in program arguments: ")
     , m_usage_function(std::move(usage_function))
 {
     make_message(msg);

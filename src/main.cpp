@@ -21,24 +21,13 @@ using emu::exceptions::InvalidProgramArgumentsException;
 using emu::exceptions::RomFileNotFoundException;
 using emu::util::string::find_short_executable_name;
 
-// NOLINTNEXTLINE(modernize-avoid-c-arrays)
-std::vector<std::string> argv_to_vector(int argc, char* argv[])
-{
-    std::vector<std::string> args;
-
-    for (int i = 0; i < argc; ++i) {
-        args.emplace_back(argv[i]);
-    }
-
-    return args;
-}
-
 int main(int argc, char* argv[])
 {
-    std::string short_executable_name = find_short_executable_name(std::string(argv[0]));
+    const std::string short_executable_name = find_short_executable_name(std::string(argv[0]));
     try {
         if (argc > 1) {
-            const Options options = CommandLineArguments::find_options(argv_to_vector(argc, argv));
+            const std::vector<std::string> args(argv, argv + argc);
+            const Options options = CommandLineArguments::find_options(args);
             if (options.is_failed().first && !options.is_asking_for_help().first) {
                 throw InvalidProgramArgumentsException(options.is_failed().second, Frontend::print_main_usage);
             }

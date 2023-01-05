@@ -6,6 +6,7 @@
 #include "instructions/instructions.h"
 #include "interfaces/in_observer.h"
 #include "interfaces/out_observer.h"
+#include "manual_state.h"
 #include <algorithm>
 #include <cstdint>
 #include <iostream>
@@ -21,38 +22,11 @@ using emu::util::byte::to_u16;
 using emu::util::string::hexify;
 
 Cpu::Cpu(EmulatorMemory<u16, u8>& memory, const u16 initial_pc)
-    : m_is_halted(false)
-    , m_iff1(false)
-    , m_iff2(false)
-    , m_is_interrupted(false)
-    , m_is_nmi_interrupted(false)
-    , m_instruction_from_interruptor(0)
-    , m_memory(memory)
+    : m_memory(memory)
     , m_memory_size(memory.size())
     , m_io_in(s_number_of_io_ports)
     , m_io_out(s_number_of_io_ports)
-    , m_opcode(0)
-    , m_sp(0xffff)
     , m_pc(initial_pc)
-    , m_acc_reg(0xff)
-    , m_acc_p_reg(0)
-    , m_b_reg(0)
-    , m_b_p_reg(0)
-    , m_c_reg(0)
-    , m_c_p_reg(0)
-    , m_d_reg(0)
-    , m_d_p_reg(0)
-    , m_e_reg(0)
-    , m_e_p_reg(0)
-    , m_h_reg(0)
-    , m_h_p_reg(0)
-    , m_l_reg(0)
-    , m_l_p_reg(0)
-    , m_ix_reg(0)
-    , m_iy_reg(0)
-    , m_i_reg(0)
-    , m_r_reg(0)
-    , m_interrupt_mode(InterruptMode::ZERO)
 {
     m_flag_reg.from_u8(0xff);
     m_flag_p_reg.from_u8(0x00);
@@ -126,6 +100,35 @@ void Cpu::start()
 void Cpu::stop()
 {
     reset_state();
+}
+
+void Cpu::set_state_manually(ManualState manual_state)
+{
+    m_iff1 = manual_state.m_iff1;
+    m_iff2 = manual_state.m_iff2;
+    m_sp = manual_state.m_sp;
+    m_pc = manual_state.m_pc;
+    m_acc_reg = manual_state.m_acc_reg;
+    m_acc_p_reg = manual_state.m_acc_p_reg;
+    m_b_reg = manual_state.m_b_reg;
+    m_b_p_reg = manual_state.m_b_p_reg;
+    m_c_reg = manual_state.m_c_reg;
+    m_c_p_reg = manual_state.m_c_p_reg;
+    m_d_reg = manual_state.m_d_reg;
+    m_d_p_reg = manual_state.m_d_p_reg;
+    m_e_reg = manual_state.m_e_reg;
+    m_e_p_reg = manual_state.m_e_p_reg;
+    m_h_reg = manual_state.m_h_reg;
+    m_h_p_reg = manual_state.m_h_p_reg;
+    m_l_reg = manual_state.m_l_reg;
+    m_l_p_reg = manual_state.m_l_p_reg;
+    m_ix_reg = manual_state.m_ix_reg;
+    m_iy_reg = manual_state.m_iy_reg;
+    m_i_reg = manual_state.m_i_reg;
+    m_r_reg = manual_state.m_r_reg;
+    m_flag_reg.from_u8(manual_state.m_flag_reg.to_u8());
+    m_flag_p_reg.from_u8(manual_state.m_flag_p_reg.to_u8());
+    m_interrupt_mode = manual_state.m_interrupt_mode;
 }
 
 void Cpu::interrupt(u8 instruction_to_perform)

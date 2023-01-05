@@ -1,6 +1,6 @@
 #pragma once
 
-#include "applications/zxspectrum_48k/interfaces/printable_format.h"
+#include "applications/zxspectrum_48k/interfaces/format.h"
 #include "chips/z80/flags.h"
 #include "chips/z80/interrupt_mode.h"
 #include "crosscutting/memory/emulator_memory.h"
@@ -10,6 +10,10 @@
 #include <cstddef>
 #include <string>
 #include <vector>
+
+namespace emu::z80 {
+struct ManualState;
+}
 
 namespace emu::applications::zxspectrum_48k {
 
@@ -26,14 +30,20 @@ enum class Z80FormatVersion {
     v3
 };
 
-class Z80Format : public PrintableFormat {
+class Z80Format : public Format {
 public:
     explicit Z80Format(std::string const& file_path);
 
     void print_header() override;
 
+    ManualState to_cpu_state() override;
+
+    void to_memory(EmulatorMemory<u16, u8>& memory) override;
+
 private:
     static constexpr std::size_t s_header_size_v1 = 30;
+    static constexpr std::size_t s_number_of_sound_registers = 16;
+    static constexpr std::size_t s_number_of_keyboard_mappings = 5;
 
     Z80FormatVersion m_version { Z80FormatVersion::Unknown };
 
@@ -42,7 +52,7 @@ private:
     std::size_t m_byte_counter = { 0 };
 
     /**
-     * PrintableFormat description (https://worldofspectrum.org/faq/reference/z80format.htm):
+     * Format description (https://worldofspectrum.org/faq/reference/z80format.htm):
      *
      * V1:
      *
@@ -113,9 +123,9 @@ private:
     bool m_iff1;
     bool m_iff2;
     InterruptMode m_interrupt_mode;
-    bool m_is_issue2_emulation;
-    bool m_is_double_interrupt_frequency;
-    u8 m_synchronization;
+    bool m_is_issue2_emulation;           // Emulate an Issue 2 Spectrum: EAR bit is 1 when not toggling. The bit is 0 when not toggling on Issue 3.
+    bool m_is_double_interrupt_frequency; // Interrupt twice as often
+    u8 m_synchronization;                 // Remove flickering of moving characters in some programs
     u8 m_joystick_type;
 
     /**
@@ -144,8 +154,8 @@ private:
     u8 m_hardware_mode;
     u8 m_byte_35;
     u8 m_byte_36;
-    bool m_is_r_reg_emulation_on;
-    bool m_is_ldir_emulation_on;
+    bool m_is_r_reg_emulation_on; // On: Real Z80 behavior. Off: Random number generator, except for bit 7, which stays the same.
+    bool m_is_ldir_emulation_on;  // Emulate LDIR with an x86 instructions that does the same thing, but faster.
     bool m_is_ay_sound_in_use;
     bool m_is_fuller_audio_box_emulation;
     bool m_is_modifying_hardware;
@@ -182,9 +192,11 @@ private:
     std::vector<u16> m_keyboard_mappings_for_ud_joystick;
     std::vector<u16> m_ascii_keyboard_mapping;
     u8 m_mgt_type;
-    u8 m_disciple_inhibit_button_status;
-    u8 m_disciple_inhibit_flag;
+    u8 m_disciple_inhibit_button_status; // Floppy disk interface. Inhibit: turn off
+    u8 m_disciple_inhibit_flag;          // Floppy disk interface
     u8 m_last_out_0x1ffd;
+
+    void read_block_v2(EmulatorMemory<u16, u8>& memory);
 
     void parse();
 

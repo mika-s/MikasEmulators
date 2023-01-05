@@ -10,7 +10,7 @@
 #include <vector>
 
 namespace emu::applications::zxspectrum_48k {
-class PrintableFormat;
+class Format;
 class Gui;
 class Input;
 class MemoryMapForZxSpectrum48k;
@@ -39,13 +39,15 @@ private:
     std::shared_ptr<Input> m_input;
     bool m_is_starting_paused;
     std::shared_ptr<MemoryMapForZxSpectrum48k> m_memory_mapped_io;
-    std::shared_ptr<PrintableFormat> m_format;
+    std::shared_ptr<Format> m_format;
 
     void setup_printing_session();
 
     void setup_ordinary_session(const GuiType gui_type);
 
     void load_files();
+
+    void load_snapshot();
 
     static std::vector<u8> create_vram();
 

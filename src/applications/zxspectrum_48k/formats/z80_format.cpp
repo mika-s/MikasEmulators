@@ -1,6 +1,9 @@
 #include "z80_format.h"
+#include "applications/zxspectrum_48k/interfaces/format.h"
 #include "chips/z80/flags.h"
 #include "chips/z80/interrupt_mode.h"
+#include "chips/z80/manual_state.h"
+#include "crosscutting/exceptions/unsupported_exception.h"
 #include "crosscutting/memory/next_byte.h"
 #include "crosscutting/memory/next_word.h"
 #include "crosscutting/typedefs.h"
@@ -14,6 +17,7 @@
 
 namespace emu::applications::zxspectrum_48k {
 
+using emu::exceptions::UnsupportedException;
 using emu::memory::NextByte;
 using emu::memory::NextWord;
 using emu::util::byte::high_byte;
@@ -153,7 +157,7 @@ void Z80Format::print_header()
     std::cout << "Fuller Audio Box:      " << (m_is_fuller_audio_box_emulation ? "true" : "false") << "\n";
     std::cout << "Modifying hardware:    " << (m_is_modifying_hardware ? "true" : "false") << "\n";
     std::cout << "Last OUT 0xfffd:       " << hexify(m_last_out_0xfffd) << "\n";
-    for (int i = 0; i < 16; ++i) {
+    for (std::size_t i = 0; i < s_number_of_sound_registers; ++i) {
         if (i < 10) {
             std::cout << "Sound chip " << i << ":          " << hexify(m_sound_chip_registers[i]) << "\n";
         } else {
@@ -170,7 +174,7 @@ void Z80Format::print_header()
     std::cout << "Multiface ROM paged:   " << (m_is_multiface_rom_paged ? "true" : "false") << "\n";
     std::cout << "0-8192:                " << (m_is_0_to_8192_rom ? "ROM" : "RAM") << "\n";
     std::cout << "8192-16383:            " << (m_is_8192_to_16383_rom ? "ROM" : "RAM") << "\n";
-    for (int i = 0; i < 5; ++i) {
+    for (std::size_t i = 0; i < s_number_of_keyboard_mappings; ++i) {
         std::cout << "KB map for UD joy " << i << ":   " << hexify(m_keyboard_mappings_for_ud_joystick[i]) << "\n";
     }
     std::cout << "KB label left:         " << high_byte(m_ascii_keyboard_mapping[0]) << low_byte(m_ascii_keyboard_mapping[0]) << "\n";
@@ -184,6 +188,105 @@ void Z80Format::print_header()
     std::cout << "Discp. inh. flag:      " << hexify(m_disciple_inhibit_flag) << "\n";
     if (m_length_of_additional_header_block == 55) {
         std::cout << "Last OUT 0x1ffd:    " << hexify(m_last_out_0x1ffd) << "\n";
+    }
+}
+
+ManualState Z80Format::to_cpu_state()
+{
+    return {
+        .m_iff1 = m_iff1,
+        .m_iff2 = m_iff2,
+        .m_sp = m_sp,
+        .m_pc = m_pc,
+        .m_acc_reg = m_acc_reg,
+        .m_acc_p_reg = m_acc_p_reg,
+        .m_b_reg = m_b_reg,
+        .m_b_p_reg = m_b_p_reg,
+        .m_c_reg = m_c_reg,
+        .m_c_p_reg = m_c_p_reg,
+        .m_d_reg = m_d_reg,
+        .m_d_p_reg = m_d_p_reg,
+        .m_e_reg = m_e_reg,
+        .m_e_p_reg = m_e_p_reg,
+        .m_h_reg = m_h_reg,
+        .m_h_p_reg = m_h_p_reg,
+        .m_l_reg = m_l_reg,
+        .m_l_p_reg = m_l_p_reg,
+        .m_ix_reg = m_ix_reg,
+        .m_iy_reg = m_iy_reg,
+        .m_i_reg = m_i_reg,
+        .m_r_reg = m_r_reg,
+        .m_flag_reg = m_flag_reg,
+        .m_flag_p_reg = m_flag_p_reg,
+        .m_interrupt_mode = m_interrupt_mode
+    };
+}
+
+void Z80Format::to_memory(EmulatorMemory<u16, u8>& memory)
+{
+    if (m_version == Z80FormatVersion::v1) {
+        // TODO: v1
+        while (true) {
+            break;
+        }
+    } else {
+        while (m_byte_counter < m_raw_data.size()) {
+            read_block_v2(memory);
+        }
+    }
+}
+
+void Z80Format::read_block_v2(EmulatorMemory<u16, u8>& memory)
+{
+    std::vector<u8> output;
+
+//    std::cout << "Reading a block with:\n";
+    const u16 length_of_compressed_data = get_next_word();
+    const u8 page_number = get_next_byte();
+//    std::cout << "\tLength: " << hexify(length_of_compressed_data) << "\n";
+//    std::cout << "\tPage number: " << hexify(page_number) << "\n\n";
+
+    u16 offset;
+    switch (page_number) {
+    case 4:
+        offset = 0x8000;
+        break;
+    case 5:
+        offset = 0xc000;
+        break;
+    case 8:
+        offset = 0x4000;
+        break;
+    default:
+        throw std::invalid_argument("Page has to be 4, 5 or 8.");
+    }
+
+    int i = 0;
+    while (i++ < length_of_compressed_data) {
+        const u8 byte = get_next_byte();
+
+        if (byte == 0xed && m_raw_data.read(m_byte_counter) == 0xed) {
+            get_next_byte();
+            u8 repetitions = get_next_byte();
+            const u8 value = get_next_byte();
+            i += 3;
+            while (repetitions-- > 0) {
+                output.push_back(value);
+            }
+        } else {
+            output.push_back(byte);
+        }
+    }
+
+    if (output.size() != 0x4000) {
+        throw std::invalid_argument(
+            fmt::format(
+                "Output size is wrong when reading z80 format. Was {} but should be 0x4000",
+                hexify(static_cast<u16>(output.size()))));
+    }
+
+    for (std::size_t j = offset, k = 0; k < output.size(); ++j, ++k) {
+        memory.write(j, output[k]);
     }
 }
 
@@ -282,7 +385,7 @@ void Z80Format::parse_v2()
 
     m_last_out_0xfffd = get_next_byte();
 
-    for (int i = 0; i < 16; ++i) {
+    for (std::size_t i = 0; i < s_number_of_sound_registers; ++i) {
         m_sound_chip_registers.push_back(get_next_byte());
     }
 }
@@ -293,14 +396,22 @@ void Z80Format::parse_v3()
     m_high_T_state_counter = get_next_byte();
     m_flag_byte_spectator = get_next_byte();
     m_is_mgt_rom_paged = get_next_byte() == 0xff;
+    if (m_is_mgt_rom_paged) {
+        throw UnsupportedException("MGT ROM paging");
+    }
+
     m_is_multiface_rom_paged = get_next_byte() == 0xff;
+    if (m_is_mgt_rom_paged) {
+        throw UnsupportedException("Multiface ROM paging");
+    }
+
     m_is_0_to_8192_rom = get_next_byte() == 0xff;
     m_is_8192_to_16383_rom = get_next_byte() == 0xff;
 
-    for (int i = 0; i < 5; ++i) {
+    for (std::size_t i = 0; i < s_number_of_keyboard_mappings; ++i) {
         m_keyboard_mappings_for_ud_joystick.push_back(get_next_word());
     }
-    for (int i = 0; i < 5; ++i) {
+    for (std::size_t i = 0; i < s_number_of_keyboard_mappings; ++i) {
         m_ascii_keyboard_mapping.push_back(get_next_word());
     }
 
