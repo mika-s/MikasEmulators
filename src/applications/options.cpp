@@ -87,12 +87,18 @@ void Options::set_path(std::string path)
     m_path = std::optional(path);
 }
 
+void Options::set_tokens(std::vector<std::string> tokens)
+{
+    m_cmd_tokens = std::move(tokens);
+}
+
 void Options::add_option(std::string const& name)
 {
     if (m_options.count(name) == 0) {
         std::vector<std::string> vec;
         m_options[name] = vec;
         m_is_asking_for_help = m_is_asking_for_help || m_options.contains("help") || m_options.contains("h");
+        m_is_debugging_cmd_parser = m_is_debugging_cmd_parser || m_options.contains("debug");
     }
 }
 
@@ -126,5 +132,9 @@ void Options::fail(std::string reason)
 
         m_failed_reason = std::move(reason);
     }
+}
+std::pair<bool, std::vector<std::string>> Options::is_debugging_cmd_parser() const
+{
+    return { m_is_debugging_cmd_parser, m_cmd_tokens };
 }
 }

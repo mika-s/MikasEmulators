@@ -283,10 +283,7 @@ std::vector<DisassembledLine<u16, 16>> SpaceInvadersSession::disassemble_program
         std::remove_if(disassembled_program.begin(), disassembled_program.end(), [](std::string const& s) { return s.empty(); }));
 
     std::vector<DisassembledLine<u16, 16>> lines;
-    std::transform(
-        disassembled_program.begin(),
-        disassembled_program.end(),
-        std::back_inserter(lines),
+    std::transform(disassembled_program.begin(), disassembled_program.end(), std::back_inserter(lines),
         [](std::string const& line) { return DisassembledLine<u16, 16>(line); });
 
     return lines;

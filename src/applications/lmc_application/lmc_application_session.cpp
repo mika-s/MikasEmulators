@@ -103,7 +103,8 @@ LmcApplicationSession::~LmcApplicationSession()
 }
 
 std::function<void()> loop;
-void main_loop() {
+void main_loop()
+{
     loop();
 }
 
@@ -273,10 +274,7 @@ std::vector<DisassembledLine<Address, 10>> LmcApplicationSession::disassemble_pr
         std::remove_if(disassembled_program.begin(), disassembled_program.end(), [](std::string const& s) { return s.empty(); }));
 
     std::vector<DisassembledLine<Address, 10>> lines;
-    std::transform(
-        disassembled_program.begin(),
-        disassembled_program.end(),
-        std::back_inserter(lines),
+    std::transform(disassembled_program.begin(), disassembled_program.end(), std::back_inserter(lines),
         [](std::string const& line) { return DisassembledLine<Address, 10>(line); });
 
     return lines;

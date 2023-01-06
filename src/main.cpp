@@ -28,8 +28,15 @@ int main(int argc, char* argv[])
         if (argc > 1) {
             const std::vector<std::string> args(argv, argv + argc);
             const Options options = CommandLineArguments::find_options(args);
+
             if (options.is_failed().first && !options.is_asking_for_help().first) {
                 throw InvalidProgramArgumentsException(options.is_failed().second, Frontend::print_main_usage);
+            } else if (options.is_debugging_cmd_parser().first) {
+                for (std::string const& token : options.is_debugging_cmd_parser().second) {
+                    std::cout << token << " ";
+                }
+                std::cout << "\n";
+                return 3;
             }
 
             Frontend::run(options);

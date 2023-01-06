@@ -1,10 +1,14 @@
 #include "scanner.h"
 #include "command_line_arguments/token.h"
 #include "command_line_arguments/token_kind.h"
+#include <algorithm>
 #include <cassert>
 #include <cctype>
 #include <fmt/core.h>
+#include <iterator>
+#include <sstream>
 #include <stdexcept>
+#include <string>
 #include <unordered_map>
 #include <utility>
 
@@ -17,11 +21,11 @@ Scanner::Scanner(std::vector<std::string> args)
 
 Token Scanner::current_token()
 {
-    while (tokens.empty()) {
+    while (m_tokens.empty()) {
         read_next_arg();
     }
 
-    return tokens[0];
+    return m_tokens[0];
 }
 
 void Scanner::skip(TokenKind next)
@@ -37,17 +41,27 @@ void Scanner::skip(TokenKind next)
     read_next_token();
 }
 
+std::vector<std::string> Scanner::tokens_as_strings()
+{
+    std::vector<std::string> tokens;
+    std::transform(m_all_scanned_tokens.begin(), m_all_scanned_tokens.end(), std::back_inserter(tokens),
+        [](Token const& token) { std::stringstream ss; ss << token; return ss.str(); });
+
+    return tokens;
+}
+
 void Scanner::read_next_token()
 {
-    if (!tokens.empty()) {
-        tokens.erase(tokens.begin());
+    if (!m_tokens.empty()) {
+        m_tokens.erase(m_tokens.begin());
     }
 }
 
 void Scanner::read_next_arg()
 {
     if (m_arg_idx >= m_args.size()) {
-        tokens.emplace_back(TokenKind::Eof);
+        m_tokens.emplace_back(TokenKind::Eof);
+        m_all_scanned_tokens.emplace_back(TokenKind::Eof);
     } else {
         read_token(m_args[m_arg_idx++]);
     }
@@ -68,7 +82,8 @@ bool Scanner::handle_single_character(std::string const& line)
 {
     switch (line[m_current_pos]) {
     case '=':
-        tokens.emplace_back(TokenKind::Equals);
+        m_tokens.emplace_back(TokenKind::Equals);
+        m_all_scanned_tokens.emplace_back(TokenKind::Equals);
         ++m_current_pos;
         break;
     default:
@@ -91,8 +106,10 @@ bool Scanner::handle_short_option(std::string const& line)
 
             assert(literal.length() != 0);
 
-            tokens.emplace_back(TokenKind::ShortOption, literal);
+            m_tokens.emplace_back(TokenKind::ShortOption, literal);
+            m_all_scanned_tokens.emplace_back(TokenKind::ShortOption, literal);
             m_current_pos += 2;
+
             return true;
         } else {
             return false;
@@ -126,7 +143,8 @@ bool Scanner::handle_long_option(std::string const& line)
 
         assert(literal.length() != 0);
 
-        tokens.emplace_back(TokenKind::LongOption, literal);
+        m_tokens.emplace_back(TokenKind::LongOption, literal);
+        m_all_scanned_tokens.emplace_back(TokenKind::LongOption, literal);
 
         return true;
     } else {
@@ -148,7 +166,9 @@ bool Scanner::handle_identifier(std::string const& line)
         ++m_current_pos;
 
         const std::string literal = line.substr(start, m_current_pos - start);
-        tokens.emplace_back(TokenKind::Identifier, literal);
+        m_tokens.emplace_back(TokenKind::Identifier, literal);
+        m_all_scanned_tokens.emplace_back(TokenKind::Identifier, literal);
+
         return true;
     } else {
         return false;

@@ -16,9 +16,12 @@ public:
 
     void skip(TokenKind next);
 
+    std::vector<std::string> tokens_as_strings();
+
 private:
     std::vector<std::string> m_args;
-    std::vector<Token> tokens;
+    std::vector<Token> m_tokens;
+    std::vector<Token> m_all_scanned_tokens;
     std::size_t m_current_pos = 0;
     std::size_t m_arg_idx = 0;
 

@@ -96,6 +96,7 @@ void Parser::parse(Scanner& scanner, Options& options)
                 break;
             case ParserStates::Finished:
                 scanner.skip(TokenKind::Eof);
+                options.set_tokens(scanner.tokens_as_strings());
                 return;
             }
         }

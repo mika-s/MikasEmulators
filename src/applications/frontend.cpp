@@ -291,16 +291,10 @@ std::unique_ptr<Emulator> Frontend::choose_emulator(std::string const& program, 
 bool Frontend::is_supporting(std::string const& program)
 {
     std::vector<std::string> program_names;
-    std::transform(
-        s_supported_programs.begin(),
-        s_supported_programs.end(),
-        std::back_inserter(program_names),
+    std::transform(s_supported_programs.begin(), s_supported_programs.end(), std::back_inserter(program_names),
         [](std::pair<std::string, std::string> const& program_description) { return program_description.first; });
     std::vector<std::string> program_names_filtered;
-    std::copy_if(
-        program_names.begin(),
-        program_names.end(),
-        std::back_inserter(program_names_filtered),
+    std::copy_if(program_names.begin(), program_names.end(), std::back_inserter(program_names_filtered),
         [](std::string const& program_name) { return program_name != "NEWLINE"; });
 
     return std::find(program_names_filtered.begin(), program_names_filtered.end(), program) != program_names_filtered.end();
