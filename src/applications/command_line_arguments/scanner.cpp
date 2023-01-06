@@ -119,6 +119,15 @@ bool Scanner::handle_short_option(std::string const& line)
     }
 }
 
+bool is_legal_long_option_literal_character(char ch)
+{
+    bool is_alnum = std::isalnum(ch);
+    bool is_hyphen = ch == '-';
+    bool is_underscore = ch == '_';
+
+    return is_alnum || is_hyphen || is_underscore;
+}
+
 bool Scanner::handle_long_option(std::string const& line)
 {
     if (line[m_current_pos] == '-') {
@@ -133,7 +142,7 @@ bool Scanner::handle_long_option(std::string const& line)
         const std::size_t length = line.length();
         const std::size_t start = m_current_pos + 1;
 
-        while (m_current_pos + 1 < length && std::isalnum(line[m_current_pos + 1])) {
+        while (m_current_pos + 1 < length && is_legal_long_option_literal_character(line[m_current_pos + 1])) {
             ++m_current_pos;
         }
 

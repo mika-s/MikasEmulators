@@ -14,15 +14,15 @@ Settings Settings::from_options(Options const& options)
         .m_is_only_printing_header = false
     };
 
-    std::optional<std::string> path = options.path();
+    const std::optional<std::string> path = options.path();
 
     if (path.has_value()) {
         settings.m_snapshot_file = path.value();
     }
 
-    std::unordered_map<std::string, std::vector<std::string>> opts = options.options();
+    const std::unordered_map<std::string, std::vector<std::string>> opts = options.options();
 
-    if (opts.contains("print")) {
+    if (opts.contains("print-header")) {
         settings.m_is_only_printing_header = true;
     }
 
