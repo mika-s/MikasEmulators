@@ -42,6 +42,9 @@ public:
 
 private:
     static constexpr std::size_t s_header_size_v1 = 30;
+    static constexpr std::size_t s_header_size_additional_v2 = 23;
+    static constexpr std::size_t s_header_size_additional_v3_1 = 54;
+    static constexpr std::size_t s_header_size_additional_v3_2 = 55;
     static constexpr std::size_t s_number_of_sound_registers = 16;
     static constexpr std::size_t s_number_of_keyboard_mappings = 5;
 
@@ -93,40 +96,40 @@ private:
      *                                   defined, for version 3 .z80 files)
      *                                 3=Sinclair 2 Right joystick
      */
-    u8 m_acc_reg;
+    u8 m_acc_reg { 0 };
     Flags m_flag_reg_before_v2_modification;
     Flags m_flag_reg;
-    u8 m_b_reg;
-    u8 m_c_reg;
-    u8 m_h_reg;
-    u8 m_l_reg;
-    u16 m_pc_before_v2_modification;
-    u16 m_pc;
-    u16 m_sp;
-    u8 m_i_reg;
-    u8 m_r_reg;
-    u8 m_border_color;
-    bool m_is_basic_samrom_switched_in;
-    bool m_is_block_of_data_compressed;
-    u8 m_d_reg;
-    u8 m_e_reg;
-    u8 m_b_p_reg;
-    u8 m_c_p_reg;
-    u8 m_d_p_reg;
-    u8 m_e_p_reg;
-    u8 m_h_p_reg;
-    u8 m_l_p_reg;
-    u8 m_acc_p_reg;
+    u8 m_b_reg { 0 };
+    u8 m_c_reg { 0 };
+    u8 m_h_reg { 0 };
+    u8 m_l_reg { 0 };
+    u16 m_pc_before_v2_modification { 0 };
+    u16 m_pc { 0 };
+    u16 m_sp { 0 };
+    u8 m_i_reg { 0 };
+    u8 m_r_reg { 0 };
+    u8 m_border_color { 0 };
+    bool m_is_basic_samrom_switched_in { false };
+    bool m_is_block_of_data_compressed { false };
+    u8 m_d_reg { 0 };
+    u8 m_e_reg { 0 };
+    u8 m_b_p_reg { 0 };
+    u8 m_c_p_reg { 0 };
+    u8 m_d_p_reg { 0 };
+    u8 m_e_p_reg { 0 };
+    u8 m_h_p_reg { 0 };
+    u8 m_l_p_reg { 0 };
+    u8 m_acc_p_reg { 0 };
     Flags m_flag_p_reg;
-    u16 m_iy_reg;
-    u16 m_ix_reg;
-    bool m_iff1;
-    bool m_iff2;
+    u16 m_iy_reg { 0 };
+    u16 m_ix_reg { 0 };
+    bool m_iff1 { false };
+    bool m_iff2 { false };
     InterruptMode m_interrupt_mode;
-    bool m_is_issue2_emulation;           // Emulate an Issue 2 Spectrum: EAR bit is 1 when not toggling. The bit is 0 when not toggling on Issue 3.
-    bool m_is_double_interrupt_frequency; // Interrupt twice as often
-    u8 m_synchronization;                 // Remove flickering of moving characters in some programs
-    u8 m_joystick_type;
+    bool m_is_issue2_emulation { false };           // Emulate an Issue 2 Spectrum: EAR bit is 1 when not toggling. The bit is 0 when not toggling on Issue 3.
+    bool m_is_double_interrupt_frequency { false }; // Interrupt twice as often
+    u8 m_synchronization { 0 };                     // Remove flickering of moving characters in some programs
+    u8 m_joystick_type { 0 };
 
     /**
      * V2 (in addition to the header above):
@@ -150,16 +153,16 @@ private:
      *      * 38      1       Last OUT to port 0xfffd (soundchip register number)
      *      * 39      16      Contents of the sound chip registers
      */
-    u16 m_length_of_additional_header_block;
-    u8 m_hardware_mode;
-    u8 m_byte_35;
-    u8 m_byte_36;
-    bool m_is_r_reg_emulation_on; // On: Real Z80 behavior. Off: Random number generator, except for bit 7, which stays the same.
-    bool m_is_ldir_emulation_on;  // Emulate LDIR with an x86 instructions that does the same thing, but faster.
-    bool m_is_ay_sound_in_use;
-    bool m_is_fuller_audio_box_emulation;
-    bool m_is_modifying_hardware;
-    u8 m_last_out_0xfffd;
+    u16 m_length_of_additional_header_block { 0 };
+    u8 m_hardware_mode { 0 };
+    u8 m_byte_35 { 0 };
+    u8 m_byte_36 { 0 };
+    bool m_is_r_reg_emulation_on { false }; // On: Real Z80 behavior. Off: Random number generator, except for bit 7, which stays the same.
+    bool m_is_ldir_emulation_on { false };  // Emulate LDIR with an x86 instructions that does the same thing, but faster.
+    bool m_is_ay_sound_in_use { false };
+    bool m_is_fuller_audio_box_emulation { false };
+    bool m_is_modifying_hardware { false };
+    u8 m_last_out_0xfffd { 0 };
     std::vector<u8> m_sound_chip_registers;
 
     /**
@@ -182,19 +185,21 @@ private:
      *        85      1       Disciple inhibit flag: 0=rom pageable, 0ff=not
      *     ** 86      1       Last OUT to port 0x1ffd
      */
-    u16 m_low_T_state_counter;
-    u8 m_high_T_state_counter;
-    u8 m_flag_byte_spectator;
-    bool m_is_mgt_rom_paged;
-    bool m_is_multiface_rom_paged;
-    bool m_is_0_to_8192_rom;
-    bool m_is_8192_to_16383_rom;
+    u16 m_low_T_state_counter { 0 };
+    u8 m_high_T_state_counter { 0 };
+    u8 m_flag_byte_spectator { 0 };
+    bool m_is_mgt_rom_paged { false };
+    bool m_is_multiface_rom_paged { false };
+    bool m_is_0_to_8192_rom { false };
+    bool m_is_8192_to_16383_rom { false };
     std::vector<u16> m_keyboard_mappings_for_ud_joystick;
     std::vector<u16> m_ascii_keyboard_mapping;
-    u8 m_mgt_type;
-    u8 m_disciple_inhibit_button_status; // Floppy disk interface. Inhibit: turn off
-    u8 m_disciple_inhibit_flag;          // Floppy disk interface
-    u8 m_last_out_0x1ffd;
+    u8 m_mgt_type { 0 };
+    u8 m_disciple_inhibit_button_status { 0 }; // Floppy disk interface. Inhibit: turn off
+    u8 m_disciple_inhibit_flag { 0 };          // Floppy disk interface
+    u8 m_last_out_0x1ffd { 0 };
+
+    void read_block_v1(EmulatorMemory<u16, u8>& memory);
 
     void read_block_v2(EmulatorMemory<u16, u8>& memory);
 

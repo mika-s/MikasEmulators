@@ -143,51 +143,55 @@ void Z80Format::print_header()
     std::cout << "Joystick:              " << hexify(m_joystick_type) << " (" << joystick_string() << ")"
               << "\n";
 
-    std::cout << "\nVersion 2 headers:\n";
-    std::cout << "------------------\n";
-    std::cout << "F:                     " << hexify(m_flag_reg.to_u8()) << "\n";
-    std::cout << "Length of header:      " << +m_length_of_additional_header_block << "\n";
-    std::cout << "PC:                    " << hexify(m_pc) << "\n";
-    std::cout << "Hardware mode:         " << hexify(m_hardware_mode) << "\n";
-    std::cout << "Byte 35:               " << hexify(m_byte_35) << "\n";
-    std::cout << "Byte 36:               " << hexify(m_byte_36) << "\n";
-    std::cout << "R reg emulation:       " << (m_is_r_reg_emulation_on ? "true" : "false") << "\n";
-    std::cout << "LDIR emulation:        " << (m_is_ldir_emulation_on ? "true" : "false") << "\n";
-    std::cout << "AY sound in use:       " << (m_is_ay_sound_in_use ? "true" : "false") << "\n";
-    std::cout << "Fuller Audio Box:      " << (m_is_fuller_audio_box_emulation ? "true" : "false") << "\n";
-    std::cout << "Modifying hardware:    " << (m_is_modifying_hardware ? "true" : "false") << "\n";
-    std::cout << "Last OUT 0xfffd:       " << hexify(m_last_out_0xfffd) << "\n";
-    for (std::size_t i = 0; i < s_number_of_sound_registers; ++i) {
-        if (i < 10) {
-            std::cout << "Sound chip " << i << ":          " << hexify(m_sound_chip_registers[i]) << "\n";
-        } else {
-            std::cout << "Sound chip " << i << ":         " << hexify(m_sound_chip_registers[i]) << "\n";
+    if (m_version == Z80FormatVersion::v2 || m_version == Z80FormatVersion::v3) {
+        std::cout << "\nVersion 2 headers:\n";
+        std::cout << "------------------\n";
+        std::cout << "F:                     " << hexify(m_flag_reg.to_u8()) << "\n";
+        std::cout << "Length of header:      " << +m_length_of_additional_header_block << "\n";
+        std::cout << "PC:                    " << hexify(m_pc) << "\n";
+        std::cout << "Hardware mode:         " << hexify(m_hardware_mode) << "\n";
+        std::cout << "Byte 35:               " << hexify(m_byte_35) << "\n";
+        std::cout << "Byte 36:               " << hexify(m_byte_36) << "\n";
+        std::cout << "R reg emulation:       " << (m_is_r_reg_emulation_on ? "true" : "false") << "\n";
+        std::cout << "LDIR emulation:        " << (m_is_ldir_emulation_on ? "true" : "false") << "\n";
+        std::cout << "AY sound in use:       " << (m_is_ay_sound_in_use ? "true" : "false") << "\n";
+        std::cout << "Fuller Audio Box:      " << (m_is_fuller_audio_box_emulation ? "true" : "false") << "\n";
+        std::cout << "Modifying hardware:    " << (m_is_modifying_hardware ? "true" : "false") << "\n";
+        std::cout << "Last OUT 0xfffd:       " << hexify(m_last_out_0xfffd) << "\n";
+        for (std::size_t i = 0; i < s_number_of_sound_registers; ++i) {
+            if (i < 10) {
+                std::cout << "Sound chip " << i << ":          " << hexify(m_sound_chip_registers[i]) << "\n";
+            } else {
+                std::cout << "Sound chip " << i << ":         " << hexify(m_sound_chip_registers[i]) << "\n";
+            }
         }
     }
 
-    std::cout << "\nVersion 3 headers:\n";
-    std::cout << "------------------\n";
-    std::cout << "Low T state counter:   " << hexify(m_low_T_state_counter) << "\n";
-    std::cout << "High T state counter:  " << hexify(m_high_T_state_counter) << "\n";
-    std::cout << "Flag byte Spectator:   " << hexify(m_flag_byte_spectator) << "\n";
-    std::cout << "MGT ROM paged:         " << (m_is_mgt_rom_paged ? "true" : "false") << "\n";
-    std::cout << "Multiface ROM paged:   " << (m_is_multiface_rom_paged ? "true" : "false") << "\n";
-    std::cout << "0-8192:                " << (m_is_0_to_8192_rom ? "ROM" : "RAM") << "\n";
-    std::cout << "8192-16383:            " << (m_is_8192_to_16383_rom ? "ROM" : "RAM") << "\n";
-    for (std::size_t i = 0; i < s_number_of_keyboard_mappings; ++i) {
-        std::cout << "KB map for UD joy " << i << ":   " << hexify(m_keyboard_mappings_for_ud_joystick[i]) << "\n";
-    }
-    std::cout << "KB label left:         " << high_byte(m_ascii_keyboard_mapping[0]) << low_byte(m_ascii_keyboard_mapping[0]) << "\n";
-    std::cout << "KB label right:        " << high_byte(m_ascii_keyboard_mapping[1]) << low_byte(m_ascii_keyboard_mapping[1]) << "\n";
-    std::cout << "KB label down:         " << high_byte(m_ascii_keyboard_mapping[2]) << low_byte(m_ascii_keyboard_mapping[2]) << "\n";
-    std::cout << "KB label up:           " << high_byte(m_ascii_keyboard_mapping[3]) << low_byte(m_ascii_keyboard_mapping[3]) << "\n";
-    std::cout << "KB label fire:         " << high_byte(m_ascii_keyboard_mapping[4]) << low_byte(m_ascii_keyboard_mapping[4]) << "\n";
-    std::cout << "MGT type:              " << hexify(m_mgt_type) << " (" << mgt_type_string() << ")"
-              << "\n";
-    std::cout << "Discp. inh. btn stat:  " << hexify(m_disciple_inhibit_button_status) << "\n";
-    std::cout << "Discp. inh. flag:      " << hexify(m_disciple_inhibit_flag) << "\n";
-    if (m_length_of_additional_header_block == 55) {
-        std::cout << "Last OUT 0x1ffd:    " << hexify(m_last_out_0x1ffd) << "\n";
+    if (m_version == Z80FormatVersion::v3) {
+        std::cout << "\nVersion 3 headers:\n";
+        std::cout << "------------------\n";
+        std::cout << "Low T state counter:   " << hexify(m_low_T_state_counter) << "\n";
+        std::cout << "High T state counter:  " << hexify(m_high_T_state_counter) << "\n";
+        std::cout << "Flag byte Spectator:   " << hexify(m_flag_byte_spectator) << "\n";
+        std::cout << "MGT ROM paged:         " << (m_is_mgt_rom_paged ? "true" : "false") << "\n";
+        std::cout << "Multiface ROM paged:   " << (m_is_multiface_rom_paged ? "true" : "false") << "\n";
+        std::cout << "0-8192:                " << (m_is_0_to_8192_rom ? "ROM" : "RAM") << "\n";
+        std::cout << "8192-16383:            " << (m_is_8192_to_16383_rom ? "ROM" : "RAM") << "\n";
+        for (std::size_t i = 0; i < s_number_of_keyboard_mappings; ++i) {
+            std::cout << "KB map for UD joy " << i << ":   " << hexify(m_keyboard_mappings_for_ud_joystick[i]) << "\n";
+        }
+        std::cout << "KB label left:         " << high_byte(m_ascii_keyboard_mapping[0]) << low_byte(m_ascii_keyboard_mapping[0]) << "\n";
+        std::cout << "KB label right:        " << high_byte(m_ascii_keyboard_mapping[1]) << low_byte(m_ascii_keyboard_mapping[1]) << "\n";
+        std::cout << "KB label down:         " << high_byte(m_ascii_keyboard_mapping[2]) << low_byte(m_ascii_keyboard_mapping[2]) << "\n";
+        std::cout << "KB label up:           " << high_byte(m_ascii_keyboard_mapping[3]) << low_byte(m_ascii_keyboard_mapping[3]) << "\n";
+        std::cout << "KB label fire:         " << high_byte(m_ascii_keyboard_mapping[4]) << low_byte(m_ascii_keyboard_mapping[4]) << "\n";
+        std::cout << "MGT type:              " << hexify(m_mgt_type) << " (" << mgt_type_string() << ")"
+                  << "\n";
+        std::cout << "Discp. inh. btn stat:  " << hexify(m_disciple_inhibit_button_status) << "\n";
+        std::cout << "Discp. inh. flag:      " << hexify(m_disciple_inhibit_flag) << "\n";
+        if (m_length_of_additional_header_block == 55) {
+            std::cout << "Last OUT 0x1ffd:    " << hexify(m_last_out_0x1ffd) << "\n";
+        }
     }
 }
 
@@ -225,10 +229,7 @@ ManualState Z80Format::to_cpu_state()
 void Z80Format::to_memory(EmulatorMemory<u16, u8>& memory)
 {
     if (m_version == Z80FormatVersion::v1) {
-        // TODO: v1
-        while (true) {
-            break;
-        }
+        read_block_v1(memory);
     } else {
         while (m_byte_counter < m_raw_data.size()) {
             read_block_v2(memory);
@@ -236,15 +237,58 @@ void Z80Format::to_memory(EmulatorMemory<u16, u8>& memory)
     }
 }
 
+void Z80Format::read_block_v1(EmulatorMemory<u16, u8>& memory)
+{
+    std::vector<u8> output;
+
+    while (m_byte_counter < m_raw_data.size() - 4) {
+        const u8 byte = get_next_byte();
+
+        if (m_is_block_of_data_compressed && byte == 0xed && m_raw_data.read(m_byte_counter) == 0xed) {
+            get_next_byte();
+            u8 repetitions = get_next_byte();
+            const u8 value = get_next_byte();
+            while (repetitions-- > 0) {
+                output.push_back(value);
+            }
+        } else {
+            output.push_back(byte);
+        }
+    }
+
+    const u8 eb1 = get_next_byte();
+    const u8 eb2 = get_next_byte();
+    const u8 eb3 = get_next_byte();
+    const u8 eb4 = get_next_byte();
+
+    if (!(eb1 == 0x00 && eb2 == 0xed && eb3 == 0xed && eb4 == 0x00)) {
+        throw std::invalid_argument(
+            fmt::format(
+                "The four final bytes were not 0x00 0xed 0xed 0x00, but {} {} {} {}",
+                hexify(eb1), hexify(eb2), hexify(eb3), hexify(eb4)));
+    }
+
+    if (output.size() != 0xc000) {
+        throw std::invalid_argument(
+            fmt::format(
+                "Output size is wrong when reading z80 format. Was {} but should be 0xc000",
+                hexify(static_cast<u16>(output.size()))));
+    }
+
+    for (u16 address = 0x4000; address < 0xffff; ++address) {
+        memory.write(address, output[address - 0x4000]);
+    }
+}
+
 void Z80Format::read_block_v2(EmulatorMemory<u16, u8>& memory)
 {
     std::vector<u8> output;
 
-//    std::cout << "Reading a block with:\n";
+    //    std::cout << "Reading a block with:\n";
     const u16 length_of_compressed_data = get_next_word();
     const u8 page_number = get_next_byte();
-//    std::cout << "\tLength: " << hexify(length_of_compressed_data) << "\n";
-//    std::cout << "\tPage number: " << hexify(page_number) << "\n\n";
+    //    std::cout << "\tLength: " << hexify(length_of_compressed_data) << "\n";
+    //    std::cout << "\tPage number: " << hexify(page_number) << "\n\n";
 
     u16 offset;
     switch (page_number) {
@@ -265,7 +309,7 @@ void Z80Format::read_block_v2(EmulatorMemory<u16, u8>& memory)
     while (i++ < length_of_compressed_data) {
         const u8 byte = get_next_byte();
 
-        if (byte == 0xed && m_raw_data.read(m_byte_counter) == 0xed) {
+        if (m_is_block_of_data_compressed && byte == 0xed && m_raw_data.read(m_byte_counter) == 0xed) {
             get_next_byte();
             u8 repetitions = get_next_byte();
             const u8 value = get_next_byte();
@@ -351,7 +395,6 @@ void Z80Format::parse_v1()
     m_interrupt_mode = parse_interrupt_mode(misc_byte_2 & 0b00000011);
     m_is_issue2_emulation = is_bit_set(misc_byte_2, 2);
     m_is_double_interrupt_frequency = is_bit_set(misc_byte_2, 3);
-    m_is_block_of_data_compressed = is_bit_set(misc_byte_2, 5);
     m_synchronization = misc_byte_2 & 0b00110000 >> 4;
     m_joystick_type = misc_byte_2 & 0b11000000 >> 6;
 }
@@ -362,12 +405,16 @@ void Z80Format::parse_v2()
     m_flag_reg.from_u8(m_flag_reg.to_u8() & 0b11001111);
     m_length_of_additional_header_block = get_next_word();
 
-    if (m_length_of_additional_header_block == 23) {
+    if (m_length_of_additional_header_block == s_header_size_additional_v2) {
         m_version = Z80FormatVersion::v2;
-    } else if (m_length_of_additional_header_block == 54 || m_length_of_additional_header_block == 55) {
+    } else if (m_length_of_additional_header_block == s_header_size_additional_v3_1
+        || m_length_of_additional_header_block == s_header_size_additional_v3_2) {
         m_version = Z80FormatVersion::v3;
     } else {
-        throw std::invalid_argument(fmt::format("Invalid header length: {}. Must be 23 for v2 or 54/55 for v3.", m_length_of_additional_header_block));
+        throw std::invalid_argument(
+            fmt::format("Invalid header length: {}. Must be {} for v2 or {}/{} for v3.",
+                m_length_of_additional_header_block, s_header_size_additional_v2,
+                s_header_size_additional_v3_1, s_header_size_additional_v3_2));
     }
 
     m_pc_before_v2_modification = m_pc;
