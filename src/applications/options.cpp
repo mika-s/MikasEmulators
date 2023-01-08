@@ -97,8 +97,8 @@ void Options::add_option(std::string const& name)
     if (m_options.count(name) == 0) {
         std::vector<std::string> vec;
         m_options[name] = vec;
-        m_is_asking_for_help = m_is_asking_for_help || m_options.contains("help") || m_options.contains("h");
-        m_is_debugging_cmd_parser = m_is_debugging_cmd_parser || m_options.contains("debug");
+        m_is_asking_for_help = m_is_asking_for_help || m_options.contains(s_help_long) || m_options.contains(s_help_short);
+        m_is_debugging_cmd_parser = m_is_debugging_cmd_parser || m_options.contains(s_debug_scanner_long);
     }
 }
 
@@ -112,7 +112,7 @@ void Options::add_option(std::string const& name, std::string const& value)
         m_options[name].push_back(value);
     }
 
-    m_is_asking_for_help = m_is_asking_for_help || m_options.contains("help") || m_options.contains("h");
+    m_is_asking_for_help = m_is_asking_for_help || m_options.contains(s_help_long) || m_options.contains(s_help_short);
 }
 
 std::unordered_map<std::string, std::vector<std::string>> Options::options() const

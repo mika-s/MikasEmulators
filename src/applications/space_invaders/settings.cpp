@@ -2,10 +2,12 @@
 #include "crosscutting/exceptions/invalid_program_arguments_exception.h"
 #include "options.h"
 #include "usage.h"
+#include <fmt/core.h>
 #include <functional>
 #include <sstream>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 namespace emu::applications::space_invaders {
@@ -14,6 +16,12 @@ using emu::exceptions::InvalidProgramArgumentsException;
 
 Settings Settings::from_options(Options const& options)
 {
+    for (auto const& opt : options.options()) {
+        if (!s_recognized_options.contains(opt.first)) {
+            throw InvalidProgramArgumentsException(fmt::format("Unknown flag: {}", opt.first), print_usage);
+        }
+    }
+
     Settings settings {
         .m_number_of_lives = NumberOfLives::Three,
         .m_bonus_life_at = BonusLifeAt::_1500,
@@ -37,7 +45,7 @@ Settings Settings::from_options(Options const& options)
                 std::stringstream ss;
                 ss << "Invalid number of lives passed to the -d option: " << opt
                    << R"(. Should be "-d n=3", ..., "-d n=6".)";
-                throw InvalidProgramArgumentsException(ss.str(), &print_usage);
+                throw InvalidProgramArgumentsException(ss.str(), print_usage);
             }
             break;
         case 'b':
@@ -49,7 +57,7 @@ Settings Settings::from_options(Options const& options)
                 std::stringstream ss;
                 ss << "Invalid bonus life at passed to the -d option: " << opt
                    << R"(. Should be "-d b=1500" or "-d b=1000".)";
-                throw InvalidProgramArgumentsException(ss.str(), &print_usage);
+                throw InvalidProgramArgumentsException(ss.str(), print_usage);
             }
             break;
         case 'c':
@@ -61,13 +69,13 @@ Settings Settings::from_options(Options const& options)
                 std::stringstream ss;
                 ss << "Invalid coin info passed to the -d option: " << opt
                    << R"(. Should be "-d c=on" or "-d c=off".)";
-                throw InvalidProgramArgumentsException(ss.str(), &print_usage);
+                throw InvalidProgramArgumentsException(ss.str(), print_usage);
             }
             break;
         default:
             std::stringstream ss;
             ss << "Unknown -d value: " << opt << "\n";
-            throw InvalidProgramArgumentsException(ss.str(), &print_usage);
+            throw InvalidProgramArgumentsException(ss.str(), print_usage);
         }
     }
 

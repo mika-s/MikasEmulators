@@ -25,7 +25,8 @@ void InvalidProgramArgumentsException::make_message(std::string const& msg)
 
     m_message = ss.str();
 }
-std::function<void(const std::string& program_name)> const& InvalidProgramArgumentsException::usage_function() const
+
+std::function<void(std::string const& program_name)> const& InvalidProgramArgumentsException::usage_function() const
 {
     return m_usage_function;
 }

@@ -19,6 +19,8 @@ public:
     std::vector<std::string> tokens_as_strings();
 
 private:
+    static constexpr char s_start_of_flag = '-';
+
     std::vector<std::string> m_args;
     std::vector<Token> m_tokens;
     std::vector<Token> m_all_scanned_tokens;

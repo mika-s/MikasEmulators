@@ -19,7 +19,7 @@ public:
 
 private:
     static constexpr int s_sdl_frequency = 44100;
-    static constexpr int s_fps = 60;
+    static constexpr int s_fps = 50;
 
     unsigned int m_volume = 5000;
 

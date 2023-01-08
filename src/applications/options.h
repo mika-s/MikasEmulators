@@ -20,7 +20,7 @@ public:
 
     std::string short_executable_name() const;
 
-    GuiType gui_type(std::function<void(const std::string&)> const& print_usage) const;
+    GuiType gui_type(std::function<void(std::string const&)> const& print_usage) const;
 
     std::pair<bool, std::string> is_asking_for_help() const;
 
@@ -53,6 +53,10 @@ public:
     void fail(std::string reason);
 
 private:
+    static const inline std::string s_help_short = "h";
+    static const inline std::string s_help_long = "help";
+    static const inline std::string s_debug_scanner_long = "debug-scanner";
+
     std::vector<std::string> m_args { "" };
     std::string m_command { "" };
     std::optional<std::string> m_application;

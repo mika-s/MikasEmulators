@@ -2,10 +2,12 @@
 #include "crosscutting/exceptions/invalid_program_arguments_exception.h"
 #include "options.h"
 #include "usage.h"
+#include <fmt/core.h>
 #include <functional>
 #include <sstream>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 namespace emu::applications::pacman {
@@ -15,6 +17,12 @@ using emu::exceptions::InvalidProgramArgumentsException;
 Settings Settings::from_options(Options const& options)
 {
     using namespace applications::pacman;
+
+    for (auto const& opt : options.options()) {
+        if (!s_recognized_options.contains(opt.first)) {
+            throw InvalidProgramArgumentsException(fmt::format("Unknown flag: {}", opt.first), print_usage);
+        }
+    }
 
     Settings settings {
         .m_number_of_lives = NumberOfLives::Three,
@@ -43,7 +51,7 @@ Settings Settings::from_options(Options const& options)
                 std::stringstream ss;
                 ss << "Invalid number of lives passed to the -d option: " << opt
                    << R"(. Should be "-d n=1", "-d n=2", "-d n=3" or "-d n=5".)";
-                throw InvalidProgramArgumentsException(ss.str(), &print_usage);
+                throw InvalidProgramArgumentsException(ss.str(), print_usage);
             }
             break;
         case 'b':
@@ -59,7 +67,7 @@ Settings Settings::from_options(Options const& options)
                 std::stringstream ss;
                 ss << "Invalid bonus life at passed to the -d option: " << opt
                    << R"(. Should be "-d b=10000", "-d b=15000", "-d b=20000" or "-d b=none".)";
-                throw InvalidProgramArgumentsException(ss.str(), &print_usage);
+                throw InvalidProgramArgumentsException(ss.str(), print_usage);
             }
             break;
         case 'c':
@@ -76,7 +84,7 @@ Settings Settings::from_options(Options const& options)
                 ss << "Invalid number of coins per game passed to the -d option: " << opt
                    << R"(. Should be "-d c=1C1G" (one per game), "-d c=1C2G" (one per two games), )"
                    << R"("-d c=2C1G" (two per game) or "-d c=free".)";
-                throw InvalidProgramArgumentsException(ss.str(), &print_usage);
+                throw InvalidProgramArgumentsException(ss.str(), print_usage);
             }
             break;
         case 'd':
@@ -88,7 +96,7 @@ Settings Settings::from_options(Options const& options)
                 std::stringstream ss;
                 ss << "Invalid difficulty passed to the -d option: " << opt
                    << R"(. Should be "-d d=normal" or "-d d=hard".)";
-                throw InvalidProgramArgumentsException(ss.str(), &print_usage);
+                throw InvalidProgramArgumentsException(ss.str(), print_usage);
             }
             break;
         case 'g':
@@ -100,7 +108,7 @@ Settings Settings::from_options(Options const& options)
                 std::stringstream ss;
                 ss << "Invalid ghost names passed to the -d option: " << opt
                    << R"(. Should be "-d g=normal" or "-d g=alternate".)";
-                throw InvalidProgramArgumentsException(ss.str(), &print_usage);
+                throw InvalidProgramArgumentsException(ss.str(), print_usage);
             }
             break;
         case 't':
@@ -112,7 +120,7 @@ Settings Settings::from_options(Options const& options)
                 std::stringstream ss;
                 ss << "Invalid board test passed to the -d option: " << opt
                    << R"(. Should be "-d t=off" or "-d t=on".)";
-                throw InvalidProgramArgumentsException(ss.str(), &print_usage);
+                throw InvalidProgramArgumentsException(ss.str(), print_usage);
             }
             break;
         case 'm':
@@ -124,13 +132,13 @@ Settings Settings::from_options(Options const& options)
                 std::stringstream ss;
                 ss << "Invalid cabinet mode passed to the -d option: " << opt
                    << R"(. Should be "-d m=table" or "-d m=upright".)";
-                throw InvalidProgramArgumentsException(ss.str(), &print_usage);
+                throw InvalidProgramArgumentsException(ss.str(), print_usage);
             }
             break;
         default:
             std::stringstream ss;
             ss << "Unknown -d value: " << opt << "\n";
-            throw InvalidProgramArgumentsException(ss.str(), &print_usage);
+            throw InvalidProgramArgumentsException(ss.str(), print_usage);
         }
     }
 

@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+#include <unordered_set>
+
 namespace emu::applications {
 class Options;
 }
@@ -30,5 +33,17 @@ public:
     CoinInfo m_coin_info;
 
     static Settings from_options(Options const& options);
+
+private:
+    static const inline std::string s_help_short = "h";
+    static const inline std::string s_help_long = "help";
+    static const inline std::string s_debug_scanner_long = "debug-scanner";
+
+    static const inline std::string s_dipswitch_short = "d";
+    static const inline std::string s_gui_short = "g";
+
+    static const inline std::unordered_set<std::string> s_recognized_options = {
+        s_help_short, s_help_long, s_debug_scanner_long, s_dipswitch_short, s_gui_short
+    };
 };
 }

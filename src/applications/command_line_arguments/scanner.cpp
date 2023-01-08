@@ -95,7 +95,7 @@ bool Scanner::handle_single_character(std::string const& line)
 
 bool Scanner::handle_short_option(std::string const& line)
 {
-    if (line[m_current_pos] == '-') {
+    if (line[m_current_pos] == s_start_of_flag) {
         bool const is_next_hyphen = m_current_pos < line.length() - 1 && line[m_current_pos + 1] == '-';
         if (is_next_hyphen) {
             return false;
@@ -130,7 +130,7 @@ bool is_legal_long_option_literal_character(char ch)
 
 bool Scanner::handle_long_option(std::string const& line)
 {
-    if (line[m_current_pos] == '-') {
+    if (line[m_current_pos] == s_start_of_flag) {
         bool const is_next_hyphen = m_current_pos < line.length() - 1 && line[m_current_pos + 1] == '-';
         bool const is_next_next_alnum = m_current_pos < line.length() - 2 && std::isalnum(line[m_current_pos + 2]);
         if (!is_next_hyphen || !is_next_next_alnum) {
@@ -164,11 +164,11 @@ bool Scanner::handle_long_option(std::string const& line)
 bool Scanner::handle_identifier(std::string const& line)
 {
     char current_char = line[m_current_pos];
-    if (current_char != '-') {
+    if (current_char != s_start_of_flag) {
         const std::size_t length = line.length();
         const std::size_t start = m_current_pos;
 
-        while (m_current_pos + 1 < length && !std::isspace(line[m_current_pos + 1])) {
+        while (m_current_pos + 1 < length) {
             ++m_current_pos;
         }
 
