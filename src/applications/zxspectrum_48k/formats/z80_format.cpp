@@ -1,5 +1,6 @@
 #include "z80_format.h"
 #include "applications/zxspectrum_48k/interfaces/format.h"
+#include "applications/zxspectrum_48k/joystick_type.h"
 #include "chips/z80/flags.h"
 #include "chips/z80/interrupt_mode.h"
 #include "chips/z80/manual_state.h"
@@ -14,6 +15,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <unordered_map>
 
 namespace emu::applications::zxspectrum_48k {
 
@@ -77,22 +79,6 @@ std::string Z80Format::synchronization_string()
     }
 }
 
-std::string Z80Format::joystick_string()
-{
-    switch (m_joystick_type) {
-    case 0:
-        return "Cursor/Protek/AGF joystick";
-    case 1:
-        return "Kempston joystick";
-    case 2:
-        return "Sinclair 2 Left joystick";
-    case 3:
-        return "Sinclair 2 Right joystick";
-    default:
-        throw std::invalid_argument(fmt::format("m_joystick_type cannot be {}. Has to be between 0-3.", m_joystick_type));
-    }
-}
-
 std::string Z80Format::mgt_type_string()
 {
     switch (m_mgt_type) {
@@ -140,8 +126,7 @@ void Z80Format::print_header()
     std::cout << "Double intr. freq:     " << (m_is_double_interrupt_frequency ? "true" : "false") << "\n";
     std::cout << "Synchronization:       " << hexify(m_synchronization) << " (" << synchronization_string() << ")"
               << "\n";
-    std::cout << "Joystick:              " << hexify(m_joystick_type) << " (" << joystick_string() << ")"
-              << "\n";
+    std::cout << "Joystick:              " << s_joystick_type_as_string.at(m_joystick_type) << "\n";
 
     if (m_version == Z80FormatVersion::v2 || m_version == Z80FormatVersion::v3) {
         std::cout << "\nVersion 2 headers:\n";
@@ -149,7 +134,7 @@ void Z80Format::print_header()
         std::cout << "F:                     " << hexify(m_flag_reg.to_u8()) << "\n";
         std::cout << "Length of header:      " << +m_length_of_additional_header_block << "\n";
         std::cout << "PC:                    " << hexify(m_pc) << "\n";
-        std::cout << "Hardware mode:         " << hexify(m_hardware_mode) << "\n";
+        std::cout << "Hardware mode:         " << s_hardware_mode_as_string.at(m_hardware_mode) << "\n";
         std::cout << "Byte 35:               " << hexify(m_byte_35) << "\n";
         std::cout << "Byte 36:               " << hexify(m_byte_36) << "\n";
         std::cout << "R reg emulation:       " << (m_is_r_reg_emulation_on ? "true" : "false") << "\n";
@@ -305,11 +290,14 @@ void Z80Format::read_block_v2(EmulatorMemory<u16, u8>& memory)
         throw std::invalid_argument("Page has to be 4, 5 or 8.");
     }
 
+    // We disregard the compression bool in the v1 header when using v2 block parsing.
+    bool is_compressed = length_of_compressed_data != 0xffff;
+
     int i = 0;
     while (i++ < length_of_compressed_data) {
         const u8 byte = get_next_byte();
 
-        if (m_is_block_of_data_compressed && byte == 0xed && m_raw_data.read(m_byte_counter) == 0xed) {
+        if (is_compressed && byte == 0xed && m_raw_data.read(m_byte_counter) == 0xed) {
             get_next_byte();
             u8 repetitions = get_next_byte();
             const u8 value = get_next_byte();
@@ -396,7 +384,7 @@ void Z80Format::parse_v1()
     m_is_issue2_emulation = is_bit_set(misc_byte_2, 2);
     m_is_double_interrupt_frequency = is_bit_set(misc_byte_2, 3);
     m_synchronization = misc_byte_2 & 0b00110000 >> 4;
-    m_joystick_type = misc_byte_2 & 0b11000000 >> 6;
+    m_joystick_type = parse_joystick_type(misc_byte_2 & 0b11000000 >> 6);
 }
 
 void Z80Format::parse_v2()
@@ -419,7 +407,16 @@ void Z80Format::parse_v2()
 
     m_pc_before_v2_modification = m_pc;
     m_pc = get_next_word();
-    m_hardware_mode = get_next_byte();
+    m_hardware_mode = parse_hardware_mode(get_next_byte());
+
+    if (m_hardware_mode != HardwareMode::_48k && m_hardware_mode != HardwareMode::_48k_If1) {
+        throw UnsupportedException(
+            fmt::format("Only hardware modes {} and {} are supported, but {} was provided",
+                s_hardware_mode_as_string.at(HardwareMode::_48k),
+                s_hardware_mode_as_string.at(HardwareMode::_48k_If1),
+                s_hardware_mode_as_string.at(m_hardware_mode)));
+    }
+
     m_byte_35 = get_next_byte();
     m_byte_36 = get_next_byte();
 
@@ -481,6 +478,68 @@ InterruptMode Z80Format::parse_interrupt_mode(u8 raw_interrupt_mode)
         return InterruptMode::TWO;
     default:
         throw std::invalid_argument(fmt::format("Invalid interrupt mode: {}", raw_interrupt_mode));
+    }
+}
+
+JoystickType Z80Format::parse_joystick_type(u8 raw_joystick_type)
+{
+    switch (raw_joystick_type) {
+    case 0:
+        return JoystickType::Cursor_Protek_AGF;
+    case 1:
+        return JoystickType::Kempston;
+    case 2:
+        if (m_version == Z80FormatVersion::v3) {
+            return JoystickType::UserDefined;
+        } else {
+            return JoystickType::Sinclair_2_Left;
+        }
+    case 3:
+        return JoystickType::Sinclair_2_Right;
+    default:
+        throw std::invalid_argument(fmt::format("Invalid joystick type: {}", raw_joystick_type));
+    }
+}
+
+HardwareMode Z80Format::parse_hardware_mode(u8 raw_hardware_mode)
+{
+    switch (m_version) {
+    case Z80FormatVersion::v2:
+        switch (raw_hardware_mode) {
+        case 0:
+            return HardwareMode::_48k;
+        case 1:
+            return HardwareMode::_48k_If1;
+        case 2:
+            return HardwareMode::SamRam;
+        case 3:
+            return HardwareMode::_128k;
+        case 4:
+            return HardwareMode::_128k_If1;
+        default:
+            throw std::invalid_argument(fmt::format("Invalid hardware mode for v2: {}", raw_hardware_mode));
+        }
+    case Z80FormatVersion::v3:
+        switch (raw_hardware_mode) {
+        case 0:
+            return HardwareMode::_48k;
+        case 1:
+            return HardwareMode::_48k_If1;
+        case 2:
+            return HardwareMode::SamRam;
+        case 3:
+            return HardwareMode::_48k_MGT;
+        case 4:
+            return HardwareMode::_128k;
+        case 5:
+            return HardwareMode::_128k_If1;
+        case 6:
+            return HardwareMode::_128k_MGT;
+        default:
+            throw std::invalid_argument(fmt::format("Invalid hardware mode for v2: {}", raw_hardware_mode));
+        }
+    default:
+        throw std::invalid_argument("Cannot only parse hardware mode in v2 or v3");
     }
 }
 

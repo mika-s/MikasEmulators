@@ -5,6 +5,7 @@
 #include "applications/options.h"
 #include "crosscutting/exceptions/invalid_program_arguments_exception.h"
 #include "crosscutting/exceptions/rom_file_not_found_exception.h"
+#include "crosscutting/exceptions/unsupported_exception.h"
 #include "crosscutting/util/string_util.h"
 #include "doctest.h"
 #include <SDL.h>
@@ -19,6 +20,7 @@ using emu::applications::Options;
 using emu::applications::command_line_arguments::CommandLineArguments;
 using emu::exceptions::InvalidProgramArgumentsException;
 using emu::exceptions::RomFileNotFoundException;
+using emu::exceptions::UnsupportedException;
 using emu::util::string::find_short_executable_name;
 
 int main(int argc, char* argv[])
@@ -52,6 +54,10 @@ int main(int argc, char* argv[])
         std::cout << ex.what() << "\n";
         SDL_Quit();
         return 2;
+    } catch (UnsupportedException& ex) {
+        std::cout << ex.what() << "\n";
+        SDL_Quit();
+        return 3;
     }
 
     return 0;

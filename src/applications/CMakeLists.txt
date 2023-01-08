@@ -182,6 +182,7 @@ set(SOURCES_APPLICATIONS_H
         zxspectrum_48k/gui_sdl.h
         zxspectrum_48k/input_imgui.h
         zxspectrum_48k/input_sdl.h
+        zxspectrum_48k/joystick_type.h
         zxspectrum_48k/key_request.h
         zxspectrum_48k/keyboard_pane.h
         zxspectrum_48k/memory_map_for_zxspectrum_48k.h
