@@ -8,6 +8,7 @@
 #include "space_invaders/space_invaders_session.h"
 #include <cstddef>
 #include <string>
+#include <vector>
 
 namespace emu::applications::space_invaders {
 class Settings;
@@ -44,6 +45,12 @@ std::unique_ptr<Session> SpaceInvaders::new_session()
     return std::make_unique<SpaceInvadersSession>(m_settings, m_is_starting_paused, m_gui, m_input, m_memory);
 }
 
+std::vector<u8> create_empty_vector(std::size_t size)
+{
+    std::vector<u8> vec(size, 0);
+    return vec;
+}
+
 void SpaceInvaders::load_files()
 {
     const std::string directory = "roms/8080/space_invaders/";
@@ -51,23 +58,7 @@ void SpaceInvaders::load_files()
     m_memory.add(read_file_into_vector(directory + "invaders.g")); // $0800-$0fff: invaders.g
     m_memory.add(read_file_into_vector(directory + "invaders.f")); // $1000-$17ff: invaders.f
     m_memory.add(read_file_into_vector(directory + "invaders.e")); // $1800-$1fff: invaders.e
-    m_memory.add(create_work_ram());                               // $2000-$23ff: work RAM
-    m_memory.add(create_vram());                                   // $2400-$3fff: video RAM
-}
-
-std::vector<u8> create_empty_vector(std::size_t size)
-{
-    std::vector<u8> vec(size, 0);
-    return vec;
-}
-
-std::vector<u8> SpaceInvaders::create_work_ram()
-{
-    return create_empty_vector(0x23ff - 0x2000 + 1);
-}
-
-std::vector<u8> SpaceInvaders::create_vram()
-{
-    return create_empty_vector(0x3fff - 0x2400 + 1);
+    m_memory.add(create_empty_vector(0x23ff - 0x2000 + 1));        // $2000-$23ff: work RAM
+    m_memory.add(create_empty_vector(0x3fff - 0x2400 + 1));        // $2400-$3fff: video RAM
 }
 }

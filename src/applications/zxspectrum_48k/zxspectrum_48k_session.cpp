@@ -186,6 +186,14 @@ void ZxSpectrum48kSession::setup_debugging()
         "LAST-K",
         [&]() { return true; },
         [&]() { return memory().at(0x5c08); }));
+    m_debug_container->add_io(IoDebugContainer<u8>(
+        "IFF1",
+        [&]() { return true; },
+        [&]() { return m_cpu->iff1() ? 1 : 0; }));
+    m_debug_container->add_io(IoDebugContainer<u8>(
+        "IFF2",
+        [&]() { return true; },
+        [&]() { return m_cpu->iff2() ? 1 : 0; }));
     m_debug_container->add_memory(MemoryDebugContainer<u8>(
         [&]() { return memory(); }));
     m_debug_container->add_disassembled_program(disassemble_program());

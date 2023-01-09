@@ -164,9 +164,9 @@ cyc Cpu::next_instruction()
         return handle_maskable_interrupt_1_2(cycles);
     } else if (m_is_halted) {
         return 4; // TODO: What is the proper value while NOPing during halt?
+    } else {
+        m_opcode = get_next_byte().farg;
     }
-
-    m_opcode = get_next_byte().farg;
 
     print_debug(m_opcode);
 
@@ -2433,6 +2433,9 @@ void Cpu::next_extd_instruction(u8 extd_opcode, cyc& cycles)
     case RETN_UNDOC3:
     case RETN_UNDOC4:
         retn(m_pc, m_sp, m_memory, m_iff1, m_iff2, cycles);
+        if (m_was_nmi_interrupted) {
+            nonmaskable_interrupt_finished();
+        }
         break;
     case IM_0_1:
     case IM_0_2:
@@ -2652,6 +2655,7 @@ void Cpu::next_extd_instruction(u8 extd_opcode, cyc& cycles)
 
 cyc Cpu::handle_nonmaskable_interrupt(cyc cycles)
 {
+    m_iff2 = m_iff1;
     m_iff1 = false;
     m_is_nmi_interrupted = false;
     m_is_halted = false;
@@ -2661,6 +2665,12 @@ cyc Cpu::handle_nonmaskable_interrupt(cyc cycles)
     nmi(m_pc, m_sp, m_memory, cycles);
 
     return cycles;
+}
+
+void Cpu::nonmaskable_interrupt_finished()
+{
+    m_iff1 = m_iff2;
+    m_was_nmi_interrupted = false;
 }
 
 cyc Cpu::handle_maskable_interrupt_0(cyc cycles)
@@ -2849,6 +2859,16 @@ InterruptMode Cpu::interrupt_mode() const
     return m_interrupt_mode;
 }
 
+bool Cpu::iff1() const
+{
+    return m_iff1;
+}
+
+bool Cpu::iff2() const
+{
+    return m_iff2;
+}
+
 void Cpu::notify_out_observers(u8 port)
 {
     for (OutObserver* observer : m_out_observers) {
@@ -2871,7 +2891,7 @@ void Cpu::r_tick()
 void Cpu::print_debug(u8 opcode)
 {
     if (false) {
-        std::cout << "pc=" << hexify(m_pc)
+        std::cout << "pc=" << hexify(static_cast<u16>(m_pc - 1)) // -1 because fetching opcode increments by one
                   << ",sp=" << hexify(m_sp)
                   << ",op=" << hexify(opcode)
                   << ",a=" << hexify(m_acc_reg)

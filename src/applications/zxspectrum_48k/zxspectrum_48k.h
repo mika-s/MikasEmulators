@@ -7,7 +7,6 @@
 #include "settings.h"
 #include "zxspectrum_48k_session.h"
 #include <memory>
-#include <vector>
 
 namespace emu::applications::zxspectrum_48k {
 class Format;
@@ -48,19 +47,5 @@ private:
     void load_files();
 
     void load_snapshot();
-
-    static std::vector<u8> create_vram();
-
-    static std::vector<u8> create_vram_color();
-
-    static std::vector<u8> create_printer_buffer();
-
-    static std::vector<u8> create_system_variables();
-
-    static std::vector<u8> create_reserved1();
-
-    static std::vector<u8> create_ram();
-
-    static std::vector<u8> create_reserved2();
 };
 }

@@ -10,6 +10,7 @@
 #include "applications/space_invaders/settings.h"
 #include "applications/space_invaders/space_invaders.h"
 #include "applications/space_invaders/usage.h"
+#include "applications/zxspectrum_48k/formats/z80_format.h"
 #include "applications/zxspectrum_48k/settings.h"
 #include "applications/zxspectrum_48k/usage.h"
 #include "applications/zxspectrum_48k/zxspectrum_48k.h"
@@ -97,6 +98,7 @@ void Frontend::run_program(Options const& options)
 
 void Frontend::disassemble(Options const& options)
 {
+    using emu::applications::zxspectrum_48k::Z80Format;
     using emu::memory::EmulatorMemory;
     using emu::util::file::read_file_into_vector;
 
@@ -132,11 +134,31 @@ void Frontend::disassemble(Options const& options)
             EmulatorMemory<u16, u8> memory;
             memory.add(read_file_into_vector(file_path));
 
+            if (options.options().contains("format")) {
+                throw InvalidProgramArgumentsException(
+                    fmt::format("Unrecognized format: {}", options.options().at("format")[0]),
+                    Frontend::print_disassemble_usage);
+            }
+
             i8080::Disassembler disassembler(memory, std::cout);
             disassembler.disassemble();
         } else if (cpu == "Z80") {
             EmulatorMemory<u16, u8> memory;
-            memory.add(read_file_into_vector(file_path));
+
+            if (options.options().contains("format")) {
+                if (options.options().at("format").size() > 0 && options.options().at("format")[0] == "SX_Spectrum_Z80") {
+                    memory.add(read_file_into_vector("roms/z80/zxspectrum_48k/48k.rom")); // $0000-$3fff: 48k.rom
+                    memory.add(std::vector<u8>(0xbfff, 0x00));
+                    Z80Format format(file_path);
+                    format.to_memory(memory);
+                } else {
+                    throw InvalidProgramArgumentsException(
+                        fmt::format("Unrecognized format: {}", options.options().at("format")[0]),
+                        Frontend::print_disassemble_usage);
+                }
+            } else {
+                memory.add(read_file_into_vector(file_path));
+            }
 
             z80::Disassembler disassembler(memory, std::cout);
             disassembler.disassemble();
@@ -199,8 +221,8 @@ void Frontend::print_run_usage(std::string const& program_name)
 
 void Frontend::print_disassemble_usage(std::string const& program_name)
 {
-    std::cout << "\nUsage: ./" << program_name << " disassemble --cpu=<CPU> FILE_PATH\n\n";
-    std::cout << "Disassemble a file for a given CPU\n\n";
+    std::cout << "\nUsage: ./" << program_name << " disassemble --cpu=<CPU> --format=<FORMAT> FILE_PATH\n\n";
+    std::cout << "Disassemble a file for a given CPU and format (optional)\n\n";
 
     std::cout << "CPUs:\n";
 
@@ -210,6 +232,17 @@ void Frontend::print_disassemble_usage(std::string const& program_name)
             std::cout << "\n";
         } else {
             std::cout << "  " << cpu_description.first << padding << cpu_description.second << "\n";
+        }
+    }
+
+    std::cout << "\nFormats:\n";
+
+    for (auto& format_description : s_supported_formats) {
+        std::string padding = create_padding(format_description.first.size(), s_padding_to_description);
+        if (format_description.first == "NEWLINE") {
+            std::cout << "\n";
+        } else {
+            std::cout << "  " << format_description.first << padding << format_description.second << "\n";
         }
     }
 }

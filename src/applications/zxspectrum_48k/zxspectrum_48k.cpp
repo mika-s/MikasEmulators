@@ -14,6 +14,7 @@
 #include <cstddef>
 #include <string>
 #include <utility>
+#include <vector>
 
 namespace emu::misc {
 class Session;
@@ -72,17 +73,23 @@ std::unique_ptr<Session> ZxSpectrum48k::new_session()
     }
 }
 
+std::vector<u8> create_empty_vector(std::size_t size)
+{
+    std::vector<u8> vec(size, 0);
+    return vec;
+}
+
 void ZxSpectrum48k::load_files()
 {
     const std::string directory = "roms/z80/zxspectrum_48k/";
     m_memory.add(read_file_into_vector(directory + "48k.rom")); // $0000-$3fff: 48k.rom
-    m_memory.add(create_vram());                                // $4000-$57ff: video RAM
-    m_memory.add(create_vram_color());                          // $5800-$5aff: video RAM (color data)
-    m_memory.add(create_printer_buffer());                      // $5b00-$5bff: printer buffer
-    m_memory.add(create_system_variables());                    // $5c00-$5cbf: system variables
-    m_memory.add(create_reserved1());                           // $5cc0-$5cca: reserved
-    m_memory.add(create_ram());                                 // $5ccb-$ff57: RAM
-    m_memory.add(create_reserved2());                           // $ff58-$ffff: reserved
+    m_memory.add(create_empty_vector(0x57ff - 0x4000 + 1));     // $4000-$57ff: video RAM
+    m_memory.add(create_empty_vector(0x5aff - 0x5800 + 1));     // $5800-$5aff: video RAM (color data)
+    m_memory.add(create_empty_vector(0x5bff - 0x5b00 + 1));     // $5b00-$5bff: printer buffer
+    m_memory.add(create_empty_vector(0x5cbf - 0x5c00 + 1));     // $5c00-$5cbf: system variables
+    m_memory.add(create_empty_vector(0x5cca - 0x5cc0 + 1));     // $5cc0-$5cca: reserved
+    m_memory.add(create_empty_vector(0xff57 - 0x5ccb + 1));     // $5ccb-$ff57: RAM
+    m_memory.add(create_empty_vector(0xffff - 0xff58 + 1));     // $ff58-$ffff: reserved
 }
 
 void ZxSpectrum48k::load_snapshot()
@@ -90,46 +97,5 @@ void ZxSpectrum48k::load_snapshot()
 
     m_format = std::make_shared<Z80Format>(m_settings.m_snapshot_file);
     m_format->to_memory(m_memory);
-}
-
-std::vector<u8> create_empty_vector(std::size_t size)
-{
-    std::vector<u8> vec(size, 0);
-    return vec;
-}
-
-std::vector<u8> ZxSpectrum48k::create_vram()
-{
-    return create_empty_vector(0x57ff - 0x4000 + 1);
-}
-
-std::vector<u8> ZxSpectrum48k::create_vram_color()
-{
-    return create_empty_vector(0x5aff - 0x5800 + 1);
-}
-
-std::vector<u8> ZxSpectrum48k::create_printer_buffer()
-{
-    return create_empty_vector(0x5bff - 0x5b00 + 1);
-}
-
-std::vector<u8> ZxSpectrum48k::create_system_variables()
-{
-    return create_empty_vector(0x5cbf - 0x5c00 + 1);
-}
-
-std::vector<u8> ZxSpectrum48k::create_reserved1()
-{
-    return create_empty_vector(0x5cca - 0x5cc0 + 1);
-}
-
-std::vector<u8> ZxSpectrum48k::create_ram()
-{
-    return create_empty_vector(0xff57 - 0x5ccb + 1);
-}
-
-std::vector<u8> ZxSpectrum48k::create_reserved2()
-{
-    return create_empty_vector(0xffff - 0xff58 + 1);
 }
 }

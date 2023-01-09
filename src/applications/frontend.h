@@ -60,6 +60,10 @@ private:
         { "LMC", "The Little Man Computer instructional model" },
     };
 
+    static const inline std::vector<std::pair<std::string, std::string>> s_supported_formats = {
+        { "SX_Spectrum_Z80", "The Z80 format for SX Spectrum (Z80 CPU only)" },
+    };
+
     static const inline std::vector<std::pair<std::string, std::string>> s_command_descriptions = {
         { "run", "Run an application" },
         { "disassemble", "Disassemble a binary" },

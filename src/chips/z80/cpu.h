@@ -103,6 +103,10 @@ public:
 
     [[nodiscard]] bool is_interrupted() const;
 
+    [[nodiscard]] bool iff1() const;
+
+    [[nodiscard]] bool iff2() const;
+
     [[nodiscard]] InterruptMode interrupt_mode() const;
 
     void interrupt(u8 supplied_instruction_from_interruptor);
@@ -120,6 +124,7 @@ private:
     bool m_iff2 { false };
     bool m_is_interrupted { false };
     bool m_is_nmi_interrupted { false };
+    bool m_was_nmi_interrupted { false }; // true while jump to 0x66 is happening after NMI
     u8 m_instruction_from_interruptor { 0 };
 
     EmulatorMemory<u16, u8>& m_memory;
@@ -165,6 +170,8 @@ private:
     void next_extd_instruction(u8 extd_opcode, cyc& cycles);
 
     cyc handle_nonmaskable_interrupt(cyc cycles);
+
+    void nonmaskable_interrupt_finished();
 
     cyc handle_maskable_interrupt_0(cyc cycles);
 

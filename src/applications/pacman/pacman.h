@@ -6,7 +6,6 @@
 #include "crosscutting/typedefs.h"
 #include "pacman_session.h"
 #include <memory>
-#include <vector>
 
 namespace emu::applications::pacman {
 class Audio;
@@ -48,15 +47,5 @@ private:
     bool m_is_starting_paused;
 
     void load_files();
-
-    static std::vector<u8> create_tile_ram();
-
-    static std::vector<u8> create_palette_ram();
-
-    static std::vector<u8> create_ram();
-
-    static std::vector<u8> create_sprite_ram();
-
-    static std::vector<u8> create_memory_mapped_io();
 };
 }

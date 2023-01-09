@@ -7,7 +7,6 @@
 #include "settings.h"
 #include "space_invaders_session.h"
 #include <memory>
-#include <vector>
 
 namespace emu::applications::space_invaders {
 class Gui;
@@ -40,9 +39,5 @@ private:
     std::shared_ptr<MemoryMapForSpaceInvaders> m_memory_mapped_io;
 
     void load_files();
-
-    static std::vector<u8> create_work_ram();
-
-    static std::vector<u8> create_vram();
 };
 }

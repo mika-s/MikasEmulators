@@ -2,7 +2,10 @@
 #include "cpm_application_session.h"
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/file_util.h"
+#include <cassert>
+#include <cstddef>
 #include <cstdint>
+#include <vector>
 
 namespace emu::misc {
 class Session;
@@ -23,54 +26,35 @@ std::unique_ptr<Session> CpmApplication::new_session()
     return std::make_unique<CpmApplicationSession>(m_loaded_file, m_memory);
 }
 
+std::vector<u8> create_empty_vector(std::size_t size)
+{
+    std::vector<u8> vec(size, 0);
+    return vec;
+}
+
 void CpmApplication::load_file(std::string const& file)
 {
     m_loaded_file = file;
 
-    const std::vector<u8> initial_offset = create_initial_offset();
     const std::vector<u8> rom = read_file_into_vector(file);
-    const std::vector<u8> work_ram = create_work_ram(UINT16_MAX - initial_offset.size() - rom.size() + 1);
 
-    m_memory.add(initial_offset);
+    m_memory.add(create_empty_vector(0x100)); // Because the initial "ORG 00100H" offset in the source
     m_memory.add(rom);
-    m_memory.add(work_ram);
+    m_memory.add(create_empty_vector(UINT16_MAX - 0x100 - rom.size()));
 
     patch_program(m_memory);
-}
 
-std::vector<u8> CpmApplication::create_initial_offset()
-{
-    std::vector<u8> offset;
-    int const size = 0x100; // Because the initial "ORG 00100H" offset in the source
-
-    offset.reserve(size);
-    for (int i = 0; i < size; ++i) {
-        offset.push_back(0);
-    }
-
-    return offset;
-}
-
-std::vector<u8> CpmApplication::create_work_ram(std::size_t size)
-{
-    std::vector<u8> work_ram;
-
-    work_ram.reserve(size);
-    for (std::size_t i = 0; i < size; ++i) {
-        work_ram.push_back(0);
-    }
-
-    return work_ram;
+    assert(m_memory.size() == 0xffff);
 }
 
 void CpmApplication::patch_program(EmulatorMemory<u16, u8>& program)
 {
     // Finished with tests:
-    program.write(0x0000, 0xd3);    // OUT 0x00
+    program.write(0x0000, 0xd3); // OUT 0x00
 
     // BDOS call point (0x0005)
-    program.write(0x0005, 0xd3);    // OUT 0x01
+    program.write(0x0005, 0xd3); // OUT 0x01
     program.write(0x0006, 0x01);
-    program.write(0x0007, 0xc9);    // RET
+    program.write(0x0007, 0xc9); // RET
 }
 }

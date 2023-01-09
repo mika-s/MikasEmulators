@@ -75,7 +75,7 @@ void SteppingState::perform(cyc& cycles)
     m_ctx->m_gui->update_screen(vram(), color_ram(), m_ctx->m_cpu_io.border_color(), s_game_window_subtitle);
 
     if (m_ctx->m_cpu->is_inta()) {
-        m_ctx->m_cpu->interrupt(0xff);
+        m_ctx->m_cpu->interrupt(s_rst_7_z80);
     }
 
     m_is_stepping_cycle = false;

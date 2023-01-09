@@ -45,6 +45,7 @@ public:
 
 private:
     static inline std::string s_game_window_subtitle = "Stepping";
+    static constexpr unsigned int s_rst_7_z80 = 0xff;
 
     // Game loop - begin
     static constexpr long double s_fps = 50.0L;
