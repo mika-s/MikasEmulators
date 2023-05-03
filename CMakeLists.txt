@@ -29,6 +29,7 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/libs/imgui/)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/src/crosscutting)
 add_subdirectory(${PROJECT_SOURCE_DIR}/src/chips/8080)
+add_subdirectory(${PROJECT_SOURCE_DIR}/src/chips/lr35902)
 add_subdirectory(${PROJECT_SOURCE_DIR}/src/chips/namco_wsg3)
 add_subdirectory(${PROJECT_SOURCE_DIR}/src/chips/z80)
 add_subdirectory(${PROJECT_SOURCE_DIR}/src/chips/trivial/lmc)
@@ -44,6 +45,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
         fmt::fmt
         Crosscutting
         I8080
+        LR35902
         NamcoWsg3
         Z80
         LMC
