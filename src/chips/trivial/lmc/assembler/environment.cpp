@@ -1,4 +1,5 @@
 #include "environment.h"
+#include "crosscutting/misc/uinteger.h"
 #include <fmt/core.h>
 #include <stdexcept>
 

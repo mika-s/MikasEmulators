@@ -1,9 +1,11 @@
 #pragma once
 
-#include "opcode.h"
 #include "usings.h"
 #include <iosfwd>
 
+namespace emu::lmc {
+enum class Opcode;
+}
 namespace emu::memory {
 template<class A, class D>
 class EmulatorMemory;

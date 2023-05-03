@@ -6,7 +6,7 @@
 #include "applications/pacman/usage.h"
 #include "applications/space_invaders/usage.h"
 #include "applications/zxspectrum_48k/usage.h"
-#include "crosscutting/gui/gui_type.h"
+#include "crosscutting/gui/gui_type.h" // IWYU pragma: keep
 #include <cstddef>
 #include <functional>
 #include <memory>

@@ -3,7 +3,6 @@
 #include "gui/graphics/framebuffer.h"
 #include <algorithm>
 #include <cstdint>
-#include <ext/alloc_traits.h>
 #include <fmt/core.h>
 #include <iterator>
 #include <stdexcept>

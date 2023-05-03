@@ -9,6 +9,7 @@
 #include "interfaces/in_observer.h"
 #include "interfaces/out_observer.h"
 #include "opcode.h"
+#include "out_type.h"
 #include <algorithm>
 #include <iostream>
 

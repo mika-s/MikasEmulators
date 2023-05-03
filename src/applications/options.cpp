@@ -2,7 +2,6 @@
 #include "crosscutting/exceptions/invalid_program_arguments_exception.h"
 #include "crosscutting/util/string_util.h"
 #include "frontend.h"
-#include <ext/alloc_traits.h>
 #include <utility>
 
 namespace emu::applications {

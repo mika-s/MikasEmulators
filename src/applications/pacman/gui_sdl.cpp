@@ -4,9 +4,9 @@
 #include <SDL_error.h>
 #include <SDL_log.h>
 #include <SDL_pixels.h>
+#include <SDL_stdinc.h>
 #include <algorithm>
 #include <cstdlib>
-#include <cstring>
 #include <string>
 
 namespace emu::applications::pacman {
@@ -127,9 +127,10 @@ void GuiSdl::update_screen(
     int pitch = 0;
 
     if (SDL_LockTexture(m_texture, nullptr, &pixels, &pitch) != 0) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error while unlocking SDL texture: %s", SDL_GetError());
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error while locking SDL texture: %s", SDL_GetError());
+        exit(1);
     } else {
-        memcpy(pixels, framebuffer.data(), pitch * s_height);
+        SDL_memcpy(pixels, framebuffer.data(), pitch * s_height);
     }
 
     const std::string title = game_window_subtitle.empty() ? "Pacman" : "Pacman - " + game_window_subtitle;

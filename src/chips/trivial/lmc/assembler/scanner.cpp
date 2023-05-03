@@ -7,7 +7,6 @@
 #include <cstdlib>
 #include <fmt/core.h>
 #include <iostream>
-#include <memory>
 #include <sstream>
 #include <stdexcept>
 #include <unordered_map>

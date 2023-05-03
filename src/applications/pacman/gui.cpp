@@ -3,7 +3,6 @@
 #include "crosscutting/gui/graphics/tile.h"
 #include "crosscutting/util/gui_util.h"
 #include <cstddef>
-#include <ext/alloc_traits.h>
 #include <stdexcept>
 #include <utility>
 

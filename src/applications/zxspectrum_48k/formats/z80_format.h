@@ -1,9 +1,7 @@
 #pragma once
 
 #include "applications/zxspectrum_48k/interfaces/format.h"
-#include "applications/zxspectrum_48k/joystick_type.h"
 #include "chips/z80/flags.h"
-#include "chips/z80/interrupt_mode.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/memory/next_byte.h"
 #include "crosscutting/memory/next_word.h"
@@ -13,8 +11,12 @@
 #include <unordered_map>
 #include <vector>
 
+namespace emu::applications::zxspectrum_48k {
+enum class JoystickType;
+}
 namespace emu::z80 {
 struct ManualState;
+enum class InterruptMode;
 }
 
 namespace emu::applications::zxspectrum_48k {

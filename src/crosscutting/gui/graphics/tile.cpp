@@ -2,7 +2,6 @@
 #include "gui/graphics/color.h"
 #include "gui/graphics/framebuffer.h"
 #include <cstdint>
-#include <ext/alloc_traits.h>
 #include <fmt/core.h>
 #include <stdexcept>
 

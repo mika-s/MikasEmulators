@@ -1,11 +1,14 @@
 #pragma once
 
-#include "assembler/token_kind.h"
 #include "token.h"
 #include "usings.h"
 #include <sstream>
 #include <string>
 #include <vector>
+
+namespace emu::lmc {
+enum class TokenKind;
+}
 
 namespace emu::lmc {
 

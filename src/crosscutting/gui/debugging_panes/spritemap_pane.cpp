@@ -5,10 +5,8 @@
 #include "gui/graphics/color.h"
 #include "gui/graphics/framebuffer.h"
 #include "gui/graphics/sprite.h"
-#include <bits/utility.h>
 #include <cstddef>
 #include <cstdint>
-#include <ext/alloc_traits.h>
 #include <stdexcept>
 #include <tuple>
 #include <utility>

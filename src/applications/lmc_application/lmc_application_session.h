@@ -2,7 +2,6 @@
 
 #include "chips/trivial/lmc/interfaces/in_observer.h"
 #include "chips/trivial/lmc/interfaces/out_observer.h"
-#include "chips/trivial/lmc/out_type.h"
 #include "chips/trivial/lmc/usings.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/misc/governor.h"
@@ -33,6 +32,7 @@ class DisassembledLine;
 }
 namespace emu::lmc {
 class Cpu;
+enum class OutType;
 }
 namespace emu::logging {
 class Logger;

@@ -2,7 +2,6 @@
 #include "cpu_io.h"
 #include "crosscutting/util/byte_util.h"
 #include "imgui.h"
-#include <ext/alloc_traits.h>
 #include <fmt/core.h>
 
 namespace emu::applications::zxspectrum_48k {

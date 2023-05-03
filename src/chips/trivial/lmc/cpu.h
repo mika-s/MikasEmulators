@@ -5,8 +5,6 @@
 #include "crosscutting/memory/next_word.h"
 #include "crosscutting/typedefs.h"
 #include "flags.h"
-#include "opcode.h"
-#include "out_type.h"
 #include <vector>
 
 namespace emu::memory {
@@ -15,6 +13,8 @@ class EmulatorMemory;
 }
 namespace emu::lmc {
 class InObserver;
+enum class Opcode;
+enum class OutType;
 }
 namespace emu::lmc {
 class OutObserver;

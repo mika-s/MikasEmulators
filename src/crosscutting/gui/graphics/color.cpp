@@ -12,7 +12,7 @@ Color::Color(u8 alpha, u8 red, u8 green, u8 blue)
 {
 }
 
-u32 Color::to_u32()
+u32 Color::to_u32() const
 {
     return emu::util::byte::to_u32(m_alpha, m_blue, m_green, m_red);
 }

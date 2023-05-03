@@ -1,10 +1,13 @@
 #pragma once
 
 #include "token.h"
-#include "token_kind.h"
 #include <cstddef>
 #include <string>
 #include <vector>
+
+namespace emu::applications::command_line_arguments {
+enum class TokenKind;
+}
 
 namespace emu::applications::command_line_arguments {
 

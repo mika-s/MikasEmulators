@@ -22,8 +22,6 @@ struct GuiRequest;
 namespace emu::debugger {
 template<class A, class D, std::size_t B>
 class DebugContainer;
-}
-namespace emu::debugger {
 template<class A, std::size_t B>
 class Debugger;
 }

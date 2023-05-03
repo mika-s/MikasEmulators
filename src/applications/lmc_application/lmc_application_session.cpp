@@ -2,7 +2,6 @@
 #include "chips/trivial/lmc/assembler/assembler.h"
 #include "chips/trivial/lmc/cpu.h"
 #include "chips/trivial/lmc/disassembler.h"
-#include "chips/trivial/lmc/out_type.h"
 #include "chips/trivial/lmc/usings.h"
 #include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/debugging/debugger.h"
@@ -30,8 +29,12 @@
 #include <utility>
 #include <vector>
 #ifdef __EMSCRIPTEN__
-#include <emscripten.h>
+#    include <emscripten.h>
 #endif
+
+namespace emu::lmc {
+enum class OutType;
+}
 
 namespace emu::applications::lmc {
 

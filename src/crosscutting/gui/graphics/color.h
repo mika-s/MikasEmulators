@@ -9,7 +9,7 @@ public:
 
     [[nodiscard]] bool is_transparent() const;
 
-    u32 to_u32();
+    [[nodiscard]] u32 to_u32() const;
 
     static Color black();
 

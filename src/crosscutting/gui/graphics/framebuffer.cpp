@@ -2,7 +2,6 @@
 #include "crosscutting/typedefs.h"
 #include "gui/graphics/color.h"
 #include <algorithm>
-#include <ext/alloc_traits.h>
 #include <fmt/core.h>
 #include <iterator>
 #include <stdexcept>

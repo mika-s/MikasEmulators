@@ -3,7 +3,6 @@
 #include "crosscutting/memory/emulator_memory.h"
 #include "namco_wsg3/voice.h"
 #include "pacman/settings.h"
-#include <memory>
 
 namespace emu::applications::pacman {
 

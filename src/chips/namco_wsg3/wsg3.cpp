@@ -1,7 +1,6 @@
 #include "wsg3.h"
 #include "voice.h"
 #include <fmt/core.h>
-#include <memory>
 #include <stdexcept>
 #include <utility>
 

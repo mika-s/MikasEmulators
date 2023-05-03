@@ -18,6 +18,7 @@
 #include <fmt/core.h>
 #include <memory>
 #include <stdexcept>
+#include <string>
 #include <unordered_map>
 #include <utility>
 

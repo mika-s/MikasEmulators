@@ -1,6 +1,5 @@
 #pragma once
 
-#include "chips/trivial/lmc/out_type.h"
 #include "chips/trivial/lmc/usings.h"
 #include "ui.h"
 #include <cstddef>
@@ -18,6 +17,9 @@ class DebugContainer;
 namespace emu::debugger {
 template<class A, std::size_t B>
 class Debugger;
+}
+namespace emu::lmc {
+enum class OutType;
 }
 namespace emu::logging {
 class Logger;
