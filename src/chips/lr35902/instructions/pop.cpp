@@ -57,30 +57,6 @@ void pop_af(Flags& flag_reg, u8& acc_reg, u16& sp, EmulatorMemory<u16, u8> const
     cycles = 10;
 }
 
-/**
- * Pop IX or IY off the stack
- * <ul>
- *   <li>Size: 1</li>
- *   <li>Cycles: 4</li>
- *   <li>States: 14</li>
- *   <li>Condition bits affected: none</li>
- * </ul>
- *
- * @param ix_reg is the IX register register, which will be mutated
- * @param sp is the stack pointer, which will be mutated
- * @param memory is the memory
- * @param cycles is the number of cycles variable, which will be mutated
- */
-void pop_ixy(u16& ix_iy_reg, u16& sp, EmulatorMemory<u16, u8> const& memory, cyc& cycles)
-{
-    const u8 lo = memory.read(sp++);
-    const u8 hi = memory.read(sp++);
-
-    ix_iy_reg = to_u16(hi, lo);
-
-    cycles = 14;
-}
-
 void print_pop(std::ostream& ostream, std::string const& reg)
 {
     ostream << "POP "
@@ -117,9 +93,7 @@ TEST_CASE("LR35902: POP qq")
 
         CHECK_EQ(true, flag_reg.is_carry_flag_set());
         CHECK_EQ(true, flag_reg.is_zero_flag_set());
-        CHECK_EQ(true, flag_reg.is_parity_overflow_flag_set());
         CHECK_EQ(true, flag_reg.is_half_carry_flag_set());
-        CHECK_EQ(true, flag_reg.is_sign_flag_set());
         CHECK_EQ(0x05, acc_reg);
         CHECK_EQ(0x05, sp);
     }
@@ -135,26 +109,6 @@ TEST_CASE("LR35902: POP qq")
         pop(reg1, reg2, sp, memory, cycles);
 
         CHECK_EQ(10, cycles);
-    }
-}
-
-TEST_CASE("LR35902: POP IX/IY")
-{
-    cyc cycles = 0;
-
-    EmulatorMemory<u16, u8> memory;
-    memory.add(std::vector<u8> { 0x01, 0x02, 0x03, 0xff, 0x05, 0x06, 0x07, 0x08 });
-
-    SUBCASE("should use 14 cycles")
-    {
-        cycles = 0;
-
-        u16 ix = 0x1234;
-        u16 sp = 0x03;
-
-        pop_ixy(ix, sp, memory, cycles);
-
-        CHECK_EQ(14, cycles);
     }
 }
 }

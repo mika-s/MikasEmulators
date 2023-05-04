@@ -126,98 +126,6 @@ void jp_c(u16& pc, NextWord const& args, Flags const& flag_reg, cyc& cycles)
 }
 
 /**
- * Jump if parity odd
- * <ul>
- *   <li>Size: 3</li>
- *   <li>Cycles: 3</li>
- *   <li>States: 10</li>
- *   <li>Condition bits affected: none</li>
- * </ul>
- *
- * @param pc is the program counter, which will be mutated
- * @param args contains the argument with the address to jump to
- * @param flag_reg is the flag register
- * @param cycles is the number of cycles variable, which will be mutated
- */
-void jp_po(u16& pc, NextWord const& args, Flags const& flag_reg, cyc& cycles)
-{
-    if (!flag_reg.is_parity_overflow_flag_set()) {
-        pc = to_u16(args.sarg, args.farg);
-    }
-
-    cycles = 10;
-}
-
-/**
- * Jump if parity even
- * <ul>
- *   <li>Size: 3</li>
- *   <li>Cycles: 3</li>
- *   <li>States: 10</li>
- *   <li>Condition bits affected: none</li>
- * </ul>
- *
- * @param pc is the program counter, which will be mutated
- * @param args contains the argument with the address to jump to
- * @param flag_reg is the flag register
- * @param cycles is the number of cycles variable, which will be mutated
- */
-void jp_pe(u16& pc, NextWord const& args, Flags const& flag_reg, cyc& cycles)
-{
-    if (flag_reg.is_parity_overflow_flag_set()) {
-        pc = to_u16(args.sarg, args.farg);
-    }
-
-    cycles = 10;
-}
-
-/**
- * Jump if positive
- * <ul>
- *   <li>Size: 3</li>
- *   <li>Cycles: 3</li>
- *   <li>States: 10</li>
- *   <li>Condition bits affected: none</li>
- * </ul>
- *
- * @param pc is the program counter, which will be mutated
- * @param args contains the argument with the address to jump to
- * @param flag_reg is the flag register
- * @param cycles is the number of cycles variable, which will be mutated
- */
-void jp_p(u16& pc, NextWord const& args, Flags const& flag_reg, cyc& cycles)
-{
-    if (!flag_reg.is_sign_flag_set()) {
-        pc = to_u16(args.sarg, args.farg);
-    }
-
-    cycles = 10;
-}
-
-/**
- * Jump if minus
- * <ul>
- *   <li>Size: 3</li>
- *   <li>Cycles: 3</li>
- *   <li>States: 10</li>
- *   <li>Condition bits affected: none</li>
- * </ul>
- *
- * @param pc is the program counter, which will be mutated
- * @param args contains the argument with the address to jump to
- * @param flag_reg is the flag register
- * @param cycles is the number of cycles variable, which will be mutated
- */
-void jp_m(u16& pc, NextWord const& args, Flags const& flag_reg, cyc& cycles)
-{
-    if (flag_reg.is_sign_flag_set()) {
-        pc = to_u16(args.sarg, args.farg);
-    }
-
-    cycles = 10;
-}
-
-/**
  * Jump to address in HL
  * <ul>
  *   <li>Size: 1</li>
@@ -235,26 +143,6 @@ void jp_hl(u16& pc, u16 address, cyc& cycles)
     pc = address;
 
     cycles = 4;
-}
-
-/**
- * Jump to address in IX or IY
- * <ul>
- *   <li>Size: 1</li>
- *   <li>Cycles: 2</li>
- *   <li>States: 8</li>
- *   <li>Condition bits affected: none</li>
- * </ul>
- *
- * @param pc is the program counter, which will be mutated
- * @param ixy_reg is the IX or IY register with the address to jump to
- * @param cycles is the number of cycles variable, which will be mutated
- */
-void jp_ixy(u16& pc, u16 ixy_reg, cyc& cycles)
-{
-    pc = ixy_reg;
-
-    cycles = 8;
 }
 
 void print_jp_nn(std::ostream& ostream, NextWord const& args)
@@ -344,8 +232,6 @@ TEST_CASE("LR35902: JP NZ")
         CHECK_EQ(false, flag_reg.is_zero_flag_set());
         CHECK_EQ(false, flag_reg.is_carry_flag_set());
         CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
-        CHECK_EQ(false, flag_reg.is_sign_flag_set());
-        CHECK_EQ(false, flag_reg.is_parity_overflow_flag_set());
     }
 
     SUBCASE("should use 10 cycles")
@@ -408,8 +294,6 @@ TEST_CASE("LR35902: JP Z")
         CHECK_EQ(true, flag_reg.is_zero_flag_set());
         CHECK_EQ(false, flag_reg.is_carry_flag_set());
         CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
-        CHECK_EQ(false, flag_reg.is_sign_flag_set());
-        CHECK_EQ(false, flag_reg.is_parity_overflow_flag_set());
     }
 
     SUBCASE("should use 10 cycles")
@@ -472,8 +356,6 @@ TEST_CASE("LR35902: JP NC")
         CHECK_EQ(false, flag_reg.is_zero_flag_set());
         CHECK_EQ(false, flag_reg.is_carry_flag_set());
         CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
-        CHECK_EQ(false, flag_reg.is_sign_flag_set());
-        CHECK_EQ(false, flag_reg.is_parity_overflow_flag_set());
     }
 
     SUBCASE("should use 10 cycles")
@@ -536,8 +418,6 @@ TEST_CASE("LR35902: JP C")
         CHECK_EQ(false, flag_reg.is_zero_flag_set());
         CHECK_EQ(true, flag_reg.is_carry_flag_set());
         CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
-        CHECK_EQ(false, flag_reg.is_sign_flag_set());
-        CHECK_EQ(false, flag_reg.is_parity_overflow_flag_set());
     }
 
     SUBCASE("should use 10 cycles")
@@ -555,262 +435,6 @@ TEST_CASE("LR35902: JP C")
         flag_reg.set_carry_flag();
 
         jp_c(pc, args, flag_reg, cycles);
-
-        CHECK_EQ(10, cycles);
-    }
-}
-
-TEST_CASE("LR35902: JP PO")
-{
-    cyc cycles = 0;
-
-    SUBCASE("should jump when the parity flag is unset")
-    {
-        u16 pc = 0;
-        NextWord args = { .farg = 0x11, .sarg = 0x22 };
-        Flags flag_reg;
-        flag_reg.clear_parity_overflow_flag(); // Parity is odd when the parity flag is false.
-
-        jp_po(pc, args, flag_reg, cycles);
-
-        CHECK_EQ(to_u16(args.sarg, args.farg), pc);
-    }
-
-    SUBCASE("should not jump when the parity flag is set")
-    {
-        u16 pc = 0;
-        NextWord args = { .farg = 0x11, .sarg = 0x22 };
-        Flags flag_reg;
-        flag_reg.set_parity_overflow_flag();
-
-        jp_po(pc, args, flag_reg, cycles);
-
-        CHECK_EQ(0, pc);
-    }
-
-    SUBCASE("should not affect any flags")
-    {
-        u16 pc = 0;
-        NextWord args = { .farg = 0x11, .sarg = 0x22 };
-        Flags flag_reg;
-        flag_reg.clear_parity_overflow_flag();
-
-        jp_po(pc, args, flag_reg, cycles);
-
-        CHECK_EQ(false, flag_reg.is_zero_flag_set());
-        CHECK_EQ(false, flag_reg.is_carry_flag_set());
-        CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
-        CHECK_EQ(false, flag_reg.is_sign_flag_set());
-        CHECK_EQ(false, flag_reg.is_parity_overflow_flag_set());
-    }
-
-    SUBCASE("should use 10 cycles")
-    {
-        cycles = 0;
-        u16 pc = 0;
-        NextWord args = { .farg = 0x11, .sarg = 0x22 };
-        Flags flag_reg;
-        flag_reg.set_parity_overflow_flag();
-
-        jp_po(pc, args, flag_reg, cycles);
-
-        CHECK_EQ(10, cycles);
-
-        flag_reg.clear_parity_overflow_flag();
-
-        jp_po(pc, args, flag_reg, cycles);
-
-        CHECK_EQ(10, cycles);
-    }
-}
-
-TEST_CASE("LR35902: JP PE")
-{
-    cyc cycles = 0;
-
-    SUBCASE("should jump when the parity flag is set")
-    {
-        u16 pc = 0;
-        NextWord args = { .farg = 0x11, .sarg = 0x22 };
-        Flags flag_reg;
-        flag_reg.set_parity_overflow_flag(); // Parity is even when the parity flag is true.
-
-        jp_pe(pc, args, flag_reg, cycles);
-
-        CHECK_EQ(to_u16(args.sarg, args.farg), pc);
-    }
-
-    SUBCASE("should not jump when the parity flag is unset")
-    {
-        u16 pc = 0;
-        NextWord args = { .farg = 0x11, .sarg = 0x22 };
-        Flags flag_reg;
-        flag_reg.clear_parity_overflow_flag();
-
-        jp_pe(pc, args, flag_reg, cycles);
-
-        CHECK_EQ(0, pc);
-    }
-
-    SUBCASE("should not affect any flags")
-    {
-        u16 pc = 0;
-        NextWord args = { .farg = 0x11, .sarg = 0x22 };
-        Flags flag_reg;
-        flag_reg.set_parity_overflow_flag();
-
-        jp_pe(pc, args, flag_reg, cycles);
-
-        CHECK_EQ(false, flag_reg.is_zero_flag_set());
-        CHECK_EQ(false, flag_reg.is_carry_flag_set());
-        CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
-        CHECK_EQ(false, flag_reg.is_sign_flag_set());
-        CHECK_EQ(true, flag_reg.is_parity_overflow_flag_set());
-    }
-
-    SUBCASE("should use 10 cycles")
-    {
-        cycles = 0;
-        u16 pc = 0;
-        NextWord args = { .farg = 0x11, .sarg = 0x22 };
-        Flags flag_reg;
-        flag_reg.clear_parity_overflow_flag();
-
-        jp_pe(pc, args, flag_reg, cycles);
-
-        CHECK_EQ(10, cycles);
-
-        flag_reg.set_parity_overflow_flag();
-
-        jp_pe(pc, args, flag_reg, cycles);
-
-        CHECK_EQ(10, cycles);
-    }
-}
-
-TEST_CASE("LR35902: JP P")
-{
-    cyc cycles = 0;
-
-    SUBCASE("should jump when the sign flag is unset")
-    {
-        u16 pc = 0;
-        NextWord args = { .farg = 0x11, .sarg = 0x22 };
-        Flags flag_reg;
-        flag_reg.clear_sign_flag(); // Positive if the sign flag is false.
-
-        jp_p(pc, args, flag_reg, cycles);
-
-        CHECK_EQ(0x2211, pc);
-    }
-
-    SUBCASE("should not jump when the sign flag is set")
-    {
-        u16 pc = 0;
-        NextWord args = { .farg = 0x11, .sarg = 0x22 };
-        Flags flag_reg;
-        flag_reg.set_sign_flag();
-
-        jp_p(pc, args, flag_reg, cycles);
-
-        CHECK_EQ(0, pc);
-    }
-
-    SUBCASE("should not affect any flags")
-    {
-        u16 pc = 0;
-        NextWord args = { .farg = 0x11, .sarg = 0x22 };
-        Flags flag_reg;
-        flag_reg.clear_sign_flag();
-
-        jp_p(pc, args, flag_reg, cycles);
-
-        CHECK_EQ(false, flag_reg.is_zero_flag_set());
-        CHECK_EQ(false, flag_reg.is_carry_flag_set());
-        CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
-        CHECK_EQ(false, flag_reg.is_sign_flag_set());
-        CHECK_EQ(false, flag_reg.is_parity_overflow_flag_set());
-    }
-
-    SUBCASE("should use 10 cycles if the sign flag is set")
-    {
-        cycles = 0;
-        u16 pc = 0;
-        NextWord args = { .farg = 0x11, .sarg = 0x22 };
-        Flags flag_reg;
-        flag_reg.set_sign_flag();
-
-        jp_p(pc, args, flag_reg, cycles);
-
-        CHECK_EQ(10, cycles);
-
-        flag_reg.clear_sign_flag();
-
-        jp_p(pc, args, flag_reg, cycles);
-
-        CHECK_EQ(10, cycles);
-    }
-}
-
-TEST_CASE("LR35902: JP M")
-{
-    cyc cycles = 0;
-
-    SUBCASE("should jump when the sign flag is set")
-    {
-        u16 pc = 0;
-        NextWord args = { .farg = 0x11, .sarg = 0x22 };
-        Flags flag_reg;
-        flag_reg.set_sign_flag(); // Negative if the sign flag is true.
-
-        jp_m(pc, args, flag_reg, cycles);
-
-        CHECK_EQ(to_u16(args.sarg, args.farg), pc);
-    }
-
-    SUBCASE("should not jump when the sign flag is unset")
-    {
-        u16 pc = 0;
-        NextWord args = { .farg = 0x11, .sarg = 0x22 };
-        Flags flag_reg;
-        flag_reg.clear_sign_flag();
-
-        jp_m(pc, args, flag_reg, cycles);
-
-        CHECK_EQ(0, pc);
-    }
-
-    SUBCASE("should not affect any flags")
-    {
-        u16 pc = 0;
-        NextWord args = { .farg = 0x11, .sarg = 0x22 };
-        Flags flag_reg;
-        flag_reg.set_sign_flag();
-
-        jp_m(pc, args, flag_reg, cycles);
-
-        CHECK_EQ(false, flag_reg.is_zero_flag_set());
-        CHECK_EQ(false, flag_reg.is_carry_flag_set());
-        CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
-        CHECK_EQ(true, flag_reg.is_sign_flag_set());
-        CHECK_EQ(false, flag_reg.is_parity_overflow_flag_set());
-    }
-
-    SUBCASE("should use 10 cycles")
-    {
-        cycles = 0;
-        u16 pc = 0;
-        NextWord args = { .farg = 0x11, .sarg = 0x22 };
-        Flags flag_reg;
-        flag_reg.clear_sign_flag();
-
-        jp_m(pc, args, flag_reg, cycles);
-
-        CHECK_EQ(10, cycles);
-
-        flag_reg.set_sign_flag();
-
-        jp_m(pc, args, flag_reg, cycles);
 
         CHECK_EQ(10, cycles);
     }
@@ -836,22 +460,6 @@ TEST_CASE("LR35902: JP (HL)")
         jp_hl(pc, address, cycles);
 
         CHECK_EQ(4, cycles);
-    }
-}
-
-TEST_CASE("LR35902: JP (IX) or JP (IY)")
-{
-    cyc cycles = 0;
-    u16 pc = 0x1111;
-    u16 ix = 0x432a;
-
-    SUBCASE("should use 8 cycles")
-    {
-        cycles = 0;
-
-        jp_ixy(pc, ix, cycles);
-
-        CHECK_EQ(8, cycles);
     }
 }
 }

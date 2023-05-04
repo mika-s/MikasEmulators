@@ -1,5 +1,4 @@
 #include "chips/lr35902/flags.h"
-#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/memory/next_byte.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
@@ -92,34 +91,6 @@ void adc_A_MHL(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
 }
 
 /**
- * Add value in memory pointed to by IX or IY plus d to accumulator with carry
- * <ul>
- *   <li>Size: 2</li>
- *   <li>Cycles: 5</li>
- *   <li>States: 19</li>
- *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
- * </ul>
- *
- * @param acc_reg is the accumulator register, which will be mutated
- * @param ixy_reg is the IX or IY register containing the base address
- * @param args contains address offset
- * @param memory is the memory, which will be mutated
- * @param flag_reg is the flag register, which will be mutated
- * @param cycles is the number of cycles variable, which will be mutated
- */
-void adc_A_MixyPd(u8& acc_reg, u16 ixy_reg, NextByte const& args, EmulatorMemory<u16, u8>& memory, Flags& flag_reg, cyc& cycles)
-{
-    const u16 address = ixy_reg + static_cast<i8>(args.farg);
-    u8 value = memory.read(address);
-
-    adc(acc_reg, value, flag_reg);
-
-    memory.write(address, value);
-
-    cycles = 19;
-}
-
-/**
  * Add from register to HL with carry
  * <ul>
  *   <li>Size: 1</li>
@@ -146,50 +117,6 @@ void adc_hl_ss(u8& h_reg, u8& l_reg, u16 value, Flags& flag_reg, cyc& cycles)
     cycles = 15;
 }
 
-/************************************ FUNCTIONS FOR UNDOCUMENTED INSTRUCTIONS *************************************/
-
-/**
- * Add from register to accumulator with carry (undocumented)
- * <ul>
- *   <li>Size: 2</li>
- *   <li>Cycles: 2</li>
- *   <li>States: 8</li>
- *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
- * </ul>
- *
- * @param acc_reg is the accumulator register, which will be mutated
- * @param value is the value to add to the accumulator register
- * @param flag_reg is the flag register, which will be mutated
- * @param cycles is the number of cycles variable, which will be mutated
- */
-void adc_A_r_undoc(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
-{
-    adc(acc_reg, value, flag_reg);
-
-    cycles = 8;
-}
-
-/**
- * Add from IX or IY high or low to accumulator with carry (undocumented)
- * <ul>
- *   <li>Size: 2</li>
- *   <li>Cycles: 2</li>
- *   <li>States: 8</li>
- *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
- * </ul>
- *
- * @param acc_reg is the accumulator register, which will be mutated
- * @param ixy_reg_h_or_l is the value to add to the accumulator register
- * @param flag_reg is the flag register, which will be mutated
- * @param cycles is the number of cycles variable, which will be mutated
- */
-void adc_A_ixy_h_or_l(u8& acc_reg, u8 ixy_reg_h_or_l, Flags& flag_reg, cyc& cycles)
-{
-    adc(acc_reg, ixy_reg_h_or_l, flag_reg);
-
-    cycles = 8;
-}
-
 /******************************** END OF FUNCTIONS FOR UNDOCUMENTED INSTRUCTIONS **********************************/
 
 void print_adc_r_s(std::ostream& ostream, std::string const& dest, std::string const& src)
@@ -200,35 +127,12 @@ void print_adc_r_s(std::ostream& ostream, std::string const& dest, std::string c
             << src;
 }
 
-void print_adc_r_s_undocumented(std::ostream& ostream, std::string const& dest, std::string const& src)
-{
-    ostream << "ADC "
-            << dest
-            << ", "
-            << src
-            << "*";
-}
-
 void print_adc_r_n(std::ostream& ostream, std::string const& reg, NextByte const& args)
 {
     ostream << "ADC "
             << reg
             << ", "
             << hexify_wo_0x(args.farg);
-}
-
-void print_adc_MixyPn(std::ostream& ostream, std::string const& reg, std::string const& ixy_reg, NextByte const& args)
-{
-    const i8 signed_value = static_cast<i8>(args.farg);
-    const std::string plus_or_minus = (signed_value >= 0) ? "+" : "";
-
-    ostream << "ADC "
-            << reg
-            << ",("
-            << ixy_reg
-            << plus_or_minus
-            << +signed_value
-            << ")";
 }
 
 TEST_CASE("LR35902: ADC (8-bit)")
@@ -253,20 +157,10 @@ TEST_CASE("LR35902: ADC (8-bit)")
 
                     CHECK_EQ(static_cast<u8>(acc_reg_counter + value + carry), acc_reg);
                     CHECK_EQ(acc_reg == 0, flag_reg.is_zero_flag_set());
-                    CHECK_EQ(static_cast<i8>(acc_reg) < 0, flag_reg.is_sign_flag_set());
                     CHECK_EQ(false, flag_reg.is_add_subtract_flag_set());
                     CHECK_EQ(
                         (((acc_reg_counter & 0xf) + (value & 0xf) + (carry & 0xf)) & 0x10) > 0,
                         flag_reg.is_half_carry_flag_set());
-
-                    bool const are_same_sign = (acc_reg_counter <= INT8_MAX && value <= INT8_MAX) || (INT8_MAX < acc_reg_counter && INT8_MAX < value);
-                    bool const are_positive = are_same_sign && acc_reg_counter <= INT8_MAX;
-                    bool const are_negative = are_same_sign && INT8_MAX < acc_reg_counter;
-                    bool const goes_from_positive_to_negative = are_positive && acc_reg > INT8_MAX;
-                    bool const goes_negative_to_positive = are_negative && acc_reg <= INT8_MAX;
-                    CHECK_EQ(
-                        goes_from_positive_to_negative || goes_negative_to_positive,
-                        flag_reg.is_parity_overflow_flag_set());
 
                     // TODO: Move carry here
                 }

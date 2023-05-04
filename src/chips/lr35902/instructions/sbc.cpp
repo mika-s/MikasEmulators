@@ -1,13 +1,12 @@
 #include "chips/lr35902/flags.h"
-#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/memory/next_byte.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
 #include "doctest.h"
 #include "instruction_util.h"
+#include <cstdint>
 #include <iostream>
-#include <stdint.h>
 #include <string>
 
 namespace emu::lr35902 {
@@ -87,35 +86,6 @@ void sbc_A_MHL(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
 }
 
 /**
- * Subtract value pointed to by IX or IY plus d from accumulator with carry
- * <ul>
- *   <li>Size: 3</li>
- *   <li>Cycles: 5</li>
- *   <li>States: 19</li>
- *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
- * </ul>
- *
- * @param acc_reg is the accumulator register, which will be mutated
- * @param ixy_reg is the IX or IY register containing the base address
- * @param args contains address offset
- * @param memory is the memory
- * @param flag_reg is the flag register, which will be mutated
- * @param cycles is the number of cycles variable, which will be mutated
- */
-void sbc_A_MixyPd(u8& acc_reg, u16 ixy_reg, NextByte const& args, EmulatorMemory<u16, u8>& memory, Flags& flag_reg,
-    cyc& cycles)
-{
-    const u16 address = ixy_reg + static_cast<i8>(args.farg);
-    u8 value = memory.read(address);
-
-    sbc(acc_reg, value, flag_reg);
-
-    memory.write(address, value);
-
-    cycles = 19;
-}
-
-/**
  * Subtract register pair from HL with carry
  * <ul>
  *   <li>Size: 2</li>
@@ -142,52 +112,6 @@ void sbc_HL_ss(u8& h_reg, u8& l_reg, u16 value, Flags& flag_reg, cyc& cycles)
     cycles = 15;
 }
 
-/************************************ FUNCTIONS FOR UNDOCUMENTED INSTRUCTIONS *************************************/
-
-/**
- * Subtract with carry (undocumented)
- * <ul>
- *   <li>Size: 2</li>
- *   <li>Cycles: 2</li>
- *   <li>States: 8</li>
- *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
- * </ul>
- *
- * @param acc_reg is the accumulator register, which will be mutated
- * @param value contains the value to subtract from the accumulator register
- * @param flag_reg is the flag register, which will be mutated
- * @param cycles is the number of cycles variable, which will be mutated
- */
-void sbc_A_r_undoc(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
-{
-    sbc(acc_reg, value, flag_reg);
-
-    cycles = 8;
-}
-
-/**
- * Subtract IX or IY high or low from accumulator with carry (undocumented)
- * <ul>
- *   <li>Size: 2</li>
- *   <li>Cycles: 2</li>
- *   <li>States: 8</li>
- *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
- * </ul>
- *
- * @param acc_reg is the accumulator register, which will be mutated
- * @param value is the value to subtract from the accumulator register
- * @param flag_reg is the flag register, which will be mutated
- * @param cycles is the number of cycles variable, which will be mutated
- */
-void sbc_A_ixy_h_or_l(u8& acc_reg, u8 ixy_reg_h_or_l, Flags& flag_reg, cyc& cycles)
-{
-    sbc(acc_reg, ixy_reg_h_or_l, flag_reg);
-
-    cycles = 8;
-}
-
-/******************************** END OF FUNCTIONS FOR UNDOCUMENTED INSTRUCTIONS **********************************/
-
 void print_sbc_r_s(std::ostream& ostream, std::string const& dest, std::string const& src)
 {
     ostream << "SBC "
@@ -196,36 +120,12 @@ void print_sbc_r_s(std::ostream& ostream, std::string const& dest, std::string c
             << src;
 }
 
-void print_sbc_r_s_undocumented(std::ostream& ostream, std::string const& dest, std::string const& src)
-{
-    ostream << "SBC "
-            << dest
-            << ", "
-            << src
-            << "*";
-}
-
 void print_sbc_r_n(std::ostream& ostream, std::string const& reg, NextByte const& args)
 {
     ostream << "SBC "
             << reg
             << ", "
             << hexify_wo_0x(args.farg);
-}
-
-void print_sbc_MixyPn(std::ostream& ostream, std::string const& reg, std::string const& ixy_reg,
-    NextByte const& args)
-{
-    const i8 signed_value = static_cast<i8>(args.farg);
-    const std::string plus_or_minus = (signed_value >= 0) ? "+" : "";
-
-    ostream << "SBC "
-            << reg
-            << ",("
-            << ixy_reg
-            << plus_or_minus
-            << +signed_value
-            << ")";
 }
 
 TEST_CASE("LR35902: SBC (byte)")
@@ -250,13 +150,12 @@ TEST_CASE("LR35902: SBC (byte)")
 
                     CHECK_EQ(static_cast<u8>(acc_reg_counter - value - carry), acc_reg);
                     CHECK_EQ(acc_reg == 0, flag_reg.is_zero_flag_set());
-                    CHECK_EQ(static_cast<i8>(acc_reg) < 0, flag_reg.is_sign_flag_set());
                     CHECK_EQ(true, flag_reg.is_add_subtract_flag_set());
                     //                    CHECK_EQ(true, flag_reg.is_carry_flag_set());
                     CHECK_EQ(
                         (((acc_reg_counter & 0xf) - (value & 0xf) - (carry & 0xf)) & 0x10) > 0,
                         flag_reg.is_half_carry_flag_set());
-                    // todo: overflow flag, carry flag
+                    // todo: carry flag
                 }
             }
         }
@@ -267,17 +166,6 @@ TEST_CASE("LR35902: SBC (word)")
 {
     cyc cycles = 0;
     u8 h_reg, l_reg;
-
-    SUBCASE("should set the parity/overflow flag")
-    {
-        Flags flag_reg;
-        h_reg = 0xfb;
-        l_reg = 0x19;
-
-        sbc_HL_ss(h_reg, l_reg, 31775, flag_reg, cycles);
-
-        CHECK_EQ(true, flag_reg.is_parity_overflow_flag_set());
-    }
 
     SUBCASE("should set the zero flag when zero and not set otherwise")
     {
@@ -290,41 +178,6 @@ TEST_CASE("LR35902: SBC (word)")
                 sbc_HL_ss(h_reg, l_reg, value, flag_reg, cycles);
 
                 CHECK_EQ(to_u16(h_reg, l_reg) == 0, flag_reg.is_zero_flag_set());
-            }
-        }
-    }
-
-    SUBCASE("should set the sign flag when above 32767 and not otherwise")
-    {
-        const u8 min_max = 100;
-        for (u16 hl_counter = UINT16_MAX / 2 - min_max;
-             hl_counter < static_cast<u16>(UINT16_MAX / 2 + min_max); ++hl_counter) {
-            for (u16 value = 0; value < UINT8_MAX; ++value) {
-                Flags flag_reg;
-                h_reg = high_byte(hl_counter);
-                l_reg = low_byte(hl_counter);
-
-                sbc_HL_ss(h_reg, l_reg, value, flag_reg, cycles);
-
-                CHECK_EQ(to_u16(h_reg, l_reg) > UINT16_MAX / 2, flag_reg.is_sign_flag_set());
-            }
-        }
-    }
-
-    SUBCASE("should set the sign flag when above 32767 and not otherwise")
-    {
-
-        const u8 min_max = 100;
-        for (u16 hl_counter = UINT16_MAX / 2 - min_max;
-             hl_counter < static_cast<u16>(UINT16_MAX / 2 + min_max); ++hl_counter) {
-            for (u16 value = 0; value < UINT8_MAX; ++value) {
-                Flags flag_reg;
-                h_reg = high_byte(hl_counter);
-                l_reg = low_byte(hl_counter);
-
-                sbc_HL_ss(h_reg, l_reg, value, flag_reg, cycles);
-
-                CHECK_EQ(to_u16(h_reg, l_reg) > UINT16_MAX / 2, flag_reg.is_sign_flag_set());
             }
         }
     }

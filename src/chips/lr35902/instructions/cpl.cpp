@@ -29,18 +29,6 @@ void cpl(u8& acc_reg, Flags& flag_reg, cyc& cycles)
     flag_reg.set_half_carry_flag();
     flag_reg.set_add_subtract_flag();
 
-    if (is_bit_set(acc_reg, 5)) {
-        flag_reg.set_y_flag();
-    } else {
-        flag_reg.clear_y_flag();
-    }
-
-    if (is_bit_set(acc_reg, 3)) {
-        flag_reg.set_x_flag();
-    } else {
-        flag_reg.clear_x_flag();
-    }
-
     cycles = 4;
 }
 

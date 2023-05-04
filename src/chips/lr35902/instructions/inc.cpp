@@ -135,102 +135,6 @@ void inc_sp(u16& sp, cyc& cycles)
     cycles = 6;
 }
 
-/**
- * Increment IX or IY register
- * <ul>
- *   <li>Size: 2</li>
- *   <li>Cycles: 2</li>
- *   <li>States: 10</li>
- *   <li>Condition bits affected: none</li>
- * </ul>
- *
- * @param ixy_reg is the IX or IY register, which will be mutated
- * @param cycles is the number of cycles variable, which will be mutated
- */
-void inc_ixy(u16& ixy_reg, cyc& cycles)
-{
-    ++ixy_reg;
-
-    cycles = 10;
-}
-
-/**
- * Increment IXH/IYH
- * <ul>
- *   <li>Size: 2</li>
- *   <li>Cycles: 6</li>
- *   <li>States: 8</li>
- *   <li>Condition bits affected: half carry, zero, sign, parity/overflow, add/subtract</li>
- * </ul>
- *
- * @param ixy_reg is the IX or IY register
- * @param flag_reg is the flag register, which will be mutated
- * @param cycles is the number of cycles variable, which will be mutated
- */
-void inc_ixyh(u16& ixy_reg, Flags& flag_reg, cyc& cycles)
-{
-    u8 ixyh = high_byte(ixy_reg);
-    const u8 ixyl = low_byte(ixy_reg);
-
-    inc(ixyh, flag_reg);
-
-    ixy_reg = to_u16(ixyh, ixyl);
-
-    cycles = 8;
-}
-
-/**
- * Increment IXL/IYL
- * <ul>
- *   <li>Size: 2</li>
- *   <li>Cycles: 6</li>
- *   <li>States: 8</li>
- *   <li>Condition bits affected: half carry, zero, sign, parity/overflow, add/subtract</li>
- * </ul>
- *
- * @param ixy_reg is the IX or IY register
- * @param flag_reg is the flag register, which will be mutated
- * @param cycles is the number of cycles variable, which will be mutated
- */
-void inc_ixyl(u16& ixy_reg, Flags& flag_reg, cyc& cycles)
-{
-    const u8 ixyh = high_byte(ixy_reg);
-    u8 ixyl = low_byte(ixy_reg);
-
-    inc(ixyl, flag_reg);
-
-    ixy_reg = to_u16(ixyh, ixyl);
-
-    cycles = 8;
-}
-
-/**
- * Increment value in memory pointed to by IX or IY plus d
- * <ul>
- *   <li>Size: 3</li>
- *   <li>Cycles: 6</li>
- *   <li>States: 23</li>
- *   <li>Condition bits affected: half carry, zero, sign, parity/overflow, add/subtract</li>
- * </ul>
- *
- * @param ixy_reg is the IX or IY register containing the base address
- * @param args contains address offset
- * @param memory is the memory, which will be mutated
- * @param flag_reg is the flag register, which will be mutated
- * @param cycles is the number of cycles variable, which will be mutated
- */
-void inc_MixyPd(u16 ixy_reg, NextByte const& args, EmulatorMemory<u16, u8>& memory, Flags& flag_reg, cyc& cycles)
-{
-    const u16 address = ixy_reg + static_cast<i8>(args.farg);
-    u8 value = memory.read(address);
-
-    inc(value, flag_reg);
-
-    memory.write(address, value);
-
-    cycles = 23;
-}
-
 void print_inc(std::ostream& ostream, std::string const& reg)
 {
     ostream << "INC "
@@ -242,19 +146,6 @@ void print_inc_undocumented(std::ostream& ostream, std::string const& reg)
     ostream << "INC "
             << reg
             << "*";
-}
-
-void print_inc_MixyPn(std::ostream& ostream, std::string const& ixy_reg, NextByte const& args)
-{
-    const i8 signed_value = static_cast<i8>(args.farg);
-    const std::string plus_or_minus = (signed_value >= 0) ? "+" : "";
-
-    ostream << "INC "
-            << "("
-            << ixy_reg
-            << plus_or_minus
-            << +signed_value
-            << ")";
 }
 
 TEST_CASE("LR35902: INC")
@@ -323,34 +214,6 @@ TEST_CASE("LR35902: INC")
         inc(reg, flag_reg);
 
         CHECK_EQ(true, flag_reg.is_zero_flag_set());
-    }
-
-    SUBCASE("should set the sign flag when going above 127")
-    {
-        u8 reg = INT8_MAX;
-        Flags flag_reg;
-
-        CHECK_EQ(false, flag_reg.is_sign_flag_set());
-
-        inc(reg, flag_reg);
-
-        CHECK_EQ(true, flag_reg.is_sign_flag_set());
-    }
-
-    SUBCASE("should set the overflow flag when overflowing and not otherwise")
-    {
-        u8 acc_reg;
-
-        for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
-            Flags flag_reg;
-            acc_reg = acc_reg_counter;
-
-            inc(acc_reg, flag_reg);
-
-            CHECK_EQ( // The manual: P/V is set if r was 7Fh before operation; otherwise, it is reset.
-                acc_reg_counter == 0x7f,
-                flag_reg.is_parity_overflow_flag_set());
-        }
     }
 
     SUBCASE("should always unset the add/subtract flag")
@@ -456,32 +319,6 @@ TEST_CASE("LR35902: INC (HL)")
         inc_MHL(memory, 0x0001, flag_reg, cycles);
 
         CHECK_EQ(11, cycles);
-    }
-}
-
-TEST_CASE("LR35902: INC IX or INC IY)")
-{
-    cyc cycles = 0;
-    u16 ix = 0;
-
-    SUBCASE("should increase IX")
-    {
-        for (u16 expected_ix = 0; expected_ix < UINT16_MAX; ++expected_ix) {
-            ix = expected_ix;
-
-            inc_ixy(ix, cycles);
-
-            CHECK_EQ(expected_ix + 1, ix);
-        }
-    }
-
-    SUBCASE("should use 10 cycles")
-    {
-        cycles = 0;
-
-        inc_ixy(ix, cycles);
-
-        CHECK_EQ(10, cycles);
     }
 }
 }

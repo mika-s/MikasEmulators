@@ -57,43 +57,19 @@ public:
 
     [[nodiscard]] u8 a() const;
 
-    [[nodiscard]] u8 a_p() const;
-
     [[nodiscard]] u8 b() const;
-
-    [[nodiscard]] u8 b_p() const;
 
     [[nodiscard]] u8 c() const;
 
-    [[nodiscard]] u8 c_p() const;
-
     [[nodiscard]] u8 d() const;
-
-    [[nodiscard]] u8 d_p() const;
 
     [[nodiscard]] u8 e() const;
 
-    [[nodiscard]] u8 e_p() const;
-
     [[nodiscard]] u8 h() const;
-
-    [[nodiscard]] u8 h_p() const;
 
     [[nodiscard]] u8 l() const;
 
-    [[nodiscard]] u8 l_p() const;
-
     [[nodiscard]] u8 f() const;
-
-    [[nodiscard]] u8 f_p() const;
-
-    [[nodiscard]] u16 ix() const;
-
-    [[nodiscard]] u16 iy() const;
-
-    [[nodiscard]] u8 i() const;
-
-    [[nodiscard]] u8 r() const;
 
     [[nodiscard]] u16 pc() const;
 
@@ -137,37 +113,19 @@ private:
     u16 m_sp { 0xffff };
     u16 m_pc;
     u8 m_acc_reg { 0xff };
-    u8 m_acc_p_reg { 0 };
     u8 m_b_reg { 0 };
-    u8 m_b_p_reg { 0 };
     u8 m_c_reg { 0 };
-    u8 m_c_p_reg { 0 };
     u8 m_d_reg { 0 };
-    u8 m_d_p_reg { 0 };
     u8 m_e_reg { 0 };
-    u8 m_e_p_reg { 0 };
     u8 m_h_reg { 0 };
-    u8 m_h_p_reg { 0 };
     u8 m_l_reg { 0 };
-    u8 m_l_p_reg { 0 };
-    u16 m_ix_reg { 0 };
-    u16 m_iy_reg { 0 };
-    u8 m_i_reg { 0 };
-    u8 m_r_reg { 0 };
     Flags m_flag_reg;
-    Flags m_flag_p_reg;
     InterruptMode m_interrupt_mode { InterruptMode::ZERO };
 
     std::vector<OutObserver*> m_out_observers;
     std::vector<InObserver*> m_in_observers;
 
     void next_bits_instruction(u8 bits_opcode, cyc& cycles);
-
-    void next_ixy_instruction(u8 ixy_opcode, u16& ixy_reg, cyc& cycles);
-
-    void next_ixy_bits_instruction(NextWord args, u16& ixy_reg, cyc& cycles);
-
-    void next_extd_instruction(u8 extd_opcode, cyc& cycles);
 
     cyc handle_nonmaskable_interrupt(cyc cycles);
 
@@ -186,8 +144,6 @@ private:
     void notify_in_observers(u16 port);
 
     [[nodiscard]] u16 address_in_HL() const;
-
-    void r_tick();
 
     void print_debug(u8 opcode);
 };

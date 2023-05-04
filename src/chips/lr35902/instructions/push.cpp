@@ -59,28 +59,6 @@ void push_af(Flags const& flag_reg, u8 acc_reg, u16& sp, EmulatorMemory<u16, u8>
     cycles = 11;
 }
 
-/**
- * Push IX or IY onto the stack
- * <ul>
- *   <li>Size: 1</li>
- *   <li>Cycles: 4</li>
- *   <li>States: 15</li>
- *   <li>Condition bits affected: none</li>
- * </ul>
- *
- * @param ixy_reg is the IX or IY register
- * @param sp is the stack pointer, which will be mutated
- * @param memory is the memory, which will be mutated
- * @param cycles is the number of cycles variable, which will be mutated
- */
-void push_ixy(u16 ixy_reg, u16& sp, EmulatorMemory<u16, u8>& memory, cyc& cycles)
-{
-    memory.write(--sp, high_byte(ixy_reg));
-    memory.write(--sp, low_byte(ixy_reg));
-
-    cycles = 15;
-}
-
 void print_push(std::ostream& ostream, std::string const& reg)
 {
     ostream << "PUSH "
@@ -112,8 +90,6 @@ TEST_CASE("LR35902: PUSH qq")
         Flags flag_reg;
         flag_reg.set_carry_flag();
         flag_reg.set_zero_flag();
-        flag_reg.set_sign_flag();
-        flag_reg.set_parity_overflow_flag();
         flag_reg.set_half_carry_flag();
         u8 acc_reg = 0xbb;
         u16 sp = 0x03;
@@ -142,26 +118,6 @@ TEST_CASE("LR35902: PUSH qq")
         push_qq(reg1, reg2, sp, memory, cycles);
 
         CHECK_EQ(11, cycles);
-    }
-}
-
-TEST_CASE("LR35902: PUSH IX/IY")
-{
-    cyc cycles = 0;
-
-    SUBCASE("should use 15 cycles when pushing IX or IY onto the stack")
-    {
-        cycles = 0;
-
-        const u16 ix = 0x01234;
-        u16 sp = 0x03;
-
-        EmulatorMemory<u16, u8> memory;
-        memory.add(std::vector<u8> { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 });
-
-        push_ixy(ix, sp, memory, cycles);
-
-        CHECK_EQ(15, cycles);
     }
 }
 }

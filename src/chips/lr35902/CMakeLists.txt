@@ -10,53 +10,28 @@ set(SOURCES_LR35902_CPP
         instructions/call.cpp
         instructions/ccf.cpp
         instructions/cp.cpp
-        instructions/cpd.cpp
-        instructions/cpdr.cpp
-        instructions/cpi.cpp
-        instructions/cpir.cpp
         instructions/cpl.cpp
         instructions/daa.cpp
         instructions/dec.cpp
         instructions/di.cpp
         instructions/djnz.cpp
         instructions/ei.cpp
-        instructions/ex.cpp
-        instructions/exx.cpp
         instructions/halt.cpp
         instructions/im.cpp
-        instructions/in.cpp
         instructions/inc.cpp
-        instructions/ind.cpp
-        instructions/indr.cpp
-        instructions/ini.cpp
-        instructions/inir.cpp
         instructions/instruction_util.cpp
         instructions/jp.cpp
         instructions/jr.cpp
         instructions/ld.cpp
-        instructions/ldd.cpp
-        instructions/lddr.cpp
-        instructions/ldi.cpp
-        instructions/ldir.cpp
-        instructions/neg.cpp
         instructions/nop.cpp
         instructions/or.cpp
-        instructions/out.cpp
-        instructions/outd.cpp
-        instructions/outi.cpp
-        instructions/otdr.cpp
-        instructions/otir.cpp
         instructions/pop.cpp
         instructions/push.cpp
         instructions/res.cpp
         instructions/ret.cpp
-        instructions/reti.cpp
-        instructions/retn.cpp
         instructions/rl.cpp
         instructions/rlc.cpp
-        instructions/rld.cpp
         instructions/rr.cpp
-        instructions/rrd.cpp
         instructions/rrc.cpp
         instructions/rst.cpp
         instructions/sbc.cpp

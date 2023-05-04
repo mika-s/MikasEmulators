@@ -5,7 +5,6 @@
 #include "crosscutting/typedefs.h"
 #include <cstddef>
 #include <iosfwd>
-#include <string>
 
 namespace emu::memory {
 template<class A, class D>
@@ -34,12 +33,6 @@ private:
     void print_next_instruction();
 
     void print_next_bits_instruction(u8 bits_opcode);
-
-    void print_next_ixy_instruction(u8 ixy_opcode, std::string const& ixy_reg);
-
-    void print_next_ixy_bits_instruction(NextWord args, std::string const& ixy_reg);
-
-    void print_next_extd_instruction(u8 extd_opcode);
 
     NextByte get_next_byte();
 

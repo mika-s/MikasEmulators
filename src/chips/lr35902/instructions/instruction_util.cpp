@@ -18,11 +18,8 @@ void add_to_register(u8& reg, u8 value, bool cf, Flags& flag_reg)
 
     flag_reg.handle_carry_flag(previous, value, cf);
     flag_reg.handle_zero_flag(reg);
-    flag_reg.handle_overflow_flag(previous, value, cf);
-    flag_reg.handle_sign_flag(reg);
     flag_reg.handle_half_carry_flag(previous, value, cf);
     flag_reg.clear_add_subtract_flag();
-    flag_reg.handle_xy_flags(reg);
 }
 
 void add_to_register(u16& reg, u16 value, bool cf, Flags& flag_reg)

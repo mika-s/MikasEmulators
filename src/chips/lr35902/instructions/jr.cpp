@@ -214,8 +214,6 @@ TEST_CASE("LR35902: JP C")
         CHECK_EQ(false, flag_reg.is_zero_flag_set());
         CHECK_EQ(true, flag_reg.is_carry_flag_set());
         CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
-        CHECK_EQ(false, flag_reg.is_sign_flag_set());
-        CHECK_EQ(false, flag_reg.is_parity_overflow_flag_set());
     }
 
     SUBCASE("should use 7 cycles when the carry flag is unset")
@@ -285,8 +283,6 @@ TEST_CASE("LR35902: JR NC")
         CHECK_EQ(false, flag_reg.is_zero_flag_set());
         CHECK_EQ(false, flag_reg.is_carry_flag_set());
         CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
-        CHECK_EQ(false, flag_reg.is_sign_flag_set());
-        CHECK_EQ(false, flag_reg.is_parity_overflow_flag_set());
     }
 
     SUBCASE("should use 7 cycles when the carry flag is set")
@@ -356,8 +352,6 @@ TEST_CASE("LR35902: JR Z")
         CHECK_EQ(true, flag_reg.is_zero_flag_set());
         CHECK_EQ(false, flag_reg.is_carry_flag_set());
         CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
-        CHECK_EQ(false, flag_reg.is_sign_flag_set());
-        CHECK_EQ(false, flag_reg.is_parity_overflow_flag_set());
     }
 
     SUBCASE("should use 7 cycles when the zero flag is unset")
@@ -427,8 +421,6 @@ TEST_CASE("LR35902: JR NZ")
         CHECK_EQ(false, flag_reg.is_zero_flag_set());
         CHECK_EQ(false, flag_reg.is_carry_flag_set());
         CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
-        CHECK_EQ(false, flag_reg.is_sign_flag_set());
-        CHECK_EQ(false, flag_reg.is_parity_overflow_flag_set());
     }
 
     SUBCASE("should use 7 cycles when the zero flag is set")

@@ -8,7 +8,6 @@
 #include "interfaces/out_observer.h"
 #include "manual_state.h"
 #include <algorithm>
-#include <cstdint>
 #include <iostream>
 #include <stdexcept>
 #include <string>
@@ -29,7 +28,6 @@ Cpu::Cpu(EmulatorMemory<u16, u8>& memory, const u16 initial_pc)
     , m_pc(initial_pc)
 {
     m_flag_reg.from_u8(0xff);
-    m_flag_p_reg.from_u8(0x00);
 }
 
 Cpu::~Cpu()
@@ -70,17 +68,13 @@ bool Cpu::can_run_next_instruction() const
 void Cpu::reset_state()
 {
     m_acc_reg = 0xff;
-    m_acc_p_reg = 0;
-    m_b_reg = m_b_p_reg = 0;
-    m_c_reg = m_c_p_reg = 0;
-    m_d_reg = m_d_p_reg = 0;
-    m_e_reg = m_e_p_reg = 0;
-    m_h_reg = m_h_p_reg = 0;
-    m_l_reg = m_l_p_reg = 0;
-    m_ix_reg = m_iy_reg = 0;
-    m_i_reg = m_r_reg = 0;
+    m_b_reg = 0;
+    m_c_reg = 0;
+    m_d_reg = 0;
+    m_e_reg = 0;
+    m_h_reg = 0;
+    m_l_reg = 0;
     m_flag_reg.from_u8(0xff);
-    m_flag_p_reg.from_u8(0x00);
     m_pc = 0;
     m_sp = 0xffff;
     m_is_halted = false;
@@ -109,25 +103,13 @@ void Cpu::set_state_manually(ManualState manual_state)
     m_sp = manual_state.m_sp;
     m_pc = manual_state.m_pc;
     m_acc_reg = manual_state.m_acc_reg;
-    m_acc_p_reg = manual_state.m_acc_p_reg;
     m_b_reg = manual_state.m_b_reg;
-    m_b_p_reg = manual_state.m_b_p_reg;
     m_c_reg = manual_state.m_c_reg;
-    m_c_p_reg = manual_state.m_c_p_reg;
     m_d_reg = manual_state.m_d_reg;
-    m_d_p_reg = manual_state.m_d_p_reg;
     m_e_reg = manual_state.m_e_reg;
-    m_e_p_reg = manual_state.m_e_p_reg;
     m_h_reg = manual_state.m_h_reg;
-    m_h_p_reg = manual_state.m_h_p_reg;
     m_l_reg = manual_state.m_l_reg;
-    m_l_p_reg = manual_state.m_l_p_reg;
-    m_ix_reg = manual_state.m_ix_reg;
-    m_iy_reg = manual_state.m_iy_reg;
-    m_i_reg = manual_state.m_i_reg;
-    m_r_reg = manual_state.m_r_reg;
     m_flag_reg.from_u8(manual_state.m_flag_reg.to_u8());
-    m_flag_p_reg.from_u8(manual_state.m_flag_p_reg.to_u8());
     m_interrupt_mode = manual_state.m_interrupt_mode;
 }
 
@@ -170,8 +152,6 @@ cyc Cpu::next_instruction()
 
     print_debug(m_opcode);
 
-    r_tick();
-
     switch (m_opcode) {
     case NOP:
         nop(cycles);
@@ -198,7 +178,7 @@ cyc Cpu::next_instruction()
         rlca(m_acc_reg, m_flag_reg, cycles);
         break;
     case EX_AF_AFP:
-        ex(m_acc_reg, m_flag_reg, m_acc_p_reg, m_flag_p_reg, cycles);
+        //        ex(m_acc_reg, m_flag_reg, m_acc_p_reg, m_flag_p_reg, cycles); TODO
         break;
     case ADD_HL_BC:
         add_HL_ss(m_h_reg, m_l_reg, to_u16(m_b_reg, m_c_reg), m_flag_reg, cycles);
@@ -339,7 +319,7 @@ cyc Cpu::next_instruction()
         ld_MHL_n(m_memory, address_in_HL(), get_next_byte(), cycles);
         break;
     case SCF:
-        scf(m_flag_reg, m_acc_reg, cycles);
+        scf(m_flag_reg, cycles);
         break;
     case JR_C_e:
         jr_c(m_pc, get_next_byte(), m_flag_reg, cycles);
@@ -363,7 +343,7 @@ cyc Cpu::next_instruction()
         ld_r_n(m_acc_reg, get_next_byte(), cycles);
         break;
     case CCF:
-        ccf(m_flag_reg, m_acc_reg, cycles);
+        ccf(m_flag_reg, cycles);
         break;
     case LD_B_B:
         ld_r_r(m_b_reg, m_b_reg, cycles);
@@ -807,9 +787,9 @@ cyc Cpu::next_instruction()
         jp_nc(m_pc, get_next_word(), m_flag_reg, cycles);
         break;
     case OUT: {
-        NextByte args = get_next_byte();
-        out_n_A(m_acc_reg, args, m_io_out, cycles);
-        notify_out_observers(args.farg);
+        //        NextByte args = get_next_byte(); TODO
+        //        out_n_A(m_acc_reg, args, m_io_out, cycles);
+        //        notify_out_observers(args.farg);
         break;
     }
     case CALL_NC:
@@ -828,25 +808,25 @@ cyc Cpu::next_instruction()
         ret_c(m_pc, m_sp, m_memory, m_flag_reg, cycles);
         break;
     case EXX:
-        exx(m_b_reg, m_c_reg, m_b_p_reg, m_c_p_reg,
-            m_d_reg, m_e_reg, m_d_p_reg, m_e_p_reg,
-            m_h_reg, m_l_reg, m_h_p_reg, m_l_p_reg,
-            cycles);
+        //        exx(m_b_reg, m_c_reg, m_b_p_reg, m_c_p_reg, TODO
+        //            m_d_reg, m_e_reg, m_d_p_reg, m_e_p_reg,
+        //            m_h_reg, m_l_reg, m_h_p_reg, m_l_p_reg,
+        //            cycles);
         break;
     case JP_C:
         jp_c(m_pc, get_next_word(), m_flag_reg, cycles);
         break;
     case IN: {
-        NextByte args = get_next_byte();
-        notify_in_observers(to_u16(m_acc_reg, args.farg));
-        in_A_n(m_acc_reg, args, m_io_in, cycles);
+        //        NextByte args = get_next_byte(); TODO
+        //        notify_in_observers(to_u16(m_acc_reg, args.farg));
+        //        in_A_n(m_acc_reg, args, m_io_in, cycles);
         break;
     }
     case CALL_C:
         call_c(m_pc, m_sp, m_memory, get_next_word(), m_flag_reg, cycles);
         break;
     case IX:
-        next_ixy_instruction(get_next_byte().farg, m_ix_reg, cycles);
+        //        next_ixy_instruction(get_next_byte().farg, m_ix_reg, cycles); TODO
         break;
     case SBC_A_n:
         sbc_A_n(m_acc_reg, get_next_byte(), m_flag_reg, cycles);
@@ -855,19 +835,19 @@ cyc Cpu::next_instruction()
         rst_3(m_pc, m_sp, m_memory, cycles);
         break;
     case RET_PO:
-        ret_po(m_pc, m_sp, m_memory, m_flag_reg, cycles);
+        //        ret_po(m_pc, m_sp, m_memory, m_flag_reg, cycles); TODO
         break;
     case POP_HL:
         pop(m_h_reg, m_l_reg, m_sp, m_memory, cycles);
         break;
     case JP_PO:
-        jp_po(m_pc, get_next_word(), m_flag_reg, cycles);
+        //        jp_po(m_pc, get_next_word(), m_flag_reg, cycles); TODO
         break;
     case EX_MSP_HL:
-        ex_msp_hl(m_sp, memory(), m_h_reg, m_l_reg, cycles);
+        //        ex_msp_hl(m_sp, memory(), m_h_reg, m_l_reg, cycles); TODO
         break;
     case CALL_PO:
-        call_po(m_pc, m_sp, m_memory, get_next_word(), m_flag_reg, cycles);
+        //        call_po(m_pc, m_sp, m_memory, get_next_word(), m_flag_reg, cycles); TODO
         break;
     case PUSH_HL:
         push_qq(m_h_reg, m_l_reg, m_sp, m_memory, cycles);
@@ -879,22 +859,22 @@ cyc Cpu::next_instruction()
         rst_4(m_pc, m_sp, m_memory, cycles);
         break;
     case RET_PE:
-        ret_pe(m_pc, m_sp, m_memory, m_flag_reg, cycles);
+        //        ret_pe(m_pc, m_sp, m_memory, m_flag_reg, cycles); TODO
         break;
     case JP_MHL:
         jp_hl(m_pc, address_in_HL(), cycles);
         break;
     case JP_PE:
-        jp_pe(m_pc, get_next_word(), m_flag_reg, cycles);
+        //        jp_pe(m_pc, get_next_word(), m_flag_reg, cycles); TODO
         break;
     case EX_DE_HL:
-        ex_de_hl(m_h_reg, m_l_reg, m_d_reg, m_e_reg, cycles);
+        //        ex_de_hl(m_h_reg, m_l_reg, m_d_reg, m_e_reg, cycles); TODO
         break;
     case CALL_PE:
-        call_pe(m_pc, m_sp, m_memory, get_next_word(), m_flag_reg, cycles);
+        //        call_pe(m_pc, m_sp, m_memory, get_next_word(), m_flag_reg, cycles); TODO
         break;
     case EXTD:
-        next_extd_instruction(get_next_byte().farg, cycles);
+        //        next_extd_instruction(get_next_byte().farg, cycles); TODO
         break;
     case XOR_n:
         xor_n(m_acc_reg, get_next_byte(), m_flag_reg, cycles);
@@ -903,19 +883,19 @@ cyc Cpu::next_instruction()
         rst_5(m_pc, m_sp, m_memory, cycles);
         break;
     case RET_P:
-        ret_p(m_pc, m_sp, m_memory, m_flag_reg, cycles);
+        //        ret_p(m_pc, m_sp, m_memory, m_flag_reg, cycles); TODO
         break;
     case POP_AF:
-        pop_af(m_flag_reg, m_acc_reg, m_sp, m_memory, cycles);
+        //        pop_af(m_flag_reg, m_acc_reg, m_sp, m_memory, cycles); TODO
         break;
     case JP_P:
-        jp_p(m_pc, get_next_word(), m_flag_reg, cycles);
+        //        jp_p(m_pc, get_next_word(), m_flag_reg, cycles); TODO
         break;
     case DI:
         di(m_iff1, m_iff2, cycles);
         break;
     case CALL_P:
-        call_p(m_pc, m_sp, m_memory, get_next_word(), m_flag_reg, cycles);
+        //        call_p(m_pc, m_sp, m_memory, get_next_word(), m_flag_reg, cycles); TODO
         break;
     case PUSH_AF:
         push_af(m_flag_reg, m_acc_reg, m_sp, m_memory, cycles);
@@ -927,22 +907,22 @@ cyc Cpu::next_instruction()
         rst_6(m_pc, m_sp, m_memory, cycles);
         break;
     case RET_M:
-        ret_m(m_pc, m_sp, m_memory, m_flag_reg, cycles);
+        //        ret_m(m_pc, m_sp, m_memory, m_flag_reg, cycles); TODO
         break;
     case LD_SP_HL:
         ld_sp_hl(m_sp, address_in_HL(), cycles);
         break;
     case JP_M:
-        jp_m(m_pc, get_next_word(), m_flag_reg, cycles);
+        //        jp_m(m_pc, get_next_word(), m_flag_reg, cycles); TODO
         break;
     case EI:
         ei(m_iff1, m_iff2, cycles);
         break;
     case CALL_M:
-        call_m(m_pc, m_sp, m_memory, get_next_word(), m_flag_reg, cycles);
+        //        call_m(m_pc, m_sp, m_memory, get_next_word(), m_flag_reg, cycles); TODO
         break;
     case IY:
-        next_ixy_instruction(get_next_byte().farg, m_iy_reg, cycles);
+        //        next_ixy_instruction(get_next_byte().farg, m_iy_reg, cycles); TODO
         break;
     case CP_n:
         cp_n(m_acc_reg, get_next_byte(), m_flag_reg, cycles);
@@ -960,7 +940,6 @@ cyc Cpu::next_instruction()
 void Cpu::next_bits_instruction(u8 bits_opcode, cyc& cycles)
 {
     print_debug(bits_opcode);
-    r_tick();
 
     switch (bits_opcode) {
     case RLC_B:
@@ -1736,931 +1715,12 @@ void Cpu::next_bits_instruction(u8 bits_opcode, cyc& cycles)
     }
 }
 
-void Cpu::next_ixy_instruction(u8 ixy_opcode, u16& ixy_reg, cyc& cycles)
-{
-    print_debug(ixy_opcode);
-    r_tick();
-
-    switch (ixy_opcode) {
-    case INC_B_UNDOC:
-        inc_r_undoc(m_b_reg, m_flag_reg, cycles);
-        break;
-    case DEC_B_UNDOC:
-        dec_r_undoc(m_b_reg, m_flag_reg, cycles);
-        break;
-    case LD_B_n_UNDOC:
-        ld_r_n_undoc(m_b_reg, get_next_byte(), cycles);
-        break;
-    case ADD_IXY_BC:
-        add_ixy_pp(ixy_reg, to_u16(m_b_reg, m_c_reg), m_flag_reg, cycles);
-        break;
-    case INC_C_UNDOC:
-        inc_r_undoc(m_c_reg, m_flag_reg, cycles);
-        break;
-    case DEC_C_UNDOC:
-        dec_r_undoc(m_c_reg, m_flag_reg, cycles);
-        break;
-    case LD_C_n_UNDOC:
-        ld_r_n_undoc(m_c_reg, get_next_byte(), cycles);
-        break;
-    case INC_D_UNDOC:
-        inc_r_undoc(m_d_reg, m_flag_reg, cycles);
-        break;
-    case DEC_D_UNDOC:
-        dec_r_undoc(m_d_reg, m_flag_reg, cycles);
-        break;
-    case LD_D_n_UNDOC:
-        ld_r_n_undoc(m_d_reg, get_next_byte(), cycles);
-        break;
-    case ADD_IXY_DE:
-        add_ixy_pp(ixy_reg, to_u16(m_d_reg, m_e_reg), m_flag_reg, cycles);
-        break;
-    case INC_E_UNDOC:
-        inc_r_undoc(m_e_reg, m_flag_reg, cycles);
-        break;
-    case DEC_E_UNDOC:
-        dec_r_undoc(m_e_reg, m_flag_reg, cycles);
-        break;
-    case LD_E_n_UNDOC:
-        ld_r_n_undoc(m_e_reg, get_next_byte(), cycles);
-        break;
-    case LD_IXY_nn:
-        ld_ixy_nn(ixy_reg, get_next_word(), cycles);
-        break;
-    case LD_Mnn_IXY:
-        ld_Mnn_ixy(ixy_reg, get_next_word(), memory(), cycles);
-        break;
-    case INC_IXY:
-        inc_ixy(ixy_reg, cycles);
-        break;
-    case INC_IXH_UNDOC:
-        inc_ixyh(ixy_reg, m_flag_reg, cycles);
-        break;
-    case DEC_IXH_UNDOC:
-        dec_ixyh(ixy_reg, m_flag_reg, cycles);
-        break;
-    case LD_IXYH_n_UNDOC:
-        ld_ixyh_n(ixy_reg, get_next_byte(), cycles);
-        break;
-    case ADD_IXY_IXY:
-        add_ixy_pp(ixy_reg, ixy_reg, m_flag_reg, cycles);
-        break;
-    case LD_IXY_Mnn:
-        ld_ixy_Mnn(ixy_reg, get_next_word(), memory(), cycles);
-        break;
-    case DEC_IXY:
-        dec_ixy(ixy_reg, cycles);
-        break;
-    case INC_IXL_UNDOC:
-        inc_ixyl(ixy_reg, m_flag_reg, cycles);
-        break;
-    case DEC_IXL_UNDOC:
-        dec_ixyl(ixy_reg, m_flag_reg, cycles);
-        break;
-    case LD_IXYL_n_UNDOC:
-        ld_ixyl_n(ixy_reg, get_next_byte(), cycles);
-        break;
-    case INC_MIXY_P_n:
-        inc_MixyPd(ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
-        break;
-    case DEC_MIXY_P_n:
-        dec_MixyPd(ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
-        break;
-    case LD_MIXY_P_n_d:
-        ld_MixyPd_n(ixy_reg, get_next_word(), m_memory, cycles);
-        break;
-    case ADD_IXY_SP:
-        add_ixy_pp(ixy_reg, m_sp, m_flag_reg, cycles);
-        break;
-    case INC_A_UNDOC:
-        inc_r_undoc(m_acc_reg, m_flag_reg, cycles);
-        break;
-    case DEC_A_UNDOC:
-        dec_r_undoc(m_acc_reg, m_flag_reg, cycles);
-        break;
-    case LD_A_n_UNDOC:
-        ld_r_n_undoc(m_acc_reg, get_next_byte(), cycles);
-        break;
-    case LD_B_B_UNDOC:
-        ld_r_r_undoc(m_b_reg, m_b_reg, cycles);
-        break;
-    case LD_B_C_UNDOC:
-        ld_r_r_undoc(m_b_reg, m_c_reg, cycles);
-        break;
-    case LD_B_D_UNDOC:
-        ld_r_r_undoc(m_b_reg, m_d_reg, cycles);
-        break;
-    case LD_B_E_UNDOC:
-        ld_r_r_undoc(m_b_reg, m_e_reg, cycles);
-        break;
-    case LD_B_IXYH_UNDOC:
-        ld_r_r_undoc(m_b_reg, high_byte(ixy_reg), cycles);
-        break;
-    case LD_B_IXYL_UNDOC:
-        ld_r_r_undoc(m_b_reg, low_byte(ixy_reg), cycles);
-        break;
-    case LD_B_MIXY_P_n:
-        ld_r_MixyPd(m_b_reg, ixy_reg, get_next_byte(), m_memory, cycles);
-        break;
-    case LD_B_A_UNDOC:
-        ld_r_r_undoc(m_b_reg, m_acc_reg, cycles);
-        break;
-    case LD_C_B_UNDOC:
-        ld_r_r_undoc(m_c_reg, m_b_reg, cycles);
-        break;
-    case LD_C_C_UNDOC:
-        ld_r_r_undoc(m_c_reg, m_c_reg, cycles);
-        break;
-    case LD_C_D_UNDOC:
-        ld_r_r_undoc(m_c_reg, m_d_reg, cycles);
-        break;
-    case LD_C_E_UNDOC:
-        ld_r_r_undoc(m_c_reg, m_e_reg, cycles);
-        break;
-    case LD_C_IXYH_UNDOC:
-        ld_r_r_undoc(m_c_reg, high_byte(ixy_reg), cycles);
-        break;
-    case LD_C_IXYL_UNDOC:
-        ld_r_r_undoc(m_c_reg, low_byte(ixy_reg), cycles);
-        break;
-    case LD_C_MIXY_P_n:
-        ld_r_MixyPd(m_c_reg, ixy_reg, get_next_byte(), m_memory, cycles);
-        break;
-    case LD_C_A_UNDOC:
-        ld_r_r_undoc(m_c_reg, m_acc_reg, cycles);
-        break;
-    case LD_D_B_UNDOC:
-        ld_r_r_undoc(m_d_reg, m_b_reg, cycles);
-        break;
-    case LD_D_C_UNDOC:
-        ld_r_r_undoc(m_d_reg, m_c_reg, cycles);
-        break;
-    case LD_D_D_UNDOC:
-        ld_r_r_undoc(m_d_reg, m_d_reg, cycles);
-        break;
-    case LD_D_E_UNDOC:
-        ld_r_r_undoc(m_d_reg, m_e_reg, cycles);
-        break;
-    case LD_D_IXYH_UNDOC:
-        ld_r_r_undoc(m_d_reg, high_byte(ixy_reg), cycles);
-        break;
-    case LD_D_IXYL_UNDOC:
-        ld_r_r_undoc(m_d_reg, low_byte(ixy_reg), cycles);
-        break;
-    case LD_D_MIXY_P_n:
-        ld_r_MixyPd(m_d_reg, ixy_reg, get_next_byte(), m_memory, cycles);
-        break;
-    case LD_D_A_UNDOC:
-        ld_r_r_undoc(m_d_reg, m_acc_reg, cycles);
-        break;
-    case LD_E_B_UNDOC:
-        ld_r_r_undoc(m_e_reg, m_b_reg, cycles);
-        break;
-    case LD_E_C_UNDOC:
-        ld_r_r_undoc(m_e_reg, m_c_reg, cycles);
-        break;
-    case LD_E_D_UNDOC:
-        ld_r_r_undoc(m_e_reg, m_d_reg, cycles);
-        break;
-    case LD_E_E_UNDOC:
-        ld_r_r_undoc(m_e_reg, m_e_reg, cycles);
-        break;
-    case LD_E_IXYH_UNDOC:
-        ld_r_r_undoc(m_e_reg, high_byte(ixy_reg), cycles);
-        break;
-    case LD_E_IXYL_UNDOC:
-        ld_r_r_undoc(m_e_reg, low_byte(ixy_reg), cycles);
-        break;
-    case LD_E_MIXY_P_n:
-        ld_r_MixyPd(m_e_reg, ixy_reg, get_next_byte(), m_memory, cycles);
-        break;
-    case LD_E_A_UNDOC:
-        ld_r_r_undoc(m_e_reg, m_acc_reg, cycles);
-        break;
-    case LD_IXYH_B_UNDOC:
-        ld_ixyh_r_undoc(ixy_reg, m_b_reg, cycles);
-        break;
-    case LD_IXYH_C_UNDOC:
-        ld_ixyh_r_undoc(ixy_reg, m_c_reg, cycles);
-        break;
-    case LD_IXYH_D_UNDOC:
-        ld_ixyh_r_undoc(ixy_reg, m_d_reg, cycles);
-        break;
-    case LD_IXYH_E_UNDOC:
-        ld_ixyh_r_undoc(ixy_reg, m_e_reg, cycles);
-        break;
-    case LD_IXYH_IXYH_UNDOC:
-        ld_ixyh_r_undoc(ixy_reg, high_byte(ixy_reg), cycles);
-        break;
-    case LD_IXYH_IXYL_UNDOC:
-        ld_ixyh_r_undoc(ixy_reg, low_byte(ixy_reg), cycles);
-        break;
-    case LD_H_MIXY_P_n:
-        ld_r_MixyPd(m_h_reg, ixy_reg, get_next_byte(), m_memory, cycles);
-        break;
-    case LD_IXYH_A_UNDOC:
-        ld_ixyh_r_undoc(ixy_reg, m_acc_reg, cycles);
-        break;
-    case LD_IXYL_B_UNDOC:
-        ld_ixyl_r_undoc(ixy_reg, m_b_reg, cycles);
-        break;
-    case LD_IXYL_C_UNDOC:
-        ld_ixyl_r_undoc(ixy_reg, m_c_reg, cycles);
-        break;
-    case LD_IXYL_D_UNDOC:
-        ld_ixyl_r_undoc(ixy_reg, m_d_reg, cycles);
-        break;
-    case LD_IXYL_E_UNDOC:
-        ld_ixyl_r_undoc(ixy_reg, m_e_reg, cycles);
-        break;
-    case LD_IXYL_IXYH_UNDOC:
-        ld_ixyl_r_undoc(ixy_reg, high_byte(ixy_reg), cycles);
-        break;
-    case LD_IXYL_IXYL_UNDOC:
-        ld_ixyl_r_undoc(ixy_reg, low_byte(ixy_reg), cycles);
-        break;
-    case LD_L_MIXY_P_n:
-        ld_r_MixyPd(m_l_reg, ixy_reg, get_next_byte(), m_memory, cycles);
-        break;
-    case LD_IXYL_A_UNDOC:
-        ld_ixyl_r_undoc(ixy_reg, m_acc_reg, cycles);
-        break;
-    case LD_MIXY_P_n_B:
-        ld_MixyPd_r(ixy_reg, get_next_byte(), m_memory, m_b_reg, cycles);
-        break;
-    case LD_MIXY_P_n_C:
-        ld_MixyPd_r(ixy_reg, get_next_byte(), m_memory, m_c_reg, cycles);
-        break;
-    case LD_MIXY_P_n_D:
-        ld_MixyPd_r(ixy_reg, get_next_byte(), m_memory, m_d_reg, cycles);
-        break;
-    case LD_MIXY_P_n_E:
-        ld_MixyPd_r(ixy_reg, get_next_byte(), m_memory, m_e_reg, cycles);
-        break;
-    case LD_MIXY_P_n_H:
-        ld_MixyPd_r(ixy_reg, get_next_byte(), m_memory, m_h_reg, cycles);
-        break;
-    case LD_MIXY_P_n_L:
-        ld_MixyPd_r(ixy_reg, get_next_byte(), m_memory, m_l_reg, cycles);
-        break;
-    case LD_MIXY_P_n_A:
-        ld_MixyPd_r(ixy_reg, get_next_byte(), m_memory, m_acc_reg, cycles);
-        break;
-    case LD_A_B_UNDOC:
-        ld_r_r_undoc(m_acc_reg, m_b_reg, cycles);
-        break;
-    case LD_A_C_UNDOC:
-        ld_r_r_undoc(m_acc_reg, m_c_reg, cycles);
-        break;
-    case LD_A_D_UNDOC:
-        ld_r_r_undoc(m_acc_reg, m_d_reg, cycles);
-        break;
-    case LD_A_E_UNDOC:
-        ld_r_r_undoc(m_acc_reg, m_e_reg, cycles);
-        break;
-    case LD_A_IXYH_UNDOC:
-        ld_r_r_undoc(m_acc_reg, high_byte(ixy_reg), cycles);
-        break;
-    case LD_A_IXYL_UNDOC:
-        ld_r_r_undoc(m_acc_reg, low_byte(ixy_reg), cycles);
-        break;
-    case LD_A_MIXY_P_n:
-        ld_r_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, cycles);
-        break;
-    case LD_A_A_UNDOC:
-        ld_r_r_undoc(m_acc_reg, m_acc_reg, cycles);
-        break;
-    case ADD_A_B_UNDOC:
-        add_A_r_undoc(m_acc_reg, m_b_reg, m_flag_reg, cycles);
-        break;
-    case ADD_A_C_UNDOC:
-        add_A_r_undoc(m_acc_reg, m_c_reg, m_flag_reg, cycles);
-        break;
-    case ADD_A_D_UNDOC:
-        add_A_r_undoc(m_acc_reg, m_d_reg, m_flag_reg, cycles);
-        break;
-    case ADD_A_E_UNDOC:
-        add_A_r_undoc(m_acc_reg, m_e_reg, m_flag_reg, cycles);
-        break;
-    case ADD_A_IXYH_UNDOC:
-        add_A_ixy_h_or_l(m_acc_reg, high_byte(ixy_reg), m_flag_reg, cycles);
-        break;
-    case ADD_A_IXYL_UNDOC:
-        add_A_ixy_h_or_l(m_acc_reg, low_byte(ixy_reg), m_flag_reg, cycles);
-        break;
-    case ADD_A_MIXY_P_n:
-        add_A_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
-        break;
-    case ADD_A_A_UNDOC:
-        add_A_r_undoc(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
-        break;
-    case ADC_A_B_UNDOC:
-        adc_A_r_undoc(m_acc_reg, m_b_reg, m_flag_reg, cycles);
-        break;
-    case ADC_A_C_UNDOC:
-        adc_A_r_undoc(m_acc_reg, m_c_reg, m_flag_reg, cycles);
-        break;
-    case ADC_A_D_UNDOC:
-        adc_A_r_undoc(m_acc_reg, m_d_reg, m_flag_reg, cycles);
-        break;
-    case ADC_A_E_UNDOC:
-        adc_A_r_undoc(m_acc_reg, m_e_reg, m_flag_reg, cycles);
-        break;
-    case ADC_A_MIXY_P_n:
-        adc_A_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
-        break;
-    case ADC_A_IXYH_UNDOC:
-        adc_A_ixy_h_or_l(m_acc_reg, high_byte(ixy_reg), m_flag_reg, cycles);
-        break;
-    case ADC_A_IXYL_UNDOC:
-        adc_A_ixy_h_or_l(m_acc_reg, low_byte(ixy_reg), m_flag_reg, cycles);
-        break;
-    case ADC_A_A_UNDOC:
-        adc_A_r_undoc(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
-        break;
-    case SUB_B_UNDOC:
-        sub_r_undoc(m_acc_reg, m_b_reg, m_flag_reg, cycles);
-        break;
-    case SUB_C_UNDOC:
-        sub_r_undoc(m_acc_reg, m_c_reg, m_flag_reg, cycles);
-        break;
-    case SUB_D_UNDOC:
-        sub_r_undoc(m_acc_reg, m_d_reg, m_flag_reg, cycles);
-        break;
-    case SUB_E_UNDOC:
-        sub_r_undoc(m_acc_reg, m_e_reg, m_flag_reg, cycles);
-        break;
-    case SUB_IXYH_UNDOC:
-        sub_ixy_h_or_l(m_acc_reg, high_byte(ixy_reg), m_flag_reg, cycles);
-        break;
-    case SUB_IXYL_UNDOC:
-        sub_ixy_h_or_l(m_acc_reg, low_byte(ixy_reg), m_flag_reg, cycles);
-        break;
-    case SUB_MIXY_P_n:
-        sub_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
-        break;
-    case SUB_A_UNDOC:
-        sub_r_undoc(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
-        break;
-    case SBC_A_B_UNDOC:
-        sbc_A_r_undoc(m_acc_reg, m_b_reg, m_flag_reg, cycles);
-        break;
-    case SBC_A_C_UNDOC:
-        sbc_A_r_undoc(m_acc_reg, m_c_reg, m_flag_reg, cycles);
-        break;
-    case SBC_A_D_UNDOC:
-        sbc_A_r_undoc(m_acc_reg, m_d_reg, m_flag_reg, cycles);
-        break;
-    case SBC_A_E_UNDOC:
-        sbc_A_r_undoc(m_acc_reg, m_e_reg, m_flag_reg, cycles);
-        break;
-    case SBC_A_IXYH_UNDOC:
-        sbc_A_ixy_h_or_l(m_acc_reg, high_byte(ixy_reg), m_flag_reg, cycles);
-        break;
-    case SBC_A_IXYL_UNDOC:
-        sbc_A_ixy_h_or_l(m_acc_reg, low_byte(ixy_reg), m_flag_reg, cycles);
-        break;
-    case SBC_A_MIXY_P_n:
-        sbc_A_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
-        break;
-    case SBC_A_A_UNDOC:
-        sbc_A_r_undoc(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
-        break;
-    case AND_B_UNDOC:
-        and_r_undoc(m_acc_reg, m_b_reg, m_flag_reg, cycles);
-        break;
-    case AND_C_UNDOC:
-        and_r_undoc(m_acc_reg, m_c_reg, m_flag_reg, cycles);
-        break;
-    case AND_D_UNDOC:
-        and_r_undoc(m_acc_reg, m_d_reg, m_flag_reg, cycles);
-        break;
-    case AND_E_UNDOC:
-        and_r_undoc(m_acc_reg, m_e_reg, m_flag_reg, cycles);
-        break;
-    case AND_IXYH_UNDOC:
-        and_ixy_h_or_l(m_acc_reg, high_byte(ixy_reg), m_flag_reg, cycles);
-        break;
-    case AND_IXYL_UNDOC:
-        and_ixy_h_or_l(m_acc_reg, low_byte(ixy_reg), m_flag_reg, cycles);
-        break;
-    case AND_MIXY_P_n:
-        and_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
-        break;
-    case AND_A_UNDOC:
-        and_r_undoc(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
-        break;
-    case XOR_B_UNDOC:
-        xor_r_undoc(m_acc_reg, m_b_reg, m_flag_reg, cycles);
-        break;
-    case XOR_C_UNDOC:
-        xor_r_undoc(m_acc_reg, m_c_reg, m_flag_reg, cycles);
-        break;
-    case XOR_D_UNDOC:
-        xor_r_undoc(m_acc_reg, m_d_reg, m_flag_reg, cycles);
-        break;
-    case XOR_E_UNDOC:
-        xor_r_undoc(m_acc_reg, m_e_reg, m_flag_reg, cycles);
-        break;
-    case XOR_IXYH_UNDOC:
-        xor_ixy_h_or_l(m_acc_reg, high_byte(ixy_reg), m_flag_reg, cycles);
-        break;
-    case XOR_IXYL_UNDOC:
-        xor_ixy_h_or_l(m_acc_reg, low_byte(ixy_reg), m_flag_reg, cycles);
-        break;
-    case XOR_A_UNDOC:
-        xor_r_undoc(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
-        break;
-    case OR_B_UNDOC:
-        or_r_undoc(m_acc_reg, m_b_reg, m_flag_reg, cycles);
-        break;
-    case OR_C_UNDOC:
-        or_r_undoc(m_acc_reg, m_c_reg, m_flag_reg, cycles);
-        break;
-    case OR_D_UNDOC:
-        or_r_undoc(m_acc_reg, m_d_reg, m_flag_reg, cycles);
-        break;
-    case OR_E_UNDOC:
-        or_r_undoc(m_acc_reg, m_e_reg, m_flag_reg, cycles);
-        break;
-    case OR_IXYH_UNDOC:
-        or_ixy_h_or_l(m_acc_reg, high_byte(ixy_reg), m_flag_reg, cycles);
-        break;
-    case OR_IXYL_UNDOC:
-        or_ixy_h_or_l(m_acc_reg, low_byte(ixy_reg), m_flag_reg, cycles);
-        break;
-    case OR_MIXY_P_n:
-        or_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
-        break;
-    case XOR_MIXY_P_n:
-        xor_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
-        break;
-    case OR_A_UNDOC:
-        or_r_undoc(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
-        break;
-    case CP_B_UNDOC:
-        cp_r_undoc(m_acc_reg, m_b_reg, m_flag_reg, cycles);
-        break;
-    case CP_C_UNDOC:
-        cp_r_undoc(m_acc_reg, m_c_reg, m_flag_reg, cycles);
-        break;
-    case CP_D_UNDOC:
-        cp_r_undoc(m_acc_reg, m_d_reg, m_flag_reg, cycles);
-        break;
-    case CP_E_UNDOC:
-        cp_r_undoc(m_acc_reg, m_e_reg, m_flag_reg, cycles);
-        break;
-    case CP_IXYH_UNDOC:
-        cp_ixy_h_or_l(m_acc_reg, high_byte(ixy_reg), m_flag_reg, cycles);
-        break;
-    case CP_IXYL_UNDOC:
-        cp_ixy_h_or_l(m_acc_reg, low_byte(ixy_reg), m_flag_reg, cycles);
-        break;
-    case CP_MIXY_P_n:
-        cp_MixyPd(m_acc_reg, ixy_reg, get_next_byte(), m_memory, m_flag_reg, cycles);
-        break;
-    case CP_A_UNDOC:
-        cp_r_undoc(m_acc_reg, m_acc_reg, m_flag_reg, cycles);
-        break;
-    case IXY_BITS:
-        next_ixy_bits_instruction(get_next_word(), ixy_reg, cycles);
-        break;
-    case POP_IXY:
-        pop_ixy(ixy_reg, m_sp, m_memory, cycles);
-        break;
-    case EX_MSP_IX:
-        ex_msp_ixy(m_sp, m_memory, ixy_reg, cycles);
-        break;
-    case PUSH_IXY:
-        push_ixy(ixy_reg, m_sp, m_memory, cycles);
-        break;
-    case JP_MIXY:
-        jp_ixy(m_pc, ixy_reg, cycles);
-        break;
-    case LD_SP_IXY:
-        ld_sp_ixy(m_sp, ixy_reg, cycles);
-        break;
-    default:
-        throw UnrecognizedOpcodeException(ixy_opcode, "IX/IY instructions");
-    }
-}
-
-void Cpu::next_ixy_bits_instruction(NextWord args, u16& ixy_reg, cyc& cycles)
-{
-    u8 d = args.farg;
-    u8 ixy_bits_opcode = args.sarg;
-    print_debug(ixy_bits_opcode);
-
-    switch (ixy_bits_opcode) {
-    case RLC_MIXY_P_n_B_UNDOC1:
-        rlc_MixyPd_r(m_b_reg, ixy_reg, d, m_memory, m_flag_reg, cycles);
-        break;
-    case RLC_MIXY_P_n_C_UNDOC1:
-        rlc_MixyPd_r(m_c_reg, ixy_reg, d, m_memory, m_flag_reg, cycles);
-        break;
-    case RLC_MIXY_P_n_D_UNDOC1:
-        rlc_MixyPd_r(m_d_reg, ixy_reg, d, m_memory, m_flag_reg, cycles);
-        break;
-    case RLC_MIXY_P_n_E_UNDOC1:
-        rlc_MixyPd_r(m_e_reg, ixy_reg, d, m_memory, m_flag_reg, cycles);
-        break;
-    case RLC_MIXY_P_n_H_UNDOC1:
-        rlc_MixyPd_r(m_h_reg, ixy_reg, d, m_memory, m_flag_reg, cycles);
-        break;
-    case RLC_MIXY_P_n_L_UNDOC1:
-        rlc_MixyPd_r(m_l_reg, ixy_reg, d, m_memory, m_flag_reg, cycles);
-        break;
-    case RLC_MIXY_P_n:
-        rlc_MixyPd(ixy_reg, d, m_memory, m_flag_reg, cycles);
-        break;
-    case RLC_MIXY_P_n_A_UNDOC1:
-        rlc_MixyPd_r(m_acc_reg, ixy_reg, d, m_memory, m_flag_reg, cycles);
-        break;
-    case RRC_MIXY_P_n:
-        rrc_MixyPd(ixy_reg, d, m_memory, m_flag_reg, cycles);
-        break;
-    case RL_MIXY_P_n_B_UNDOC:
-        rl_MixyPd_r(m_b_reg, ixy_reg, d, m_memory, m_flag_reg, cycles);
-        break;
-    case RL_MIXY_P_n_C_UNDOC:
-        rl_MixyPd_r(m_c_reg, ixy_reg, d, m_memory, m_flag_reg, cycles);
-        break;
-    case RL_MIXY_P_n_D_UNDOC:
-        rl_MixyPd_r(m_d_reg, ixy_reg, d, m_memory, m_flag_reg, cycles);
-        break;
-    case RL_MIXY_P_n_E_UNDOC:
-        rl_MixyPd_r(m_e_reg, ixy_reg, d, m_memory, m_flag_reg, cycles);
-        break;
-    case RL_MIXY_P_n_H_UNDOC:
-        rl_MixyPd_r(m_h_reg, ixy_reg, d, m_memory, m_flag_reg, cycles);
-        break;
-    case RL_MIXY_P_n_L_UNDOC:
-        rl_MixyPd_r(m_l_reg, ixy_reg, d, m_memory, m_flag_reg, cycles);
-        break;
-    case RL_MIXY_P_n:
-        rl_MixyPd(ixy_reg, d, m_memory, m_flag_reg, cycles);
-        break;
-    case RL_MIXY_P_n_A_UNDOC:
-        rl_MixyPd_r(m_acc_reg, ixy_reg, d, m_memory, m_flag_reg, cycles);
-        break;
-    case RR_MIXY_P_n:
-        rr_MixyPd(ixy_reg, d, m_memory, m_flag_reg, cycles);
-        break;
-    case SLA_MIXY_P_n:
-        sla_MixyPd(ixy_reg, d, m_memory, m_flag_reg, cycles);
-        break;
-    case SRA_MIXY_P_n:
-        sra_MixyPd(ixy_reg, d, m_memory, m_flag_reg, cycles);
-        break;
-    case SLL_MIXY_P_n:
-        sll_MixyPd(ixy_reg, d, m_memory, m_flag_reg, cycles);
-        break;
-    case SRL_MIXY_P_n:
-        srl_MixyPd(ixy_reg, d, m_memory, m_flag_reg, cycles);
-        break;
-    case BIT_0_MIXY_P_n:
-        bit_MixyPd(0, ixy_reg, d, m_memory, m_flag_reg, cycles);
-        break;
-    case BIT_1_MIXY_P_n:
-        bit_MixyPd(1, ixy_reg, d, m_memory, m_flag_reg, cycles);
-        break;
-    case BIT_2_MIXY_P_n:
-        bit_MixyPd(2, ixy_reg, d, m_memory, m_flag_reg, cycles);
-        break;
-    case BIT_3_MIXY_P_n:
-        bit_MixyPd(3, ixy_reg, d, m_memory, m_flag_reg, cycles);
-        break;
-    case BIT_4_MIXY_P_n:
-        bit_MixyPd(4, ixy_reg, d, m_memory, m_flag_reg, cycles);
-        break;
-    case BIT_5_MIXY_P_n:
-        bit_MixyPd(5, ixy_reg, d, m_memory, m_flag_reg, cycles);
-        break;
-    case BIT_6_MIXY_P_n:
-        bit_MixyPd(6, ixy_reg, d, m_memory, m_flag_reg, cycles);
-        break;
-    case BIT_7_MIXY_P_n:
-        bit_MixyPd(7, ixy_reg, d, m_memory, m_flag_reg, cycles);
-        break;
-    case RES_0_MIXY_P_n:
-        res_MixyPd(0, ixy_reg, d, m_memory, cycles);
-        break;
-    case RES_1_MIXY_P_n:
-        res_MixyPd(1, ixy_reg, d, m_memory, cycles);
-        break;
-    case RES_2_MIXY_P_n:
-        res_MixyPd(2, ixy_reg, d, m_memory, cycles);
-        break;
-    case RES_3_MIXY_P_n:
-        res_MixyPd(3, ixy_reg, d, m_memory, cycles);
-        break;
-    case RES_4_MIXY_P_n:
-        res_MixyPd(4, ixy_reg, d, m_memory, cycles);
-        break;
-    case RES_5_MIXY_P_n:
-        res_MixyPd(5, ixy_reg, d, m_memory, cycles);
-        break;
-    case RES_6_MIXY_P_n:
-        res_MixyPd(6, ixy_reg, d, m_memory, cycles);
-        break;
-    case RES_7_MIXY_P_n:
-        res_MixyPd(7, ixy_reg, d, m_memory, cycles);
-        break;
-    case SET_0_MIXY_P_n:
-        set_MixyPd(0, ixy_reg, d, m_memory, cycles);
-        break;
-    case SET_1_MIXY_P_n:
-        set_MixyPd(1, ixy_reg, d, m_memory, cycles);
-        break;
-    case SET_2_MIXY_P_n:
-        set_MixyPd(2, ixy_reg, d, m_memory, cycles);
-        break;
-    case SET_3_MIXY_P_n:
-        set_MixyPd(3, ixy_reg, d, m_memory, cycles);
-        break;
-    case SET_4_MIXY_P_n:
-        set_MixyPd(4, ixy_reg, d, m_memory, cycles);
-        break;
-    case SET_5_MIXY_P_n:
-        set_MixyPd(5, ixy_reg, d, m_memory, cycles);
-        break;
-    case SET_6_MIXY_P_n:
-        set_MixyPd(6, ixy_reg, d, m_memory, cycles);
-        break;
-    case SET_7_MIXY_P_n:
-        set_MixyPd(7, ixy_reg, d, m_memory, cycles);
-        break;
-    default:
-        throw UnrecognizedOpcodeException(ixy_bits_opcode, "IX/IY bits instructions");
-    }
-}
-
-void Cpu::next_extd_instruction(u8 extd_opcode, cyc& cycles)
-{
-    print_debug(extd_opcode);
-    r_tick();
-
-    switch (extd_opcode) {
-    case IN_B_C: {
-        notify_in_observers(to_u16(m_b_reg, m_c_reg));
-        in_r_C(m_b_reg, m_b_reg, m_c_reg, m_io_in, m_flag_reg, cycles);
-        break;
-    }
-    case OUT_C_B: {
-        out_C_r(m_b_reg, m_c_reg, m_b_reg, m_io_in, cycles);
-        notify_out_observers(m_c_reg);
-        break;
-    }
-    case SBC_HL_BC:
-        sbc_HL_ss(m_h_reg, m_l_reg, to_u16(m_b_reg, m_c_reg), m_flag_reg, cycles);
-        break;
-    case LD_Mnn_BC:
-        ld_Mnn_dd(m_b_reg, m_c_reg, m_memory, get_next_word(), cycles);
-        break;
-    case NEG_UNDOC1:
-    case NEG_UNDOC2:
-    case NEG_UNDOC3:
-    case NEG_UNDOC4:
-    case NEG_UNDOC5:
-    case NEG_UNDOC6:
-    case NEG_UNDOC7:
-    case NEG:
-        neg(m_acc_reg, m_flag_reg, cycles);
-        break;
-    case RETN:
-    case RETN_UNDOC1:
-    case RETN_UNDOC2:
-    case RETN_UNDOC3:
-    case RETN_UNDOC4:
-        retn(m_pc, m_sp, m_memory, m_iff1, m_iff2, cycles);
-        if (m_was_nmi_interrupted) {
-            nonmaskable_interrupt_finished();
-        }
-        break;
-    case IM_0_1:
-    case IM_0_2:
-    case IM_0_3:
-        im(m_interrupt_mode, InterruptMode::ZERO, cycles);
-        break;
-    case LD_I_A:
-        ld_I_A(m_i_reg, m_acc_reg, cycles);
-        break;
-    case IN_C_C: {
-        notify_in_observers(to_u16(m_b_reg, m_c_reg));
-        in_r_C(m_c_reg, m_b_reg, m_c_reg, m_io_in, m_flag_reg, cycles);
-        break;
-    }
-    case OUT_C_C: {
-        out_C_r(m_b_reg, m_c_reg, m_c_reg, m_io_in, cycles);
-        notify_out_observers(m_c_reg);
-        break;
-    }
-    case ADC_HL_BC:
-        adc_hl_ss(m_h_reg, m_l_reg, to_u16(m_b_reg, m_c_reg), m_flag_reg, cycles);
-        break;
-    case LD_BC_Mnn:
-        ld_dd_Mnn(m_b_reg, m_c_reg, get_next_word(), m_memory, cycles);
-        break;
-    case RETI:
-        reti(m_pc, m_sp, m_memory, cycles);
-        break;
-    case LD_R_A:
-        ld_R_A(m_r_reg, m_acc_reg, cycles);
-        break;
-    case IN_D_C: {
-        notify_in_observers(to_u16(m_b_reg, m_c_reg));
-        in_r_C(m_d_reg, m_b_reg, m_c_reg, m_io_in, m_flag_reg, cycles);
-        break;
-    }
-    case OUT_C_D: {
-        out_C_r(m_b_reg, m_c_reg, m_d_reg, m_io_in, cycles);
-        notify_out_observers(m_c_reg);
-        break;
-    }
-    case SBC_HL_DE:
-        sbc_HL_ss(m_h_reg, m_l_reg, to_u16(m_d_reg, m_e_reg), m_flag_reg, cycles);
-        break;
-    case LD_Mnn_DE:
-        ld_Mnn_dd(m_d_reg, m_e_reg, m_memory, get_next_word(), cycles);
-        break;
-    case IM_1_1:
-    case IM_1_2:
-        im(m_interrupt_mode, InterruptMode::ONE, cycles);
-        break;
-    case IN_A_C: {
-        notify_in_observers(to_u16(m_b_reg, m_c_reg));
-        in_r_C(m_acc_reg, m_b_reg, m_c_reg, m_io_in, m_flag_reg, cycles);
-        break;
-    }
-    case OUT_C_A: {
-        out_C_r(m_b_reg, m_c_reg, m_acc_reg, m_io_in, cycles);
-        notify_out_observers(m_c_reg);
-        break;
-    }
-    case LD_A_I:
-        ld_A_I(m_acc_reg, m_i_reg, m_flag_reg, m_iff2, cycles);
-        break;
-    case IN_E_C: {
-        notify_in_observers(to_u16(m_b_reg, m_c_reg));
-        in_r_C(m_e_reg, m_b_reg, m_c_reg, m_io_in, m_flag_reg, cycles);
-        break;
-    }
-    case OUT_C_E: {
-        out_C_r(m_b_reg, m_c_reg, m_e_reg, m_io_in, cycles);
-        notify_out_observers(m_c_reg);
-        break;
-    }
-    case ADC_HL_DE:
-        adc_hl_ss(m_h_reg, m_l_reg, to_u16(m_d_reg, m_e_reg), m_flag_reg, cycles);
-        break;
-    case LD_DE_Mnn:
-        ld_dd_Mnn(m_d_reg, m_e_reg, get_next_word(), m_memory, cycles);
-        break;
-    case IM_2_0:
-    case IM_2_1:
-        im(m_interrupt_mode, InterruptMode::TWO, cycles);
-        break;
-    case LD_A_R:
-        ld_A_R(m_acc_reg, m_r_reg, m_flag_reg, m_iff2, cycles);
-        break;
-    case IN_H_C: {
-        notify_in_observers(to_u16(m_b_reg, m_c_reg));
-        in_r_C(m_h_reg, m_b_reg, m_c_reg, m_io_in, m_flag_reg, cycles);
-        break;
-    }
-    case OUT_C_H: {
-        out_C_r(m_b_reg, m_c_reg, m_h_reg, m_io_in, cycles);
-        notify_out_observers(m_c_reg);
-        break;
-    }
-    case SBC_HL_HL:
-        sbc_HL_ss(m_h_reg, m_l_reg, to_u16(m_h_reg, m_l_reg), m_flag_reg, cycles);
-        break;
-    case LD_Mnn_HL_UNDOC:
-        ld_Mnn_dd(m_h_reg, m_l_reg, m_memory, get_next_word(), cycles);
-        break;
-    case RRD:
-        rrd(m_acc_reg, m_memory, address_in_HL(), m_flag_reg, cycles);
-        break;
-    case IN_L_C: {
-        notify_in_observers(to_u16(m_b_reg, m_c_reg));
-        in_r_C(m_l_reg, m_b_reg, m_c_reg, m_io_in, m_flag_reg, cycles);
-        break;
-    }
-    case OUT_C_L: {
-        out_C_r(m_b_reg, m_c_reg, m_l_reg, m_io_in, cycles);
-        notify_out_observers(m_c_reg);
-        break;
-    }
-    case ADC_HL_HL:
-        adc_hl_ss(m_h_reg, m_l_reg, to_u16(m_h_reg, m_l_reg), m_flag_reg, cycles);
-        break;
-    case LD_HL_Mnn_UNDOC:
-        ld_dd_Mnn(m_h_reg, m_l_reg, get_next_word(), m_memory, cycles);
-        break;
-    case RLD:
-        rld(m_acc_reg, m_memory, address_in_HL(), m_flag_reg, cycles);
-        break;
-    case IN_C: {
-        u8 throwaway;
-        notify_in_observers(to_u16(m_b_reg, m_c_reg));
-        in_r_C(throwaway, m_b_reg, m_c_reg, m_io_in, m_flag_reg, cycles);
-        break;
-    }
-    case OUT_C_0: {
-        out_C_r(m_b_reg, m_c_reg, 0, m_io_in, cycles);
-        notify_out_observers(m_c_reg);
-        break;
-    }
-    case SBC_HL_SP:
-        sbc_HL_ss(m_h_reg, m_l_reg, m_sp, m_flag_reg, cycles);
-        break;
-    case LD_Mnn_SP:
-        ld_Mnn_sp(m_sp, m_memory, get_next_word(), cycles);
-        break;
-    case ADC_HL_SP:
-        adc_hl_ss(m_h_reg, m_l_reg, m_sp, m_flag_reg, cycles);
-        break;
-    case LD_SP_Mnn:
-        ld_sp_Mnn(m_sp, m_memory, get_next_word(), cycles);
-        break;
-    case LDI:
-        ldi(m_b_reg, m_c_reg, m_d_reg, m_e_reg, m_h_reg, m_l_reg, m_acc_reg,
-            m_memory, m_flag_reg, cycles);
-        break;
-    case CPI:
-        cpi(m_b_reg, m_c_reg, m_h_reg, m_l_reg, m_acc_reg,
-            m_memory, m_flag_reg, cycles);
-        break;
-    case INI:
-        ini(m_b_reg, m_c_reg, m_h_reg, m_l_reg, m_memory, m_flag_reg,
-            m_io_in, cycles);
-        break;
-    case OUTI:
-        outi(m_b_reg, m_c_reg, m_h_reg, m_l_reg, m_memory, m_flag_reg,
-            m_io_out, cycles);
-        break;
-    case LDD:
-        ldd(m_b_reg, m_c_reg, m_d_reg, m_e_reg, m_h_reg, m_l_reg, m_acc_reg,
-            m_memory, m_flag_reg, cycles);
-        break;
-    case CPD:
-        cpd(m_b_reg, m_c_reg, m_h_reg, m_l_reg, m_acc_reg, m_memory,
-            m_flag_reg, cycles);
-        break;
-    case IND:
-        ind(m_b_reg, m_c_reg, m_h_reg, m_l_reg, m_memory, m_flag_reg,
-            m_io_in, cycles);
-        break;
-    case OUTD:
-        outd(m_b_reg, m_c_reg, m_h_reg, m_l_reg, m_memory, m_flag_reg,
-            m_io_out, cycles);
-        break;
-    case LDIR:
-        ldir(m_pc, m_b_reg, m_c_reg, m_d_reg, m_e_reg,
-            m_h_reg, m_l_reg, m_acc_reg, m_memory, m_flag_reg, cycles);
-        break;
-    case CPIR:
-        cpir(m_pc, m_b_reg, m_c_reg, m_h_reg, m_l_reg,
-            m_acc_reg, m_memory, m_flag_reg, cycles);
-        break;
-    case INIR:
-        inir(m_pc, m_b_reg, m_c_reg, m_h_reg, m_l_reg, m_memory, m_flag_reg,
-            m_io_in, cycles);
-        break;
-    case OTIR:
-        otir(m_pc, m_b_reg, m_c_reg, m_h_reg, m_l_reg, m_memory, m_flag_reg,
-            m_io_out, cycles);
-        break;
-    case LDDR:
-        lddr(m_pc, m_b_reg, m_c_reg, m_d_reg, m_e_reg, m_h_reg, m_l_reg,
-            m_acc_reg, m_memory, m_flag_reg, cycles);
-        break;
-    case CPDR:
-        cpdr(m_pc, m_b_reg, m_c_reg, m_h_reg, m_l_reg,
-            m_acc_reg, m_memory, m_flag_reg, cycles);
-        break;
-    case INDR:
-        indr(m_pc, m_b_reg, m_c_reg, m_h_reg, m_l_reg, m_memory, m_flag_reg,
-            m_io_in, cycles);
-        break;
-    case OTDR:
-        otdr(m_pc, m_b_reg, m_c_reg, m_h_reg, m_l_reg, m_memory, m_flag_reg,
-            m_io_out, cycles);
-        break;
-    default:
-        throw UnrecognizedOpcodeException(extd_opcode, "EXTD instructions");
-    }
-}
-
 cyc Cpu::handle_nonmaskable_interrupt(cyc cycles)
 {
     m_iff2 = m_iff1;
     m_iff1 = false;
     m_is_nmi_interrupted = false;
     m_is_halted = false;
-
-    r_tick();
 
     nmi(m_pc, m_sp, m_memory, cycles);
 
@@ -2679,8 +1739,6 @@ cyc Cpu::handle_maskable_interrupt_0(cyc cycles)
     m_is_interrupted = false;
     m_is_halted = false;
 
-    r_tick();
-
     m_opcode = m_instruction_from_interruptor;
     cycles = 13;
 
@@ -2693,8 +1751,6 @@ cyc Cpu::handle_maskable_interrupt_1_2(cyc cycles)
     m_is_interrupted = false;
     m_is_halted = false;
 
-    r_tick();
-
     switch (m_interrupt_mode) {
     case InterruptMode::ZERO:
         throw std::invalid_argument("Programming error: Should handle this mode somewhere else.");
@@ -2703,11 +1759,11 @@ cyc Cpu::handle_maskable_interrupt_1_2(cyc cycles)
         cycles = 13;
         break;
     case InterruptMode::TWO:
-        const u16 address_of_interrupt_vector = to_u16(m_i_reg, m_instruction_from_interruptor);
-        const u8 farg = m_memory.read(address_of_interrupt_vector);
-        const u8 sarg = m_memory.read(address_of_interrupt_vector + 1);
-        call(m_pc, m_sp, m_memory, { .farg = farg, .sarg = sarg }, cycles);
-        cycles = 19;
+        //        const u16 address_of_interrupt_vector = to_u16(m_i_reg, m_instruction_from_interruptor); TODO
+        //        const u8 farg = m_memory.read(address_of_interrupt_vector);
+        //        const u8 sarg = m_memory.read(address_of_interrupt_vector + 1);
+        //        call(m_pc, m_sp, m_memory, { .farg = farg, .sarg = sarg }, cycles);
+        //        cycles = 19;
         break;
     }
 
@@ -2754,19 +1810,9 @@ u8 Cpu::a() const
     return m_acc_reg;
 }
 
-u8 Cpu::a_p() const
-{
-    return m_acc_p_reg;
-}
-
 u8 Cpu::b() const
 {
     return m_b_reg;
-}
-
-u8 Cpu::b_p() const
-{
-    return m_b_p_reg;
 }
 
 u8 Cpu::c() const
@@ -2774,19 +1820,9 @@ u8 Cpu::c() const
     return m_c_reg;
 }
 
-u8 Cpu::c_p() const
-{
-    return m_c_p_reg;
-}
-
 u8 Cpu::d() const
 {
     return m_d_reg;
-}
-
-u8 Cpu::d_p() const
-{
-    return m_d_p_reg;
 }
 
 u8 Cpu::e() const
@@ -2794,19 +1830,9 @@ u8 Cpu::e() const
     return m_e_reg;
 }
 
-u8 Cpu::e_p() const
-{
-    return m_e_p_reg;
-}
-
 u8 Cpu::h() const
 {
     return m_h_reg;
-}
-
-u8 Cpu::h_p() const
-{
-    return m_h_p_reg;
 }
 
 u8 Cpu::l() const
@@ -2814,39 +1840,9 @@ u8 Cpu::l() const
     return m_l_reg;
 }
 
-u8 Cpu::l_p() const
-{
-    return m_l_p_reg;
-}
-
 u8 Cpu::f() const
 {
     return m_flag_reg.to_u8();
-}
-
-u8 Cpu::f_p() const
-{
-    return m_flag_p_reg.to_u8();
-}
-
-u16 Cpu::ix() const
-{
-    return m_ix_reg;
-}
-
-u16 Cpu::iy() const
-{
-    return m_iy_reg;
-}
-
-u8 Cpu::i() const
-{
-    return m_i_reg;
-}
-
-u8 Cpu::r() const
-{
-    return m_r_reg;
 }
 
 bool Cpu::is_interrupted() const
@@ -2883,11 +1879,6 @@ void Cpu::notify_in_observers(u16 port)
     }
 }
 
-void Cpu::r_tick()
-{
-    m_r_reg = m_r_reg == INT8_MAX ? 0 : m_r_reg + 1;
-}
-
 void Cpu::print_debug(u8 opcode)
 {
     if (false) {
@@ -2901,31 +1892,10 @@ void Cpu::print_debug(u8 opcode)
                   << ",e=" << hexify(m_e_reg)
                   << ",h=" << hexify(m_h_reg)
                   << ",l=" << hexify(m_l_reg)
-                  << ",a'=" << hexify(m_acc_p_reg)
-                  << ",b'=" << hexify(m_b_p_reg)
-                  << ",c'=" << hexify(m_c_p_reg)
-                  << ",d'=" << hexify(m_d_p_reg)
-                  << ",e'=" << hexify(m_e_p_reg)
-                  << ",h'=" << hexify(m_h_p_reg)
-                  << ",l'=" << hexify(m_l_p_reg)
-                  << ",ix=" << hexify(m_ix_reg)
-                  << ",iy=" << hexify(m_iy_reg)
-                  << ",i=" << hexify(m_i_reg)
-                  << ",r=" << hexify(m_r_reg)
                   << ",c=" << m_flag_reg.is_carry_flag_set()
-                  << ",po=" << m_flag_reg.is_parity_overflow_flag_set()
                   << ",hc=" << m_flag_reg.is_half_carry_flag_set()
                   << ",n=" << m_flag_reg.is_add_subtract_flag_set()
                   << ",z=" << m_flag_reg.is_zero_flag_set()
-                  << ",s=" << m_flag_reg.is_sign_flag_set()
-                  << ",y=" << m_flag_reg.is_y_flag_set()
-                  << ",x=" << m_flag_reg.is_x_flag_set()
-                  //                  << ",c'=" << m_flag_p_reg.is_carry_flag_set()
-                  //                  << ",po'=" << m_flag_p_reg.is_parity_overflow_flag_set()
-                  //                  << ",hc'=" << m_flag_p_reg.is_half_carry_flag_set()
-                  //                  << ",n'=" << m_flag_p_reg.is_add_subtract_flag_set()
-                  //                  << ",z'=" << m_flag_p_reg.is_zero_flag_set()
-                  //                  << ",s'=" << m_flag_p_reg.is_sign_flag_set()
                   << "\n"
                   << std::flush;
     }

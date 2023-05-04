@@ -10,10 +10,11 @@ notice.
 
 - [Intel 8080](documentation/chips/8080.md)
     - [Space Invaders](documentation/applications/space_invaders.md)
+- [LR35902](documentation/chips/lr35902.md) (WIP)
 - [Z80](documentation/chips/z80.md)
     - [Pacman](documentation/applications/pacman.md)
     - [CP/M](documentation/applications/cpm.md) (WIP)
-    - [ZX Spectrum 48K](documentation/applications/zx_spectrum.md) (WIP)
+    - [ZX Spectrum 48K](documentation/applications/zx_spectrum.md)
 
 **Trivial architectures:**
 

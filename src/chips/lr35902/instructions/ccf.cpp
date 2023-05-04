@@ -21,7 +21,7 @@ using emu::util::byte::is_bit_set;
  * @param acc_reg is the accumulator, and is used to set the X and Y flags
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void ccf(Flags& flag_reg, u8 acc_reg, cyc& cycles)
+void ccf(Flags& flag_reg, cyc& cycles)
 {
     bool was_carry_set = flag_reg.is_carry_flag_set();
     flag_reg.toggle_carry_flag();
@@ -30,18 +30,6 @@ void ccf(Flags& flag_reg, u8 acc_reg, cyc& cycles)
         flag_reg.set_half_carry_flag();
     } else {
         flag_reg.clear_half_carry_flag();
-    }
-
-    if (is_bit_set(acc_reg, 5)) {
-        flag_reg.set_y_flag();
-    } else {
-        flag_reg.clear_y_flag();
-    }
-
-    if (is_bit_set(acc_reg, 3)) {
-        flag_reg.set_x_flag();
-    } else {
-        flag_reg.clear_x_flag();
     }
 
     cycles = 4;
@@ -55,7 +43,6 @@ void print_ccf(std::ostream& ostream)
 TEST_CASE("LR35902: CCF")
 {
     cyc cycles = 0;
-    u8 acc_reg = 0;
 
     SUBCASE("should toggle the carry flag, set half carry flag to previous carry flag and always reset add/subtract flag")
     {
@@ -63,28 +50,22 @@ TEST_CASE("LR35902: CCF")
 
         CHECK_EQ(false, flag_reg.is_carry_flag_set());
 
-        ccf(flag_reg, acc_reg, cycles);
+        ccf(flag_reg, cycles);
 
         CHECK_EQ(true, flag_reg.is_carry_flag_set());
         CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
-        CHECK_EQ(false, flag_reg.is_sign_flag_set());
-        CHECK_EQ(false, flag_reg.is_parity_overflow_flag_set());
         CHECK_EQ(false, flag_reg.is_zero_flag_set());
 
-        ccf(flag_reg, acc_reg, cycles);
+        ccf(flag_reg, cycles);
 
         CHECK_EQ(false, flag_reg.is_carry_flag_set());
         CHECK_EQ(true, flag_reg.is_half_carry_flag_set());
-        CHECK_EQ(false, flag_reg.is_sign_flag_set());
-        CHECK_EQ(false, flag_reg.is_parity_overflow_flag_set());
         CHECK_EQ(false, flag_reg.is_zero_flag_set());
 
-        ccf(flag_reg, acc_reg, cycles);
+        ccf(flag_reg, cycles);
 
         CHECK_EQ(true, flag_reg.is_carry_flag_set());
         CHECK_EQ(false, flag_reg.is_half_carry_flag_set());
-        CHECK_EQ(false, flag_reg.is_sign_flag_set());
-        CHECK_EQ(false, flag_reg.is_parity_overflow_flag_set());
         CHECK_EQ(false, flag_reg.is_zero_flag_set());
     }
 
@@ -94,7 +75,7 @@ TEST_CASE("LR35902: CCF")
 
         Flags flag_reg;
 
-        ccf(flag_reg, acc_reg, cycles);
+        ccf(flag_reg, cycles);
 
         CHECK_EQ(4, cycles);
     }

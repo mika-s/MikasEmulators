@@ -459,7 +459,7 @@ TEST_CASE("Z80: INC (HL)")
     }
 }
 
-TEST_CASE("Z80: INC IX or INC IY)")
+TEST_CASE("Z80: INC (IX or IY)")
 {
     cyc cycles = 0;
     u16 ix = 0;

@@ -28,7 +28,6 @@ void rrc(u8& value, Flags& flag_reg)
 
     flag_reg.clear_half_carry_flag();
     flag_reg.clear_add_subtract_flag();
-    flag_reg.handle_xy_flags(value);
 }
 
 /**
@@ -69,8 +68,6 @@ void rrc_r(u8& reg, Flags& flag_reg, cyc& cycles)
     rrc(reg, flag_reg);
 
     flag_reg.handle_zero_flag(reg);
-    flag_reg.handle_sign_flag(reg);
-    flag_reg.handle_parity_flag(reg);
 
     cycles = 8;
 }
@@ -98,75 +95,8 @@ void rrc_MHL(EmulatorMemory<u16, u8>& memory, u16 address, Flags& flag_reg, cyc&
     memory.write(address, value);
 
     flag_reg.handle_zero_flag(value);
-    flag_reg.handle_sign_flag(value);
-    flag_reg.handle_parity_flag(value);
 
     cycles = 15;
-}
-
-/**
- * Rotate right circular (value in memory pointed to by IX or IY plus d)
- * <ul>
- *   <li>Size: 4</li>
- *   <li>Cycles: 6</li>
- *   <li>States: 23</li>
- *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
- * </ul>
- *
- * @param ixy_reg is the IX or IY register containing the base address
- * @param d is the address offset
- * @param memory is the memory, which will be mutated
- * @param flag_reg is the flag register, which will be mutated
- * @param cycles is the number of cycles variable, which will be mutated
- */
-void rrc_MixyPd(u16 ixy_reg, u8 d, EmulatorMemory<u16, u8>& memory, Flags& flag_reg, cyc& cycles)
-{
-    const u16 address = ixy_reg + static_cast<i8>(d);
-    u8 value = memory.read(address);
-
-    rrc(value, flag_reg);
-
-    memory.write(address, value);
-
-    flag_reg.handle_zero_flag(value);
-    flag_reg.handle_sign_flag(value);
-    flag_reg.handle_parity_flag(value);
-
-    cycles = 23;
-}
-
-/**
- * Rotate right circular (value in memory pointed to by IX or IY plus d)
- * <ul>
- *   <li>Size: 4</li>
- *   <li>Cycles: 6</li>
- *   <li>States: 23</li>
- *   <li>Condition bits affected: carry, half carry, add/subtract</li>
- * </ul>
- *
- * @param reg is the register store the result in, which will be mutated
- * @param ixy_reg is the IX or IY register containing the base address
- * @param d is the address offset
- * @param memory is the memory, which will be mutated
- * @param flag_reg is the flag register, which will be mutated
- * @param cycles is the number of cycles variable, which will be mutated
- */
-void rrc_MixyPd_r(u8& reg, u16 ixy_reg, u8 d, EmulatorMemory<u16, u8>& memory, Flags& flag_reg, cyc& cycles)
-{
-    const u16 address = ixy_reg + static_cast<i8>(d);
-    u8 value = memory.read(address);
-
-    rrc(value, flag_reg);
-
-    memory.write(address, value);
-
-    flag_reg.handle_zero_flag(value);
-    flag_reg.handle_sign_flag(value);
-    flag_reg.handle_parity_flag(value);
-
-    reg = value;
-
-    cycles = 23;
 }
 
 void print_rrca(std::ostream& ostream)
@@ -178,19 +108,6 @@ void print_rrc(std::ostream& ostream, std::string const& reg)
 {
     ostream << "RLC "
             << reg;
-}
-
-void print_rrc_MixyPn(std::ostream& ostream, std::string const& ixy_reg, u8 d)
-{
-    const i8 signed_value = static_cast<i8>(d);
-    const std::string plus_or_minus = (signed_value >= 0) ? "+" : "";
-
-    ostream << "RRC "
-            << "("
-            << ixy_reg
-            << plus_or_minus
-            << +signed_value
-            << ")";
 }
 
 TEST_CASE("LR35902: RRCA")

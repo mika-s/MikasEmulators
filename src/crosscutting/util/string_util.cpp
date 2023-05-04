@@ -7,6 +7,7 @@
 #include <fmt/core.h>
 #include <iomanip>
 #include <stdexcept>
+#include <tuple>
 
 namespace emu::util::string {
 
@@ -73,7 +74,7 @@ std::string find_short_executable_name(std::string name)
     std::size_t pos;
     std::string token;
     while ((pos = name.find(delimiter)) != std::string::npos) {
-        name.substr(0, pos);
+        std::ignore = name.substr(0, pos);
         name.erase(0, pos + delimiter.length());
     }
 

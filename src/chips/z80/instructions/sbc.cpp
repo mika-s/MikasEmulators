@@ -6,8 +6,8 @@
 #include "crosscutting/util/string_util.h"
 #include "doctest.h"
 #include "instruction_util.h"
+#include <cstdint>
 #include <iostream>
-#include <stdint.h>
 #include <string>
 
 namespace emu::z80 {
