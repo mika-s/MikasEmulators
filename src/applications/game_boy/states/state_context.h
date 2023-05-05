@@ -10,7 +10,7 @@ namespace emu::applications::game_boy {
 class Audio;
 class GuiIo;
 class Input;
-class MemoryMappedIoForPacman;
+class MemoryMappedIoForGameBoy;
 class State;
 }
 namespace emu::debugger {
@@ -48,7 +48,7 @@ public:
         std::shared_ptr<Audio> audio,
         std::shared_ptr<Cpu> cpu,
         EmulatorMemory<u16, u8>& memory,
-        std::shared_ptr<MemoryMappedIoForPacman> memory_mapped_io,
+        std::shared_ptr<MemoryMappedIoForGameBoy> memory_mapped_io,
         u8& vblank_interrupt_return,
         std::shared_ptr<Logger> logger,
         std::shared_ptr<Debugger<u16, 16>> debugger,
@@ -66,7 +66,7 @@ public:
     std::shared_ptr<Cpu> m_cpu;
 
     EmulatorMemory<u16, u8>& m_memory;
-    std::shared_ptr<MemoryMappedIoForPacman> m_memory_mapped_io;
+    std::shared_ptr<MemoryMappedIoForGameBoy> m_memory_mapped_io;
 
     u8& m_vblank_interrupt_return;
 

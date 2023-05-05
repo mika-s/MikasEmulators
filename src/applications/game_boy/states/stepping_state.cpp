@@ -3,7 +3,7 @@
 #include "applications/game_boy/gui.h"
 #include "applications/game_boy/gui_io.h"
 #include "applications/game_boy/interfaces/input.h"
-#include "applications/game_boy/memory_mapped_io_for_pacman.h"
+#include "applications/game_boy/memory_mapped_io_for_game_boy.h"
 #include "chips/z80/cpu.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/typedefs.h"

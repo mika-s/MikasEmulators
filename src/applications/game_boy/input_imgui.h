@@ -9,14 +9,14 @@
 namespace emu::applications::game_boy {
 class GuiIo;
 class KeyObserver;
-class MemoryMappedIoForPacman;
+class MemoryMappedIoForGameBoy;
 }
 
 namespace emu::applications::game_boy {
 
 class InputImgui : public Input {
 public:
-    void read(GuiIo& gui_io, std::shared_ptr<MemoryMappedIoForPacman> memory_mapped_io) override;
+    void read(GuiIo& gui_io, std::shared_ptr<MemoryMappedIoForGameBoy> memory_mapped_io) override;
 
     void read_debug_only(GuiIo& gui_io) override;
 

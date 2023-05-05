@@ -22,9 +22,9 @@ using emu::memory::MemoryMappedIo;
 using emu::util::byte::low_nibble;
 using emu::wsg3::Voice;
 
-class MemoryMappedIoForPacman : public MemoryMappedIo<u16, u8> {
+class MemoryMappedIoForGameBoy : public MemoryMappedIo<u16, u8> {
 public:
-    explicit MemoryMappedIoForPacman(EmulatorMemory<u16, u8>& memory, Settings settings);
+    explicit MemoryMappedIoForGameBoy(EmulatorMemory<u16, u8>& memory, Settings settings);
 
     void write(u16 address, u8 value) override;
 

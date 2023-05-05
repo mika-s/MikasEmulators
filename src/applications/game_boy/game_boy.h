@@ -4,14 +4,14 @@
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/misc/emulator.h"
 #include "crosscutting/typedefs.h"
-#include "pacman_session.h"
+#include "game_boy_session.h"
 #include <memory>
 
 namespace emu::applications::game_boy {
 class Audio;
 class Gui;
 class Input;
-class MemoryMappedIoForPacman;
+class MemoryMappedIoForGameBoy;
 class Settings;
 }
 namespace emu::misc {
@@ -23,9 +23,9 @@ namespace emu::applications::game_boy {
 using emu::gui::GuiType;
 using emu::misc::Emulator;
 
-class Pacman : public Emulator {
+class GameBoy : public Emulator {
 public:
-    Pacman(
+    GameBoy(
         Settings const& settings,
         const GuiType gui_type);
 
@@ -39,7 +39,7 @@ private:
     EmulatorMemory<u16, u8> m_sprite_rom;
     EmulatorMemory<u16, u8> m_sound_rom1;
     EmulatorMemory<u16, u8> m_sound_rom2;
-    std::shared_ptr<MemoryMappedIoForPacman> m_memory_mapped_io;
+    std::shared_ptr<MemoryMappedIoForGameBoy> m_memory_mapped_io;
 
     std::shared_ptr<Gui> m_gui;
     std::shared_ptr<Input> m_input;

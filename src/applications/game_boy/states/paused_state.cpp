@@ -4,7 +4,7 @@
 #include "game_boy/gui.h"
 #include "game_boy/gui_io.h"
 #include "game_boy/interfaces/input.h"
-#include "game_boy/memory_mapped_io_for_pacman.h"
+#include "game_boy/memory_mapped_io_for_game_boy.h"
 #include "state_context.h"
 #include <utility>
 

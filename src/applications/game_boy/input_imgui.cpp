@@ -4,7 +4,7 @@
 #include "imgui_impl_sdl.h"
 #include "interfaces/key_observer.h"
 #include "key_request.h"
-#include "memory_mapped_io_for_pacman.h"
+#include "memory_mapped_io_for_game_boy.h"
 #include <SDL_events.h>
 #include <SDL_keyboard.h>
 #include <algorithm>
@@ -30,7 +30,7 @@ void InputImgui::notify_io_observers(IoRequest request)
     }
 }
 
-void InputImgui::read(GuiIo& gui_io, std::shared_ptr<MemoryMappedIoForPacman> memory_mapped_io)
+void InputImgui::read(GuiIo& gui_io, std::shared_ptr<MemoryMappedIoForGameBoy> memory_mapped_io)
 {
     SDL_Event read_input_event;
 

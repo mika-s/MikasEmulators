@@ -2,7 +2,7 @@
 #include "applications/cpm_8080/cpm_application.h"
 #include "applications/cpm_8080/usage.h"
 #include "applications/cpm_z80/cpm_application.h"
-#include "applications/game_boy/pacman.h"
+#include "applications/game_boy/game_boy.h"
 #include "applications/game_boy/settings.h"
 #include "applications/game_boy/usage.h"
 #include "applications/lmc_application/lmc_application.h"
@@ -323,7 +323,7 @@ std::unique_ptr<Emulator> Frontend::choose_emulator(std::string const& program, 
     } else if (program == "CPUTEST") {
         return std::make_unique<cpm::i8080::CpmApplication>("roms/8080/CPUTEST.COM");
     } else if (program == "game_boy") {
-        return std::make_unique<game_boy::Pacman>(
+        return std::make_unique<game_boy::GameBoy>(
             game_boy::Settings::from_options(options),
             options.gui_type(game_boy::print_usage));
     } else if (program == "lmc_application") {

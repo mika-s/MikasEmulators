@@ -19,7 +19,7 @@ namespace emu::applications::game_boy {
 class Audio;
 class Gui;
 class Input;
-class MemoryMappedIoForPacman;
+class MemoryMappedIoForGameBoy;
 class StateContext;
 struct GuiRequest;
 }
@@ -58,21 +58,21 @@ using emu::z80::Cpu;
 using emu::z80::InObserver;
 using emu::z80::OutObserver;
 
-class PacmanSession
+class GameBoySession
     : public Session
     , public GuiObserver
     , public OutObserver
     , public KeyObserver {
 public:
-    PacmanSession(
+    GameBoySession(
         bool is_starting_paused,
         std::shared_ptr<Gui> gui,
         std::shared_ptr<Input> input,
         std::shared_ptr<Audio> audio,
-        std::shared_ptr<MemoryMappedIoForPacman> memory_mapped_io,
+        std::shared_ptr<MemoryMappedIoForGameBoy> memory_mapped_io,
         EmulatorMemory<u16, u8>& memory);
 
-    ~PacmanSession() override;
+    ~GameBoySession() override;
 
     void run() override;
 
@@ -98,7 +98,7 @@ private:
     u8 m_vblank_interrupt_return { 0 };
 
     GuiIo m_gui_io;
-    std::shared_ptr<MemoryMappedIoForPacman> m_memory_mapped_io;
+    std::shared_ptr<MemoryMappedIoForGameBoy> m_memory_mapped_io;
     std::shared_ptr<Gui> m_gui;
     std::shared_ptr<Input> m_input;
     std::shared_ptr<Audio> m_audio;

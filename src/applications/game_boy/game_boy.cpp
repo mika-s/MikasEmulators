@@ -1,13 +1,13 @@
-#include "pacman.h"
+#include "game_boy.h"
 #include "audio.h"
 #include "crosscutting/util/file_util.h"
+#include "game_boy_session.h"
 #include "gui.h"
 #include "gui_imgui.h"
 #include "gui_sdl.h"
 #include "input_imgui.h"
 #include "input_sdl.h"
-#include "memory_mapped_io_for_pacman.h"
-#include "pacman_session.h"
+#include "memory_mapped_io_for_game_boy.h"
 #include "settings.h" // IWYU pragma: keep
 #include <cstddef>
 #include <memory>
@@ -22,7 +22,7 @@ namespace emu::applications::game_boy {
 
 using emu::util::file::read_file_into_vector;
 
-Pacman::Pacman(Settings const& settings, const GuiType gui_type)
+GameBoy::GameBoy(Settings const& settings, const GuiType gui_type)
 {
     if (gui_type == GuiType::DEBUGGING) {
         m_gui = std::make_shared<GuiImgui>();
@@ -36,13 +36,13 @@ Pacman::Pacman(Settings const& settings, const GuiType gui_type)
 
     load_files();
 
-    m_memory_mapped_io = std::make_shared<MemoryMappedIoForPacman>(m_memory, settings);
+    m_memory_mapped_io = std::make_shared<MemoryMappedIoForGameBoy>(m_memory, settings);
     m_memory.attach_memory_mapper(m_memory_mapped_io);
 }
 
-std::unique_ptr<Session> Pacman::new_session()
+std::unique_ptr<Session> GameBoy::new_session()
 {
-    return std::make_unique<PacmanSession>(
+    return std::make_unique<GameBoySession>(
         m_is_starting_paused,
         m_gui,
         m_input,
@@ -57,7 +57,7 @@ std::vector<u8> create_empty_vector(std::size_t size)
     return vec;
 }
 
-void Pacman::load_files()
+void GameBoy::load_files()
 {
     const std::string directory = "roms/z80/pacman/";
     m_memory.add(read_file_into_vector(directory + "pacman.6e")); // $0000-$0fff: pacman.6e, code

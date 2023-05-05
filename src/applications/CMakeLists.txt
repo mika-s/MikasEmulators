@@ -24,9 +24,9 @@ set(SOURCES_APPLICATIONS_CPP
         game_boy/gui_sdl.cpp
         game_boy/input_imgui.cpp
         game_boy/input_sdl.cpp
-        game_boy/memory_mapped_io_for_pacman.cpp
-        game_boy/pacman.cpp
-        game_boy/pacman_session.cpp
+        game_boy/memory_mapped_io_for_game_boy.cpp
+        game_boy/game_boy.cpp
+        game_boy/game_boy_session.cpp
         game_boy/settings.cpp
         game_boy/usage.cpp
         game_boy/states/paused_state.cpp
@@ -133,9 +133,9 @@ set(SOURCES_APPLICATIONS_H
         game_boy/input_imgui.h
         game_boy/input_sdl.h
         game_boy/key_request.h
-        game_boy/memory_mapped_io_for_pacman.h
-        game_boy/pacman.h
-        game_boy/pacman_session.h
+        game_boy/memory_mapped_io_for_game_boy.h
+        game_boy/game_boy.h
+        game_boy/game_boy_session.h
         game_boy/settings.h
         game_boy/usage.h
         game_boy/interfaces/gui_observer.h

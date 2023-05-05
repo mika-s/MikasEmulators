@@ -1,4 +1,4 @@
-#include "pacman_session.h"
+#include "game_boy_session.h"
 #include "audio.h"
 #include "chips/z80/cpu.h"
 #include "chips/z80/disassembler.h"
@@ -14,7 +14,7 @@
 #include "interfaces/input.h"
 #include "interfaces/state.h"
 #include "key_request.h"
-#include "memory_mapped_io_for_pacman.h"
+#include "memory_mapped_io_for_game_boy.h"
 #include "states/paused_state.h"
 #include "states/running_state.h"
 #include "states/state_context.h"
@@ -39,12 +39,12 @@ using emu::util::string::split;
 using emu::z80::Disassembler;
 using emu::z80::InterruptMode;
 
-PacmanSession::PacmanSession(
+GameBoySession::GameBoySession(
     bool is_starting_paused,
     std::shared_ptr<Gui> gui,
     std::shared_ptr<Input> input,
     std::shared_ptr<Audio> audio,
-    std::shared_ptr<MemoryMappedIoForPacman> memory_mapped_io,
+    std::shared_ptr<MemoryMappedIoForGameBoy> memory_mapped_io,
     EmulatorMemory<u16, u8>& memory)
     : m_memory_mapped_io(std::move(memory_mapped_io))
     , m_gui(std::move(gui))
@@ -87,14 +87,14 @@ PacmanSession::PacmanSession(
     }
 }
 
-PacmanSession::~PacmanSession()
+GameBoySession::~GameBoySession()
 {
     m_gui->remove_gui_observer(this);
     m_input->remove_io_observer(this);
     m_cpu->remove_out_observer(this);
 }
 
-void PacmanSession::run()
+void GameBoySession::run()
 {
     m_cpu->start();
 
@@ -105,17 +105,17 @@ void PacmanSession::run()
     }
 }
 
-void PacmanSession::pause()
+void GameBoySession::pause()
 {
     m_state_context->change_state(m_state_context->paused_state());
 }
 
-void PacmanSession::stop()
+void GameBoySession::stop()
 {
     m_state_context->change_state(m_state_context->stopped_state());
 }
 
-void PacmanSession::setup_cpu()
+void GameBoySession::setup_cpu()
 {
     const u16 initial_pc = 0;
 
@@ -124,7 +124,7 @@ void PacmanSession::setup_cpu()
     m_cpu->add_out_observer(*this);
 }
 
-void PacmanSession::setup_debugging()
+void GameBoySession::setup_debugging()
 {
     m_debug_container = std::make_shared<DebugContainer<u16, u8, 16>>();
     m_debug_container->add_register(RegisterDebugContainer<u8>(
@@ -239,7 +239,7 @@ void PacmanSession::setup_debugging()
     m_gui->attach_logger(m_logger);
 }
 
-void PacmanSession::gui_request(GuiRequest request)
+void GameBoySession::gui_request(GuiRequest request)
 {
     switch (request.m_type) {
     case RUN:
@@ -257,7 +257,7 @@ void PacmanSession::gui_request(GuiRequest request)
     }
 }
 
-void PacmanSession::out_changed(u16 port)
+void GameBoySession::out_changed(u16 port)
 {
     if (!m_outputs_during_cycle.contains(port)) {
         m_outputs_during_cycle[port] = m_cpu->a();
@@ -268,11 +268,11 @@ void PacmanSession::out_changed(u16 port)
     if (port == s_out_port_vblank_interrupt_return) {
         m_vblank_interrupt_return = m_cpu->a();
     } else {
-        throw std::runtime_error("Illegal output port for Pacman");
+        throw std::runtime_error("Illegal output port for GameBoy");
     }
 }
 
-void PacmanSession::key_pressed(IoRequest request)
+void GameBoySession::key_pressed(IoRequest request)
 {
     switch (request) {
     case TOGGLE_MUTE:
@@ -289,12 +289,12 @@ void PacmanSession::key_pressed(IoRequest request)
     }
 }
 
-std::vector<u8> PacmanSession::memory()
+std::vector<u8> GameBoySession::memory()
 {
     return { m_memory.begin(), m_memory.end() };
 }
 
-std::vector<DisassembledLine<u16, 16>> PacmanSession::disassemble_program()
+std::vector<DisassembledLine<u16, 16>> GameBoySession::disassemble_program()
 {
     EmulatorMemory<u16, u8> sliced_for_disassembly = m_memory.slice(0, 0x3fff);
 
