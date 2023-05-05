@@ -18,6 +18,23 @@ set(SOURCES_APPLICATIONS_CPP
         cpm_z80/cpm_application_session.cpp
         cpm_z80/usage.cpp
 
+        game_boy/audio.cpp
+        game_boy/gui.cpp
+        game_boy/gui_imgui.cpp
+        game_boy/gui_sdl.cpp
+        game_boy/input_imgui.cpp
+        game_boy/input_sdl.cpp
+        game_boy/memory_mapped_io_for_pacman.cpp
+        game_boy/pacman.cpp
+        game_boy/pacman_session.cpp
+        game_boy/settings.cpp
+        game_boy/usage.cpp
+        game_boy/states/paused_state.cpp
+        game_boy/states/running_state.cpp
+        game_boy/states/stepping_state.cpp
+        game_boy/states/stopped_state.cpp
+        game_boy/states/state_context.cpp
+
         lmc_application/gui_imgui.cpp
         lmc_application/input_imgui.cpp
         lmc_application/lmc_application.cpp
@@ -108,6 +125,28 @@ set(SOURCES_APPLICATIONS_H
         cpm_z80/cpm_application.h
         cpm_z80/cpm_application_session.h
         cpm_z80/usage.h
+
+        game_boy/audio.h
+        game_boy/gui.h
+        game_boy/gui_imgui.h
+        game_boy/gui_sdl.h
+        game_boy/input_imgui.h
+        game_boy/input_sdl.h
+        game_boy/key_request.h
+        game_boy/memory_mapped_io_for_pacman.h
+        game_boy/pacman.h
+        game_boy/pacman_session.h
+        game_boy/settings.h
+        game_boy/usage.h
+        game_boy/interfaces/gui_observer.h
+        game_boy/interfaces/input.h
+        game_boy/interfaces/key_observer.h
+        game_boy/interfaces/state.h
+        game_boy/states/paused_state.h
+        game_boy/states/running_state.h
+        game_boy/states/stepping_state.h
+        game_boy/states/stopped_state.h
+        game_boy/states/state_context.h
 
         lmc_application/ui.h
         lmc_application/gui_imgui.h
@@ -206,7 +245,7 @@ set(SOURCES_APPLICATIONS_H
 add_library(Applications STATIC ${SOURCES_APPLICATIONS_H} ${SOURCES_APPLICATIONS_CPP})
 target_link_libraries(Applications PRIVATE
         Glad SDL2::Main SDL2::Image ImGui Doctest
-        Crosscutting I8080 LMC NamcoWsg3 Z80
+        Crosscutting I8080 LR35902 LMC NamcoWsg3 Z80
         )
 target_include_directories(Applications PUBLIC ../)
 

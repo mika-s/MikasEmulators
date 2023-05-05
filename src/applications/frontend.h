@@ -2,6 +2,7 @@
 
 #include "applications/cpm_8080/usage.h"
 #include "applications/cpm_z80/usage.h"
+#include "applications/game_boy/usage.h"
 #include "applications/lmc_application/usage.h"
 #include "applications/pacman/usage.h"
 #include "applications/space_invaders/usage.h"
@@ -52,6 +53,8 @@ private:
         { "CPUTEST", "The CPUTEST CP/M-based test binary for 8080" },
         { "NEWLINE", "NEWLINE" },
         { "lmc_application", "LMC applications" },
+        { "NEWLINE", "NEWLINE" },
+        { "game_boy", "The original Game Boy" },
     };
 
     static const inline std::vector<std::pair<std::string, std::string>> s_supported_cpus = {
@@ -89,6 +92,7 @@ private:
         { "8080EXM", cpm::i8080::print_usage },
         { "CPUTEST", cpm::i8080::print_usage },
         { "lmc_application", lmc_application::print_usage },
+        { "game_boy", game_boy::print_usage },
     };
 
     static void run_program(Options const& options);

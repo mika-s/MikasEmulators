@@ -2,6 +2,9 @@
 #include "applications/cpm_8080/cpm_application.h"
 #include "applications/cpm_8080/usage.h"
 #include "applications/cpm_z80/cpm_application.h"
+#include "applications/game_boy/pacman.h"
+#include "applications/game_boy/settings.h"
+#include "applications/game_boy/usage.h"
 #include "applications/lmc_application/lmc_application.h"
 #include "applications/lmc_application/usage.h"
 #include "applications/pacman/pacman.h"
@@ -15,6 +18,7 @@
 #include "applications/zxspectrum_48k/usage.h"
 #include "applications/zxspectrum_48k/zxspectrum_48k.h"
 #include "chips/8080/disassembler.h"
+#include "chips/lr35902/disassembler.h"
 #include "chips/z80/disassembler.h"
 #include "crosscutting/exceptions/invalid_program_arguments_exception.h"
 #include "crosscutting/memory/emulator_memory.h"
@@ -141,6 +145,19 @@ void Frontend::disassemble(Options const& options)
             }
 
             i8080::Disassembler disassembler(memory, std::cout);
+            disassembler.disassemble();
+        } else if (cpu == "LR35902") {
+            EmulatorMemory<u16, u8> memory;
+
+            if (options.options().contains("format")) {
+                throw InvalidProgramArgumentsException(
+                    fmt::format("Unrecognized format: {}", options.options().at("format")[0]),
+                    Frontend::print_disassemble_usage);
+            } else {
+                memory.add(read_file_into_vector(file_path));
+            }
+
+            lr35902::Disassembler disassembler(memory, std::cout);
             disassembler.disassemble();
         } else if (cpu == "Z80") {
             EmulatorMemory<u16, u8> memory;
@@ -305,6 +322,10 @@ std::unique_ptr<Emulator> Frontend::choose_emulator(std::string const& program, 
         return std::make_unique<cpm::i8080::CpmApplication>("roms/8080/8080EXM.COM");
     } else if (program == "CPUTEST") {
         return std::make_unique<cpm::i8080::CpmApplication>("roms/8080/CPUTEST.COM");
+    } else if (program == "game_boy") {
+        return std::make_unique<game_boy::Pacman>(
+            game_boy::Settings::from_options(options),
+            options.gui_type(game_boy::print_usage));
     } else if (program == "lmc_application") {
         if (options.path().has_value()) {
             return std::make_unique<lmc::LmcApplication>(
