@@ -35,7 +35,7 @@ void inc(u8& reg, Flags& flag_reg)
  *   <li>Size: 1</li>
  *   <li>Cycles: 1</li>
  *   <li>States: 4</li>
- *   <li>Condition bits affected: half carry, zero, sign, parity/overflow, add/subtract</li>
+ *   <li>Condition bits affected: half carry, zero, add/subtract</li>
  * </ul>
  *
  * @param reg is the register to increment, which will be mutated
@@ -55,7 +55,7 @@ void inc_r(u8& reg, Flags& flag_reg, cyc& cycles)
  *   <li>Size: 2</li>
  *   <li>Cycles: 2</li>
  *   <li>States: 8</li>
- *   <li>Condition bits affected: half carry, zero, sign, parity/overflow, add/subtract</li>
+ *   <li>Condition bits affected: half carry, zero, add/subtract</li>
  * </ul>
  *
  * @param reg is the register to increment, which will be mutated
@@ -75,7 +75,7 @@ void inc_r_undoc(u8& reg, Flags& flag_reg, cyc& cycles)
  *   <li>Size: 1</li>
  *   <li>Cycles: 1</li>
  *   <li>States: 11</li>
- *   <li>Condition bits affected: half carry, zero, sign, parity, add/subtract</li>
+ *   <li>Condition bits affected: half carry, zero, add/subtract</li>
  * </ul>
  *
  * @param memory is the memory, which will be mutated

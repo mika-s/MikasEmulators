@@ -58,7 +58,7 @@ void rla(u8& acc_reg, Flags& flag_reg, cyc& cycles)
  *   <li>Size: 2</li>
  *   <li>Cycles: 2</li>
  *   <li>States: 8</li>
- *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+ *   <li>Condition bits affected: carry, half carry, zero, add/subtract</li>
  * </ul>
  *
  * @param reg is the register to rotate, which will be mutated
@@ -80,7 +80,7 @@ void rl_r(u8& reg, Flags& flag_reg, cyc& cycles)
  *   <li>Size: 2</li>
  *   <li>Cycles: 4</li>
  *   <li>States: 15</li>
- *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+ *   <li>Condition bits affected: carry, half carry, zero, add/subtract</li>
  * </ul>
  *
  * @param memory is the memory, which will be mutated

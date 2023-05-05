@@ -15,7 +15,7 @@ using emu::util::byte::is_bit_set;
  *   <li>Size: 1</li>
  *   <li>Cycles: 1</li>
  *   <li>States: 4</li>
- *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow</li>
+ *   <li>Condition bits affected: carry, half carry, zero</li>
  * </ul>
  *
  * @param acc_reg is the accumulator register, which will be mutated

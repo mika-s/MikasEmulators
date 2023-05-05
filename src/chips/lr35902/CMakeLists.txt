@@ -37,7 +37,6 @@ set(SOURCES_LR35902_CPP
         instructions/scf.cpp
         instructions/set.cpp
         instructions/sla.cpp
-        instructions/sll.cpp
         instructions/sra.cpp
         instructions/srl.cpp
         instructions/stop.cpp

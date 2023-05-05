@@ -36,7 +36,7 @@ void dec_u8(u8& reg, Flags& flag_reg)
  *   <li>Size: 1</li>
  *   <li>Cycles: 1</li>
  *   <li>States: 4</li>
- *   <li>Condition bits affected: half carry, zero, sign, parity, add/subtract</li>
+ *   <li>Condition bits affected: half carry, zero, sign, parity/overflow, add/subtract</li>
  * </ul>
  *
  * @param reg is the register to decrement, which will be mutated
@@ -56,7 +56,7 @@ void dec_r(u8& reg, Flags& flag_reg, cyc& cycles)
  *   <li>Size: 1</li>
  *   <li>Cycles: 1</li>
  *   <li>States: 11</li>
- *   <li>Condition bits affected: half carry, zero, sign, parity, add/subtract</li>
+ *   <li>Condition bits affected: half carry, zero, sign, parity/overflow, add/subtract</li>
  * </ul>
  *
  * @param value_in_hl is the value in memory at HL's address, which will be mutated
@@ -219,7 +219,7 @@ void dec_MixyPd(u16 ixy_reg, NextByte const& args, EmulatorMemory<u16, u8>& memo
  *   <li>Size: 2</li>
  *   <li>Cycles: 2</li>
  *   <li>States: 8</li>
- *   <li>Condition bits affected: half carry, zero, sign, parity, add/subtract</li>
+ *   <li>Condition bits affected: half carry, zero, sign, parity/overflow, add/subtract</li>
  * </ul>
  *
  * @param reg is the register to decrement, which will be mutated

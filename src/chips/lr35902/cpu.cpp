@@ -867,7 +867,7 @@ cyc Cpu::next_instruction()
         ld_sp_hl(m_sp, address_in_HL(), cycles);
         break;
     case LD_A_Mnn:
-        //        jp_m(m_pc, get_next_word(), m_flag_reg, cycles); TODO
+        ld_A_Mnn(m_acc_reg, m_memory, get_next_word(), cycles);
         break;
     case EI:
         ei(m_iff1, m_iff2, cycles);
@@ -1035,28 +1035,28 @@ void Cpu::next_bits_instruction(u8 bits_opcode, cyc& cycles)
         sra_r(m_acc_reg, m_flag_reg, cycles);
         break;
     case SWAP_B:
-        sll_r_undoc(m_b_reg, m_flag_reg, cycles);
+        swap(m_b_reg, m_flag_reg, cycles);
         break;
     case SWAP_C:
-        sll_r_undoc(m_c_reg, m_flag_reg, cycles);
+        swap(m_c_reg, m_flag_reg, cycles);
         break;
     case SWAP_D:
-        sll_r_undoc(m_d_reg, m_flag_reg, cycles);
+        swap(m_d_reg, m_flag_reg, cycles);
         break;
     case SWAP_E:
-        sll_r_undoc(m_e_reg, m_flag_reg, cycles);
+        swap(m_e_reg, m_flag_reg, cycles);
         break;
     case SWAP_H:
-        sll_r_undoc(m_h_reg, m_flag_reg, cycles);
+        swap(m_h_reg, m_flag_reg, cycles);
         break;
     case SWAP_L:
-        sll_r_undoc(m_l_reg, m_flag_reg, cycles);
+        swap(m_l_reg, m_flag_reg, cycles);
         break;
     case SWAP_MHL:
-        sll_MHL_undoc(m_memory, address_in_HL(), m_flag_reg, cycles);
+        swap_MHL(m_memory, address_in_HL(), m_flag_reg, cycles);
         break;
     case SWAP_A:
-        sll_r_undoc(m_acc_reg, m_flag_reg, cycles);
+        swap(m_acc_reg, m_flag_reg, cycles);
         break;
     case SRL_B:
         srl_r(m_b_reg, m_flag_reg, cycles);

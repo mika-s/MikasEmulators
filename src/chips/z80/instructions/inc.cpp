@@ -75,7 +75,7 @@ void inc_r_undoc(u8& reg, Flags& flag_reg, cyc& cycles)
  *   <li>Size: 1</li>
  *   <li>Cycles: 1</li>
  *   <li>States: 11</li>
- *   <li>Condition bits affected: half carry, zero, sign, parity, add/subtract</li>
+ *   <li>Condition bits affected: half carry, zero, sign, parity/overflow, add/subtract</li>
  * </ul>
  *
  * @param memory is the memory, which will be mutated

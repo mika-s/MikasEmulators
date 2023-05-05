@@ -35,7 +35,7 @@ void srl(u8& value, Flags& flag_reg)
  *   <li>Size: 2</li>
  *   <li>Cycles: 2</li>
  *   <li>States: 8</li>
- *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+ *   <li>Condition bits affected: carry, half carry, zero, add/subtract</li>
  * </ul>
  *
  * @param reg is the register to rotate, which will be mutated
@@ -55,10 +55,11 @@ void srl_r(u8& reg, Flags& flag_reg, cyc& cycles)
  *   <li>Size: 2</li>
  *   <li>Cycles: 4</li>
  *   <li>States: 15</li>
- *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+ *   <li>Condition bits affected: carry, half carry, zero, add/subtract</li>
  * </ul>
  *
- * @param value_in_hl is the value in memory at HL's address, which will be mutated
+ * @param memory is the memory, which will be mutated
+ * @param address is the address in HL
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */

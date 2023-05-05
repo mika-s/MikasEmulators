@@ -24,7 +24,7 @@ void sub(u8& acc_reg, u8 value, Flags& flag_reg)
  *   <li>Size: 1</li>
  *   <li>Cycles: 1</li>
  *   <li>States: 4</li>
- *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+ *   <li>Condition bits affected: carry, half carry, zero, add/subtract</li>
  * </ul>
  *
  * @param acc_reg is the accumulator register, which will be mutated
@@ -45,7 +45,7 @@ void sub_r(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
  *   <li>Size: 2</li>
  *   <li>Cycles: 2</li>
  *   <li>States: 7</li>
- *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+ *   <li>Condition bits affected: carry, half carry, zero, add/subtract</li>
  * </ul>
  *
  * @param acc_reg is the accumulator register, which will be mutated
@@ -66,7 +66,7 @@ void sub_n(u8& acc_reg, NextByte const& args, Flags& flag_reg, cyc& cycles)
  *   <li>Size: 1</li>
  *   <li>Cycles: 2</li>
  *   <li>States: 7</li>
- *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+ *   <li>Condition bits affected: carry, half carry, zero, add/subtract</li>
  * </ul>
  *
  * @param acc_reg is the accumulator register, which will be mutated
@@ -81,42 +81,10 @@ void sub_MHL(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
     cycles = 7;
 }
 
-/************************************ FUNCTIONS FOR UNDOCUMENTED INSTRUCTIONS *************************************/
-
-/**
- * Subtract (undocumented)
- * <ul>
- *   <li>Size: 2</li>
- *   <li>Cycles: 2</li>
- *   <li>States: 8</li>
- *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
- * </ul>
- *
- * @param acc_reg is the accumulator register, which will be mutated
- * @param value contains the value to subtract from the accumulator register
- * @param flag_reg is the flag register, which will be mutated
- * @param cycles is the number of cycles variable, which will be mutated
- */
-void sub_r_undoc(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
-{
-    sub(acc_reg, value, flag_reg);
-
-    cycles = 8;
-}
-
-/******************************** END OF FUNCTIONS FOR UNDOCUMENTED INSTRUCTIONS **********************************/
-
 void print_sub(std::ostream& ostream, std::string const& reg)
 {
     ostream << "SUB "
             << reg;
-}
-
-void print_sub_undocumented(std::ostream& ostream, std::string const& reg)
-{
-    ostream << "SUB "
-            << reg
-            << "*";
 }
 
 void print_sub(std::ostream& ostream, NextByte const& args)

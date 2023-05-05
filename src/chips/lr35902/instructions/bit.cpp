@@ -36,7 +36,7 @@ void bit(unsigned int bit_number, u8 reg, Flags& flag_reg)
  *   <li>Size: 2</li>
  *   <li>Cycles: 2</li>
  *   <li>States: 8</li>
- *   <li>Condition bits affected: half carry, sign, zero, parity/overflow, add/subtract</li>
+ *   <li>Condition bits affected: half carry, zero, add/subtract</li>
  * </ul>
  *
  * @param bit_number is the bit number to test
@@ -59,7 +59,7 @@ void bit_r(unsigned int bit_number, u8 reg, Flags& flag_reg, cyc& cycles)
  *   <li>Size: 2</li>
  *   <li>Cycles: 3</li>
  *   <li>States: 12</li>
- *   <li>Condition bits affected: half carry, sign, zero, parity/overflow, add/subtract</li>
+ *   <li>Condition bits affected: half carry, zero, add/subtract</li>
  * </ul>
  *
  * @param bit_number is the bit number to test

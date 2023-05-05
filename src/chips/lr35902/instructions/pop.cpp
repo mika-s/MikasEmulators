@@ -41,7 +41,7 @@ void pop(u8& reg1, u8& reg2, u16& sp, EmulatorMemory<u16, u8> const& memory, cyc
  *   <li>Size: 1</li>
  *   <li>Cycles: 3</li>
  *   <li>States: 10</li>
- *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+ *   <li>Condition bits affected: carry, half carry, zero, add/subtract</li>
  * </ul>
  *
  * @param flag_reg is the flag register

@@ -34,12 +34,8 @@ void and_(u8& acc_reg, u8 value, Flags& flag_reg)
  *   <li>Size: 1</li>
  *   <li>Cycles: 1</li>
  *   <li>States: 4</li>
- *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+ *   <li>Condition bits affected: carry, half carry, zero, add/subtract</li>
  * </ul>
- *
- * According to the Z80 CPU User Manual, the parity/overflow flag should be set when overflowing for
- * this instruction. That is not correct, it should be set when even parity.
- * See https://retrocomputing.stackexchange.com/questions/2549/z80-cpu-user-manual-and-p-v-flag.
  *
  * @param acc_reg is the accumulator register
  * @param value contains the argument that should be anded with the accumulator
@@ -59,12 +55,8 @@ void and_r(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
  *   <li>Size: 2</li>
  *   <li>Cycles: 2</li>
  *   <li>States: 7</li>
- *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+ *   <li>Condition bits affected: carry, half carry, zero, add/subtract</li>
  * </ul>
- *
- * According to the Z80 CPU User Manual, the parity/overflow flag should be set when overflowing for
- * this instruction. That is not correct, it should be set when even parity.
- * See https://retrocomputing.stackexchange.com/questions/2549/z80-cpu-user-manual-and-p-v-flag.
  *
  * @param acc_reg is the accumulator register, which will be mutated
  * @param args contains the argument with the immediate value
@@ -84,12 +76,8 @@ void and_n(u8& acc_reg, NextByte const& args, Flags& flag_reg, cyc& cycles)
  *   <li>Size: 2</li>
  *   <li>Cycles: 2</li>
  *   <li>States: 7</li>
- *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+ *   <li>Condition bits affected: carry, half carry, zero, add/subtract</li>
  * </ul>
- *
- * According to the Z80 CPU User Manual, the parity/overflow flag should be set when overflowing for
- * this instruction. That is not correct, it should be set when even parity.
- * See https://retrocomputing.stackexchange.com/questions/2549/z80-cpu-user-manual-and-p-v-flag.
  *
  * @param acc_reg is the accumulator register
  * @param value contains the argument that should be anded with the accumulator

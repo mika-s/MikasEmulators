@@ -41,7 +41,7 @@ void add(u16& reg, u16 value, Flags& flag_reg)
  *   <li>Size: 1</li>
  *   <li>Cycles: 1</li>
  *   <li>States: 4</li>
- *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+ *   <li>Condition bits affected: carry, half carry, zero, add/subtract</li>
  * </ul>
  *
  * @param acc_reg is the accumulator register, which will be mutated
@@ -62,7 +62,7 @@ void add_A_r(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
  *   <li>Size: 2</li>
  *   <li>Cycles: 2</li>
  *   <li>States: 7</li>
- *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+ *   <li>Condition bits affected: carry, half carry, zero, add/subtract</li>
  * </ul>
  *
  * @param acc_reg is the accumulator register, which will be mutated
@@ -83,7 +83,7 @@ void add_A_n(u8& acc_reg, NextByte const& args, Flags& flag_reg, cyc& cycles)
  *   <li>Size: 1</li>
  *   <li>Cycles: 2</li>
  *   <li>States: 7</li>
- *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+ *   <li>Condition bits affected: carry, half carry, zero, add/subtract</li>
  * </ul>
  *
  * @param acc_reg is the accumulator register, which will be mutated

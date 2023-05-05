@@ -34,7 +34,7 @@ void sla(u8& value, Flags& flag_reg)
  *   <li>Size: 2</li>
  *   <li>Cycles: 2</li>
  *   <li>States: 8</li>
- *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+ *   <li>Condition bits affected: carry, half carry, zero, add/subtract</li>
  * </ul>
  *
  * @param reg is the register to rotate, which will be mutated
@@ -54,7 +54,7 @@ void sla_r(u8& reg, Flags& flag_reg, cyc& cycles)
  *   <li>Size: 2</li>
  *   <li>Cycles: 4</li>
  *   <li>States: 15</li>
- *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
+ *   <li>Condition bits affected: carry, half carry, zero, add/subtract</li>
  * </ul>
  *
  * @param value_in_hl is the value in memory at HL's address, which will be mutated
