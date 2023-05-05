@@ -1,7 +1,6 @@
 #pragma once
 
 #include "chips/lr35902/flags.h"
-#include "chips/lr35902/interrupt_mode.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/memory/next_byte.h"
 #include "crosscutting/memory/next_word.h"
@@ -20,7 +19,7 @@ constexpr unsigned int INC_B = 0x04;
 constexpr unsigned int DEC_B = 0x05;
 constexpr unsigned int LD_B_n = 0x06;
 constexpr unsigned int RLCA = 0x07;
-constexpr unsigned int EX_AF_AFP = 0x08; // TODO: LD (a16),SP
+constexpr unsigned int LD_Mnn_SP = 0x08;
 constexpr unsigned int ADD_HL_BC = 0x09;
 constexpr unsigned int LD_A_MBC = 0x0A;
 constexpr unsigned int DEC_BC = 0x0B;
@@ -28,7 +27,7 @@ constexpr unsigned int INC_C = 0x0C;
 constexpr unsigned int DEC_C = 0x0D;
 constexpr unsigned int LD_C_n = 0x0E;
 constexpr unsigned int RRCA = 0x0F;
-constexpr unsigned int DJNZ = 0x10; // TODO: STOP 0
+constexpr unsigned int STOP_0 = 0x10;
 constexpr unsigned int LD_DE_nn = 0x11;
 constexpr unsigned int LD_MDE_A = 0x12;
 constexpr unsigned int INC_DE = 0x13;
@@ -46,7 +45,7 @@ constexpr unsigned int LD_E_n = 0x1E;
 constexpr unsigned int RRA = 0x1F;
 constexpr unsigned int JR_NZ_e = 0x20;
 constexpr unsigned int LD_HL_nn = 0x21;
-constexpr unsigned int LD_Mnn_HL = 0x22; // TODO: LD (HL+),A
+constexpr unsigned int LD_MHLp_A = 0x22;
 constexpr unsigned int INC_HL = 0x23;
 constexpr unsigned int INC_H = 0x24;
 constexpr unsigned int DEC_H = 0x25;
@@ -54,7 +53,7 @@ constexpr unsigned int LD_H_n = 0x26;
 constexpr unsigned int DAA = 0x27;
 constexpr unsigned int JR_Z_e = 0x28;
 constexpr unsigned int ADD_HL_HL = 0x29;
-constexpr unsigned int LD_HL_Mnn = 0x2A; // TODO: LD A,(HL+)
+constexpr unsigned int LD_A_MHLp = 0x2A;
 constexpr unsigned int DEC_HL = 0x2B;
 constexpr unsigned int INC_L = 0x2C;
 constexpr unsigned int DEC_L = 0x2D;
@@ -62,7 +61,7 @@ constexpr unsigned int LD_L_n = 0x2E;
 constexpr unsigned int CPL = 0x2F;
 constexpr unsigned int JR_NC_e = 0x30;
 constexpr unsigned int LD_SP_nn = 0x31;
-constexpr unsigned int LD_Mnn_A = 0x32; // TODO: LD (HL-),A
+constexpr unsigned int LH_MHLm_A = 0x32;
 constexpr unsigned int INC_SP = 0x33;
 constexpr unsigned int INC_MHL = 0x34;
 constexpr unsigned int DEC_MHL = 0x35;
@@ -70,7 +69,7 @@ constexpr unsigned int LD_MHL_n = 0x36;
 constexpr unsigned int SCF = 0x37;
 constexpr unsigned int JR_C_e = 0x38;
 constexpr unsigned int ADD_HL_SP = 0x39;
-constexpr unsigned int LD_A_Mnn = 0x3A; // TODO: LD A,(HL-)
+constexpr unsigned int LD_A_MHLm = 0x3A;
 constexpr unsigned int DEC_SP = 0x3B;
 constexpr unsigned int INC_A = 0x3C;
 constexpr unsigned int DEC_A = 0x3D;
@@ -215,7 +214,7 @@ constexpr unsigned int RST_0 = 0xC7;
 constexpr unsigned int RET_Z = 0xC8;
 constexpr unsigned int RET = 0xC9;
 constexpr unsigned int JP_Z = 0xCA;
-constexpr unsigned int BITS = 0xCB; // TODO: PREFIX CB
+constexpr unsigned int BITS = 0xCB;
 constexpr unsigned int CALL_Z = 0xCC;
 constexpr unsigned int CALL = 0xCD;
 constexpr unsigned int ADC_A_n = 0xCE;
@@ -223,49 +222,38 @@ constexpr unsigned int RST_1 = 0xCF;
 constexpr unsigned int RET_NC = 0xD0;
 constexpr unsigned int POP_DE = 0xD1;
 constexpr unsigned int JP_NC = 0xD2;
-constexpr unsigned int OUT = 0xD3;  // TODO: nothing
 constexpr unsigned int CALL_NC = 0xD4;
 constexpr unsigned int PUSH_DE = 0xD5;
 constexpr unsigned int SUB_n = 0xD6;
 constexpr unsigned int RST_2 = 0xD7;
 constexpr unsigned int RET_C = 0xD8;
-constexpr unsigned int EXX = 0xD9;
+constexpr unsigned int RETI = 0xD9;
 constexpr unsigned int JP_C = 0xDA;
-constexpr unsigned int IN = 0xDB; // TODO: nothing
 constexpr unsigned int CALL_C = 0xDC;
-constexpr unsigned int IX = 0xDD; // TODO: nothing
 constexpr unsigned int SBC_A_n = 0xDE;
 constexpr unsigned int RST_3 = 0xDF;
-constexpr unsigned int RET_PO = 0xE0; // TODO: LDH (a8),A
+constexpr unsigned int LDH_Mn_A = 0xE0;
 constexpr unsigned int POP_HL = 0xE1;
-constexpr unsigned int JP_PO = 0xE2; // TODO: LD (C),A
-constexpr unsigned int EX_MSP_HL = 0xE3; // TODO: nothing
-constexpr unsigned int CALL_PO = 0xE4; // TODO: nothing
+constexpr unsigned int LD_MC_A = 0xE2;
 constexpr unsigned int PUSH_HL = 0xE5;
 constexpr unsigned int AND_n = 0xE6;
 constexpr unsigned int RST_4 = 0xE7;
-constexpr unsigned int RET_PE = 0xE8; // TODO: ADD SP,r8
+constexpr unsigned int ADD_SP_n = 0xE8;
 constexpr unsigned int JP_MHL = 0xE9;
-constexpr unsigned int JP_PE = 0xEA; // TODO: LD (a16),A
-constexpr unsigned int EX_DE_HL = 0xEB; // TODO: nothing
-constexpr unsigned int CALL_PE = 0xEC; // TODO: nothing
-constexpr unsigned int EXTD = 0xED; // TODO: nothing
+constexpr unsigned int LD_Mnn_A = 0xEA;
 constexpr unsigned int XOR_n = 0xEE;
 constexpr unsigned int RST_5 = 0xEF;
-constexpr unsigned int RET_P = 0xF0; // TODO: LDH A,(a8)
+constexpr unsigned int LDH_A_Mn = 0xF0;
 constexpr unsigned int POP_AF = 0xF1;
-constexpr unsigned int JP_P = 0xF2; // TODO: LD A,(C)
+constexpr unsigned int LD_A_MC = 0xF2;
 constexpr unsigned int DI = 0xF3;
-constexpr unsigned int CALL_P = 0xF4; // TODO: nothing
 constexpr unsigned int PUSH_AF = 0xF5;
 constexpr unsigned int OR_n = 0xF6;
 constexpr unsigned int RST_6 = 0xF7;
-constexpr unsigned int RET_M = 0xF8; // TODO: LD HL,SP+r8
+constexpr unsigned int LD_HL_SPpn = 0xF8;
 constexpr unsigned int LD_SP_HL = 0xF9;
-constexpr unsigned int JP_M = 0xFA; // TODO: LD A,(a16)
+constexpr unsigned int LD_A_Mnn = 0xFA;
 constexpr unsigned int EI = 0xFB;
-constexpr unsigned int CALL_M = 0xFC; // TODO: nothing
-constexpr unsigned int IY = 0xFD; // TODO: nothing
 constexpr unsigned int CP_n = 0xFE;
 constexpr unsigned int RST_7 = 0xFF;
 
@@ -318,14 +306,14 @@ constexpr unsigned int SRA_H = 0x2C;
 constexpr unsigned int SRA_L = 0x2D;
 constexpr unsigned int SRA_MHL = 0x2E;
 constexpr unsigned int SRA_A = 0x2F;
-constexpr unsigned int SLL_B_UNDOC = 0x30; // TODO: SWAP B
-constexpr unsigned int SLL_C_UNDOC = 0x31; // TODO: SWAP C
-constexpr unsigned int SLL_D_UNDOC = 0x32; // TODO: SWAP D
-constexpr unsigned int SLL_E_UNDOC = 0x33; // TODO: SWAP E
-constexpr unsigned int SLL_H_UNDOC = 0x34; // TODO: SWAP H
-constexpr unsigned int SLL_L_UNDOC = 0x35; // TODO: SWAP L
-constexpr unsigned int SLL_MHL_UNDOC = 0x36; // TODO: SWAP (HL)
-constexpr unsigned int SLL_A_UNDOC = 0x37; // TODO: SWAP A
+constexpr unsigned int SWAP_B = 0x30;
+constexpr unsigned int SWAP_C = 0x31;
+constexpr unsigned int SWAP_D = 0x32;
+constexpr unsigned int SWAP_E = 0x33;
+constexpr unsigned int SWAP_H = 0x34;
+constexpr unsigned int SWAP_L = 0x35;
+constexpr unsigned int SWAP_MHL = 0x36;
+constexpr unsigned int SWAP_A = 0x37;
 constexpr unsigned int SRL_B = 0x38;
 constexpr unsigned int SRL_C = 0x39;
 constexpr unsigned int SRL_D = 0x3A;
@@ -562,10 +550,8 @@ void dec_ss(u8& reg1, u8& reg2, cyc& cycles);
 void dec_sp(u16& sp, cyc& cycles);
 void dec_MHL(EmulatorMemory<u16, u8>& memory, u16 address, Flags& flag_reg, cyc& cycles);
 void di(bool& iff1, bool& iff2, cyc& cycles);
-void djnz(u8& b_reg, u16& pc, NextByte const& args, cyc& cycles);
 void ei(bool& iff1, bool& iff2, cyc& cycles);
 void halt(bool& is_halted, cyc& cycles);
-void im(InterruptMode& interrupt_mode, InterruptMode value, cyc& cycles);
 void inc_r(u8& reg, Flags& flag_reg, cyc& cycles);
 void inc_ss(u8& reg1, u8& reg2, cyc& cycles);
 void inc_MHL(EmulatorMemory<u16, u8>& memory, u16 address, Flags& flag_reg, cyc& cycles);
@@ -582,39 +568,24 @@ void jr_nc(u16& pc, NextByte const& args, Flags const& flag_reg, cyc& cycles);
 void jr_nz(u16& pc, NextByte const& args, Flags const& flag_reg, cyc& cycles);
 void jr_z(u16& pc, NextByte const& args, Flags const& flag_reg, cyc& cycles);
 void ld_r_n(u8& reg, NextByte const& args, cyc& cycles);
-void ld_r_n_undoc(u8& to, NextByte const& args, cyc& cycles);
 void ld_r_r(u8& to, u8 value, cyc& cycles);
-void ld_r_r_undoc(u8& to, u8 value, cyc& cycles);
 void ld_r_MHL(u8& reg, u8 value, cyc& cycles);
-void ld_A_I(u8& acc_reg, u8 i_reg, Flags& flag_reg, bool iff2, cyc& cycles);
 void ld_A_Mss(u8& to, u8 value, cyc& cycles);
 void ld_A_Mnn(u8& reg, EmulatorMemory<u16, u8> const& memory, NextWord const& args, cyc& cycles);
-void ld_I_A(u8& i_reg, u8 acc_reg, cyc& cycles);
-void ld_R_A(u8& r_reg, u8 acc_reg, cyc& cycles);
-void ld_A_R(u8& acc_reg, u8 r_reg, Flags& flag_reg, bool iff2, cyc& cycles);
 void ld_HL_Mnn(u8& h_reg, u8& l_reg, EmulatorMemory<u16, u8> const& memory, NextWord const& args, cyc& cycles);
 void ld_dd_nn(u8& reg1, u8& reg2, NextWord const& args, cyc& cycles);
-void ld_ixy_nn(u16& ixy_reg, NextWord const& args, cyc& cycles);
-void ld_dd_Mnn(u8& reg1, u8& reg2, NextWord const& args, EmulatorMemory<u16, u8> const& memory, cyc& cycles);
 void ld_MHL_n(EmulatorMemory<u16, u8>& memory, u16 address, NextByte const& args, cyc& cycles);
 void ld_MHL_r(EmulatorMemory<u16, u8>& memory, u16 address, u8 value, cyc& cycles);
 void ld_Mnn_A(u8& acc_reg, EmulatorMemory<u16, u8>& memory, NextWord const& args, cyc& cycles);
 void ld_Mnn_HL(u8 h_reg, u8 l_reg, EmulatorMemory<u16, u8>& memory, NextWord const& args, cyc& cycles);
 void ld_Mnn_dd(u8 hi_reg, u8 lo_reg, EmulatorMemory<u16, u8>& memory, NextWord const& args, cyc& cycles);
-void ld_Mnn_sp(u16 sp, EmulatorMemory<u16, u8>& memory, NextWord const& args, cyc& cycles);
 void ld_Mss_A(EmulatorMemory<u16, u8>& memory, u16 address, u8 acc_reg, cyc& cycles);
 void ld_sp_Mnn(u16& sp, EmulatorMemory<u16, u8> const& memory, NextWord const& args, cyc& cycles);
 void ld_sp_nn(u16& sp, NextWord const& args, cyc& cycles);
 void ld_sp_hl(u16& sp, u16 address, cyc& cycles);
-void ldd(u8& b_reg, u8& c_reg, u8& d_reg, u8& e_reg, u8& h_reg, u8& l_reg, u8 acc_reg, EmulatorMemory<u16, u8>& memory, Flags& flag_reg, cyc& cycles);
-void lddr(u16& pc, u8& b_reg, u8& c_reg, u8& d_reg, u8& e_reg, u8& h_reg, u8& l_reg, u8 acc_reg, EmulatorMemory<u16, u8>& memory, Flags& flag_reg, cyc& cycles);
-void ldi(u8& b_reg, u8& c_reg, u8& d_reg, u8& e_reg, u8& h_reg, u8& l_reg, u8 acc_reg, EmulatorMemory<u16, u8>& memory, Flags& flag_reg, cyc& cycles);
-void ldir(u16& pc, u8& b_reg, u8& c_reg, u8& d_reg, u8& e_reg, u8& h_reg, u8& l_reg, u8 acc_reg, EmulatorMemory<u16, u8>& memory, Flags& flag_reg, cyc& cycles);
-void neg(u8& acc_reg, Flags& flag_reg, cyc& cycles);
 void nmi(u16& pc, u16& sp, EmulatorMemory<u16, u8>& memory, cyc& cycles);
 void nop(cyc& cycles);
 void or_r(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles);
-void or_r_undoc(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles);
 void or_n(u8& acc_reg, NextByte const& args, Flags& flag_reg, cyc& cycles);
 void or_MHL(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles);
 void pop(u8& reg1, u8& reg2, u16& sp, EmulatorMemory<u16, u8> const& memory, cyc& cycles);
@@ -629,14 +600,12 @@ void ret_nc(u16& pc, u16& sp, EmulatorMemory<u16, u8> const& memory, Flags const
 void ret_nz(u16& pc, u16& sp, EmulatorMemory<u16, u8> const& memory, Flags const& flag_reg, cyc& cycles);
 void ret_z(u16& pc, u16& sp, EmulatorMemory<u16, u8> const& memory, Flags const& flag_reg, cyc& cycles);
 void reti(u16& pc, u16& sp, EmulatorMemory<u16, u8> const& memory, cyc& cycles);
-void retn(u16& pc, u16& sp, EmulatorMemory<u16, u8> const& memory, bool& iff1, bool iff2, cyc& cycles);
 void rla(u8& acc_reg, Flags& flag_reg, cyc& cycles);
 void rl_r(u8& reg, Flags& flag_reg, cyc& cycles);
 void rl_MHL(EmulatorMemory<u16, u8>& memory, u16 address, Flags& flag_reg, cyc& cycles);
 void rlca(u8& acc_reg, Flags& flag_reg, cyc& cycles);
 void rlc_r(u8& reg, Flags& flag_reg, cyc& cycles);
 void rlc_MHL(EmulatorMemory<u16, u8>& memory, u16 address, Flags& flag_reg, cyc& cycles);
-void rld(u8& acc_reg, EmulatorMemory<u16, u8>& memory, u16 address, Flags& flag_reg, cyc& cycles);
 void rra(u8& acc_reg, Flags& flag_reg, cyc& cycles);
 void rr_r(u8& reg, Flags& flag_reg, cyc& cycles);
 void rr_MHL(EmulatorMemory<u16, u8>& memory, u16 address, Flags& flag_reg, cyc& cycles);
@@ -666,9 +635,11 @@ void sra_r(u8& reg, Flags& flag_reg, cyc& cycles);
 void sra_MHL(EmulatorMemory<u16, u8>& memory, u16 address, Flags& flag_reg, cyc& cycles);
 void srl_r(u8& reg, Flags& flag_reg, cyc& cycles);
 void srl_MHL(EmulatorMemory<u16, u8>& memory, u16 address, Flags& flag_reg, cyc& cycles);
+void stop_0(cyc& cycles);
 void sub_n(u8& acc_reg, NextByte const& args, Flags& flag_reg, cyc& cycles);
 void sub_r(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles);
 void sub_MHL(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles);
+void swap(u8& reg, Flags& flag_reg, cyc& cycles);
 void xor_n(u8& acc_reg, NextByte const& args, Flags& flag_reg, cyc& cycles);
 void xor_r(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles);
 void xor_MHL(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles);
@@ -688,56 +659,40 @@ void print_cp(std::ostream& ostream, NextByte const& args);
 void print_cpl(std::ostream& ostream);
 void print_daa(std::ostream& ostream);
 void print_di(std::ostream& ostream);
-void print_djnz(std::ostream& ostream, NextByte const& args);
 void print_dec(std::ostream& ostream, std::string const& reg);
-void print_dec_undocumented(std::ostream& ostream, std::string const& reg);
 void print_ei(std::ostream& ostream);
 void print_halt(std::ostream& ostream);
-void print_im(std::ostream& ostream, unsigned int interrupt_mode);
 void print_inc(std::ostream& ostream, std::string const& reg);
-void print_inc_undocumented(std::ostream& ostream, std::string const& reg);
 void print_jp_nn(std::ostream& ostream, NextWord const& args);
 void print_jp_cc_nn(std::ostream& ostream, NextWord const& args, std::string const& condition);
 void print_jp_Mss(std::ostream& ostream, std::string const& reg);
 void print_jr(std::ostream& ostream, NextByte const& args);
 void print_jr(std::ostream& ostream, std::string const& condition, NextByte const& args);
 void print_ld(std::ostream& ostream, std::string const& dest, std::string const& src);
-void print_ld_undocumented(std::ostream& ostream, std::string const& dest, std::string const& src);
 void print_ld(std::ostream& ostream, std::string const& dest, NextByte const& args);
-void print_ld_undocumented(std::ostream& ostream, std::string const& dest, NextByte const& args);
 void print_ld(std::ostream& ostream, std::string const& dest, NextWord const& args);
+void print_ld(std::ostream& ostream, NextWord const& args, std::string const& src);
 void print_ld_dd_nn(std::ostream& ostream, std::string const& reg, NextWord const& args);
 void print_ld_Mnn_dd(std::ostream& ostream, NextWord const& args, std::string const& src);
-void print_ld_Mnn_dd_undocumented(std::ostream& ostream, NextWord const& args, std::string const& src);
-void print_ld_dd_Mnn(std::ostream& ostream, std::string const& dest, NextWord const& args);
-void print_ld_dd_Mnn_undocumented(std::ostream& ostream, std::string const& dest, NextWord const& args);
-void print_ldd(std::ostream& ostream);
-void print_lddr(std::ostream& ostream);
-void print_ldi(std::ostream& ostream);
-void print_ldir(std::ostream& ostream);
-void print_neg(std::ostream& ostream);
 void print_nop(std::ostream& ostream);
 void print_or_r(std::ostream& ostream, std::string const& reg);
-void print_or_r_undocumented(std::ostream& ostream, std::string const& reg);
 void print_or_n(std::ostream& ostream, NextByte const& args);
 void print_pop(std::ostream& ostream, std::string const& reg);
 void print_push(std::ostream& ostream, std::string const& reg);
 void print_res(std::ostream& ostream, unsigned int bit_number, std::string const& src);
 void print_ret(std::ostream& ostream);
 void print_ret(std::ostream& ostream, std::string const& condition);
+void print_reti(std::ostream& ostream);
 void print_rla(std::ostream& ostream);
 void print_rl(std::ostream& ostream, std::string const& reg);
 void print_rlc(std::ostream& ostream, std::string const& reg);
 void print_rlca(std::ostream& ostream);
-void print_rld(std::ostream& ostream);
 void print_rst(std::ostream& ostream, int number);
 void print_rr(std::ostream& ostream, std::string const& reg);
 void print_rra(std::ostream& ostream);
 void print_rrc(std::ostream& ostream, std::string const& reg);
 void print_rrca(std::ostream& ostream);
-void print_rrd(std::ostream& ostream);
 void print_sbc_r_s(std::ostream& ostream, std::string const& dest, std::string const& src);
-void print_sbc_r_s_undocumented(std::ostream& ostream, std::string const& dest, std::string const& src);
 void print_sbc_r_n(std::ostream& ostream, std::string const& reg, NextByte const& args);
 void print_scf(std::ostream& ostream);
 void print_set(std::ostream& ostream, unsigned int bit_number, std::string const& src);
@@ -745,11 +700,11 @@ void print_sla(std::ostream& ostream, std::string const& reg);
 void print_sra(std::ostream& ostream, std::string const& reg);
 void print_sll(std::ostream& ostream, std::string const& reg);
 void print_srl(std::ostream& ostream, std::string const& reg);
+void print_stop(std::ostream& ostream);
 void print_sub(std::ostream& ostream, std::string const& reg);
-void print_sub_undocumented(std::ostream& ostream, std::string const& reg);
 void print_sub(std::ostream& ostream, NextByte const& args);
+void print_swap(std::ostream& ostream, std::string const& reg);
 void print_xor_r(std::ostream& ostream, std::string const& reg);
-void print_xor_r_undocumented(std::ostream& ostream, std::string const& reg);
 void print_xor_n(std::ostream& ostream, NextByte const& args);
 }
 // @formatter:on

@@ -181,6 +181,7 @@ void Frontend::test(Options const& options)
 
         if (!opts.contains("cpu")) {
             context.addFilter("test-case", "8080*");
+            context.addFilter("test-case", "LR35902*");
             context.addFilter("test-case", "Z80*");
             context.addFilter("test-case", "LMC*");
         } else {

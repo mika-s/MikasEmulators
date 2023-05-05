@@ -56,6 +56,7 @@ private:
 
     static const inline std::vector<std::pair<std::string, std::string>> s_supported_cpus = {
         { "8080", "The Intel 8080 8-bit microprocessor" },
+        { "LR35902", "The LR35902 8-bit microprocessor" },
         { "Z80", "The Zilog Z80 8-bit microprocessor" },
         { "LMC", "The Little Man Computer instructional model" },
     };

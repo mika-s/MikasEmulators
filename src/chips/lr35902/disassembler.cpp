@@ -59,8 +59,8 @@ void Disassembler::print_next_instruction()
     case RLCA:
         print_rlca(m_ostream);
         break;
-    case EX_AF_AFP:
-        //        print_ex(m_ostream, "AF", "AF'");   // TODO
+    case LD_Mnn_SP:
+        print_ld(m_ostream, get_next_word(), "SP");
         break;
     case ADD_HL_BC:
         print_add(m_ostream, "HL", "BC");
@@ -83,8 +83,8 @@ void Disassembler::print_next_instruction()
     case RRCA:
         print_rrca(m_ostream);
         break;
-    case DJNZ:
-        print_djnz(m_ostream, get_next_byte());
+    case STOP_0:
+        print_stop(m_ostream);
         break;
     case LD_DE_nn:
         print_ld_dd_nn(m_ostream, "DE", get_next_word());
@@ -137,7 +137,7 @@ void Disassembler::print_next_instruction()
     case LD_HL_nn:
         print_ld_dd_nn(m_ostream, "HL", get_next_word());
         break;
-    case LD_Mnn_HL:
+    case LD_MHLp_A:
         print_ld_Mnn_dd(m_ostream, get_next_word(), "HL");
         break;
     case INC_HL:
@@ -161,7 +161,7 @@ void Disassembler::print_next_instruction()
     case ADD_HL_HL:
         print_add(m_ostream, "HL", "HL");
         break;
-    case LD_HL_Mnn:
+    case LD_A_MHLp:
         print_ld(m_ostream, "HL", get_next_word());
         break;
     case DEC_HL:
@@ -185,7 +185,7 @@ void Disassembler::print_next_instruction()
     case LD_SP_nn:
         print_ld_dd_nn(m_ostream, "SP", get_next_word());
         break;
-    case LD_Mnn_A:
+    case LH_MHLm_A:
         print_ld_Mnn_dd(m_ostream, get_next_word(), "A");
         break;
     case INC_SP:
@@ -209,7 +209,7 @@ void Disassembler::print_next_instruction()
     case ADD_HL_SP:
         print_add(m_ostream, "HL", "SP");
         break;
-    case LD_A_Mnn:
+    case LD_A_MHLm:
         print_ld(m_ostream, "A", get_next_word());
         break;
     case DEC_SP:
@@ -668,9 +668,6 @@ void Disassembler::print_next_instruction()
     case JP_NC:
         print_jp_cc_nn(m_ostream, get_next_word(), "NC");
         break;
-    case OUT:
-        //        print_out(m_ostream, get_next_byte()); TODO
-        break;
     case CALL_NC:
         print_call_cc_nn(m_ostream, get_next_word(), "NC");
         break;
@@ -686,20 +683,14 @@ void Disassembler::print_next_instruction()
     case RET_C:
         print_ret(m_ostream, "C");
         break;
-    case EXX:
-        //        print_exx(m_ostream); TODO
+    case RETI:
+        print_reti(m_ostream);
         break;
     case JP_C:
         print_jp_cc_nn(m_ostream, get_next_word(), "C");
         break;
-    case IN:
-        //        print_in(m_ostream, get_next_byte()); TODO
-        break;
     case CALL_C:
         print_call_cc_nn(m_ostream, get_next_word(), "C");
-        break;
-    case IX:
-        //        print_next_ixy_instruction(get_next_byte().farg, "IX"); TODO
         break;
     case SBC_A_n:
         print_sbc_r_n(m_ostream, "A", get_next_byte());
@@ -707,20 +698,14 @@ void Disassembler::print_next_instruction()
     case RST_3:
         print_rst(m_ostream, 3);
         break;
-    case RET_PO:
+    case LDH_Mn_A:
         print_ret(m_ostream, "PO");
         break;
     case POP_HL:
         print_pop(m_ostream, "HL");
         break;
-    case JP_PO:
+    case LD_MC_A:
         print_jp_cc_nn(m_ostream, get_next_word(), "PO");
-        break;
-    case EX_MSP_HL:
-        //        print_ex(m_ostream, "(SP)", "HL"); TODO
-        break;
-    case CALL_PO:
-        print_call_cc_nn(m_ostream, get_next_word(), "PO");
         break;
     case PUSH_HL:
         print_push(m_ostream, "HL");
@@ -731,23 +716,14 @@ void Disassembler::print_next_instruction()
     case RST_4:
         print_rst(m_ostream, 4);
         break;
-    case RET_PE:
+    case ADD_SP_n:
         print_ret(m_ostream, "PE");
         break;
     case JP_MHL:
         print_jp_Mss(m_ostream, "HL");
         break;
-    case JP_PE:
+    case LD_Mnn_A:
         print_jp_cc_nn(m_ostream, get_next_word(), "PE");
-        break;
-    case EX_DE_HL:
-        //        print_ex(m_ostream, "DE", "HL"); TODO
-        break;
-    case CALL_PE:
-        print_call_cc_nn(m_ostream, get_next_word(), "PE");
-        break;
-    case EXTD:
-        //        print_next_extd_instruction(get_next_byte().farg); TODO
         break;
     case XOR_n:
         print_xor_n(m_ostream, get_next_byte());
@@ -755,20 +731,17 @@ void Disassembler::print_next_instruction()
     case RST_5:
         print_rst(m_ostream, 5);
         break;
-    case RET_P:
+    case LDH_A_Mn:
         print_ret(m_ostream, "P");
         break;
     case POP_AF:
         print_pop(m_ostream, "AF");
         break;
-    case JP_P:
+    case LD_A_MC:
         print_jp_cc_nn(m_ostream, get_next_word(), "P");
         break;
     case DI:
         print_di(m_ostream);
-        break;
-    case CALL_P:
-        print_call_cc_nn(m_ostream, get_next_word(), "P");
         break;
     case PUSH_AF:
         print_push(m_ostream, "AF");
@@ -779,23 +752,17 @@ void Disassembler::print_next_instruction()
     case RST_6:
         print_rst(m_ostream, 6);
         break;
-    case RET_M:
+    case LD_HL_SPpn:
         print_ret(m_ostream, "M");
         break;
     case LD_SP_HL:
         print_ld(m_ostream, "SP", "HL");
         break;
-    case JP_M:
+    case LD_A_Mnn:
         print_jp_cc_nn(m_ostream, get_next_word(), "M");
         break;
     case EI:
         print_ei(m_ostream);
-        break;
-    case CALL_M:
-        print_call_cc_nn(m_ostream, get_next_word(), "M");
-        break;
-    case IY:
-        //        print_next_ixy_instruction(get_next_byte().farg, "IY"); TODO
         break;
     case CP_n:
         print_cp(m_ostream, get_next_byte());
@@ -957,29 +924,29 @@ void Disassembler::print_next_bits_instruction(u8 bits_opcode)
     case SRA_A:
         print_sra(m_ostream, "A");
         break;
-    case SLL_B_UNDOC:
-        print_sll(m_ostream, "B");
+    case SWAP_B:
+        print_swap(m_ostream, "B");
         break;
-    case SLL_C_UNDOC:
-        print_sll(m_ostream, "C");
+    case SWAP_C:
+        print_swap(m_ostream, "C");
         break;
-    case SLL_D_UNDOC:
-        print_sll(m_ostream, "D");
+    case SWAP_D:
+        print_swap(m_ostream, "D");
         break;
-    case SLL_E_UNDOC:
-        print_sll(m_ostream, "E");
+    case SWAP_E:
+        print_swap(m_ostream, "E");
         break;
-    case SLL_H_UNDOC:
-        print_sll(m_ostream, "H");
+    case SWAP_H:
+        print_swap(m_ostream, "H");
         break;
-    case SLL_L_UNDOC:
-        print_sll(m_ostream, "L");
+    case SWAP_L:
+        print_swap(m_ostream, "L");
         break;
-    case SLL_MHL_UNDOC:
-        print_sll(m_ostream, "(HL)");
+    case SWAP_MHL:
+        print_swap(m_ostream, "(HL)");
         break;
-    case SLL_A_UNDOC:
-        print_sll(m_ostream, "A");
+    case SWAP_A:
+        print_swap(m_ostream, "A");
         break;
     case SRL_B:
         print_srl(m_ostream, "B");

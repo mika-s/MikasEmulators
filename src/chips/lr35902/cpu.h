@@ -4,9 +4,7 @@
 #include "crosscutting/memory/next_word.h"
 #include "crosscutting/typedefs.h"
 #include "flags.h"
-#include "interrupt_mode.h"
 #include <cstddef>
-#include <cstdint>
 #include <vector>
 
 namespace emu::memory {
@@ -83,8 +81,6 @@ public:
 
     [[nodiscard]] bool iff2() const;
 
-    [[nodiscard]] InterruptMode interrupt_mode() const;
-
     void interrupt(u8 supplied_instruction_from_interruptor);
 
     void nmi_interrupt();
@@ -92,8 +88,6 @@ public:
     void input(u16 port, u8 value);
 
 private:
-    static constexpr unsigned int s_number_of_io_ports = UINT16_MAX;
-
     bool m_is_halted { false };
 
     bool m_iff1 { false };
@@ -106,9 +100,6 @@ private:
     EmulatorMemory<u16, u8>& m_memory;
     std::size_t m_memory_size;
 
-    std::vector<u8> m_io_in;
-    std::vector<u8> m_io_out;
-
     u8 m_opcode { 0 };
     u16 m_sp { 0xffff };
     u16 m_pc;
@@ -120,7 +111,6 @@ private:
     u8 m_h_reg { 0 };
     u8 m_l_reg { 0 };
     Flags m_flag_reg;
-    InterruptMode m_interrupt_mode { InterruptMode::ZERO };
 
     std::vector<OutObserver*> m_out_observers;
     std::vector<InObserver*> m_in_observers;
@@ -132,8 +122,6 @@ private:
     void nonmaskable_interrupt_finished();
 
     cyc handle_maskable_interrupt_0(cyc cycles);
-
-    cyc handle_maskable_interrupt_1_2(cyc cycles);
 
     NextByte get_next_byte();
 

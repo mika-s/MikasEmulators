@@ -447,6 +447,14 @@ void print_ld(std::ostream& ostream, std::string const& dest, NextWord const& ar
             << ")";
 }
 
+void print_ld(std::ostream& ostream, NextWord const& args, std::string const& src)
+{
+    ostream << "LD ("
+            << hexify_wo_0x(to_u16(args.sarg, args.farg))
+            << "),"
+            << src;
+}
+
 void print_ld_dd_nn(std::ostream& ostream, std::string const& dest, NextWord const& args)
 {
     ostream << "LD "

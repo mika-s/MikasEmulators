@@ -2,7 +2,6 @@
 
 #include "crosscutting/typedefs.h"
 #include "flags.h"
-#include "interrupt_mode.h"
 
 namespace emu::lr35902 {
 
@@ -19,7 +18,6 @@ struct ManualState {
     u8 m_h_reg;
     u8 m_l_reg;
     Flags m_flag_reg;
-    InterruptMode m_interrupt_mode;
 };
 
 }

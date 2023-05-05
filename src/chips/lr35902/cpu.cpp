@@ -9,7 +9,6 @@
 #include "manual_state.h"
 #include <algorithm>
 #include <iostream>
-#include <stdexcept>
 #include <string>
 
 namespace emu::lr35902 {
@@ -23,8 +22,6 @@ using emu::util::string::hexify;
 Cpu::Cpu(EmulatorMemory<u16, u8>& memory, const u16 initial_pc)
     : m_memory(memory)
     , m_memory_size(memory.size())
-    , m_io_in(s_number_of_io_ports)
-    , m_io_out(s_number_of_io_ports)
     , m_pc(initial_pc)
 {
     m_flag_reg.from_u8(0xff);
@@ -75,16 +72,13 @@ void Cpu::reset_state()
     m_h_reg = 0;
     m_l_reg = 0;
     m_flag_reg.from_u8(0xff);
-    m_pc = 0;
-    m_sp = 0xffff;
+    m_pc = 0x100;
+    m_sp = 0xfffe;
     m_is_halted = false;
     m_iff1 = m_iff2 = false;
     m_is_interrupted = false;
     m_is_nmi_interrupted = false;
     m_instruction_from_interruptor = 0;
-    m_interrupt_mode = InterruptMode::ZERO;
-    std::fill(m_io_in.begin(), m_io_in.end(), 0);
-    std::fill(m_io_out.begin(), m_io_out.end(), 0);
 }
 
 void Cpu::start()
@@ -110,7 +104,6 @@ void Cpu::set_state_manually(ManualState manual_state)
     m_h_reg = manual_state.m_h_reg;
     m_l_reg = manual_state.m_l_reg;
     m_flag_reg.from_u8(manual_state.m_flag_reg.to_u8());
-    m_interrupt_mode = manual_state.m_interrupt_mode;
 }
 
 void Cpu::interrupt(u8 instruction_to_perform)
@@ -129,9 +122,8 @@ bool Cpu::is_inta() const
     return m_iff1;
 }
 
-void Cpu::input(u16 port, u8 value)
+void Cpu::input([[maybe_unused]] u16 port, [[maybe_unused]] u8 value)
 {
-    m_io_in[port] = value;
 }
 
 cyc Cpu::next_instruction()
@@ -140,10 +132,8 @@ cyc Cpu::next_instruction()
 
     if (m_is_nmi_interrupted) {
         return handle_nonmaskable_interrupt(cycles);
-    } else if (m_iff1 && m_is_interrupted && m_interrupt_mode == InterruptMode::ZERO) {
-        cycles += handle_maskable_interrupt_0(cycles);
     } else if (m_iff1 && m_is_interrupted) {
-        return handle_maskable_interrupt_1_2(cycles);
+        cycles += handle_maskable_interrupt_0(cycles);
     } else if (m_is_halted) {
         return 4; // TODO: What is the proper value while NOPing during halt?
     } else {
@@ -177,7 +167,7 @@ cyc Cpu::next_instruction()
     case RLCA:
         rlca(m_acc_reg, m_flag_reg, cycles);
         break;
-    case EX_AF_AFP:
+    case LD_Mnn_SP:
         //        ex(m_acc_reg, m_flag_reg, m_acc_p_reg, m_flag_p_reg, cycles); TODO
         break;
     case ADD_HL_BC:
@@ -201,8 +191,8 @@ cyc Cpu::next_instruction()
     case RRCA:
         rrca(m_acc_reg, m_flag_reg, cycles);
         break;
-    case DJNZ:
-        djnz(m_b_reg, m_pc, get_next_byte(), cycles);
+    case STOP_0:
+        stop_0(cycles);
         break;
     case LD_DE_nn:
         ld_dd_nn(m_d_reg, m_e_reg, get_next_word(), cycles);
@@ -255,7 +245,7 @@ cyc Cpu::next_instruction()
     case LD_HL_nn:
         ld_dd_nn(m_h_reg, m_l_reg, get_next_word(), cycles);
         break;
-    case LD_Mnn_HL:
+    case LD_MHLp_A:
         ld_Mnn_HL(m_h_reg, m_l_reg, m_memory, get_next_word(), cycles);
         break;
     case INC_HL:
@@ -279,7 +269,7 @@ cyc Cpu::next_instruction()
     case ADD_HL_HL:
         add_HL_ss(m_h_reg, m_l_reg, to_u16(m_h_reg, m_l_reg), m_flag_reg, cycles);
         break;
-    case LD_HL_Mnn:
+    case LD_A_MHLp:
         ld_HL_Mnn(m_h_reg, m_l_reg, m_memory, get_next_word(), cycles);
         break;
     case DEC_HL:
@@ -303,7 +293,7 @@ cyc Cpu::next_instruction()
     case LD_SP_nn:
         ld_sp_nn(m_sp, get_next_word(), cycles);
         break;
-    case LD_Mnn_A:
+    case LH_MHLm_A:
         ld_Mnn_A(m_acc_reg, m_memory, get_next_word(), cycles);
         break;
     case INC_SP:
@@ -327,7 +317,7 @@ cyc Cpu::next_instruction()
     case ADD_HL_SP:
         add_HL_ss(m_h_reg, m_l_reg, m_sp, m_flag_reg, cycles);
         break;
-    case LD_A_Mnn:
+    case LD_A_MHLm:
         ld_A_Mnn(m_acc_reg, m_memory, get_next_word(), cycles);
         break;
     case DEC_SP:
@@ -786,12 +776,6 @@ cyc Cpu::next_instruction()
     case JP_NC:
         jp_nc(m_pc, get_next_word(), m_flag_reg, cycles);
         break;
-    case OUT: {
-        //        NextByte args = get_next_byte(); TODO
-        //        out_n_A(m_acc_reg, args, m_io_out, cycles);
-        //        notify_out_observers(args.farg);
-        break;
-    }
     case CALL_NC:
         call_nc(m_pc, m_sp, m_memory, get_next_word(), m_flag_reg, cycles);
         break;
@@ -807,26 +791,14 @@ cyc Cpu::next_instruction()
     case RET_C:
         ret_c(m_pc, m_sp, m_memory, m_flag_reg, cycles);
         break;
-    case EXX:
-        //        exx(m_b_reg, m_c_reg, m_b_p_reg, m_c_p_reg, TODO
-        //            m_d_reg, m_e_reg, m_d_p_reg, m_e_p_reg,
-        //            m_h_reg, m_l_reg, m_h_p_reg, m_l_p_reg,
-        //            cycles);
+    case RETI:
+        reti(m_pc, m_sp, m_memory, cycles);
         break;
     case JP_C:
         jp_c(m_pc, get_next_word(), m_flag_reg, cycles);
         break;
-    case IN: {
-        //        NextByte args = get_next_byte(); TODO
-        //        notify_in_observers(to_u16(m_acc_reg, args.farg));
-        //        in_A_n(m_acc_reg, args, m_io_in, cycles);
-        break;
-    }
     case CALL_C:
         call_c(m_pc, m_sp, m_memory, get_next_word(), m_flag_reg, cycles);
-        break;
-    case IX:
-        //        next_ixy_instruction(get_next_byte().farg, m_ix_reg, cycles); TODO
         break;
     case SBC_A_n:
         sbc_A_n(m_acc_reg, get_next_byte(), m_flag_reg, cycles);
@@ -834,20 +806,14 @@ cyc Cpu::next_instruction()
     case RST_3:
         rst_3(m_pc, m_sp, m_memory, cycles);
         break;
-    case RET_PO:
+    case LDH_Mn_A:
         //        ret_po(m_pc, m_sp, m_memory, m_flag_reg, cycles); TODO
         break;
     case POP_HL:
         pop(m_h_reg, m_l_reg, m_sp, m_memory, cycles);
         break;
-    case JP_PO:
+    case LD_MC_A:
         //        jp_po(m_pc, get_next_word(), m_flag_reg, cycles); TODO
-        break;
-    case EX_MSP_HL:
-        //        ex_msp_hl(m_sp, memory(), m_h_reg, m_l_reg, cycles); TODO
-        break;
-    case CALL_PO:
-        //        call_po(m_pc, m_sp, m_memory, get_next_word(), m_flag_reg, cycles); TODO
         break;
     case PUSH_HL:
         push_qq(m_h_reg, m_l_reg, m_sp, m_memory, cycles);
@@ -858,23 +824,14 @@ cyc Cpu::next_instruction()
     case RST_4:
         rst_4(m_pc, m_sp, m_memory, cycles);
         break;
-    case RET_PE:
+    case ADD_SP_n:
         //        ret_pe(m_pc, m_sp, m_memory, m_flag_reg, cycles); TODO
         break;
     case JP_MHL:
         jp_hl(m_pc, address_in_HL(), cycles);
         break;
-    case JP_PE:
+    case LD_Mnn_A:
         //        jp_pe(m_pc, get_next_word(), m_flag_reg, cycles); TODO
-        break;
-    case EX_DE_HL:
-        //        ex_de_hl(m_h_reg, m_l_reg, m_d_reg, m_e_reg, cycles); TODO
-        break;
-    case CALL_PE:
-        //        call_pe(m_pc, m_sp, m_memory, get_next_word(), m_flag_reg, cycles); TODO
-        break;
-    case EXTD:
-        //        next_extd_instruction(get_next_byte().farg, cycles); TODO
         break;
     case XOR_n:
         xor_n(m_acc_reg, get_next_byte(), m_flag_reg, cycles);
@@ -882,20 +839,17 @@ cyc Cpu::next_instruction()
     case RST_5:
         rst_5(m_pc, m_sp, m_memory, cycles);
         break;
-    case RET_P:
+    case LDH_A_Mn:
         //        ret_p(m_pc, m_sp, m_memory, m_flag_reg, cycles); TODO
         break;
     case POP_AF:
-        //        pop_af(m_flag_reg, m_acc_reg, m_sp, m_memory, cycles); TODO
+        pop_af(m_flag_reg, m_acc_reg, m_sp, m_memory, cycles);
         break;
-    case JP_P:
+    case LD_A_MC:
         //        jp_p(m_pc, get_next_word(), m_flag_reg, cycles); TODO
         break;
     case DI:
         di(m_iff1, m_iff2, cycles);
-        break;
-    case CALL_P:
-        //        call_p(m_pc, m_sp, m_memory, get_next_word(), m_flag_reg, cycles); TODO
         break;
     case PUSH_AF:
         push_af(m_flag_reg, m_acc_reg, m_sp, m_memory, cycles);
@@ -906,23 +860,17 @@ cyc Cpu::next_instruction()
     case RST_6:
         rst_6(m_pc, m_sp, m_memory, cycles);
         break;
-    case RET_M:
+    case LD_HL_SPpn:
         //        ret_m(m_pc, m_sp, m_memory, m_flag_reg, cycles); TODO
         break;
     case LD_SP_HL:
         ld_sp_hl(m_sp, address_in_HL(), cycles);
         break;
-    case JP_M:
+    case LD_A_Mnn:
         //        jp_m(m_pc, get_next_word(), m_flag_reg, cycles); TODO
         break;
     case EI:
         ei(m_iff1, m_iff2, cycles);
-        break;
-    case CALL_M:
-        //        call_m(m_pc, m_sp, m_memory, get_next_word(), m_flag_reg, cycles); TODO
-        break;
-    case IY:
-        //        next_ixy_instruction(get_next_byte().farg, m_iy_reg, cycles); TODO
         break;
     case CP_n:
         cp_n(m_acc_reg, get_next_byte(), m_flag_reg, cycles);
@@ -1086,28 +1034,28 @@ void Cpu::next_bits_instruction(u8 bits_opcode, cyc& cycles)
     case SRA_A:
         sra_r(m_acc_reg, m_flag_reg, cycles);
         break;
-    case SLL_B_UNDOC:
+    case SWAP_B:
         sll_r_undoc(m_b_reg, m_flag_reg, cycles);
         break;
-    case SLL_C_UNDOC:
+    case SWAP_C:
         sll_r_undoc(m_c_reg, m_flag_reg, cycles);
         break;
-    case SLL_D_UNDOC:
+    case SWAP_D:
         sll_r_undoc(m_d_reg, m_flag_reg, cycles);
         break;
-    case SLL_E_UNDOC:
+    case SWAP_E:
         sll_r_undoc(m_e_reg, m_flag_reg, cycles);
         break;
-    case SLL_H_UNDOC:
+    case SWAP_H:
         sll_r_undoc(m_h_reg, m_flag_reg, cycles);
         break;
-    case SLL_L_UNDOC:
+    case SWAP_L:
         sll_r_undoc(m_l_reg, m_flag_reg, cycles);
         break;
-    case SLL_MHL_UNDOC:
+    case SWAP_MHL:
         sll_MHL_undoc(m_memory, address_in_HL(), m_flag_reg, cycles);
         break;
-    case SLL_A_UNDOC:
+    case SWAP_A:
         sll_r_undoc(m_acc_reg, m_flag_reg, cycles);
         break;
     case SRL_B:
@@ -1745,31 +1693,6 @@ cyc Cpu::handle_maskable_interrupt_0(cyc cycles)
     return cycles;
 }
 
-cyc Cpu::handle_maskable_interrupt_1_2(cyc cycles)
-{
-    m_iff1 = m_iff2 = false;
-    m_is_interrupted = false;
-    m_is_halted = false;
-
-    switch (m_interrupt_mode) {
-    case InterruptMode::ZERO:
-        throw std::invalid_argument("Programming error: Should handle this mode somewhere else.");
-    case InterruptMode::ONE:
-        rst_7(m_pc, m_sp, m_memory, cycles);
-        cycles = 13;
-        break;
-    case InterruptMode::TWO:
-        //        const u16 address_of_interrupt_vector = to_u16(m_i_reg, m_instruction_from_interruptor); TODO
-        //        const u8 farg = m_memory.read(address_of_interrupt_vector);
-        //        const u8 sarg = m_memory.read(address_of_interrupt_vector + 1);
-        //        call(m_pc, m_sp, m_memory, { .farg = farg, .sarg = sarg }, cycles);
-        //        cycles = 19;
-        break;
-    }
-
-    return cycles;
-}
-
 NextByte Cpu::get_next_byte()
 {
     return {
@@ -1848,11 +1771,6 @@ u8 Cpu::f() const
 bool Cpu::is_interrupted() const
 {
     return m_is_interrupted;
-}
-
-InterruptMode Cpu::interrupt_mode() const
-{
-    return m_interrupt_mode;
 }
 
 bool Cpu::iff1() const

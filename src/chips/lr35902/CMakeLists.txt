@@ -14,10 +14,8 @@ set(SOURCES_LR35902_CPP
         instructions/daa.cpp
         instructions/dec.cpp
         instructions/di.cpp
-        instructions/djnz.cpp
         instructions/ei.cpp
         instructions/halt.cpp
-        instructions/im.cpp
         instructions/inc.cpp
         instructions/instruction_util.cpp
         instructions/jp.cpp
@@ -29,6 +27,7 @@ set(SOURCES_LR35902_CPP
         instructions/push.cpp
         instructions/res.cpp
         instructions/ret.cpp
+        instructions/reti.cpp
         instructions/rl.cpp
         instructions/rlc.cpp
         instructions/rr.cpp
@@ -41,7 +40,9 @@ set(SOURCES_LR35902_CPP
         instructions/sll.cpp
         instructions/sra.cpp
         instructions/srl.cpp
+        instructions/stop.cpp
         instructions/sub.cpp
+        instructions/swap.cpp
         instructions/xor.cpp
         )
 
@@ -50,7 +51,6 @@ set(SOURCES_LR35902_H
         disassembler.h
         flags.h
         util.h
-        interrupt_mode.h
         manual_state.h
         instructions/instruction_util.h
         instructions/instructions.h
