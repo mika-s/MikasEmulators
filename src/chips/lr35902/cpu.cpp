@@ -75,9 +75,8 @@ void Cpu::reset_state()
     m_pc = 0x100;
     m_sp = 0xfffe;
     m_is_halted = false;
-    m_iff1 = m_iff2 = false;
+    m_if = m_ie = false;
     m_is_interrupted = false;
-    m_is_nmi_interrupted = false;
     m_instruction_from_interruptor = 0;
 }
 
@@ -92,8 +91,8 @@ void Cpu::stop()
 
 void Cpu::set_state_manually(ManualState manual_state)
 {
-    m_iff1 = manual_state.m_iff1;
-    m_iff2 = manual_state.m_iff2;
+    m_if = manual_state.m_iff1;
+    m_ie = manual_state.m_iff2;
     m_sp = manual_state.m_sp;
     m_pc = manual_state.m_pc;
     m_acc_reg = manual_state.m_acc_reg;
@@ -112,14 +111,9 @@ void Cpu::interrupt(u8 instruction_to_perform)
     m_instruction_from_interruptor = instruction_to_perform;
 }
 
-void Cpu::nmi_interrupt()
-{
-    m_is_nmi_interrupted = true;
-}
-
 bool Cpu::is_inta() const
 {
-    return m_iff1;
+    return m_if;
 }
 
 void Cpu::input([[maybe_unused]] u16 port, [[maybe_unused]] u8 value)
@@ -130,9 +124,7 @@ cyc Cpu::next_instruction()
 {
     cyc cycles = 0;
 
-    if (m_is_nmi_interrupted) {
-        return handle_nonmaskable_interrupt(cycles);
-    } else if (m_iff1 && m_is_interrupted) {
+    if (m_if && m_is_interrupted) {
         cycles += handle_maskable_interrupt_0(cycles);
     } else if (m_is_halted) {
         return 4; // TODO: What is the proper value while NOPing during halt?
@@ -168,7 +160,7 @@ cyc Cpu::next_instruction()
         rlca(m_acc_reg, m_flag_reg, cycles);
         break;
     case LD_Mnn_SP:
-        //        ex(m_acc_reg, m_flag_reg, m_acc_p_reg, m_flag_p_reg, cycles); TODO
+        ld_Mnn_sp(m_sp, m_memory, get_next_word(), cycles);
         break;
     case ADD_HL_BC:
         add_HL_ss(m_h_reg, m_l_reg, to_u16(m_b_reg, m_c_reg), m_flag_reg, cycles);
@@ -808,12 +800,14 @@ cyc Cpu::next_instruction()
         break;
     case LDH_Mn_A:
         //        ret_po(m_pc, m_sp, m_memory, m_flag_reg, cycles); TODO
+        throw UnrecognizedOpcodeException(m_opcode);
         break;
     case POP_HL:
         pop(m_h_reg, m_l_reg, m_sp, m_memory, cycles);
         break;
     case LD_MC_A:
         //        jp_po(m_pc, get_next_word(), m_flag_reg, cycles); TODO
+        throw UnrecognizedOpcodeException(m_opcode);
         break;
     case PUSH_HL:
         push_qq(m_h_reg, m_l_reg, m_sp, m_memory, cycles);
@@ -826,12 +820,13 @@ cyc Cpu::next_instruction()
         break;
     case ADD_SP_n:
         //        ret_pe(m_pc, m_sp, m_memory, m_flag_reg, cycles); TODO
+        throw UnrecognizedOpcodeException(m_opcode);
         break;
     case JP_MHL:
         jp_hl(m_pc, address_in_HL(), cycles);
         break;
     case LD_Mnn_A:
-        //        jp_pe(m_pc, get_next_word(), m_flag_reg, cycles); TODO
+        ld_Mnn_A(m_acc_reg, m_memory, get_next_word(), cycles);
         break;
     case XOR_n:
         xor_n(m_acc_reg, get_next_byte(), m_flag_reg, cycles);
@@ -841,15 +836,17 @@ cyc Cpu::next_instruction()
         break;
     case LDH_A_Mn:
         //        ret_p(m_pc, m_sp, m_memory, m_flag_reg, cycles); TODO
+        throw UnrecognizedOpcodeException(m_opcode);
         break;
     case POP_AF:
         pop_af(m_flag_reg, m_acc_reg, m_sp, m_memory, cycles);
         break;
     case LD_A_MC:
         //        jp_p(m_pc, get_next_word(), m_flag_reg, cycles); TODO
+        throw UnrecognizedOpcodeException(m_opcode);
         break;
     case DI:
-        di(m_iff1, m_iff2, cycles);
+        di(m_if, m_ie, cycles);
         break;
     case PUSH_AF:
         push_af(m_flag_reg, m_acc_reg, m_sp, m_memory, cycles);
@@ -862,6 +859,7 @@ cyc Cpu::next_instruction()
         break;
     case LD_HL_SPpn:
         //        ret_m(m_pc, m_sp, m_memory, m_flag_reg, cycles); TODO
+        throw UnrecognizedOpcodeException(m_opcode);
         break;
     case LD_SP_HL:
         ld_sp_hl(m_sp, address_in_HL(), cycles);
@@ -870,7 +868,7 @@ cyc Cpu::next_instruction()
         ld_A_Mnn(m_acc_reg, m_memory, get_next_word(), cycles);
         break;
     case EI:
-        ei(m_iff1, m_iff2, cycles);
+        ei(m_if, m_ie, cycles);
         break;
     case CP_n:
         cp_n(m_acc_reg, get_next_byte(), m_flag_reg, cycles);
@@ -1663,27 +1661,9 @@ void Cpu::next_bits_instruction(u8 bits_opcode, cyc& cycles)
     }
 }
 
-cyc Cpu::handle_nonmaskable_interrupt(cyc cycles)
-{
-    m_iff2 = m_iff1;
-    m_iff1 = false;
-    m_is_nmi_interrupted = false;
-    m_is_halted = false;
-
-    nmi(m_pc, m_sp, m_memory, cycles);
-
-    return cycles;
-}
-
-void Cpu::nonmaskable_interrupt_finished()
-{
-    m_iff1 = m_iff2;
-    m_was_nmi_interrupted = false;
-}
-
 cyc Cpu::handle_maskable_interrupt_0(cyc cycles)
 {
-    m_iff1 = m_iff2 = false;
+    m_if = m_ie = false;
     m_is_interrupted = false;
     m_is_halted = false;
 
@@ -1773,14 +1753,14 @@ bool Cpu::is_interrupted() const
     return m_is_interrupted;
 }
 
-bool Cpu::iff1() const
+bool Cpu::if_() const
 {
-    return m_iff1;
+    return m_if;
 }
 
-bool Cpu::iff2() const
+bool Cpu::ie() const
 {
-    return m_iff2;
+    return m_ie;
 }
 
 void Cpu::notify_out_observers(u8 port)

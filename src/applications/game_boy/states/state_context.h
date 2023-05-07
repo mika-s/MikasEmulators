@@ -19,7 +19,7 @@ class DebugContainer;
 template<class A, std::size_t B>
 class Debugger;
 }
-namespace emu::z80 {
+namespace emu::lr35902 {
 class Cpu;
 }
 namespace emu::logging {
@@ -35,7 +35,7 @@ class Governor;
 
 namespace emu::applications::game_boy {
 
-using emu::z80::Cpu;
+using emu::lr35902::Cpu;
 using emu::memory::EmulatorMemory;
 using emu::misc::Governor;
 

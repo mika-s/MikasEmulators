@@ -1,5 +1,4 @@
 #include "disassembler.h"
-#include "crosscutting/exceptions/unrecognized_opcode_exception.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/util/string_util.h"
 #include "instructions/instructions.h"
@@ -8,7 +7,6 @@
 
 namespace emu::lr35902 {
 
-using emu::exceptions::UnrecognizedOpcodeException;
 using emu::util::string::hexify;
 using emu::util::string::hexify_wo_0x;
 
@@ -33,6 +31,11 @@ void Disassembler::print_next_instruction()
     m_ostream << hexify_wo_0x(m_pc, 4) << "\t\t";
 
     m_opcode = get_next_byte().farg;
+
+    if (0x0104 <= m_pc && m_pc <= 0x014f + 1) {
+        print_cartridge_header();
+        return;
+    }
 
     switch (m_opcode) {
     case NOP:
@@ -138,7 +141,7 @@ void Disassembler::print_next_instruction()
         print_ld_dd_nn(m_ostream, "HL", get_next_word());
         break;
     case LD_MHLp_A:
-        print_ld_Mnn_dd(m_ostream, get_next_word(), "HL");
+        print_ld_Mnn_dd(m_ostream, get_next_word(), "HL");  // TODO
         break;
     case INC_HL:
         print_inc(m_ostream, "HL");
@@ -699,13 +702,13 @@ void Disassembler::print_next_instruction()
         print_rst(m_ostream, 3);
         break;
     case LDH_Mn_A:
-        print_ret(m_ostream, "PO");
+        print_ld(m_ostream, "", ""); // TODO
         break;
     case POP_HL:
         print_pop(m_ostream, "HL");
         break;
     case LD_MC_A:
-        print_jp_cc_nn(m_ostream, get_next_word(), "PO");
+        print_ld(m_ostream, "(C)", "A");
         break;
     case PUSH_HL:
         print_push(m_ostream, "HL");
@@ -717,13 +720,13 @@ void Disassembler::print_next_instruction()
         print_rst(m_ostream, 4);
         break;
     case ADD_SP_n:
-        print_ret(m_ostream, "PE");
+        print_add_r_n(m_ostream, "SP", get_next_byte());
         break;
     case JP_MHL:
         print_jp_Mss(m_ostream, "HL");
         break;
     case LD_Mnn_A:
-        print_jp_cc_nn(m_ostream, get_next_word(), "PE");
+        print_ld_Mnn_dd(m_ostream, get_next_word(), "A");
         break;
     case XOR_n:
         print_xor_n(m_ostream, get_next_byte());
@@ -732,7 +735,7 @@ void Disassembler::print_next_instruction()
         print_rst(m_ostream, 5);
         break;
     case LDH_A_Mn:
-        print_ret(m_ostream, "P");
+        print_ret(m_ostream, "P");  // TODO
         break;
     case POP_AF:
         print_pop(m_ostream, "AF");
@@ -759,7 +762,7 @@ void Disassembler::print_next_instruction()
         print_ld(m_ostream, "SP", "HL");
         break;
     case LD_A_Mnn:
-        print_jp_cc_nn(m_ostream, get_next_word(), "M");
+        print_ld(m_ostream, "A", get_next_word());
         break;
     case EI:
         print_ei(m_ostream);
@@ -771,7 +774,8 @@ void Disassembler::print_next_instruction()
         print_rst(m_ostream, 7);
         break;
     default:
-        throw UnrecognizedOpcodeException(m_opcode);
+        m_ostream << "db " << hexify_wo_0x(m_opcode);
+        break;
     }
 
     m_ostream << "\n";
@@ -1549,8 +1553,201 @@ void Disassembler::print_next_bits_instruction(u8 bits_opcode)
         print_set(m_ostream, 7, "A");
         break;
     default:
-        m_ostream << hexify(bits_opcode) << " (data)";
+        m_ostream << "db " << hexify_wo_0x(bits_opcode);
         break;
+    }
+}
+
+void Disassembler::print_cartridge_header()
+{
+    if (0x0104 <= m_pc && m_pc <= 0x0133 + 1) { // Nintendo logo
+        m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Nintendo logo)\n";
+    } else if (0x0134 <= m_pc && m_pc <= 0x0142 + 1) { // Title
+        m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Title)\n";
+    } else if (0x0143 + 1 == m_pc) { // Color / not color
+        m_ostream << "db " << hexify_wo_0x(m_opcode) << (m_opcode == 0x80 ? " (color GB)\n" : " (not color GB)\n");
+    } else if (0x0144 <= m_pc && m_pc <= 0x0145 + 1) { // New licensee code
+        m_ostream << "db " << hexify_wo_0x(m_opcode) << " (New licensee code)\n";
+    } else if (0x0146 + 1 == m_pc) { // GB / SGB indicator
+        m_ostream << "db " << hexify_wo_0x(m_opcode) << (m_opcode == 0x03 ? " (SGB)\n" : " (GB)\n");
+    } else if (0x0147 + 1 == m_pc) { // Cartridge type
+        switch (m_opcode) {
+        case 0x00:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Cartridge type: ROM ONLY)\n";
+            break;
+        case 0x01:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Cartridge type: MBC1)\n";
+            break;
+        case 0x02:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Cartridge type: MBC1+RAM)\n";
+            break;
+        case 0x03:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Cartridge type: MBC1+RAM+BATTERY)\n";
+            break;
+        case 0x05:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Cartridge type: MBC2)\n";
+            break;
+        case 0x06:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Cartridge type: MBC2+BATTERY)\n";
+            break;
+        case 0x08:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Cartridge type: ROM+RAM)\n";
+            break;
+        case 0x09:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Cartridge type: ROM+RAM+BATTER)\n";
+            break;
+        case 0x0b:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Cartridge type: MMM01)\n";
+            break;
+        case 0x0c:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Cartridge type: MMM01+RAM)\n";
+            break;
+        case 0x0d:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Cartridge type: MMM01+RAM+BATTERY)\n";
+            break;
+        case 0x0f:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Cartridge type: MBC3+TIMER+BATTERY)\n";
+            break;
+        case 0x10:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Cartridge type: MBC3+TIMER+RAM+BATTERY)\n";
+            break;
+        case 0x11:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Cartridge type: MBC3)\n";
+            break;
+        case 0x12:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Cartridge type: MBC3+RAM)\n";
+            break;
+        case 0x13:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Cartridge type: MBC3+RAM+BATTERY)\n";
+            break;
+        case 0x19:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Cartridge type: MBC5)\n";
+            break;
+        case 0x1a:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Cartridge type: MBC5+RAM)\n";
+            break;
+        case 0x1b:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Cartridge type: MBC5+RAM+BATTERY)\n";
+            break;
+        case 0x1c:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Cartridge type: MBC5+RUMBLE)\n";
+            break;
+        case 0x1d:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Cartridge type: MBC5+RUMBLE+RAM)\n";
+            break;
+        case 0x1e:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Cartridge type: MBC5+RUMBLE+RAM+BATTERY)\n";
+            break;
+        case 0x20:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Cartridge type: MBC6)\n";
+            break;
+        case 0x22:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Cartridge type: MBC7+SENSOR+RUMBLE+RAM+BATTERY)\n";
+            break;
+        case 0xfc:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Cartridge type: POCKET CAMERA)\n";
+            break;
+        case 0xfd:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Cartridge type: BANDAI TAMA5)\n";
+            break;
+        case 0xfe:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Cartridge type: HuC3)\n";
+            break;
+        case 0xff:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Cartridge type: HuC1+RAM+BATTERY)\n";
+            break;
+        default:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Cartridge type: Unknown)\n";
+            break;
+        }
+    } else if (0x0148 + 1 == m_pc) { // ROM size
+        switch (m_opcode) {
+        case 0x00:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (ROM size: 32KByte (no ROM banking))\n";
+            break;
+        case 0x01:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (ROM size: 64KByte (4 banks))\n";
+            break;
+        case 0x02:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (ROM size: 128KByte (8 banks))\n";
+            break;
+        case 0x03:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (ROM size: 256KByte (16 banks))\n";
+            break;
+        case 0x04:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (ROM size: 512KByte (32 banks))\n";
+            break;
+        case 0x05:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (ROM size: 1MByte (64 banks)  - only 63 banks used by MBC1)\n";
+            break;
+        case 0x06:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (ROM size: 2MByte (128 banks) - only 125 banks used by MBC1)\n";
+            break;
+        case 0x07:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (ROM size: 4MByte (256 banks))\n";
+            break;
+        case 0x08:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (ROM size: 8MByte (512 banks))\n";
+            break;
+        case 0x52:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (ROM size: 1.1MByte (72 banks))\n";
+            break;
+        case 0x53:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (ROM size: 1.2MByte (80 banks))\n";
+            break;
+        case 0x54:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (ROM size: 1.5MByte (96 banks))\n";
+            break;
+        default:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (ROM size: Unknown)\n";
+            break;
+        }
+    } else if (0x0149 + 1 == m_pc) { // RAM size
+        switch (m_opcode) {
+        case 0x00:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (RAM size: None)\n";
+            break;
+        case 0x01:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (RAM size: 2 KBytes)\n";
+            break;
+        case 0x02:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (RAM size: 8 KBytes)\n";
+            break;
+        case 0x03:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (RAM size: 32 KBytes (4 banks of 8KBytes each))\n";
+            break;
+        case 0x04:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (RAM size: 128 KBytes (16 banks of 8KBytes each))\n";
+            break;
+        case 0x05:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (RAM size: 64 KBytes (8 banks of 8KBytes each))\n";
+            break;
+        default:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (RAM size: Unknown)\n";
+            break;
+        }
+    } else if (0x014a + 1 == m_pc) { // Destination code
+        switch (m_opcode) {
+        case 0x00:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Destination code: Japanese)\n";
+            break;
+        case 0x01:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Destination code: Non-Japanese)\n";
+            break;
+        default:
+            m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Destination code: Unknown)\n";
+            break;
+        }
+    } else if (0x014b + 1 == m_pc) { // Old licensee code
+        m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Old licensee code)\n";
+    } else if (0x014c + 1 == m_pc) { // Mask ROM version number
+        m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Mask ROM version number)\n";
+    } else if (0x014d + 1 == m_pc) { // Header checksum
+        m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Header checksum)\n";
+    } else if (0x014e <= m_pc && m_pc <= 0x014f + 1) { // Global checksum
+        m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Global checksum)\n";
+    } else {
+        m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Description not implemented yet)\n";
     }
 }
 

@@ -31,7 +31,7 @@ void ld_M(EmulatorMemory<u16, u8>& memory, u16 address, u8 value)
 }
 
 /**
- * Load from register to register
+ * Load from register into register
  * <ul>
  *   <li>Size: 1</li>
  *   <li>Cycles: 1</li>
@@ -165,7 +165,7 @@ void ld_A_I(u8& acc_reg, u8 i_reg, Flags& flag_reg, bool iff2, cyc& cycles)
 }
 
 /**
- * Load from memory into register
+ * Load from memory into the accumulator
  * <ul>
  *   <li>Size: 1</li>
  *   <li>Cycles: 2</li>
@@ -226,7 +226,7 @@ void ld_I_A(u8& i_reg, u8 acc_reg, cyc& cycles)
 }
 
 /**
- * Load from the R register, into the accumulator
+ * Load from the accumulator, into the R register
  * <ul>
  *   <li>Size: 2</li>
  *   <li>Cycles: 2</li>
@@ -279,7 +279,7 @@ void ld_A_R(u8& acc_reg, u8 r_reg, Flags& flag_reg, bool iff2, cyc& cycles)
 }
 
 /**
- * Load register into memory at HL's address
+ * Load the accumulator into memory at HL's address
  * <ul>
  *   <li>Size: 2</li>
  *   <li>Cycles: 2</li>
@@ -299,7 +299,7 @@ void ld_Mss_A(EmulatorMemory<u16, u8>& memory, u16 address, u8 acc_reg, cyc& cyc
 }
 
 /**
- * Load memory at address nn into the accumulator
+ * Load the accumulator into the memory at address nn
  * <ul>
  *   <li>Size: 3</li>
  *   <li>Cycles: 4</li>

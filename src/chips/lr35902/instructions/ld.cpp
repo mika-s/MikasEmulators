@@ -172,7 +172,7 @@ void ld_A_Mnn(u8& acc_reg, EmulatorMemory<u16, u8> const& memory, NextWord const
 }
 
 /**
- * Load register into memory at HL's address
+ * Load the accumulator into memory at HL's address
  * <ul>
  *   <li>Size: 2</li>
  *   <li>Cycles: 2</li>
@@ -192,7 +192,7 @@ void ld_Mss_A(EmulatorMemory<u16, u8>& memory, u16 address, u8 acc_reg, cyc& cyc
 }
 
 /**
- * Load memory at address nn into the accumulator
+ * Load the accumulator memory at address nn
  * <ul>
  *   <li>Size: 3</li>
  *   <li>Cycles: 4</li>

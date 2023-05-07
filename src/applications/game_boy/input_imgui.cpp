@@ -46,44 +46,45 @@ void InputImgui::read(GuiIo& gui_io, std::shared_ptr<MemoryMappedIoForGameBoy> m
                 break;
             case SDL_KEYUP:
                 switch (read_input_event.key.keysym.scancode) {
-                case s_credit:
-                    memory_mapped_io->in0_read(7, true);
-                    break;
-                case s_insert_coin_p1:
-                    memory_mapped_io->in0_read(5, true);
-                    break;
-                case s_insert_coin_p2:
-                    memory_mapped_io->in0_read(6, true);
-                    break;
                 case s_p1_start:
-                    memory_mapped_io->in1_read(5, true);
+                    memory_mapped_io->p1(5, false);
+                    memory_mapped_io->p1(4, true);
+                    memory_mapped_io->p1(3, false);
                     break;
-                case s_p1_up:
-                    memory_mapped_io->in0_read(0, true);
+                case s_p1_select:
+                    memory_mapped_io->p1(5, false);
+                    memory_mapped_io->p1(4, true);
+                    memory_mapped_io->p1(2, false);
                     break;
-                case s_p1_down:
-                    memory_mapped_io->in0_read(3, true);
+                case s_up:
+                    memory_mapped_io->p1(5, true);
+                    memory_mapped_io->p1(4, false);
+                    memory_mapped_io->p1(0, false);
                     break;
-                case s_p1_left:
-                    memory_mapped_io->in0_read(1, true);
+                case s_down:
+                    memory_mapped_io->p1(5, true);
+                    memory_mapped_io->p1(4, false);
+                    memory_mapped_io->p1(3, false);
                     break;
-                case s_p1_right:
-                    memory_mapped_io->in0_read(2, true);
+                case s_left:
+                    memory_mapped_io->p1(5, true);
+                    memory_mapped_io->p1(4, false);
+                    memory_mapped_io->p1(1, false);
                     break;
-                case s_p2_start:
-                    memory_mapped_io->in1_read(6, true);
+                case s_right:
+                    memory_mapped_io->p1(5, true);
+                    memory_mapped_io->p1(4, false);
+                    memory_mapped_io->p1(0, false);
                     break;
-                case s_p2_up:
-                    memory_mapped_io->in1_read(0, true);
+                case s_a:
+                    memory_mapped_io->p1(5, false);
+                    memory_mapped_io->p1(4, true);
+                    memory_mapped_io->p1(1, false);
                     break;
-                case s_p2_down:
-                    memory_mapped_io->in1_read(3, true);
-                    break;
-                case s_p2_left:
-                    memory_mapped_io->in1_read(1, true);
-                    break;
-                case s_p2_right:
-                    memory_mapped_io->in1_read(2, true);
+                case s_b:
+                    memory_mapped_io->p1(5, false);
+                    memory_mapped_io->p1(4, true);
+                    memory_mapped_io->p1(0, false);
                     break;
                 default:
                     break;
@@ -103,44 +104,45 @@ void InputImgui::read(GuiIo& gui_io, std::shared_ptr<MemoryMappedIoForGameBoy> m
                 case s_pause:
                     gui_io.m_is_toggling_pause = true;
                     break;
-                case s_credit:
-                    memory_mapped_io->in0_read(7, false);
-                    break;
-                case s_insert_coin_p1:
-                    memory_mapped_io->in0_read(5, false);
-                    break;
-                case s_insert_coin_p2:
-                    memory_mapped_io->in0_read(6, false);
-                    break;
                 case s_p1_start:
-                    memory_mapped_io->in1_read(5, false);
+                    memory_mapped_io->p1(5, true);
+                    memory_mapped_io->p1(4, false);
+                    memory_mapped_io->p1(3, true);
                     break;
-                case s_p1_up:
-                    memory_mapped_io->in0_read(0, false);
+                case s_p1_select:
+                    memory_mapped_io->p1(5, true);
+                    memory_mapped_io->p1(4, false);
+                    memory_mapped_io->p1(2, true);
                     break;
-                case s_p1_down:
-                    memory_mapped_io->in0_read(3, false);
+                case s_up:
+                    memory_mapped_io->p1(5, false);
+                    memory_mapped_io->p1(4, true);
+                    memory_mapped_io->p1(0, true);
                     break;
-                case s_p1_left:
-                    memory_mapped_io->in0_read(1, false);
+                case s_down:
+                    memory_mapped_io->p1(5, false);
+                    memory_mapped_io->p1(4, true);
+                    memory_mapped_io->p1(3, true);
                     break;
-                case s_p1_right:
-                    memory_mapped_io->in0_read(2, false);
+                case s_left:
+                    memory_mapped_io->p1(5, false);
+                    memory_mapped_io->p1(4, true);
+                    memory_mapped_io->p1(1, true);
                     break;
-                case s_p2_start:
-                    memory_mapped_io->in1_read(6, false);
+                case s_right:
+                    memory_mapped_io->p1(5, false);
+                    memory_mapped_io->p1(4, true);
+                    memory_mapped_io->p1(0, true);
                     break;
-                case s_p2_up:
-                    memory_mapped_io->in1_read(0, false);
+                case s_a:
+                    memory_mapped_io->p1(5, true);
+                    memory_mapped_io->p1(4, false);
+                    memory_mapped_io->p1(1, true);
                     break;
-                case s_p2_down:
-                    memory_mapped_io->in1_read(3, false);
-                    break;
-                case s_p2_left:
-                    memory_mapped_io->in1_read(1, false);
-                    break;
-                case s_p2_right:
-                    memory_mapped_io->in1_read(2, false);
+                case s_b:
+                    memory_mapped_io->p1(5, true);
+                    memory_mapped_io->p1(4, false);
+                    memory_mapped_io->p1(0, true);
                     break;
                 default:
                     break;

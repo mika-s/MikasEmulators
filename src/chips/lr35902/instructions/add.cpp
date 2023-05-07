@@ -125,8 +125,6 @@ void add_HL_ss(u8& h_reg, u8& l_reg, u16 value, Flags& flag_reg, cyc& cycles)
     cycles = 11;
 }
 
-/******************************** END OF FUNCTIONS FOR UNDOCUMENTED INSTRUCTIONS **********************************/
-
 void print_add(std::ostream& ostream, std::string const& dest, std::string const& src)
 {
     ostream << "ADD "

@@ -59,7 +59,6 @@ public:
         std::vector<u8> const& tile_ram,
         std::vector<u8> const& sprite_ram,
         std::vector<u8> const& palette_ram,
-        bool is_screen_flipped,
         std::string const& game_window_subtitle)
         = 0;
 
@@ -114,32 +113,19 @@ protected:
     static constexpr unsigned int s_sprite_offset_col_rotation_number = 5;
     static constexpr unsigned int s_sprite_number_of_rotations = 4;
 
-    // Border
-    static constexpr int s_border_size_in_tiles = 2;
-    static constexpr int s_width_invisible_border = s_border_size_in_tiles * s_tile_size;
-    static constexpr int s_width_both_borders = 2 * s_width_invisible_border;
-
     // Visible area
-    static constexpr u16 s_playarea_start_address_offset = 0x0040;
-    static constexpr u16 s_playarea_stop_address_offset = 0x03bf;
-    static constexpr u16 s_topbar_r1_start_address_offset = 0x03df;
-    static constexpr u16 s_topbar_r1_stop_address_offset = 0x03c0;
-    static constexpr u16 s_topbar_r2_start_address_offset = 0x03ff;
-    static constexpr u16 s_topbar_r2_stop_address_offset = 0x03e0;
-    static constexpr u16 s_bottombar_r1_start_address_offset = 0x001f;
-    static constexpr u16 s_bottombar_r1_stop_address_offset = 0x0000;
-    static constexpr u16 s_bottombar_r2_start_address_offset = 0x003f;
-    static constexpr u16 s_bottombar_r2_stop_address_offset = 0x0020;
-    static constexpr int s_visible_area_start_row = 2;
-    static constexpr int s_visible_area_width_in_tiles = 28;
+    static constexpr u16 s_tile_set1_part1_address_offset = 0x8000;
+    static constexpr u16 s_tile_set1_part2_address_offset = 0x8800;
+    static constexpr u16 s_tile_set2_part1_address_offset = 0x9000;
+    static constexpr u16 s_tile_set2_part2_address_offset = 0x9000;
+    static constexpr int s_visible_area_width_in_tiles = 20;
     static constexpr int s_width_visible_area = s_visible_area_width_in_tiles * s_tile_size;
-    static constexpr int s_visible_area_height_in_tiles = 36;
+    static constexpr int s_visible_area_height_in_tiles = 18;
     static constexpr int s_height_visible_area = s_visible_area_height_in_tiles * s_tile_size;
-    static constexpr int s_bottombar_start_row = 34;
-    static constexpr int s_play_area_height_in_tiles = 32;
 
     // Final width and height
-    static constexpr int s_width = s_width_visible_area + s_width_both_borders;
+    // Resolution: 160x144 (20x18 tiles)
+    static constexpr int s_width = s_width_visible_area;
     static constexpr int s_height = s_height_visible_area;
 
     static constexpr float s_scale = 4.0;
@@ -175,16 +161,6 @@ protected:
         std::vector<u8> const& tile_ram,
         std::vector<u8> const& palette_ram);
 
-    void render_top_bar(
-        Framebuffer& screen,
-        std::vector<u8> const& tile_ram,
-        std::vector<u8> const& palette_ram);
-
-    void render_bottom_bar(
-        Framebuffer& screen,
-        std::vector<u8> const& tile_ram,
-        std::vector<u8> const& palette_ram);
-
     std::shared_ptr<Tile> render_tile(u8 palette_idx, u8 tile_idx);
 
     std::shared_ptr<Tile> render_debugging_tile(u8 tile_idx);
@@ -197,12 +173,9 @@ protected:
 
     void draw_sprites(Framebuffer& screen, std::vector<u8> const& sprite_ram);
 
-    static void draw_edges(Framebuffer& screen);
-
     std::vector<u32> create_framebuffer(
         std::vector<u8> const& tile_ram,
         std::vector<u8> const& sprite_ram,
-        std::vector<u8> const& palette_ram,
-        bool is_screen_flipped);
+        std::vector<u8> const& palette_ram);
 };
 }

@@ -1,10 +1,9 @@
 #include "stepping_state.h"
-#include "applications/game_boy/audio.h"
 #include "applications/game_boy/gui.h"
 #include "applications/game_boy/gui_io.h"
 #include "applications/game_boy/interfaces/input.h"
 #include "applications/game_boy/memory_mapped_io_for_game_boy.h"
-#include "chips/z80/cpu.h"
+#include "chips/lr35902/cpu.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/typedefs.h"
 #include "state_context.h"
@@ -79,8 +78,8 @@ void SteppingState::perform(cyc& cycles)
             transition_to_run();
             return;
         }
-        m_ctx->m_gui->update_screen(tile_ram(), sprite_ram(), palette_ram(), m_ctx->m_memory_mapped_io->is_screen_flipped(), s_game_window_subtitle);
-        m_ctx->m_audio->handle_sound(m_ctx->m_memory_mapped_io->is_sound_enabled(), m_ctx->m_memory_mapped_io->voices());
+        m_ctx->m_gui->update_screen(tile_ram(), sprite_ram(), palette_ram(), s_game_window_subtitle);
+        //        m_ctx->m_audio->handle_sound(m_ctx->m_memory_mapped_io->is_sound_enabled(), m_ctx->m_memory_mapped_io->voices());
     }
 
     m_is_stepping_cycle = false;

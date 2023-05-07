@@ -1,6 +1,6 @@
 #pragma once
 
-#include "chips/z80/interfaces/out_observer.h"
+#include "chips/lr35902/interfaces/out_observer.h"
 #include "crosscutting/misc/governor.h"
 #include "crosscutting/misc/sdl_counter.h"
 #include "crosscutting/misc/session.h"
@@ -38,7 +38,7 @@ namespace emu::memory {
 template<class A, class D>
 class EmulatorMemory;
 }
-namespace emu::z80 {
+namespace emu::lr35902 {
 class Cpu;
 class InObserver;
 }
@@ -54,9 +54,9 @@ using emu::memory::EmulatorMemory;
 using emu::misc::Governor;
 using emu::misc::sdl_get_ticks_high_performance;
 using emu::misc::Session;
-using emu::z80::Cpu;
-using emu::z80::InObserver;
-using emu::z80::OutObserver;
+using emu::lr35902::Cpu;
+using emu::lr35902::InObserver;
+using emu::lr35902::OutObserver;
 
 class GameBoySession
     : public Session

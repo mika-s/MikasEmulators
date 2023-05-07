@@ -34,6 +34,8 @@ private:
 
     void print_next_bits_instruction(u8 bits_opcode);
 
+    void print_cartridge_header();
+
     NextByte get_next_byte();
 
     NextWord get_next_word();

@@ -4,7 +4,6 @@
 #include "game_boy/gui.h"
 #include "game_boy/gui_io.h"
 #include "game_boy/interfaces/input.h"
-#include "game_boy/memory_mapped_io_for_game_boy.h"
 #include "state_context.h"
 #include <utility>
 
@@ -51,7 +50,7 @@ void PausedState::perform([[maybe_unused]] cyc& cycles)
             transition_to_run();
             return;
         }
-        m_ctx->m_gui->update_screen(tile_ram(), sprite_ram(), palette_ram(), m_ctx->m_memory_mapped_io->is_screen_flipped(), s_game_window_subtitle);
+        m_ctx->m_gui->update_screen(tile_ram(), sprite_ram(), palette_ram(), s_game_window_subtitle);
     }
 }
 

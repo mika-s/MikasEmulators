@@ -33,21 +33,14 @@ private:
     static constexpr SDL_Scancode s_step_cycle = SDL_SCANCODE_F8;
     static constexpr SDL_Scancode s_continue_running = SDL_SCANCODE_F9;
 
-    static constexpr SDL_Scancode s_credit = SDL_SCANCODE_X;
-    static constexpr SDL_Scancode s_insert_coin_p1 = SDL_SCANCODE_C;
-    static constexpr SDL_Scancode s_insert_coin_p2 = SDL_SCANCODE_V;
-
     static constexpr SDL_Scancode s_p1_start = SDL_SCANCODE_RETURN;
-    static constexpr SDL_Scancode s_p1_up = SDL_SCANCODE_W;
-    static constexpr SDL_Scancode s_p1_down = SDL_SCANCODE_S;
-    static constexpr SDL_Scancode s_p1_left = SDL_SCANCODE_A;
-    static constexpr SDL_Scancode s_p1_right = SDL_SCANCODE_D;
-
-    static constexpr SDL_Scancode s_p2_start = SDL_SCANCODE_RSHIFT;
-    static constexpr SDL_Scancode s_p2_up = SDL_SCANCODE_UP;
-    static constexpr SDL_Scancode s_p2_down = SDL_SCANCODE_DOWN;
-    static constexpr SDL_Scancode s_p2_left = SDL_SCANCODE_LEFT;
-    static constexpr SDL_Scancode s_p2_right = SDL_SCANCODE_RIGHT;
+    static constexpr SDL_Scancode s_p1_select = SDL_SCANCODE_RSHIFT;
+    static constexpr SDL_Scancode s_up = SDL_SCANCODE_W;
+    static constexpr SDL_Scancode s_down = SDL_SCANCODE_S;
+    static constexpr SDL_Scancode s_left = SDL_SCANCODE_A;
+    static constexpr SDL_Scancode s_right = SDL_SCANCODE_D;
+    static constexpr SDL_Scancode s_a = SDL_SCANCODE_RALT;
+    static constexpr SDL_Scancode s_b = SDL_SCANCODE_RCTRL;
 
     std::vector<KeyObserver*> m_io_observers;
 

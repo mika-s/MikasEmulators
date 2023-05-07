@@ -1,8 +1,6 @@
 #include "game_boy.h"
-#include "audio.h"
 #include "crosscutting/util/file_util.h"
 #include "game_boy_session.h"
-#include "gui.h"
 #include "gui_imgui.h"
 #include "gui_sdl.h"
 #include "input_imgui.h"
@@ -59,31 +57,21 @@ std::vector<u8> create_empty_vector(std::size_t size)
 
 void GameBoy::load_files()
 {
-    const std::string directory = "roms/z80/pacman/";
-    m_memory.add(read_file_into_vector(directory + "pacman.6e")); // $0000-$0fff: pacman.6e, code
-    m_memory.add(read_file_into_vector(directory + "pacman.6f")); // $1000-$1fff: pacman.6f, code
-    m_memory.add(read_file_into_vector(directory + "pacman.6h")); // $2000-$2fff: pacman.6h, code
-    m_memory.add(read_file_into_vector(directory + "pacman.6j")); // $3000-$3fff: pacman.6j, code
-    m_memory.add(create_empty_vector(0x43ff - 0x4000 + 1));       // $4000-$43ff: tile RAM
-    m_memory.add(create_empty_vector(0x47ff - 0x4400 + 1));       // $4400-$47ff: palette RAM
-    m_memory.add(create_empty_vector(0x4fef - 0x4800 + 1));       // $4800-$4fef: RAM
-    m_memory.add(create_empty_vector(0x4fff - 0x4ff0 + 1));       // $4ff0-$4fff: sprite RAM
-    m_memory.add(create_empty_vector(0x50ff - 0x5000 + 1));       // $5000-$50ff: memory-mapped IO
+    const std::string directory = "roms/game_boy/";
+    m_memory.add(read_file_into_vector(directory + "cpu_instrs.gb")); // $0000-$3fff: cpu_instrs.gb: cartridge, hardcoded tests
 
-    m_color_rom.add(read_file_into_vector(directory + "82s123.7f"));   // $0000-$0020: 82s123.7f, colors
-    m_palette_rom.add(read_file_into_vector(directory + "82s126.4a")); // $0000-$00ff: 82s126.4a, palettes
-    m_tile_rom.add(read_file_into_vector(directory + "pacman.5e"));    // $0000-$0fff: pacman.5e, tiles
-    m_sprite_rom.add(read_file_into_vector(directory + "pacman.5f"));  // $0000-$0fff: pacman.5f, sprites
-    m_sound_rom1.add(read_file_into_vector(directory + "82s126.1m"));  // $0000-$00ff: 82s126.1m, sound 1
-    m_sound_rom2.add(read_file_into_vector(directory + "82s126.3m"));  // $0000-$00ff: 82s126.3m, sound 2
+    // 0x0000 - 0x00FF: Boot ROM
 
-    m_gui->load_color_rom({ m_color_rom.begin(), m_color_rom.end() });
-    m_gui->load_palette_rom({ m_palette_rom.begin(), m_palette_rom.end() });
-    m_gui->load_tile_rom({ m_tile_rom.begin(), m_tile_rom.end() });
-    m_gui->load_sprite_rom({ m_sprite_rom.begin(), m_sprite_rom.end() });
+    // Main RAM: 8K Byte
+    // Video RAM: 8K Byte
 
-    std::vector<u8> sound_rom1 = { m_sound_rom1.begin(), m_sound_rom1.end() };
-    std::vector<u8> sound_rom2 = { m_sound_rom2.begin(), m_sound_rom2.end() };
-    m_audio = std::make_shared<Audio>(sound_rom1, sound_rom2);
+//    m_gui->load_color_rom({ m_color_rom.begin(), m_color_rom.end() });
+//    m_gui->load_palette_rom({ m_palette_rom.begin(), m_palette_rom.end() });
+//    m_gui->load_tile_rom({ m_tile_rom.begin(), m_tile_rom.end() });
+//    m_gui->load_sprite_rom({ m_sprite_rom.begin(), m_sprite_rom.end() });
+
+//    std::vector<u8> sound_rom1 = { m_sound_rom1.begin(), m_sound_rom1.end() };
+//    std::vector<u8> sound_rom2 = { m_sound_rom2.begin(), m_sound_rom2.end() };
+//    m_audio = std::make_shared<Audio>(sound_rom1, sound_rom2);
 }
 }

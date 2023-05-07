@@ -77,24 +77,21 @@ public:
 
     [[nodiscard]] bool is_interrupted() const;
 
-    [[nodiscard]] bool iff1() const;
+    [[nodiscard]] bool if_() const;
 
-    [[nodiscard]] bool iff2() const;
+    [[nodiscard]] bool ie() const;
 
     void interrupt(u8 supplied_instruction_from_interruptor);
-
-    void nmi_interrupt();
 
     void input(u16 port, u8 value);
 
 private:
     bool m_is_halted { false };
 
-    bool m_iff1 { false };
-    bool m_iff2 { false };
+    bool m_if { false };
+    bool m_ie { false };
+    bool m_ime { false };
     bool m_is_interrupted { false };
-    bool m_is_nmi_interrupted { false };
-    bool m_was_nmi_interrupted { false }; // true while jump to 0x66 is happening after NMI
     u8 m_instruction_from_interruptor { 0 };
 
     EmulatorMemory<u16, u8>& m_memory;
@@ -116,10 +113,6 @@ private:
     std::vector<InObserver*> m_in_observers;
 
     void next_bits_instruction(u8 bits_opcode, cyc& cycles);
-
-    cyc handle_nonmaskable_interrupt(cyc cycles);
-
-    void nonmaskable_interrupt_finished();
 
     cyc handle_maskable_interrupt_0(cyc cycles);
 

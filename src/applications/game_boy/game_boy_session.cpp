@@ -1,8 +1,7 @@
 #include "game_boy_session.h"
 #include "audio.h"
-#include "chips/z80/cpu.h"
-#include "chips/z80/disassembler.h"
-#include "chips/z80/interrupt_mode.h"
+#include "chips/lr35902/cpu.h"
+#include "chips/lr35902/disassembler.h"
 #include "crosscutting/debugging/debug_container.h"
 #include "crosscutting/debugging/debugger.h"
 #include "crosscutting/debugging/disassembled_line.h"
@@ -14,7 +13,6 @@
 #include "interfaces/input.h"
 #include "interfaces/state.h"
 #include "key_request.h"
-#include "memory_mapped_io_for_game_boy.h"
 #include "states/paused_state.h"
 #include "states/running_state.h"
 #include "states/state_context.h"
@@ -36,8 +34,7 @@ using emu::debugger::IoDebugContainer;
 using emu::debugger::MemoryDebugContainer;
 using emu::debugger::RegisterDebugContainer;
 using emu::util::string::split;
-using emu::z80::Disassembler;
-using emu::z80::InterruptMode;
+using emu::lr35902::Disassembler;
 
 GameBoySession::GameBoySession(
     bool is_starting_paused,
@@ -129,104 +126,39 @@ void GameBoySession::setup_debugging()
     m_debug_container = std::make_shared<DebugContainer<u16, u8, 16>>();
     m_debug_container->add_register(RegisterDebugContainer<u8>(
         "A",
-        [&]() { return m_cpu->a(); },
-        [&]() { return m_cpu->a_p(); }));
+        [&]() { return m_cpu->a(); }));
     m_debug_container->add_register(RegisterDebugContainer<u8>(
         "B",
-        [&]() { return m_cpu->b(); },
-        [&]() { return m_cpu->b_p(); }));
+        [&]() { return m_cpu->b(); }));
     m_debug_container->add_register(RegisterDebugContainer<u8>(
         "C",
-        [&]() { return m_cpu->c(); },
-        [&]() { return m_cpu->c_p(); }));
+        [&]() { return m_cpu->c(); }));
     m_debug_container->add_register(RegisterDebugContainer<u8>(
         "D",
-        [&]() { return m_cpu->d(); },
-        [&]() { return m_cpu->d_p(); }));
+        [&]() { return m_cpu->d(); }));
     m_debug_container->add_register(RegisterDebugContainer<u8>(
         "E",
-        [&]() { return m_cpu->e(); },
-        [&]() { return m_cpu->e_p(); }));
+        [&]() { return m_cpu->e(); }));
     m_debug_container->add_register(RegisterDebugContainer<u8>(
         "H",
-        [&]() { return m_cpu->h(); },
-        [&]() { return m_cpu->h_p(); }));
+        [&]() { return m_cpu->h(); }));
     m_debug_container->add_register(RegisterDebugContainer<u8>(
         "L",
-        [&]() { return m_cpu->l(); },
-        [&]() { return m_cpu->l_p(); }));
-    m_debug_container->add_register(RegisterDebugContainer<u8>("I", [&]() { return m_cpu->i(); }));
-    m_debug_container->add_register(RegisterDebugContainer<u8>("R", [&]() { return m_cpu->r(); }));
+        [&]() { return m_cpu->l(); }));
     m_debug_container->add_pc([&]() { return m_cpu->pc(); });
     m_debug_container->add_sp([&]() { return m_cpu->sp(); });
     m_debug_container->add_is_interrupted([&]() { return m_cpu->is_interrupted(); });
-    m_debug_container->add_interrupt_mode([&]() {
-        switch (m_cpu->interrupt_mode()) {
-        case InterruptMode::ZERO:
-            return "0";
-        case InterruptMode::ONE:
-            return "1";
-        case InterruptMode::TWO:
-            return "2";
-        default:
-            throw std::invalid_argument("Unhandled InterruptMode");
-        }
-    });
     m_debug_container->add_flag_register(FlagRegisterDebugContainer<u8>(
         "F",
         [&]() { return m_cpu->f(); },
-        { { "s", 7 },
-            { "z", 6 },
-            { "y", 5 },
-            { "h", 4 },
-            { "x", 3 },
-            { "p", 2 },
-            { "n", 1 },
-            { "c", 0 } }));
-    m_debug_container->add_io(IoDebugContainer<u8>(
-        "vblank return",
-        [&]() { return m_outputs_during_cycle.contains(s_out_port_vblank_interrupt_return); },
-        [&]() { return m_outputs_during_cycle[s_out_port_vblank_interrupt_return]; }));
-    m_debug_container->add_io(IoDebugContainer<u8>(
-        "coin counter",
-        [&]() { return true; },
-        [&]() { return m_memory_mapped_io->coin_counter(); }));
-    m_debug_container->add_io(IoDebugContainer<u8>(
-        "dipswitches",
-        [&]() { return true; },
-        [&]() { return m_memory_mapped_io->dipswitches(); },
-        { { "coin 1 (AH)", 0 },
-            { "coin 2 (AH)", 1 },
-            { "lives 1 (AH)", 2 },
-            { "lives 2 (AH)", 3 },
-            { "bonus life 1 (AH)", 4 },
-            { "bonus life 2 (AH)", 5 },
-            { "difficulty (AH)", 6 },
-            { "ghost names (AH)", 7 } }));
-    m_debug_container->add_io(IoDebugContainer<u8>(
-        "in 0",
-        [&]() { return true; },
-        [&]() { return m_memory_mapped_io->in0_read(); },
-        { { "up (AL)", 0 },
-            { "left (AL)", 1 },
-            { "right (AL)", 2 },
-            { "down (AL)", 3 },
-            { "off (AH)", 4 },
-            { "coin 1 (AL)", 5 },
-            { "coin 2 (AL)", 6 },
-            { "service 1 (AL)", 7 } }));
-    m_debug_container->add_io(IoDebugContainer<u8>(
-        "in 1",
-        [&]() { return true; },
-        [&]() { return m_memory_mapped_io->in1_read(); },
-        { { "up (AL)", 0 },
-            { "left (AL)", 1 },
-            { "right (AL)", 2 },
-            { "down (AL)", 3 },
-            { "board test (AL)", 4 },
-            { "start 1 (AL)", 5 },
-            { "start 2 (AL)", 6 },
-            { "cocktail (AL)", 7 } }));
+        { { "z", 7 },
+            { "n", 6 },
+            { "h", 5 },
+            { "c", 4 },
+            { "0", 3 },
+            { "0", 2 },
+            { "0", 1 },
+            { "0", 0 } }));
     m_debug_container->add_memory(MemoryDebugContainer<u8>(
         [&]() { return memory(); }));
     m_debug_container->add_disassembled_program(disassemble_program());

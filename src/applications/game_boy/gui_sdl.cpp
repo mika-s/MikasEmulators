@@ -118,10 +118,9 @@ void GuiSdl::update_screen(
     std::vector<u8> const& tile_ram,
     std::vector<u8> const& sprite_ram,
     std::vector<u8> const& palette_ram,
-    bool is_screen_flipped,
     std::string const& game_window_subtitle)
 {
-    std::vector<u32> framebuffer = create_framebuffer(tile_ram, sprite_ram, palette_ram, is_screen_flipped);
+    std::vector<u32> framebuffer = create_framebuffer(tile_ram, sprite_ram, palette_ram);
 
     void* pixels = nullptr;
     int pitch = 0;
