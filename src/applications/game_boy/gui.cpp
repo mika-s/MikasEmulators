@@ -132,32 +132,32 @@ void Gui::draw_sprites([[maybe_unused]] Framebuffer& framebuffer, [[maybe_unused
 }
 
 std::vector<u32> Gui::create_framebuffer(
-    std::vector<u8> const& tile_ram,
-    std::vector<u8> const& sprite_ram,
-    std::vector<u8> const& palette_ram)
+    [[maybe_unused]] std::vector<u8> const& tile_ram,
+    [[maybe_unused]] std::vector<u8> const& sprite_ram,
+    [[maybe_unused]] std::vector<u8> const& palette_ram)
 {
-    if (!m_has_loaded_color_rom) {
-        throw std::runtime_error("Programming error: The color ROM has not been loaded");
-    } else if (!m_has_loaded_palette_rom) {
-        throw std::runtime_error("Programming error: The palette ROM has not been loaded");
-    } else if (!m_has_loaded_tile_rom) {
-        throw std::runtime_error("Programming error: The tile ROM has not been loaded");
-    } else if (!m_has_loaded_sprite_rom) {
-        throw std::runtime_error("Programming error: The sprite ROM has not been loaded");
-    }
-
-    bool const is_not_debugging_tiles_or_sprites = !(m_is_tile_debug_enabled || m_is_sprite_debug_enabled);
-    bool const should_draw_tiles = m_is_tile_debug_enabled || is_not_debugging_tiles_or_sprites;
-    bool const should_draw_sprites = m_is_sprite_debug_enabled || is_not_debugging_tiles_or_sprites;
-
-    if (should_draw_tiles) {
-        draw_tiles(m_framebuffer, tile_ram, palette_ram);
-    } else {
-        m_framebuffer.clear();
-    }
-    if (should_draw_sprites) {
-        draw_sprites(m_framebuffer, sprite_ram);
-    }
+//    if (!m_has_loaded_color_rom) {
+//        throw std::runtime_error("Programming error: The color ROM has not been loaded");
+//    } else if (!m_has_loaded_palette_rom) {
+//        throw std::runtime_error("Programming error: The palette ROM has not been loaded");
+//    } else if (!m_has_loaded_tile_rom) {
+//        throw std::runtime_error("Programming error: The tile ROM has not been loaded");
+//    } else if (!m_has_loaded_sprite_rom) {
+//        throw std::runtime_error("Programming error: The sprite ROM has not been loaded");
+//    }
+//
+//    bool const is_not_debugging_tiles_or_sprites = !(m_is_tile_debug_enabled || m_is_sprite_debug_enabled);
+//    bool const should_draw_tiles = m_is_tile_debug_enabled || is_not_debugging_tiles_or_sprites;
+//    bool const should_draw_sprites = m_is_sprite_debug_enabled || is_not_debugging_tiles_or_sprites;
+//
+//    if (should_draw_tiles) {
+//        draw_tiles(m_framebuffer, tile_ram, palette_ram);
+//    } else {
+//        m_framebuffer.clear();
+//    }
+//    if (should_draw_sprites) {
+//        draw_sprites(m_framebuffer, sprite_ram);
+//    }
 
     return m_framebuffer.to_output_vector();
 }

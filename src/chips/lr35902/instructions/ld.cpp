@@ -1,3 +1,4 @@
+#include "chips/lr35902/flags.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/memory/next_byte.h"
 #include "crosscutting/memory/next_word.h"
@@ -5,6 +6,7 @@
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
 #include "doctest.h"
+#include "instruction_util.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -98,8 +100,9 @@ void ld_r_MHL(u8& to, u8 value, cyc& cycles)
  *   <li>Condition bits affected: none</li>
  * </ul>
  *
- * @param to is the memory location to load into, which will be mutated
- * @param value is the register value to load into to
+ * @param memory is the memory, which will be mutated
+ * @param address is the address in memory to load from
+ * @param value is the register value to load into memory
  * @param cycles is the number of cycles variable, which will be mutated
  */
 void ld_MHL_r(EmulatorMemory<u16, u8>& memory, u16 address, u8 value, cyc& cycles)
@@ -118,9 +121,9 @@ void ld_MHL_r(EmulatorMemory<u16, u8>& memory, u16 address, u8 value, cyc& cycle
  *   <li>Condition bits affected: none</li>
  * </ul>
  *
- * @param reg is the register to load into, which will be mutated
+ * @param memory is the memory, which will be mutated
  * @param address is the address in memory to load from
- * @param args contains value to load into the register
+ * @param args contains value to load into memory
  * @param cycles is the number of cycles variable, which will be mutated
  */
 void ld_MHL_n(EmulatorMemory<u16, u8>& memory, u16 address, NextByte const& args, cyc& cycles)
@@ -172,6 +175,27 @@ void ld_A_Mnn(u8& acc_reg, EmulatorMemory<u16, u8> const& memory, NextWord const
 }
 
 /**
+ * Load accumulator with value in memory at address pointed to by the C register
+ * <ul>
+ *   <li>Size: 2</li>
+ *   <li>Cycles: 3</li>
+ *   <li>States: 8</li>
+ *   <li>Condition bits affected: none</li>
+ * </ul>
+ *
+ * @param acc_reg is the accumulator, which will be mutated
+ * @param c_reg is the C register
+ * @param memory is the memory
+ * @param cycles is the number of cycles variable, which will be mutated
+ */
+void ld_A_MC(u8& acc_reg, u8 c_reg, EmulatorMemory<u16, u8> const& memory, cyc& cycles)
+{
+    acc_reg = memory.read(static_cast<u16>(c_reg));
+
+    cycles = 8;
+}
+
+/**
  * Load the accumulator into memory at HL's address
  * <ul>
  *   <li>Size: 2</li>
@@ -180,7 +204,8 @@ void ld_A_Mnn(u8& acc_reg, EmulatorMemory<u16, u8> const& memory, NextWord const
  *   <li>Condition bits affected: none</li>
  * </ul>
  *
- * @param to is the memory location to load into, which will be mutated
+ * @param memory is the memory, which will be mutated
+ * @param address is the address in memory to load from
  * @param acc_reg is the accumulator value to load into to
  * @param cycles is the number of cycles variable, which will be mutated
  */
@@ -201,11 +226,11 @@ void ld_Mss_A(EmulatorMemory<u16, u8>& memory, u16 address, u8 acc_reg, cyc& cyc
  * </ul>
  *
  * @param acc_reg is the accumulator register
- * @param value is the memory, which will be mutated
+ * @param memory is the memory, which will be mutated
  * @param args contains the argument with the address in memory to store the accumulator register
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void ld_Mnn_A(u8& acc_reg, EmulatorMemory<u16, u8>& memory, NextWord const& args, cyc& cycles)
+void ld_Mnn_A(u8 acc_reg, EmulatorMemory<u16, u8>& memory, NextWord const& args, cyc& cycles)
 {
     const u16 address = to_u16(args.sarg, args.farg);
 
@@ -236,6 +261,34 @@ void ld_HL_Mnn(u8& h_reg, u8& l_reg, EmulatorMemory<u16, u8> const& memory, Next
     l_reg = memory.read(address);
 
     cycles = 16;
+}
+
+/**
+ * Load HL with SP + n
+ * <ul>
+ *   <li>Size: 2</li>
+ *   <li>Cycles: 4</li>
+ *   <li>States: 12</li>
+ *   <li>Condition bits affected: none</li>
+ * </ul>
+ *
+ * @param h_reg is the H register, which will be mutated
+ * @param l_reg is the L register, which will be mutated
+ * @param sp is the stack pointer
+ * @param args contains the argument with the value to add to SP
+ * @param flag_reg is the flag register, which will be mutated
+ * @param cycles is the number of cycles variable, which will be mutated
+ */
+void ld_HL_SP_p_n(u8& h_reg, u8& l_reg, u16 sp, NextByte const& args, Flags& flag_reg, cyc& cycles)
+{
+    u16 sp_p_n = sp;
+    add_to_register(sp_p_n, static_cast<u16>(args.farg), false, flag_reg); // TODO: Signed
+    h_reg = high_byte(sp_p_n);
+    l_reg = low_byte(sp_p_n);
+    flag_reg.clear_zero_flag();
+    flag_reg.clear_add_subtract_flag();
+
+    cycles = 12;
 }
 
 /**
@@ -351,6 +404,27 @@ void ld_Mnn_HL(u8 h_reg, u8 l_reg, EmulatorMemory<u16, u8>& memory, NextWord con
 }
 
 /**
+ * Load the accumulator into memory at address given in the C register
+ * <ul>
+ *   <li>Size: 2</li>
+ *   <li>Cycles: 3</li>
+ *   <li>States: 8</li>
+ *   <li>Condition bits affected: none</li>
+ * </ul>
+ *
+ * @param c_reg is the C register
+ * @param acc_reg is the accumulator
+ * @param memory is the memory, which will be mutated
+ * @param cycles is the number of cycles variable, which will be mutated
+ */
+void ld_MC_A(u8 c_reg, u8 acc_reg, EmulatorMemory<u16, u8>& memory, cyc& cycles)
+{
+    memory.write(static_cast<u16>(c_reg), acc_reg);
+
+    cycles = 8;
+}
+
+/**
  * Load register pair into memory
  * <ul>
  *   <li>Size: 3</li>
@@ -420,6 +494,118 @@ void ld_sp_Mnn(u16& sp, EmulatorMemory<u16, u8> const& memory, NextWord const& a
     sp = to_u16(hi, lo);
 
     cycles = 20;
+}
+
+/**
+ * Load A into memory address that HL points to, then increment HL
+ * <ul>
+ *   <li>Size: 1</li>
+ *   <li>Cycles: 2</li>
+ *   <li>States: 8</li>
+ *   <li>Condition bits affected: none</li>
+ * </ul>
+ *
+ * @param memory is the memory, which will be mutated
+ * @param h_reg is the H register, which will be mutated
+ * @param l_reg is the L register, which will be mutated
+ * @param acc_reg is the accumulator
+ * @param args contains the argument with the address to lookup
+ * @param cycles is the number of cycles variable, which will be mutated
+ */
+void ld_MHLp_A(EmulatorMemory<u16, u8>& memory, u8& h_reg, u8& l_reg, u8 acc_reg, cyc& cycles)
+{
+    u16 hl = to_u16(h_reg, l_reg);
+
+    memory.write(hl++, acc_reg);
+
+    h_reg = high_byte(hl);
+    l_reg = low_byte(hl);
+
+    cycles = 8;
+}
+
+/**
+ * Load A into memory address that HL points to, then decrement HL
+ * <ul>
+ *   <li>Size: 1</li>
+ *   <li>Cycles: 2</li>
+ *   <li>States: 8</li>
+ *   <li>Condition bits affected: none</li>
+ * </ul>
+ *
+ * @param memory is the memory, which will be mutated
+ * @param h_reg is the H register, which will be mutated
+ * @param l_reg is the L register, which will be mutated
+ * @param acc_reg is the accumulator
+ * @param args contains the argument with the address to lookup
+ * @param cycles is the number of cycles variable, which will be mutated
+ */
+void ld_MHLm_A(EmulatorMemory<u16, u8>& memory, u8& h_reg, u8& l_reg, u8 acc_reg, cyc& cycles)
+{
+    u16 hl = to_u16(h_reg, l_reg);
+
+    memory.write(hl--, acc_reg);
+
+    h_reg = high_byte(hl);
+    l_reg = low_byte(hl);
+
+    cycles = 8;
+}
+
+/**
+ * Load value at memory address that HL points to into A, then increment HL
+ * <ul>
+ *   <li>Size: 1</li>
+ *   <li>Cycles: 2</li>
+ *   <li>States: 8</li>
+ *   <li>Condition bits affected: none</li>
+ * </ul>
+ *
+ * @param memory is the memory, which will be mutated
+ * @param h_reg is the H register, which will be mutated
+ * @param l_reg is the L register, which will be mutated
+ * @param acc_reg is the accumulator
+ * @param args contains the argument with the address to lookup
+ * @param cycles is the number of cycles variable, which will be mutated
+ */
+void ld_A_MHLp(u8& acc_reg, EmulatorMemory<u16, u8> const& memory, u8& h_reg, u8& l_reg, cyc& cycles)
+{
+    u16 hl = to_u16(h_reg, l_reg);
+
+    acc_reg = memory.read(hl++);
+
+    h_reg = high_byte(hl);
+    l_reg = low_byte(hl);
+
+    cycles = 8;
+}
+
+/**
+ * Load value at memory address that HL points to into A, then decrement HL
+ * <ul>
+ *   <li>Size: 1</li>
+ *   <li>Cycles: 2</li>
+ *   <li>States: 8</li>
+ *   <li>Condition bits affected: none</li>
+ * </ul>
+ *
+ * @param memory is the memory, which will be mutated
+ * @param h_reg is the H register, which will be mutated
+ * @param l_reg is the L register, which will be mutated
+ * @param acc_reg is the accumulator
+ * @param args contains the argument with the address to lookup
+ * @param cycles is the number of cycles variable, which will be mutated
+ */
+void ld_A_MHLm(u8& acc_reg, EmulatorMemory<u16, u8> const& memory, u8& h_reg, u8& l_reg, cyc& cycles)
+{
+    u16 hl = to_u16(h_reg, l_reg);
+
+    acc_reg = memory.read(hl--);
+
+    h_reg = high_byte(hl);
+    l_reg = low_byte(hl);
+
+    cycles = 8;
 }
 
 void print_ld(std::ostream& ostream, std::string const& dest, std::string const& src)

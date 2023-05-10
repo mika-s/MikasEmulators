@@ -238,7 +238,7 @@ cyc Cpu::next_instruction()
         ld_dd_nn(m_h_reg, m_l_reg, get_next_word(), cycles);
         break;
     case LD_MHLp_A:
-        ld_Mnn_HL(m_h_reg, m_l_reg, m_memory, get_next_word(), cycles);
+        ld_MHLp_A(m_memory, m_h_reg, m_l_reg, m_acc_reg, cycles);
         break;
     case INC_HL:
         inc_ss(m_h_reg, m_l_reg, cycles);
@@ -262,7 +262,7 @@ cyc Cpu::next_instruction()
         add_HL_ss(m_h_reg, m_l_reg, to_u16(m_h_reg, m_l_reg), m_flag_reg, cycles);
         break;
     case LD_A_MHLp:
-        ld_HL_Mnn(m_h_reg, m_l_reg, m_memory, get_next_word(), cycles);
+        ld_A_MHLp(m_acc_reg, m_memory, m_h_reg, m_l_reg, cycles);
         break;
     case DEC_HL:
         dec_ss(m_h_reg, m_l_reg, cycles);
@@ -286,7 +286,7 @@ cyc Cpu::next_instruction()
         ld_sp_nn(m_sp, get_next_word(), cycles);
         break;
     case LH_MHLm_A:
-        ld_Mnn_A(m_acc_reg, m_memory, get_next_word(), cycles);
+        ld_MHLm_A(m_memory, m_h_reg, m_l_reg, m_acc_reg, cycles);
         break;
     case INC_SP:
         inc_sp(m_sp, cycles);
@@ -310,7 +310,7 @@ cyc Cpu::next_instruction()
         add_HL_ss(m_h_reg, m_l_reg, m_sp, m_flag_reg, cycles);
         break;
     case LD_A_MHLm:
-        ld_A_Mnn(m_acc_reg, m_memory, get_next_word(), cycles);
+        ld_A_MHLm(m_acc_reg, m_memory, m_h_reg, m_l_reg, cycles);
         break;
     case DEC_SP:
         dec_sp(m_sp, cycles);
@@ -799,15 +799,13 @@ cyc Cpu::next_instruction()
         rst_3(m_pc, m_sp, m_memory, cycles);
         break;
     case LDH_Mn_A:
-        //        ret_po(m_pc, m_sp, m_memory, m_flag_reg, cycles); TODO
-        throw UnrecognizedOpcodeException(m_opcode);
+        ldh_Mn_A(m_memory, get_next_byte(), m_acc_reg, cycles);
         break;
     case POP_HL:
         pop(m_h_reg, m_l_reg, m_sp, m_memory, cycles);
         break;
     case LD_MC_A:
-        //        jp_po(m_pc, get_next_word(), m_flag_reg, cycles); TODO
-        throw UnrecognizedOpcodeException(m_opcode);
+        ld_MC_A(m_c_reg, m_acc_reg, m_memory, cycles);
         break;
     case PUSH_HL:
         push_qq(m_h_reg, m_l_reg, m_sp, m_memory, cycles);
@@ -819,8 +817,7 @@ cyc Cpu::next_instruction()
         rst_4(m_pc, m_sp, m_memory, cycles);
         break;
     case ADD_SP_n:
-        //        ret_pe(m_pc, m_sp, m_memory, m_flag_reg, cycles); TODO
-        throw UnrecognizedOpcodeException(m_opcode);
+        add_SP_n(m_sp, get_next_byte(), m_flag_reg, cycles);
         break;
     case JP_MHL:
         jp_hl(m_pc, address_in_HL(), cycles);
@@ -835,15 +832,13 @@ cyc Cpu::next_instruction()
         rst_5(m_pc, m_sp, m_memory, cycles);
         break;
     case LDH_A_Mn:
-        //        ret_p(m_pc, m_sp, m_memory, m_flag_reg, cycles); TODO
-        throw UnrecognizedOpcodeException(m_opcode);
+        ldh_A_Mn(m_acc_reg, m_memory, get_next_byte(), cycles);
         break;
     case POP_AF:
         pop_af(m_flag_reg, m_acc_reg, m_sp, m_memory, cycles);
         break;
     case LD_A_MC:
-        //        jp_p(m_pc, get_next_word(), m_flag_reg, cycles); TODO
-        throw UnrecognizedOpcodeException(m_opcode);
+        ld_A_MC(m_acc_reg, m_c_reg, m_memory, cycles);
         break;
     case DI:
         di(m_if, m_ie, cycles);
@@ -858,8 +853,7 @@ cyc Cpu::next_instruction()
         rst_6(m_pc, m_sp, m_memory, cycles);
         break;
     case LD_HL_SPpn:
-        //        ret_m(m_pc, m_sp, m_memory, m_flag_reg, cycles); TODO
-        throw UnrecognizedOpcodeException(m_opcode);
+        ld_HL_SP_p_n(m_h_reg, m_l_reg, m_sp, get_next_byte(), m_flag_reg, cycles);
         break;
     case LD_SP_HL:
         ld_sp_hl(m_sp, address_in_HL(), cycles);

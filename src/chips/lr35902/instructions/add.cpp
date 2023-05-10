@@ -125,6 +125,29 @@ void add_HL_ss(u8& h_reg, u8& l_reg, u16 value, Flags& flag_reg, cyc& cycles)
     cycles = 11;
 }
 
+/**
+ * Add n to SP
+ * <ul>
+ *   <li>Size: 2</li>
+ *   <li>Cycles: 4</li>
+ *   <li>States: 16</li>
+ *   <li>Condition bits affected: carry, half carry, zero, add/subtract</li>
+ * </ul>
+ *
+ * @param sp is the stack pointer, which will be mutated
+ * @param value is the value to add to SP
+ * @param flag_reg is the flag register, which will be mutated
+ * @param cycles is the number of cycles variable, which will be mutated
+ */
+void add_SP_n(u16& sp, NextByte value, Flags& flag_reg, cyc& cycles)
+{
+    add(sp, static_cast<i16>(value.farg), flag_reg);
+    flag_reg.clear_zero_flag();
+    flag_reg.clear_add_subtract_flag();
+
+    cycles = 16;
+}
+
 void print_add(std::ostream& ostream, std::string const& dest, std::string const& src)
 {
     ostream << "ADD "

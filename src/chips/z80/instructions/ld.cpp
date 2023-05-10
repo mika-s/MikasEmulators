@@ -99,8 +99,9 @@ void ld_r_MHL(u8& to, u8 value, cyc& cycles)
  *   <li>Condition bits affected: none</li>
  * </ul>
  *
- * @param to is the memory location to load into, which will be mutated
- * @param value is the register value to load into to
+ * @param memory is the memory, which will be mutated
+ * @param address is the address in memory to load from
+ * @param value is the register value to load into memory
  * @param cycles is the number of cycles variable, which will be mutated
  */
 void ld_MHL_r(EmulatorMemory<u16, u8>& memory, u16 address, u8 value, cyc& cycles)
@@ -119,9 +120,9 @@ void ld_MHL_r(EmulatorMemory<u16, u8>& memory, u16 address, u8 value, cyc& cycle
  *   <li>Condition bits affected: none</li>
  * </ul>
  *
- * @param reg is the register to load into, which will be mutated
+ * @param memory is the memory, which will be mutated
  * @param address is the address in memory to load from
- * @param args contains value to load into the register
+ * @param args contains value to load into memory
  * @param cycles is the number of cycles variable, which will be mutated
  */
 void ld_MHL_n(EmulatorMemory<u16, u8>& memory, u16 address, NextByte const& args, cyc& cycles)
@@ -287,8 +288,9 @@ void ld_A_R(u8& acc_reg, u8 r_reg, Flags& flag_reg, bool iff2, cyc& cycles)
  *   <li>Condition bits affected: none</li>
  * </ul>
  *
- * @param to is the memory location to load into, which will be mutated
- * @param acc_reg is the accumulator value to load into to
+ * @param memory is the memory, which will be mutated
+ * @param address is the address in memory to load into
+ * @param acc_reg is the accumulator value to load into memory
  * @param cycles is the number of cycles variable, which will be mutated
  */
 void ld_Mss_A(EmulatorMemory<u16, u8>& memory, u16 address, u8 acc_reg, cyc& cycles)
@@ -307,12 +309,12 @@ void ld_Mss_A(EmulatorMemory<u16, u8>& memory, u16 address, u8 acc_reg, cyc& cyc
  *   <li>Condition bits affected: none</li>
  * </ul>
  *
- * @param acc_reg is the accumulator register
- * @param value is the memory, which will be mutated
+ * @param acc_reg is the accumulator register, which will be mutated
+ * @param memory is the memory, which will be mutated
  * @param args contains the argument with the address in memory to store the accumulator register
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void ld_Mnn_A(u8& acc_reg, EmulatorMemory<u16, u8>& memory, NextWord const& args, cyc& cycles)
+void ld_Mnn_A(u8 acc_reg, EmulatorMemory<u16, u8>& memory, NextWord const& args, cyc& cycles)
 {
     const u16 address = to_u16(args.sarg, args.farg);
 

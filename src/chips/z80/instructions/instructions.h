@@ -947,7 +947,7 @@ void ld_MHL_n(EmulatorMemory<u16, u8>& memory, u16 address, NextByte const& args
 void ld_MHL_r(EmulatorMemory<u16, u8>& memory, u16 address, u8 value, cyc& cycles);
 void ld_MixyPd_n(u16 ixy_reg, NextWord const& args, EmulatorMemory<u16, u8>& memory, cyc& cycles);
 void ld_MixyPd_r(u16 ixy_reg, NextByte const& args, EmulatorMemory<u16, u8>& memory, u8 reg, cyc& cycles);
-void ld_Mnn_A(u8& acc_reg, EmulatorMemory<u16, u8>& memory, NextWord const& args, cyc& cycles);
+void ld_Mnn_A(u8 acc_reg, EmulatorMemory<u16, u8>& memory, NextWord const& args, cyc& cycles);
 void ld_Mnn_HL(u8 h_reg, u8 l_reg, EmulatorMemory<u16, u8>& memory, NextWord const& args, cyc& cycles);
 void ld_Mnn_dd(u8 hi_reg, u8 lo_reg, EmulatorMemory<u16, u8>& memory, NextWord const& args, cyc& cycles);
 void ld_Mnn_sp(u16 sp, EmulatorMemory<u16, u8>& memory, NextWord const& args, cyc& cycles);

@@ -162,9 +162,9 @@ void GameBoySession::setup_debugging()
     m_debug_container->add_memory(MemoryDebugContainer<u8>(
         [&]() { return memory(); }));
     m_debug_container->add_disassembled_program(disassemble_program());
-    m_debug_container->add_tilemap(m_gui->tiles());
-    m_debug_container->add_spritemap(m_gui->sprites());
-    m_debug_container->add_waveforms(m_audio->waveforms());
+//    m_debug_container->add_tilemap(m_gui->tiles());
+//    m_debug_container->add_spritemap(m_gui->sprites());
+//    m_debug_container->add_waveforms(m_audio->waveforms());
 
     m_gui->attach_debugger(m_debugger);
     m_gui->attach_debug_container(m_debug_container);

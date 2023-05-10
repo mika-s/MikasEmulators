@@ -21,8 +21,7 @@ set(SOURCES_LR35902_CPP
         instructions/jp.cpp
         instructions/jr.cpp
         instructions/ld.cpp
-        instructions/ldd.cpp
-        instructions/ldi.cpp
+        instructions/ldh.cpp
         instructions/nop.cpp
         instructions/or.cpp
         instructions/pop.cpp
