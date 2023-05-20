@@ -37,7 +37,11 @@ public:
     void remove_gui_observer(GuiObserver* observer) override;
 
     void update_screen(
-        std::vector<u8> const& tile_ram,
+        std::vector<u8> const& tile_ram_1,
+        std::vector<u8> const& tile_ram_2,
+        std::vector<u8> const& tile_ram_3,
+        std::vector<u8> const& tile_map_1,
+        std::vector<u8> const& tile_map_2,
         std::vector<u8> const& sprite_ram,
         std::vector<u8> const& palette_ram,
         std::string const& game_window_subtitle) override;

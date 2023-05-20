@@ -3,7 +3,7 @@
 #include "crosscutting/memory/memory_mapped_io.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
-#include <cstddef>
+#include "lcd_control.h"
 
 namespace emu::applications::game_boy {
 class Settings;
@@ -33,8 +33,9 @@ public:
 
     bool is_interrupt_enabled();
 
+    [[nodiscard]] LcdControl lcd_control() const;
+
 private:
-    static constexpr std::size_t s_address_mask = 0x7fff;
     static constexpr u16 s_address_boot_rom_end = 0x00ff;
     static constexpr u16 s_address_rom_end = 0x7fff;
     static constexpr u16 s_address_tile_ram_beginning = 0x8000;
@@ -58,12 +59,15 @@ private:
     static constexpr u16 s_address_game_boy_memory_end = 0x50ff;
     static constexpr u16 s_address_io_register = 0xff00;
     static constexpr u16 s_address_interrupt_f_register = 0xff0f;
+    static constexpr u16 s_address_lcd_control = 0xff40;
     static constexpr u16 s_address_interrupt_enabled_register = 0xffff;
 
     EmulatorMemory<u16, u8>& m_memory;
 
     bool m_if { false };
     bool m_ie { false };
+
+    LcdControl m_lcd_control;
 
     u8 m_p1 { 0xff };
 };

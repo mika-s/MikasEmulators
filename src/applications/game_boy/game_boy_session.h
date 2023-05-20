@@ -1,6 +1,5 @@
 #pragma once
 
-#include "chips/lr35902/interfaces/out_observer.h"
 #include "crosscutting/misc/governor.h"
 #include "crosscutting/misc/sdl_counter.h"
 #include "crosscutting/misc/session.h"
@@ -40,7 +39,6 @@ class EmulatorMemory;
 }
 namespace emu::lr35902 {
 class Cpu;
-class InObserver;
 }
 
 namespace emu::applications::game_boy {
@@ -55,13 +53,10 @@ using emu::misc::Governor;
 using emu::misc::sdl_get_ticks_high_performance;
 using emu::misc::Session;
 using emu::lr35902::Cpu;
-using emu::lr35902::InObserver;
-using emu::lr35902::OutObserver;
 
 class GameBoySession
     : public Session
     , public GuiObserver
-    , public OutObserver
     , public KeyObserver {
 public:
     GameBoySession(
@@ -81,8 +76,6 @@ public:
     void stop() override;
 
     void gui_request(GuiRequest request) override;
-
-    void out_changed(u16 port) override;
 
     void key_pressed(IoRequest request) override;
 

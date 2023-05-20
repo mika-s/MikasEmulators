@@ -1,6 +1,7 @@
 #include "game_boy.h"
 #include "crosscutting/util/file_util.h"
 #include "game_boy_session.h"
+#include "gui.h"
 #include "gui_imgui.h"
 #include "gui_sdl.h"
 #include "input_imgui.h"
@@ -36,6 +37,7 @@ GameBoy::GameBoy(Settings const& settings, const GuiType gui_type)
 
     m_memory_mapped_io = std::make_shared<MemoryMappedIoForGameBoy>(m_memory, settings);
     m_memory.attach_memory_mapper(m_memory_mapped_io);
+    m_gui->attach_memory_mapper(m_memory_mapped_io);
 }
 
 std::unique_ptr<Session> GameBoy::new_session()
@@ -65,13 +67,13 @@ void GameBoy::load_files()
     // Main RAM: 8K Byte
     // Video RAM: 8K Byte
 
-//    m_gui->load_color_rom({ m_color_rom.begin(), m_color_rom.end() });
-//    m_gui->load_palette_rom({ m_palette_rom.begin(), m_palette_rom.end() });
+    //    m_gui->load_color_rom({ m_color_rom.begin(), m_color_rom.end() });
+    //    m_gui->load_palette_rom({ m_palette_rom.begin(), m_palette_rom.end() });
 //    m_gui->load_tile_rom({ m_tile_rom.begin(), m_tile_rom.end() });
-//    m_gui->load_sprite_rom({ m_sprite_rom.begin(), m_sprite_rom.end() });
+    //    m_gui->load_sprite_rom({ m_sprite_rom.begin(), m_sprite_rom.end() });
 
-//    std::vector<u8> sound_rom1 = { m_sound_rom1.begin(), m_sound_rom1.end() };
-//    std::vector<u8> sound_rom2 = { m_sound_rom2.begin(), m_sound_rom2.end() };
-//    m_audio = std::make_shared<Audio>(sound_rom1, sound_rom2);
+    //    std::vector<u8> sound_rom1 = { m_sound_rom1.begin(), m_sound_rom1.end() };
+    //    std::vector<u8> sound_rom2 = { m_sound_rom2.begin(), m_sound_rom2.end() };
+    //    m_audio = std::make_shared<Audio>(sound_rom1, sound_rom2);
 }
 }

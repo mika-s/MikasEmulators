@@ -54,8 +54,6 @@ set(SOURCES_LR35902_H
         manual_state.h
         instructions/instruction_util.h
         instructions/instructions.h
-        interfaces/in_observer.h
-        interfaces/out_observer.h
         )
 
 add_library(LR35902 STATIC ${SOURCES_LR35902_CPP} ${SOURCES_LR35902_H})

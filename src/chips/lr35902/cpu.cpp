@@ -4,10 +4,7 @@
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/string_util.h"
 #include "instructions/instructions.h"
-#include "interfaces/in_observer.h"
-#include "interfaces/out_observer.h"
 #include "manual_state.h"
-#include <algorithm>
 #include <iostream>
 #include <string>
 
@@ -27,35 +24,7 @@ Cpu::Cpu(EmulatorMemory<u16, u8>& memory, const u16 initial_pc)
     m_flag_reg.from_u8(0xff);
 }
 
-Cpu::~Cpu()
-{
-    m_out_observers.clear();
-    m_in_observers.clear();
-}
-
-void Cpu::add_out_observer(OutObserver& observer)
-{
-    m_out_observers.push_back(&observer);
-}
-
-void Cpu::remove_out_observer(OutObserver* observer)
-{
-    m_out_observers.erase(
-        std::remove(m_out_observers.begin(), m_out_observers.end(), observer),
-        m_out_observers.end());
-}
-
-void Cpu::add_in_observer(InObserver& observer)
-{
-    m_in_observers.push_back(&observer);
-}
-
-void Cpu::remove_in_observer(InObserver* observer)
-{
-    m_in_observers.erase(
-        std::remove(m_in_observers.begin(), m_in_observers.end(), observer),
-        m_in_observers.end());
-}
+Cpu::~Cpu() = default;
 
 bool Cpu::can_run_next_instruction() const
 {
@@ -114,10 +83,6 @@ void Cpu::interrupt(u8 instruction_to_perform)
 bool Cpu::is_inta() const
 {
     return m_if;
-}
-
-void Cpu::input([[maybe_unused]] u16 port, [[maybe_unused]] u8 value)
-{
 }
 
 cyc Cpu::next_instruction()
@@ -1755,20 +1720,6 @@ bool Cpu::if_() const
 bool Cpu::ie() const
 {
     return m_ie;
-}
-
-void Cpu::notify_out_observers(u8 port)
-{
-    for (OutObserver* observer : m_out_observers) {
-        observer->out_changed(port);
-    }
-}
-
-void Cpu::notify_in_observers(u16 port)
-{
-    for (InObserver* observer : m_in_observers) {
-        observer->in_requested(port);
-    }
 }
 
 void Cpu::print_debug(u8 opcode)

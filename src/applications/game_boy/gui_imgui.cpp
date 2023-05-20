@@ -187,12 +187,16 @@ void GuiImgui::init()
 }
 
 void GuiImgui::update_screen(
-    std::vector<u8> const& tile_ram,
+    std::vector<u8> const& tile_ram_1,
+    [[maybe_unused]] std::vector<u8> const& tile_ram_2,
+    [[maybe_unused]] std::vector<u8> const& tile_ram_3,
+    [[maybe_unused]] std::vector<u8> const& tile_map_1,
+    [[maybe_unused]] std::vector<u8> const& tile_map_2,
     std::vector<u8> const& sprite_ram,
     std::vector<u8> const& palette_ram,
     std::string const& game_window_subtitle)
 {
-    std::vector<u32> framebuffer = create_framebuffer(tile_ram, sprite_ram, palette_ram);
+    std::vector<u32> framebuffer = create_framebuffer(tile_ram_1, sprite_ram, palette_ram);
 
     glBindTexture(GL_TEXTURE_2D, m_screen_texture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);

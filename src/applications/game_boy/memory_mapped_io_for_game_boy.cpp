@@ -1,7 +1,8 @@
 #include "memory_mapped_io_for_game_boy.h"
 #include "chips/z80/util.h"
 #include "crosscutting/memory/emulator_memory.h"
-#include "game_boy/settings.h"
+#include "lcd_control.h"
+#include "settings.h"
 
 namespace emu::applications::game_boy {
 
@@ -24,8 +25,6 @@ MemoryMappedIoForGameBoy::MemoryMappedIoForGameBoy(EmulatorMemory<u16, u8>& memo
  */
 void MemoryMappedIoForGameBoy::write(u16 address, u8 value)
 {
-    address &= s_address_mask;
-
     if (address <= s_address_rom_end) {
         // Writes to ROM are ignored.
     } else if (s_address_tile_ram_beginning <= address && address <= s_address_tile_ram_end) {
@@ -48,6 +47,9 @@ void MemoryMappedIoForGameBoy::write(u16 address, u8 value)
         m_memory.direct_write(address, value);
     } else if (address == s_address_interrupt_f_register) {
         m_if = value > 1;
+    } else if (address == s_address_lcd_control) {
+        m_lcd_control.update_from_memory(value);
+        m_memory.direct_write(address, value);
     } else if (address == s_address_interrupt_enabled_register) {
         m_ie = value > 1;
     } else {
@@ -62,8 +64,6 @@ void MemoryMappedIoForGameBoy::write(u16 address, u8 value)
  */
 u8 MemoryMappedIoForGameBoy::read(u16 address)
 {
-    address &= s_address_mask;
-
     if (address <= s_address_rom_end) {
         return m_memory.direct_read(address);
     } else if (s_address_tile_ram_beginning <= address && address <= s_address_tile_ram_end) {
@@ -115,4 +115,10 @@ u8 MemoryMappedIoForGameBoy::p1() const
 {
     return m_p1;
 }
+
+LcdControl MemoryMappedIoForGameBoy::lcd_control() const
+{
+    return m_lcd_control;
+}
+
 }

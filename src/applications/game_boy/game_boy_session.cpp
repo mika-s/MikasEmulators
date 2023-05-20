@@ -13,6 +13,8 @@
 #include "interfaces/input.h"
 #include "interfaces/state.h"
 #include "key_request.h"
+#include "lcd_control.h"
+#include "memory_mapped_io_for_game_boy.h"
 #include "states/paused_state.h"
 #include "states/running_state.h"
 #include "states/state_context.h"
@@ -22,7 +24,6 @@
 #include <iostream>
 #include <iterator>
 #include <memory>
-#include <stdexcept>
 #include <string>
 #include <tuple>
 #include <utility>
@@ -33,8 +34,8 @@ using emu::debugger::FlagRegisterDebugContainer;
 using emu::debugger::IoDebugContainer;
 using emu::debugger::MemoryDebugContainer;
 using emu::debugger::RegisterDebugContainer;
-using emu::util::string::split;
 using emu::lr35902::Disassembler;
+using emu::util::string::split;
 
 GameBoySession::GameBoySession(
     bool is_starting_paused,
@@ -88,7 +89,6 @@ GameBoySession::~GameBoySession()
 {
     m_gui->remove_gui_observer(this);
     m_input->remove_io_observer(this);
-    m_cpu->remove_out_observer(this);
 }
 
 void GameBoySession::run()
@@ -117,8 +117,6 @@ void GameBoySession::setup_cpu()
     const u16 initial_pc = 0;
 
     m_cpu = std::make_shared<Cpu>(m_memory, initial_pc);
-
-    m_cpu->add_out_observer(*this);
 }
 
 void GameBoySession::setup_debugging()
@@ -162,9 +160,21 @@ void GameBoySession::setup_debugging()
     m_debug_container->add_memory(MemoryDebugContainer<u8>(
         [&]() { return memory(); }));
     m_debug_container->add_disassembled_program(disassemble_program());
-//    m_debug_container->add_tilemap(m_gui->tiles());
-//    m_debug_container->add_spritemap(m_gui->sprites());
-//    m_debug_container->add_waveforms(m_audio->waveforms());
+    m_debug_container->add_io(IoDebugContainer<u8>(
+        "LCD control",
+        [&]() { return true; },
+        [&]() { return m_memory_mapped_io->lcd_control().to_u8(); },
+        { { "BG and Window enable/priority", 0 },
+            { "OBJ enable", 1 },
+            { "OBJ size", 2 },
+            { "BG tile map area", 3 },
+            { "BG and Window tile data area", 4 },
+            { "Window enable", 5 },
+            { "Window tile map area", 6 },
+            { "LCD enable", 7 } }));
+    //    m_debug_container->add_tilemap(m_gui->tiles());
+    //    m_debug_container->add_spritemap(m_gui->sprites());
+    //    m_debug_container->add_waveforms(m_audio->waveforms());
 
     m_gui->attach_debugger(m_debugger);
     m_gui->attach_debug_container(m_debug_container);
@@ -186,21 +196,6 @@ void GameBoySession::gui_request(GuiRequest request)
     case DEBUG_MODE:
         m_is_in_debug_mode = request.m_payload;
         break;
-    }
-}
-
-void GameBoySession::out_changed(u16 port)
-{
-    if (!m_outputs_during_cycle.contains(port)) {
-        m_outputs_during_cycle[port] = m_cpu->a();
-    } else {
-        m_outputs_during_cycle[port] |= m_cpu->a();
-    }
-
-    if (port == s_out_port_vblank_interrupt_return) {
-        m_vblank_interrupt_return = m_cpu->a();
-    } else {
-        throw std::runtime_error("Illegal output port for GameBoy");
     }
 }
 
@@ -228,7 +223,7 @@ std::vector<u8> GameBoySession::memory()
 
 std::vector<DisassembledLine<u16, 16>> GameBoySession::disassemble_program()
 {
-    EmulatorMemory<u16, u8> sliced_for_disassembly = m_memory.slice(0, 0x3fff);
+    EmulatorMemory<u16, u8> sliced_for_disassembly = m_memory.slice(0, 0xffff);
 
     std::stringstream ss;
     Disassembler disassembler(sliced_for_disassembly, ss);

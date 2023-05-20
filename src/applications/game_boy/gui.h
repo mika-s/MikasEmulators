@@ -13,6 +13,7 @@
 
 namespace emu::applications::game_boy {
 class GuiObserver;
+class MemoryMappedIoForGameBoy;
 }
 namespace emu::debugger {
 template<class A, class D, std::size_t B>
@@ -56,7 +57,11 @@ public:
     virtual void remove_gui_observer(GuiObserver* observer) = 0;
 
     virtual void update_screen(
-        std::vector<u8> const& tile_ram,
+        std::vector<u8> const& tile_ram_block_1,
+        std::vector<u8> const& tile_ram_block_2,
+        std::vector<u8> const& tile_ram_block_3,
+        std::vector<u8> const& tile_map_1,
+        std::vector<u8> const& tile_map_2,
         std::vector<u8> const& sprite_ram,
         std::vector<u8> const& palette_ram,
         std::string const& game_window_subtitle)
@@ -74,13 +79,11 @@ public:
 
     virtual void toggle_sprite_debug() = 0;
 
-    void load_color_rom(std::vector<u8> const& color_rom);
-
-    void load_palette_rom(std::vector<u8> const& palette_rom);
-
     void load_tile_rom(std::vector<u8> const& tile_rom);
 
     void load_sprite_rom(std::vector<u8> const& sprite_rom);
+
+    void attach_memory_mapper(std::shared_ptr<MemoryMappedIoForGameBoy> memory_mapper);
 
     std::vector<std::vector<std::shared_ptr<Tile>>> tiles();
 
@@ -132,8 +135,6 @@ protected:
     static constexpr int s_scaled_width = static_cast<int>(s_scale * static_cast<float>(s_width));
     static constexpr int s_scaled_height = static_cast<int>(s_scale * static_cast<float>(s_height));
 
-    bool m_has_loaded_color_rom = false;
-    bool m_has_loaded_palette_rom = false;
     bool m_has_loaded_tile_rom = false;
     bool m_has_loaded_sprite_rom = false;
 
@@ -153,6 +154,9 @@ protected:
     std::vector<std::vector<std::shared_ptr<Sprite>>> m_sprites_y;
     std::vector<std::vector<std::shared_ptr<Sprite>>> m_sprites_xy;
     std::vector<std::vector<std::shared_ptr<Sprite>>> m_debugging_sprites;
+
+    std::shared_ptr<MemoryMappedIoForGameBoy> m_memory_mapper;
+    bool m_memory_mapper_is_attached { false };
 
     unsigned int m_number_of_palettes;
 

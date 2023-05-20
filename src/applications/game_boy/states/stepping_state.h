@@ -45,7 +45,15 @@ private:
 
     bool await_input_and_update_debug();
 
-    std::vector<u8> tile_ram();
+    std::vector<u8> tile_ram_block_1();
+
+    std::vector<u8> tile_ram_block_2();
+
+    std::vector<u8> tile_ram_block_3();
+
+    std::vector<u8> tile_map_1();
+
+    std::vector<u8> tile_map_2();
 
     std::vector<u8> sprite_ram();
 

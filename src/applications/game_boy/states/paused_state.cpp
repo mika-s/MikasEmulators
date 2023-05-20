@@ -50,13 +50,24 @@ void PausedState::perform([[maybe_unused]] cyc& cycles)
             transition_to_run();
             return;
         }
-        m_ctx->m_gui->update_screen(tile_ram(), sprite_ram(), palette_ram(), s_game_window_subtitle);
+        m_ctx->m_gui->update_screen(tile_ram_block_1(), tile_ram_block_2(), tile_ram_block_3(),
+            tile_map_1(), tile_map_2(), sprite_ram(), palette_ram(), s_game_window_subtitle);
     }
 }
 
-std::vector<u8> PausedState::tile_ram()
+std::vector<u8> PausedState::tile_ram_block_1()
 {
-    return { m_ctx->m_memory.begin() + 0x4000, m_ctx->m_memory.begin() + 0x43ff + 1 };
+    return { m_ctx->m_memory.begin() + 0x8000, m_ctx->m_memory.begin() + 0x87ff + 1 };
+}
+
+std::vector<u8> PausedState::tile_ram_block_2()
+{
+    return { m_ctx->m_memory.begin() + 0x8800, m_ctx->m_memory.begin() + 0x8fff + 1 };
+}
+
+std::vector<u8> PausedState::tile_ram_block_3()
+{
+    return { m_ctx->m_memory.begin() + 0x9000, m_ctx->m_memory.begin() + 0x97ff + 1 };
 }
 
 std::vector<u8> PausedState::palette_ram()
@@ -67,6 +78,16 @@ std::vector<u8> PausedState::palette_ram()
 std::vector<u8> PausedState::sprite_ram()
 {
     return { m_ctx->m_memory.begin() + 0x4ff0, m_ctx->m_memory.begin() + 0x506f + 1 };
+}
+
+std::vector<u8> PausedState::tile_map_1()
+{
+    return { m_ctx->m_memory.begin() + 0x9800, m_ctx->m_memory.begin() + 0x9bff + 1 };
+}
+
+std::vector<u8> PausedState::tile_map_2()
+{
+    return { m_ctx->m_memory.begin() + 0x9c00, m_ctx->m_memory.begin() + 0x9fff + 1 };
 }
 
 }
