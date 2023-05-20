@@ -3,6 +3,7 @@
 #include "crosscutting/typedefs.h"
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 namespace emu::debugger {
 template<class A, std::size_t B>
@@ -20,12 +21,12 @@ public:
     {
     }
 
-    A address()
+    [[nodiscard]] A address() const
     {
         return m_address;
     }
 
-    std::string full_line()
+    [[nodiscard]] std::string const& full_line() const
     {
         return m_full_line;
     }

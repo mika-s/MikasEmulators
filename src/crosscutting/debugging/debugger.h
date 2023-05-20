@@ -39,7 +39,7 @@ public:
         m_breakpoints.erase(breakpoint_address);
     }
 
-    std::unordered_map<A, Breakpoint<A, B>, KeyHasher>& breakpoints()
+    std::unordered_map<A, Breakpoint<A, B>, KeyHasher> const& breakpoints() const
     {
         return m_breakpoints;
     }

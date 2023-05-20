@@ -22,6 +22,7 @@ namespace emu::gui {
 using emu::debugger::Breakpoint;
 using emu::debugger::DebugContainer;
 using emu::debugger::Debugger;
+using emu::debugger::DisassembledLine;
 using emu::logging::Logger;
 
 template<class A, class D, std::size_t B>
@@ -114,8 +115,8 @@ private:
                     }
                     ImGui::BeginChild("breakpoint_list_child", ImVec2(200, 200), false, ImGuiWindowFlags_HorizontalScrollbar);
                     if (ImGui::BeginTable("breakpoint_table", 3)) {
-                        for (auto& breakpoint : m_debugger->breakpoints()) {
-                            auto& [address, tooltip] = breakpoint;
+                        for (auto const& breakpoint : m_debugger->breakpoints()) {
+                            auto const& [address, tooltip] = breakpoint;
 
                             std::stringstream address_ss;
                             address_ss << address;
@@ -207,16 +208,16 @@ private:
     void draw_addresses()
     {
         if (m_debug_container->is_disassembled_program_set()) {
-            const A pc = m_debug_container->pc();
+            A const pc = m_debug_container->pc();
 
             ImGui::BeginChild(
                 "disassembled_code_child",
                 ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y),
                 false, ImGuiWindowFlags_HorizontalScrollbar);
 
-            for (auto& line : m_debug_container->disassembled_program()) {
-                const A address = line.address();
-                const std::string full_line = line.full_line();
+            for (auto const& line : m_debug_container->disassembled_program()) {
+                A const address = line.address();
+                std::string const& full_line = line.full_line();
                 bool const is_currently_looking_at_pc = address == pc;
 
                 if (m_is_following_pc && is_currently_looking_at_pc) {

@@ -342,7 +342,7 @@ public:
         m_is_disassembled_program_set = true;
     }
 
-    std::vector<DisassembledLine<A, B>> disassembled_program()
+    std::vector<DisassembledLine<A, B>> const& disassembled_program() const
     {
         return m_disassembled_program;
     }
