@@ -20,6 +20,7 @@
 #include "states/state_context.h"
 #include "states/stepping_state.h"
 #include "states/stopped_state.h"
+#include "timer.h"
 #include <algorithm>
 #include <iostream>
 #include <iterator>
@@ -42,9 +43,11 @@ GameBoySession::GameBoySession(
     std::shared_ptr<Gui> gui,
     std::shared_ptr<Input> input,
     std::shared_ptr<Audio> audio,
+    std::shared_ptr<Timer> timer,
     std::shared_ptr<MemoryMappedIoForGameBoy> memory_mapped_io,
     EmulatorMemory<u16, u8>& memory)
-    : m_memory_mapped_io(std::move(memory_mapped_io))
+    : m_timer(std::move(timer))
+    , m_memory_mapped_io(std::move(memory_mapped_io))
     , m_gui(std::move(gui))
     , m_input(std::move(input))
     , m_audio(std::move(audio))
@@ -64,6 +67,7 @@ GameBoySession::GameBoySession(
         m_input,
         m_audio,
         m_cpu,
+        m_timer,
         m_memory,
         m_memory_mapped_io,
         m_vblank_interrupt_return,
@@ -172,6 +176,22 @@ void GameBoySession::setup_debugging()
             { "Window enable", 5 },
             { "Window tile map area", 6 },
             { "LCD enable", 7 } }));
+    m_debug_container->add_io(IoDebugContainer<u8>(
+        "timer divider",
+        [&]() { return true; },
+        [&]() { return m_timer->divider(); }));
+    m_debug_container->add_io(IoDebugContainer<u8>(
+        "timer counter",
+        [&]() { return true; },
+        [&]() { return m_timer->counter(); }));
+    m_debug_container->add_io(IoDebugContainer<u8>(
+        "timer modulo",
+        [&]() { return true; },
+        [&]() { return m_timer->modulo(); }));
+    m_debug_container->add_io(IoDebugContainer<u8>(
+        "timer control",
+        [&]() { return true; },
+        [&]() { return m_timer->control(); }));
     //    m_debug_container->add_tilemap(m_gui->tiles());
     //    m_debug_container->add_spritemap(m_gui->sprites());
     //    m_debug_container->add_waveforms(m_audio->waveforms());
@@ -223,7 +243,7 @@ std::vector<u8> GameBoySession::memory()
 
 std::vector<DisassembledLine<u16, 16>> GameBoySession::disassemble_program()
 {
-    EmulatorMemory<u16, u8> sliced_for_disassembly = m_memory.slice(0, 0xffff);
+    EmulatorMemory<u16, u8> sliced_for_disassembly = m_memory.slice(0, 0x7fff);
 
     std::stringstream ss;
     Disassembler disassembler(sliced_for_disassembly, ss);

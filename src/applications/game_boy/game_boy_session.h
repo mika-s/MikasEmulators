@@ -20,6 +20,7 @@ class Gui;
 class Input;
 class MemoryMappedIoForGameBoy;
 class StateContext;
+class Timer;
 struct GuiRequest;
 }
 namespace emu::debugger {
@@ -48,11 +49,11 @@ using emu::debugger::DebugContainer;
 using emu::debugger::Debugger;
 using emu::debugger::DisassembledLine;
 using emu::logging::Logger;
+using emu::lr35902::Cpu;
 using emu::memory::EmulatorMemory;
 using emu::misc::Governor;
 using emu::misc::sdl_get_ticks_high_performance;
 using emu::misc::Session;
-using emu::lr35902::Cpu;
 
 class GameBoySession
     : public Session
@@ -64,6 +65,7 @@ public:
         std::shared_ptr<Gui> gui,
         std::shared_ptr<Input> input,
         std::shared_ptr<Audio> audio,
+        std::shared_ptr<Timer> timer,
         std::shared_ptr<MemoryMappedIoForGameBoy> memory_mapped_io,
         EmulatorMemory<u16, u8>& memory);
 
@@ -84,13 +86,13 @@ private:
     static constexpr long double s_tick_limit = 1000.0L / s_fps;
     static constexpr int s_cycles_per_ms = 3072;
     static constexpr long double s_cycles_per_tick = s_cycles_per_ms * s_tick_limit;
-    static constexpr int s_out_port_vblank_interrupt_return = 0;
 
     bool m_is_in_debug_mode { false };
 
     u8 m_vblank_interrupt_return { 0 };
 
     GuiIo m_gui_io;
+    std::shared_ptr<Timer> m_timer;
     std::shared_ptr<MemoryMappedIoForGameBoy> m_memory_mapped_io;
     std::shared_ptr<Gui> m_gui;
     std::shared_ptr<Input> m_input;

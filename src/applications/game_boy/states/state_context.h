@@ -12,6 +12,7 @@ class GuiIo;
 class Input;
 class MemoryMappedIoForGameBoy;
 class State;
+class Timer;
 }
 namespace emu::debugger {
 template<class A, class D, std::size_t B>
@@ -47,6 +48,7 @@ public:
         std::shared_ptr<Input> input,
         std::shared_ptr<Audio> audio,
         std::shared_ptr<Cpu> cpu,
+        std::shared_ptr<Timer> timer,
         EmulatorMemory<u16, u8>& memory,
         std::shared_ptr<MemoryMappedIoForGameBoy> memory_mapped_io,
         u8& vblank_interrupt_return,
@@ -65,6 +67,7 @@ public:
     std::shared_ptr<Audio> m_audio;
     std::shared_ptr<Cpu> m_cpu;
 
+    std::shared_ptr<Timer> m_timer;
     EmulatorMemory<u16, u8>& m_memory;
     std::shared_ptr<MemoryMappedIoForGameBoy> m_memory_mapped_io;
 

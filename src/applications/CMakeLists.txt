@@ -29,6 +29,7 @@ set(SOURCES_APPLICATIONS_CPP
         game_boy/game_boy.cpp
         game_boy/game_boy_session.cpp
         game_boy/settings.cpp
+        game_boy/timer.cpp
         game_boy/usage.cpp
         game_boy/states/paused_state.cpp
         game_boy/states/running_state.cpp
@@ -139,6 +140,7 @@ set(SOURCES_APPLICATIONS_H
         game_boy/game_boy.h
         game_boy/game_boy_session.h
         game_boy/settings.h
+        game_boy/timer.h
         game_boy/usage.h
         game_boy/interfaces/gui_observer.h
         game_boy/interfaces/input.h

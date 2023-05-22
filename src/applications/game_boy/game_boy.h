@@ -13,6 +13,7 @@ class Gui;
 class Input;
 class MemoryMappedIoForGameBoy;
 class Settings;
+class Timer;
 }
 namespace emu::misc {
 class Session;
@@ -41,6 +42,7 @@ private:
     EmulatorMemory<u16, u8> m_sound_rom2;
     std::shared_ptr<MemoryMappedIoForGameBoy> m_memory_mapped_io;
 
+    std::shared_ptr<Timer> m_timer;
     std::shared_ptr<Gui> m_gui;
     std::shared_ptr<Input> m_input;
     std::shared_ptr<Audio> m_audio;

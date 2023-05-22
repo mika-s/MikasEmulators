@@ -4,6 +4,7 @@
 
 namespace emu::applications::game_boy {
 class State;
+class Timer;
 }
 
 namespace emu::applications::game_boy {
@@ -16,6 +17,7 @@ StateContext::StateContext(
     std::shared_ptr<Input> input,
     std::shared_ptr<Audio> audio,
     std::shared_ptr<Cpu> cpu,
+    std::shared_ptr<Timer> timer,
     EmulatorMemory<u16, u8>& memory,
     std::shared_ptr<MemoryMappedIoForGameBoy> memory_mapped_io,
     u8& vblank_interrupt_return,
@@ -31,6 +33,7 @@ StateContext::StateContext(
     , m_input(std::move(input))
     , m_audio(std::move(audio))
     , m_cpu(std::move(cpu))
+    , m_timer(std::move(timer))
     , m_memory(memory)
     , m_memory_mapped_io(std::move(memory_mapped_io))
     , m_vblank_interrupt_return(vblank_interrupt_return)

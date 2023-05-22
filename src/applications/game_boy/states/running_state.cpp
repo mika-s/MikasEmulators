@@ -3,6 +3,7 @@
 #include "applications/game_boy/gui_io.h"
 #include "applications/game_boy/interfaces/input.h"
 #include "applications/game_boy/memory_mapped_io_for_game_boy.h"
+#include "applications/game_boy/timer.h"
 #include "chips/lr35902/cpu.h"
 #include "crosscutting/debugging/debugger.h"
 #include "crosscutting/logging/logger.h"
@@ -54,6 +55,7 @@ void RunningState::perform(cyc& cycles)
         cycles = 0;
         while (cycles < static_cast<cyc>(s_cycles_per_tick)) {
             cycles += m_ctx->m_cpu->next_instruction();
+            m_ctx->m_timer->inc(cycles);
             if (m_ctx->m_is_in_debug_mode && m_ctx->m_debugger->has_breakpoint(m_ctx->m_cpu->pc())) {
                 m_ctx->m_logger->info("Breakpoint hit: 0x%04x", m_ctx->m_cpu->pc());
                 transition_to_step();
@@ -74,6 +76,7 @@ void RunningState::perform(cyc& cycles)
                 transition_to_pause();
                 return;
             }
+
             m_ctx->m_gui->update_screen(tile_ram_block_1(), tile_ram_block_2(), tile_ram_block_3(),
                 tile_map_1(), tile_map_2(), sprite_ram(), palette_ram(), s_game_window_subtitle);
             //            m_ctx->m_audio->handle_sound(m_ctx->m_memory_mapped_io->is_sound_enabled(), m_ctx->m_memory_mapped_io->voices());

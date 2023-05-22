@@ -8,6 +8,7 @@
 #include "input_sdl.h"
 #include "memory_mapped_io_for_game_boy.h"
 #include "settings.h" // IWYU pragma: keep
+#include "timer.h"
 #include <cstddef>
 #include <memory>
 #include <string>
@@ -33,9 +34,11 @@ GameBoy::GameBoy(Settings const& settings, const GuiType gui_type)
         m_is_starting_paused = false;
     }
 
+    m_timer = std::make_shared<Timer>();
+
     load_files();
 
-    m_memory_mapped_io = std::make_shared<MemoryMappedIoForGameBoy>(m_memory, settings);
+    m_memory_mapped_io = std::make_shared<MemoryMappedIoForGameBoy>(m_memory, m_timer, settings);
     m_memory.attach_memory_mapper(m_memory_mapped_io);
     m_gui->attach_memory_mapper(m_memory_mapped_io);
 }
@@ -47,6 +50,7 @@ std::unique_ptr<Session> GameBoy::new_session()
         m_gui,
         m_input,
         m_audio,
+        m_timer,
         m_memory_mapped_io,
         m_memory);
 }
@@ -69,7 +73,7 @@ void GameBoy::load_files()
 
     //    m_gui->load_color_rom({ m_color_rom.begin(), m_color_rom.end() });
     //    m_gui->load_palette_rom({ m_palette_rom.begin(), m_palette_rom.end() });
-//    m_gui->load_tile_rom({ m_tile_rom.begin(), m_tile_rom.end() });
+    //    m_gui->load_tile_rom({ m_tile_rom.begin(), m_tile_rom.end() });
     //    m_gui->load_sprite_rom({ m_sprite_rom.begin(), m_sprite_rom.end() });
 
     //    std::vector<u8> sound_rom1 = { m_sound_rom1.begin(), m_sound_rom1.end() };
