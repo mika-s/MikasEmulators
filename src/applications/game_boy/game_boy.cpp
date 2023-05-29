@@ -64,12 +64,20 @@ std::vector<u8> create_empty_vector(std::size_t size)
 void GameBoy::load_files()
 {
     const std::string directory = "roms/game_boy/";
-    m_memory.add(read_file_into_vector(directory + "cpu_instrs.gb")); // $0000-$3fff: cpu_instrs.gb: cartridge, hardcoded tests
+    m_memory.add(read_file_into_vector(directory + "06.gb")); // hardcoded tests
+    m_memory.add(create_empty_vector(0xffff - m_memory.size()));
 
-    // 0x0000 - 0x00FF: Boot ROM
-
-    // Main RAM: 8K Byte
-    // Video RAM: 8K Byte
+    // [0000-3FFF] Cartridge ROM, bank 0
+    //      [0000-00FF] BIOS
+    //      [0100-014F] Cartridge header
+    // [4000-7FFF] Cartridge ROM, other banks
+    // [8000-9FFF] Graphics RAM
+    // [A000-BFFF] Cartridge (External) RAM
+    // [C000-DFFF] Working RAM
+    // [E000-FDFF] Working RAM (shadow)
+    // [FE00-FE9F] Graphics: sprite information
+    // [FF00-FF7F] Memory-mapped I/O
+    // [FF80-FFFF] Zero-page RAM
 
     //    m_gui->load_color_rom({ m_color_rom.begin(), m_color_rom.end() });
     //    m_gui->load_palette_rom({ m_palette_rom.begin(), m_palette_rom.end() });

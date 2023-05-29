@@ -64,30 +64,28 @@ public:
 
     [[nodiscard]] bool is_inta() const;
 
-    [[nodiscard]] bool is_interrupted() const;
-
-    [[nodiscard]] bool if_() const;
+    [[nodiscard]] bool ime() const;
 
     [[nodiscard]] bool ie() const;
 
-    void interrupt(u8 supplied_instruction_from_interruptor);
+    void interrupt(u8 new_pc);
 
 private:
     bool m_is_halted { false };
 
-    bool m_if { false };
-    bool m_ie { false };
-    bool m_ime { false };
-    bool m_is_interrupted { false };
-    u8 m_instruction_from_interruptor { 0 };
+    bool m_ime { false }; // interrupt master enable
+    bool m_ie { false };  // interrupt enabled register
+    u8 m_pc_from_interruptor { 0 };
 
     EmulatorMemory<u16, u8>& m_memory;
     std::size_t m_memory_size;
 
-    u8 m_opcode { 0 };
-    u16 m_sp { 0xffff };
+    u8 m_opcode { 0 }; // TODO: real value
+//    u16 m_sp { 0xffff };
+    u16 m_sp { 0 };
     u16 m_pc;
-    u8 m_acc_reg { 0xff };
+//    u8 m_acc_reg { 0xff }; // TODO: real value
+    u8 m_acc_reg { 0 };
     u8 m_b_reg { 0 };
     u8 m_c_reg { 0 };
     u8 m_d_reg { 0 };
@@ -98,7 +96,7 @@ private:
 
     void next_bits_instruction(u8 bits_opcode, cyc& cycles);
 
-    cyc handle_maskable_interrupt_0(cyc cycles);
+    cyc handle_interrupt(cyc cycles);
 
     NextByte get_next_byte();
 

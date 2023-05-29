@@ -17,7 +17,7 @@ using emu::util::byte::to_u16;
  * <ul>
  *   <li>Size: 1</li>
  *   <li>Cycles: 3</li>
- *   <li>States: 10</li>
+ *   <li>States: 16</li>
  *   <li>Condition bits affected: none</li>
  * </ul>
  *
@@ -30,7 +30,7 @@ void ret(u16& pc, u16& sp, EmulatorMemory<u16, u8> const& memory, cyc& cycles)
 {
     execute_return(pc, sp, memory);
 
-    cycles = 10;
+    cycles = 16;
 }
 
 /**
@@ -38,7 +38,7 @@ void ret(u16& pc, u16& sp, EmulatorMemory<u16, u8> const& memory, cyc& cycles)
  * <ul>
  *   <li>Size: 1</li>
  *   <li>Cycles: 1 or 3</li>
- *   <li>States: 5 or 11</li>
+ *   <li>States: 8 or 20</li>
  *   <li>Condition bits affected: none</li>
  * </ul>
  *
@@ -55,10 +55,10 @@ void ret_c(u16& pc, u16& sp, EmulatorMemory<u16, u8> const& memory, Flags const&
     if (flag_reg.is_carry_flag_set()) {
         execute_return(pc, sp, memory);
 
-        cycles += 6;
+        cycles += 12;
     }
 
-    cycles += 5;
+    cycles += 8;
 }
 
 /**
@@ -66,7 +66,7 @@ void ret_c(u16& pc, u16& sp, EmulatorMemory<u16, u8> const& memory, Flags const&
  * <ul>
  *   <li>Size: 1</li>
  *   <li>Cycles: 1 or 3</li>
- *   <li>States: 5 or 11</li>
+ *   <li>States: 8 or 20</li>
  *   <li>Condition bits affected: none</li>
  * </ul>
  *
@@ -83,10 +83,10 @@ void ret_nc(u16& pc, u16& sp, EmulatorMemory<u16, u8> const& memory, Flags const
     if (!flag_reg.is_carry_flag_set()) {
         execute_return(pc, sp, memory);
 
-        cycles += 6;
+        cycles += 12;
     }
 
-    cycles += 5;
+    cycles += 8;
 }
 
 /**
@@ -94,7 +94,7 @@ void ret_nc(u16& pc, u16& sp, EmulatorMemory<u16, u8> const& memory, Flags const
  * <ul>
  *   <li>Size: 1</li>
  *   <li>Cycles: 1 or 3</li>
- *   <li>States: 5 or 11</li>
+ *   <li>States: 8 or 20</li>
  *   <li>Condition bits affected: none</li>
  * </ul>
  *
@@ -111,10 +111,10 @@ void ret_z(u16& pc, u16& sp, EmulatorMemory<u16, u8> const& memory, Flags const&
     if (flag_reg.is_zero_flag_set()) {
         execute_return(pc, sp, memory);
 
-        cycles += 6;
+        cycles += 12;
     }
 
-    cycles += 5;
+    cycles += 8;
 }
 
 /**
@@ -122,7 +122,7 @@ void ret_z(u16& pc, u16& sp, EmulatorMemory<u16, u8> const& memory, Flags const&
  * <ul>
  *   <li>Size: 1</li>
  *   <li>Cycles: 1 or 3</li>
- *   <li>States: 5 or 11</li>
+ *   <li>States: 8 or 20</li>
  *   <li>Condition bits affected: none</li>
  * </ul>
  *
@@ -139,10 +139,10 @@ void ret_nz(u16& pc, u16& sp, EmulatorMemory<u16, u8> const& memory, Flags const
     if (!flag_reg.is_zero_flag_set()) {
         execute_return(pc, sp, memory);
 
-        cycles += 6;
+        cycles += 12;
     }
 
-    cycles += 5;
+    cycles += 8;
 }
 
 void print_ret(std::ostream& ostream)
@@ -213,7 +213,7 @@ TEST_CASE("LR35902: RET C")
         CHECK_EQ(0x100f, pc);
     }
 
-    SUBCASE("should use 5 cycles when not returning")
+    SUBCASE("should use 8 cycles when not returning")
     {
         cycles = 0;
         u16 pc = 0;
@@ -224,10 +224,10 @@ TEST_CASE("LR35902: RET C")
 
         ret_c(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(5, cycles);
+        CHECK_EQ(8, cycles);
     }
 
-    SUBCASE("should use 11 cycles when returning")
+    SUBCASE("should use 20 cycles when returning")
     {
         cycles = 0;
         u16 pc = 0;
@@ -239,7 +239,7 @@ TEST_CASE("LR35902: RET C")
 
         ret_c(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(11, cycles);
+        CHECK_EQ(20, cycles);
     }
 }
 
@@ -273,7 +273,7 @@ TEST_CASE("LR35902: RET NC")
         CHECK_EQ(0x100f, pc);
     }
 
-    SUBCASE("should use 5 cycles when not returning")
+    SUBCASE("should use 8 cycles when not returning")
     {
         cycles = 0;
 
@@ -284,10 +284,10 @@ TEST_CASE("LR35902: RET NC")
 
         ret_nc(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(5, cycles);
+        CHECK_EQ(8, cycles);
     }
 
-    SUBCASE("should use 11 cycles when returning")
+    SUBCASE("should use 20 cycles when returning")
     {
         cycles = 0;
 
@@ -297,7 +297,7 @@ TEST_CASE("LR35902: RET NC")
 
         ret_nc(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(11, cycles);
+        CHECK_EQ(20, cycles);
     }
 }
 
@@ -334,7 +334,7 @@ TEST_CASE("LR35902: RET Z")
         CHECK_EQ(0, sp);
     }
 
-    SUBCASE("should use 5 cycles when not returning")
+    SUBCASE("should use 8 cycles when not returning")
     {
         cycles = 0;
         u16 pc = 0;
@@ -343,10 +343,10 @@ TEST_CASE("LR35902: RET Z")
 
         ret_z(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(5, cycles);
+        CHECK_EQ(8, cycles);
     }
 
-    SUBCASE("should use 11 cycles when returning")
+    SUBCASE("should use 20 cycles when returning")
     {
         cycles = 0;
         u16 pc = 0;
@@ -356,7 +356,7 @@ TEST_CASE("LR35902: RET Z")
 
         ret_z(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(11, cycles);
+        CHECK_EQ(20, cycles);
     }
 }
 
@@ -390,7 +390,7 @@ TEST_CASE("LR35902: RET NZ")
         CHECK_EQ(0x100f, pc);
     }
 
-    SUBCASE("should use 5 cycles when not returning")
+    SUBCASE("should use 8 cycles when not returning")
     {
         cycles = 0;
         u16 pc = 0;
@@ -400,10 +400,10 @@ TEST_CASE("LR35902: RET NZ")
 
         ret_nz(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(5, cycles);
+        CHECK_EQ(8, cycles);
     }
 
-    SUBCASE("should use 11 cycles when returning")
+    SUBCASE("should use 20 cycles when returning")
     {
         cycles = 0;
         u16 pc = 0;
@@ -412,7 +412,7 @@ TEST_CASE("LR35902: RET NZ")
 
         ret_nz(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(11, cycles);
+        CHECK_EQ(20, cycles);
     }
 }
 }

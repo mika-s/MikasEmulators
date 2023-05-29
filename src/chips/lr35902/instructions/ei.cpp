@@ -3,6 +3,7 @@
 #include <iostream>
 
 namespace emu::lr35902 {
+
 /**
  * Enable interrupts
  * <ul>
@@ -12,14 +13,12 @@ namespace emu::lr35902 {
  *   <li>Condition bits affected: none</li>
  * </ul>
  *
- * @param iff1 is the main interrupt enable flip-flop, which will be mutated
- * @param iff2 is the alternate interrupt enable flip-flop, which will be mutated
+ * @param ime is the interrupt master enable, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void ei(bool& iff1, bool& iff2, cyc& cycles)
+void ei(bool& ime, cyc& cycles)
 {
-    iff1 = true;
-    iff2 = true;
+    ime = true;
 
     cycles = 4;
 }
@@ -35,27 +34,23 @@ TEST_CASE("LR35902: EI")
 
     SUBCASE("should enable interrupts")
     {
-        bool iff1 = false;
-        bool iff2 = false;
+        bool ime = false;
 
-        ei(iff1, iff2, cycles);
+        ei(ime, cycles);
 
-        CHECK_EQ(true, iff1);
-        CHECK_EQ(true, iff2);
+        CHECK_EQ(true, ime);
 
-        ei(iff1, iff2, cycles);
+        ei(ime, cycles);
 
-        CHECK_EQ(true, iff1);
-        CHECK_EQ(true, iff2);
+        CHECK_EQ(true, ime);
     }
 
     SUBCASE("should use 4 cycles")
     {
         cycles = 0;
-        bool iff1 = false;
-        bool iff2 = false;
+        bool ime = false;
 
-        ei(iff1, iff2, cycles);
+        ei(ime, cycles);
 
         CHECK_EQ(4, cycles);
     }

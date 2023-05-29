@@ -74,10 +74,6 @@ void bit_MHL(unsigned int bit_number, u16 hl_reg, EmulatorMemory<u16, u8> const&
 
     bit(bit_number, memory.read(hl_reg), flag_reg);
 
-    // TODO: Handle X and Y flags
-
-    // TODO: memptr
-
     cycles = 12;
 }
 

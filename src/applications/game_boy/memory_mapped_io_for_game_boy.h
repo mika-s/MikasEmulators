@@ -3,6 +3,7 @@
 #include "crosscutting/memory/memory_mapped_io.h"
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
+#include "interrupts.h"
 #include "lcd_control.h"
 #include <memory>
 
@@ -36,11 +37,22 @@ public:
 
     [[nodiscard]] u8 p1() const;
 
-    bool is_interrupt_enabled();
+    bool ie();
+
+    u8 if_();
+
+    void interrupt(Interrupts interrupt);
+
+    void reset_interrupt(Interrupts interrupt);
 
     [[nodiscard]] LcdControl lcd_control() const;
 
 private:
+    static constexpr u16 s_interrupt_bit_vblank = 0;
+    static constexpr u16 s_interrupt_bit_lcd = 1;
+    static constexpr u16 s_interrupt_bit_timer = 2;
+    static constexpr u16 s_interrupt_bit_joypad = 3;
+
     static constexpr u16 s_address_boot_rom_end = 0x00ff;
     static constexpr u16 s_address_rom_end = 0x7fff;
     static constexpr u16 s_address_tile_ram_beginning = 0x8000;
@@ -62,6 +74,8 @@ private:
     static constexpr u16 s_address_high_ram_beginning = 0xff80;
     static constexpr u16 s_address_high_ram_end = 0xfffe;
     static constexpr u16 s_address_game_boy_memory_end = 0x50ff;
+
+    static constexpr u8 s_blargg_serial_output_token = 0x81;
 
     /************/
     /* IO ports */
@@ -116,7 +130,7 @@ private:
     EmulatorMemory<u16, u8>& m_memory;
     std::shared_ptr<Timer> m_timer;
 
-    bool m_if { false };
+    u8 m_if { 0 };
     bool m_ie { false };
 
     LcdControl m_lcd_control;

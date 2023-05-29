@@ -659,6 +659,12 @@ void print_ld_Mnn_dd(std::ostream& ostream, NextWord const& args, std::string co
             << src;
 }
 
+void print_ld_HL_sp_p_n(std::ostream& ostream, NextByte const& args)
+{
+    ostream << "LD HL,SP+"
+            << hexify_wo_0x(args.farg);
+}
+
 TEST_CASE("LR35902: LD")
 {
     SUBCASE("should load register/memory with value from register/memory")

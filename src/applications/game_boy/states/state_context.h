@@ -100,6 +100,8 @@ public:
 
     void set_stopped_state(std::shared_ptr<State> state);
 
+    void vblank_interrupt();
+
 private:
     std::shared_ptr<State> m_current_state;
     std::shared_ptr<State> m_running_state;

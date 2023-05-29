@@ -65,8 +65,8 @@ void SteppingState::perform(cyc& cycles)
         }
     }
 
-    if (m_ctx->m_memory_mapped_io->is_interrupt_enabled()) {
-        m_ctx->m_cpu->interrupt(m_ctx->m_vblank_interrupt_return);
+//    if (m_ctx->m_memory_mapped_io->ie()) {
+        m_ctx->vblank_interrupt();
 
         m_ctx->m_input->read(m_ctx->m_gui_io, m_ctx->m_memory_mapped_io);
         if (m_ctx->m_gui_io.m_is_quitting) {
@@ -81,7 +81,7 @@ void SteppingState::perform(cyc& cycles)
         m_ctx->m_gui->update_screen(tile_ram_block_1(), tile_ram_block_2(), tile_ram_block_3(),
             tile_map_1(), tile_map_2(), sprite_ram(), palette_ram(), s_game_window_subtitle);
         //        m_ctx->m_audio->handle_sound(m_ctx->m_memory_mapped_io->is_sound_enabled(), m_ctx->m_memory_mapped_io->voices());
-    }
+//    }
 
     m_is_stepping_cycle = false;
 }

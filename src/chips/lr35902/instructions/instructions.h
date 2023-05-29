@@ -550,8 +550,8 @@ void dec_r(u8& reg, Flags& flag_reg, cyc& cycles);
 void dec_ss(u8& reg1, u8& reg2, cyc& cycles);
 void dec_sp(u16& sp, cyc& cycles);
 void dec_MHL(EmulatorMemory<u16, u8>& memory, u16 address, Flags& flag_reg, cyc& cycles);
-void di(bool& iff1, bool& iff2, cyc& cycles);
-void ei(bool& iff1, bool& iff2, cyc& cycles);
+void di(bool& ime, cyc& cycles);
+void ei(bool& ime, cyc& cycles);
 void halt(bool& is_halted, cyc& cycles);
 void inc_r(u8& reg, Flags& flag_reg, cyc& cycles);
 void inc_ss(u8& reg1, u8& reg2, cyc& cycles);
@@ -683,6 +683,7 @@ void print_ld(std::ostream& ostream, std::string const& dest, NextWord const& ar
 void print_ld(std::ostream& ostream, NextWord const& args, std::string const& src);
 void print_ld_dd_nn(std::ostream& ostream, std::string const& reg, NextWord const& args);
 void print_ld_Mnn_dd(std::ostream& ostream, NextWord const& args, std::string const& src);
+void print_ld_HL_sp_p_n(std::ostream& ostream, NextByte const& args);
 void print_ldh_A_Mn(std::ostream& ostream, NextByte const& args);
 void print_ldh_Mn_A(std::ostream& ostream, NextByte const& args);
 void print_nop(std::ostream& ostream);

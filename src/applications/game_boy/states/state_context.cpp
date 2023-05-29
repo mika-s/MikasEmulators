@@ -1,5 +1,8 @@
 #include "state_context.h"
-#include "game_boy/gui.h"
+#include "applications/game_boy/gui.h"
+#include "applications/game_boy/interrupts.h"
+#include "applications/game_boy/memory_mapped_io_for_game_boy.h"
+#include "chips/lr35902/cpu.h"
 #include <utility>
 
 namespace emu::applications::game_boy {
@@ -93,6 +96,15 @@ void StateContext::set_stepping_state(std::shared_ptr<State> state)
 void StateContext::set_stopped_state(std::shared_ptr<State> state)
 {
     m_stopped_state = std::move(state);
+}
+
+void StateContext::vblank_interrupt()
+{
+    m_memory_mapped_io->interrupt(Interrupts::VBLANK);
+
+    m_cpu->interrupt(0x40);
+
+    m_memory_mapped_io->reset_interrupt(Interrupts::VBLANK);
 }
 
 }

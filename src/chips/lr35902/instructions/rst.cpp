@@ -15,7 +15,7 @@ void rst(u16& pc, u16 new_pc, u16& sp, EmulatorMemory<u16, u8>& memory, cyc& cyc
 {
     execute_call(pc, sp, memory, low_byte(new_pc), high_byte(new_pc));
 
-    cycles = 11;
+    cycles = 16;
 }
 
 /**
@@ -23,7 +23,7 @@ void rst(u16& pc, u16 new_pc, u16& sp, EmulatorMemory<u16, u8>& memory, cyc& cyc
  * <ul>
  *   <li>Size: 1</li>
  *   <li>Cycles: 3</li>
- *   <li>States: 11</li>
+ *   <li>States: 16</li>
  *   <li>Condition bits affected: none</li>
  * </ul>
  *
@@ -42,7 +42,7 @@ void rst_0(u16& pc, u16& sp, EmulatorMemory<u16, u8>& memory, cyc& cycles)
  * <ul>
  *   <li>Size: 1</li>
  *   <li>Cycles: 3</li>
- *   <li>States: 11</li>
+ *   <li>States: 16</li>
  *   <li>Condition bits affected: none</li>
  * </ul>
  *
@@ -61,7 +61,7 @@ void rst_1(u16& pc, u16& sp, EmulatorMemory<u16, u8>& memory, cyc& cycles)
  * <ul>
  *   <li>Size: 1</li>
  *   <li>Cycles: 3</li>
- *   <li>States: 11</li>
+ *   <li>States: 16</li>
  *   <li>Condition bits affected: none</li>
  * </ul>
  *
@@ -80,7 +80,7 @@ void rst_2(u16& pc, u16& sp, EmulatorMemory<u16, u8>& memory, cyc& cycles)
  * <ul>
  *   <li>Size: 1</li>
  *   <li>Cycles: 3</li>
- *   <li>States: 11</li>
+ *   <li>States: 16</li>
  *   <li>Condition bits affected: none</li>
  * </ul>
  *
@@ -99,7 +99,7 @@ void rst_3(u16& pc, u16& sp, EmulatorMemory<u16, u8>& memory, cyc& cycles)
  * <ul>
  *   <li>Size: 1</li>
  *   <li>Cycles: 3</li>
- *   <li>States: 11</li>
+ *   <li>States: 16</li>
  *   <li>Condition bits affected: none</li>
  * </ul>
  *
@@ -118,7 +118,7 @@ void rst_4(u16& pc, u16& sp, EmulatorMemory<u16, u8>& memory, cyc& cycles)
  * <ul>
  *   <li>Size: 1</li>
  *   <li>Cycles: 3</li>
- *   <li>States: 11</li>
+ *   <li>States: 16</li>
  *   <li>Condition bits affected: none</li>
  * </ul>
  *
@@ -137,7 +137,7 @@ void rst_5(u16& pc, u16& sp, EmulatorMemory<u16, u8>& memory, cyc& cycles)
  * <ul>
  *   <li>Size: 1</li>
  *   <li>Cycles: 3</li>
- *   <li>States: 11</li>
+ *   <li>States: 16</li>
  *   <li>Condition bits affected: none</li>
  * </ul>
  *
@@ -156,7 +156,7 @@ void rst_6(u16& pc, u16& sp, EmulatorMemory<u16, u8>& memory, cyc& cycles)
  * <ul>
  *   <li>Size: 1</li>
  *   <li>Cycles: 3</li>
- *   <li>States: 11</li>
+ *   <li>States: 16</li>
  *   <li>Condition bits affected: none</li>
  * </ul>
  *
@@ -168,23 +168,6 @@ void rst_6(u16& pc, u16& sp, EmulatorMemory<u16, u8>& memory, cyc& cycles)
 void rst_7(u16& pc, u16& sp, EmulatorMemory<u16, u8>& memory, cyc& cycles)
 {
     rst(pc, 0x38, sp, memory, cycles);
-}
-
-/**
- * NMI
- * <ul>
- *   <li>States: 11</li>
- *   <li>Condition bits affected: none</li>
- * </ul>
- *
- * @param pc is the program counter, which will be mutated
- * @param sp is the stack pointer, which will be mutated
- * @param memory is the memory, which will be mutated
- * @param cycles is the number of cycles variable, which will be mutated
- */
-void nmi(u16& pc, u16& sp, EmulatorMemory<u16, u8>& memory, cyc& cycles)
-{
-    rst(pc, 0x66, sp, memory, cycles);
 }
 
 void print_rst(std::ostream& ostream, int number)
@@ -331,7 +314,7 @@ TEST_CASE("LR35902: RST")
         CHECK_EQ(0x12, memory.read(0x01));
     }
 
-    SUBCASE("should use 11 cycles when returning")
+    SUBCASE("should use 16 cycles when returning")
     {
         cyc cycles = 0;
 
@@ -342,7 +325,7 @@ TEST_CASE("LR35902: RST")
 
         rst_0(pc, sp, memory, cycles);
 
-        CHECK_EQ(11, cycles);
+        CHECK_EQ(16, cycles);
     }
 }
 }

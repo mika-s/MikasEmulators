@@ -45,7 +45,7 @@ void swap(u8& reg, [[maybe_unused]] Flags& flag_reg, cyc& cycles)
  * <ul>
  *   <li>Size: 2</li>
  *   <li>Cycles: 2</li>
- *   <li>States: 8</li>
+ *   <li>States: 16</li>
  *   <li>Condition bits affected: carry, half carry, zero, add/subtract</li>
  * </ul>
  *
@@ -65,7 +65,7 @@ void swap_MHL(EmulatorMemory<u16, u8>& memory, u16 address, [[maybe_unused]] Fla
 
     memory.write(address, value);
 
-    cycles = 8;
+    cycles = 16;
 }
 
 void print_swap(std::ostream& ostream, std::string const& reg)

@@ -18,6 +18,8 @@ using emu::util::byte::is_bit_set;
  *   <li>Condition bits affected: none</li>
  * </ul>
  *
+ * NOTE: Number of cycles spent is unknown.
+ *
  * @param cycles is the number of cycles variable, which will be mutated
  */
 void stop_0(cyc& cycles)

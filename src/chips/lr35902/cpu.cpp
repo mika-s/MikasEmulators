@@ -21,7 +21,8 @@ Cpu::Cpu(EmulatorMemory<u16, u8>& memory, const u16 initial_pc)
     , m_memory_size(memory.size())
     , m_pc(initial_pc)
 {
-    m_flag_reg.from_u8(0xff);
+    //    m_flag_reg.from_u8(0xff);  // TODO: real value
+    m_flag_reg.from_u8(0x0);
 }
 
 Cpu::~Cpu() = default;
@@ -44,9 +45,8 @@ void Cpu::reset_state()
     m_pc = 0x100;
     m_sp = 0xfffe;
     m_is_halted = false;
-    m_if = m_ie = false;
-    m_is_interrupted = false;
-    m_instruction_from_interruptor = 0;
+    m_ime = m_ie = false;
+    m_pc_from_interruptor = 0;
 }
 
 void Cpu::start()
@@ -60,8 +60,8 @@ void Cpu::stop()
 
 void Cpu::set_state_manually(ManualState manual_state)
 {
-    m_if = manual_state.m_iff1;
-    m_ie = manual_state.m_iff2;
+    m_ime = manual_state.m_ime;
+    m_ie = manual_state.m_ie;
     m_sp = manual_state.m_sp;
     m_pc = manual_state.m_pc;
     m_acc_reg = manual_state.m_acc_reg;
@@ -74,23 +74,23 @@ void Cpu::set_state_manually(ManualState manual_state)
     m_flag_reg.from_u8(manual_state.m_flag_reg.to_u8());
 }
 
-void Cpu::interrupt(u8 instruction_to_perform)
+void Cpu::interrupt(u8 new_pc)
 {
-    m_is_interrupted = true;
-    m_instruction_from_interruptor = instruction_to_perform;
+    m_ie = true;
+    m_pc_from_interruptor = new_pc;
 }
 
 bool Cpu::is_inta() const
 {
-    return m_if;
+    return m_ime;
 }
 
 cyc Cpu::next_instruction()
 {
     cyc cycles = 0;
 
-    if (m_if && m_is_interrupted) {
-        cycles += handle_maskable_interrupt_0(cycles);
+    if (m_ime && m_ie) {
+        cycles += handle_interrupt(cycles);
     } else if (m_is_halted) {
         return 4; // TODO: What is the proper value while NOPing during halt?
     } else {
@@ -806,7 +806,7 @@ cyc Cpu::next_instruction()
         ld_A_MC(m_acc_reg, m_c_reg, m_memory, cycles);
         break;
     case DI:
-        di(m_if, m_ie, cycles);
+        di(m_ime, cycles);
         break;
     case PUSH_AF:
         push_af(m_flag_reg, m_acc_reg, m_sp, m_memory, cycles);
@@ -827,7 +827,7 @@ cyc Cpu::next_instruction()
         ld_A_Mnn(m_acc_reg, m_memory, get_next_word(), cycles);
         break;
     case EI:
-        ei(m_if, m_ie, cycles);
+        ei(m_ime, cycles);
         break;
     case CP_n:
         cp_n(m_acc_reg, get_next_byte(), m_flag_reg, cycles);
@@ -1620,13 +1620,13 @@ void Cpu::next_bits_instruction(u8 bits_opcode, cyc& cycles)
     }
 }
 
-cyc Cpu::handle_maskable_interrupt_0(cyc cycles)
+cyc Cpu::handle_interrupt(cyc cycles)
 {
-    m_if = m_ie = false;
-    m_is_interrupted = false;
+    m_ime = m_ie = false;
     m_is_halted = false;
 
-    m_opcode = m_instruction_from_interruptor;
+    m_pc = m_pc_from_interruptor;
+
     cycles = 13;
 
     return cycles;
@@ -1707,14 +1707,9 @@ u8 Cpu::f() const
     return m_flag_reg.to_u8();
 }
 
-bool Cpu::is_interrupted() const
+bool Cpu::ime() const
 {
-    return m_is_interrupted;
-}
-
-bool Cpu::if_() const
-{
-    return m_if;
+    return m_ime;
 }
 
 bool Cpu::ie() const
@@ -1724,7 +1719,7 @@ bool Cpu::ie() const
 
 void Cpu::print_debug(u8 opcode)
 {
-    if (false) {
+    if (true) {
         std::cout << "pc=" << hexify(static_cast<u16>(m_pc - 1)) // -1 because fetching opcode increments by one
                   << ",sp=" << hexify(m_sp)
                   << ",op=" << hexify(opcode)

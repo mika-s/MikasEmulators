@@ -45,7 +45,7 @@ void set_r(unsigned int bit_number, u8& reg, cyc& cycles)
  * <ul>
  *   <li>Size: 2</li>
  *   <li>Cycles: 4</li>
- *   <li>States: 15</li>
+ *   <li>States: 16</li>
  *   <li>Condition bits affected: none</li>
  * </ul>
  *
@@ -60,7 +60,7 @@ void set_MHL(unsigned int bit_number, u16 hl_reg, EmulatorMemory<u16, u8>& memor
 
     set_bit_in_memory(memory, hl_reg, bit_number);
 
-    cycles = 15;
+    cycles = 16;
 }
 
 void print_set(std::ostream& ostream, unsigned int bit_number, std::string const& src)

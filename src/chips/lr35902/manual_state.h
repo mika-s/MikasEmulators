@@ -6,8 +6,8 @@
 namespace emu::lr35902 {
 
 struct ManualState {
-    bool m_iff1;
-    bool m_iff2;
+    bool m_ime;
+    bool m_ie;
     u16 m_sp;
     u16 m_pc;
     u8 m_acc_reg;

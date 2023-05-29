@@ -134,6 +134,7 @@ set(SOURCES_APPLICATIONS_H
         game_boy/gui_sdl.h
         game_boy/input_imgui.h
         game_boy/input_sdl.h
+        game_boy/interrupts.h
         game_boy/key_request.h
         game_boy/lcd_control.h
         game_boy/memory_mapped_io_for_game_boy.h

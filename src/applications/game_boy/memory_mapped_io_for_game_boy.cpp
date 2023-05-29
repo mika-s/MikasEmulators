@@ -1,9 +1,11 @@
 #include "memory_mapped_io_for_game_boy.h"
 #include "chips/z80/util.h"
 #include "crosscutting/memory/emulator_memory.h"
+#include "interrupts.h"
 #include "lcd_control.h"
 #include "settings.h"
 #include "timer.h"
+#include <iostream>
 #include <utility>
 
 namespace emu::applications::game_boy {
@@ -51,6 +53,15 @@ void MemoryMappedIoForGameBoy::write(u16 address, u8 value)
         m_memory.direct_write(address, value);
     } else if (s_address_high_ram_beginning <= address && address <= s_address_high_ram_end) {
         m_memory.direct_write(address, value);
+    } else if (address == s_address_serial_transfer_data) {
+        m_memory.direct_write(address, value);
+    } else if (address == s_address_serial_transfer_control) {
+        if (value == s_blargg_serial_output_token) {
+            std::cout << m_memory.direct_read(address);
+            m_memory.direct_write(address, 0);
+        } else {
+            m_memory.direct_write(address, value);
+        }
     } else if (address == s_address_timer_divider_register) {
         m_timer->reset_divider();
     } else if (address == s_address_timer_counter) {
@@ -60,12 +71,14 @@ void MemoryMappedIoForGameBoy::write(u16 address, u8 value)
     } else if (address == s_address_timer_control) {
         m_timer->control(value);
     } else if (address == s_address_interrupt_f_register) {
-        m_if = value > 1;
+        m_if = value;
+        m_memory.direct_write(address, value);
     } else if (address == s_address_lcd_control) {
         m_lcd_control.update_from_memory(value);
         m_memory.direct_write(address, value);
     } else if (address == s_address_interrupt_enabled_register) {
         m_ie = value > 1;
+        m_memory.direct_write(address, value);
     } else {
     }
 }
@@ -103,6 +116,10 @@ u8 MemoryMappedIoForGameBoy::read(u16 address)
         return m_memory.direct_read(address);
     } else if (address == s_address_joypad) {
         return m_p1;
+    } else if (address == s_address_serial_transfer_data) {
+        return m_memory.direct_read(address);
+    } else if (address == s_address_serial_transfer_control) {
+        return m_memory.direct_read(address);
     } else if (address == s_address_timer_divider_register) {
         return m_timer->divider();
     } else if (address == s_address_timer_counter) {
@@ -112,17 +129,17 @@ u8 MemoryMappedIoForGameBoy::read(u16 address)
     } else if (address == s_address_timer_control) {
         return m_timer->control();
     } else if (address == s_address_interrupt_f_register) {
-        return m_if;
+        return m_memory.direct_read(address);
     } else if (address == s_address_interrupt_enabled_register) {
-        return m_ie;
+        return m_memory.direct_read(address);
     } else {
-        return 0;
+        return m_memory.direct_read(address);
     }
 }
 
-bool MemoryMappedIoForGameBoy::is_interrupt_enabled()
+bool MemoryMappedIoForGameBoy::ie()
 {
-    return m_if;
+    return m_ie;
 }
 
 void MemoryMappedIoForGameBoy::p1(unsigned int bit_number, bool is_setting)
@@ -142,6 +159,55 @@ u8 MemoryMappedIoForGameBoy::p1() const
 LcdControl MemoryMappedIoForGameBoy::lcd_control() const
 {
     return m_lcd_control;
+}
+
+u8 MemoryMappedIoForGameBoy::if_()
+{
+    return m_if;
+}
+
+void MemoryMappedIoForGameBoy::interrupt(Interrupts interrupt)
+{
+    u8 value = read(s_address_interrupt_f_register);
+
+    switch (interrupt) {
+    case VBLANK:
+        set_bit(value, s_interrupt_bit_vblank);
+        break;
+    case LCD:
+        set_bit(value, s_interrupt_bit_lcd);
+        break;
+    case TIMER:
+        set_bit(value, s_interrupt_bit_timer);
+        break;
+    case JOYPAD:
+        set_bit(value, s_interrupt_bit_joypad);
+        break;
+    }
+
+    write(s_address_interrupt_f_register, value);
+}
+
+void MemoryMappedIoForGameBoy::reset_interrupt(Interrupts interrupt)
+{
+    u8 value = read(s_address_interrupt_f_register);
+
+    switch (interrupt) {
+    case VBLANK:
+        unset_bit(value, s_interrupt_bit_vblank);
+        break;
+    case LCD:
+        unset_bit(value, s_interrupt_bit_lcd);
+        break;
+    case TIMER:
+        unset_bit(value, s_interrupt_bit_timer);
+        break;
+    case JOYPAD:
+        unset_bit(value, s_interrupt_bit_joypad);
+        break;
+    }
+
+    write(s_address_interrupt_f_register, value);
 }
 
 }

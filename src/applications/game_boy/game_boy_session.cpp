@@ -149,7 +149,7 @@ void GameBoySession::setup_debugging()
         [&]() { return m_cpu->l(); }));
     m_debug_container->add_pc([&]() { return m_cpu->pc(); });
     m_debug_container->add_sp([&]() { return m_cpu->sp(); });
-    m_debug_container->add_is_interrupted([&]() { return m_cpu->is_interrupted(); });
+    m_debug_container->add_is_interrupted([&]() { return m_cpu->ime(); });
     m_debug_container->add_flag_register(FlagRegisterDebugContainer<u8>(
         "F",
         [&]() { return m_cpu->f(); },

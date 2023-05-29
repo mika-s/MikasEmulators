@@ -14,7 +14,7 @@ namespace emu::lr35902 {
  * <ul>
  *   <li>Size: 2</li>
  *   <li>Cycles: 4/li>
- *   <li>States: 14</li>
+ *   <li>States: 16</li>
  *   <li>Condition bits affected: none</li>
  * </ul>
  *
@@ -26,9 +26,8 @@ namespace emu::lr35902 {
 void reti(u16& pc, u16& sp, EmulatorMemory<u16, u8> const& memory, cyc& cycles)
 {
     execute_return(pc, sp, memory);
-    // TODO: Signal an I/O device that the interrupt routine is completed.
 
-    cycles = 14;
+    cycles = 16;
 }
 
 void print_reti(std::ostream& ostream)

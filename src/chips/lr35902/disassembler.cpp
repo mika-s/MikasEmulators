@@ -141,7 +141,7 @@ void Disassembler::print_next_instruction()
         print_ld_dd_nn(m_ostream, "HL", get_next_word());
         break;
     case LD_MHLp_A:
-        print_ld_Mnn_dd(m_ostream, get_next_word(), "HL"); // TODO
+        print_ld(m_ostream, "(HL+)", "A");
         break;
     case INC_HL:
         print_inc(m_ostream, "HL");
@@ -165,7 +165,7 @@ void Disassembler::print_next_instruction()
         print_add(m_ostream, "HL", "HL");
         break;
     case LD_A_MHLp:
-        print_ld(m_ostream, "HL", get_next_word());
+        print_ld(m_ostream, "A", "(HL+)");
         break;
     case DEC_HL:
         print_dec(m_ostream, "HL");
@@ -189,7 +189,7 @@ void Disassembler::print_next_instruction()
         print_ld_dd_nn(m_ostream, "SP", get_next_word());
         break;
     case LH_MHLm_A:
-        print_ld_Mnn_dd(m_ostream, get_next_word(), "A"); // TODO
+        print_ld(m_ostream, "(HL-)", "A");
         break;
     case INC_SP:
         print_inc(m_ostream, "SP");
@@ -756,7 +756,7 @@ void Disassembler::print_next_instruction()
         print_rst(m_ostream, 6);
         break;
     case LD_HL_SPpn:
-        print_ret(m_ostream, "M"); // TODO
+        print_ld_HL_sp_p_n(m_ostream, get_next_byte());
         break;
     case LD_SP_HL:
         print_ld(m_ostream, "SP", "HL");

@@ -77,7 +77,7 @@ void rrc_r(u8& reg, Flags& flag_reg, cyc& cycles)
  * <ul>
  *   <li>Size: 2</li>
  *   <li>Cycles: 4</li>
- *   <li>States: 15</li>
+ *   <li>States: 16</li>
  *   <li>Condition bits affected: carry, half carry, zero, add/subtract</li>
  * </ul>
  *
@@ -96,7 +96,7 @@ void rrc_MHL(EmulatorMemory<u16, u8>& memory, u16 address, Flags& flag_reg, cyc&
 
     flag_reg.handle_zero_flag(value);
 
-    cycles = 15;
+    cycles = 16;
 }
 
 void print_rrca(std::ostream& ostream)

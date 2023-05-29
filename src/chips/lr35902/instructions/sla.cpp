@@ -53,7 +53,7 @@ void sla_r(u8& reg, Flags& flag_reg, cyc& cycles)
  * <ul>
  *   <li>Size: 2</li>
  *   <li>Cycles: 4</li>
- *   <li>States: 15</li>
+ *   <li>States: 16</li>
  *   <li>Condition bits affected: carry, half carry, zero, add/subtract</li>
  * </ul>
  *
@@ -69,7 +69,7 @@ void sla_MHL(EmulatorMemory<u16, u8>& memory, u16 address, Flags& flag_reg, cyc&
 
     memory.write(address, value);
 
-    cycles = 15;
+    cycles = 16;
 }
 
 void print_sla(std::ostream& ostream, std::string const& reg)
