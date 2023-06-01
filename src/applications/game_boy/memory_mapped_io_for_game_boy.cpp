@@ -76,10 +76,14 @@ void MemoryMappedIoForGameBoy::write(u16 address, u8 value)
     } else if (address == s_address_lcd_control) {
         m_lcd_control.update_from_memory(value);
         m_memory.direct_write(address, value);
+    } else if (address == s_address_boot_rom_active) {
+        m_is_boot_rom_active = value != 0;
+        m_memory.direct_write(address, value);
     } else if (address == s_address_interrupt_enabled_register) {
         m_ie = value > 1;
         m_memory.direct_write(address, value);
     } else {
+        m_memory.direct_write(address, value);
     }
 }
 
@@ -91,9 +95,12 @@ void MemoryMappedIoForGameBoy::write(u16 address, u8 value)
  */
 u8 MemoryMappedIoForGameBoy::read(u16 address)
 {
-    // TODO: When reaching 0x100, the boot ROM area is no longer pointing to the boot ROM.
     if (address <= s_address_rom_end) {
-        return m_memory.direct_read(address);
+        if (address <= s_address_boot_rom_end && m_is_boot_rom_active) {
+            return s_boot_rom[address];
+        } else {
+            return m_memory.direct_read(address);
+        }
     } else if (s_address_tile_ram_beginning <= address && address <= s_address_tile_ram_end) {
         return m_memory.direct_read(address);
     } else if (s_address_background_map_beginning <= address && address <= s_address_background_map_end) {
@@ -208,6 +215,11 @@ void MemoryMappedIoForGameBoy::reset_interrupt(Interrupts interrupt)
     }
 
     write(s_address_interrupt_f_register, value);
+}
+
+bool MemoryMappedIoForGameBoy::is_boot_rom_active() const
+{
+    return m_is_boot_rom_active;
 }
 
 }

@@ -192,6 +192,10 @@ void GameBoySession::setup_debugging()
         "timer control",
         [&]() { return true; },
         [&]() { return m_timer->control(); }));
+    m_debug_container->add_io(IoDebugContainer<u8>(
+        "boot rom active",
+        [&]() { return true; },
+        [&]() { return m_memory_mapped_io->is_boot_rom_active(); }));
     //    m_debug_container->add_tilemap(m_gui->tiles());
     //    m_debug_container->add_spritemap(m_gui->sprites());
     //    m_debug_container->add_waveforms(m_audio->waveforms());
@@ -243,7 +247,14 @@ std::vector<u8> GameBoySession::memory()
 
 std::vector<DisassembledLine<u16, 16>> GameBoySession::disassemble_program()
 {
-    EmulatorMemory<u16, u8> sliced_for_disassembly = m_memory.slice(0, 0x7fff);
+    std::vector<u8> values;
+    values.reserve(0x7fff);
+    for (u16 address = 0; address < 0x7fff; ++address) {
+        values.push_back(m_memory_mapped_io->read(address));
+    }
+
+    EmulatorMemory<u16, u8> sliced_for_disassembly;
+    sliced_for_disassembly.add(values);
 
     std::stringstream ss;
     Disassembler disassembler(sliced_for_disassembly, ss);

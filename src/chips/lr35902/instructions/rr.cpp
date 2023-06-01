@@ -36,7 +36,7 @@ void rr(u8& value, Flags& flag_reg)
  *   <li>Size: 1</li>
  *   <li>Cycles: 1</li>
  *   <li>States: 4</li>
- *   <li>Condition bits affected: carry, half carry, add/subtract</li>
+ *   <li>Condition bits affected: carry, half carry, zero, add/subtract</li>
  * </ul>
  *
  * @param acc_reg is the accumulator register, which will be mutated
@@ -46,6 +46,7 @@ void rr(u8& value, Flags& flag_reg)
 void rra(u8& acc_reg, Flags& flag_reg, cyc& cycles)
 {
     rr(acc_reg, flag_reg);
+    flag_reg.clear_zero_flag();
 
     cycles = 4;
 }
