@@ -2,6 +2,7 @@
 #include "applications/game_boy/gui.h"
 #include "applications/game_boy/gui_io.h"
 #include "applications/game_boy/interfaces/input.h"
+#include "applications/game_boy/lcd.h"
 #include "applications/game_boy/lcd_control.h"
 #include "applications/game_boy/memory_mapped_io_for_game_boy.h"
 #include "applications/game_boy/timer.h"
@@ -76,7 +77,7 @@ void RunningState::perform(cyc& cycles)
             return;
         }
 
-        m_ctx->m_gui->update_screen(m_ctx->m_memory_mapped_io->lcd_control(),
+        m_ctx->m_gui->update_screen(m_ctx->m_lcd->lcd_control(),
             tile_ram_block_1(), tile_ram_block_2(), tile_ram_block_3(),
             tile_map_1(), tile_map_2(), sprite_ram(), palette_ram(), s_game_window_subtitle);
 
@@ -86,7 +87,7 @@ void RunningState::perform(cyc& cycles)
 
 void RunningState::update_graphics(cyc cycles)
 {
-    if (m_ctx->m_memory_mapped_io->lcd_control().m_is_ldc_and_ppu_enabled) {
+    if (m_ctx->m_lcd->lcd_control().m_is_ldc_and_ppu_enabled) {
         m_ctx->m_scanline_counter -= cycles;
     } else {
         return;

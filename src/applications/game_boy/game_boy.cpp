@@ -6,6 +6,7 @@
 #include "gui_sdl.h"
 #include "input_imgui.h"
 #include "input_sdl.h"
+#include "lcd.h"
 #include "memory_mapped_io_for_game_boy.h"
 #include "settings.h" // IWYU pragma: keep
 #include "timer.h"
@@ -34,11 +35,12 @@ GameBoy::GameBoy(Settings const& settings, const GuiType gui_type)
         m_is_starting_paused = false;
     }
 
+    m_lcd = std::make_shared<Lcd>();
     m_timer = std::make_shared<Timer>();
 
     load_files();
 
-    m_memory_mapped_io = std::make_shared<MemoryMappedIoForGameBoy>(m_memory, m_timer, settings);
+    m_memory_mapped_io = std::make_shared<MemoryMappedIoForGameBoy>(m_memory, m_timer, m_lcd, settings);
     m_memory.attach_memory_mapper(m_memory_mapped_io);
     m_gui->attach_memory_mapper(m_memory_mapped_io);
 }
@@ -48,6 +50,7 @@ std::unique_ptr<Session> GameBoy::new_session()
     return std::make_unique<GameBoySession>(
         m_is_starting_paused,
         m_gui,
+        m_lcd,
         m_input,
         m_audio,
         m_timer,

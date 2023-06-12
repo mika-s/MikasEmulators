@@ -4,12 +4,11 @@
 #include "crosscutting/typedefs.h"
 #include "crosscutting/util/byte_util.h"
 #include "interrupts.h"
-#include "lcd_control.h"
-#include "lcd_status.h"
 #include <array>
 #include <memory>
 
 namespace emu::applications::game_boy {
+class Lcd;
 class Settings;
 class Timer;
 }
@@ -29,6 +28,7 @@ public:
     explicit MemoryMappedIoForGameBoy(
         EmulatorMemory<u16, u8>& memory,
         std::shared_ptr<Timer> timer,
+        std::shared_ptr<Lcd> lcd,
         Settings settings);
 
     void write(u16 address, u8 value) override;
@@ -46,10 +46,6 @@ public:
     void interrupt(Interrupts interrupt);
 
     void reset_interrupt(Interrupts interrupt);
-
-    [[nodiscard]] LcdControl lcd_control() const;
-
-    [[nodiscard]] LcdStatus lcd_status() const;
 
     [[nodiscard]] bool is_boot_rom_active() const;
 
@@ -166,20 +162,12 @@ private:
 
     EmulatorMemory<u16, u8>& m_memory;
     std::shared_ptr<Timer> m_timer;
+    std::shared_ptr<Lcd> m_lcd;
 
     bool m_is_boot_rom_active { true };
 
     u8 m_if { 0 };
     bool m_ie { false };
-
-    LcdControl m_lcd_control;
-    LcdStatus m_lcd_status;
-    u8 m_ly { 0 };
-    u8 m_lyc { 0 };
-    u8 m_scy { 0 };
-    u8 m_scx { 0 };
-    u8 m_wy { 0 };
-    u8 m_wx { 0 };
 
     u8 m_p1 { 0xff };
 

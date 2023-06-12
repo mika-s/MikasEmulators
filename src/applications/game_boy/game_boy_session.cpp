@@ -13,6 +13,7 @@
 #include "interfaces/input.h"
 #include "interfaces/state.h"
 #include "key_request.h"
+#include "lcd.h"
 #include "lcd_control.h"
 #include "lcd_status.h"
 #include "memory_mapped_io_for_game_boy.h"
@@ -42,6 +43,7 @@ using emu::util::string::split;
 GameBoySession::GameBoySession(
     bool is_starting_paused,
     std::shared_ptr<Gui> gui,
+    std::shared_ptr<Lcd> lcd,
     std::shared_ptr<Input> input,
     std::shared_ptr<Audio> audio,
     std::shared_ptr<Timer> timer,
@@ -50,6 +52,7 @@ GameBoySession::GameBoySession(
     : m_timer(std::move(timer))
     , m_memory_mapped_io(std::move(memory_mapped_io))
     , m_gui(std::move(gui))
+    , m_lcd(std::move(lcd))
     , m_input(std::move(input))
     , m_audio(std::move(audio))
     , m_memory(memory)
@@ -65,6 +68,7 @@ GameBoySession::GameBoySession(
     m_state_context = std::make_shared<StateContext>(
         m_gui_io,
         m_gui,
+        m_lcd,
         m_input,
         m_audio,
         m_cpu,
@@ -168,7 +172,7 @@ void GameBoySession::setup_debugging()
     m_debug_container->add_io(IoDebugContainer<u8>(
         "LCD control",
         [&]() { return true; },
-        [&]() { return m_memory_mapped_io->lcd_control().to_u8(); },
+        [&]() { return m_lcd->lcd_control().to_u8(); },
         { { "BG and Window enable/priority", 0 },
             { "OBJ enable", 1 },
             { "OBJ size", 2 },
@@ -180,7 +184,7 @@ void GameBoySession::setup_debugging()
     m_debug_container->add_io(IoDebugContainer<u8>(
         "LCD status",
         [&]() { return true; },
-        [&]() { return m_memory_mapped_io->lcd_status().to_u8(); },
+        [&]() { return m_lcd->lcd_status().to_u8(); },
         { { "LCD status mode 1", 0 },
             { "LCD status mode 2", 1 },
             { "LYC=LY", 2 },

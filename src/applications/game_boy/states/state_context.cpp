@@ -6,6 +6,7 @@
 #include <utility>
 
 namespace emu::applications::game_boy {
+class Lcd;
 class State;
 class Timer;
 }
@@ -17,6 +18,7 @@ using emu::misc::Governor;
 StateContext::StateContext(
     GuiIo& gui_io,
     std::shared_ptr<Gui> gui,
+    std::shared_ptr<Lcd> lcd,
     std::shared_ptr<Input> input,
     std::shared_ptr<Audio> audio,
     std::shared_ptr<Cpu> cpu,
@@ -33,6 +35,7 @@ StateContext::StateContext(
     : m_is_in_debug_mode(is_in_debug_mode)
     , m_gui_io(gui_io)
     , m_gui(std::move(gui))
+    , m_lcd(std::move(lcd))
     , m_input(std::move(input))
     , m_audio(std::move(audio))
     , m_cpu(std::move(cpu))

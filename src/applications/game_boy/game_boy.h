@@ -11,6 +11,7 @@ namespace emu::applications::game_boy {
 class Audio;
 class Gui;
 class Input;
+class Lcd;
 class MemoryMappedIoForGameBoy;
 class Settings;
 class Timer;
@@ -44,6 +45,7 @@ private:
 
     std::shared_ptr<Timer> m_timer;
     std::shared_ptr<Gui> m_gui;
+    std::shared_ptr<Lcd> m_lcd;
     std::shared_ptr<Input> m_input;
     std::shared_ptr<Audio> m_audio;
     bool m_is_starting_paused;

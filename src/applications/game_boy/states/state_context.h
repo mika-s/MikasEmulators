@@ -10,6 +10,7 @@ namespace emu::applications::game_boy {
 class Audio;
 class GuiIo;
 class Input;
+class Lcd;
 class MemoryMappedIoForGameBoy;
 class State;
 class Timer;
@@ -45,6 +46,7 @@ public:
     explicit StateContext(
         GuiIo& gui_io,
         std::shared_ptr<Gui> gui,
+        std::shared_ptr<Lcd> lcd,
         std::shared_ptr<Input> input,
         std::shared_ptr<Audio> audio,
         std::shared_ptr<Cpu> cpu,
@@ -63,6 +65,7 @@ public:
 
     GuiIo& m_gui_io;
     std::shared_ptr<Gui> m_gui;
+    std::shared_ptr<Lcd> m_lcd;
     std::shared_ptr<Input> m_input;
     std::shared_ptr<Audio> m_audio;
     std::shared_ptr<Cpu> m_cpu;
