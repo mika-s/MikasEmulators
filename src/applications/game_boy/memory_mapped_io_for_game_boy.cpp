@@ -1,4 +1,5 @@
 #include "memory_mapped_io_for_game_boy.h"
+#include "boot_rom.h"
 #include "chips/z80/util.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "interrupts.h"
@@ -7,6 +8,7 @@
 #include "lcd_status.h"
 #include "settings.h"
 #include "timer.h"
+#include <array>
 #include <iostream>
 #include <utility>
 

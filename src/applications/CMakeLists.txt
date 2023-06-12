@@ -131,6 +131,7 @@ set(SOURCES_APPLICATIONS_H
         cpm_z80/usage.h
 
         game_boy/audio.h
+        game_boy/boot_rom.h
         game_boy/gui.h
         game_boy/gui_imgui.h
         game_boy/gui_sdl.h
