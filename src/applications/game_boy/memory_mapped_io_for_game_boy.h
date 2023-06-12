@@ -48,10 +48,6 @@ public:
 
     [[nodiscard]] bool is_boot_rom_active() const;
 
-    void increment_scanline();
-
-    void reset_scanline();
-
 private:
     static constexpr u16 s_interrupt_bit_vblank = 0;
     static constexpr u16 s_interrupt_bit_lcd = 1;

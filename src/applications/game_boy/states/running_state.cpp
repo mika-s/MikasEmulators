@@ -81,7 +81,7 @@ void RunningState::perform(cyc& cycles)
             tile_ram_block_1(), tile_ram_block_2(), tile_ram_block_3(),
             tile_map_1(), tile_map_2(), sprite_ram(), palette_ram(), s_game_window_subtitle);
 
-        //            m_ctx->m_audio->handle_sound(m_ctx->m_memory_mapped_io->is_sound_enabled(), m_ctx->m_memory_mapped_io->voices());
+        // m_ctx->m_audio->handle_sound(m_ctx->m_memory_mapped_io->is_sound_enabled(), m_ctx->m_memory_mapped_io->voices());
     }
 }
 
@@ -94,7 +94,7 @@ void RunningState::update_graphics(cyc cycles)
     }
 
     if (m_ctx->m_scanline_counter <= 0) {
-        m_ctx->m_memory_mapped_io->increment_scanline();
+        m_ctx->m_lcd->increment_scanline();
 
         u8 current_line = m_ctx->m_memory_mapped_io->read(0xff44);
         m_ctx->m_scanline_counter = 456;
@@ -102,7 +102,7 @@ void RunningState::update_graphics(cyc cycles)
         if (current_line == 144) {
             m_ctx->vblank_interrupt();
         } else if (current_line > 153) {
-            m_ctx->m_memory_mapped_io->reset_scanline();
+            m_ctx->m_lcd->reset_scanline();
         } else if (current_line < 144) {
             // draw scan line
         }

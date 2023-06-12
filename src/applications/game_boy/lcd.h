@@ -9,7 +9,12 @@ namespace emu::applications::game_boy {
 class Lcd {
 public:
     [[nodiscard]] LcdControl& lcd_control();
+
     [[nodiscard]] LcdStatus& lcd_status();
+
+    void increment_scanline();
+
+    void reset_scanline();
 
     u8 m_ly { 0 };
     u8 m_lyc { 0 };

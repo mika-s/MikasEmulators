@@ -87,23 +87,18 @@ void MemoryMappedIoForGameBoy::write(u16 address, u8 value)
         m_memory.direct_write(address, value);
     } else if (address == s_address_lcd_viewport_y_position) {
         m_lcd->m_scy = value;
-        m_memory.direct_write(address, value);
     } else if (address == s_address_lcd_viewport_x_position) {
         m_lcd->m_scx = value;
-        m_memory.direct_write(address, value);
     } else if (address == s_address_lcd_y_coordinate) {
         m_memory.direct_write(address, 0);
     } else if (address == s_address_lcd_y_coordinate_compare) {
         m_lcd->m_lyc = value;
-        m_memory.direct_write(address, value);
     } else if (address == s_address_oam_dma) {
         dma_transfer(value);
     } else if (address == s_address_lcd_window_y_position) {
         m_lcd->m_wy = value;
-        m_memory.direct_write(address, value);
     } else if (address == s_address_lcd_window_x_position) {
         m_lcd->m_wx = value;
-        m_memory.direct_write(address, value);
     } else if (address == s_address_boot_rom_active) {
         m_is_boot_rom_active = value != 0;
         m_memory.direct_write(address, value);
@@ -167,6 +162,18 @@ u8 MemoryMappedIoForGameBoy::read(u16 address)
         return m_memory.direct_read(address);
     } else if (address == s_address_lcd_status) {
         return m_lcd->lcd_status().to_u8();
+    } else if (address == s_address_lcd_viewport_y_position) {
+        return m_lcd->m_scy;
+    } else if (address == s_address_lcd_viewport_x_position) {
+        return m_lcd->m_scx;
+    } else if (address == s_address_lcd_y_coordinate) {
+        return m_lcd->m_ly;
+    } else if (address == s_address_lcd_y_coordinate_compare) {
+        return m_lcd->m_lyc;
+    } else if (address == s_address_lcd_window_y_position) {
+        return m_lcd->m_wy;
+    } else if (address == s_address_lcd_window_x_position) {
+        return m_lcd->m_wx;
     } else if (address == s_address_interrupt_enabled_register) {
         return m_memory.direct_read(address);
     } else {
@@ -245,20 +252,6 @@ void MemoryMappedIoForGameBoy::reset_interrupt(Interrupts interrupt)
 bool MemoryMappedIoForGameBoy::is_boot_rom_active() const
 {
     return m_is_boot_rom_active;
-}
-
-void MemoryMappedIoForGameBoy::increment_scanline()
-{
-    ++m_lcd->m_ly;
-    m_memory.direct_write(s_address_lcd_y_coordinate, m_lcd->m_ly);
-
-    m_lcd->lcd_status().m_is_lyc_eq_ly = m_lcd->m_ly == m_lcd->m_lyc; // TODO: interrupt if true
-}
-
-void MemoryMappedIoForGameBoy::reset_scanline()
-{
-    m_lcd->m_ly = 0;
-    m_memory.direct_write(s_address_lcd_y_coordinate, m_lcd->m_ly);
 }
 
 void MemoryMappedIoForGameBoy::dma_transfer(u8 value)

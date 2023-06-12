@@ -259,7 +259,7 @@ void GameBoySession::key_pressed(IoRequest request)
 
 std::vector<u8> GameBoySession::memory()
 {
-    return { m_memory.begin(), m_memory.end() };
+    return { m_memory.begin(), m_memory.end() }; // TODO: Go through the memory mapper
 }
 
 std::vector<DisassembledLine<u16, 16>> GameBoySession::disassemble_program()
