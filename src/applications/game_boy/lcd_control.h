@@ -6,14 +6,14 @@ namespace emu::applications::game_boy {
 
 class LcdControl {
 public:
-    bool is_ldc_and_ppu_enabled { false };
-    int window_tile_map_area { 0 };
-    bool is_window_enabled { false };
-    int bg_and_window_tile_data_area { 0 };
-    int bg_tile_map_area { 0 };
-    int obj_size { false };
-    bool is_obj_enabled { false };
-    bool is_bg_and_window_enabled { false };
+    bool m_is_ldc_and_ppu_enabled { false };
+    int m_window_tile_map_area { 0 };
+    bool m_is_window_enabled { false };
+    int m_bg_and_window_tile_data_area { 0 };
+    int m_bg_tile_map_area { 0 };
+    int m_obj_size { false };
+    bool m_is_obj_enabled { false };
+    bool m_is_bg_and_window_enabled { false };
 
     void update_from_memory(u8 value);
 

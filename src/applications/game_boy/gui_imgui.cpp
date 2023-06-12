@@ -2,12 +2,13 @@
 #include "crosscutting/gui/graphics/framebuffer.h"
 #include "crosscutting/logging/logger.h"
 #include "glad/glad.h"
+#include "gui.h"
 #include "gui_request.h"
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_sdl.h"
 #include "interfaces/gui_observer.h"
-#include "gui.h"
+#include "lcd_control.h"
 #include <SDL.h>
 #include <SDL_error.h>
 #include <SDL_log.h>
@@ -187,6 +188,7 @@ void GuiImgui::init()
 }
 
 void GuiImgui::update_screen(
+    LcdControl lcd_control,
     std::vector<u8> const& tile_ram_1,
     [[maybe_unused]] std::vector<u8> const& tile_ram_2,
     [[maybe_unused]] std::vector<u8> const& tile_ram_3,
@@ -196,7 +198,7 @@ void GuiImgui::update_screen(
     std::vector<u8> const& palette_ram,
     std::string const& game_window_subtitle)
 {
-    std::vector<u32> framebuffer = create_framebuffer(tile_ram_1, sprite_ram, palette_ram);
+    std::vector<u32> framebuffer = create_framebuffer(lcd_control, tile_ram_1, sprite_ram, palette_ram);
 
     glBindTexture(GL_TEXTURE_2D, m_screen_texture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);

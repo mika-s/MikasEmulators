@@ -3,6 +3,7 @@
 #include "crosscutting/memory/emulator_memory.h"
 #include "interrupts.h"
 #include "lcd_control.h"
+#include "lcd_status.h"
 #include "settings.h"
 #include "timer.h"
 #include <iostream>
@@ -76,6 +77,28 @@ void MemoryMappedIoForGameBoy::write(u16 address, u8 value)
     } else if (address == s_address_lcd_control) {
         m_lcd_control.update_from_memory(value);
         m_memory.direct_write(address, value);
+    } else if (address == s_address_lcd_status) {
+        m_lcd_status.update_from_memory(value);
+        m_memory.direct_write(address, value);
+    } else if (address == s_address_lcd_viewport_y_position) {
+        m_scy = value;
+        m_memory.direct_write(address, value);
+    } else if (address == s_address_lcd_viewport_x_position) {
+        m_scx = value;
+        m_memory.direct_write(address, value);
+    } else if (address == s_address_lcd_y_coordinate) {
+        m_memory.direct_write(address, 0);
+    } else if (address == s_address_lcd_y_coordinate_compare) {
+        m_lyc = value;
+        m_memory.direct_write(address, value);
+    } else if (address == s_address_oam_dma) {
+        dma_transfer(value);
+    } else if (address == s_address_lcd_window_y_position) {
+        m_wy = value;
+        m_memory.direct_write(address, value);
+    } else if (address == s_address_lcd_window_x_position) {
+        m_wx = value;
+        m_memory.direct_write(address, value);
     } else if (address == s_address_boot_rom_active) {
         m_is_boot_rom_active = value != 0;
         m_memory.direct_write(address, value);
@@ -137,6 +160,8 @@ u8 MemoryMappedIoForGameBoy::read(u16 address)
         return m_timer->control();
     } else if (address == s_address_interrupt_f_register) {
         return m_memory.direct_read(address);
+    } else if (address == s_address_lcd_status) {
+        return m_lcd_status.to_u8();
     } else if (address == s_address_interrupt_enabled_register) {
         return m_memory.direct_read(address);
     } else {
@@ -166,6 +191,11 @@ u8 MemoryMappedIoForGameBoy::p1() const
 LcdControl MemoryMappedIoForGameBoy::lcd_control() const
 {
     return m_lcd_control;
+}
+
+LcdStatus MemoryMappedIoForGameBoy::lcd_status() const
+{
+    return m_lcd_status;
 }
 
 u8 MemoryMappedIoForGameBoy::if_()
@@ -220,6 +250,29 @@ void MemoryMappedIoForGameBoy::reset_interrupt(Interrupts interrupt)
 bool MemoryMappedIoForGameBoy::is_boot_rom_active() const
 {
     return m_is_boot_rom_active;
+}
+
+void MemoryMappedIoForGameBoy::increment_scanline()
+{
+    ++m_ly;
+    m_memory.direct_write(s_address_lcd_y_coordinate, m_ly);
+
+    m_lcd_status.m_is_lyc_eq_ly = m_ly == m_lyc; // TODO: interrupt if true
+}
+
+void MemoryMappedIoForGameBoy::reset_scanline()
+{
+    m_ly = 0;
+    m_memory.direct_write(s_address_lcd_y_coordinate, m_ly);
+}
+
+void MemoryMappedIoForGameBoy::dma_transfer(u8 value)
+{
+    for (u16 dest_address = s_address_object_attribute_memory_beginning, src_address = value << 8;
+         dest_address <= s_address_object_attribute_memory_end;
+         ++dest_address, ++src_address) {
+        m_memory.direct_write(dest_address, m_memory.read(src_address));
+    }
 }
 
 }

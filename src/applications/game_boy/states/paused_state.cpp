@@ -50,7 +50,8 @@ void PausedState::perform([[maybe_unused]] cyc& cycles)
             transition_to_run();
             return;
         }
-        m_ctx->m_gui->update_screen(tile_ram_block_1(), tile_ram_block_2(), tile_ram_block_3(),
+        m_ctx->m_gui->update_screen(m_ctx->m_memory_mapped_io->lcd_control(),
+            tile_ram_block_1(), tile_ram_block_2(), tile_ram_block_3(),
             tile_map_1(), tile_map_2(), sprite_ram(), palette_ram(), s_game_window_subtitle);
     }
 }

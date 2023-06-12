@@ -5,6 +5,7 @@
 #include "crosscutting/util/byte_util.h"
 #include "interrupts.h"
 #include "lcd_control.h"
+#include "lcd_status.h"
 #include <array>
 #include <memory>
 
@@ -48,7 +49,13 @@ public:
 
     [[nodiscard]] LcdControl lcd_control() const;
 
+    [[nodiscard]] LcdStatus lcd_status() const;
+
     [[nodiscard]] bool is_boot_rom_active() const;
+
+    void increment_scanline();
+
+    void reset_scanline();
 
 private:
     static constexpr std::array<u8, 256> s_boot_rom = {
@@ -144,8 +151,15 @@ private:
     static constexpr u16 s_address_sound_wave_ram_end = 0xff3f;       // Wave RAM end
 
     // LCD
-    static constexpr u16 s_address_lcd_control = 0xff40; // LCDC
-    static constexpr u16 s_address_lcd_status = 0xff41;  // STAT
+    static constexpr u16 s_address_lcd_control = 0xff40;              // LCDC
+    static constexpr u16 s_address_lcd_status = 0xff41;               // STAT
+    static constexpr u16 s_address_lcd_viewport_y_position = 0xff42;  // SCY
+    static constexpr u16 s_address_lcd_viewport_x_position = 0xff43;  // SCX
+    static constexpr u16 s_address_lcd_y_coordinate = 0xff44;         // LY
+    static constexpr u16 s_address_lcd_y_coordinate_compare = 0xff45; // LYC
+    static constexpr u16 s_address_oam_dma = 0xff46;                  // OAM DMA
+    static constexpr u16 s_address_lcd_window_y_position = 0xff4a;    // WY
+    static constexpr u16 s_address_lcd_window_x_position = 0xff4b;    // WX
 
     static constexpr u16 s_address_boot_rom_active = 0xff50;
     static constexpr u16 s_address_interrupt_enabled_register = 0xffff; // IE
@@ -159,7 +173,16 @@ private:
     bool m_ie { false };
 
     LcdControl m_lcd_control;
+    LcdStatus m_lcd_status;
+    u8 m_ly { 0 };
+    u8 m_lyc { 0 };
+    u8 m_scy { 0 };
+    u8 m_scx { 0 };
+    u8 m_wy { 0 };
+    u8 m_wx { 0 };
 
     u8 m_p1 { 0xff };
+
+    void dma_transfer(u8 value);
 };
 }

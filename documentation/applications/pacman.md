@@ -22,7 +22,7 @@ The flag is `-d`, and it has the following options:
 - `t=on` or `t=off` sets the board test bit. The default value, if unset, is off.
 - `m=table` or `t=upright` sets the cabinet mode bit. The default value, if unset, is upright.
 
-An example:
+For example:
 
 ```sh
 ./emulator run pacman -d n=5 -d b=20000
@@ -36,7 +36,7 @@ the `-g` flag:
 - `ordinary` starts the ordinary GUI. The default value, if unset.
 - `debugging` starts the debugging GUI.
 
-An example:
+For example:
 
 ```sh
 ./emulator run pacman -g debugging

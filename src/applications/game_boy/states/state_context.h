@@ -80,6 +80,8 @@ public:
 
     Governor& m_governor;
 
+    int m_scanline_counter = { 456 };
+
     void change_state(std::shared_ptr<State> new_state);
 
     std::shared_ptr<State> paused_state();

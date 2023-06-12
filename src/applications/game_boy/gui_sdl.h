@@ -11,6 +11,7 @@
 
 namespace emu::applications::game_boy {
 class GuiObserver;
+class LcdControl;
 }
 namespace emu::debugger {
 template<class A, class D, std::size_t B>
@@ -37,6 +38,7 @@ public:
     void remove_gui_observer(GuiObserver* observer) override;
 
     void update_screen(
+        LcdControl lcd_control,
         std::vector<u8> const& tile_ram_1,
         std::vector<u8> const& tile_ram_2,
         std::vector<u8> const& tile_ram_3,

@@ -2,6 +2,7 @@
 #include "applications/game_boy/gui.h"
 #include "applications/game_boy/gui_io.h"
 #include "applications/game_boy/interfaces/input.h"
+#include "applications/game_boy/lcd_control.h"
 #include "applications/game_boy/memory_mapped_io_for_game_boy.h"
 #include "applications/game_boy/timer.h"
 #include "chips/lr35902/cpu.h"
@@ -56,6 +57,7 @@ void RunningState::perform(cyc& cycles)
         while (cycles < static_cast<cyc>(s_cycles_per_tick)) {
             cycles += m_ctx->m_cpu->next_instruction();
             m_ctx->m_timer->inc(cycles);
+            update_graphics(cycles);
             if (m_ctx->m_is_in_debug_mode && m_ctx->m_debugger->has_breakpoint(m_ctx->m_cpu->pc())) {
                 m_ctx->m_logger->info("Breakpoint hit: 0x%04x", m_ctx->m_cpu->pc());
                 transition_to_step();
@@ -63,24 +65,46 @@ void RunningState::perform(cyc& cycles)
             }
         }
 
-//        if (m_ctx->m_memory_mapped_io->ie()) {
+        m_ctx->m_input->read(m_ctx->m_gui_io, m_ctx->m_memory_mapped_io);
+        if (m_ctx->m_gui_io.m_is_quitting) {
+            m_ctx->m_gui_io.m_is_quitting = false;
+            transition_to_stop();
+            return;
+        } else if (m_ctx->m_gui_io.m_is_toggling_pause) {
+            m_ctx->m_gui_io.m_is_toggling_pause = false;
+            transition_to_pause();
+            return;
+        }
+
+        m_ctx->m_gui->update_screen(m_ctx->m_memory_mapped_io->lcd_control(),
+            tile_ram_block_1(), tile_ram_block_2(), tile_ram_block_3(),
+            tile_map_1(), tile_map_2(), sprite_ram(), palette_ram(), s_game_window_subtitle);
+
+        //            m_ctx->m_audio->handle_sound(m_ctx->m_memory_mapped_io->is_sound_enabled(), m_ctx->m_memory_mapped_io->voices());
+    }
+}
+
+void RunningState::update_graphics(cyc cycles)
+{
+    if (m_ctx->m_memory_mapped_io->lcd_control().m_is_ldc_and_ppu_enabled) {
+        m_ctx->m_scanline_counter -= cycles;
+    } else {
+        return;
+    }
+
+    if (m_ctx->m_scanline_counter <= 0) {
+        m_ctx->m_memory_mapped_io->increment_scanline();
+
+        u8 current_line = m_ctx->m_memory_mapped_io->read(0xff44);
+        m_ctx->m_scanline_counter = 456;
+
+        if (current_line == 144) {
             m_ctx->vblank_interrupt();
-
-            m_ctx->m_input->read(m_ctx->m_gui_io, m_ctx->m_memory_mapped_io);
-            if (m_ctx->m_gui_io.m_is_quitting) {
-                m_ctx->m_gui_io.m_is_quitting = false;
-                transition_to_stop();
-                return;
-            } else if (m_ctx->m_gui_io.m_is_toggling_pause) {
-                m_ctx->m_gui_io.m_is_toggling_pause = false;
-                transition_to_pause();
-                return;
-            }
-
-            m_ctx->m_gui->update_screen(tile_ram_block_1(), tile_ram_block_2(), tile_ram_block_3(),
-                tile_map_1(), tile_map_2(), sprite_ram(), palette_ram(), s_game_window_subtitle);
-            //            m_ctx->m_audio->handle_sound(m_ctx->m_memory_mapped_io->is_sound_enabled(), m_ctx->m_memory_mapped_io->voices());
-//        }
+        } else if (current_line > 153) {
+            m_ctx->m_memory_mapped_io->reset_scanline();
+        } else if (current_line < 144) {
+            // draw scan line
+        }
     }
 }
 

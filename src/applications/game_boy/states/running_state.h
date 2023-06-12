@@ -35,11 +35,13 @@ private:
     // Game loop - begin
     static constexpr long double s_fps = 60.0L;
     static constexpr long double s_tick_limit = 1000.0L / s_fps;
-    static constexpr int s_cycles_per_ms = 2000;
+    static constexpr long double s_cycles_per_ms = 4194.304;
     static constexpr long double s_cycles_per_tick = s_cycles_per_ms * s_tick_limit;
     // Game loop - end
 
     std::shared_ptr<StateContext> m_ctx;
+
+    void update_graphics(cyc cycles);
 
     std::vector<u8> tile_ram_block_1();
 

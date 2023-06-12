@@ -14,6 +14,7 @@
 #include "interfaces/state.h"
 #include "key_request.h"
 #include "lcd_control.h"
+#include "lcd_status.h"
 #include "memory_mapped_io_for_game_boy.h"
 #include "states/paused_state.h"
 #include "states/running_state.h"
@@ -176,6 +177,18 @@ void GameBoySession::setup_debugging()
             { "Window enable", 5 },
             { "Window tile map area", 6 },
             { "LCD enable", 7 } }));
+    m_debug_container->add_io(IoDebugContainer<u8>(
+        "LCD status",
+        [&]() { return true; },
+        [&]() { return m_memory_mapped_io->lcd_status().to_u8(); },
+        { { "LCD status mode 1", 0 },
+            { "LCD status mode 2", 1 },
+            { "LYC=LY", 2 },
+            { "Mode 0 HBlank STAT interrupt source", 3 },
+            { "Mode 1 VBlank STAT interrupt source", 4 },
+            { "Mode 2 OAM STAT interrupt source", 5 },
+            { "LYC=LY STAT interrupt source", 6 },
+            { "Unused", 7 } }));
     m_debug_container->add_io(IoDebugContainer<u8>(
         "timer divider",
         [&]() { return true; },

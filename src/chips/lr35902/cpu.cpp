@@ -1719,7 +1719,7 @@ bool Cpu::ie() const
 
 void Cpu::print_debug(u8 opcode)
 {
-    if (true) {
+    if (false) {
         std::cout << "pc=" << hexify(static_cast<u16>(m_pc - 1)) // -1 because fetching opcode increments by one
                   << ",sp=" << hexify(m_sp)
                   << ",op=" << hexify(opcode)

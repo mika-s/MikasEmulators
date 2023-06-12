@@ -15,7 +15,7 @@ It is possible to provide arguments that sets the DIP switches. The flag is `-d`
 - `b=1000` or `b=1500` sets bonus life at a score of 1000 or 1500. The default value, if unset, is bonus life at 1500.
 - `c=on` or `c=off` sets coin on or off. Doesn't seem to do anything.
 
-An example:
+For example:
 
 ```sh
 ./emulator run space_invaders -d n=5 -d b=1500
@@ -29,7 +29,7 @@ the `-g` flag:
 - `ordinary` starts the ordinary GUI. The default value, if unset.
 - `debugging` starts the debugging GUI.
 
-An example:
+For example:
 
 ```sh
 ./emulator run space_invaders -g debugging

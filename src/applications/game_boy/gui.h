@@ -13,6 +13,7 @@
 
 namespace emu::applications::game_boy {
 class GuiObserver;
+class LcdControl;
 class MemoryMappedIoForGameBoy;
 }
 namespace emu::debugger {
@@ -57,6 +58,7 @@ public:
     virtual void remove_gui_observer(GuiObserver* observer) = 0;
 
     virtual void update_screen(
+        LcdControl lcd_control,
         std::vector<u8> const& tile_ram_block_1,
         std::vector<u8> const& tile_ram_block_2,
         std::vector<u8> const& tile_ram_block_3,
@@ -178,6 +180,7 @@ protected:
     void draw_sprites(Framebuffer& screen, std::vector<u8> const& sprite_ram);
 
     std::vector<u32> create_framebuffer(
+        LcdControl lcd_control,
         std::vector<u8> const& tile_ram,
         std::vector<u8> const& sprite_ram,
         std::vector<u8> const& palette_ram);

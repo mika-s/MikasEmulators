@@ -25,6 +25,7 @@ set(SOURCES_APPLICATIONS_CPP
         game_boy/input_imgui.cpp
         game_boy/input_sdl.cpp
         game_boy/lcd_control.cpp
+        game_boy/lcd_status.cpp
         game_boy/memory_mapped_io_for_game_boy.cpp
         game_boy/game_boy.cpp
         game_boy/game_boy_session.cpp
@@ -137,6 +138,7 @@ set(SOURCES_APPLICATIONS_H
         game_boy/interrupts.h
         game_boy/key_request.h
         game_boy/lcd_control.h
+        game_boy/lcd_status.h
         game_boy/memory_mapped_io_for_game_boy.h
         game_boy/game_boy.h
         game_boy/game_boy_session.h
