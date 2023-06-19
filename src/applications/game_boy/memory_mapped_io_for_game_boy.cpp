@@ -59,6 +59,26 @@ void MemoryMappedIoForGameBoy::write(u16 address, u8 value)
         m_memory.direct_write(address, value);
     } else if (s_address_high_ram_beginning <= address && address <= s_address_high_ram_end) {
         m_memory.direct_write(address, value);
+    } else if (address == s_address_joypad) {
+        if (!is_bit_set(value, s_bit_number_select_button_keys)) {
+            m_is_reading_direction_keys = false;
+        } else {
+            m_is_reading_direction_keys = true;
+        }
+        if (is_bit_set(value, s_bit_number_select_button_keys)) {
+            set_bit(m_p1_button_keys, s_bit_number_select_button_keys);
+            set_bit(m_p1_direction_keys, s_bit_number_select_button_keys);
+        } else {
+            unset_bit(m_p1_button_keys, s_bit_number_select_button_keys);
+            unset_bit(m_p1_direction_keys, s_bit_number_select_button_keys);
+        }
+        if (is_bit_set(value, s_bit_number_select_direction_keys)) {
+            set_bit(m_p1_button_keys, s_bit_number_select_direction_keys);
+            set_bit(m_p1_direction_keys, s_bit_number_select_direction_keys);
+        } else {
+            unset_bit(m_p1_button_keys, s_bit_number_select_direction_keys);
+            unset_bit(m_p1_direction_keys, s_bit_number_select_direction_keys);
+        }
     } else if (address == s_address_serial_transfer_data) {
         m_memory.direct_write(address, value);
     } else if (address == s_address_serial_transfer_control) {
@@ -143,7 +163,11 @@ u8 MemoryMappedIoForGameBoy::read(u16 address)
     } else if (s_address_high_ram_beginning <= address && address <= s_address_high_ram_end) {
         return m_memory.direct_read(address);
     } else if (address == s_address_joypad) {
-        return m_p1;
+        if (m_is_reading_direction_keys) {
+            return m_p1_direction_keys;
+        } else {
+            return m_p1_button_keys;
+        }
     } else if (address == s_address_serial_transfer_data) {
         return m_memory.direct_read(address);
     } else if (address == s_address_serial_transfer_control) {
@@ -186,18 +210,27 @@ bool MemoryMappedIoForGameBoy::ie()
     return m_ie;
 }
 
-void MemoryMappedIoForGameBoy::p1(unsigned int bit_number, bool is_setting)
+void MemoryMappedIoForGameBoy::p1_button_keys(unsigned int bit_number, bool is_setting)
 {
     if (is_setting) {
-        set_bit(m_p1, bit_number);
+        set_bit(m_p1_button_keys, bit_number);
     } else {
-        unset_bit(m_p1, bit_number);
+        unset_bit(m_p1_button_keys, bit_number);
+    }
+}
+
+void MemoryMappedIoForGameBoy::p1_direction_keys(unsigned int bit_number, bool is_setting)
+{
+    if (is_setting) {
+        set_bit(m_p1_direction_keys, bit_number);
+    } else {
+        unset_bit(m_p1_direction_keys, bit_number);
     }
 }
 
 u8 MemoryMappedIoForGameBoy::p1() const
 {
-    return m_p1;
+    return m_p1_button_keys;
 }
 
 u8 MemoryMappedIoForGameBoy::if_()

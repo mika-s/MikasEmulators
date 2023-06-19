@@ -1,6 +1,7 @@
 #pragma once
 
 #include "interfaces/input.h"
+#include "interrupts.h"
 #include "key_request.h"
 #include <SDL_scancode.h>
 #include <memory>
@@ -8,6 +9,7 @@
 
 namespace emu::applications::game_boy {
 class GuiIo;
+class InterruptObserver;
 class KeyObserver;
 class MemoryMappedIoForGameBoy;
 }
@@ -24,6 +26,10 @@ public:
 
     void remove_io_observer(KeyObserver* observer) override;
 
+    void add_interrupt_observer(InterruptObserver& observer) override;
+
+    void remove_interrupt_observer(InterruptObserver* observer) override;
+
 private:
     static constexpr SDL_Scancode s_mute = SDL_SCANCODE_M;
     static constexpr SDL_Scancode s_pause = SDL_SCANCODE_PAUSE;
@@ -39,6 +45,10 @@ private:
 
     std::vector<KeyObserver*> m_io_observers;
 
+    std::vector<InterruptObserver*> m_interrupt_observers;
+
     void notify_io_observers(IoRequest request);
+
+    void notify_interrupt_observers(Interrupts interrupt);
 };
 }

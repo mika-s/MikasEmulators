@@ -65,6 +65,7 @@ GameBoySession::GameBoySession(
 
     m_gui->add_gui_observer(*this);
     m_input->add_io_observer(*this);
+    m_input->add_interrupt_observer(*this);
     m_timer->add_interrupt_observer(*this);
     m_lcd->add_interrupt_observer(*this);
 
@@ -101,6 +102,7 @@ GameBoySession::GameBoySession(
 GameBoySession::~GameBoySession()
 {
     m_gui->remove_gui_observer(this);
+    m_input->remove_io_observer(this);
     m_input->remove_io_observer(this);
     m_state_context->remove_interrupt_observer(this);
     m_timer->remove_interrupt_observer(this);

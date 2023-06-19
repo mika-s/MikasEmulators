@@ -1,6 +1,8 @@
 #include "input_sdl.h"
 #include "gui_io.h"
+#include "interfaces/interrupt_observer.h"
 #include "interfaces/key_observer.h"
+#include "interrupts.h"
 #include "key_request.h"
 #include "memory_mapped_io_for_game_boy.h"
 #include <SDL_events.h>
@@ -28,6 +30,18 @@ void InputSdl::notify_io_observers(IoRequest request)
     }
 }
 
+void InputSdl::add_interrupt_observer(InterruptObserver& observer)
+{
+    m_interrupt_observers.push_back(&observer);
+}
+
+void InputSdl::remove_interrupt_observer(InterruptObserver* observer)
+{
+    m_interrupt_observers.erase(
+        std::remove(m_interrupt_observers.begin(), m_interrupt_observers.end(), observer),
+        m_interrupt_observers.end());
+}
+
 void InputSdl::read(GuiIo& gui_io, std::shared_ptr<MemoryMappedIoForGameBoy> memory_mapped_io)
 {
     SDL_Event read_input_event;
@@ -40,44 +54,44 @@ void InputSdl::read(GuiIo& gui_io, std::shared_ptr<MemoryMappedIoForGameBoy> mem
         case SDL_KEYUP:
             switch (read_input_event.key.keysym.scancode) {
             case s_p1_start:
-                memory_mapped_io->p1(5, false);
-                memory_mapped_io->p1(4, true);
-                memory_mapped_io->p1(3, false);
+                memory_mapped_io->p1_button_keys(5, false);
+                memory_mapped_io->p1_button_keys(4, true);
+                memory_mapped_io->p1_button_keys(3, false);
                 break;
             case s_p1_select:
-                memory_mapped_io->p1(5, false);
-                memory_mapped_io->p1(4, true);
-                memory_mapped_io->p1(2, false);
+                memory_mapped_io->p1_button_keys(5, false);
+                memory_mapped_io->p1_button_keys(4, true);
+                memory_mapped_io->p1_button_keys(2, false);
                 break;
             case s_up:
-                memory_mapped_io->p1(5, true);
-                memory_mapped_io->p1(4, false);
-                memory_mapped_io->p1(0, false);
+                memory_mapped_io->p1_button_keys(5, true);
+                memory_mapped_io->p1_button_keys(4, false);
+                memory_mapped_io->p1_button_keys(0, false);
                 break;
             case s_down:
-                memory_mapped_io->p1(5, true);
-                memory_mapped_io->p1(4, false);
-                memory_mapped_io->p1(3, false);
+                memory_mapped_io->p1_button_keys(5, true);
+                memory_mapped_io->p1_button_keys(4, false);
+                memory_mapped_io->p1_button_keys(3, false);
                 break;
             case s_left:
-                memory_mapped_io->p1(5, true);
-                memory_mapped_io->p1(4, false);
-                memory_mapped_io->p1(1, false);
+                memory_mapped_io->p1_button_keys(5, true);
+                memory_mapped_io->p1_button_keys(4, false);
+                memory_mapped_io->p1_button_keys(1, false);
                 break;
             case s_right:
-                memory_mapped_io->p1(5, true);
-                memory_mapped_io->p1(4, false);
-                memory_mapped_io->p1(0, false);
+                memory_mapped_io->p1_button_keys(5, true);
+                memory_mapped_io->p1_button_keys(4, false);
+                memory_mapped_io->p1_button_keys(0, false);
                 break;
             case s_a:
-                memory_mapped_io->p1(5, false);
-                memory_mapped_io->p1(4, true);
-                memory_mapped_io->p1(1, false);
+                memory_mapped_io->p1_button_keys(5, false);
+                memory_mapped_io->p1_button_keys(4, true);
+                memory_mapped_io->p1_button_keys(1, false);
                 break;
             case s_b:
-                memory_mapped_io->p1(5, false);
-                memory_mapped_io->p1(4, true);
-                memory_mapped_io->p1(0, false);
+                memory_mapped_io->p1_button_keys(5, false);
+                memory_mapped_io->p1_button_keys(4, true);
+                memory_mapped_io->p1_button_keys(0, false);
                 break;
             default:
                 break;
@@ -92,44 +106,44 @@ void InputSdl::read(GuiIo& gui_io, std::shared_ptr<MemoryMappedIoForGameBoy> mem
                 gui_io.m_is_toggling_pause = true;
                 break;
             case s_p1_start:
-                memory_mapped_io->p1(5, true);
-                memory_mapped_io->p1(4, false);
-                memory_mapped_io->p1(3, true);
+                memory_mapped_io->p1_button_keys(5, true);
+                memory_mapped_io->p1_button_keys(4, false);
+                memory_mapped_io->p1_button_keys(3, true);
                 break;
             case s_p1_select:
-                memory_mapped_io->p1(5, true);
-                memory_mapped_io->p1(4, false);
-                memory_mapped_io->p1(2, true);
+                memory_mapped_io->p1_button_keys(5, true);
+                memory_mapped_io->p1_button_keys(4, false);
+                memory_mapped_io->p1_button_keys(2, true);
                 break;
             case s_up:
-                memory_mapped_io->p1(5, false);
-                memory_mapped_io->p1(4, true);
-                memory_mapped_io->p1(0, true);
+                memory_mapped_io->p1_button_keys(5, false);
+                memory_mapped_io->p1_button_keys(4, true);
+                memory_mapped_io->p1_button_keys(0, true);
                 break;
             case s_down:
-                memory_mapped_io->p1(5, false);
-                memory_mapped_io->p1(4, true);
-                memory_mapped_io->p1(3, true);
+                memory_mapped_io->p1_button_keys(5, false);
+                memory_mapped_io->p1_button_keys(4, true);
+                memory_mapped_io->p1_button_keys(3, true);
                 break;
             case s_left:
-                memory_mapped_io->p1(5, false);
-                memory_mapped_io->p1(4, true);
-                memory_mapped_io->p1(1, true);
+                memory_mapped_io->p1_button_keys(5, false);
+                memory_mapped_io->p1_button_keys(4, true);
+                memory_mapped_io->p1_button_keys(1, true);
                 break;
             case s_right:
-                memory_mapped_io->p1(5, false);
-                memory_mapped_io->p1(4, true);
-                memory_mapped_io->p1(0, true);
+                memory_mapped_io->p1_button_keys(5, false);
+                memory_mapped_io->p1_button_keys(4, true);
+                memory_mapped_io->p1_button_keys(0, true);
                 break;
             case s_a:
-                memory_mapped_io->p1(5, true);
-                memory_mapped_io->p1(4, false);
-                memory_mapped_io->p1(1, true);
+                memory_mapped_io->p1_button_keys(5, true);
+                memory_mapped_io->p1_button_keys(4, false);
+                memory_mapped_io->p1_button_keys(1, true);
                 break;
             case s_b:
-                memory_mapped_io->p1(5, true);
-                memory_mapped_io->p1(4, false);
-                memory_mapped_io->p1(0, true);
+                memory_mapped_io->p1_button_keys(5, true);
+                memory_mapped_io->p1_button_keys(4, false);
+                memory_mapped_io->p1_button_keys(0, true);
                 break;
             default:
                 break;
@@ -142,4 +156,12 @@ void InputSdl::read(GuiIo& gui_io, std::shared_ptr<MemoryMappedIoForGameBoy> mem
 }
 
 void InputSdl::read_debug_only([[maybe_unused]] GuiIo& gui_io) { }
+
+void InputSdl::notify_interrupt_observers(Interrupts interrupt)
+{
+    for (InterruptObserver* observer : m_interrupt_observers) {
+        observer->interrupt(interrupt);
+    }
+}
+
 }

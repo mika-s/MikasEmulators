@@ -1,8 +1,9 @@
 #pragma once
 
+#include "applications/game_boy/gui_io.h"
+#include "applications/game_boy/interfaces/interrupt_observer.h"
+#include "applications/game_boy/interfaces/key_observer.h"
 #include "applications/game_boy/memory_mapped_io_for_game_boy.h"
-#include "game_boy/gui_io.h"
-#include "key_observer.h"
 #include <memory>
 
 namespace emu::applications::game_boy {
@@ -18,5 +19,9 @@ public:
     virtual void add_io_observer(KeyObserver& observer) = 0;
 
     virtual void remove_io_observer(KeyObserver* observer) = 0;
+
+    virtual void add_interrupt_observer(InterruptObserver& observer) = 0;
+
+    virtual void remove_interrupt_observer(InterruptObserver* observer) = 0;
 };
 }

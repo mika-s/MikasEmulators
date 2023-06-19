@@ -34,7 +34,9 @@ public:
 
     u8 read(u16 address) override;
 
-    void p1(unsigned int bit_number, bool is_setting);
+    void p1_button_keys(unsigned int bit_number, bool is_setting);
+
+    void p1_direction_keys(unsigned int bit_number, bool is_setting);
 
     [[nodiscard]] u8 p1() const;
 
@@ -53,6 +55,9 @@ private:
     static constexpr u16 s_interrupt_bit_lcd = 1;
     static constexpr u16 s_interrupt_bit_timer = 2;
     static constexpr u16 s_interrupt_bit_joypad = 3;
+
+    static constexpr u16 s_bit_number_select_button_keys = 5;
+    static constexpr u16 s_bit_number_select_direction_keys = 4;
 
     static constexpr u16 s_address_boot_rom_end = 0x00ff;
     static constexpr u16 s_address_rom_end = 0x7fff;
@@ -145,7 +150,9 @@ private:
     u8 m_if { 0 };
     bool m_ie { false };
 
-    u8 m_p1 { 0xff };
+    u8 m_p1_button_keys { 0xff };
+    u8 m_p1_direction_keys { 0xff };
+    bool m_is_reading_direction_keys { false };
 
     void dma_transfer(u8 value);
 };

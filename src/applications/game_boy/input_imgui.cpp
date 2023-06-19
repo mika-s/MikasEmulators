@@ -2,7 +2,9 @@
 #include "gui_io.h"
 #include "imgui.h"
 #include "imgui_impl_sdl.h"
+#include "interfaces/interrupt_observer.h"
 #include "interfaces/key_observer.h"
+#include "interrupts.h"
 #include "key_request.h"
 #include "memory_mapped_io_for_game_boy.h"
 #include <SDL_events.h>
@@ -30,6 +32,18 @@ void InputImgui::notify_io_observers(IoRequest request)
     }
 }
 
+void InputImgui::add_interrupt_observer(InterruptObserver& observer)
+{
+    m_interrupt_observers.push_back(&observer);
+}
+
+void InputImgui::remove_interrupt_observer(InterruptObserver* observer)
+{
+    m_interrupt_observers.erase(
+        std::remove(m_interrupt_observers.begin(), m_interrupt_observers.end(), observer),
+        m_interrupt_observers.end());
+}
+
 void InputImgui::read(GuiIo& gui_io, std::shared_ptr<MemoryMappedIoForGameBoy> memory_mapped_io)
 {
     SDL_Event read_input_event;
@@ -47,44 +61,36 @@ void InputImgui::read(GuiIo& gui_io, std::shared_ptr<MemoryMappedIoForGameBoy> m
             case SDL_KEYUP:
                 switch (read_input_event.key.keysym.scancode) {
                 case s_p1_start:
-                    memory_mapped_io->p1(5, false);
-                    memory_mapped_io->p1(4, true);
-                    memory_mapped_io->p1(3, false);
+                    m_is_pressing_start = false;
+                    memory_mapped_io->p1_button_keys(s_bit_number_start, true);
                     break;
                 case s_p1_select:
-                    memory_mapped_io->p1(5, false);
-                    memory_mapped_io->p1(4, true);
-                    memory_mapped_io->p1(2, false);
+                    m_is_pressing_select = false;
+                    memory_mapped_io->p1_button_keys(s_bit_number_select, true);
                     break;
                 case s_up:
-                    memory_mapped_io->p1(5, true);
-                    memory_mapped_io->p1(4, false);
-                    memory_mapped_io->p1(0, false);
+                    m_is_pressing_up = false;
+                    memory_mapped_io->p1_direction_keys(s_bit_number_up, true);
                     break;
                 case s_down:
-                    memory_mapped_io->p1(5, true);
-                    memory_mapped_io->p1(4, false);
-                    memory_mapped_io->p1(3, false);
+                    m_is_pressing_down = false;
+                    memory_mapped_io->p1_direction_keys(s_bit_number_down, true);
                     break;
                 case s_left:
-                    memory_mapped_io->p1(5, true);
-                    memory_mapped_io->p1(4, false);
-                    memory_mapped_io->p1(1, false);
+                    m_is_pressing_left = false;
+                    memory_mapped_io->p1_direction_keys(s_bit_number_left, true);
                     break;
                 case s_right:
-                    memory_mapped_io->p1(5, true);
-                    memory_mapped_io->p1(4, false);
-                    memory_mapped_io->p1(0, false);
+                    m_is_pressing_right = false;
+                    memory_mapped_io->p1_direction_keys(s_bit_number_right, true);
                     break;
                 case s_a:
-                    memory_mapped_io->p1(5, false);
-                    memory_mapped_io->p1(4, true);
-                    memory_mapped_io->p1(1, false);
+                    m_is_pressing_a = false;
+                    memory_mapped_io->p1_button_keys(s_bit_number_a, true);
                     break;
                 case s_b:
-                    memory_mapped_io->p1(5, false);
-                    memory_mapped_io->p1(4, true);
-                    memory_mapped_io->p1(0, false);
+                    m_is_pressing_b = false;
+                    memory_mapped_io->p1_button_keys(s_bit_number_b, true);
                     break;
                 default:
                     break;
@@ -105,44 +111,60 @@ void InputImgui::read(GuiIo& gui_io, std::shared_ptr<MemoryMappedIoForGameBoy> m
                     gui_io.m_is_toggling_pause = true;
                     break;
                 case s_p1_start:
-                    memory_mapped_io->p1(5, true);
-                    memory_mapped_io->p1(4, false);
-                    memory_mapped_io->p1(3, true);
+                    if (!m_is_pressing_start) {
+                        notify_interrupt_observers(JOYPAD);
+                    }
+                    m_is_pressing_start = true;
+                    memory_mapped_io->p1_button_keys(s_bit_number_start, false);
                     break;
                 case s_p1_select:
-                    memory_mapped_io->p1(5, true);
-                    memory_mapped_io->p1(4, false);
-                    memory_mapped_io->p1(2, true);
+                    if (!m_is_pressing_select) {
+                        notify_interrupt_observers(JOYPAD);
+                    }
+                    m_is_pressing_select = true;
+                    memory_mapped_io->p1_button_keys(s_bit_number_select, false);
                     break;
                 case s_up:
-                    memory_mapped_io->p1(5, false);
-                    memory_mapped_io->p1(4, true);
-                    memory_mapped_io->p1(0, true);
+                    if (!m_is_pressing_up) {
+                        notify_interrupt_observers(JOYPAD);
+                    }
+                    m_is_pressing_up = true;
+                    memory_mapped_io->p1_direction_keys(s_bit_number_up, false);
                     break;
                 case s_down:
-                    memory_mapped_io->p1(5, false);
-                    memory_mapped_io->p1(4, true);
-                    memory_mapped_io->p1(3, true);
+                    if (!m_is_pressing_down) {
+                        notify_interrupt_observers(JOYPAD);
+                    }
+                    m_is_pressing_down = true;
+                    memory_mapped_io->p1_direction_keys(s_bit_number_down, false);
                     break;
                 case s_left:
-                    memory_mapped_io->p1(5, false);
-                    memory_mapped_io->p1(4, true);
-                    memory_mapped_io->p1(1, true);
+                    if (!m_is_pressing_left) {
+                        notify_interrupt_observers(JOYPAD);
+                    }
+                    m_is_pressing_left = true;
+                    memory_mapped_io->p1_direction_keys(s_bit_number_left, false);
                     break;
                 case s_right:
-                    memory_mapped_io->p1(5, false);
-                    memory_mapped_io->p1(4, true);
-                    memory_mapped_io->p1(0, true);
+                    if (!m_is_pressing_right) {
+                        notify_interrupt_observers(JOYPAD);
+                    }
+                    m_is_pressing_right = true;
+                    memory_mapped_io->p1_direction_keys(s_bit_number_right, false);
                     break;
                 case s_a:
-                    memory_mapped_io->p1(5, true);
-                    memory_mapped_io->p1(4, false);
-                    memory_mapped_io->p1(1, true);
+                    if (!m_is_pressing_a) {
+                        notify_interrupt_observers(JOYPAD);
+                    }
+                    m_is_pressing_a = true;
+                    memory_mapped_io->p1_button_keys(s_bit_number_a, false);
                     break;
                 case s_b:
-                    memory_mapped_io->p1(5, true);
-                    memory_mapped_io->p1(4, false);
-                    memory_mapped_io->p1(0, true);
+                    if (!m_is_pressing_b) {
+                        notify_interrupt_observers(JOYPAD);
+                    }
+                    m_is_pressing_b = true;
+                    memory_mapped_io->p1_button_keys(s_bit_number_b, false);
                     break;
                 default:
                     break;
@@ -209,4 +231,12 @@ void InputImgui::read_debug_only(GuiIo& gui_io)
         }
     }
 }
+
+void InputImgui::notify_interrupt_observers(Interrupts interrupt)
+{
+    for (InterruptObserver* observer : m_interrupt_observers) {
+        observer->interrupt(interrupt);
+    }
+}
+
 }
