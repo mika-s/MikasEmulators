@@ -6,7 +6,9 @@
 #include "crosscutting/typedefs.h"
 #include "gui_io.h"
 #include "interfaces/gui_observer.h"
+#include "interfaces/interrupt_observer.h"
 #include "interfaces/key_observer.h"
+#include "interrupts.h"
 #include "key_request.h"
 #include <cstddef>
 #include <functional>
@@ -59,7 +61,8 @@ using emu::misc::Session;
 class GameBoySession
     : public Session
     , public GuiObserver
-    , public KeyObserver {
+    , public KeyObserver
+    , public InterruptObserver {
 public:
     GameBoySession(
         bool is_starting_paused,
@@ -82,6 +85,8 @@ public:
     void gui_request(GuiRequest request) override;
 
     void key_pressed(IoRequest request) override;
+
+    void interrupt(Interrupts interrupt) override;
 
 private:
     static constexpr long double s_fps = 60.0L;

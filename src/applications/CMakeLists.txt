@@ -150,6 +150,7 @@ set(SOURCES_APPLICATIONS_H
         game_boy/usage.h
         game_boy/interfaces/gui_observer.h
         game_boy/interfaces/input.h
+        game_boy/interfaces/interrupt_observer.h
         game_boy/interfaces/key_observer.h
         game_boy/interfaces/state.h
         game_boy/states/paused_state.h

@@ -2,6 +2,7 @@
 #include "applications/game_boy/gui.h"
 #include "applications/game_boy/gui_io.h"
 #include "applications/game_boy/interfaces/input.h"
+#include "applications/game_boy/interrupts.h"
 #include "applications/game_boy/lcd.h"
 #include "applications/game_boy/lcd_control.h"
 #include "applications/game_boy/memory_mapped_io_for_game_boy.h"
@@ -57,7 +58,7 @@ void RunningState::perform(cyc& cycles)
         cycles = 0;
         while (cycles < static_cast<cyc>(s_cycles_per_tick)) {
             cycles += m_ctx->m_cpu->next_instruction();
-            m_ctx->m_timer->inc(cycles);
+            m_ctx->m_timer->update(cycles);
             update_graphics(cycles);
             if (m_ctx->m_is_in_debug_mode && m_ctx->m_debugger->has_breakpoint(m_ctx->m_cpu->pc())) {
                 m_ctx->m_logger->info("Breakpoint hit: 0x%04x", m_ctx->m_cpu->pc());
@@ -100,7 +101,7 @@ void RunningState::update_graphics(cyc cycles)
         m_ctx->m_scanline_counter = 456;
 
         if (current_line == 144) {
-            m_ctx->vblank_interrupt();
+            m_ctx->notify_interrupt_observers(VBLANK);
         } else if (current_line > 153) {
             m_ctx->m_lcd->reset_scanline();
         } else if (current_line < 144) {

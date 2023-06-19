@@ -1,8 +1,8 @@
 #include "state_context.h"
 #include "applications/game_boy/gui.h"
+#include "applications/game_boy/interfaces/interrupt_observer.h"
 #include "applications/game_boy/interrupts.h"
-#include "applications/game_boy/memory_mapped_io_for_game_boy.h"
-#include "chips/lr35902/cpu.h"
+#include <algorithm>
 #include <utility>
 
 namespace emu::applications::game_boy {
@@ -101,13 +101,23 @@ void StateContext::set_stopped_state(std::shared_ptr<State> state)
     m_stopped_state = std::move(state);
 }
 
-void StateContext::vblank_interrupt()
+void StateContext::add_interrupt_observer(InterruptObserver& observer)
 {
-    m_memory_mapped_io->interrupt(Interrupts::VBLANK);
+    m_interrupt_observers.push_back(&observer);
+}
 
-    m_cpu->interrupt(0x40);
+void StateContext::remove_interrupt_observer(InterruptObserver* observer)
+{
+    m_interrupt_observers.erase(
+        std::remove(m_interrupt_observers.begin(), m_interrupt_observers.end(), observer),
+        m_interrupt_observers.end());
+}
 
-    m_memory_mapped_io->reset_interrupt(Interrupts::VBLANK);
+void StateContext::notify_interrupt_observers(Interrupts interrupt)
+{
+    for (InterruptObserver* observer : m_interrupt_observers) {
+        observer->interrupt(interrupt);
+    }
 }
 
 }

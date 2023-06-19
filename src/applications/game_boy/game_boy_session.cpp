@@ -12,6 +12,7 @@
 #include "gui_request.h"
 #include "interfaces/input.h"
 #include "interfaces/state.h"
+#include "interrupts.h"
 #include "key_request.h"
 #include "lcd.h"
 #include "lcd_control.h"
@@ -64,6 +65,8 @@ GameBoySession::GameBoySession(
 
     m_gui->add_gui_observer(*this);
     m_input->add_io_observer(*this);
+    m_timer->add_interrupt_observer(*this);
+    m_lcd->add_interrupt_observer(*this);
 
     m_state_context = std::make_shared<StateContext>(
         m_gui_io,
@@ -86,6 +89,7 @@ GameBoySession::GameBoySession(
     m_state_context->set_paused_state(std::make_shared<PausedState>(m_state_context));
     m_state_context->set_stepping_state(std::make_shared<SteppingState>(m_state_context));
     m_state_context->set_stopped_state(std::make_shared<StoppedState>(m_state_context));
+    m_state_context->add_interrupt_observer(*this);
 
     if (is_starting_paused) {
         m_state_context->change_state(m_state_context->paused_state());
@@ -98,6 +102,9 @@ GameBoySession::~GameBoySession()
 {
     m_gui->remove_gui_observer(this);
     m_input->remove_io_observer(this);
+    m_state_context->remove_interrupt_observer(this);
+    m_timer->remove_interrupt_observer(this);
+    m_lcd->remove_interrupt_observer(this);
 }
 
 void GameBoySession::run()
@@ -257,8 +264,38 @@ void GameBoySession::key_pressed(IoRequest request)
     }
 }
 
+void GameBoySession::interrupt(Interrupts interrupt)
+{
+    m_memory_mapped_io->interrupt(interrupt);
+
+    switch (interrupt) {
+    case VBLANK:
+        m_cpu->interrupt(0x40);
+        break;
+    case LCD:
+        m_cpu->interrupt(0x48);
+        break;
+    case TIMER:
+        m_cpu->interrupt(0x50);
+        break;
+    case JOYPAD:
+        m_cpu->interrupt(0x60);
+        break;
+    default:
+        break;
+    }
+
+    m_memory_mapped_io->reset_interrupt(interrupt);
+}
+
 std::vector<u8> GameBoySession::memory()
 {
+    //    std::vector<u8> memory;
+    //    memory.reserve(0xffff);
+    //    for (unsigned int address = 0; address <= 0xffff; ++address) {
+    //        memory.push_back(m_memory_mapped_io->read(address));
+    //    }
+    //    return memory;
     return { m_memory.begin(), m_memory.end() }; // TODO: Go through the memory mapper
 }
 
@@ -288,4 +325,5 @@ std::vector<DisassembledLine<u16, 16>> GameBoySession::disassemble_program()
 
     return lines;
 }
+
 }

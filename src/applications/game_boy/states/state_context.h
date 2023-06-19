@@ -1,15 +1,18 @@
 #pragma once
 
 #include "applications/game_boy/gui.h"
+#include "applications/game_boy/interrupts.h"
 #include "crosscutting/typedefs.h"
 #include <cstddef>
 #include <memory>
 #include <unordered_map>
+#include <vector>
 
 namespace emu::applications::game_boy {
 class Audio;
 class GuiIo;
 class Input;
+class InterruptObserver;
 class Lcd;
 class MemoryMappedIoForGameBoy;
 class State;
@@ -105,7 +108,11 @@ public:
 
     void set_stopped_state(std::shared_ptr<State> state);
 
-    void vblank_interrupt();
+    void add_interrupt_observer(InterruptObserver& observer);
+
+    void remove_interrupt_observer(InterruptObserver* observer);
+
+    void notify_interrupt_observers(Interrupts interrupt);
 
 private:
     std::shared_ptr<State> m_current_state;
@@ -113,5 +120,7 @@ private:
     std::shared_ptr<State> m_paused_state;
     std::shared_ptr<State> m_stepping_state;
     std::shared_ptr<State> m_stopped_state;
+
+    std::vector<InterruptObserver*> m_interrupt_observers;
 };
 }

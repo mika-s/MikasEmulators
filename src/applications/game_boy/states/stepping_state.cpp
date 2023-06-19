@@ -2,6 +2,7 @@
 #include "applications/game_boy/gui.h"
 #include "applications/game_boy/gui_io.h"
 #include "applications/game_boy/interfaces/input.h"
+#include "applications/game_boy/interrupts.h"
 #include "applications/game_boy/lcd.h"
 #include "chips/lr35902/cpu.h"
 #include "crosscutting/memory/emulator_memory.h"
@@ -65,7 +66,7 @@ void SteppingState::perform(cyc& cycles)
         }
     }
 
-    m_ctx->vblank_interrupt();
+    m_ctx->notify_interrupt_observers(VBLANK);
 
     m_ctx->m_input->read(m_ctx->m_gui_io, m_ctx->m_memory_mapped_io);
     if (m_ctx->m_gui_io.m_is_quitting) {

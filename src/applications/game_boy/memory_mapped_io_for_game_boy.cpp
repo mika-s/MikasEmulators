@@ -81,10 +81,8 @@ void MemoryMappedIoForGameBoy::write(u16 address, u8 value)
         m_memory.direct_write(address, value);
     } else if (address == s_address_lcd_control) {
         m_lcd->lcd_control().update_from_memory(value);
-        m_memory.direct_write(address, value);
     } else if (address == s_address_lcd_status) {
         m_lcd->lcd_status().update_from_memory(value);
-        m_memory.direct_write(address, value);
     } else if (address == s_address_lcd_viewport_y_position) {
         m_lcd->m_scy = value;
     } else if (address == s_address_lcd_viewport_x_position) {
@@ -160,6 +158,8 @@ u8 MemoryMappedIoForGameBoy::read(u16 address)
         return m_timer->control();
     } else if (address == s_address_interrupt_f_register) {
         return m_memory.direct_read(address);
+    } else if (address == s_address_lcd_control) {
+        return m_lcd->lcd_control().to_u8();
     } else if (address == s_address_lcd_status) {
         return m_lcd->lcd_status().to_u8();
     } else if (address == s_address_lcd_viewport_y_position) {
