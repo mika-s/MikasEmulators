@@ -1,10 +1,12 @@
 #pragma once
 
+#include "chips/trivial/lmc/flags.h"
 #include "chips/trivial/lmc/usings.h"
 #include "crosscutting/memory/emulator_memory.h"
-#include "flags.h"
 
 namespace emu::lmc {
+
+using emu::memory::EmulatorMemory;
 
 void add(Data& acc_reg, Address address, EmulatorMemory<Address, Data> const& memory);
 void sub(Data& acc_reg, Address address, EmulatorMemory<Address, Data> const& memory, Flags& flag_reg);

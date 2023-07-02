@@ -3,6 +3,7 @@
 #include <iostream>
 
 namespace emu::lr35902 {
+
 /**
  * No operation
  * <ul>
