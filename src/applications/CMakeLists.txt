@@ -87,6 +87,19 @@ set(SOURCES_APPLICATIONS_CPP
         space_invaders/states/stopped_state.cpp
         space_invaders/states/state_context.cpp
 
+        synacor_application/gui_imgui.cpp
+        synacor_application/input_imgui.cpp
+        synacor_application/synacor_application.cpp
+        synacor_application/synacor_application_session.cpp
+        synacor_application/tui_terminal.cpp
+        synacor_application/usage.cpp
+        synacor_application/states/paused_state.cpp
+        synacor_application/states/running_state.cpp
+        synacor_application/states/running_awaiting_input_state.cpp
+        synacor_application/states/stepping_state.cpp
+        synacor_application/states/stopped_state.cpp
+        synacor_application/states/state_context.cpp
+
         zxspectrum_48k/audio.cpp
         zxspectrum_48k/cpu_io.cpp
         zxspectrum_48k/gui.cpp
@@ -224,6 +237,23 @@ set(SOURCES_APPLICATIONS_H
         space_invaders/states/stopped_state.h
         space_invaders/states/state_context.h
 
+        synacor_application/ui.h
+        synacor_application/gui_imgui.h
+        synacor_application/input_imgui.h
+        synacor_application/synacor_application.h
+        synacor_application/synacor_application_session.h
+        synacor_application/tui_terminal.h
+        synacor_application/usage.h
+        synacor_application/interfaces/ui_observer.h
+        synacor_application/interfaces/input.h
+        synacor_application/interfaces/state.h
+        synacor_application/states/paused_state.h
+        synacor_application/states/running_state.h
+        synacor_application/states/running_awaiting_input_state.h
+        synacor_application/states/stepping_state.h
+        synacor_application/states/stopped_state.h
+        synacor_application/states/state_context.h
+
         zxspectrum_48k/audio.h
         zxspectrum_48k/cpu_io.h
         zxspectrum_48k/gui.h
@@ -256,7 +286,7 @@ set(SOURCES_APPLICATIONS_H
 add_library(Applications STATIC ${SOURCES_APPLICATIONS_H} ${SOURCES_APPLICATIONS_CPP})
 target_link_libraries(Applications PRIVATE
         Glad SDL2::Main SDL2::Image ImGui Doctest
-        Crosscutting I8080 LR35902 LMC NamcoWsg3 Z80
+        Crosscutting I8080 LR35902 LMC NamcoWsg3 Synacor Z80
         )
 target_include_directories(Applications PUBLIC ../)
 

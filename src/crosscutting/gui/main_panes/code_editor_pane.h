@@ -41,7 +41,7 @@ public:
         } else {
             ImGui::BeginChild("scrolling", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
 
-            strncpy(buffer, m_debug_container->file_content().c_str(), buffer_size);
+            strncpy(buffer, m_debug_container->file_content().c_str(), s_buffer_size - 1);
 
             const ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
             ImGui::InputTextMultiline("##code", buffer, IM_ARRAYSIZE(buffer), //
@@ -77,12 +77,12 @@ public:
     }
 
 private:
-    static constexpr unsigned int buffer_size = 65536;
+    static constexpr unsigned int s_buffer_size = 65536;
 
     std::shared_ptr<DebugContainer<A, D, B>> m_debug_container;
     bool m_is_debug_container_set { false };
 
-    char buffer[buffer_size]; // NOLINT
+    char buffer[s_buffer_size]; // NOLINT
 
     std::vector<CodeEditorPaneObserver*> m_pane_observers;
 

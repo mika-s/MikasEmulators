@@ -1,7 +1,7 @@
 #pragma once
 
-#include "chips/trivial/lmc/cpu.h"
-#include "chips/trivial/lmc/usings.h"
+#include "chips/trivial/synacor/cpu.h"
+#include "chips/trivial/synacor/usings.h"
 #include "crosscutting/gui/gui_type.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/misc/emulator.h"
@@ -11,28 +11,30 @@
 #include <string>
 #include <vector>
 
-namespace emu::applications::lmc {
-class Input;
+namespace emu::applications::synacor {
 class Ui;
+}
+namespace emu::applications::synacor {
+class Input;
 }
 namespace emu::misc {
 class Session;
 }
 
-namespace emu::applications::lmc {
+namespace emu::applications::synacor {
 
 using emu::gui::GuiType;
-using emu::lmc::Address;
-using emu::lmc::Cpu;
-using emu::lmc::Data;
 using emu::memory::EmulatorMemory;
 using emu::misc::Emulator;
 using emu::misc::Session;
 using emu::misc::UInteger;
+using emu::synacor::Address;
+using emu::synacor::Cpu;
+using emu::synacor::Data;
 
-class LmcApplication : public Emulator {
+class SynacorApplication : public Emulator {
 public:
-    explicit LmcApplication(std::string const& file, const GuiType gui_type);
+    explicit SynacorApplication(std::string const& file, const GuiType gui_type);
 
     std::unique_ptr<Session> new_session() override;
 

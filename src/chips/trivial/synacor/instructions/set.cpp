@@ -13,7 +13,7 @@ namespace emu::synacor {
  * @param a is the <a> register, which will be mutated
  * @param b is the value to place into <a>
  */
-void set(Data &a, Data b)
+void set([[maybe_unused]] Data &a, [[maybe_unused]] Data b)
 {
 }
 
