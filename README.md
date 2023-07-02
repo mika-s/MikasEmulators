@@ -20,6 +20,7 @@ notice.
 **Trivial architectures:**
 
 - [Little Man Computer (LMC)](documentation/chips/lmc.md)
+- [Synacor challenge](documentation/chips/synacor.md)
 
 ## Dependencies
 
