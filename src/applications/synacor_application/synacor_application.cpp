@@ -24,9 +24,9 @@ using emu::util::byte::to_u16;
 using emu::util::file::read_file;
 using emu::util::string::split;
 
-SynacorApplication::SynacorApplication(std::string const& file, const GuiType gui_type)
+SynacorApplication::SynacorApplication(const GuiType gui_type)
 {
-    load_file(file);
+    load_file();
     if (gui_type == GuiType::DEBUGGING) {
         m_is_only_run_once = false;
         m_gui = std::make_shared<GuiImgui>();
@@ -52,13 +52,12 @@ std::unique_ptr<Session> SynacorApplication::new_session()
         m_memory);
 }
 
-void SynacorApplication::load_file(std::string const& file)
+void SynacorApplication::load_file()
 {
-    m_loaded_file = file;
+    m_loaded_file = "roms/trivial/synacor/challenge.bin";
 
-    const std::stringstream file_content = read_file(file);
+    const std::stringstream file_content = read_file(m_loaded_file);
     m_file_content = file_content.str();
-//    const std::vector<Data> code = Assembler::assemble(file_content);
     std::vector<Data> remaining_memory;
 
 //    if (code.size() < s_memory_size) {

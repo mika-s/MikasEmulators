@@ -37,7 +37,6 @@ using emu::synacor::Data;
 GuiImgui::GuiImgui()
     : m_win(nullptr)
     , m_gl_context(nullptr)
-    , m_show_code_editor(true)
     , m_show_terminal(true)
     , m_show_game_info(true)
     , m_show_cpu_info(true)
@@ -48,7 +47,6 @@ GuiImgui::GuiImgui()
 {
     init();
 
-    m_code_editor.add_pane_observer(*this);
     m_terminal.add_pane_observer(*this);
 }
 
@@ -92,7 +90,7 @@ void GuiImgui::remove_ui_observer(UiObserver* observer)
         m_gui_observers.end());
 }
 
-void GuiImgui::notify_gui_observers(GuiRequest request)
+void GuiImgui::notify_gui_observers(GuiRequest const& request)
 {
     for (UiObserver* observer : m_gui_observers) {
         observer->gui_request(request);
@@ -108,8 +106,7 @@ void GuiImgui::attach_debug_container(std::shared_ptr<DebugContainer<Address, Da
 {
     m_cpu_info.attach_debug_container(debug_container);
     m_disassembly.attach_debug_container(debug_container);
-//    m_memory_editor.attach_debug_container(debug_container);
-    m_code_editor.attach_debug_container(debug_container);
+    //    m_memory_editor.attach_debug_container(debug_container);
 }
 
 void GuiImgui::attach_logger(std::shared_ptr<Logger> logger)
@@ -249,7 +246,6 @@ void GuiImgui::render(bool is_awaiting_input, std::string const& game_window_sub
             ImGui::EndMenu();
         }
         if (ImGui::BeginMenu("Windows")) {
-            ImGui::MenuItem("Code editor", nullptr, &m_show_code_editor);
             ImGui::MenuItem("Terminal", nullptr, &m_show_terminal);
             ImGui::MenuItem("Program info", nullptr, &m_show_game_info);
             ImGui::MenuItem("CPU info", nullptr, &m_show_cpu_info);
@@ -272,9 +268,6 @@ void GuiImgui::render(bool is_awaiting_input, std::string const& game_window_sub
     }
     if (m_show_disassembly) {
         render_disassembly_window();
-    }
-    if (m_show_code_editor) {
-        render_code_editor();
     }
     if (m_show_terminal) {
         render_terminal_window(is_awaiting_input, game_window_subtitle);
@@ -302,16 +295,11 @@ void GuiImgui::update_debug_only(bool is_awaiting_input)
     render(is_awaiting_input, "Stepping");
 }
 
-void GuiImgui::render_code_editor()
-{
-    m_code_editor.draw("Code editor", &m_show_code_editor);
-}
-
 void GuiImgui::render_terminal_window(bool is_awaiting_input, std::string const& game_window_subtitle)
 {
     const std::string prefix = "Program";
     const std::string id = "###" + prefix;
-    std::string terminal_status = "";
+    std::string terminal_status;
     if (is_awaiting_input) {
         terminal_status = " (awaiting input)";
     }
@@ -365,5 +353,10 @@ void GuiImgui::render_disassembly_window()
 
 void GuiImgui::render_memory_editor_window()
 {
+}
+
+void GuiImgui::input_sent(std::string const& input)
+{
+    notify_gui_observers({ .m_type = GuiRequestType::INPUT_FROM_TERMINAL, .m_data_payload = Data(std::stoi(input)) });
 }
 }

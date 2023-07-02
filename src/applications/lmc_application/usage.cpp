@@ -5,7 +5,7 @@
 #include <utility>
 #include <vector>
 
-namespace emu::applications::lmc_application {
+namespace emu::applications::lmc {
 
 using emu::util::string::create_padding;
 

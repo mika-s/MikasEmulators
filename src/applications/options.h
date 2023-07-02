@@ -58,16 +58,16 @@ private:
     static const inline std::string s_debug_scanner_long = "debug-scanner";
 
     std::vector<std::string> m_args { "" };
-    std::string m_command { "" };
+    std::string m_command;
     std::optional<std::string> m_application;
     std::optional<std::string> m_path;
     bool m_is_asking_for_help { false };
-    std::string m_is_asking_for_help_reason { "" };
+    std::string m_is_asking_for_help_reason;
     bool m_is_failed { false };
-    std::string m_failed_reason { "" };
+    std::string m_failed_reason;
     bool m_is_debugging_cmd_parser { false };
     std::vector<std::string> m_cmd_tokens;
-    std::string m_short_executable_name { "" };
+    std::string m_short_executable_name;
     std::unordered_map<std::string, std::vector<std::string>> m_options;
 };
 }

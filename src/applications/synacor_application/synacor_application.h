@@ -34,7 +34,7 @@ using emu::synacor::Data;
 
 class SynacorApplication : public Emulator {
 public:
-    explicit SynacorApplication(std::string const& file, const GuiType gui_type);
+    explicit SynacorApplication(const GuiType gui_type);
 
     std::unique_ptr<Session> new_session() override;
 
@@ -50,7 +50,7 @@ private:
     std::string m_loaded_file;
     std::string m_file_content;
 
-    void load_file(std::string const& file);
+    void load_file();
 
     std::vector<Data> create_work_ram(std::size_t size);
 };

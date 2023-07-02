@@ -6,6 +6,7 @@
 #include "applications/lmc_application/usage.h"
 #include "applications/pacman/usage.h"
 #include "applications/space_invaders/usage.h"
+#include "applications/synacor_application/usage.h"
 #include "applications/zxspectrum_48k/usage.h"
 #include "crosscutting/gui/gui_type.h" // IWYU pragma: keep
 #include <cstddef>
@@ -54,6 +55,8 @@ private:
         { "NEWLINE", "NEWLINE" },
         { "lmc_application", "LMC applications" },
         { "NEWLINE", "NEWLINE" },
+        { "synacor_application", "Synacor application" },
+        { "NEWLINE", "NEWLINE" },
         { "game_boy", "The original Game Boy" },
     };
 
@@ -62,6 +65,7 @@ private:
         { "LR35902", "The LR35902 8-bit microprocessor" },
         { "Z80", "The Zilog Z80 8-bit microprocessor" },
         { "LMC", "The Little Man Computer instructional model" },
+        { "Synacor", "The CPU/VM of the Synacor challenge" },
     };
 
     static const inline std::vector<std::pair<std::string, std::string>> s_supported_formats = {
@@ -91,7 +95,8 @@ private:
         { "8080PRE", cpm::i8080::print_usage },
         { "8080EXM", cpm::i8080::print_usage },
         { "CPUTEST", cpm::i8080::print_usage },
-        { "lmc_application", lmc_application::print_usage },
+        { "lmc_application", lmc::print_usage },
+        { "synacor_application", synacor::print_usage },
         { "game_boy", game_boy::print_usage },
     };
 

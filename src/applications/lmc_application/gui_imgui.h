@@ -108,7 +108,7 @@ private:
 
     std::vector<std::string> m_output;
 
-    void notify_gui_observers(GuiRequest request);
+    void notify_gui_observers(const GuiRequest& request);
 
     void init();
 

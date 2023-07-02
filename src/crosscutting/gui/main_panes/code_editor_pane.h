@@ -82,7 +82,7 @@ private:
     std::shared_ptr<DebugContainer<A, D, B>> m_debug_container;
     bool m_is_debug_container_set { false };
 
-    char buffer[s_buffer_size]; // NOLINT
+    char buffer[s_buffer_size]{}; // NOLINT
 
     std::vector<CodeEditorPaneObserver*> m_pane_observers;
 

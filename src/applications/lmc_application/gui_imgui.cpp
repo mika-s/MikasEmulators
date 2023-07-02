@@ -108,7 +108,7 @@ void GuiImgui::remove_ui_observer(UiObserver* observer)
         m_gui_observers.end());
 }
 
-void GuiImgui::notify_gui_observers(GuiRequest request)
+void GuiImgui::notify_gui_observers(const GuiRequest& request)
 {
     for (UiObserver* observer : m_gui_observers) {
         observer->gui_request(request);
@@ -333,7 +333,7 @@ void GuiImgui::render_terminal_window(bool is_awaiting_input, std::string const&
 {
     const std::string prefix = "Program";
     const std::string id = "###" + prefix;
-    std::string terminal_status = "";
+    std::string terminal_status;
     if (is_awaiting_input) {
         terminal_status = " (awaiting input)";
     }

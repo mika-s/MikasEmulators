@@ -13,6 +13,8 @@
 #include "applications/space_invaders/settings.h"
 #include "applications/space_invaders/space_invaders.h"
 #include "applications/space_invaders/usage.h"
+#include "applications/synacor_application/synacor_application.h"
+#include "applications/synacor_application/usage.h"
 #include "applications/zxspectrum_48k/formats/z80_format.h"
 #include "applications/zxspectrum_48k/settings.h"
 #include "applications/zxspectrum_48k/usage.h"
@@ -163,7 +165,7 @@ void Frontend::disassemble(Options const& options)
             EmulatorMemory<u16, u8> memory;
 
             if (options.options().contains("format")) {
-                if (options.options().at("format").size() > 0 && options.options().at("format")[0] == "SX_Spectrum_Z80") {
+                if (!options.options().at("format").empty() && options.options().at("format")[0] == "SX_Spectrum_Z80") {
                     memory.add(read_file_into_vector("roms/z80/zxspectrum_48k/48k.rom")); // $0000-$3fff: 48k.rom
                     memory.add(std::vector<u8>(0xbfff, 0x00));
                     Z80Format format(file_path);
@@ -201,6 +203,7 @@ void Frontend::test(Options const& options)
             context.addFilter("test-case", "LR35902*");
             context.addFilter("test-case", "Z80*");
             context.addFilter("test-case", "LMC*");
+            context.addFilter("test-case", "Synacor*");
         } else {
             for (std::string& cpu : opts["cpu"]) {
                 context.addFilter("test-case", fmt::format("{}*", cpu).c_str());
@@ -330,12 +333,15 @@ std::unique_ptr<Emulator> Frontend::choose_emulator(std::string const& program, 
         if (options.path().has_value()) {
             return std::make_unique<lmc::LmcApplication>(
                 options.path().value(),
-                options.gui_type(lmc_application::print_usage));
+                options.gui_type(lmc::print_usage));
         } else {
             throw InvalidProgramArgumentsException(
                 "You have to specify the path of the file to run",
-                lmc_application::print_usage);
+                lmc::print_usage);
         }
+    } else if (program == "synacor") {
+        return std::make_unique<synacor::SynacorApplication>(
+            options.gui_type(synacor::print_usage));
     } else {
         throw InvalidProgramArgumentsException(
             "Illegal program argument when choosing emulator",
