@@ -171,13 +171,13 @@ TEST_CASE("LR35902: RET")
         CHECK_EQ(0x01ab, pc);
     }
 
-    SUBCASE("should use 10 cycles")
+    SUBCASE("should use 16 cycles")
     {
         cycles = 0;
 
         ret(pc, sp, memory, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(16, cycles);
     }
 }
 

@@ -17,7 +17,7 @@ public:
 
     void update_from_memory(u8 value);
 
-    u8 to_u8();
+    u8 to_u8() const;
 
 private:
     static const unsigned int s_ldc_and_ppu_enabled_bit = 7;

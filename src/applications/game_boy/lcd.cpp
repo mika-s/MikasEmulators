@@ -24,7 +24,10 @@ void Lcd::increment_scanline()
 {
     ++m_ly;
 
-    m_lcd_status.m_is_lyc_eq_ly = m_ly == m_lyc; // TODO: interrupt if true
+    m_lcd_status.m_is_lyc_eq_ly = m_ly == m_lyc;
+    if (m_lcd_status.m_is_lyc_eq_ly) {
+        notify_interrupt_observers(LCD);
+    }
 }
 
 void Lcd::reset_scanline()

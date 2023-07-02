@@ -18,7 +18,7 @@ void LcdControl::update_from_memory(u8 value)
     m_is_bg_and_window_enabled = is_bit_set(value, s_bg_and_window_enable_bit);
 }
 
-u8 LcdControl::to_u8()
+u8 LcdControl::to_u8() const
 {
     u8 value = 0;
 

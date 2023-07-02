@@ -33,7 +33,7 @@ void LcdStatus::update_from_memory(u8 value)
     m_is_lyc_eq_ly_stat_interrupt_source = is_bit_set(value, s_lyc_eq_ly_stat_interrupt_source_bit);
 }
 
-u8 LcdStatus::to_u8()
+u8 LcdStatus::to_u8() const
 {
     u8 value = 0;
 

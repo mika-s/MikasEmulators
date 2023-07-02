@@ -23,7 +23,7 @@ public:
 
     void update_from_memory(u8 value);
 
-    u8 to_u8();
+    u8 to_u8() const;
 
 private:
     static unsigned int const s_lyc_eq_ly_stat_interrupt_source_bit = 6;
