@@ -9,6 +9,7 @@
 #include "synacor_application_session.h"
 #include "tui_terminal.h"
 #include <cassert>
+#include <fmt/core.h>
 #include <iosfwd>
 #include <vector>
 
@@ -21,7 +22,7 @@ namespace emu::applications::synacor {
 using emu::gui::GuiType;
 using emu::synacor::Data;
 using emu::util::byte::to_u16;
-using emu::util::file::read_file;
+using emu::util::file::read_file_into_vector;
 using emu::util::string::split;
 
 SynacorApplication::SynacorApplication(const GuiType gui_type)
@@ -38,6 +39,9 @@ SynacorApplication::SynacorApplication(const GuiType gui_type)
         m_input = std::make_shared<InputImgui>();
         m_is_starting_paused = false;
     }
+
+    m_memory_mapped_io = std::make_shared<MemoryMapForSynacorApplication>(m_memory);
+    m_memory.attach_memory_mapper(m_memory_mapped_io);
 }
 
 std::unique_ptr<Session> SynacorApplication::new_session()
@@ -55,30 +59,23 @@ std::unique_ptr<Session> SynacorApplication::new_session()
 void SynacorApplication::load_file()
 {
     m_loaded_file = "roms/trivial/synacor/challenge.bin";
-
-    const std::stringstream file_content = read_file(m_loaded_file);
-    m_file_content = file_content.str();
-    std::vector<Data> remaining_memory;
-
-//    if (code.size() < s_memory_size) {
-//        remaining_memory = create_work_ram(s_memory_size - code.size());
-//    }
-
-//    assert(code.size() + remaining_memory.size() == s_memory_size);
-
-//    m_memory.add(code);
-    m_memory.add(remaining_memory);
-}
-
-std::vector<Data> SynacorApplication::create_work_ram(std::size_t size)
-{
-    std::vector<Data> work_ram;
-
-    work_ram.reserve(size);
-    for (std::size_t i = 0; i < size; ++i) {
-        work_ram.emplace_back(0);
+    std::vector<u8> as_u8 = read_file_into_vector(m_loaded_file);
+    std::vector<u16> as_u16;
+    for (unsigned int i = 0; i < as_u8.size(); i += 2) {
+        as_u16.push_back(to_u16(as_u8[i + 1], as_u8[i]));
     }
 
-    return work_ram;
+    std::vector<Data> as_Data;
+    for (u16 value : as_u16) {
+        if (value >= s_max_value_in_file) {
+            throw std::runtime_error(
+                fmt::format("Value too large in {}. Max value is {}, but was {}", m_loaded_file, s_max_value_in_file, value));
+        } else {
+            as_Data.emplace_back(value);
+        }
+    }
+
+    m_memory.add(as_Data);
 }
+
 }

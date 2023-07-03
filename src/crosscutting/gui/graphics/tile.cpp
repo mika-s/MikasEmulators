@@ -53,7 +53,7 @@ void Tile::map_to_framebuffer(
     }
 }
 
-std::size_t Tile::size()
+std::size_t Tile::size() const
 {
     return m_width;
 }

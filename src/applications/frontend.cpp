@@ -21,12 +21,14 @@
 #include "applications/zxspectrum_48k/zxspectrum_48k.h"
 #include "chips/8080/disassembler.h"
 #include "chips/lr35902/disassembler.h"
+#include "chips/trivial/synacor/disassembler.h"
 #include "chips/z80/disassembler.h"
 #include "crosscutting/exceptions/invalid_program_arguments_exception.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/misc/emulator.h"
 #include "crosscutting/misc/session.h"
 #include "crosscutting/typedefs.h"
+#include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/file_util.h"
 #include "crosscutting/util/string_util.h"
 #include "doctest.h"
@@ -41,6 +43,7 @@
 namespace emu::applications {
 
 using emu::exceptions::InvalidProgramArgumentsException;
+using emu::util::byte::to_u16;
 using emu::util::string::create_padding;
 
 void Frontend::run(Options const& options)
@@ -180,6 +183,33 @@ void Frontend::disassemble(Options const& options)
             }
 
             z80::Disassembler disassembler(memory, std::cout);
+            disassembler.disassemble();
+        } else if (cpu == "Synacor") {
+            if (options.options().contains("format")) {
+                throw InvalidProgramArgumentsException(
+                    fmt::format("Unrecognized format: {}", options.options().at("format")[0]),
+                    Frontend::print_disassemble_usage);
+            }
+
+            std::vector<u8> as_u8 = read_file_into_vector(file_path);
+            std::vector<u16> as_u16;
+            for (unsigned int i = 0; i < as_u8.size(); i += 2) {
+                as_u16.push_back(to_u16(as_u8[i + 1], as_u8[i]));
+            }
+
+            std::vector<emu::synacor::Data> as_Data;
+            for (u16 value : as_u16) {
+                if (value >= 32776) {
+                    throw std::runtime_error(
+                        fmt::format("Value too large in {}. Max value is {}, but was {}", file_path, 32776, value));
+                } else {
+                    as_Data.emplace_back(value);
+                }
+            }
+            EmulatorMemory<emu::synacor::Address, emu::synacor::Data> memory;
+            memory.add(as_Data);
+
+            emu::synacor::Disassembler disassembler(memory, std::cout);
             disassembler.disassemble();
         } else {
             throw InvalidProgramArgumentsException(
@@ -339,7 +369,7 @@ std::unique_ptr<Emulator> Frontend::choose_emulator(std::string const& program, 
                 "You have to specify the path of the file to run",
                 lmc::print_usage);
         }
-    } else if (program == "synacor") {
+    } else if (program == "synacor_application") {
         return std::make_unique<synacor::SynacorApplication>(
             options.gui_type(synacor::print_usage));
     } else {

@@ -26,7 +26,7 @@ class SpaceInvaders : public Emulator {
 public:
     SpaceInvaders(
         Settings const& settings,
-        const GuiType gui_type);
+        GuiType gui_type);
 
     std::unique_ptr<Session> new_session() override;
 

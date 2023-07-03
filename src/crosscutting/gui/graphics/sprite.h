@@ -29,7 +29,7 @@ public:
 
     void map_to_framebuffer(Framebuffer& framebuffer, int origin_row, int origin_col);
 
-    std::size_t size();
+    std::size_t size() const;
 
 private:
     std::vector<std::vector<Color>> m_values;

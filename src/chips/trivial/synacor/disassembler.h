@@ -20,6 +20,7 @@ public:
 
 private:
     EmulatorMemory<Address, Data>& m_memory;
+    std::size_t m_memory_size;
     Address m_pc;
     Data m_opcode { 0 };
     std::ostream& m_ostream;

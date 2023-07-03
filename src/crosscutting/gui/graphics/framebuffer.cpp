@@ -61,12 +61,12 @@ std::vector<u32> Framebuffer::to_output_vector()
     return output;
 }
 
-unsigned int Framebuffer::height()
+unsigned int Framebuffer::height() const
 {
     return m_height;
 }
 
-unsigned int Framebuffer::width()
+unsigned int Framebuffer::width() const
 {
     return m_width;
 }

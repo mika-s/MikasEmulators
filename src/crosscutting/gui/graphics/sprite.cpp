@@ -74,7 +74,7 @@ Color Sprite::get(std::size_t row, std::size_t col)
     return m_values[row][col];
 }
 
-std::size_t Sprite::size()
+std::size_t Sprite::size() const
 {
     return m_width;
 }

@@ -244,20 +244,22 @@ std::vector<Data> SynacorApplicationSession::memory()
 
 std::vector<DisassembledLine<Address, 16>> SynacorApplicationSession::disassemble_program()
 {
-    std::stringstream ss;
-    Disassembler disassembler(m_memory, ss);
-    disassembler.disassemble();
+//    std::stringstream ss;
+//    Disassembler disassembler(m_memory, ss);
+//    disassembler.disassemble();
+//
+//    std::vector<std::string> disassembled_program = split(ss, "\n");
+//
+//    disassembled_program.erase(
+//        std::remove_if(disassembled_program.begin(), disassembled_program.end(), [](std::string const& s) { return s.empty(); }));
+//
+//    std::vector<DisassembledLine<Address, 16>> lines;
+//    std::transform(disassembled_program.begin(), disassembled_program.end(), std::back_inserter(lines),
+//        [](std::string const& line) { return DisassembledLine<Address, 16>(line); });
 
-    std::vector<std::string> disassembled_program = split(ss, "\n");
+//    return lines;
 
-    disassembled_program.erase(
-        std::remove_if(disassembled_program.begin(), disassembled_program.end(), [](std::string const& s) { return s.empty(); }));
-
-    std::vector<DisassembledLine<Address, 16>> lines;
-    std::transform(disassembled_program.begin(), disassembled_program.end(), std::back_inserter(lines),
-        [](std::string const& line) { return DisassembledLine<Address, 16>(line); });
-
-    return lines;
+    return {};
 }
 
 }

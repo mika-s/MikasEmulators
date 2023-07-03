@@ -14,6 +14,7 @@ using emu::util::string::hexify_wo_0x;
 
 Disassembler::Disassembler(EmulatorMemory<Address, Data>& memory, std::ostream& ostream)
     : m_memory(memory)
+    , m_memory_size(memory.size())
     , m_pc(0)
     , m_ostream(ostream)
 {
@@ -21,7 +22,7 @@ Disassembler::Disassembler(EmulatorMemory<Address, Data>& memory, std::ostream& 
 
 void Disassembler::disassemble()
 {
-    while (m_pc < Address(99)) {
+    while (m_pc.underlying() < m_memory_size) {
         print_next_instruction();
     }
     print_next_instruction();
@@ -80,7 +81,7 @@ void Disassembler::print_next_instruction()
         print_not(m_ostream);
         break;
     case RMEM:
-        print_rmem(m_ostream);
+        print_rmem(m_ostream, Address(get_next_value()), Address(get_next_value()));
         break;
     case WMEM:
         print_wmem(m_ostream);
@@ -92,7 +93,7 @@ void Disassembler::print_next_instruction()
         print_ret(m_ostream);
         break;
     case OUT:
-        print_out(m_ostream);
+        print_out(m_ostream, get_next_value());
         break;
     case IN:
         print_in(m_ostream);

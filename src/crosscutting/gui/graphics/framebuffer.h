@@ -21,9 +21,9 @@ public:
 
     std::vector<u32> to_output_vector();
 
-    unsigned int height();
+    unsigned int height() const;
 
-    unsigned int width();
+    unsigned int width() const;
 
 private:
     unsigned int m_height;

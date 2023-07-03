@@ -89,6 +89,7 @@ set(SOURCES_APPLICATIONS_CPP
 
         synacor_application/gui_imgui.cpp
         synacor_application/input_imgui.cpp
+        synacor_application/memory_map_for_synacor_application.cpp
         synacor_application/synacor_application.cpp
         synacor_application/synacor_application_session.cpp
         synacor_application/tui_terminal.cpp
@@ -240,6 +241,7 @@ set(SOURCES_APPLICATIONS_H
         synacor_application/ui.h
         synacor_application/gui_imgui.h
         synacor_application/input_imgui.h
+        synacor_application/memory_map_for_synacor_application.h
         synacor_application/synacor_application.h
         synacor_application/synacor_application_session.h
         synacor_application/tui_terminal.h

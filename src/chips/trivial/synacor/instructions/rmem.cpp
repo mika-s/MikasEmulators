@@ -8,21 +8,25 @@ namespace emu::synacor {
 using emu::memory::EmulatorMemory;
 
 /**
- * Add value in memory to the accumulator
+ * Read memory at address <b> and write it to <a>
  * <ul>
- *   <li>Size: 2</li>
+ *   <li>Size: 3</li>
  * </ul>
  *
- * @param acc_reg is the accumulator register, which will be mutated
- * @param address is the address to the value in memory
+ * @param a is the address to write to
+ * @param b is the address to read from
  * @param memory is the memory
  */
-void rmem()
+void rmem(Address a, Address b, EmulatorMemory<Address, Data>& memory)
 {
+    memory.write(a, memory.read(b));
 }
 
-void print_rmem(std::ostream& ostream)
+void print_rmem(std::ostream& ostream, Address a, Address b)
 {
-    ostream << "RMEM ";
+    ostream << "RMEM "
+            << a.underlying()
+            << " "
+            << b.underlying();
 }
 }

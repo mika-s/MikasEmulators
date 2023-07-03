@@ -131,7 +131,7 @@ void Cpu::next_instruction()
         not_();
         break;
     case RMEM:
-        rmem();
+        rmem(Address(get_next_value()), Address(get_next_value()), m_memory);
         break;
     case WMEM:
         wmem();
@@ -143,7 +143,7 @@ void Cpu::next_instruction()
         ret();
         break;
     case OUT:
-        out();
+        out(get_next_value());
         break;
     case IN:
         in();

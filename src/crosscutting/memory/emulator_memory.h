@@ -16,7 +16,7 @@ public:
 
     void add(std::vector<D> const& to_add)
     {
-        std::size_t current_size = m_memory.size();
+        const std::size_t current_size = m_memory.size();
 
         for (std::size_t i = current_size, j = 0; i < current_size + to_add.size(); ++i, ++j) {
             m_memory.push_back(to_add[j]);

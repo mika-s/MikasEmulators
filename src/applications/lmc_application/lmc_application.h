@@ -50,6 +50,6 @@ private:
 
     void load_file(std::string const& file);
 
-    std::vector<Data> create_work_ram(std::size_t size);
+    static std::vector<Data> create_work_ram(std::size_t size);
 };
 }
