@@ -146,7 +146,7 @@ void Cpu::next_instruction()
         out(get_next_value());
         break;
     case IN:
-        in();
+        in(Address(get_next_value()), m_memory);
         break;
     case NOOP:
         noop();

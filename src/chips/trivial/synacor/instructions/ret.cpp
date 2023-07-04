@@ -20,6 +20,6 @@ void ret()
 
 void print_ret(std::ostream& ostream)
 {
-    ostream << "RET ";
+    ostream << "RET";
 }
 }

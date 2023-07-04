@@ -1,11 +1,13 @@
 #include "chips/trivial/synacor/usings.h"
 #include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/misc/uinteger.h"
+#include "crosscutting/util/string_util.h"
 #include <iostream>
 
 namespace emu::synacor {
 
 using emu::memory::EmulatorMemory;
+using emu::util::string::hexify;
 
 /**
  * Add value in memory to the accumulator
@@ -21,8 +23,11 @@ void jf()
 {
 }
 
-void print_jf(std::ostream& ostream)
+void print_jf(std::ostream& ostream, Data a, Address b)
 {
-    ostream << "JF ";
+    ostream << "JF "
+            << hexify(static_cast<u16>(a.underlying()))
+            << " "
+            << hexify(static_cast<u16>(b.underlying()));
 }
 }

@@ -30,7 +30,7 @@ void Disassembler::disassemble()
 
 void Disassembler::print_next_instruction()
 {
-    m_ostream << m_pc << "\t\t";
+    m_ostream << hexify_wo_0x(static_cast<u16>(m_pc.underlying())) << "\t\t";
 
     m_opcode = get_next_value();
 
@@ -39,55 +39,55 @@ void Disassembler::print_next_instruction()
         print_halt(m_ostream);
         break;
     case SET:
-        print_set(m_ostream, get_next_value(), get_next_value()); // TODO
+        print_set(m_ostream, get_next_value(), get_next_value());
         break;
     case PUSH:
-        print_push(m_ostream);
+        print_push(m_ostream, Address(get_next_value()));
         break;
     case POP:
-        print_pop(m_ostream);
+        print_pop(m_ostream, Address(get_next_value()));
         break;
     case EQ:
-        print_eq(m_ostream);
+        print_eq(m_ostream, Address(get_next_value()), get_next_value(), get_next_value());
         break;
     case GT:
-        print_gt(m_ostream);
+        print_gt(m_ostream, Address(get_next_value()), get_next_value(), get_next_value());
         break;
     case JMP:
-        print_jmp(m_ostream);
+        print_jmp(m_ostream, Address(get_next_value()));
         break;
     case JT:
-        print_jt(m_ostream);
+        print_jt(m_ostream, get_next_value(), Address(get_next_value()));
         break;
     case JF:
-        print_jf(m_ostream);
+        print_jf(m_ostream, get_next_value(), Address(get_next_value()));
         break;
     case ADD:
-        print_add(m_ostream);
+        print_add(m_ostream, Address(get_next_value()), get_next_value(), get_next_value());
         break;
     case MULT:
-        print_mult(m_ostream);
+        print_mult(m_ostream, Address(get_next_value()), get_next_value(), get_next_value());
         break;
     case MOD:
-        print_mod(m_ostream);
+        print_mod(m_ostream, Address(get_next_value()), get_next_value(), get_next_value());
         break;
     case AND:
-        print_and(m_ostream);
+        print_and(m_ostream, Address(get_next_value()), get_next_value(), get_next_value());
         break;
     case OR:
-        print_or(m_ostream);
+        print_or(m_ostream, Address(get_next_value()), get_next_value(), get_next_value());
         break;
     case NOT:
-        print_not(m_ostream);
+        print_not(m_ostream, Address(get_next_value()), get_next_value());
         break;
     case RMEM:
         print_rmem(m_ostream, Address(get_next_value()), Address(get_next_value()));
         break;
     case WMEM:
-        print_wmem(m_ostream);
+        print_wmem(m_ostream, Address(get_next_value()), Address(get_next_value()));
         break;
     case CALL:
-        print_call(m_ostream);
+        print_call(m_ostream, Address(get_next_value()));
         break;
     case RET:
         print_ret(m_ostream);
@@ -96,7 +96,7 @@ void Disassembler::print_next_instruction()
         print_out(m_ostream, get_next_value());
         break;
     case IN:
-        print_in(m_ostream);
+        print_in(m_ostream, Address(get_next_value()));
         break;
     case NOOP:
         print_noop(m_ostream);
