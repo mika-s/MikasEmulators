@@ -8,26 +8,43 @@ namespace emu::synacor {
 using emu::util::string::hexify;
 
 /**
- * Branch if positive
+ * Store into <a> the remainder of <b> divided by <c>
  * <ul>
- *   <li>Size: 2</li>
+ *   <li>Size: 4</li>
  * </ul>
  *
- * @param pc is the program counter, which will be mutated
- * @param address is the address to the value in memory
- * @param flag_reg is the flag register
+ * @param a is the program counter, which will be mutated
+ * @param b is the address to the value in memory
+ * @param c is the flag register
  */
 void mod()
 {
 }
 
-void print_mod(std::ostream& ostream, Address a, Data b, Data c)
+void print_mod(std::ostream& ostream, RawData a, RawData b, RawData c)
 {
-    ostream << "MOD "
-            << hexify(static_cast<u16>(a.underlying()))
-            << " "
-            << hexify(static_cast<u16>(b.underlying()))
-            << " "
-            << hexify(static_cast<u16>(c.underlying()));
+    ostream << "MOD ";
+
+    if (a >= RawData(32768)) {
+        ostream << "r" << static_cast<u16>(Data(a.underlying()).underlying());
+    } else {
+        ostream << hexify(static_cast<u16>(a.underlying()));
+    }
+
+    ostream << " ";
+
+    if (b >= RawData(32768)) {
+        ostream << "r" << static_cast<u16>(Data(b.underlying()).underlying());
+    } else {
+        ostream << hexify(static_cast<u16>(b.underlying()));
+    }
+
+    ostream << " ";
+
+    if (c >= RawData(32768)) {
+        ostream << "r" << static_cast<u16>(Data(c.underlying()).underlying());
+    } else {
+        ostream << hexify(static_cast<u16>(c.underlying()));
+    }
 }
 }

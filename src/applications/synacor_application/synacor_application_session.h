@@ -54,6 +54,7 @@ using emu::synacor::Cpu;
 using emu::synacor::Data;
 using emu::synacor::InObserver;
 using emu::synacor::OutObserver;
+using emu::synacor::RawData;
 
 class SynacorApplicationSession
     : public Session
@@ -68,7 +69,7 @@ public:
         std::shared_ptr<Input> input,
         std::string loaded_file,
         std::string file_content,
-        EmulatorMemory<Address, Data> memory);
+        EmulatorMemory<Address, RawData> memory);
 
     ~SynacorApplicationSession() override;
 
@@ -102,7 +103,7 @@ private:
     std::shared_ptr<Ui> m_ui;
     std::shared_ptr<Input> m_input;
     std::shared_ptr<Cpu> m_cpu;
-    EmulatorMemory<Address, Data> m_memory;
+    EmulatorMemory<Address, RawData> m_memory;
     std::string m_loaded_file;
     std::string m_file_content;
     std::shared_ptr<Logger> m_logger;
@@ -117,9 +118,7 @@ private:
 
     void setup_debugging();
 
-    std::vector<Data> memory();
-
-    void assemble_and_load_request();
+    std::vector<RawData> memory();
 
     void input_from_terminal(Data input);
 

@@ -65,17 +65,17 @@ void SynacorApplication::load_file()
         as_u16.push_back(to_u16(as_u8[i + 1], as_u8[i]));
     }
 
-    std::vector<Data> as_Data;
+    std::vector<RawData> as_RawData;
     for (u16 value : as_u16) {
         if (value >= s_max_value_in_file) {
             throw std::runtime_error(
                 fmt::format("Value too large in {}. Max value is {}, but was {}", m_loaded_file, s_max_value_in_file, value));
         } else {
-            as_Data.emplace_back(value);
+            as_RawData.emplace_back(value);
         }
     }
 
-    m_memory.add(as_Data);
+    m_memory.add(as_RawData);
 }
 
 }

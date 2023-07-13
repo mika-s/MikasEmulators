@@ -23,11 +23,22 @@ void wmem()
 {
 }
 
-void print_wmem(std::ostream& ostream, Address a, Address b)
+void print_wmem(std::ostream& ostream, RawData a, RawData b)
 {
-    ostream << "WMEM "
-            << hexify(static_cast<u16>(a.underlying()))
-            << " "
-            << hexify(static_cast<u16>(b.underlying()));
+    ostream << "WMEM ";
+
+    if (a >= RawData(32768)) {
+        ostream << "r" << static_cast<u16>(Data(a.underlying()).underlying());
+    } else {
+        ostream << hexify(static_cast<u16>(a.underlying()));
+    }
+
+    ostream << " ";
+
+    if (b >= RawData(32768)) {
+        ostream << "r" << static_cast<u16>(Data(b.underlying()).underlying());
+    } else {
+        ostream << hexify(static_cast<u16>(b.underlying()));
+    }
 }
 }

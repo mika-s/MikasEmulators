@@ -4,7 +4,8 @@
 
 namespace emu::synacor {
 
-using Address = emu::misc::UInteger<32767>;
-using Data = emu::misc::UInteger<32767>;
+using RawData = emu::misc::UInteger<32776>;
+using Address = emu::misc::UInteger<32776>;
+using Data = emu::misc::UInteger<32768>;
 
 }

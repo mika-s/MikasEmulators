@@ -10,26 +10,44 @@ using emu::memory::EmulatorMemory;
 using emu::util::string::hexify;
 
 /**
- * Add value in memory to the accumulator
+ * Set <a> to 1 if <b> is equal to <c>; set it to 0 otherwise
  * <ul>
- *   <li>Size: 2</li>
+ *   <li>Size: 4</li>
  * </ul>
  *
- * @param acc_reg is the accumulator register, which will be mutated
- * @param address is the address to the value in memory
- * @param memory is the memory
+ * @param a is the value set to 0 or 1, which will be mutated
+ * @param b is the first operand to check for equality
+ * @param c is the second operand to check for equality
  */
-void eq()
+void eq(RawData& a, RawData b, RawData c)
 {
+    a = b == c ? RawData(1) : RawData(0);
 }
 
-void print_eq(std::ostream& ostream, Address a, Data b, Data c)
+void print_eq(std::ostream& ostream, RawData a, RawData b, RawData c)
 {
-    ostream << "EQ "
-            << hexify(static_cast<u16>(a.underlying()))
-            << " "
-            << hexify(static_cast<u16>(b.underlying()))
-            << " "
-            << hexify(static_cast<u16>(c.underlying()));
+    ostream << "EQ ";
+
+    if (a >= RawData(32768)) {
+        ostream << "r" << static_cast<u16>(Data(a.underlying()).underlying());
+    } else {
+        ostream << hexify(static_cast<u16>(a.underlying()));
+    }
+
+    ostream << " ";
+
+    if (b >= RawData(32768)) {
+        ostream << "r" << static_cast<u16>(Data(b.underlying()).underlying());
+    } else {
+        ostream << hexify(static_cast<u16>(b.underlying()));
+    }
+
+    ostream << " ";
+
+    if (c >= RawData(32768)) {
+        ostream << "r" << static_cast<u16>(Data(c.underlying()).underlying());
+    } else {
+        ostream << hexify(static_cast<u16>(c.underlying()));
+    }
 }
 }

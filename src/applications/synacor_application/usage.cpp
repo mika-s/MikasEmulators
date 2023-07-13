@@ -22,7 +22,7 @@ const std::vector<std::pair<std::string, std::string>> examples = {
 void print_usage(std::string const& program_name)
 {
     std::cout << "\nUsage: ./" << program_name << " run synacor_application [FLAGS] <file>\n\n";
-    std::cout << "Run a LMC program\n\n";
+    std::cout << "Run a Synacor program\n\n";
 
     std::cout << "Flags:\n";
 

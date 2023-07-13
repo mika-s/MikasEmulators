@@ -1,0 +1,23 @@
+#!/usr/bin/env python3
+
+import os
+import sys
+import shlex
+
+scriptDir = os.path.dirname(os.path.realpath(__file__))
+
+args = list(map(shlex.quote, sys.argv[1:]))
+
+if "--build" not in args:
+  args.insert(0, "$cmakeFlags")
+
+cwd = os.getcwd()
+cmd = 'cd ' + shlex.quote(cwd) + ' && cmake ' + ' '.join(args)
+
+os.chdir(scriptDir)
+os.execvp("nix-shell", [
+  'nix-shell',
+  '--pure',
+  '--run', cmd
+  ])
+

@@ -28,7 +28,7 @@ using emu::memory::NextWord;
 class Cpu {
 public:
     Cpu(
-        EmulatorMemory<Address, Data>& memory,
+        EmulatorMemory<Address, RawData>& memory,
         Address initial_pc);
 
     ~Cpu();
@@ -51,23 +51,7 @@ public:
 
     void remove_in_observer(InObserver* observer);
 
-    EmulatorMemory<Address, Data>& memory();
-
-    [[nodiscard]] Data r0() const;
-
-    [[nodiscard]] Data r1() const;
-
-    [[nodiscard]] Data r2() const;
-
-    [[nodiscard]] Data r3() const;
-
-    [[nodiscard]] Data r4() const;
-
-    [[nodiscard]] Data r5() const;
-
-    [[nodiscard]] Data r6() const;
-
-    [[nodiscard]] Data r7() const;
+    EmulatorMemory<Address, RawData>& memory();
 
     [[nodiscard]] Address pc() const;
 
@@ -76,24 +60,16 @@ public:
 private:
     bool m_is_halted;
 
-    EmulatorMemory<Address, Data>& m_memory;
+    EmulatorMemory<Address, RawData>& m_memory;
 
     Data m_opcode { 0 };
     Address m_pc;
-    Data m_r0 { 0 };
-    Data m_r1 { 0 };
-    Data m_r2 { 0 };
-    Data m_r3 { 0 };
-    Data m_r4 { 0 };
-    Data m_r5 { 0 };
-    Data m_r6 { 0 };
-    Data m_r7 { 0 };
     std::stack<Data> m_stack;
 
     std::vector<OutObserver*> m_out_observers;
     std::vector<InObserver*> m_in_observers;
 
-    Data get_next_value();
+    RawData get_next_value();
 
     void notify_out_observers(Data acc_reg);
 

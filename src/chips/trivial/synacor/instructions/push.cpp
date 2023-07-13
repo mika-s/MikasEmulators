@@ -3,6 +3,7 @@
 #include "crosscutting/misc/uinteger.h"
 #include "crosscutting/util/string_util.h"
 #include <iostream>
+#include <stack>
 
 namespace emu::synacor {
 
@@ -10,22 +11,27 @@ using emu::memory::EmulatorMemory;
 using emu::util::string::hexify;
 
 /**
- * Add value in memory to the accumulator
+ * Push <a> onto the stack
  * <ul>
  *   <li>Size: 2</li>
  * </ul>
  *
- * @param acc_reg is the accumulator register, which will be mutated
- * @param address is the address to the value in memory
- * @param memory is the memory
+ * @param stack is the stack, which will be mutated
+ * @param a is the value to push onto the stack
  */
-void push()
+void push(std::stack<Data>& stack, RawData a)
 {
+    stack.emplace(a.underlying());
 }
 
-void print_push(std::ostream& ostream, Address a)
+void print_push(std::ostream& ostream, RawData a)
 {
-    ostream << "PUSH "
-            << hexify(static_cast<u16>(a.underlying()));
+    ostream << "PUSH ";
+
+    if (a >= RawData(32768)) {
+        ostream << "r" << static_cast<u16>(Data(a.underlying()).underlying());
+    } else {
+        ostream << hexify(static_cast<u16>(a.underlying()));
+    }
 }
 }

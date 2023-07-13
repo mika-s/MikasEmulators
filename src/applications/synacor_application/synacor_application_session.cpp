@@ -37,6 +37,7 @@ using emu::debugger::RegisterDebugContainer;
 using emu::synacor::Address;
 using emu::synacor::Data;
 using emu::synacor::Disassembler;
+using emu::synacor::RawData;
 using emu::util::byte::to_u16;
 using emu::util::string::split;
 
@@ -47,7 +48,7 @@ SynacorApplicationSession::SynacorApplicationSession(
     std::shared_ptr<Input> input,
     std::string loaded_file,
     std::string file_content,
-    EmulatorMemory<Address, Data> memory)
+    EmulatorMemory<Address, RawData> memory)
     : m_is_only_run_once(is_only_run_once)
     , m_ui(std::move(gui))
     , m_input(std::move(input))
@@ -155,40 +156,6 @@ std::vector<Data> create_work_ram(std::size_t size)
     return work_ram;
 }
 
-void SynacorApplicationSession::assemble_and_load_request()
-{
-    m_logger->info("Trying to assemble and load source code...");
-
-    m_cpu->reset_state();
-    m_ui->clear_terminal();
-    m_state_context->change_state(m_state_context->paused_state());
-
-    try {
-//        std::stringstream ss(m_file_content);
-//        const std::vector<Data> code = Assembler::assemble(ss);
-//        std::vector<Data> remaining_memory;
-
-//        if (code.size() < m_memory.size()) {
-//            remaining_memory = create_work_ram(m_memory.size() - code.size());
-//        }
-//
-//        if (code.size() + remaining_memory.size() == m_memory.size()) {
-//            m_memory.clear();
-//            m_memory.add(code);
-//            m_memory.add(remaining_memory);
-//            m_logger->info("Ok");
-//        } else {
-//            m_memory.clear();
-//            m_memory.add({ code.begin(), code.begin() + s_program_size });
-//            m_logger->info("The program is too large: truncating it");
-//        }
-    } catch (std::exception& ex) {
-        m_logger->info(ex.what());
-    }
-
-    m_debug_container->add_disassembled_program(disassemble_program());
-}
-
 void SynacorApplicationSession::input_from_terminal(Data input)
 {
     m_state_context->m_is_awaiting_input = false;
@@ -219,16 +186,16 @@ void SynacorApplicationSession::setup_cpu()
 void SynacorApplicationSession::setup_debugging()
 {
     m_debug_container = std::make_shared<DebugContainer<Address, Data, 16>>();
-    m_debug_container->add_register(RegisterDebugContainer<Data>("R0", [&]() { return m_cpu->r0(); }));
-    m_debug_container->add_register(RegisterDebugContainer<Data>("R1", [&]() { return m_cpu->r1(); }));
-    m_debug_container->add_register(RegisterDebugContainer<Data>("R2", [&]() { return m_cpu->r2(); }));
-    m_debug_container->add_register(RegisterDebugContainer<Data>("R3", [&]() { return m_cpu->r3(); }));
-    m_debug_container->add_register(RegisterDebugContainer<Data>("R4", [&]() { return m_cpu->r4(); }));
-    m_debug_container->add_register(RegisterDebugContainer<Data>("R5", [&]() { return m_cpu->r5(); }));
-    m_debug_container->add_register(RegisterDebugContainer<Data>("R6", [&]() { return m_cpu->r6(); }));
-    m_debug_container->add_register(RegisterDebugContainer<Data>("R7", [&]() { return m_cpu->r7(); }));
+    //    m_debug_container->add_register(RegisterDebugContainer<Data>("R0", [&]() { return m_cpu->r0(); }));
+    //    m_debug_container->add_register(RegisterDebugContainer<Data>("R1", [&]() { return m_cpu->r1(); }));
+    //    m_debug_container->add_register(RegisterDebugContainer<Data>("R2", [&]() { return m_cpu->r2(); }));
+    //    m_debug_container->add_register(RegisterDebugContainer<Data>("R3", [&]() { return m_cpu->r3(); }));
+    //    m_debug_container->add_register(RegisterDebugContainer<Data>("R4", [&]() { return m_cpu->r4(); }));
+    //    m_debug_container->add_register(RegisterDebugContainer<Data>("R5", [&]() { return m_cpu->r5(); }));
+    //    m_debug_container->add_register(RegisterDebugContainer<Data>("R6", [&]() { return m_cpu->r6(); }));
+    //    m_debug_container->add_register(RegisterDebugContainer<Data>("R7", [&]() { return m_cpu->r7(); }));
     m_debug_container->add_pc([&]() { return m_cpu->pc(); });
-    m_debug_container->add_memory(MemoryDebugContainer<Data>([&]() { return memory(); }));
+//    m_debug_container->add_memory(MemoryDebugContainer<Data>([&]() { return memory(); }));
     m_debug_container->add_disassembled_program(disassemble_program());
     m_debug_container->add_file_content([&]() { return m_file_content; });
 
@@ -237,27 +204,27 @@ void SynacorApplicationSession::setup_debugging()
     m_ui->attach_logger(m_logger);
 }
 
-std::vector<Data> SynacorApplicationSession::memory()
+std::vector<RawData> SynacorApplicationSession::memory()
 {
     return { m_memory.begin(), m_memory.end() };
 }
 
 std::vector<DisassembledLine<Address, 16>> SynacorApplicationSession::disassemble_program()
 {
-//    std::stringstream ss;
-//    Disassembler disassembler(m_memory, ss);
-//    disassembler.disassemble();
-//
-//    std::vector<std::string> disassembled_program = split(ss, "\n");
-//
-//    disassembled_program.erase(
-//        std::remove_if(disassembled_program.begin(), disassembled_program.end(), [](std::string const& s) { return s.empty(); }));
-//
-//    std::vector<DisassembledLine<Address, 16>> lines;
-//    std::transform(disassembled_program.begin(), disassembled_program.end(), std::back_inserter(lines),
-//        [](std::string const& line) { return DisassembledLine<Address, 16>(line); });
+    //    std::stringstream ss;
+    //    Disassembler disassembler(m_memory, ss);
+    //    disassembler.disassemble();
+    //
+    //    std::vector<std::string> disassembled_program = split(ss, "\n");
+    //
+    //    disassembled_program.erase(
+    //        std::remove_if(disassembled_program.begin(), disassembled_program.end(), [](std::string const& s) { return s.empty(); }));
+    //
+    //    std::vector<DisassembledLine<Address, 16>> lines;
+    //    std::transform(disassembled_program.begin(), disassembled_program.end(), std::back_inserter(lines),
+    //        [](std::string const& line) { return DisassembledLine<Address, 16>(line); });
 
-//    return lines;
+    //    return lines;
 
     return {};
 }

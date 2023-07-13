@@ -30,6 +30,7 @@ using emu::misc::UInteger;
 using emu::synacor::Address;
 using emu::synacor::Cpu;
 using emu::synacor::Data;
+using emu::synacor::RawData;
 
 class SynacorApplication : public Emulator {
 public:
@@ -42,7 +43,7 @@ private:
 
     bool m_is_only_run_once;
     std::unique_ptr<Cpu> m_cpu;
-    EmulatorMemory<Address, Data> m_memory;
+    EmulatorMemory<Address, RawData> m_memory;
     std::shared_ptr<Ui> m_gui;
     std::shared_ptr<Input> m_input;
     std::shared_ptr<MemoryMapForSynacorApplication> m_memory_mapped_io;

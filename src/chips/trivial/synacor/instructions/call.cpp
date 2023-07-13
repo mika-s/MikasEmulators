@@ -10,7 +10,7 @@ using emu::memory::EmulatorMemory;
 using emu::util::string::hexify;
 
 /**
- * Add value in memory to the accumulator
+ * Write the address of the next instruction to the stack and jump to <a>
  * <ul>
  *   <li>Size: 2</li>
  * </ul>
@@ -23,9 +23,14 @@ void call()
 {
 }
 
-void print_call(std::ostream& ostream, Address a)
+void print_call(std::ostream& ostream, RawData a)
 {
-    ostream << "CALL "
-            << hexify(static_cast<u16>(a.underlying()));
+    ostream << "CALL ";
+
+    if (a >= RawData(32768)) {
+        ostream << "r" << static_cast<u16>(Data(a.underlying()).underlying());
+    } else {
+        ostream << hexify(static_cast<u16>(a.underlying()));
+    }
 }
 }

@@ -23,11 +23,22 @@ void not_()
 {
 }
 
-void print_not(std::ostream& ostream, Address a, Data b)
+void print_not(std::ostream& ostream, RawData a, RawData b)
 {
-    ostream << "NOT "
-            << hexify(static_cast<u16>(a.underlying()))
-            << " "
-            << hexify(static_cast<u16>(b.underlying()));
+    ostream << "ADD ";
+
+    if (a >= RawData(32768)) {
+        ostream << "r" << static_cast<u16>(Data(a.underlying()).underlying());
+    } else {
+        ostream << hexify(static_cast<u16>(a.underlying()));
+    }
+
+    ostream << " ";
+
+    if (b >= RawData(32768)) {
+        ostream << "r" << static_cast<u16>(Data(b.underlying()).underlying());
+    } else {
+        ostream << hexify(static_cast<u16>(b.underlying()));
+    }
 }
 }

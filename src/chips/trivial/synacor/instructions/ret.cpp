@@ -5,7 +5,7 @@
 namespace emu::synacor {
 
 /**
- * Branch if zero
+ * Remove the top element from the stack and jump to it; empty stack = halt
  * <ul>
  *   <li>Size: 2</li>
  * </ul>

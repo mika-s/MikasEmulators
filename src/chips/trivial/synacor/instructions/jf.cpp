@@ -10,24 +10,34 @@ using emu::memory::EmulatorMemory;
 using emu::util::string::hexify;
 
 /**
- * Add value in memory to the accumulator
+ * If <a> is zero, jump to <b>
  * <ul>
- *   <li>Size: 2</li>
+ *   <li>Size: 3</li>
  * </ul>
  *
- * @param acc_reg is the accumulator register, which will be mutated
- * @param address is the address to the value in memory
- * @param memory is the memory
+ * @param a is the accumulator register, which will be mutated
+ * @param b is the address to the value in memory
  */
 void jf()
 {
 }
 
-void print_jf(std::ostream& ostream, Data a, Address b)
+void print_jf(std::ostream& ostream, RawData a, RawData b)
 {
-    ostream << "JF "
-            << hexify(static_cast<u16>(a.underlying()))
-            << " "
-            << hexify(static_cast<u16>(b.underlying()));
+    ostream << "JF ";
+
+    if (a >= RawData(32768)) {
+        ostream << "r" << static_cast<u16>(Data(a.underlying()).underlying());
+    } else {
+        ostream << hexify(static_cast<u16>(a.underlying()));
+    }
+
+    ostream << " ";
+
+    if (b >= RawData(32768)) {
+        ostream << "r" << static_cast<u16>(Data(b.underlying()).underlying());
+    } else {
+        ostream << hexify(static_cast<u16>(b.underlying()));
+    }
 }
 }

@@ -20,7 +20,7 @@ using emu::util::byte::to_u16;
 using emu::util::string::hexify;
 
 Cpu::Cpu(
-    EmulatorMemory<Address, Data>& memory,
+    EmulatorMemory<Address, RawData>& memory,
     const Address initial_pc)
     : m_is_halted(false)
     , m_memory(memory)
@@ -60,7 +60,7 @@ void Cpu::remove_in_observer(InObserver* observer)
 
 bool Cpu::can_run_next_instruction() const
 {
-    return m_pc < Address(99) && !m_is_halted;
+    return m_pc < Address(m_memory.size()) && !m_is_halted;
 }
 
 void Cpu::reset_state()
@@ -80,7 +80,7 @@ void Cpu::stop()
 
 void Cpu::next_instruction()
 {
-    m_opcode = get_next_value();
+    m_opcode = Data(get_next_value().underlying());
 
     print_debug(m_opcode);
 
@@ -89,16 +89,16 @@ void Cpu::next_instruction()
         halt(m_is_halted);
         break;
     case SET:
-        set(m_r0, get_next_value()); // TODO
+        set(m_memory, get_next_value(), get_next_value());
         break;
     case PUSH:
-        push();
+        push(m_stack, get_next_value());
         break;
     case POP:
-        pop();
+//        pop(m_stack, m_r0); // TODO
         break;
     case EQ:
-        eq();
+//        eq(m_r0, get_next_value(), get_next_value()); // TODO
         break;
     case GT:
         gt();
@@ -143,7 +143,7 @@ void Cpu::next_instruction()
         ret();
         break;
     case OUT:
-        out(get_next_value());
+//        out(get_next_value());
         break;
     case IN:
         in(Address(get_next_value()), m_memory);
@@ -152,58 +152,18 @@ void Cpu::next_instruction()
         noop();
         break;
     default:
-        throw UnrecognizedOpcodeException(m_opcode.underlying());
+        throw UnrecognizedOpcodeException(static_cast<u16>(m_opcode.underlying()));
     }
 }
 
-Data Cpu::get_next_value()
+Address Cpu::get_next_value()
 {
     return m_memory.read(m_pc++);
 }
 
-EmulatorMemory<Address, Data>& Cpu::memory()
+EmulatorMemory<Address, RawData>& Cpu::memory()
 {
     return m_memory;
-}
-
-Data Cpu::r0() const
-{
-    return m_r0;
-}
-
-Data Cpu::r1() const
-{
-    return m_r1;
-}
-
-Data Cpu::r2() const
-{
-    return m_r2;
-}
-
-Data Cpu::r3() const
-{
-    return m_r3;
-}
-
-Data Cpu::r4() const
-{
-    return m_r4;
-}
-
-Data Cpu::r5() const
-{
-    return m_r5;
-}
-
-Data Cpu::r6() const
-{
-    return m_r6;
-}
-
-Data Cpu::r7() const
-{
-    return m_r7;
 }
 
 Address Cpu::pc() const
@@ -211,9 +171,9 @@ Address Cpu::pc() const
     return m_pc;
 }
 
-void Cpu::input(Data value)
+void Cpu::input([[maybe_unused]] Data value)
 {
-    m_r0 = value;
+//    m_r0 = value;
 }
 
 void Cpu::notify_out_observers(Data acc_reg)
@@ -235,14 +195,14 @@ void Cpu::print_debug([[maybe_unused]] Data opcode)
     if (false) {
         std::cout << "pc=" << m_pc
                   << ",op=" << opcode
-                  << ",r0=" << m_r0.underlying()
-                  << ",r1=" << m_r1.underlying()
-                  << ",r2=" << m_r2.underlying()
-                  << ",r3=" << m_r3.underlying()
-                  << ",r4=" << m_r4.underlying()
-                  << ",r5=" << m_r5.underlying()
-                  << ",r6=" << m_r6.underlying()
-                  << ",r7=" << m_r7.underlying()
+//                  << ",r0=" << m_r0.underlying()
+//                  << ",r1=" << m_r1.underlying()
+//                  << ",r2=" << m_r2.underlying()
+//                  << ",r3=" << m_r3.underlying()
+//                  << ",r4=" << m_r4.underlying()
+//                  << ",r5=" << m_r5.underlying()
+//                  << ",r6=" << m_r6.underlying()
+//                  << ",r7=" << m_r7.underlying()
                   << "\n"
                   << std::flush;
     }

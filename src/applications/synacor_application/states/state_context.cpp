@@ -37,7 +37,7 @@ StateContext::StateContext(
     std::shared_ptr<Ui> ui,
     std::shared_ptr<Input> input,
     std::shared_ptr<Cpu> cpu,
-    EmulatorMemory<Address, Data>& memory,
+    EmulatorMemory<Address, RawData>& memory,
     std::shared_ptr<Logger> logger,
     std::shared_ptr<Debugger<Address, 16>> debugger,
     std::shared_ptr<DebugContainer<Address, Data, 16>> debug_container,

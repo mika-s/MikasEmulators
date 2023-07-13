@@ -12,7 +12,7 @@ namespace emu::synacor {
 using emu::exceptions::UnrecognizedOpcodeException;
 using emu::util::string::hexify_wo_0x;
 
-Disassembler::Disassembler(EmulatorMemory<Address, Data>& memory, std::ostream& ostream)
+Disassembler::Disassembler(EmulatorMemory<Address, RawData>& memory, std::ostream& ostream)
     : m_memory(memory)
     , m_memory_size(memory.size())
     , m_pc(0)
@@ -30,85 +30,147 @@ void Disassembler::disassemble()
 
 void Disassembler::print_next_instruction()
 {
-    m_ostream << hexify_wo_0x(static_cast<u16>(m_pc.underlying())) << "\t\t";
+    m_ostream
+        << hexify_wo_0x(static_cast<u16>(m_pc.underlying()))
+        << " (" << hexify_wo_0x(static_cast<u16>(2 * m_pc.underlying()))
+        << ")\t\t";
 
-    m_opcode = get_next_value();
+    m_opcode = Data(get_next_value().underlying());
 
     switch (m_opcode.underlying()) {
     case HALT:
         print_halt(m_ostream);
         break;
-    case SET:
-        print_set(m_ostream, get_next_value(), get_next_value());
+    case SET: {
+        const RawData farg = get_next_value();
+        const RawData sarg = get_next_value();
+        print_set(m_ostream, farg, sarg);
         break;
-    case PUSH:
-        print_push(m_ostream, Address(get_next_value()));
+    }
+    case PUSH: {
+        const RawData farg = get_next_value();
+        print_push(m_ostream, farg);
         break;
-    case POP:
-        print_pop(m_ostream, Address(get_next_value()));
+    }
+    case POP: {
+        const RawData farg = get_next_value();
+        print_pop(m_ostream, farg);
         break;
-    case EQ:
-        print_eq(m_ostream, Address(get_next_value()), get_next_value(), get_next_value());
+    }
+    case EQ: {
+        const RawData farg = get_next_value();
+        const RawData sarg = get_next_value();
+        const RawData targ = get_next_value();
+        print_eq(m_ostream, farg, sarg, targ);
         break;
-    case GT:
-        print_gt(m_ostream, Address(get_next_value()), get_next_value(), get_next_value());
+    }
+    case GT: {
+        const RawData farg = get_next_value();
+        const RawData sarg = get_next_value();
+        const RawData targ = get_next_value();
+        print_gt(m_ostream, farg, sarg, targ);
         break;
-    case JMP:
-        print_jmp(m_ostream, Address(get_next_value()));
+    }
+    case JMP: {
+        const RawData farg = get_next_value();
+        print_jmp(m_ostream, farg);
         break;
-    case JT:
-        print_jt(m_ostream, get_next_value(), Address(get_next_value()));
+    }
+    case JT: {
+        const RawData farg = get_next_value();
+        const RawData sarg = get_next_value();
+        print_jt(m_ostream, farg, sarg);
         break;
-    case JF:
-        print_jf(m_ostream, get_next_value(), Address(get_next_value()));
+    }
+    case JF: {
+        const RawData farg = get_next_value();
+        const RawData sarg = get_next_value();
+        print_jf(m_ostream, farg, sarg);
         break;
-    case ADD:
-        print_add(m_ostream, Address(get_next_value()), get_next_value(), get_next_value());
+    }
+    case ADD: {
+        const RawData farg = get_next_value();
+        const RawData sarg = get_next_value();
+        const RawData targ = get_next_value();
+        print_add(m_ostream, farg, sarg, targ);
         break;
-    case MULT:
-        print_mult(m_ostream, Address(get_next_value()), get_next_value(), get_next_value());
+    }
+    case MULT: {
+        const RawData farg = get_next_value();
+        const RawData sarg = get_next_value();
+        const RawData targ = get_next_value();
+        print_mult(m_ostream, farg, sarg, targ);
         break;
-    case MOD:
-        print_mod(m_ostream, Address(get_next_value()), get_next_value(), get_next_value());
+    }
+    case MOD: {
+        const RawData farg = get_next_value();
+        const RawData sarg = get_next_value();
+        const RawData targ = get_next_value();
+        print_mod(m_ostream, farg, sarg, targ);
         break;
-    case AND:
-        print_and(m_ostream, Address(get_next_value()), get_next_value(), get_next_value());
+    }
+    case AND: {
+        const RawData farg = get_next_value();
+        const RawData sarg = get_next_value();
+        const RawData targ = get_next_value();
+        print_and(m_ostream, farg, sarg, targ);
         break;
-    case OR:
-        print_or(m_ostream, Address(get_next_value()), get_next_value(), get_next_value());
+    }
+    case OR: {
+        const RawData farg = get_next_value();
+        const RawData sarg = get_next_value();
+        const RawData targ = get_next_value();
+        print_or(m_ostream, farg, sarg, targ);
         break;
-    case NOT:
-        print_not(m_ostream, Address(get_next_value()), get_next_value());
+    }
+    case NOT: {
+        const RawData farg = get_next_value();
+        const RawData sarg = get_next_value();
+        print_not(m_ostream, farg, sarg);
         break;
-    case RMEM:
-        print_rmem(m_ostream, Address(get_next_value()), Address(get_next_value()));
+    }
+    case RMEM: {
+        const RawData farg = get_next_value();
+        const RawData sarg = get_next_value();
+        print_rmem(m_ostream, farg, sarg);
         break;
-    case WMEM:
-        print_wmem(m_ostream, Address(get_next_value()), Address(get_next_value()));
+    }
+    case WMEM: {
+        const RawData farg = get_next_value();
+        const RawData sarg = get_next_value();
+        print_wmem(m_ostream, farg, sarg);
         break;
-    case CALL:
-        print_call(m_ostream, Address(get_next_value()));
+    }
+    case CALL: {
+        const RawData farg = get_next_value();
+        print_call(m_ostream, farg);
         break;
+    }
     case RET:
         print_ret(m_ostream);
         break;
-    case OUT:
-        print_out(m_ostream, get_next_value());
+    case OUT: {
+        const RawData farg = get_next_value();
+        print_out(m_ostream, farg);
         break;
-    case IN:
-        print_in(m_ostream, Address(get_next_value()));
+    }
+    case IN: {
+        const RawData farg = get_next_value();
+        print_in(m_ostream, farg);
         break;
+    }
     case NOOP:
         print_noop(m_ostream);
         break;
     default:
-        throw UnrecognizedOpcodeException(m_opcode.underlying());
+        m_ostream << "db " << hexify_wo_0x(static_cast<u16>(m_opcode.underlying()));
+        //throw UnrecognizedOpcodeException(static_cast<u16>(m_opcode.underlying()));
     }
 
     m_ostream << "\n";
 }
 
-Data Disassembler::get_next_value()
+RawData Disassembler::get_next_value()
 {
     return m_memory.read(m_pc++);
 }

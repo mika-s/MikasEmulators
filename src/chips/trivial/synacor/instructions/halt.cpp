@@ -3,7 +3,7 @@
 namespace emu::synacor {
 
 /**
- * Halt the program
+ * Stop execution and terminate the program
  * <ul>
  *   <li>Size: 1</li>
  * </ul>

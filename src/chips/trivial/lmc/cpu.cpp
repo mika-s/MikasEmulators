@@ -187,7 +187,7 @@ Opcode Cpu::find_opcode(Data raw_opcode)
     } else if (raw_opcode <= Data(922)) {
         return Opcode::OTC;
     } else {
-        throw UnrecognizedOpcodeException(raw_opcode.underlying());
+        throw UnrecognizedOpcodeException(static_cast<u8>(raw_opcode.underlying()));
     }
 }
 

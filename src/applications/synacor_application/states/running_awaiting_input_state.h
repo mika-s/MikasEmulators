@@ -31,7 +31,7 @@ public:
     void perform(cyc& cycles) override;
 
 private:
-    static inline std::string s_game_window_subtitle = "";
+    static inline std::string s_game_window_subtitle;
 
     // Game loop - begin
     static constexpr long double s_fps = 60.0L;

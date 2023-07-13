@@ -23,14 +23,19 @@ using emu::util::string::hexify;
  * @param a is address to write input to
  * @param memory is the memory, which will be mutated
  */
-void in(Address a, EmulatorMemory<Address, Data>& memory)
+void in(Address a, EmulatorMemory<Address, RawData>& memory)
 {
-    memory.write(a, Data(1)); // TODO
+    memory.write(a, RawData(1)); // TODO
 }
 
-void print_in(std::ostream& ostream, Address a)
+void print_in(std::ostream& ostream, RawData a)
 {
-    ostream << "IN "
-            << hexify(static_cast<u16>(a.underlying()));
+    ostream << "IN ";
+
+    if (a >= RawData(32768)) {
+        ostream << "r" << static_cast<u16>(Data(a.underlying()).underlying());
+    } else {
+        ostream << hexify(static_cast<u16>(a.underlying()));
+    }
 }
 }

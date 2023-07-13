@@ -197,17 +197,17 @@ void Frontend::disassemble(Options const& options)
                 as_u16.push_back(to_u16(as_u8[i + 1], as_u8[i]));
             }
 
-            std::vector<emu::synacor::Data> as_Data;
+            std::vector<emu::synacor::RawData> as_RawData;
             for (u16 value : as_u16) {
                 if (value >= 32776) {
                     throw std::runtime_error(
                         fmt::format("Value too large in {}. Max value is {}, but was {}", file_path, 32776, value));
                 } else {
-                    as_Data.emplace_back(value);
+                    as_RawData.emplace_back(value);
                 }
             }
-            EmulatorMemory<emu::synacor::Address, emu::synacor::Data> memory;
-            memory.add(as_Data);
+            EmulatorMemory<emu::synacor::Address, emu::synacor::RawData> memory;
+            memory.add(as_RawData);
 
             emu::synacor::Disassembler disassembler(memory, std::cout);
             disassembler.disassemble();

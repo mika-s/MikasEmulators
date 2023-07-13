@@ -14,12 +14,12 @@ using emu::memory::EmulatorMemory;
 
 class Disassembler {
 public:
-    Disassembler(EmulatorMemory<Address, Data>& memory, std::ostream& iostream);
+    Disassembler(EmulatorMemory<Address, RawData>& memory, std::ostream& iostream);
 
     void disassemble();
 
 private:
-    EmulatorMemory<Address, Data>& m_memory;
+    EmulatorMemory<Address, RawData>& m_memory;
     std::size_t m_memory_size;
     Address m_pc;
     Data m_opcode { 0 };
@@ -27,6 +27,6 @@ private:
 
     void print_next_instruction();
 
-    Data get_next_value();
+    RawData get_next_value();
 };
 }

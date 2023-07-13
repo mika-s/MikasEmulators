@@ -32,9 +32,10 @@ class Governor;
 
 namespace emu::applications::synacor {
 
-using emu::synacor::Cpu;
 using emu::memory::EmulatorMemory;
 using emu::misc::Governor;
+using emu::synacor::Cpu;
+using emu::synacor::RawData;
 
 class StateContext {
 public:
@@ -43,7 +44,7 @@ public:
         std::shared_ptr<Ui> ui,
         std::shared_ptr<Input> input,
         std::shared_ptr<Cpu> cpu,
-        EmulatorMemory<Address, Data>& memory,
+        EmulatorMemory<Address, RawData>& memory,
         std::shared_ptr<Logger> logger,
         std::shared_ptr<Debugger<Address, 16>> debugger,
         std::shared_ptr<DebugContainer<Address, Data, 16>> debug_container,
@@ -61,7 +62,7 @@ public:
     std::shared_ptr<Input> m_input;
     std::shared_ptr<Cpu> m_cpu;
 
-    EmulatorMemory<Address, Data>& m_memory;
+    EmulatorMemory<Address, RawData>& m_memory;
 
     std::shared_ptr<Logger> m_logger;
     std::shared_ptr<Debugger<Address, 16>> m_debugger;

@@ -19,16 +19,27 @@ using emu::util::string::hexify;
  * @param b is the address to read from
  * @param memory is the memory
  */
-void rmem(Address a, Address b, EmulatorMemory<Address, Data>& memory)
+void rmem(Address a, Address b, EmulatorMemory<Address, RawData>& memory)
 {
     memory.write(a, memory.read(b));
 }
 
-void print_rmem(std::ostream& ostream, Address a, Address b)
+void print_rmem(std::ostream& ostream, RawData a, RawData b)
 {
-    ostream << "RMEM "
-            << hexify(static_cast<u16>(a.underlying()))
-            << " "
-            << hexify(static_cast<u16>(b.underlying()));
+    ostream << "RMEM ";
+
+    if (a >= RawData(32768)) {
+        ostream << "r" << static_cast<u16>(Data(a.underlying()).underlying());
+    } else {
+        ostream << hexify(static_cast<u16>(a.underlying()));
+    }
+
+    ostream << " ";
+
+    if (b >= RawData(32768)) {
+        ostream << "r" << static_cast<u16>(Data(b.underlying()).underlying());
+    } else {
+        ostream << hexify(static_cast<u16>(b.underlying()));
+    }
 }
 }

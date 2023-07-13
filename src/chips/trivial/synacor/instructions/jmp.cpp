@@ -10,22 +10,25 @@ using emu::memory::EmulatorMemory;
 using emu::util::string::hexify;
 
 /**
- * Add value in memory to the accumulator
+ * Jump to <a>
  * <ul>
  *   <li>Size: 2</li>
  * </ul>
  *
- * @param acc_reg is the accumulator register, which will be mutated
- * @param address is the address to the value in memory
- * @param memory is the memory
+ * @param a is the accumulator register, which will be mutated
  */
 void jmp()
 {
 }
 
-void print_jmp(std::ostream& ostream, Address a)
+void print_jmp(std::ostream& ostream, RawData a)
 {
-    ostream << "JMP "
-            << hexify(static_cast<u16>(a.underlying()));
+    ostream << "JMP ";
+
+    if (a >= RawData(32768)) {
+        ostream << "r" << static_cast<u16>(Data(a.underlying()).underlying());
+    } else {
+        ostream << hexify(static_cast<u16>(a.underlying()));
+    }
 }
 }
