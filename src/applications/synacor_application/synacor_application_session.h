@@ -106,7 +106,7 @@ private:
     std::string m_file_content;
     std::shared_ptr<Logger> m_logger;
     std::shared_ptr<Debugger<Address, 16>> m_debugger;
-    std::shared_ptr<DebugContainer<Address, Data, 16>> m_debug_container;
+    std::shared_ptr<DebugContainer<Address, RawData, 16>> m_debug_container;
 
     Governor m_governor { Governor(s_tick_limit, sdl_get_ticks_high_performance) };
 

@@ -17,6 +17,7 @@ using emu::debugger::Debugger;
 using emu::logging::Logger;
 using emu::synacor::Address;
 using emu::synacor::Data;
+using emu::synacor::RawData;
 using emu::util::byte::is_bit_set;
 using emu::util::byte::to_u32;
 
@@ -42,7 +43,7 @@ public:
 
     virtual void attach_debugger(std::shared_ptr<Debugger<Address, 16>> debugger) = 0;
 
-    virtual void attach_debug_container(std::shared_ptr<DebugContainer<Address, Data, 16>> debug_container) = 0;
+    virtual void attach_debug_container(std::shared_ptr<DebugContainer<Address, RawData, 16>> debug_container) = 0;
 
     virtual void attach_logger(std::shared_ptr<Logger> logger) = 0;
 

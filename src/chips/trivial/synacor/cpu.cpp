@@ -120,7 +120,7 @@ void Cpu::next_instruction()
     }
     case JMP: {
         const RawData farg = get_next_value();
-        jmp(m_pc, farg);
+        jmp(m_pc, m_memory, farg);
         break;
     }
     case JT: {
@@ -230,6 +230,11 @@ Address Cpu::pc() const
     return m_pc;
 }
 
+RawData Cpu::r0() const
+{
+    return m_memory.read(Address(32768));
+}
+
 void Cpu::input([[maybe_unused]] Data value)
 {
     //    m_r0 = value;
@@ -266,4 +271,5 @@ void Cpu::print_debug([[maybe_unused]] Data opcode)
                   << std::flush;
     }
 }
+
 }

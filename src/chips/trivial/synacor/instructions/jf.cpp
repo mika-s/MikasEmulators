@@ -22,7 +22,9 @@ using emu::util::string::hexify;
  */
 void jf(Address& pc, EmulatorMemory<Address, RawData> const& memory, RawData a, RawData b)
 {
-    if (a == RawData(0)) {
+    const RawData real_a = a >= RawData(32768) ? memory.read(Address(a)) : a;
+
+    if (real_a == RawData(0)) {
         if (b >= RawData(32768)) {
             pc = Address(memory.read(Address(b.underlying())));
         } else {

@@ -102,7 +102,7 @@ void GuiImgui::attach_debugger(std::shared_ptr<Debugger<Address, 16>> debugger)
     m_disassembly.attach_debugger(debugger);
 }
 
-void GuiImgui::attach_debug_container(std::shared_ptr<DebugContainer<Address, Data, 16>> debug_container)
+void GuiImgui::attach_debug_container(std::shared_ptr<DebugContainer<Address, RawData, 16>> debug_container)
 {
     m_cpu_info.attach_debug_container(debug_container);
     m_disassembly.attach_debug_container(debug_container);

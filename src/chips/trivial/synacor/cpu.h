@@ -55,6 +55,8 @@ public:
 
     [[nodiscard]] Address pc() const;
 
+    [[nodiscard]] RawData r0() const;
+
     void input(Data value);
 
 private:

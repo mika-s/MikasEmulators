@@ -16,11 +16,14 @@ using emu::util::string::hexify;
  * </ul>
  *
  * @param pc is the program counter, which will be modified
+ * @param memory is the memory
  * @param a is the address to jump to
  */
-void jmp(Address& pc, RawData a)
+void jmp(Address& pc, EmulatorMemory<Address, RawData> const& memory, RawData a)
 {
-    pc = Address(a.underlying());
+    const RawData real_a = a >= RawData(32768) ? memory.read(Address(a)) : a;
+
+    pc = Address(real_a.underlying());
 }
 
 void print_jmp(std::ostream& ostream, RawData a)

@@ -47,7 +47,7 @@ public:
         EmulatorMemory<Address, RawData>& memory,
         std::shared_ptr<Logger> logger,
         std::shared_ptr<Debugger<Address, 16>> debugger,
-        std::shared_ptr<DebugContainer<Address, Data, 16>> debug_container,
+        std::shared_ptr<DebugContainer<Address, RawData, 16>> debug_container,
         Governor& governor,
         bool& is_only_run_once,
         bool& is_awaiting_input,
@@ -66,7 +66,7 @@ public:
 
     std::shared_ptr<Logger> m_logger;
     std::shared_ptr<Debugger<Address, 16>> m_debugger;
-    std::shared_ptr<DebugContainer<Address, Data, 16>> m_debug_container;
+    std::shared_ptr<DebugContainer<Address, RawData, 16>> m_debug_container;
 
     Governor& m_governor;
 

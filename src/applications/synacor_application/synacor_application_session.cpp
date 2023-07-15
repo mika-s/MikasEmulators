@@ -144,18 +144,6 @@ void SynacorApplicationSession::gui_request(GuiRequest request)
     }
 }
 
-std::vector<Data> create_work_ram(std::size_t size)
-{
-    std::vector<Data> work_ram;
-
-    work_ram.reserve(size);
-    for (std::size_t i = 0; i < size; ++i) {
-        work_ram.emplace_back(0);
-    }
-
-    return work_ram;
-}
-
 void SynacorApplicationSession::input_from_terminal(Data input)
 {
     m_state_context->m_is_awaiting_input = false;
@@ -185,15 +173,15 @@ void SynacorApplicationSession::setup_cpu()
 
 void SynacorApplicationSession::setup_debugging()
 {
-    m_debug_container = std::make_shared<DebugContainer<Address, Data, 16>>();
-    //    m_debug_container->add_register(RegisterDebugContainer<Data>("R0", [&]() { return m_cpu->r0(); }));
-    //    m_debug_container->add_register(RegisterDebugContainer<Data>("R1", [&]() { return m_cpu->r1(); }));
-    //    m_debug_container->add_register(RegisterDebugContainer<Data>("R2", [&]() { return m_cpu->r2(); }));
-    //    m_debug_container->add_register(RegisterDebugContainer<Data>("R3", [&]() { return m_cpu->r3(); }));
-    //    m_debug_container->add_register(RegisterDebugContainer<Data>("R4", [&]() { return m_cpu->r4(); }));
-    //    m_debug_container->add_register(RegisterDebugContainer<Data>("R5", [&]() { return m_cpu->r5(); }));
-    //    m_debug_container->add_register(RegisterDebugContainer<Data>("R6", [&]() { return m_cpu->r6(); }));
-    //    m_debug_container->add_register(RegisterDebugContainer<Data>("R7", [&]() { return m_cpu->r7(); }));
+    m_debug_container = std::make_shared<DebugContainer<Address, RawData, 16>>();
+        m_debug_container->add_register(RegisterDebugContainer<RawData>("R0", [&]() { return m_memory.read(Address(32768)); }));
+        m_debug_container->add_register(RegisterDebugContainer<RawData>("R1", [&]() { return m_memory.read(Address(32769)); }));
+        m_debug_container->add_register(RegisterDebugContainer<RawData>("R2", [&]() { return m_memory.read(Address(32770)); }));
+        m_debug_container->add_register(RegisterDebugContainer<RawData>("R3", [&]() { return m_memory.read(Address(32771)); }));
+        m_debug_container->add_register(RegisterDebugContainer<RawData>("R4", [&]() { return m_memory.read(Address(32772)); }));
+        m_debug_container->add_register(RegisterDebugContainer<RawData>("R5", [&]() { return m_memory.read(Address(32773)); }));
+        m_debug_container->add_register(RegisterDebugContainer<RawData>("R6", [&]() { return m_memory.read(Address(32774)); }));
+        m_debug_container->add_register(RegisterDebugContainer<RawData>("R7", [&]() { return m_memory.read(Address(32775)); }));
     m_debug_container->add_pc([&]() { return m_cpu->pc(); });
 //    m_debug_container->add_memory(MemoryDebugContainer<Data>([&]() { return memory(); }));
     m_debug_container->add_disassembled_program(disassemble_program());
@@ -225,8 +213,6 @@ std::vector<DisassembledLine<Address, 16>> SynacorApplicationSession::disassembl
             [](std::string const& line) { return DisassembledLine<Address, 16>(line); });
 
         return lines;
-
-//    return {};
 }
 
 }

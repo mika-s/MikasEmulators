@@ -44,7 +44,7 @@ void TuiTerminal::attach_debugger([[maybe_unused]] std::shared_ptr<Debugger<Addr
 {
 }
 
-void TuiTerminal::attach_debug_container([[maybe_unused]] std::shared_ptr<DebugContainer<Address, Data, 16>> debug_container)
+void TuiTerminal::attach_debug_container([[maybe_unused]] std::shared_ptr<DebugContainer<Address, RawData, 16>> debug_container)
 {
 }
 

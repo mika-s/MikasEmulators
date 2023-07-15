@@ -63,7 +63,7 @@ public:
 
     void attach_debugger(std::shared_ptr<Debugger<Address, 16>> debugger) override;
 
-    void attach_debug_container(std::shared_ptr<DebugContainer<Address, Data, 16>> debug_container) override;
+    void attach_debug_container(std::shared_ptr<DebugContainer<Address, RawData, 16>> debug_container) override;
 
     void attach_logger(std::shared_ptr<Logger> logger) override;
 
@@ -86,8 +86,8 @@ private:
     std::shared_ptr<Logger> m_logger;
 
     DebugLogPane m_log;
-    DisassemblyPane<Address, Data, 16> m_disassembly;
-    CpuInfoPane<Address, Data, 16> m_cpu_info;
+    DisassemblyPane<Address, RawData, 16> m_disassembly;
+    CpuInfoPane<Address, RawData, 16> m_cpu_info;
     TerminalPane m_terminal;
 
     std::vector<std::string> m_output;

@@ -39,7 +39,7 @@ void gt(EmulatorMemory<Address, RawData>& memory, RawData a, RawData b, RawData 
 void halt(bool& is_halted);
 void in(Address a, EmulatorMemory<Address, RawData>& memory);
 void jf(Address& pc, EmulatorMemory<Address, RawData> const& memory, RawData a, RawData b);
-void jmp(Address& pc, RawData a);
+void jmp(Address& pc, EmulatorMemory<Address, RawData> const& memory, RawData a);
 void jt(Address& pc, EmulatorMemory<Address, RawData> const& memory, RawData a, RawData b);
 void mod(EmulatorMemory<Address, RawData>& memory, RawData a, RawData b, RawData c);
 void mult(EmulatorMemory<Address, RawData>& memory, RawData a, RawData b, RawData c);
