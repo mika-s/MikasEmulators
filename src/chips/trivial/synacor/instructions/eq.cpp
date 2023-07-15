@@ -15,13 +15,18 @@ using emu::util::string::hexify;
  *   <li>Size: 4</li>
  * </ul>
  *
- * @param a is the value set to 0 or 1, which will be mutated
+ * @param memory is the memory, which will be mutated
+ * @param a is the value set to 0 or 1
  * @param b is the first operand to check for equality
  * @param c is the second operand to check for equality
  */
-void eq(RawData& a, RawData b, RawData c)
+void eq(EmulatorMemory<Address, RawData>& memory, RawData a, RawData b, RawData c)
 {
-    a = b == c ? RawData(1) : RawData(0);
+    if (b == c) {
+        memory.write(Address(a.underlying()), RawData(1));
+    } else {
+        memory.write(Address(a.underlying()), RawData(0));
+    }
 }
 
 void print_eq(std::ostream& ostream, RawData a, RawData b, RawData c)

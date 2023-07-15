@@ -15,12 +15,16 @@ using emu::util::string::hexify;
  *   <li>Size: 4</li>
  * </ul>
  *
- * @param a is the accumulator register, which will be mutated
- * @param b is the address to the value in memory
- * @param c is the memory
+ * @param memory is the memory, which will be mutated
+ * @param a is the address of the register to store the or result into
+ * @param b is the first operand to or
+ * @param c is the second operand to or
  */
-void or_()
+void or_(EmulatorMemory<Address, RawData>& memory, RawData a, RawData b, RawData c)
 {
+    memory.write(
+        Address(a.underlying()),
+        RawData(Data(b.underlying() | c.underlying()).underlying()));
 }
 
 void print_or(std::ostream& ostream, RawData a, RawData b, RawData c)

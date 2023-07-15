@@ -10,9 +10,9 @@
 
 namespace emu::applications::synacor {
 
-void TuiTerminal::to_terminal(Data acc_reg)
+void TuiTerminal::to_terminal(Data character)
 {
-    std::cout << static_cast<char>(acc_reg.underlying());
+    std::cout << static_cast<char>(character.underlying());
 }
 
 void TuiTerminal::from_terminal()

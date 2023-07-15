@@ -1,10 +1,12 @@
 #include "chips/trivial/synacor/usings.h"
+#include "crosscutting/memory/emulator_memory.h"
 #include "crosscutting/misc/uinteger.h"
 #include "crosscutting/util/string_util.h"
 #include <iostream>
 
 namespace emu::synacor {
 
+using emu::memory::EmulatorMemory;
 using emu::util::string::hexify;
 
 /**
@@ -13,12 +15,16 @@ using emu::util::string::hexify;
  *   <li>Size: 4</li>
  * </ul>
  *
- * @param a is the program counter, which will be mutated
- * @param b is the address to the value in memory
- * @param c is the flag register
+ * @param memory is the memory, which will be mutated
+ * @param a is the address of the register to store the product into
+ * @param b is the first operand to multiply
+ * @param c is the second operand to multiply
  */
-void mult()
+void mult(EmulatorMemory<Address, RawData>& memory, RawData a, RawData b, RawData c)
 {
+    memory.write(
+        Address(a.underlying()),
+        RawData(Data(b.underlying() * c.underlying()).underlying()));
 }
 
 void print_mult(std::ostream& ostream, RawData a, RawData b, RawData c)

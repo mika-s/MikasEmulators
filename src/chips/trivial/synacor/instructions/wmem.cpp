@@ -10,17 +10,18 @@ using emu::memory::EmulatorMemory;
 using emu::util::string::hexify;
 
 /**
- * Add value in memory to the accumulator
+ * Write the value from <b> into memory at address <a>
  * <ul>
- *   <li>Size: 2</li>
+ *   <li>Size: 3</li>
  * </ul>
  *
- * @param acc_reg is the accumulator register, which will be mutated
- * @param address is the address to the value in memory
- * @param memory is the memory
+ * @param memory is the memory, which will be mutated
+ * @param a is the address to write to
+ * @param b is the address to read from
  */
-void wmem()
+void wmem(EmulatorMemory<Address, RawData>& memory, RawData a, RawData b)
 {
+    memory.write(Address(a.underlying()), memory.read(Address(b.underlying())));
 }
 
 void print_wmem(std::ostream& ostream, RawData a, RawData b)

@@ -15,11 +15,20 @@ using emu::util::string::hexify;
  *   <li>Size: 3</li>
  * </ul>
  *
- * @param a is the accumulator register, which will be mutated
- * @param b is the address to the value in memory
+ * @param pc is the program counter, which will be modified
+ * @param memory is the memory
+ * @param a is the value to check for zero
+ * @param b is the address to jump to
  */
-void jf()
+void jf(Address& pc, EmulatorMemory<Address, RawData> const& memory, RawData a, RawData b)
 {
+    if (a == RawData(0)) {
+        if (b >= RawData(32768)) {
+            pc = Address(memory.read(Address(b.underlying())));
+        } else {
+            pc = Address(b.underlying());
+        }
+    }
 }
 
 void print_jf(std::ostream& ostream, RawData a, RawData b)

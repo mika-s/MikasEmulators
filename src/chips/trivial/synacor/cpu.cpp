@@ -88,66 +88,125 @@ void Cpu::next_instruction()
     case HALT:
         halt(m_is_halted);
         break;
-    case SET:
-        set(m_memory, get_next_value(), get_next_value());
+    case SET: {
+        const RawData farg = get_next_value();
+        const RawData sarg = get_next_value();
+        set(m_memory, farg, sarg);
         break;
-    case PUSH:
-        push(m_stack, get_next_value());
+    }
+    case PUSH: {
+        const RawData farg = get_next_value();
+        push(m_stack, m_memory, farg);
         break;
-    case POP:
-//        pop(m_stack, m_r0); // TODO
+    }
+    case POP: {
+        const RawData farg = get_next_value();
+        pop(m_stack, m_memory, farg);
         break;
-    case EQ:
-//        eq(m_r0, get_next_value(), get_next_value()); // TODO
+    }
+    case EQ: {
+        const RawData farg = get_next_value();
+        const RawData sarg = get_next_value();
+        const RawData targ = get_next_value();
+        eq(m_memory, farg, sarg, targ);
         break;
-    case GT:
-        gt();
+    }
+    case GT: {
+        const RawData farg = get_next_value();
+        const RawData sarg = get_next_value();
+        const RawData targ = get_next_value();
+        gt(m_memory, farg, sarg, targ);
         break;
-    case JMP:
-        jmp();
+    }
+    case JMP: {
+        const RawData farg = get_next_value();
+        jmp(m_pc, farg);
         break;
-    case JT:
-        jt();
+    }
+    case JT: {
+        const RawData farg = get_next_value();
+        const RawData sarg = get_next_value();
+        jt(m_pc, m_memory, farg, sarg);
         break;
-    case JF:
-        jf();
+    }
+    case JF: {
+        const RawData farg = get_next_value();
+        const RawData sarg = get_next_value();
+        jf(m_pc, m_memory, farg, sarg);
         break;
-    case ADD:
-        add();
+    }
+    case ADD: {
+        const RawData farg = get_next_value();
+        const RawData sarg = get_next_value();
+        const RawData targ = get_next_value();
+        add(m_memory, farg, sarg, targ);
         break;
-    case MULT:
-        mult();
+    }
+    case MULT: {
+        const RawData farg = get_next_value();
+        const RawData sarg = get_next_value();
+        const RawData targ = get_next_value();
+        mult(m_memory, farg, sarg, targ);
         break;
-    case MOD:
-        mod();
+    }
+    case MOD: {
+        const RawData farg = get_next_value();
+        const RawData sarg = get_next_value();
+        const RawData targ = get_next_value();
+        mod(m_memory, farg, sarg, targ);
         break;
-    case AND:
-        and_();
+    }
+    case AND: {
+        const RawData farg = get_next_value();
+        const RawData sarg = get_next_value();
+        const RawData targ = get_next_value();
+        and_(m_memory, farg, sarg, targ);
         break;
-    case OR:
-        or_();
+    }
+    case OR: {
+        const RawData farg = get_next_value();
+        const RawData sarg = get_next_value();
+        const RawData targ = get_next_value();
+        or_(m_memory, farg, sarg, targ);
         break;
-    case NOT:
-        not_();
+    }
+    case NOT: {
+        const RawData farg = get_next_value();
+        const RawData sarg = get_next_value();
+        not_(m_memory, farg, sarg);
         break;
-    case RMEM:
-        rmem(Address(get_next_value()), Address(get_next_value()), m_memory);
+    }
+    case RMEM: {
+        const RawData farg = get_next_value();
+        const RawData sarg = get_next_value();
+        rmem(m_memory, farg, sarg);
         break;
-    case WMEM:
-        wmem();
+    }
+    case WMEM: {
+        const RawData farg = get_next_value();
+        const RawData sarg = get_next_value();
+        wmem(m_memory, farg, sarg);
         break;
-    case CALL:
-        call();
+    }
+    case CALL: {
+        const RawData farg = get_next_value();
+        call(m_pc, m_stack, farg);
         break;
-    case RET:
-        ret();
+    }
+    case RET: {
+        ret(m_stack, m_pc, m_is_halted);
         break;
-    case OUT:
-//        out(get_next_value());
+    }
+    case OUT: {
+        const RawData farg = get_next_value();
+        out(Data(farg.underlying()));
+        notify_out_observers(Data(farg.underlying()));
         break;
-    case IN:
+    }
+    case IN: {
         in(Address(get_next_value()), m_memory);
         break;
+    }
     case NOOP:
         noop();
         break;
@@ -156,7 +215,7 @@ void Cpu::next_instruction()
     }
 }
 
-Address Cpu::get_next_value()
+RawData Cpu::get_next_value()
 {
     return m_memory.read(m_pc++);
 }
@@ -173,13 +232,13 @@ Address Cpu::pc() const
 
 void Cpu::input([[maybe_unused]] Data value)
 {
-//    m_r0 = value;
+    //    m_r0 = value;
 }
 
-void Cpu::notify_out_observers(Data acc_reg)
+void Cpu::notify_out_observers(Data character)
 {
     for (OutObserver* observer : m_out_observers) {
-        observer->out_changed(acc_reg);
+        observer->out_changed(character);
     }
 }
 
@@ -195,14 +254,14 @@ void Cpu::print_debug([[maybe_unused]] Data opcode)
     if (false) {
         std::cout << "pc=" << m_pc
                   << ",op=" << opcode
-//                  << ",r0=" << m_r0.underlying()
-//                  << ",r1=" << m_r1.underlying()
-//                  << ",r2=" << m_r2.underlying()
-//                  << ",r3=" << m_r3.underlying()
-//                  << ",r4=" << m_r4.underlying()
-//                  << ",r5=" << m_r5.underlying()
-//                  << ",r6=" << m_r6.underlying()
-//                  << ",r7=" << m_r7.underlying()
+                  //                  << ",r0=" << m_r0.underlying()
+                  //                  << ",r1=" << m_r1.underlying()
+                  //                  << ",r2=" << m_r2.underlying()
+                  //                  << ",r3=" << m_r3.underlying()
+                  //                  << ",r4=" << m_r4.underlying()
+                  //                  << ",r5=" << m_r5.underlying()
+                  //                  << ",r6=" << m_r6.underlying()
+                  //                  << ",r7=" << m_r7.underlying()
                   << "\n"
                   << std::flush;
     }

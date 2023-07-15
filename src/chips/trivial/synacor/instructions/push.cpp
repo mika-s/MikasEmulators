@@ -19,9 +19,13 @@ using emu::util::string::hexify;
  * @param stack is the stack, which will be mutated
  * @param a is the value to push onto the stack
  */
-void push(std::stack<Data>& stack, RawData a)
+void push(std::stack<Address>& stack, EmulatorMemory<Address, RawData> const& memory, RawData a)
 {
-    stack.emplace(a.underlying());
+    if (a >= RawData(32768)) {
+        stack.emplace(memory.read(Address(a.underlying())).underlying());
+    } else {
+        stack.emplace(a.underlying());
+    }
 }
 
 void print_push(std::ostream& ostream, RawData a)

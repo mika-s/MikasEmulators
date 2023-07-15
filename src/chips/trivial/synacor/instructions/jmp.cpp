@@ -15,10 +15,12 @@ using emu::util::string::hexify;
  *   <li>Size: 2</li>
  * </ul>
  *
- * @param a is the accumulator register, which will be mutated
+ * @param pc is the program counter, which will be modified
+ * @param a is the address to jump to
  */
-void jmp()
+void jmp(Address& pc, RawData a)
 {
+    pc = Address(a.underlying());
 }
 
 void print_jmp(std::ostream& ostream, RawData a)

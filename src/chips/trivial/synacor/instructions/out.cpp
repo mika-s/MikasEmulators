@@ -15,7 +15,7 @@ using emu::util::string::hexify;
  *
  * @param character is the character to print to the terminal
  */
-void out(RawData character)
+void out([[maybe_unused]] Data character)
 {
     std::cout << static_cast<char>(character.underlying())
               << std::flush;

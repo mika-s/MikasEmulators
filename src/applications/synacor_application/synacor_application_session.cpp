@@ -162,9 +162,9 @@ void SynacorApplicationSession::input_from_terminal(Data input)
     m_cpu->input(input);
 }
 
-void SynacorApplicationSession::out_changed(Data acc_reg)
+void SynacorApplicationSession::out_changed(Data character)
 {
-    m_ui->to_terminal(acc_reg);
+    m_ui->to_terminal(character);
 }
 
 void SynacorApplicationSession::in_requested()
@@ -211,22 +211,22 @@ std::vector<RawData> SynacorApplicationSession::memory()
 
 std::vector<DisassembledLine<Address, 16>> SynacorApplicationSession::disassemble_program()
 {
-    //    std::stringstream ss;
-    //    Disassembler disassembler(m_memory, ss);
-    //    disassembler.disassemble();
-    //
-    //    std::vector<std::string> disassembled_program = split(ss, "\n");
-    //
-    //    disassembled_program.erase(
-    //        std::remove_if(disassembled_program.begin(), disassembled_program.end(), [](std::string const& s) { return s.empty(); }));
-    //
-    //    std::vector<DisassembledLine<Address, 16>> lines;
-    //    std::transform(disassembled_program.begin(), disassembled_program.end(), std::back_inserter(lines),
-    //        [](std::string const& line) { return DisassembledLine<Address, 16>(line); });
+        std::stringstream ss;
+        Disassembler disassembler(m_memory, ss);
+        disassembler.disassemble();
 
-    //    return lines;
+        std::vector<std::string> disassembled_program = split(ss, "\n");
 
-    return {};
+        disassembled_program.erase(
+            std::remove_if(disassembled_program.begin(), disassembled_program.end(), [](std::string const& s) { return s.empty(); }));
+
+        std::vector<DisassembledLine<Address, 16>> lines;
+        std::transform(disassembled_program.begin(), disassembled_program.end(), std::back_inserter(lines),
+            [](std::string const& line) { return DisassembledLine<Address, 16>(line); });
+
+        return lines;
+
+//    return {};
 }
 
 }

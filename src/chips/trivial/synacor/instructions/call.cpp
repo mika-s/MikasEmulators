@@ -3,6 +3,7 @@
 #include "crosscutting/misc/uinteger.h"
 #include "crosscutting/util/string_util.h"
 #include <iostream>
+#include <stack>
 
 namespace emu::synacor {
 
@@ -15,12 +16,14 @@ using emu::util::string::hexify;
  *   <li>Size: 2</li>
  * </ul>
  *
- * @param acc_reg is the accumulator register, which will be mutated
- * @param address is the address to the value in memory
- * @param memory is the memory
+ * @param pc is the program counter, which will be mutated
+ * @param stack is the stack, which will be mutated
+ * @param a is the address to jump to
  */
-void call()
+void call(Address& pc, std::stack<Address>& stack, RawData a)
 {
+    stack.emplace(pc.underlying() + 1);
+    pc = Address(a.underlying());
 }
 
 void print_call(std::ostream& ostream, RawData a)

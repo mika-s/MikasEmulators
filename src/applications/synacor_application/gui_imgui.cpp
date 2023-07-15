@@ -64,9 +64,9 @@ GuiImgui::~GuiImgui()
     m_gl_context = nullptr;
 }
 
-void GuiImgui::to_terminal(Data acc_reg)
+void GuiImgui::to_terminal(Data character)
 {
-    m_output.push_back(fmt::format("{}", static_cast<char>(acc_reg.underlying())));
+    m_output.push_back(fmt::format("{}", static_cast<char>(character.underlying())));
 }
 
 void GuiImgui::from_terminal()

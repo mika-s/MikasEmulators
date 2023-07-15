@@ -81,13 +81,11 @@ public:
 
     void gui_request(GuiRequest request) override;
 
-    void out_changed(Data acc_reg) override;
+    void out_changed(Data character) override;
 
     void in_requested() override;
 
 private:
-    static constexpr unsigned int s_program_size = 100;
-
     // Game loop - begin
     static constexpr long double s_fps = 60.0L;
     static constexpr long double s_tick_limit = 1000.0L / s_fps;

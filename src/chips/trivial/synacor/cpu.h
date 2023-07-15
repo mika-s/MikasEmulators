@@ -64,14 +64,14 @@ private:
 
     Data m_opcode { 0 };
     Address m_pc;
-    std::stack<Data> m_stack;
+    std::stack<Address> m_stack;
 
     std::vector<OutObserver*> m_out_observers;
     std::vector<InObserver*> m_in_observers;
 
     RawData get_next_value();
 
-    void notify_out_observers(Data acc_reg);
+    void notify_out_observers(Data character);
 
     void notify_in_observers();
 

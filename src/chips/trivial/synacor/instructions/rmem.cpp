@@ -15,13 +15,13 @@ using emu::util::string::hexify;
  *   <li>Size: 3</li>
  * </ul>
  *
+ * @param memory is the memory, which will be mutated
  * @param a is the address to write to
  * @param b is the address to read from
- * @param memory is the memory
  */
-void rmem(Address a, Address b, EmulatorMemory<Address, RawData>& memory)
+void rmem(EmulatorMemory<Address, RawData>& memory, RawData a, RawData b)
 {
-    memory.write(a, memory.read(b));
+    memory.write(Address(a.underlying()), memory.read(Address(b.underlying())));
 }
 
 void print_rmem(std::ostream& ostream, RawData a, RawData b)

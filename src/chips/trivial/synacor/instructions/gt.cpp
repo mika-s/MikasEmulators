@@ -10,17 +10,23 @@ using emu::memory::EmulatorMemory;
 using emu::util::string::hexify;
 
 /**
- * Add value in memory to the accumulator
+ * Set <a> to 1 if <b> is greater than <c>; set it to 0 otherwise
  * <ul>
- *   <li>Size: 2</li>
+ *   <li>Size: 4</li>
  * </ul>
  *
- * @param acc_reg is the accumulator register, which will be mutated
- * @param address is the address to the value in memory
- * @param memory is the memory
+ * @param memory is the memory, which will be mutated
+ * @param a is the value set to 0 or 1
+ * @param b is the first operand to check for equality
+ * @param c is the second operand to check for equality
  */
-void gt()
+void gt(EmulatorMemory<Address, RawData>& memory, RawData a, RawData b, RawData c)
 {
+    if (b > c) {
+        memory.write(Address(a.underlying()), RawData(1));
+    } else {
+        memory.write(Address(a.underlying()), RawData(0));
+    }
 }
 
 void print_gt(std::ostream& ostream, RawData a, RawData b, RawData c)

@@ -26,7 +26,7 @@ public:
 
     virtual ~Ui() = default;
 
-    virtual void to_terminal(Data acc_reg) = 0;
+    virtual void to_terminal(Data character) = 0;
 
     virtual void from_terminal() = 0;
 

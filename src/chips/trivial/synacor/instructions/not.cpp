@@ -10,17 +10,21 @@ using emu::memory::EmulatorMemory;
 using emu::util::string::hexify;
 
 /**
- * Add value in memory to the accumulator
+ * Stores 15-bit bitwise inverse of <b> in <a>
  * <ul>
- *   <li>Size: 2</li>
+ *   <li>Size: 3</li>
  * </ul>
  *
- * @param acc_reg is the accumulator register, which will be mutated
- * @param address is the address to the value in memory
- * @param memory is the memory
+ * @param memory is the memory, which will be mutated
+ * @param a is the address of the register to store the not result into
+ * @param b is the first operand to not
+ * @param c is the second operand to not
  */
-void not_()
+void not_(EmulatorMemory<Address, RawData>& memory, RawData a, RawData b)
 {
+    memory.write(
+        Address(a.underlying()),
+        RawData(Data(~b.underlying()).underlying()));
 }
 
 void print_not(std::ostream& ostream, RawData a, RawData b)

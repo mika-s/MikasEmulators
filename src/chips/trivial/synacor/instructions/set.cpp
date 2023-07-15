@@ -15,12 +15,13 @@ using emu::util::string::hexify;
  *   <li>Size: 3</li>
  * </ul>
  *
- * @param a is the <a> register, which will be mutated
+ * @param memory is the memory, which will be mutated
+ * @param a is the <a> register
  * @param b is the value to place into <a>
  */
-void set(EmulatorMemory<Address, RawData>& memory, Address a, RawData b)
+void set(EmulatorMemory<Address, RawData>& memory, RawData a, RawData b)
 {
-    memory.write(a, b);
+    memory.write(Address(a.underlying()), b);
 }
 
 void print_set(std::ostream& ostream, RawData a, RawData b)

@@ -30,7 +30,7 @@ using emu::synacor::Data;
 class TuiTerminal : public Ui {
 
 public:
-    void to_terminal(Data acc_reg) override;
+    void to_terminal(Data character) override;
 
     void from_terminal() override;
 

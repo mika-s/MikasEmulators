@@ -31,28 +31,28 @@ namespace emu::synacor {
 
 using emu::memory::EmulatorMemory;
 
-void add();
-void and_();
-void call();
-void eq(RawData& a, RawData b, RawData c);
-void gt();
+void add(EmulatorMemory<Address, RawData>& memory, RawData a, RawData b, RawData c);
+void and_(EmulatorMemory<Address, RawData>& memory, RawData a, RawData b, RawData c);
+void call(Address& pc, std::stack<Address>& stack, RawData a);
+void eq(EmulatorMemory<Address, RawData>& memory, RawData a, RawData b, RawData c);
+void gt(EmulatorMemory<Address, RawData>& memory, RawData a, RawData b, RawData c);
 void halt(bool& is_halted);
 void in(Address a, EmulatorMemory<Address, RawData>& memory);
-void jf();
-void jmp();
-void jt();
-void mod();
-void mult();
+void jf(Address& pc, EmulatorMemory<Address, RawData> const& memory, RawData a, RawData b);
+void jmp(Address& pc, RawData a);
+void jt(Address& pc, EmulatorMemory<Address, RawData> const& memory, RawData a, RawData b);
+void mod(EmulatorMemory<Address, RawData>& memory, RawData a, RawData b, RawData c);
+void mult(EmulatorMemory<Address, RawData>& memory, RawData a, RawData b, RawData c);
 void noop();
-void not_();
-void or_();
+void not_(EmulatorMemory<Address, RawData>& memory, RawData a, RawData b);
+void or_(EmulatorMemory<Address, RawData>& memory, RawData a, RawData b, RawData c);
 void out(Data character);
-void pop(std::stack<Data>& stack, RawData& a);
-void push(std::stack<Data>& stack, RawData a);
-void ret();
-void rmem(Address a, Address b, EmulatorMemory<Address, RawData>& memory);
-void set(EmulatorMemory<Address, RawData>& memory, Address a, RawData b);
-void wmem();
+void pop(std::stack<Address>& stack, EmulatorMemory<Address, RawData>& memory, RawData a);
+void push(std::stack<Address>& stack, EmulatorMemory<Address, RawData> const& memory, RawData a);
+void ret(std::stack<Address>& stack, Address& pc, bool& is_halted);
+void rmem(EmulatorMemory<Address, RawData>& memory, RawData a, RawData b);
+void set(EmulatorMemory<Address, RawData>& memory, RawData a, RawData b);
+void wmem(EmulatorMemory<Address, RawData>& memory, RawData a, RawData b);
 
 void print_add(std::ostream& ostream, RawData a, RawData b, RawData c);
 void print_and(std::ostream& ostream, RawData a, RawData b, RawData c);

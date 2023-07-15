@@ -19,10 +19,19 @@ using emu::util::string::hexify;
  * @param stack is the stack, which will be mutated
  * @param a is the place to write the top element to, which will be mutated
  */
-void pop(std::stack<Data>& stack, RawData& a)
+void pop(std::stack<Address>& stack, EmulatorMemory<Address, RawData>& memory, RawData a)
 {
-    a = RawData(stack.top().underlying());
-    stack.pop();
+    if (stack.empty()) {
+        throw std::runtime_error("The stack is empty");
+    }
+
+    if (a >= RawData(32768)) {
+        auto const stack_value = RawData(stack.top().underlying());
+        stack.pop();
+        memory.write(Address(a.underlying()), stack_value);
+    } else {
+        throw std::runtime_error("Cannot POP to a non-register");
+    }
 }
 
 void print_pop(std::ostream& ostream, RawData a)
