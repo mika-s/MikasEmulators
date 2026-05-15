@@ -16,18 +16,18 @@ LmcProgram::LmcProgram(std::vector<LmcLine> lines)
 {
 }
 
-std::vector<Data> LmcProgram::eval()
+auto LmcProgram::eval() const -> std::vector<Data>
 {
     std::vector<Data> data;
 
-    for (LmcLine& line : m_lines) {
+    for (LmcLine const& line : m_lines) {
         data.push_back(line.eval());
     }
 
     return data;
 }
 
-LmcProgram LmcProgram::parse(Scanner& scanner, Environment& environment)
+auto LmcProgram::parse(Scanner& scanner, Environment& environment) -> LmcProgram
 {
     std::vector<LmcLine> lines;
 

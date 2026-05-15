@@ -118,7 +118,7 @@ private:
 
     std::vector<RawData> memory();
 
-    void input_from_terminal(Data input);
+    void input_from_terminal(Data input) const;
 
     std::vector<DisassembledLine<Address, 16>> disassemble_program();
 };

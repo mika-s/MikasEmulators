@@ -47,7 +47,7 @@ private:
     // CP/M syscalls
     // https://www.seasip.info/Cpm/bdos.html
 
-    static void c_write(u8 e);
+    static auto c_write(u8 e) -> void; // NOLINT(*-identifier-length)
 
     static void c_writestr(EmulatorMemory<u16, u8> const& memory, u16 address);
 };

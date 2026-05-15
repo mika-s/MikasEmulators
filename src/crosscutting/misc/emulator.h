@@ -9,6 +9,6 @@ class Emulator {
 public:
     virtual ~Emulator() = default;
 
-    virtual std::unique_ptr<Session> new_session() = 0;
+    virtual auto new_session() -> std::unique_ptr<Session> = 0;
 };
 }

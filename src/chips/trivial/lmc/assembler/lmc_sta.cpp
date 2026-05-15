@@ -19,15 +19,15 @@ LmcSta::LmcSta(LmcOperand operand)
 {
 }
 
-Data LmcSta::eval()
+auto LmcSta::eval() -> Data
 {
     return opcode + m_operand.eval();
 }
 
-std::unique_ptr<InstructionInterface> LmcSta::parse(Scanner& scanner, Environment& environment)
+auto LmcSta::parse(Scanner& scanner, Environment& environment) -> std::unique_ptr<InstructionInterface>
 {
     scanner.skip(TokenKind::Sta);
-    LmcOperand operand = LmcOperand::parse(scanner, environment);
+    LmcOperand const operand = LmcOperand::parse(scanner, environment);
 
     return std::make_unique<LmcSta>(operand);
 }

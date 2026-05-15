@@ -26,23 +26,23 @@ public:
 
     void write(Address address, RawData value) override;
 
-    RawData read(Address address) override;
+    auto read(Address address) -> RawData override;
 
-    [[nodiscard]] Data r0() const;
+    [[nodiscard]] auto r0() const -> Data;
 
-    [[nodiscard]] Data r1() const;
+    [[nodiscard]] auto r1() const -> Data;
 
-    [[nodiscard]] Data r2() const;
+    [[nodiscard]] auto r2() const -> Data;
 
-    [[nodiscard]] Data r3() const;
+    [[nodiscard]] auto r3() const -> Data;
 
-    [[nodiscard]] Data r4() const;
+    [[nodiscard]] auto r4() const -> Data;
 
-    [[nodiscard]] Data r5() const;
+    [[nodiscard]] auto r5() const -> Data;
 
-    [[nodiscard]] Data r6() const;
+    [[nodiscard]] auto r6() const -> Data;
 
-    [[nodiscard]] Data r7() const;
+    [[nodiscard]] auto r7() const -> Data;
 
 private:
     EmulatorMemory<Address, RawData>& m_memory;

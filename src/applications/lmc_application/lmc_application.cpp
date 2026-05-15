@@ -42,7 +42,7 @@ LmcApplication::LmcApplication(std::string const& file, const GuiType gui_type)
     }
 }
 
-std::unique_ptr<Session> LmcApplication::new_session()
+auto LmcApplication::new_session() -> std::unique_ptr<Session>
 {
     return std::make_unique<LmcApplicationSession>(
         m_is_only_run_once,
@@ -73,7 +73,7 @@ void LmcApplication::load_file(std::string const& file)
     m_memory.add(remaining_memory);
 }
 
-std::vector<Data> LmcApplication::create_work_ram(std::size_t size)
+auto LmcApplication::create_work_ram(const std::size_t size) -> std::vector<Data>
 {
     std::vector<Data> work_ram;
 

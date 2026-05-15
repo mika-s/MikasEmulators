@@ -14,11 +14,11 @@ class LmcOtc : public InstructionInterface {
 public:
     LmcOtc();
 
-    Data eval() override;
+    auto eval() -> Data override;
 
-    static std::unique_ptr<InstructionInterface> parse(Scanner& scanner);
+    static auto parse(Scanner& scanner) -> std::unique_ptr<InstructionInterface>;
 
 private:
-    static const inline Data opcode = Data(922);
+    static const inline auto opcode = Data(922);
 };
 }

@@ -19,16 +19,16 @@ LmcLda::LmcLda(LmcOperand operand)
 {
 }
 
-Data LmcLda::eval()
+auto LmcLda::eval() -> Data
 {
     return opcode + m_operand.eval();
 }
 
-std::unique_ptr<InstructionInterface> LmcLda::parse(Scanner& scanner, Environment& environment)
+auto LmcLda::parse(Scanner& scanner, Environment& environment) -> std::unique_ptr<InstructionInterface>
 {
     scanner.skip(TokenKind::Lda);
 
-    LmcOperand operand = LmcOperand::parse(scanner, environment);
+    LmcOperand const operand = LmcOperand::parse(scanner, environment);
 
     return std::make_unique<LmcLda>(operand);
 }

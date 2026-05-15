@@ -15,11 +15,11 @@ class Scanner {
 public:
     explicit Scanner(std::vector<std::string> args);
 
-    Token current_token();
+    auto current_token() -> Token;
 
     void skip(TokenKind next);
 
-    std::vector<std::string> tokens_as_strings();
+    auto tokens_as_strings() -> std::vector<std::string>;
 
 private:
     static constexpr char s_start_of_flag = '-';
@@ -36,12 +36,12 @@ private:
 
     void read_token(std::string const& line);
 
-    bool handle_single_character(std::string const& line);
+    auto handle_single_character(std::string const& line) -> bool;
 
-    bool handle_short_option(std::string const& line);
+    auto handle_short_option(std::string const& line) -> bool;
 
-    bool handle_long_option(std::string const& line);
+    auto handle_long_option(std::string const& line) -> bool;
 
-    bool handle_identifier(std::string const& line);
+    auto handle_identifier(std::string const& line) -> bool;
 };
 }

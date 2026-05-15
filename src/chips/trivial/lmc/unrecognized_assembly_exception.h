@@ -11,7 +11,7 @@ public:
 
     UnrecognizedAssemblyException(std::string const& assembly, std::string const& extra_message);
 
-    [[nodiscard]] char const* what() const noexcept override;
+    [[nodiscard]] auto what() const noexcept -> char const* override;
 
 private:
     void make_message(std::string const& assembly);

@@ -106,7 +106,7 @@ private:
     SpritemapPane m_spritemap { 1 };
     WaveformPane m_waveforms;
 
-    void notify_gui_observers(GuiRequest request);
+    void notify_gui_observers(GuiRequest request) const;
 
     void init();
 

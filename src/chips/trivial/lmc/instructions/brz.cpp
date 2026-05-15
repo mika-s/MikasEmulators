@@ -14,14 +14,14 @@ namespace emu::lmc {
  * @param pc is the program counter, which will be mutated
  * @param address is the address to the value in memory
  */
-void brz(Data acc_reg, Address& pc, Address address)
+void brz(const Data acc_reg, Address& pc, const Address address) // NOLINT(*-identifier-length)
 {
     if (acc_reg.underlying() == 0) {
         pc = address;
     }
 }
 
-void print_brz(std::ostream& ostream, Address address)
+void print_brz(std::ostream& ostream, const Address address)
 {
     ostream << "BRZ "
             << address;

@@ -110,8 +110,8 @@ private:
 
     static void print_test_usage(std::string const& program_name);
 
-    static std::unique_ptr<Emulator> choose_emulator(std::string const& program, Options const& options);
+    static auto choose_emulator(std::string const& program, Options const& options) -> std::unique_ptr<Emulator>;
 
-    static bool is_supporting(std::string const& program);
+    static auto is_supporting(std::string const& program) -> bool;
 };
 }

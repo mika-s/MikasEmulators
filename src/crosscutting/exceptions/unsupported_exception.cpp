@@ -3,21 +3,21 @@
 
 namespace emu::exceptions {
 
-UnsupportedException::UnsupportedException(std::string const& msg)
+UnsupportedException::UnsupportedException(std::string const& message)
     : std::invalid_argument("Unsupported: ")
 {
-    make_message(msg);
+    make_message(message);
 }
 
-char const* UnsupportedException::what() const noexcept
+auto UnsupportedException::what() const noexcept -> char const*
 {
     return m_message.c_str();
 }
 
-void UnsupportedException::make_message(std::string const& msg)
+void UnsupportedException::make_message(std::string const& message)
 {
-    std::stringstream ss;
-    ss << invalid_argument::what() << msg;
+    std::stringstream ss; // NOLINT(*-identifier-length)
+    ss << invalid_argument::what() << message;
 
     m_message = ss.str();
 }

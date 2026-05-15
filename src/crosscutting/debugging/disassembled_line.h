@@ -21,12 +21,12 @@ public:
     {
     }
 
-    [[nodiscard]] A address() const
+    [[nodiscard]] auto address() const -> A
     {
         return m_address;
     }
 
-    [[nodiscard]] std::string const& full_line() const
+    [[nodiscard]] auto full_line() const -> std::string const&
     {
         return m_full_line;
     }
@@ -35,14 +35,13 @@ private:
     A m_address;
     std::string m_full_line;
 
-    static A address_from_disassembly_line(std::string line)
+    static auto address_from_disassembly_line(std::string line) -> A
     {
         const std::string delimiter = "\t";
-        std::size_t pos;
-        std::string token;
+        std::size_t pos = 0;
         std::vector<std::string> split;
         while ((pos = line.find(delimiter)) != std::string::npos) {
-            token = line.substr(0, pos);
+            std::string const token = line.substr(0, pos);
             split.push_back(token);
             line.erase(0, pos + delimiter.length());
         }

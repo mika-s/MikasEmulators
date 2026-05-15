@@ -16,7 +16,7 @@ class RunningAwaitingInputState : public State {
 public:
     explicit RunningAwaitingInputState(std::shared_ptr<StateContext> state_context);
 
-    bool is_exit_state() override;
+    auto is_exit_state() -> bool override;
 
     void transition_to_run() override;
 

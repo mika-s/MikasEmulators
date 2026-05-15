@@ -9,10 +9,10 @@ namespace emu::util::file {
 
 using emu::exceptions::RomFileNotFoundException;
 
-std::vector<u8> convert_char_pointer_to_vector(char* memory, std::streampos size)
+auto convert_char_pointer_to_vector(const char* memory, const std::streampos size) -> std::vector<u8>
 {
     std::vector<u8> program;
-    program.reserve(static_cast<unsigned long>(size));
+    program.reserve(size);
 
     for (int i = 0; i < size; ++i) {
         program.push_back(static_cast<u8>(memory[i]));
@@ -21,13 +21,12 @@ std::vector<u8> convert_char_pointer_to_vector(char* memory, std::streampos size
     return program;
 }
 
-std::vector<u8> read_file_into_vector(std::string const& path)
+auto read_file_into_vector(std::string const& path) -> std::vector<u8>
 {
     if (!std::filesystem::exists(path)) {
         throw RomFileNotFoundException(path);
     }
 
-    std::streampos size;
     char* memory;
 
     std::ifstream file(path, std::ios::in | std::ios::binary | std::ios::ate);
@@ -35,7 +34,7 @@ std::vector<u8> read_file_into_vector(std::string const& path)
     std::vector<u8> program;
 
     if (file.is_open()) {
-        size = file.tellg();
+        std::streampos const size = file.tellg();
         memory = new char[static_cast<unsigned long>(size)];
         file.seekg(0, std::ios::beg);
         file.read(memory, size);
@@ -51,7 +50,7 @@ std::vector<u8> read_file_into_vector(std::string const& path)
     return program;
 }
 
-std::stringstream read_file(std::string const& path)
+auto read_file(std::string const& path) -> std::stringstream
 {
     std::string line;
     std::stringstream ss;

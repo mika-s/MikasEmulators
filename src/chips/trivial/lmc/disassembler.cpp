@@ -32,8 +32,8 @@ void Disassembler::print_next_instruction()
 {
     m_ostream << m_pc << "\t\t";
 
-    Data raw_opcode = get_next_value();
-    const Opcode opcode = find_opcode(raw_opcode);
+    Data const raw_opcode = get_next_value();
+    Opcode const opcode = find_opcode(raw_opcode);
 
     switch (opcode) {
     case Opcode::ADD:
@@ -78,42 +78,52 @@ void Disassembler::print_next_instruction()
     m_ostream << "\n";
 }
 
-Data Disassembler::get_next_value()
+auto Disassembler::get_next_value() -> Data
 {
     return m_memory.read(m_pc++);
 }
 
-Address Disassembler::find_argument(Data raw_opcode)
+auto Disassembler::find_argument(const Data raw_opcode) -> Address
 {
     return Address(raw_opcode.underlying());
 }
 
-Opcode Disassembler::find_opcode(Data raw_opcode)
+auto Disassembler::find_opcode(const Data raw_opcode) -> Opcode
 {
     if (Data(0) <= raw_opcode && raw_opcode <= Data(99)) {
         return Opcode::HLT;
-    } else if (Data(100) <= raw_opcode && raw_opcode <= Data(199)) {
-        return Opcode::ADD;
-    } else if (Data(200) <= raw_opcode && raw_opcode <= Data(299)) {
-        return Opcode::SUB;
-    } else if (Data(300) <= raw_opcode && raw_opcode <= Data(399)) {
-        return Opcode::STA;
-    } else if (Data(500) <= raw_opcode && raw_opcode <= Data(599)) {
-        return Opcode::LDA;
-    } else if (Data(600) <= raw_opcode && raw_opcode <= Data(699)) {
-        return Opcode::BRA;
-    } else if (Data(700) <= raw_opcode && raw_opcode <= Data(799)) {
-        return Opcode::BRZ;
-    } else if (Data(800) <= raw_opcode && raw_opcode <= Data(899)) {
-        return Opcode::BRP;
-    } else if (raw_opcode == Data(901)) {
-        return Opcode::INP;
-    } else if (raw_opcode <= Data(902)) {
-        return Opcode::OUT;
-    } else if (raw_opcode <= Data(922)) {
-        return Opcode::OTC;
-    } else {
-        throw UnrecognizedOpcodeException(static_cast<u8>(raw_opcode.underlying()));
     }
+    if (Data(100) <= raw_opcode && raw_opcode <= Data(199)) {
+        return Opcode::ADD;
+    }
+    if (Data(200) <= raw_opcode && raw_opcode <= Data(299)) {
+        return Opcode::SUB;
+    }
+    if (Data(300) <= raw_opcode && raw_opcode <= Data(399)) {
+        return Opcode::STA;
+    }
+    if (Data(500) <= raw_opcode && raw_opcode <= Data(599)) {
+        return Opcode::LDA;
+    }
+    if (Data(600) <= raw_opcode && raw_opcode <= Data(699)) {
+        return Opcode::BRA;
+    }
+    if (Data(700) <= raw_opcode && raw_opcode <= Data(799)) {
+        return Opcode::BRZ;
+    }
+    if (Data(800) <= raw_opcode && raw_opcode <= Data(899)) {
+        return Opcode::BRP;
+    }
+    if (raw_opcode == Data(901)) {
+        return Opcode::INP;
+    }
+    if (raw_opcode <= Data(902)) {
+        return Opcode::OUT;
+    }
+    if (raw_opcode <= Data(922)) {
+        return Opcode::OTC;
+    }
+
+    throw UnrecognizedOpcodeException(static_cast<u8>(raw_opcode.underlying()));
 }
 }

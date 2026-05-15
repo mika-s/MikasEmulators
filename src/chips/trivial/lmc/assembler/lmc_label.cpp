@@ -16,21 +16,21 @@ LmcLabel::LmcLabel(std::string literal, Environment& environment)
 {
 }
 
-Address LmcLabel::eval()
+auto LmcLabel::eval() const -> Address
 {
     return m_environment.get_address_given_label(m_literal);
 }
 
-std::optional<LmcLabel> LmcLabel::parse(Scanner& scanner, Environment& environment)
+auto LmcLabel::parse(Scanner& scanner, Environment& environment) -> std::optional<LmcLabel>
 {
-    Token current_token = scanner.current_token();
-    if (current_token.kind() == TokenKind::Label) {
+    if (Token const current_token = scanner.current_token(); current_token.kind() == TokenKind::Label) {
         const std::string label = current_token.label_literal();
         scanner.skip(TokenKind::Label);
         environment.add_label(label, scanner.current_address() - Address(1));
         return { LmcLabel(label, environment) };
-    } else {
-        return std::nullopt;
     }
+
+    return std::nullopt;
+
 }
 }

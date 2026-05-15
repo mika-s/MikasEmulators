@@ -10,7 +10,7 @@ class Environment {
 public:
     void add_label(std::string const& label, Address address);
 
-    Address get_address_given_label(std::string const& label);
+    auto get_address_given_label(std::string const& label) -> Address;
 
 private:
     std::unordered_map<std::string, Address> m_mapping;

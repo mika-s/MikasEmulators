@@ -59,7 +59,7 @@ void Frontend::run(Options const& options)
     } else {
         throw InvalidProgramArgumentsException(
             fmt::format("Unknown command: {}", command),
-            Frontend::print_main_usage);
+            print_main_usage);
     }
 }
 
@@ -70,9 +70,9 @@ void Frontend::print_main_usage(std::string const& program_name)
 
     std::cout << "Commands:\n";
 
-    for (auto& command_description : s_command_descriptions) {
-        std::string padding = create_padding(command_description.first.size(), s_padding_to_description);
-        std::cout << "  " << command_description.first << padding << command_description.second << "\n";
+    for (const auto&[fst, snd] : s_command_descriptions) {
+        std::string const padding = create_padding(fst.size(), s_padding_to_description);
+        std::cout << "  " << fst << padding << snd << "\n";
     }
 
     std::cout << "\n\nRun './" << program_name << " COMMAND --help' for more information on a command.\n";
@@ -235,7 +235,7 @@ void Frontend::test(Options const& options)
             context.addFilter("test-case", "LMC*");
             context.addFilter("test-case", "Synacor*");
         } else {
-            for (std::string& cpu : opts["cpu"]) {
+            for (std::string const& cpu : opts["cpu"]) {
                 context.addFilter("test-case", fmt::format("{}*", cpu).c_str());
             }
         }
@@ -258,7 +258,7 @@ void Frontend::print_run_usage(std::string const& program_name)
     std::cout << "Applications:\n";
 
     for (auto& program_description : s_supported_programs) {
-        std::string padding = create_padding(program_description.first.size(), s_padding_to_description);
+        std::string const padding = create_padding(program_description.first.size(), s_padding_to_description);
         if (program_description.first == "NEWLINE") {
             std::cout << "\n";
         } else {
@@ -278,7 +278,7 @@ void Frontend::print_disassemble_usage(std::string const& program_name)
     std::cout << "CPUs:\n";
 
     for (auto& cpu_description : s_supported_cpus) {
-        std::string padding = create_padding(cpu_description.first.size(), s_padding_to_description);
+        std::string const padding = create_padding(cpu_description.first.size(), s_padding_to_description);
         if (cpu_description.first == "NEWLINE") {
             std::cout << "\n";
         } else {
@@ -288,12 +288,12 @@ void Frontend::print_disassemble_usage(std::string const& program_name)
 
     std::cout << "\nFormats:\n";
 
-    for (auto& format_description : s_supported_formats) {
-        std::string padding = create_padding(format_description.first.size(), s_padding_to_description);
-        if (format_description.first == "NEWLINE") {
+    for (const auto&[fst, snd] : s_supported_formats) {
+        std::string const padding = create_padding(fst.size(), s_padding_to_description);
+        if (fst == "NEWLINE") {
             std::cout << "\n";
         } else {
-            std::cout << "  " << format_description.first << padding << format_description.second << "\n";
+            std::cout << "  " << fst << padding << snd << "\n";
         }
     }
 }
@@ -305,12 +305,12 @@ void Frontend::print_test_usage(std::string const& program_name)
 
     std::cout << "CPUs:\n";
 
-    for (auto& cpu_description : s_supported_cpus) {
-        std::string padding = create_padding(cpu_description.first.size(), s_padding_to_description);
-        if (cpu_description.first == "NEWLINE") {
+    for (const auto&[fst, snd] : s_supported_cpus) {
+        std::string const padding = create_padding(fst.size(), s_padding_to_description);
+        if (fst == "NEWLINE") {
             std::cout << "\n";
         } else {
-            std::cout << "  " << cpu_description.first << padding << cpu_description.second << "\n";
+            std::cout << "  " << fst << padding << snd << "\n";
         }
     }
 
@@ -318,14 +318,14 @@ void Frontend::print_test_usage(std::string const& program_name)
                  "CPU is provided.\nThe crosscutting unit tests are always run.\n";
     std::cout << "\nExamples:\n";
 
-    for (auto& example_description : s_test_examples) {
-        std::cout << "  " << example_description.second << ":\n";
+    for (const auto&[fst, snd] : s_test_examples) {
+        std::cout << "  " << snd << ":\n";
         std::cout << "    "
-                  << "./" << program_name << " test " << example_description.first << "\n\n";
+                  << "./" << program_name << " test " << fst << "\n\n";
     }
 }
 
-std::unique_ptr<Emulator> Frontend::choose_emulator(std::string const& program, Options const& options)
+auto Frontend::choose_emulator(std::string const& program, Options const& options) -> std::unique_ptr<Emulator>
 {
     using namespace applications;
 

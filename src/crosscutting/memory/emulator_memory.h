@@ -29,7 +29,7 @@ public:
         m_memory_mapper_is_attached = true;
     }
 
-    std::size_t size()
+    auto size() -> std::size_t
     {
         dummy();
         return m_memory.size();
@@ -47,7 +47,7 @@ public:
      * @param to is the index to slice until
      * @return a new EmulatorMemory object that contains the sliced memory
      */
-    EmulatorMemory<A, D> slice(std::size_t from, std::size_t to)
+    auto slice(const std::size_t from, const std::size_t to) -> EmulatorMemory
     {
         std::vector<D> data;
 
@@ -70,41 +70,41 @@ public:
         }
     }
 
-    [[nodiscard]] D read(A address) const
+    [[nodiscard]] auto read(A address) const -> D
     {
         if (m_memory_mapper_is_attached) {
             return m_memory_mapper->read(address);
-        } else {
-            return direct_read(address);
         }
+
+        return direct_read(address);
     }
 
     void direct_write(A address, D value)
     {
-        m_memory[static_cast<typename std::vector<D>::size_type>(address)] = value;
+        m_memory[static_cast<std::vector<D>::size_type>(address)] = value;
     }
 
-    [[nodiscard]] D direct_read(A address) const
+    [[nodiscard]] auto direct_read(A address) const -> D
     {
-        return m_memory[static_cast<typename std::vector<D>::size_type>(address)];
+        return m_memory[static_cast<std::vector<D>::size_type>(address)];
     }
 
-    typename std::vector<D>::iterator begin()
+    auto begin() -> std::vector<D>::iterator
     {
         return m_memory.begin();
     }
 
-    typename std::vector<D>::iterator end()
+    auto end() -> std::vector<D>::iterator
     {
         return m_memory.end();
     }
 
-    [[nodiscard]] typename std::vector<D>::const_iterator begin() const
+    [[nodiscard]] auto begin() const -> std::vector<D>::const_iterator
     {
         return m_memory.begin();
     }
 
-    [[nodiscard]] typename std::vector<D>::const_iterator end() const
+    [[nodiscard]] auto end() const -> std::vector<D>::const_iterator
     {
         return m_memory.end();
     }

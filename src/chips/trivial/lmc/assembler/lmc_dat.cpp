@@ -16,16 +16,16 @@ LmcDat::LmcDat(std::optional<LmcInteger> operand)
 {
 }
 
-Data LmcDat::eval()
+auto LmcDat::eval() -> Data
 {
     if (m_operand.has_value()) {
         return m_operand->eval();
-    } else {
-        return Data(0);
     }
+
+    return Data(0);
 }
 
-std::unique_ptr<InstructionInterface> LmcDat::parse(Scanner& scanner)
+auto LmcDat::parse(Scanner& scanner) -> std::unique_ptr<InstructionInterface>
 {
     scanner.skip(TokenKind::Dat);
 

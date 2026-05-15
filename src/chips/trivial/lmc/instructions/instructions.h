@@ -12,9 +12,9 @@ void add(Data& acc_reg, Address address, EmulatorMemory<Address, Data> const& me
 void sub(Data& acc_reg, Address address, EmulatorMemory<Address, Data> const& memory, Flags& flag_reg);
 void sta(Data acc_reg, Address address, EmulatorMemory<Address, Data>& memory);
 void lda(Data& acc_reg, Address address, EmulatorMemory<Address, Data> const& memory);
-void bra(Address& pc, Address address);
-void brz(Data acc_reg, Address& pc, Address address);
-void brp(Address& pc, Address address, Flags flag_reg);
+void bra(Address& pc, Address address); // NOLINT(*-identifier-length)
+void brz(Data acc_reg, Address& pc, Address address); // NOLINT(*-identifier-length)
+void brp(Address& pc, Address address, Flags flag_reg); // NOLINT(*-identifier-length)
 void hlt(bool& is_halted);
 
 void print_add(std::ostream& ostream, Address address);

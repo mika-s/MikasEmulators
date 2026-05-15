@@ -51,6 +51,6 @@ private:
 
     std::vector<KeyObserver*> m_io_observers;
 
-    void notify_io_observers(IoRequest request);
+    void notify_io_observers(IoRequest request) const;
 };
 }

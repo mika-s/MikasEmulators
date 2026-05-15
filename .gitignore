@@ -10,3 +10,5 @@ helpers/cfg/test_source_code.txt
 roms/8080/*/
 roms/z80/*/
 
+pacman_imgui.ini
+synacor_imgui.ini

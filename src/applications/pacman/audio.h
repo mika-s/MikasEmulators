@@ -44,7 +44,7 @@ private:
 
     bool m_is_muted { false };
 
-    std::vector<Waveform> load_waveforms_from_roms(
+    static std::vector<Waveform> load_waveforms_from_roms(
         std::vector<u8> const& sound_rom1,
         std::vector<u8> const& sound_rom2);
 };

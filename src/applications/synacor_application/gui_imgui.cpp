@@ -64,7 +64,7 @@ GuiImgui::~GuiImgui()
     m_gl_context = nullptr;
 }
 
-void GuiImgui::to_terminal(Data character)
+void GuiImgui::to_terminal(const Data character)
 {
     m_output.push_back(fmt::format("{}", static_cast<char>(character.underlying())));
 }
@@ -90,19 +90,19 @@ void GuiImgui::remove_ui_observer(UiObserver* observer)
         m_gui_observers.end());
 }
 
-void GuiImgui::notify_gui_observers(GuiRequest const& request)
+void GuiImgui::notify_gui_observers(GuiRequest const& request) const
 {
     for (UiObserver* observer : m_gui_observers) {
         observer->gui_request(request);
     }
 }
 
-void GuiImgui::attach_debugger(std::shared_ptr<Debugger<Address, 16>> debugger)
+void GuiImgui::attach_debugger(const std::shared_ptr<Debugger<Address, 16>> debugger)
 {
     m_disassembly.attach_debugger(debugger);
 }
 
-void GuiImgui::attach_debug_container(std::shared_ptr<DebugContainer<Address, RawData, 16>> debug_container)
+void GuiImgui::attach_debug_container(const std::shared_ptr<DebugContainer<Address, RawData, 16>> debug_container)
 {
     m_cpu_info.attach_debug_container(debug_container);
     m_disassembly.attach_debug_container(debug_container);
@@ -184,7 +184,7 @@ void GuiImgui::init()
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
+    ImGuiIO& io = ImGui::GetIO(); // NOLINT(*-identifier-length)
     (void)io;
     io.IniFilename = "synacor_imgui.ini";
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
@@ -194,16 +194,16 @@ void GuiImgui::init()
     ImGui_ImplSDL2_InitForOpenGL(m_win, m_gl_context);
     ImGui_ImplOpenGL3_Init(glsl_version.c_str());
 
-    const ImVec4 background = ImVec4(35 / 255.0f, 35 / 255.0f, 35 / 255.0f, 1.00f);
+    constexpr auto background = ImVec4(35 / 255.0F, 35 / 255.0F, 35 / 255.0F, 1.00F);
     glClearColor(background.x, background.y, background.z, background.w);
 }
 
-void GuiImgui::update_screen(bool is_awaiting_input, std::string const& game_window_subtitle)
+void GuiImgui::update_screen(const bool is_awaiting_input, std::string const& game_window_subtitle)
 {
     render(is_awaiting_input, game_window_subtitle);
 }
 
-void GuiImgui::render(bool is_awaiting_input, std::string const& game_window_subtitle)
+void GuiImgui::render(const bool is_awaiting_input, std::string const& game_window_subtitle)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -212,16 +212,16 @@ void GuiImgui::render(bool is_awaiting_input, std::string const& game_window_sub
     ImGui::NewFrame();
 
     ImGuiStyle& style = ImGui::GetStyle();
-    style.WindowRounding = 0.0f;
+    style.WindowRounding = 0.0F;
 
-    int window_width;
-    int window_height;
+    int window_width = 0;
+    int window_height = 0;
     SDL_GetWindowSize(m_win, &window_width, &window_height);
 
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-    ImGui::SetNextWindowPos(ImVec2(.0f, .0f), ImGuiCond_Always);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0F, 0.0F));
+    ImGui::SetNextWindowPos(ImVec2(.0F, .0F), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(static_cast<float>(window_width), static_cast<float>(window_height)), ImGuiCond_Always);
-    ImGui::SetNextWindowBgAlpha(0.0f);
+    ImGui::SetNextWindowBgAlpha(0.0F);
 
     ImGui::Begin("Main window", nullptr,
         ImGuiWindowFlags_NoResize                    //
@@ -260,7 +260,7 @@ void GuiImgui::render(bool is_awaiting_input, std::string const& game_window_sub
 
     ImGui::DockSpace(
         ImGui::GetID("Docking"),
-        ImVec2(0.0f, 0.0f),
+        ImVec2(0.0F, 0.0F),
         ImGuiDockNodeFlags_None | ImGuiDockNodeFlags_PassthruCentralNode);
 
     if (m_show_log) {
@@ -290,15 +290,15 @@ void GuiImgui::render(bool is_awaiting_input, std::string const& game_window_sub
     SDL_GL_SwapWindow(m_win);
 }
 
-void GuiImgui::update_debug_only(bool is_awaiting_input)
+void GuiImgui::update_debug_only(const bool is_awaiting_input)
 {
     render(is_awaiting_input, "Stepping");
 }
 
-void GuiImgui::render_terminal_window(bool is_awaiting_input, std::string const& game_window_subtitle)
+void GuiImgui::render_terminal_window(const bool is_awaiting_input, std::string const& game_window_subtitle)
 {
     const std::string prefix = "Program";
-    const std::string id = "###" + prefix;
+    const std::string id = "###" + prefix; // NOLINT(*-identifier-length)
     std::string terminal_status;
     if (is_awaiting_input) {
         terminal_status = " (awaiting input)";
@@ -313,18 +313,18 @@ void GuiImgui::render_game_info_window()
 {
     ImGui::Begin("Program info", &m_show_game_info);
 
-    ImGui::Text("Avg %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    ImGui::Text("Avg %.3f ms/frame (%.1f FPS)", 1000.0F / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
     ImGui::Separator();
 
     if (ImGui::Button("Run")) {
         notify_gui_observers({ .m_type = GuiRequestType::RUN });
     }
-    ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+    ImGui::SameLine(0.0F, ImGui::GetStyle().ItemInnerSpacing.x);
     if (ImGui::Button("Pause")) {
         notify_gui_observers({ .m_type = GuiRequestType::PAUSE });
     }
-    ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+    ImGui::SameLine(0.0F, ImGui::GetStyle().ItemInnerSpacing.x);
     if (ImGui::Button("Stop")) {
         notify_gui_observers({ .m_type = GuiRequestType::STOP });
     }

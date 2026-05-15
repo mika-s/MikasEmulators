@@ -19,12 +19,12 @@ class LmcAdd : public InstructionInterface {
 public:
     explicit LmcAdd(LmcOperand operand);
 
-    Data eval() override;
+    auto eval() -> Data override;
 
-    static std::unique_ptr<InstructionInterface> parse(Scanner& scanner, Environment& environment);
+    static auto parse(Scanner& scanner, Environment& environment) -> std::unique_ptr<InstructionInterface>;
 
 private:
-    static const inline Data opcode = Data(100);
+    static const inline auto opcode = Data(100);
 
     LmcOperand m_operand;
 };

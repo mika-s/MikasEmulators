@@ -10,12 +10,12 @@ namespace emu::lmc {
 
 LmcOtc::LmcOtc() = default;
 
-Data LmcOtc::eval()
+auto LmcOtc::eval() -> Data
 {
     return opcode;
 }
 
-std::unique_ptr<InstructionInterface> LmcOtc::parse(Scanner& scanner)
+auto LmcOtc::parse(Scanner& scanner) -> std::unique_ptr<InstructionInterface>
 {
     scanner.skip(TokenKind::Otc);
 

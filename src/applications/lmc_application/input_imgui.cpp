@@ -3,7 +3,6 @@
 #include "imgui.h"
 #include "imgui_impl_sdl.h"
 #include <SDL_events.h>
-#include <SDL_keyboard.h>
 
 namespace emu::applications::lmc {
 
@@ -14,7 +13,7 @@ void InputImgui::read(GuiIo& gui_io)
     while (SDL_PollEvent(&read_input_event) != 0) {
         ImGui_ImplSDL2_ProcessEvent(&read_input_event);
 
-        ImGuiIO& io = ImGui::GetIO();
+        ImGuiIO const& io = ImGui::GetIO(); // NOLINT(*-identifier-length)
 
         if (!io.WantCaptureKeyboard) {
             switch (read_input_event.type) {
@@ -58,7 +57,7 @@ void InputImgui::read_debug_only(GuiIo& gui_io)
     while (SDL_PollEvent(&read_input_event) != 0) {
         ImGui_ImplSDL2_ProcessEvent(&read_input_event);
 
-        ImGuiIO& io = ImGui::GetIO();
+        const ImGuiIO& io = ImGui::GetIO(); // NOLINT(*-identifier-length)
 
         if (!io.WantCaptureKeyboard) {
             switch (read_input_event.type) {

@@ -23,21 +23,21 @@ void InputImgui::remove_io_observer(KeyObserver* observer)
         m_io_observers.end());
 }
 
-void InputImgui::notify_io_observers(IoRequest request)
+void InputImgui::notify_io_observers(const IoRequest request) const
 {
     for (KeyObserver* observer : m_io_observers) {
         observer->key_pressed(request);
     }
 }
 
-void InputImgui::read(GuiIo& gui_io, std::shared_ptr<MemoryMappedIoForPacman> memory_mapped_io)
+void InputImgui::read(GuiIo& gui_io, const std::shared_ptr<MemoryMappedIoForPacman> memory_mapped_io)
 {
     SDL_Event read_input_event;
 
     while (SDL_PollEvent(&read_input_event) != 0) {
         ImGui_ImplSDL2_ProcessEvent(&read_input_event);
 
-        ImGuiIO& io = ImGui::GetIO();
+        ImGuiIO const& io = ImGui::GetIO(); // NOLINT(*-identifier-length)
 
         if (!io.WantCaptureKeyboard) {
             switch (read_input_event.type) {
@@ -168,7 +168,7 @@ void InputImgui::read_debug_only(GuiIo& gui_io)
     while (SDL_PollEvent(&read_input_event) != 0) {
         ImGui_ImplSDL2_ProcessEvent(&read_input_event);
 
-        ImGuiIO& io = ImGui::GetIO();
+        ImGuiIO const& io = ImGui::GetIO(); // NOLINT(*-identifier-length)
 
         if (!io.WantCaptureKeyboard) {
             switch (read_input_event.type) {

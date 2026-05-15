@@ -5,7 +5,7 @@
 
 namespace emu::applications::command_line_arguments {
 
-std::string Identifier::parse(Scanner& scanner)
+auto Identifier::parse(Scanner& scanner) -> std::string
 {
     std::string literal = scanner.current_token().string_literal();
 

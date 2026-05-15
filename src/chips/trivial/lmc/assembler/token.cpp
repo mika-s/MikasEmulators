@@ -5,24 +5,22 @@
 
 namespace emu::lmc {
 
-Token::Token(TokenKind kind)
+Token::Token(const TokenKind kind)
     : m_kind(kind)
     , m_int_literal(0)
-    , m_label_literal("")
 {
 }
 
-Token::Token(TokenKind kind, int literal)
+Token::Token(const TokenKind kind, const int literal)
     : m_kind(kind)
     , m_int_literal(literal)
-    , m_label_literal("")
 {
     if (kind != TokenKind::Integer) {
         throw std::invalid_argument("TokenKind has to be Integer when passing integer literal");
     }
 }
 
-Token::Token(TokenKind kind, std::string literal)
+Token::Token(const TokenKind kind, std::string literal)
     : m_kind(kind)
     , m_int_literal(0)
     , m_label_literal(std::move(literal))
@@ -32,17 +30,17 @@ Token::Token(TokenKind kind, std::string literal)
     }
 }
 
-TokenKind Token::kind() const
+auto Token::kind() const -> TokenKind
 {
     return m_kind;
 }
 
-int Token::int_literal() const
+auto Token::int_literal() const -> int
 {
     return m_int_literal;
 }
 
-std::string Token::label_literal() const
+auto Token::label_literal() const -> std::string
 {
     return m_label_literal;
 }

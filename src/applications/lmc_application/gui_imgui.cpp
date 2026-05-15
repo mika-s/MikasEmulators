@@ -115,12 +115,12 @@ void GuiImgui::notify_gui_observers(const GuiRequest& request)
     }
 }
 
-void GuiImgui::attach_debugger(std::shared_ptr<Debugger<Address, 10>> debugger)
+void GuiImgui::attach_debugger(const std::shared_ptr<Debugger<Address, 10>> debugger)
 {
     m_disassembly.attach_debugger(debugger);
 }
 
-void GuiImgui::attach_debug_container(std::shared_ptr<DebugContainer<Address, Data, 10>> debug_container)
+void GuiImgui::attach_debug_container(const std::shared_ptr<DebugContainer<Address, Data, 10>> debug_container)
 {
     m_cpu_info.attach_debug_container(debug_container);
     m_disassembly.attach_debug_container(debug_container);
@@ -237,16 +237,16 @@ void GuiImgui::render(bool is_awaiting_input, std::string const& game_window_sub
     ImGui::NewFrame();
 
     ImGuiStyle& style = ImGui::GetStyle();
-    style.WindowRounding = 0.0f;
+    style.WindowRounding = 0.0F;
 
-    int window_width;
-    int window_height;
+    int window_width = 0;
+    int window_height = 0;
     SDL_GetWindowSize(m_win, &window_width, &window_height);
 
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0F, 0.0F));
     ImGui::SetNextWindowPos(ImVec2(.0f, .0f), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(static_cast<float>(window_width), static_cast<float>(window_height)), ImGuiCond_Always);
-    ImGui::SetNextWindowBgAlpha(0.0f);
+    ImGui::SetNextWindowBgAlpha(0.0F);
 
     ImGui::Begin("Main window", nullptr,
         ImGuiWindowFlags_NoResize                    //
@@ -266,7 +266,7 @@ void GuiImgui::render(bool is_awaiting_input, std::string const& game_window_sub
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("File")) {
             if (ImGui::MenuItem("Exit", "Alt+F4")) {
-                notify_gui_observers({ .m_type = GuiRequestType::STOP });
+                notify_gui_observers({ .m_type = GuiRequestType::STOP, .m_string_payload = "" });
             }
             ImGui::EndMenu();
         }
@@ -286,7 +286,7 @@ void GuiImgui::render(bool is_awaiting_input, std::string const& game_window_sub
 
     ImGui::DockSpace(
         ImGui::GetID("Docking"),
-        ImVec2(0.0f, 0.0f),
+        ImVec2(0.0F, 0.0F),
         ImGuiDockNodeFlags_None | ImGuiDockNodeFlags_PassthruCentralNode);
 
     if (m_show_log) {
@@ -332,7 +332,7 @@ void GuiImgui::render_code_editor()
 void GuiImgui::render_terminal_window(bool is_awaiting_input, std::string const& game_window_subtitle)
 {
     const std::string prefix = "Program";
-    const std::string id = "###" + prefix;
+    const std::string id = "###" + prefix; // NOLINT(*-identifier-length)
     std::string terminal_status;
     if (is_awaiting_input) {
         terminal_status = " (awaiting input)";
@@ -347,24 +347,24 @@ void GuiImgui::render_game_info_window()
 {
     ImGui::Begin("Program info", &m_show_game_info);
 
-    ImGui::Text("Avg %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    ImGui::Text("Avg %.3f ms/frame (%.1f FPS)", 1000.0F / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
     ImGui::Separator();
 
     if (ImGui::Button("Run")) {
-        notify_gui_observers({ .m_type = GuiRequestType::RUN });
+        notify_gui_observers({ .m_type = GuiRequestType::RUN, .m_string_payload = "" });
     }
     ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
     if (ImGui::Button("Pause")) {
-        notify_gui_observers({ .m_type = GuiRequestType::PAUSE });
+        notify_gui_observers({ .m_type = GuiRequestType::PAUSE, .m_string_payload = "" });
     }
     ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
     if (ImGui::Button("Stop")) {
-        notify_gui_observers({ .m_type = GuiRequestType::STOP });
+        notify_gui_observers({ .m_type = GuiRequestType::STOP, .m_string_payload = "" });
     }
     ImGui::Separator();
     if (ImGui::Checkbox("Debug mode", &m_is_in_debug_mode)) {
-        notify_gui_observers({ .m_type = GuiRequestType::DEBUG_MODE, .m_bool_payload = m_is_in_debug_mode });
+        notify_gui_observers({ .m_type = GuiRequestType::DEBUG_MODE, .m_bool_payload = m_is_in_debug_mode, .m_string_payload = "" });
     }
 
     ImGui::End();
@@ -397,11 +397,11 @@ void GuiImgui::source_code_changed(std::string const& source_code)
 
 void GuiImgui::assemble_and_load_request()
 {
-    notify_gui_observers({ .m_type = GuiRequestType::ASSEMBLE_AND_LOAD, .m_bool_payload = m_is_in_debug_mode });
+    notify_gui_observers({ .m_type = GuiRequestType::ASSEMBLE_AND_LOAD, .m_bool_payload = m_is_in_debug_mode, .m_string_payload = "" });
 }
 
 void GuiImgui::input_sent(std::string const& input)
 {
-    notify_gui_observers({ .m_type = GuiRequestType::INPUT_FROM_TERMINAL, .m_data_payload = Data(std::stoi(input)) });
+    notify_gui_observers({ .m_type = GuiRequestType::INPUT_FROM_TERMINAL, .m_data_payload = Data(std::stoi(input)), .m_string_payload = "" });
 }
 }

@@ -11,7 +11,7 @@
 
 namespace emu::util::string {
 
-std::string hexify(u8 val)
+auto hexify(const u8 val) -> std::string
 {
     std::stringstream ss;
     ss << "0x" << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(val);
@@ -20,7 +20,7 @@ std::string hexify(u8 val)
     return return_val;
 }
 
-std::string hexify(u16 val)
+auto hexify(const u16 val) -> std::string
 {
     std::stringstream ss;
     ss << "0x" << std::setfill('0') << std::setw(4) << std::hex << val;
@@ -28,7 +28,7 @@ std::string hexify(u16 val)
     return ss.str();
 }
 
-std::string hexify_wo_0x(u8 val)
+auto hexify_wo_0x(const u8 val) -> std::string
 {
     std::stringstream ss;
     ss << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(val);
@@ -37,19 +37,19 @@ std::string hexify_wo_0x(u8 val)
     return return_val;
 }
 
-std::string hexify_wo_0x(i8 val)
+auto hexify_wo_0x(const i8 val) -> std::string
 {
     if (val >= 0) {
         return hexify_wo_0x(static_cast<u8>(val));
-    } else {
-        u8 uval = static_cast<u8>(abs(val));
-        std::stringstream ss;
-        ss << "-" << hexify_wo_0x(uval);
-        return ss.str();
     }
+
+    u8 const uval = static_cast<u8>(abs(val));
+    std::stringstream ss;
+    ss << "-" << hexify_wo_0x(uval);
+    return ss.str();
 }
 
-std::string hexify_wo_0x(u16 val)
+auto hexify_wo_0x(const u16 val) -> std::string
 {
     std::stringstream ss;
     ss << std::setfill('0') << std::setw(4) << std::hex << static_cast<int>(val);
@@ -58,7 +58,7 @@ std::string hexify_wo_0x(u16 val)
     return return_val;
 }
 
-std::string hexify_wo_0x(unsigned int val, int width)
+auto hexify_wo_0x(const unsigned int val, const int width) -> std::string
 {
     std::stringstream ss;
     ss << std::setfill('0') << std::setw(width) << std::hex << static_cast<int>(val);
@@ -67,7 +67,7 @@ std::string hexify_wo_0x(unsigned int val, int width)
     return return_val;
 }
 
-std::string find_short_executable_name(std::string name)
+auto find_short_executable_name(std::string name) -> std::string
 {
     const std::string delimiter = "/";
 
@@ -81,7 +81,7 @@ std::string find_short_executable_name(std::string name)
     return name;
 }
 
-std::string create_padding(std::size_t length_so_far, std::size_t expected_length)
+auto create_padding(std::size_t length_so_far, std::size_t expected_length) -> std::string
 {
     if (length_so_far > expected_length) {
         throw std::invalid_argument(
@@ -99,7 +99,7 @@ std::string create_padding(std::size_t length_so_far, std::size_t expected_lengt
     return ss.str();
 }
 
-std::vector<std::string> split(std::stringstream const& ss, std::string const& delimiter)
+auto split(std::stringstream const& ss, std::string const& delimiter) -> std::vector<std::string>
 {
     std::vector<std::string> split_string;
     std::string s = ss.str();
@@ -117,7 +117,7 @@ std::vector<std::string> split(std::stringstream const& ss, std::string const& d
     return split_string;
 }
 
-std::string_view trim(std::string_view s)
+auto trim(std::string_view s) -> std::string_view
 {
     s.remove_prefix(std::min(s.find_first_not_of(" \t\r\v\n"), s.size()));
     s.remove_suffix(std::min(s.size() - s.find_last_not_of(" \t\r\v\n") - 1, s.size()));
@@ -125,7 +125,7 @@ std::string_view trim(std::string_view s)
     return s;
 }
 
-std::string prepend(std::string prefix, char const* txt)
+auto prepend(const std::string &prefix, char const* txt) -> std::string
 {
     char* out = new char[strlen(txt) + prefix.size() + 1];
 
@@ -142,7 +142,7 @@ std::string prepend(std::string prefix, char const* txt)
     return { out };
 }
 
-std::string append(std::string postfix, char const* txt)
+auto append(const std::string &postfix, char const* txt) -> std::string
 {
     char* out = new char[strlen(txt) + postfix.size() + 1];
 
@@ -159,12 +159,12 @@ std::string append(std::string postfix, char const* txt)
     return { out };
 }
 
-bool is_alphanumeric(std::string const& str)
+auto is_alphanumeric(std::string const& str) -> bool
 {
     return std::find_if(str.begin(), str.end(), [](char const& c) { return isalnum(c); }) == str.end();
 }
 
-bool is_alpha(std::string const& str)
+auto is_alpha(std::string const& str) -> bool
 {
     return std::find_if(str.begin(), str.end(), [](char const& c) { return !isalpha(c); }) == str.end();
 }

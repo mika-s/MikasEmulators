@@ -12,9 +12,9 @@ public:
         std::string const& msg,
         std::function<void(std::string const& program_name)> usage_function);
 
-    [[nodiscard]] char const* what() const noexcept override;
+    [[nodiscard]] auto what() const noexcept -> char const* override;
 
-    [[nodiscard]] std::function<void(const std::string& program_name)> const& usage_function() const;
+    [[nodiscard]] auto usage_function() const -> std::function<void(const std::string& program_name)> const&;
 
 private:
     void make_message(std::string const& msg);

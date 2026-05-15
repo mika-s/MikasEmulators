@@ -47,22 +47,22 @@ public:
     {
     }
 
-    [[nodiscard]] std::string name() const
+    [[nodiscard]] auto name() const -> std::string
     {
         return m_name;
     }
 
-    [[nodiscard]] D main() const
+    [[nodiscard]] auto main() const -> D
     {
         return m_value_retriever_main();
     }
 
-    [[nodiscard]] D alternate() const
+    [[nodiscard]] auto alternate() const -> D
     {
         return m_value_retriever_alternate();
     }
 
-    [[nodiscard]] bool is_alternate_set() const
+    [[nodiscard]] auto is_alternate_set() const -> bool
     {
         return m_is_alternate_set;
     }
@@ -89,17 +89,17 @@ public:
     {
     }
 
-    [[nodiscard]] std::string name() const
+    [[nodiscard]] auto name() const -> std::string
     {
         return m_name;
     }
 
-    [[nodiscard]] D value() const
+    [[nodiscard]] auto value() const -> D
     {
         return m_value_retriever();
     }
 
-    [[nodiscard]] std::vector<std::tuple<std::string, unsigned int>> flag_names() const
+    [[nodiscard]] auto flag_names() const -> std::vector<std::tuple<std::string, unsigned int>>
     {
         return m_flag_names;
     }
@@ -137,27 +137,27 @@ public:
     {
     }
 
-    [[nodiscard]] std::string name() const
+    [[nodiscard]] auto name() const -> std::string
     {
         return m_name;
     }
 
-    [[nodiscard]] bool is_active() const
+    [[nodiscard]] auto is_active() const -> bool
     {
         return m_is_active_retriever();
     }
 
-    [[nodiscard]] D value() const
+    [[nodiscard]] auto value() const -> D
     {
         return m_value_retriever();
     }
 
-    [[nodiscard]] bool is_divided_into_bits() const
+    [[nodiscard]] auto is_divided_into_bits() const -> bool
     {
         return m_is_divided_into_bits;
     }
 
-    [[nodiscard]] std::vector<std::tuple<std::string, unsigned int>> bit_names() const
+    [[nodiscard]] auto bit_names() const -> std::vector<std::tuple<std::string, unsigned int>>
     {
         return m_bit_names;
     }
@@ -180,7 +180,7 @@ public:
         m_value_retriever = std::move(value_retriever);
     }
 
-    [[nodiscard]] std::vector<D> value() const
+    [[nodiscard]] auto value() const -> std::vector<D>
     {
         return m_value_retriever();
     }
@@ -201,7 +201,7 @@ class DebugContainer {
 public:
     DebugContainer() = default;
 
-    bool is_decimal()
+    auto is_decimal() -> bool
     {
         return B == 10;
     }
@@ -214,12 +214,12 @@ public:
         }
     }
 
-    std::vector<RegisterDebugContainer<D>> registers()
+    auto registers() -> std::vector<RegisterDebugContainer<D>>
     {
         return m_register_retrievers;
     }
 
-    [[nodiscard]] bool has_alternate_registers() const
+    [[nodiscard]] auto has_alternate_registers() const -> bool
     {
         return m_has_alternate_registers;
     }
@@ -230,28 +230,28 @@ public:
         m_is_flag_register_set = true;
     }
 
-    [[nodiscard]] FlagRegisterDebugContainer<D> flag_register() const
+    [[nodiscard]] auto flag_register() const -> FlagRegisterDebugContainer<D>
     {
         return m_flag_register_retriever;
     }
 
-    [[nodiscard]] bool is_flag_register_set() const
+    [[nodiscard]] auto is_flag_register_set() const -> bool
     {
         return m_is_flag_register_set;
     }
 
-    void add_io(IoDebugContainer<D> const& io)
+    void add_io(IoDebugContainer<D> const& io) // NOLINT(*-identifier-length)
     {
         m_io_retrievers.emplace_back(io);
         m_is_io_set = true;
     }
 
-    [[nodiscard]] std::vector<IoDebugContainer<D>> io() const
+    [[nodiscard]] auto io() const -> std::vector<IoDebugContainer<D>>
     {
         return m_io_retrievers;
     }
 
-    [[nodiscard]] bool is_io_set() const
+    [[nodiscard]] auto is_io_set() const -> bool
     {
         return m_is_io_set;
     }
@@ -262,12 +262,12 @@ public:
         m_is_memory_set = true;
     }
 
-    [[nodiscard]] MemoryDebugContainer<D> memory() const
+    [[nodiscard]] auto memory() const -> MemoryDebugContainer<D>
     {
         return m_memory_retriever;
     }
 
-    [[nodiscard]] bool is_memory_set() const
+    [[nodiscard]] auto is_memory_set() const -> bool
     {
         return m_is_memory_set;
     }
@@ -278,12 +278,12 @@ public:
         m_is_pc_set = true;
     }
 
-    [[nodiscard]] A pc() const
+    [[nodiscard]] auto pc() const -> A
     {
         return m_pc_retriever();
     }
 
-    [[nodiscard]] bool is_pc_set() const
+    [[nodiscard]] auto is_pc_set() const -> bool
     {
         return m_is_pc_set;
     }
@@ -294,12 +294,12 @@ public:
         m_is_sp_set = true;
     }
 
-    [[nodiscard]] A sp() const
+    [[nodiscard]] auto sp() const -> A
     {
         return m_sp_retriever();
     }
 
-    [[nodiscard]] bool is_sp_set() const
+    [[nodiscard]] auto is_sp_set() const -> bool
     {
         return m_is_sp_set;
     }
@@ -310,12 +310,12 @@ public:
         m_is_interrupted_set = true;
     }
 
-    [[nodiscard]] bool is_interrupted() const
+    [[nodiscard]] auto is_interrupted() const -> bool
     {
         return m_is_interrupted_retriever();
     }
 
-    [[nodiscard]] bool is_interrupted_set() const
+    [[nodiscard]] auto is_interrupted_set() const -> bool
     {
         return m_is_interrupted_set;
     }
@@ -326,12 +326,12 @@ public:
         m_is_interrupt_mode_set = true;
     }
 
-    [[nodiscard]] std::string interrupt_mode() const
+    [[nodiscard]] auto interrupt_mode() const -> std::string
     {
         return m_interrupt_mode_retriever();
     }
 
-    [[nodiscard]] bool is_interrupt_mode_set() const
+    [[nodiscard]] auto is_interrupt_mode_set() const -> bool
     {
         return m_is_interrupt_mode_set;
     }
@@ -342,12 +342,12 @@ public:
         m_is_disassembled_program_set = true;
     }
 
-    std::vector<DisassembledLine<A, B>> const& disassembled_program() const
+    auto disassembled_program() const -> std::vector<DisassembledLine<A, B>> const&
     {
         return m_disassembled_program;
     }
 
-    [[nodiscard]] bool is_disassembled_program_set() const
+    [[nodiscard]] auto is_disassembled_program_set() const -> bool
     {
         return m_is_disassembled_program_set;
     }
@@ -358,12 +358,12 @@ public:
         m_is_tilemap_set = true;
     }
 
-    std::vector<std::vector<std::shared_ptr<Tile>>> tiles()
+    auto tiles() -> std::vector<std::vector<std::shared_ptr<Tile>>>
     {
         return m_tiles;
     }
 
-    [[nodiscard]] bool is_tilemap_set() const
+    [[nodiscard]] auto is_tilemap_set() const -> bool
     {
         return m_is_tilemap_set;
     }
@@ -372,23 +372,24 @@ public:
         std::vector<std::vector<std::shared_ptr<Sprite>>>,
         std::vector<std::vector<std::shared_ptr<Sprite>>>,
         std::vector<std::vector<std::shared_ptr<Sprite>>>,
-        std::vector<std::vector<std::shared_ptr<Sprite>>>> const& sprites)
+        std::vector<std::vector<std::shared_ptr<Sprite>>>
+    > const& sprites)
     {
         m_sprites = sprites;
         m_is_spritemap_set = true;
     }
 
-    std::tuple<
+    auto sprites() -> std::tuple<
         std::vector<std::vector<std::shared_ptr<Sprite>>>,
         std::vector<std::vector<std::shared_ptr<Sprite>>>,
         std::vector<std::vector<std::shared_ptr<Sprite>>>,
-        std::vector<std::vector<std::shared_ptr<Sprite>>>>
-    sprites()
+        std::vector<std::vector<std::shared_ptr<Sprite>>>
+    >
     {
         return m_sprites;
     }
 
-    [[nodiscard]] bool is_spritemap_set() const
+    [[nodiscard]] auto is_spritemap_set() const -> bool
     {
         return m_is_spritemap_set;
     }
@@ -399,12 +400,12 @@ public:
         m_is_waveforms_set = true;
     }
 
-    std::vector<Waveform> waveforms()
+    auto waveforms() -> std::vector<Waveform>
     {
         return m_waveforms;
     }
 
-    [[nodiscard]] bool is_waveforms_set() const
+    [[nodiscard]] auto is_waveforms_set() const -> bool
     {
         return m_is_waveforms_set;
     }
@@ -415,12 +416,12 @@ public:
         m_is_file_content_set = true;
     }
 
-    [[nodiscard]] std::string file_content() const
+    [[nodiscard]] auto file_content() const -> std::string
     {
         return m_file_content_retriever();
     }
 
-    [[nodiscard]] bool is_file_content_set() const
+    [[nodiscard]] auto is_file_content_set() const -> bool
     {
         return m_is_file_content_set;
     }

@@ -18,7 +18,7 @@ RunningAwaitingInputState::RunningAwaitingInputState(std::shared_ptr<StateContex
 {
 }
 
-bool RunningAwaitingInputState::is_exit_state()
+auto RunningAwaitingInputState::is_exit_state() -> bool
 {
     return false;
 }
@@ -55,7 +55,8 @@ void RunningAwaitingInputState::perform([[maybe_unused]] cyc& cycles)
         m_ctx->m_gui_io.m_is_quitting = false;
         transition_to_stop();
         return;
-    } else if (m_ctx->m_gui_io.m_is_toggling_pause) {
+    }
+    if (m_ctx->m_gui_io.m_is_toggling_pause) {
         m_ctx->m_gui_io.m_is_toggling_pause = false;
         transition_to_pause();
         return;

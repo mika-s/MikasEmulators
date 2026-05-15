@@ -22,7 +22,7 @@ class CpmApplication : public Emulator {
 public:
     explicit CpmApplication(std::string const& file);
 
-    std::unique_ptr<Session> new_session() override;
+    auto new_session() -> std::unique_ptr<Session> override;
 
 private:
     std::unique_ptr<Cpu> m_cpu;

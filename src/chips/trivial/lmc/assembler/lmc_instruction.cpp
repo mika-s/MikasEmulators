@@ -29,16 +29,14 @@ LmcInstruction::LmcInstruction(std::unique_ptr<InstructionInterface> instruction
 {
 }
 
-Data LmcInstruction::eval()
+auto LmcInstruction::eval() const -> Data
 {
     return m_instruction->eval();
 }
 
-std::unique_ptr<LmcInstruction> LmcInstruction::parse(Scanner& scanner, Environment& environment)
+auto LmcInstruction::parse(Scanner& scanner, Environment& environment) -> std::unique_ptr<LmcInstruction>
 {
-    const Token current_token = scanner.current_token();
-
-    switch (current_token.kind()) {
+    switch (const Token current_token = scanner.current_token(); current_token.kind()) {
     case TokenKind::Add:
         return std::make_unique<LmcInstruction>(LmcAdd::parse(scanner, environment));
     case TokenKind::Sub:

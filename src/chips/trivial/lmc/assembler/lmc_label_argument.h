@@ -16,7 +16,7 @@ class LmcLabelArgument {
 public:
     explicit LmcLabelArgument(std::string literal, Environment& environment);
 
-    Address eval();
+    Address eval() const;
 
     static LmcLabelArgument parse(Scanner& scanner, Environment& environment);
 

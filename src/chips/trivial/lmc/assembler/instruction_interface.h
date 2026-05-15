@@ -9,6 +9,6 @@ class InstructionInterface {
 public:
     virtual ~InstructionInterface() = default;
 
-    virtual Data eval() = 0;
+    virtual auto eval() -> Data = 0;
 };
 }

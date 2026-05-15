@@ -10,6 +10,6 @@ namespace emu::applications::command_line_arguments {
 
 class Identifier {
 public:
-    static std::string parse(Scanner& scanner);
+    static auto parse(Scanner& scanner) -> std::string;
 };
 }

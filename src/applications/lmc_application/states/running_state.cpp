@@ -18,7 +18,7 @@ RunningState::RunningState(std::shared_ptr<StateContext> state_context)
 {
 }
 
-bool RunningState::is_exit_state()
+auto RunningState::is_exit_state() -> bool
 {
     return false;
 }
@@ -60,10 +60,10 @@ void RunningState::perform(cyc& cycles)
                 if (m_ctx->m_is_only_run_once) {
                     transition_to_stop();
                     return;
-                } else {
-                    transition_to_pause();
-                    return;
                 }
+
+                transition_to_pause();
+                return;
             }
             ++cycles;
             if (m_ctx->m_is_in_debug_mode && m_ctx->m_debugger->has_breakpoint(m_ctx->m_cpu->pc())) {
@@ -79,15 +79,21 @@ void RunningState::perform(cyc& cycles)
             m_ctx->m_gui_io.m_is_quitting = false;
             transition_to_stop();
             return;
-        } else if (m_ctx->m_gui_io.m_is_toggling_pause && m_ctx->m_is_awaiting_input) {
+        }
+
+        if (m_ctx->m_gui_io.m_is_toggling_pause && m_ctx->m_is_awaiting_input) {
             m_ctx->m_gui_io.m_is_toggling_pause = false;
             transition_to_run_awaiting_input();
             return;
-        } else if (m_ctx->m_gui_io.m_is_toggling_pause && !m_ctx->m_is_awaiting_input) {
+        }
+
+        if (m_ctx->m_gui_io.m_is_toggling_pause && !m_ctx->m_is_awaiting_input) {
             m_ctx->m_gui_io.m_is_toggling_pause = false;
             transition_to_run();
             return;
-        } else if (m_ctx->m_is_awaiting_input) {
+        }
+
+        if (m_ctx->m_is_awaiting_input) {
             transition_to_run_awaiting_input();
             return;
         }

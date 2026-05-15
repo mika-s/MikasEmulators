@@ -6,7 +6,7 @@
 
 namespace emu::lmc {
 
-std::vector<Data> Assembler::assemble(std::stringstream const& code)
+auto Assembler::assemble(std::stringstream const& code) -> std::vector<Data>
 {
     Scanner scanner(code);
     Environment environment;

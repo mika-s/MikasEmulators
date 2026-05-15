@@ -19,7 +19,7 @@ Scanner::Scanner(std::vector<std::string> args)
 {
 }
 
-Token Scanner::current_token()
+auto Scanner::current_token() -> Token
 {
     while (m_tokens.empty()) {
         read_next_arg();
@@ -28,9 +28,9 @@ Token Scanner::current_token()
     return m_tokens[0];
 }
 
-void Scanner::skip(TokenKind next)
+void Scanner::skip(const TokenKind next)
 {
-    TokenKind current = current_token().kind();
+    TokenKind const current = current_token().kind();
     if (current != next) {
         throw std::invalid_argument(
             fmt::format(
@@ -41,7 +41,7 @@ void Scanner::skip(TokenKind next)
     read_next_token();
 }
 
-std::vector<std::string> Scanner::tokens_as_strings()
+auto Scanner::tokens_as_strings() -> std::vector<std::string>
 {
     std::vector<std::string> tokens;
     std::transform(m_all_scanned_tokens.begin(), m_all_scanned_tokens.end(), std::back_inserter(tokens),
@@ -78,7 +78,7 @@ void Scanner::read_token(std::string const& line)
     }
 }
 
-bool Scanner::handle_single_character(std::string const& line)
+auto Scanner::handle_single_character(std::string const& line) -> bool
 {
     switch (line[m_current_pos]) {
     case '=':
@@ -93,7 +93,7 @@ bool Scanner::handle_single_character(std::string const& line)
     return true;
 }
 
-bool Scanner::handle_short_option(std::string const& line)
+auto Scanner::handle_short_option(std::string const& line) -> bool
 {
     if (line[m_current_pos] == s_start_of_flag) {
         bool const is_next_hyphen = m_current_pos < line.length() - 1 && line[m_current_pos + 1] == '-';
@@ -119,16 +119,16 @@ bool Scanner::handle_short_option(std::string const& line)
     }
 }
 
-bool is_legal_long_option_literal_character(char ch)
+auto is_legal_long_option_literal_character(char character) -> bool
 {
-    bool is_alnum = std::isalnum(ch);
-    bool is_hyphen = ch == '-';
-    bool is_underscore = ch == '_';
+    const bool is_alnum = std::isalnum(static_cast<unsigned char>(character));
+    const bool is_hyphen = character == '-';
+    const bool is_underscore = character == '_';
 
     return is_alnum || is_hyphen || is_underscore;
 }
 
-bool Scanner::handle_long_option(std::string const& line)
+auto Scanner::handle_long_option(std::string const& line) -> bool
 {
     if (line[m_current_pos] == s_start_of_flag) {
         bool const is_next_hyphen = m_current_pos < line.length() - 1 && line[m_current_pos + 1] == '-';
@@ -150,20 +150,20 @@ bool Scanner::handle_long_option(std::string const& line)
 
         const std::string literal = line.substr(start, m_current_pos - start);
 
-        assert(literal.length() != 0);
+        assert(!literal.empty());
 
         m_tokens.emplace_back(TokenKind::LongOption, literal);
         m_all_scanned_tokens.emplace_back(TokenKind::LongOption, literal);
 
         return true;
-    } else {
-        return false;
     }
+
+    return false;
 }
 
-bool Scanner::handle_identifier(std::string const& line)
+auto Scanner::handle_identifier(std::string const& line) -> bool
 {
-    char current_char = line[m_current_pos];
+    char const current_char = line[m_current_pos];
     if (current_char != s_start_of_flag) {
         const std::size_t length = line.length();
         const std::size_t start = m_current_pos;
@@ -179,8 +179,8 @@ bool Scanner::handle_identifier(std::string const& line)
         m_all_scanned_tokens.emplace_back(TokenKind::Identifier, literal);
 
         return true;
-    } else {
-        return false;
     }
+
+    return false;
 }
 }

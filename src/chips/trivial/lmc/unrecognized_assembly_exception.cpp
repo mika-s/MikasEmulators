@@ -15,14 +15,14 @@ UnrecognizedAssemblyException::UnrecognizedAssemblyException(std::string const& 
     make_message(assembly);
 }
 
-char const* UnrecognizedAssemblyException::what() const noexcept
+auto UnrecognizedAssemblyException::what() const noexcept -> char const*
 {
     return m_message.c_str();
 }
 
 void UnrecognizedAssemblyException::make_message(std::string const& assembly)
 {
-    std::stringstream ss;
+    std::stringstream ss; // NOLINT(*-identifier-length)
     ss << runtime_error::what() << ": code = " << assembly;
 
     m_message = ss.str();

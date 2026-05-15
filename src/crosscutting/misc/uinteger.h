@@ -14,7 +14,7 @@ void dummy();
 template<std::size_t M>
 class UInteger {
 public:
-    explicit UInteger(u64 value)
+    explicit UInteger(const u64 value)
         : m_value(value % M)
     {
         dummy();
@@ -116,13 +116,13 @@ public:
     /* From Stack Overflow: https://stackoverflow.com/a/1498561/8574934
      * By user Brad: https://stackoverflow.com/users/180638/brad
      * Under licence CC BY-SA 2.5: https://creativecommons.org/licenses/by-sa/2.5/ */
-    static auto num_digits(int x) -> int
+    static auto num_digits(int x) -> int // NOLINT
     {
         x = abs(x);
-        return (x < 10 ? 1 : (x < 100 ? 2 : (x < 1000 ? 3 : (x < 10000 ? 4 : (x < 100000 ? 5 : (x < 1000000 ? 6 : (x < 10000000 ? 7 : (x < 100000000 ? 8 : (x < 1000000000 ? 9 : 10)))))))));
+        return (x < 10 ? 1 : (x < 100 ? 2 : (x < 1000 ? 3 : (x < 10000 ? 4 : (x < 100000 ? 5 : (x < 1000000 ? 6 : (x < 10000000 ? 7 : (x < 100000000 ? 8 : (x < 1000000000 ? 9 : 10))))))))); // NOLINT
     }
 
-    friend auto operator<<(std::ostream& os, UInteger const& rhs) -> std::ostream&
+    friend auto operator<<(std::ostream& os, UInteger const& rhs) -> std::ostream& // NOLINT(*-identifier-length)
     {
         const int num = num_digits(static_cast<int>(M));
         os << std::setw(num) << std::setfill('0') << rhs.m_value;

@@ -42,8 +42,8 @@ using emu::util::byte::to_u16;
 using emu::util::string::split;
 
 SynacorApplicationSession::SynacorApplicationSession(
-    bool is_only_run_once,
-    bool is_starting_paused,
+    const bool is_only_run_once,
+    const bool is_starting_paused,
     std::shared_ptr<Ui> gui,
     std::shared_ptr<Input> input,
     std::string loaded_file,
@@ -106,7 +106,7 @@ void SynacorApplicationSession::run()
 {
     m_cpu->start();
 
-    cyc cycles;
+    cyc cycles = 0;
 
     while (!m_state_context->current_state()->is_exit_state()) {
         m_state_context->current_state()->perform(cycles);
@@ -144,13 +144,13 @@ void SynacorApplicationSession::gui_request(GuiRequest request)
     }
 }
 
-void SynacorApplicationSession::input_from_terminal(Data input)
+void SynacorApplicationSession::input_from_terminal(const Data input) const
 {
     m_state_context->m_is_awaiting_input = false;
     m_cpu->input(input);
 }
 
-void SynacorApplicationSession::out_changed(Data character)
+void SynacorApplicationSession::out_changed(const Data character)
 {
     m_ui->to_terminal(character);
 }
@@ -174,43 +174,43 @@ void SynacorApplicationSession::setup_cpu()
 void SynacorApplicationSession::setup_debugging()
 {
     m_debug_container = std::make_shared<DebugContainer<Address, RawData, 16>>();
-        m_debug_container->add_register(RegisterDebugContainer<RawData>("R0", [&]() { return m_memory.read(Address(32768)); }));
-        m_debug_container->add_register(RegisterDebugContainer<RawData>("R1", [&]() { return m_memory.read(Address(32769)); }));
-        m_debug_container->add_register(RegisterDebugContainer<RawData>("R2", [&]() { return m_memory.read(Address(32770)); }));
-        m_debug_container->add_register(RegisterDebugContainer<RawData>("R3", [&]() { return m_memory.read(Address(32771)); }));
-        m_debug_container->add_register(RegisterDebugContainer<RawData>("R4", [&]() { return m_memory.read(Address(32772)); }));
-        m_debug_container->add_register(RegisterDebugContainer<RawData>("R5", [&]() { return m_memory.read(Address(32773)); }));
-        m_debug_container->add_register(RegisterDebugContainer<RawData>("R6", [&]() { return m_memory.read(Address(32774)); }));
-        m_debug_container->add_register(RegisterDebugContainer<RawData>("R7", [&]() { return m_memory.read(Address(32775)); }));
-    m_debug_container->add_pc([&]() { return m_cpu->pc(); });
+    m_debug_container->add_register(RegisterDebugContainer<RawData>("R0", [&]() -> UInteger<32776> { return m_memory.read(Address(32768)); }));
+    m_debug_container->add_register(RegisterDebugContainer<RawData>("R1", [&]() -> UInteger<32776> { return m_memory.read(Address(32769)); }));
+    m_debug_container->add_register(RegisterDebugContainer<RawData>("R2", [&]() -> UInteger<32776> { return m_memory.read(Address(32770)); }));
+    m_debug_container->add_register(RegisterDebugContainer<RawData>("R3", [&]() -> UInteger<32776> { return m_memory.read(Address(32771)); }));
+    m_debug_container->add_register(RegisterDebugContainer<RawData>("R4", [&]() -> UInteger<32776> { return m_memory.read(Address(32772)); }));
+    m_debug_container->add_register(RegisterDebugContainer<RawData>("R5", [&]() -> UInteger<32776> { return m_memory.read(Address(32773)); }));
+    m_debug_container->add_register(RegisterDebugContainer<RawData>("R6", [&]() -> UInteger<32776> { return m_memory.read(Address(32774)); }));
+    m_debug_container->add_register(RegisterDebugContainer<RawData>("R7", [&]() -> UInteger<32776> { return m_memory.read(Address(32775)); }));
+    m_debug_container->add_pc([&]() -> Address { return m_cpu->pc(); });
 //    m_debug_container->add_memory(MemoryDebugContainer<Data>([&]() { return memory(); }));
     m_debug_container->add_disassembled_program(disassemble_program());
-    m_debug_container->add_file_content([&]() { return m_file_content; });
+    m_debug_container->add_file_content([&]() -> std::string { return m_file_content; });
 
     m_ui->attach_debugger(m_debugger);
     m_ui->attach_debug_container(m_debug_container);
     m_ui->attach_logger(m_logger);
 }
 
-std::vector<RawData> SynacorApplicationSession::memory()
+auto SynacorApplicationSession::memory() -> std::vector<RawData>
 {
     return { m_memory.begin(), m_memory.end() };
 }
 
-std::vector<DisassembledLine<Address, 16>> SynacorApplicationSession::disassemble_program()
+auto SynacorApplicationSession::disassemble_program() -> std::vector<DisassembledLine<Address, 16>>
 {
-        std::stringstream ss;
+        std::stringstream ss; // NOLINT(*-identifier-length)
         Disassembler disassembler(m_memory, ss);
         disassembler.disassemble();
 
         std::vector<std::string> disassembled_program = split(ss, "\n");
 
         disassembled_program.erase(
-            std::remove_if(disassembled_program.begin(), disassembled_program.end(), [](std::string const& s) { return s.empty(); }));
+            std::remove_if(disassembled_program.begin(), disassembled_program.end(), [](std::string const& s) -> bool { return s.empty(); }));
 
         std::vector<DisassembledLine<Address, 16>> lines;
         std::transform(disassembled_program.begin(), disassembled_program.end(), std::back_inserter(lines),
-            [](std::string const& line) { return DisassembledLine<Address, 16>(line); });
+            [](std::string const& line) -> DisassembledLine<Address, 16> { return DisassembledLine<Address, 16>(line); });
 
         return lines;
 }

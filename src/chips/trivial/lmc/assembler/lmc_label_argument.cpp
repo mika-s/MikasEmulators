@@ -14,14 +14,14 @@ LmcLabelArgument::LmcLabelArgument(std::string literal, Environment& environment
 {
 }
 
-Address LmcLabelArgument::eval()
+auto LmcLabelArgument::eval() const -> Address
 {
     return m_environment.get_address_given_label(m_literal);
 }
 
-LmcLabelArgument LmcLabelArgument::parse(Scanner& scanner, Environment& environment)
+auto LmcLabelArgument::parse(Scanner& scanner, Environment& environment) -> LmcLabelArgument
 {
-    Token current_token = scanner.current_token();
+    Token const current_token = scanner.current_token();
     const std::string label = current_token.label_literal();
     scanner.skip(TokenKind::Label);
 

@@ -14,7 +14,7 @@ Flags::Flags()
 {
 }
 
-u8 Flags::to_u8() const
+auto Flags::to_u8() const -> u8
 {
     return m_negative ? 1 : 0;
 }
@@ -24,7 +24,7 @@ void Flags::reset()
     clear_negative_flag();
 }
 
-void Flags::handle_negative_flag(Data previous, Data value)
+void Flags::handle_negative_flag(const Data previous, const Data value)
 {
     if (previous < value) {
         set_negative_flag();
@@ -43,7 +43,7 @@ void Flags::clear_negative_flag()
     m_negative = false;
 }
 
-bool Flags::is_negative_flag_set() const
+auto Flags::is_negative_flag_set() const -> bool
 {
     return m_negative;
 }

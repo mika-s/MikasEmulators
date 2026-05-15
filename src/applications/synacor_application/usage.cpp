@@ -26,17 +26,17 @@ void print_usage(std::string const& program_name)
 
     std::cout << "Flags:\n";
 
-    for (auto& flag_description : supported_flags) {
-        std::string padding = create_padding(flag_description.first.size(), padding_to_description);
-        std::cout << "  " << flag_description.first << padding << flag_description.second << "\n";
+    for (const auto&[flag, desc] : supported_flags) {
+        std::string const padding = create_padding(flag.size(), padding_to_description);
+        std::cout << "  " << flag << padding << desc << "\n";
     }
 
     std::cout << "\nExamples:\n";
 
-    for (auto& example_description : examples) {
-        std::cout << "  " << example_description.second << ":\n";
+    for (const auto&[example, desc] : examples) {
+        std::cout << "  " << desc << ":\n";
         std::cout << "    "
-                  << "./" << program_name << " run synacor_application " << example_description.first << "\n\n";
+                  << "./" << program_name << " run synacor_application " << example << "\n\n";
     }
 }
 }

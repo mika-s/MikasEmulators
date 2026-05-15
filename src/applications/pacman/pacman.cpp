@@ -40,7 +40,7 @@ Pacman::Pacman(Settings const& settings, const GuiType gui_type)
     m_memory.attach_memory_mapper(m_memory_mapped_io);
 }
 
-std::unique_ptr<Session> Pacman::new_session()
+auto Pacman::new_session() -> std::unique_ptr<Session>
 {
     return std::make_unique<PacmanSession>(
         m_is_starting_paused,
@@ -51,7 +51,7 @@ std::unique_ptr<Session> Pacman::new_session()
         m_memory);
 }
 
-std::vector<u8> create_empty_vector(std::size_t size)
+auto create_empty_vector(const std::size_t size) -> std::vector<u8>
 {
     std::vector<u8> vec(size, 0);
     return vec;
@@ -82,8 +82,8 @@ void Pacman::load_files()
     m_gui->load_tile_rom({ m_tile_rom.begin(), m_tile_rom.end() });
     m_gui->load_sprite_rom({ m_sprite_rom.begin(), m_sprite_rom.end() });
 
-    std::vector<u8> sound_rom1 = { m_sound_rom1.begin(), m_sound_rom1.end() };
-    std::vector<u8> sound_rom2 = { m_sound_rom2.begin(), m_sound_rom2.end() };
+    std::vector<u8> const sound_rom1 = { m_sound_rom1.begin(), m_sound_rom1.end() };
+    std::vector<u8> const sound_rom2 = { m_sound_rom2.begin(), m_sound_rom2.end() };
     m_audio = std::make_shared<Audio>(sound_rom1, sound_rom2);
 }
 }

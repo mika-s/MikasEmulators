@@ -24,7 +24,7 @@ using emu::wsg3::Voice;
 
 class MemoryMappedIoForPacman : public MemoryMappedIo<u16, u8> {
 public:
-    explicit MemoryMappedIoForPacman(EmulatorMemory<u16, u8>& memory, Settings settings);
+    explicit MemoryMappedIoForPacman(EmulatorMemory<u16, u8>& memory, const Settings &settings);
 
     void write(u16 address, u8 value) override;
 
@@ -40,15 +40,15 @@ public:
 
     [[nodiscard]] u8 in1_read() const;
 
-    u8 coin_counter();
+    static u8 coin_counter();
 
-    u8 dipswitches();
+    u8 dipswitches() const;
 
-    bool is_sound_enabled();
+    bool is_sound_enabled() const;
 
-    bool is_aux_board_enabled();
+    bool is_aux_board_enabled() const;
 
-    bool is_screen_flipped();
+    bool is_screen_flipped() const;
 
     std::vector<Voice>& voices();
 

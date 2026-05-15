@@ -71,17 +71,17 @@ public:
 
     void change_state(std::shared_ptr<State> new_state);
 
-    std::shared_ptr<State> paused_state();
+    auto paused_state() -> std::shared_ptr<State>;
 
-    std::shared_ptr<State> running_state();
+    auto running_state() -> std::shared_ptr<State>;
 
-    std::shared_ptr<State> running_awaiting_input_state();
+    auto running_awaiting_input_state() -> std::shared_ptr<State>;
 
-    std::shared_ptr<State> stepping_state();
+    auto stepping_state() -> std::shared_ptr<State>;
 
-    std::shared_ptr<State> stopped_state();
+    auto stopped_state() -> std::shared_ptr<State>;
 
-    std::shared_ptr<State> current_state();
+    auto current_state() -> std::shared_ptr<State>;
 
     void set_running_state(std::shared_ptr<State> state);
 

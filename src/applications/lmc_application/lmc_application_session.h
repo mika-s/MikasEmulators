@@ -123,7 +123,7 @@ private:
 
     void assemble_and_load_request();
 
-    void input_from_terminal(Data input);
+    void input_from_terminal(Data input) const;
 
     std::vector<DisassembledLine<Address, 10>> disassemble_program();
 };

@@ -8,8 +8,7 @@ namespace emu::applications::command_line_arguments {
 
 class CommandLineArguments {
 public:
-    static Options find_options(std::vector<std::string> args);
+    static auto find_options(std::vector<std::string> args) -> Options;
 
-private:
 };
 }

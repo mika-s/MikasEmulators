@@ -61,7 +61,7 @@ void Cpu::remove_in_observer(InObserver* observer)
         m_in_observers.end());
 }
 
-bool Cpu::can_run_next_instruction() const
+auto Cpu::can_run_next_instruction() const -> bool
 {
     return m_pc < Address(99) && !m_is_halted;
 }

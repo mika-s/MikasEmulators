@@ -42,7 +42,7 @@ void CpmApplicationSession::stop()
     throw std::runtime_error("Stop is not implemented for CP/M programs");
 }
 
-void CpmApplicationSession::out_changed(u16 port)
+void CpmApplicationSession::out_changed(const u16 port)
 {
     if (port == s_finished_port) {
         m_is_finished = true;
@@ -61,14 +61,14 @@ void CpmApplicationSession::out_changed(u16 port)
 
 void CpmApplicationSession::setup_cpu()
 {
-    const u16 initial_pc = 0x100;
+    constexpr u16 initial_pc = 0x100;
 
     m_cpu = std::make_unique<Cpu>(m_memory, initial_pc);
 
     m_cpu->add_out_observer(*this);
 }
 
-void CpmApplicationSession::c_write(u8 e)
+void CpmApplicationSession::c_write(const u8 e) // NOLINT(*-identifier-length)
 {
     std::cout << e;
 }

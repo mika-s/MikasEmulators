@@ -32,8 +32,7 @@ void Logger::info(char const* fmt, ...)
     va_end(args);
 }
 
-void Logger::notify_log_observers(char const* fmt, va_list args)
-{
+void Logger::notify_log_observers(char const* fmt, va_list args) const {
     for (LogObserver* observer : m_log_observers) {
         observer->log_element_added(fmt, args);
     }

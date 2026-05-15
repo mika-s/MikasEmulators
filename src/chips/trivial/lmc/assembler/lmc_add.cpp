@@ -19,16 +19,16 @@ LmcAdd::LmcAdd(LmcOperand operand)
 {
 }
 
-Data LmcAdd::eval()
+auto LmcAdd::eval() -> Data
 {
     return opcode + m_operand.eval();
 }
 
-std::unique_ptr<InstructionInterface> LmcAdd::parse(Scanner& scanner, Environment& environment)
+auto LmcAdd::parse(Scanner& scanner, Environment& environment) -> std::unique_ptr<InstructionInterface>
 {
     scanner.skip(TokenKind::Add);
 
-    LmcOperand operand = LmcOperand::parse(scanner, environment);
+    LmcOperand const operand = LmcOperand::parse(scanner, environment);
 
     return std::make_unique<LmcAdd>(operand);
 }

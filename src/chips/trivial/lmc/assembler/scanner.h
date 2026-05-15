@@ -18,11 +18,11 @@ public:
 
     explicit Scanner(std::stringstream const& code, bool is_debugging);
 
-    Token current_token();
+    auto current_token() -> Token;
 
     void skip(TokenKind next);
 
-    Address current_address();
+    auto current_address() -> Address;
 
 private:
     unsigned int m_real_line_no;
@@ -38,14 +38,14 @@ private:
 
     void read_tokens(std::string const& line);
 
-    static bool is_comment_line(std::string const& line);
+    static auto is_comment_line(std::string const& line) -> bool;
 
-    bool handle_single_character(std::string const& line);
+    auto handle_single_character(std::string const& line) -> bool;
 
-    bool handle_number(std::string const& line);
+    auto handle_number(std::string const& line) -> bool;
 
-    bool handle_keyword(std::string const& line);
+    auto handle_keyword(std::string const& line) -> bool;
 
-    bool handle_inline_comment(std::string const& line);
+    auto handle_inline_comment(std::string const& line) -> bool;
 };
 }

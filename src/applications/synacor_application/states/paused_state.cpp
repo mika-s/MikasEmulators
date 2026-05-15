@@ -13,7 +13,7 @@ PausedState::PausedState(std::shared_ptr<StateContext> state_context)
 {
 }
 
-bool PausedState::is_exit_state()
+auto PausedState::is_exit_state() -> bool
 {
     return false;
 }
@@ -50,11 +50,13 @@ void PausedState::perform([[maybe_unused]] cyc& cycles)
             m_ctx->m_gui_io.m_is_quitting = false;
             transition_to_stop();
             return;
-        } else if (m_ctx->m_gui_io.m_is_toggling_pause && m_ctx->m_is_awaiting_input) {
+        }
+        if (m_ctx->m_gui_io.m_is_toggling_pause && m_ctx->m_is_awaiting_input) {
             m_ctx->m_gui_io.m_is_toggling_pause = false;
             transition_to_run_awaiting_input();
             return;
-        } else if (m_ctx->m_gui_io.m_is_toggling_pause && !m_ctx->m_is_awaiting_input) {
+        }
+        if (m_ctx->m_gui_io.m_is_toggling_pause && !m_ctx->m_is_awaiting_input) {
             m_ctx->m_gui_io.m_is_toggling_pause = false;
             transition_to_run();
             return;

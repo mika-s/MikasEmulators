@@ -26,7 +26,7 @@ Audio::Audio(
         exit(1);
     }
 
-    SDL_AudioSpec audio_spec {
+    constexpr SDL_AudioSpec audio_spec {
         .freq = s_sdl_frequency,
         .format = AUDIO_S16SYS,
         .channels = 1,
@@ -57,7 +57,7 @@ Audio::~Audio()
     SDL_QuitSubSystem(SDL_INIT_AUDIO);
 }
 
-void Audio::handle_sound(bool is_sound_enabled, std::vector<Voice>& voices)
+void Audio::handle_sound(const bool is_sound_enabled, std::vector<Voice>& voices)
 {
     if (!is_sound_enabled) {
         return;
@@ -76,19 +76,20 @@ void Audio::toggle_mute()
     m_is_muted = !m_is_muted;
 }
 
-std::vector<Waveform> Audio::waveforms()
+auto Audio::waveforms() -> std::vector<Waveform>
 {
     return m_sound_chip.waveforms();
 }
 
-std::vector<Waveform> Audio::load_waveforms_from_roms(
+auto Audio::load_waveforms_from_roms(
     std::vector<u8> const& sound_rom1,
-    std::vector<u8> const& sound_rom2)
+    std::vector<u8> const& sound_rom2
+) -> std::vector<Waveform>
 {
     std::vector<Waveform> waveforms;
     std::vector<u8> samples;
 
-    for (u8 byte : sound_rom1) {
+    for (u8 const byte : sound_rom1) {
         samples.push_back(byte);
         if (samples.size() == s_samples_per_waveform) {
             waveforms.emplace_back(samples);
@@ -98,7 +99,7 @@ std::vector<Waveform> Audio::load_waveforms_from_roms(
 
     assert(waveforms.size() == 8);
 
-    for (u8 byte : sound_rom2) {
+    for (u8 const byte : sound_rom2) {
         samples.push_back(byte);
         if (samples.size() == s_samples_per_waveform) {
             waveforms.emplace_back(samples);

@@ -12,7 +12,7 @@ Governor::Governor(
 {
 }
 
-bool Governor::is_time_to_update()
+auto Governor::is_time_to_update() -> bool
 {
     long double const ticks = m_tick_retriever();
     long double const current_ms = ticks - m_last_tick;

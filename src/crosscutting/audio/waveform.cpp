@@ -10,7 +10,7 @@ Waveform::Waveform(std::vector<u8> samples)
     : m_samples(std::move(samples))
 {
 
-    for (u8 sample : m_samples) {
+    for (u8 const sample : m_samples) {
         if (sample > max_value_for_sample) {
             throw std::invalid_argument(
                 fmt::format(
@@ -21,7 +21,7 @@ Waveform::Waveform(std::vector<u8> samples)
     }
 }
 
-std::vector<u8> Waveform::samples() const
+auto Waveform::samples() const -> std::vector<u8>
 {
     return m_samples;
 }

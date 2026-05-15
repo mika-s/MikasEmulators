@@ -22,7 +22,7 @@ void Environment::add_label(std::string const& label, Address address)
     m_mapping.insert({ label, address });
 }
 
-Address Environment::get_address_given_label(std::string const& label)
+auto Environment::get_address_given_label(std::string const& label) -> Address
 {
 #ifdef __EMSCRIPTEN__
     if (m_mapping.count(label) == 0) {

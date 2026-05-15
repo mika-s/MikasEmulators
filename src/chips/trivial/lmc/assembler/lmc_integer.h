@@ -12,7 +12,7 @@ class LmcInteger {
 public:
     explicit LmcInteger(int literal);
 
-    Data eval();
+    Data eval() const;
 
     static LmcInteger parse(Scanner& scanner);
 

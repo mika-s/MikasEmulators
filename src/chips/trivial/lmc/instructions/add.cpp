@@ -17,12 +17,12 @@ using emu::memory::EmulatorMemory;
  * @param address is the address to the value in memory
  * @param memory is the memory
  */
-void add(Data& acc_reg, Address address, EmulatorMemory<Address, Data> const& memory)
+void add(Data& acc_reg, const Address address, EmulatorMemory<Address, Data> const& memory)
 {
     acc_reg += memory.read(address);
 }
 
-void print_add(std::ostream& ostream, Address address)
+void print_add(std::ostream& ostream, const Address address)
 {
     ostream << "ADD "
             << address;

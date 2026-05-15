@@ -21,14 +21,14 @@ void InputSdl::remove_io_observer(KeyObserver* observer)
         m_io_observers.end());
 }
 
-void InputSdl::notify_io_observers(IoRequest request)
+void InputSdl::notify_io_observers(IoRequest request) const
 {
     for (KeyObserver* observer : m_io_observers) {
         observer->key_pressed(request);
     }
 }
 
-void InputSdl::read(GuiIo& gui_io, std::shared_ptr<MemoryMappedIoForPacman> memory_mapped_io)
+void InputSdl::read(GuiIo& gui_io, const std::shared_ptr<MemoryMappedIoForPacman> memory_mapped_io)
 {
     SDL_Event read_input_event;
 

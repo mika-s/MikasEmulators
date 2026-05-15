@@ -34,7 +34,7 @@ public:
 
     ~Cpu();
 
-    [[nodiscard]] bool can_run_next_instruction() const;
+    [[nodiscard]] auto can_run_next_instruction() const -> bool;
 
     void next_instruction();
 
@@ -52,13 +52,13 @@ public:
 
     void remove_in_observer(InObserver* observer);
 
-    EmulatorMemory<Address, Data>& memory();
+    auto memory() -> EmulatorMemory<Address, Data>&;
 
-    [[nodiscard]] Data a() const;
+    [[nodiscard]] auto a() const -> Data;
 
-    [[nodiscard]] u8 f() const;
+    [[nodiscard]] auto f() const -> u8;
 
-    [[nodiscard]] Address pc() const;
+    [[nodiscard]] auto pc() const -> Address;
 
     void input(Data value);
 
@@ -74,11 +74,11 @@ private:
     std::vector<OutObserver*> m_out_observers;
     std::vector<InObserver*> m_in_observers;
 
-    Data get_next_value();
+    auto get_next_value() -> Data;
 
-    static Address find_argument(Data raw_opcode);
+    static auto find_argument(Data raw_opcode) -> Address;
 
-    static Opcode find_opcode(Data raw_opcode);
+    static auto find_opcode(Data raw_opcode) -> Opcode;
 
     void notify_out_observers(Data acc_reg, OutType out_type);
 

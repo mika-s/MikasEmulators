@@ -9,7 +9,7 @@ class RomFileNotFoundException : public std::runtime_error {
 public:
     explicit RomFileNotFoundException(std::string const& message);
 
-    [[nodiscard]] char const* what() const noexcept override;
+    [[nodiscard]] auto what() const noexcept -> char const* override;
 
 private:
     void make_message(std::string const& message);

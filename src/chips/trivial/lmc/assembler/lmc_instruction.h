@@ -16,9 +16,9 @@ class LmcInstruction {
 public:
     explicit LmcInstruction(std::unique_ptr<InstructionInterface> instruction);
 
-    Data eval();
+    [[nodiscard]] auto eval() const -> Data;
 
-    static std::unique_ptr<LmcInstruction> parse(Scanner& scanner, Environment& environment);
+    static auto parse(Scanner& scanner, Environment& environment) -> std::unique_ptr<LmcInstruction>;
 
 private:
     std::unique_ptr<InstructionInterface> m_instruction;

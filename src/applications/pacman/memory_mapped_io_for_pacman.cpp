@@ -12,7 +12,7 @@ using emu::util::byte::unset_bit;
 using emu::z80::set_bit_in_memory;
 using emu::z80::unset_bit_in_memory;
 
-MemoryMappedIoForPacman::MemoryMappedIoForPacman(EmulatorMemory<u16, u8>& memory, Settings settings)
+MemoryMappedIoForPacman::MemoryMappedIoForPacman(EmulatorMemory<u16, u8>& memory, const Settings &settings)
     : m_memory(memory)
     , m_is_sound_enabled(false)
     , m_is_aux_board_enabled(false)
@@ -31,7 +31,7 @@ MemoryMappedIoForPacman::MemoryMappedIoForPacman(EmulatorMemory<u16, u8>& memory
  * @param address is the address in memory to write to
  * @param value is the value that should be written to memory
  */
-void MemoryMappedIoForPacman::write(u16 address, u8 value)
+void MemoryMappedIoForPacman::write(u16 address, const u8 value)
 {
     address &= s_address_mask;
 
@@ -89,18 +89,24 @@ void MemoryMappedIoForPacman::write(u16 address, u8 value)
  * @param address is the address in memory to read from
  * @return the value in memory at the given address
  */
-u8 MemoryMappedIoForPacman::read(u16 address)
+auto MemoryMappedIoForPacman::read(u16 address) -> u8
 {
     address &= s_address_mask;
 
     if (address <= s_address_ram_end) {
         return m_memory.direct_read(address);
-    } else if (address <= s_address_pacman_memory_end) {
+    }
+
+    if (address <= s_address_pacman_memory_end) {
         if (address == s_address_lamp1 || address == s_address_lamp2) {
             return 0;
-        } else if (address == s_address_coin_lockout) {
+        }
+
+        if (address == s_address_coin_lockout) {
             return 0;
-        } else if (address == s_address_coin_counter) {
+        }
+
+        if (address == s_address_coin_counter) {
         } else if (s_address_in0_beginning <= address && address <= s_address_in0_end) {
             return in0_read();
         } else if (s_address_in1_beginning <= address && address <= s_address_in1_end) {
@@ -110,9 +116,9 @@ u8 MemoryMappedIoForPacman::read(u16 address)
         }
 
         return 0xff;
-    } else {
-        return 0;
     }
+
+    return 0;
 }
 
 bool MemoryMappedIoForPacman::is_interrupt_enabled()
@@ -120,7 +126,7 @@ bool MemoryMappedIoForPacman::is_interrupt_enabled()
     return is_bit_set(m_in0_write, 0);
 }
 
-void MemoryMappedIoForPacman::in0_read(unsigned int bit_number, bool is_setting)
+void MemoryMappedIoForPacman::in0_read(const unsigned int bit_number, const bool is_setting)
 {
     if (is_setting) {
         set_bit(m_in0_read, bit_number);
@@ -129,7 +135,7 @@ void MemoryMappedIoForPacman::in0_read(unsigned int bit_number, bool is_setting)
     }
 }
 
-u8 MemoryMappedIoForPacman::in0_read() const
+auto MemoryMappedIoForPacman::in0_read() const -> u8
 {
     return m_in0_read;
 }
@@ -143,22 +149,22 @@ void MemoryMappedIoForPacman::in1_read(unsigned int bit_number, bool is_setting)
     }
 }
 
-u8 MemoryMappedIoForPacman::in1_read() const
+auto MemoryMappedIoForPacman::in1_read() const -> u8
 {
     return m_in1_read;
 }
 
-void MemoryMappedIoForPacman::in0_write(u8 value)
+void MemoryMappedIoForPacman::in0_write(const u8 value)
 {
     m_in0_write = value;
 }
 
-u8 MemoryMappedIoForPacman::coin_counter()
+auto MemoryMappedIoForPacman::coin_counter() -> u8
 {
     return 0;
 }
 
-void MemoryMappedIoForPacman::flip_screen(u8 value)
+void MemoryMappedIoForPacman::flip_screen(const u8 value)
 {
     m_is_screen_flipped = value > 0;
 }
@@ -238,7 +244,7 @@ void MemoryMappedIoForPacman::dipswitches(Settings const& settings)
     }
 }
 
-u8 MemoryMappedIoForPacman::dipswitches()
+auto MemoryMappedIoForPacman::dipswitches() const -> u8
 {
     return m_dipswitches;
 }
@@ -267,104 +273,104 @@ void MemoryMappedIoForPacman::cabinet_mode(Settings const& settings)
     }
 }
 
-bool MemoryMappedIoForPacman::is_sound_enabled()
+auto MemoryMappedIoForPacman::is_sound_enabled() const -> bool
 {
     return m_is_sound_enabled;
 }
 
-void MemoryMappedIoForPacman::is_sound_enabled(u8 value)
+void MemoryMappedIoForPacman::is_sound_enabled(const u8 value)
 {
     m_is_sound_enabled = is_bit_set(value, s_sound_enabled_bit);
 }
 
-bool MemoryMappedIoForPacman::is_aux_board_enabled()
+auto MemoryMappedIoForPacman::is_aux_board_enabled() const -> bool
 {
     return m_is_aux_board_enabled;
 }
 
-void MemoryMappedIoForPacman::is_aux_board_enabled(u8 value)
+void MemoryMappedIoForPacman::is_aux_board_enabled(const u8 value)
 {
     m_is_aux_board_enabled = value > 0;
 }
 
-bool MemoryMappedIoForPacman::is_screen_flipped()
+auto MemoryMappedIoForPacman::is_screen_flipped() const -> bool
 {
     return m_is_screen_flipped;
 }
 
-std::vector<Voice>& MemoryMappedIoForPacman::voices()
+auto MemoryMappedIoForPacman::voices() -> std::vector<Voice>&
 {
     return m_voices;
 }
 
-void MemoryMappedIoForPacman::voice1_accumulator(u8 value, u16 address)
+void MemoryMappedIoForPacman::voice1_accumulator(const u8 value, const u16 address)
 {
     const u8 sample = address - s_address_voice1_sound_beginning;
     m_voices[0].accumulator(m_voices[0].accumulator() & ~(0x0f << (sample * 4)));
     m_voices[0].accumulator(m_voices[0].accumulator() | (low_nibble(value) << (sample * 4)));
 }
 
-void MemoryMappedIoForPacman::voice1_waveform(u8 value)
+void MemoryMappedIoForPacman::voice1_waveform(const u8 value)
 {
     m_voices[0].waveform_number(value & 0b111);
 }
 
-void MemoryMappedIoForPacman::voice1_frequency(u8 frequency, u16 address)
+void MemoryMappedIoForPacman::voice1_frequency(const u8 frequency, const u16 address)
 {
     const u8 sample = address - s_address_voice1_frequency_beginning;
     m_voices[0].frequency(m_voices[0].frequency() & ~(0x0f << (sample * 4)));
     m_voices[0].frequency(m_voices[0].frequency() | (low_nibble(frequency) << (sample * 4)));
 }
 
-void MemoryMappedIoForPacman::voice1_volume(u8 volume)
+void MemoryMappedIoForPacman::voice1_volume(const u8 volume)
 {
     m_voices[0].volume(low_nibble(volume));
 }
 
-void MemoryMappedIoForPacman::voice2_accumulator(u8 value, u16 address)
+void MemoryMappedIoForPacman::voice2_accumulator(const u8 value, const u16 address)
 {
     const u8 sample = address - s_address_voice2_sound_beginning + 1;
     m_voices[1].accumulator(m_voices[1].accumulator() & ~(0x0f << (sample * 4)));
     m_voices[1].accumulator(m_voices[1].accumulator() | (low_nibble(value) << (sample * 4)));
 }
 
-void MemoryMappedIoForPacman::voice2_waveform(u8 value)
+void MemoryMappedIoForPacman::voice2_waveform(const u8 value)
 {
     m_voices[1].waveform_number(value & 0b111);
 }
 
-void MemoryMappedIoForPacman::voice2_frequency(u8 frequency, u16 address)
+void MemoryMappedIoForPacman::voice2_frequency(const u8 frequency, const u16 address)
 {
     const u8 sample = address - s_address_voice2_frequency_beginning + 1;
     m_voices[1].frequency(m_voices[1].frequency() & ~(0x0f << (sample * 4)));
     m_voices[1].frequency(m_voices[1].frequency() | (low_nibble(frequency) << (sample * 4)));
 }
 
-void MemoryMappedIoForPacman::voice2_volume(u8 volume)
+void MemoryMappedIoForPacman::voice2_volume(const u8 volume)
 {
     m_voices[1].volume(low_nibble(volume));
 }
 
-void MemoryMappedIoForPacman::voice3_accumulator(u8 value, u16 address)
+void MemoryMappedIoForPacman::voice3_accumulator(const u8 value, const u16 address)
 {
     const u8 sample = address - s_address_voice3_sound_beginning + 1;
     m_voices[2].accumulator(m_voices[2].accumulator() & ~(0x0f << (sample * 4)));
     m_voices[2].accumulator(m_voices[2].accumulator() | (low_nibble(value) << (sample * 4)));
 }
 
-void MemoryMappedIoForPacman::voice3_waveform(u8 value)
+void MemoryMappedIoForPacman::voice3_waveform(const u8 value)
 {
     m_voices[2].waveform_number(value & 0b111);
 }
 
-void MemoryMappedIoForPacman::voice3_frequency(u8 frequency, u16 address)
+void MemoryMappedIoForPacman::voice3_frequency(const u8 frequency, const u16 address)
 {
     const u8 sample = address - s_address_voice3_frequency_beginning + 1;
     m_voices[2].frequency(m_voices[2].frequency() & ~(0x0f << (sample * 4)));
     m_voices[2].frequency(m_voices[2].frequency() | (low_nibble(frequency) << (sample * 4)));
 }
 
-void MemoryMappedIoForPacman::voice3_volume(u8 volume)
+void MemoryMappedIoForPacman::voice3_volume(const u8 volume)
 {
     m_voices[2].volume(low_nibble(volume));
 }

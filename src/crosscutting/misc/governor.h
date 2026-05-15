@@ -10,7 +10,7 @@ public:
         long double limit,
         std::function<long double()> tick_retriever);
 
-    bool is_time_to_update();
+    auto is_time_to_update() -> bool;
 
 private:
     long double m_last_tick;

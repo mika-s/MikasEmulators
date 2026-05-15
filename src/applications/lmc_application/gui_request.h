@@ -20,7 +20,7 @@ struct GuiRequest {
     GuiRequestType m_type;
     bool m_bool_payload { false };
     Data m_data_payload { Data(0) };
-    std::string m_string_payload { "" };
+    std::string m_string_payload;
 };
 
 }

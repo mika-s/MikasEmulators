@@ -40,7 +40,7 @@ using emu::z80::Disassembler;
 using emu::z80::InterruptMode;
 
 PacmanSession::PacmanSession(
-    bool is_starting_paused,
+    const bool is_starting_paused,
     std::shared_ptr<Gui> gui,
     std::shared_ptr<Input> input,
     std::shared_ptr<Audio> audio,
@@ -98,7 +98,7 @@ void PacmanSession::run()
 {
     m_cpu->start();
 
-    cyc cycles;
+    cyc cycles = 0;
 
     while (!m_state_context->current_state()->is_exit_state()) {
         m_state_context->current_state()->perform(cycles);
@@ -117,7 +117,7 @@ void PacmanSession::stop()
 
 void PacmanSession::setup_cpu()
 {
-    const u16 initial_pc = 0;
+    constexpr u16 initial_pc = 0;
 
     m_cpu = std::make_shared<Cpu>(m_memory, initial_pc);
 
@@ -129,38 +129,38 @@ void PacmanSession::setup_debugging()
     m_debug_container = std::make_shared<DebugContainer<u16, u8, 16>>();
     m_debug_container->add_register(RegisterDebugContainer<u8>(
         "A",
-        [&]() { return m_cpu->a(); },
-        [&]() { return m_cpu->a_p(); }));
+        [&]() -> u8 { return m_cpu->a(); },
+        [&]() -> u8 { return m_cpu->a_p(); }));
     m_debug_container->add_register(RegisterDebugContainer<u8>(
         "B",
-        [&]() { return m_cpu->b(); },
-        [&]() { return m_cpu->b_p(); }));
+        [&]() -> u8 { return m_cpu->b(); },
+        [&]() -> u8 { return m_cpu->b_p(); }));
     m_debug_container->add_register(RegisterDebugContainer<u8>(
         "C",
-        [&]() { return m_cpu->c(); },
-        [&]() { return m_cpu->c_p(); }));
+        [&]() -> u8 { return m_cpu->c(); },
+        [&]() -> u8 { return m_cpu->c_p(); }));
     m_debug_container->add_register(RegisterDebugContainer<u8>(
         "D",
-        [&]() { return m_cpu->d(); },
-        [&]() { return m_cpu->d_p(); }));
+        [&]() -> u8 { return m_cpu->d(); },
+        [&]() -> u8 { return m_cpu->d_p(); }));
     m_debug_container->add_register(RegisterDebugContainer<u8>(
         "E",
-        [&]() { return m_cpu->e(); },
-        [&]() { return m_cpu->e_p(); }));
+        [&]() -> u8 { return m_cpu->e(); },
+        [&]() -> u8 { return m_cpu->e_p(); }));
     m_debug_container->add_register(RegisterDebugContainer<u8>(
         "H",
-        [&]() { return m_cpu->h(); },
-        [&]() { return m_cpu->h_p(); }));
+        [&]() -> u8 { return m_cpu->h(); },
+        [&]() -> u8 { return m_cpu->h_p(); }));
     m_debug_container->add_register(RegisterDebugContainer<u8>(
         "L",
-        [&]() { return m_cpu->l(); },
-        [&]() { return m_cpu->l_p(); }));
-    m_debug_container->add_register(RegisterDebugContainer<u8>("I", [&]() { return m_cpu->i(); }));
-    m_debug_container->add_register(RegisterDebugContainer<u8>("R", [&]() { return m_cpu->r(); }));
-    m_debug_container->add_pc([&]() { return m_cpu->pc(); });
-    m_debug_container->add_sp([&]() { return m_cpu->sp(); });
-    m_debug_container->add_is_interrupted([&]() { return m_cpu->is_interrupted(); });
-    m_debug_container->add_interrupt_mode([&]() {
+        [&]() -> u8 { return m_cpu->l(); },
+        [&]() -> u8 { return m_cpu->l_p(); }));
+    m_debug_container->add_register(RegisterDebugContainer<u8>("I", [&]() -> u8 { return m_cpu->i(); }));
+    m_debug_container->add_register(RegisterDebugContainer<u8>("R", [&]() -> u8 { return m_cpu->r(); }));
+    m_debug_container->add_pc([&]() -> u16 { return m_cpu->pc(); });
+    m_debug_container->add_sp([&]() -> u16 { return m_cpu->sp(); });
+    m_debug_container->add_is_interrupted([&]() -> bool { return m_cpu->is_interrupted(); });
+    m_debug_container->add_interrupt_mode([&]() -> const char * {
         switch (m_cpu->interrupt_mode()) {
         case InterruptMode::ZERO:
             return "0";
@@ -174,7 +174,7 @@ void PacmanSession::setup_debugging()
     });
     m_debug_container->add_flag_register(FlagRegisterDebugContainer<u8>(
         "F",
-        [&]() { return m_cpu->f(); },
+        [&]() -> u8 { return m_cpu->f(); },
         { { "s", 7 },
             { "z", 6 },
             { "y", 5 },
@@ -185,16 +185,16 @@ void PacmanSession::setup_debugging()
             { "c", 0 } }));
     m_debug_container->add_io(IoDebugContainer<u8>(
         "vblank return",
-        [&]() { return m_outputs_during_cycle.contains(s_out_port_vblank_interrupt_return); },
-        [&]() { return m_outputs_during_cycle[s_out_port_vblank_interrupt_return]; }));
+        [&]() -> bool { return m_outputs_during_cycle.contains(s_out_port_vblank_interrupt_return); },
+        [&]() -> u8 { return m_outputs_during_cycle[s_out_port_vblank_interrupt_return]; }));
     m_debug_container->add_io(IoDebugContainer<u8>(
         "coin counter",
-        [&]() { return true; },
-        [&]() { return m_memory_mapped_io->coin_counter(); }));
+        [&]() -> bool { return true; },
+        [&]() -> u8 { return m_memory_mapped_io->coin_counter(); }));
     m_debug_container->add_io(IoDebugContainer<u8>(
         "dipswitches",
-        [&]() { return true; },
-        [&]() { return m_memory_mapped_io->dipswitches(); },
+        [&]() -> bool { return true; },
+        [&]() -> u8 { return m_memory_mapped_io->dipswitches(); },
         { { "coin 1 (AH)", 0 },
             { "coin 2 (AH)", 1 },
             { "lives 1 (AH)", 2 },
@@ -205,8 +205,8 @@ void PacmanSession::setup_debugging()
             { "ghost names (AH)", 7 } }));
     m_debug_container->add_io(IoDebugContainer<u8>(
         "in 0",
-        [&]() { return true; },
-        [&]() { return m_memory_mapped_io->in0_read(); },
+        [&]() -> bool { return true; },
+        [&]() -> u8 { return m_memory_mapped_io->in0_read(); },
         { { "up (AL)", 0 },
             { "left (AL)", 1 },
             { "right (AL)", 2 },
@@ -217,8 +217,8 @@ void PacmanSession::setup_debugging()
             { "service 1 (AL)", 7 } }));
     m_debug_container->add_io(IoDebugContainer<u8>(
         "in 1",
-        [&]() { return true; },
-        [&]() { return m_memory_mapped_io->in1_read(); },
+        [&]() -> bool { return true; },
+        [&]() -> u8 { return m_memory_mapped_io->in1_read(); },
         { { "up (AL)", 0 },
             { "left (AL)", 1 },
             { "right (AL)", 2 },
@@ -228,7 +228,7 @@ void PacmanSession::setup_debugging()
             { "start 2 (AL)", 6 },
             { "cocktail (AL)", 7 } }));
     m_debug_container->add_memory(MemoryDebugContainer<u8>(
-        [&]() { return memory(); }));
+        [&]() -> std::vector<u8> { return memory(); }));
     m_debug_container->add_disassembled_program(disassemble_program());
     m_debug_container->add_tilemap(m_gui->tiles());
     m_debug_container->add_spritemap(m_gui->sprites());
@@ -239,7 +239,7 @@ void PacmanSession::setup_debugging()
     m_gui->attach_logger(m_logger);
 }
 
-void PacmanSession::gui_request(GuiRequest request)
+void PacmanSession::gui_request(const GuiRequest request)
 {
     switch (request.m_type) {
     case RUN:
@@ -257,7 +257,7 @@ void PacmanSession::gui_request(GuiRequest request)
     }
 }
 
-void PacmanSession::out_changed(u16 port)
+void PacmanSession::out_changed(const u16 port)
 {
     if (!m_outputs_during_cycle.contains(port)) {
         m_outputs_during_cycle[port] = m_cpu->a();
@@ -272,7 +272,7 @@ void PacmanSession::out_changed(u16 port)
     }
 }
 
-void PacmanSession::key_pressed(IoRequest request)
+void PacmanSession::key_pressed(const IoRequest request)
 {
     switch (request) {
     case TOGGLE_MUTE:
@@ -289,12 +289,12 @@ void PacmanSession::key_pressed(IoRequest request)
     }
 }
 
-std::vector<u8> PacmanSession::memory()
+auto PacmanSession::memory() -> std::vector<u8>
 {
     return { m_memory.begin(), m_memory.end() };
 }
 
-std::vector<DisassembledLine<u16, 16>> PacmanSession::disassemble_program()
+auto PacmanSession::disassemble_program() -> std::vector<DisassembledLine<u16, 16>>
 {
     EmulatorMemory<u16, u8> sliced_for_disassembly = m_memory.slice(0, 0x3fff);
 
@@ -305,11 +305,11 @@ std::vector<DisassembledLine<u16, 16>> PacmanSession::disassemble_program()
     std::vector<std::string> disassembled_program = split(ss, "\n");
 
     disassembled_program.erase(
-        std::remove_if(disassembled_program.begin(), disassembled_program.end(), [](std::string const& s) { return s.empty(); }));
+        std::remove_if(disassembled_program.begin(), disassembled_program.end(), [](std::string const& s) -> bool { return s.empty(); }));
 
     std::vector<DisassembledLine<u16, 16>> lines;
     std::transform(disassembled_program.begin(), disassembled_program.end(), std::back_inserter(lines),
-        [](std::string const& line) { return DisassembledLine<u16, 16>(line); });
+        [](std::string const& line) -> DisassembledLine<u16, 16> { return DisassembledLine<u16, 16>(line); });
 
     return lines;
 }

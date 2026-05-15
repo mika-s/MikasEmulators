@@ -21,12 +21,12 @@ CpmApplication::CpmApplication(std::string const& file)
     load_file(file);
 }
 
-std::unique_ptr<Session> CpmApplication::new_session()
+auto CpmApplication::new_session() -> std::unique_ptr<Session>
 {
     return std::make_unique<CpmApplicationSession>(m_loaded_file, m_memory);
 }
 
-std::vector<u8> create_empty_vector(std::size_t size)
+static auto create_empty_vector(const std::size_t size) -> std::vector<u8>
 {
     std::vector<u8> vec(size, 0);
     return vec;

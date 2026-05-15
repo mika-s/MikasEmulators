@@ -9,4 +9,8 @@
       SDL2
       SDL2_image
     ];
+
+      buildInputs = with pkgs; [
+        fmt
+      ];
 }

@@ -16,7 +16,7 @@ public:
 
     UnrecognizedOpcodeException(u16 opcode, std::string const& extra_message);
 
-    [[nodiscard]] char const* what() const noexcept override;
+    [[nodiscard]] auto what() const noexcept -> char const* override;
 
 private:
     void make_message(u8 opcode);

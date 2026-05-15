@@ -11,12 +11,12 @@ namespace emu::lmc {
 
 LmcHlt::LmcHlt() = default;
 
-Data LmcHlt::eval()
+auto LmcHlt::eval() -> Data
 {
     return opcode;
 }
 
-std::unique_ptr<InstructionInterface> LmcHlt::parse(Scanner& scanner)
+auto LmcHlt::parse(Scanner& scanner) -> std::unique_ptr<InstructionInterface>
 {
     scanner.skip(TokenKind::Hlt);
 

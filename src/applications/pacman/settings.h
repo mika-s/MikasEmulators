@@ -60,7 +60,7 @@ public:
     BoardTest m_board_test;
     CabinetMode m_cabinet_mode;
 
-    static Settings from_options(Options const& options);
+    static auto from_options(Options const& options) -> Settings;
 
 private:
     static const inline std::string s_help_short = "h";

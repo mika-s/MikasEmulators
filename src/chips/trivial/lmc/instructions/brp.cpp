@@ -15,14 +15,14 @@ namespace emu::lmc {
  * @param address is the address to the value in memory
  * @param flag_reg is the flag register
  */
-void brp(Address& pc, Address address, Flags flag_reg)
+void brp(Address& pc, const Address address, const Flags flag_reg) // NOLINT(*-identifier-length)
 {
     if (!flag_reg.is_negative_flag_set()) {
         pc = address;
     }
 }
 
-void print_brp(std::ostream& ostream, Address address)
+void print_brp(std::ostream& ostream, const Address address)
 {
     ostream << "BRP "
             << address;

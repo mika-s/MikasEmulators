@@ -92,7 +92,7 @@ private:
 
     std::vector<std::string> m_output;
 
-    void notify_gui_observers(GuiRequest const& request);
+    void notify_gui_observers(GuiRequest const& request) const;
 
     void init();
 
@@ -108,6 +108,6 @@ private:
 
     void render_disassembly_window();
 
-    void render_memory_editor_window();
+    static void render_memory_editor_window();
 };
 }

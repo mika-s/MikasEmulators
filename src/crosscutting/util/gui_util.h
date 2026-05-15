@@ -5,8 +5,9 @@
 
 namespace emu::util::gui {
 
-std::vector<std::pair<int, int>> number_to_pixels(
+auto number_to_pixels(
     unsigned int number,
     unsigned int row_offset,
-    unsigned int col_offset);
+    unsigned int col_offset
+) -> std::vector<std::pair<int, int>>;
 }

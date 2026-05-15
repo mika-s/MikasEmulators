@@ -9,13 +9,13 @@ class Flags {
 public:
     Flags();
 
-    [[nodiscard]] u8 to_u8() const;
+    [[nodiscard]] auto to_u8() const -> u8;
 
     void reset();
 
     void handle_negative_flag(Data previous, Data value);
 
-    [[nodiscard]] bool is_negative_flag_set() const;
+    [[nodiscard]] auto is_negative_flag_set() const -> bool;
 
 private:
     bool m_negative;

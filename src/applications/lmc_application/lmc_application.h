@@ -32,9 +32,9 @@ using emu::misc::UInteger;
 
 class LmcApplication : public Emulator {
 public:
-    explicit LmcApplication(std::string const& file, const GuiType gui_type);
+    explicit LmcApplication(std::string const& file, GuiType gui_type);
 
-    std::unique_ptr<Session> new_session() override;
+    auto new_session() -> std::unique_ptr<Session> override;
 
 private:
     static constexpr std::size_t s_memory_size = 100;
@@ -50,6 +50,6 @@ private:
 
     void load_file(std::string const& file);
 
-    static std::vector<Data> create_work_ram(std::size_t size);
+    static auto create_work_ram(std::size_t size) -> std::vector<Data>;
 };
 }

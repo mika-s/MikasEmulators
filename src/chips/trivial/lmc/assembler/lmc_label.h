@@ -17,7 +17,7 @@ class LmcLabel {
 public:
     explicit LmcLabel(std::string literal, Environment& environment);
 
-    Address eval();
+    Address eval() const;
 
     static std::optional<LmcLabel> parse(Scanner& scanner, Environment& environment);
 

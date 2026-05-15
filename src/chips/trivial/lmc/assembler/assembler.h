@@ -12,7 +12,7 @@ namespace emu::lmc {
  */
 class Assembler {
 public:
-    static std::vector<Data> assemble(std::stringstream const& code);
+    static auto assemble(std::stringstream const& code) -> std::vector<Data>;
 
 private:
 };

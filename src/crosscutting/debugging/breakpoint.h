@@ -24,7 +24,7 @@ public:
     {
     }
 
-    [[nodiscard]] std::string const& line() const
+    [[nodiscard]] auto line() const -> std::string const&
     {
         return m_line;
     }

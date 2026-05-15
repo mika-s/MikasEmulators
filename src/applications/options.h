@@ -14,27 +14,27 @@ using emu::gui::GuiType;
 
 class Options {
 public:
-    explicit Options(std::vector<std::string> args);
+    explicit Options(const std::vector<std::string> &args);
 
-    std::vector<std::string> args() const;
+    auto args() const -> std::vector<std::string>;
 
-    std::string short_executable_name() const;
+    auto short_executable_name() const -> std::string;
 
-    GuiType gui_type(std::function<void(std::string const&)> const& print_usage) const;
+    auto gui_type(std::function<void(std::string const&)> const& print_usage) const -> GuiType;
 
-    std::pair<bool, std::string> is_asking_for_help() const;
+    auto is_asking_for_help() const -> std::pair<bool, std::string>;
 
     void set_is_asking_for_help(std::string reason);
 
-    std::string command() const;
+    auto command() const -> std::string;
 
     void set_command(std::string command);
 
-    std::optional<std::string> application() const;
+    auto application() const -> std::optional<std::string>;
 
-    void set_application(std::string command);
+    void set_application(std::string application);
 
-    std::optional<std::string> path() const;
+    auto path() const -> std::optional<std::string>;
 
     void set_path(std::string path);
 
@@ -44,11 +44,11 @@ public:
 
     void add_option(std::string const& name, std::string const& value);
 
-    std::unordered_map<std::string, std::vector<std::string>> options() const;
+    auto options() const -> std::unordered_map<std::string, std::vector<std::string>>;
 
-    std::pair<bool, std::string> is_failed() const;
+    auto is_failed() const -> std::pair<bool, std::string>;
 
-    std::pair<bool, std::vector<std::string>> is_debugging_cmd_parser() const;
+    auto is_debugging_cmd_parser() const -> std::pair<bool, std::vector<std::string>>;
 
     void fail(std::string reason);
 

@@ -5,13 +5,12 @@
 
 namespace emu::applications::command_line_arguments {
 
-Token::Token(TokenKind kind)
+Token::Token(const TokenKind kind)
     : m_kind(kind)
-    , m_string_literal("")
 {
 }
 
-Token::Token(TokenKind kind, std::string literal)
+Token::Token(const TokenKind kind, std::string literal)
     : m_kind(kind)
     , m_string_literal(std::move(literal))
 {
@@ -21,12 +20,12 @@ Token::Token(TokenKind kind, std::string literal)
     }
 }
 
-TokenKind Token::kind() const
+auto Token::kind() const -> TokenKind
 {
     return m_kind;
 }
 
-std::string Token::string_literal() const
+auto Token::string_literal() const -> std::string
 {
     return m_string_literal;
 }

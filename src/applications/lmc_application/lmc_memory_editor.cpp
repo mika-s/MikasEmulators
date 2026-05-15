@@ -35,8 +35,8 @@ void LmcMemoryEditor::draw(char const* title, bool* p_open)
     } else if (!m_debug_container->is_memory_set()) {
         ImGui::Text("Memory is not provided to this pane.");
     } else {
-        const ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg //
-            | ImGuiTableFlags_SizingFixedSame | ImGuiTableFlags_NoHostExtendX;
+        constexpr ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg //
+                                          | ImGuiTableFlags_SizingFixedSame | ImGuiTableFlags_NoHostExtendX;
 
         const std::vector<Data> memory = m_debug_container->memory().value();
 

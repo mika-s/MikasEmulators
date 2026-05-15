@@ -8,7 +8,7 @@ StoppedState::StoppedState(std::shared_ptr<StateContext> state_context)
 {
 }
 
-bool StoppedState::is_exit_state()
+auto StoppedState::is_exit_state() -> bool
 {
     return true;
 }

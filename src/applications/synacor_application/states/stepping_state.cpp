@@ -20,7 +20,7 @@ SteppingState::SteppingState(std::shared_ptr<StateContext> state_context)
 {
 }
 
-bool SteppingState::is_exit_state()
+auto SteppingState::is_exit_state() -> bool
 {
     return false;
 }
@@ -75,7 +75,9 @@ void SteppingState::perform([[maybe_unused]] cyc& cycles)
         m_ctx->m_gui_io.m_is_quitting = false;
         transition_to_stop();
         return;
-    } else if (m_ctx->m_gui_io.m_is_toggling_pause) {
+    }
+
+    if (m_ctx->m_gui_io.m_is_toggling_pause) {
         m_ctx->m_gui_io.m_is_toggling_pause = false;
         transition_to_run();
         return;
@@ -84,7 +86,7 @@ void SteppingState::perform([[maybe_unused]] cyc& cycles)
     m_ctx->m_ui->update_screen(m_ctx->m_is_awaiting_input, s_game_window_subtitle);
 }
 
-bool SteppingState::await_input_and_update_debug()
+auto SteppingState::await_input_and_update_debug() -> bool
 {
     while (true) {
         m_ctx->m_input->read_debug_only(m_ctx->m_gui_io);
@@ -93,14 +95,20 @@ bool SteppingState::await_input_and_update_debug()
             m_ctx->m_gui_io.m_is_quitting = false;
             transition_to_stop();
             return true;
-        } else if (m_ctx->m_gui_io.m_is_toggling_pause) {
+        }
+
+        if (m_ctx->m_gui_io.m_is_toggling_pause) {
             m_ctx->m_gui_io.m_is_toggling_pause = false;
             transition_to_pause();
             return true;
-        } else if (m_ctx->m_gui_io.m_is_stepping_instruction) {
+        }
+
+        if (m_ctx->m_gui_io.m_is_stepping_instruction) {
             m_ctx->m_gui_io.m_is_stepping_instruction = false;
             break;
-        } else if (m_ctx->m_gui_io.m_is_continuing_execution) {
+        }
+
+        if (m_ctx->m_gui_io.m_is_continuing_execution) {
             m_ctx->m_gui_io.m_is_continuing_execution = false;
             transition_to_run();
             return true;

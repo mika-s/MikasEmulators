@@ -9,7 +9,7 @@ class Waveform {
 public:
     explicit Waveform(std::vector<u8> samples);
 
-    [[nodiscard]] std::vector<u8> samples() const;
+    [[nodiscard]] auto samples() const -> std::vector<u8>;
 
 private:
     static constexpr u8 max_value_for_sample = 1 << 4;

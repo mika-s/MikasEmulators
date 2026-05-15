@@ -169,7 +169,7 @@ void LmcApplicationSession::gui_request(GuiRequest request)
     }
 }
 
-std::vector<Data> create_work_ram(std::size_t size)
+static auto create_work_ram(const std::size_t size) -> std::vector<Data>
 {
     std::vector<Data> work_ram;
 
@@ -190,7 +190,7 @@ void LmcApplicationSession::assemble_and_load_request()
     m_state_context->change_state(m_state_context->paused_state());
 
     try {
-        std::stringstream ss(m_file_content);
+        std::stringstream const ss(m_file_content); // NOLINT(*-identifier-length)
         const std::vector<Data> code = Assembler::assemble(ss);
         std::vector<Data> remaining_memory;
 
@@ -215,13 +215,12 @@ void LmcApplicationSession::assemble_and_load_request()
     m_debug_container->add_disassembled_program(disassemble_program());
 }
 
-void LmcApplicationSession::input_from_terminal(Data input)
-{
+void LmcApplicationSession::input_from_terminal(const Data input) const {
     m_state_context->m_is_awaiting_input = false;
     m_cpu->input(input);
 }
 
-void LmcApplicationSession::out_changed(Data acc_reg, OutType out_type)
+void LmcApplicationSession::out_changed(const Data acc_reg, const OutType out_type)
 {
     m_ui->to_terminal(acc_reg, out_type);
 }
@@ -249,36 +248,36 @@ void LmcApplicationSession::setup_debugging()
     m_debug_container->add_pc([&]() { return m_cpu->pc(); });
     m_debug_container->add_flag_register(FlagRegisterDebugContainer<Data>(
         "F",
-        [&]() { return Data(m_cpu->f()); },
+        [&]() -> Data { return Data(m_cpu->f()); },
         { { "n", 0 } }));
-    m_debug_container->add_memory(MemoryDebugContainer<Data>([&]() { return memory(); }));
+    m_debug_container->add_memory(MemoryDebugContainer<Data>([&]() -> std::vector<Data> { return memory(); }));
     m_debug_container->add_disassembled_program(disassemble_program());
-    m_debug_container->add_file_content([&]() { return m_file_content; });
+    m_debug_container->add_file_content([&]() -> std::string { return m_file_content; });
 
     m_ui->attach_debugger(m_debugger);
     m_ui->attach_debug_container(m_debug_container);
     m_ui->attach_logger(m_logger);
 }
 
-std::vector<Data> LmcApplicationSession::memory()
+auto LmcApplicationSession::memory() -> std::vector<Data>
 {
     return { m_memory.begin(), m_memory.end() };
 }
 
-std::vector<DisassembledLine<Address, 10>> LmcApplicationSession::disassemble_program()
+auto LmcApplicationSession::disassemble_program() -> std::vector<DisassembledLine<Address, 10>>
 {
-    std::stringstream ss;
+    std::stringstream ss; // NOLINT(*-identifier-length)
     Disassembler disassembler(m_memory, ss);
     disassembler.disassemble();
 
     std::vector<std::string> disassembled_program = split(ss, "\n");
 
     disassembled_program.erase(
-        std::remove_if(disassembled_program.begin(), disassembled_program.end(), [](std::string const& s) { return s.empty(); }));
+        std::remove_if(disassembled_program.begin(), disassembled_program.end(), [](std::string const& s) -> bool { return s.empty(); }));
 
     std::vector<DisassembledLine<Address, 10>> lines;
     std::transform(disassembled_program.begin(), disassembled_program.end(), std::back_inserter(lines),
-        [](std::string const& line) { return DisassembledLine<Address, 10>(line); });
+        [](std::string const& line) -> DisassembledLine<Address, 10> { return DisassembledLine<Address, 10>(line); });
 
     return lines;
 }

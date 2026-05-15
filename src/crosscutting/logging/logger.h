@@ -23,6 +23,6 @@ public:
 private:
     std::vector<LogObserver*> m_log_observers;
 
-    void notify_log_observers(char const* fmt, va_list args);
+    void notify_log_observers(char const* fmt, va_list args) const;
 };
 }

@@ -44,7 +44,7 @@ SynacorApplication::SynacorApplication(const GuiType gui_type)
     m_memory.attach_memory_mapper(m_memory_mapped_io);
 }
 
-std::unique_ptr<Session> SynacorApplication::new_session()
+auto SynacorApplication::new_session() -> std::unique_ptr<Session>
 {
     return std::make_unique<SynacorApplicationSession>(
         m_is_only_run_once,
@@ -59,14 +59,14 @@ std::unique_ptr<Session> SynacorApplication::new_session()
 void SynacorApplication::load_file()
 {
     m_loaded_file = "roms/trivial/synacor/challenge.bin";
-    std::vector<u8> as_u8 = read_file_into_vector(m_loaded_file);
+    const std::vector<u8> as_u8 = read_file_into_vector(m_loaded_file);
     std::vector<u16> as_u16;
     for (unsigned int i = 0; i < as_u8.size(); i += 2) {
         as_u16.push_back(to_u16(as_u8[i + 1], as_u8[i]));
     }
 
     std::vector<RawData> as_RawData;
-    for (u16 value : as_u16) {
+    for (u16 const value : as_u16) {
         if (value >= s_max_value_in_file) {
             throw std::runtime_error(
                 fmt::format("Value too large in {}. Max value is {}, but was {}", m_loaded_file, s_max_value_in_file, value));

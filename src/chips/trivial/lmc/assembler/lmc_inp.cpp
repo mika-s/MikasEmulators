@@ -11,12 +11,12 @@ namespace emu::lmc {
 
 LmcInp::LmcInp() = default;
 
-Data LmcInp::eval()
+auto LmcInp::eval() -> Data
 {
     return opcode;
 }
 
-std::unique_ptr<InstructionInterface> LmcInp::parse(Scanner& scanner)
+auto LmcInp::parse(Scanner& scanner) -> std::unique_ptr<InstructionInterface>
 {
     scanner.skip(TokenKind::Inp);
 

@@ -8,10 +8,10 @@ namespace emu::util::byte {
 
 using emu::misc::UInteger;
 
-bool is_bit_set(u8 variable, unsigned int bit_position);
+auto is_bit_set(u8 variable, unsigned int bit_position) -> bool;
 
 template<std::size_t M>
-bool is_bit_set(UInteger<M> variable, unsigned int bit_position)
+auto is_bit_set(UInteger<M> variable, unsigned int bit_position) -> bool
 {
     return (variable.underlying() >> bit_position) & 1;
 }
@@ -20,19 +20,19 @@ void set_bit(u8& variable, unsigned int bit_position);
 
 void unset_bit(u8& variable, unsigned int bit_position);
 
-u16 to_u16(u8 farg, u8 sarg);
+auto to_u16(u8 farg, u8 sarg) -> u16;
 
-u32 to_u32(u8 fiarg, u8 sarg, u8 targ, u8 foarg);
+auto to_u32(u8 fiarg, u8 sarg, u8 targ, u8 foarg) -> u32;
 
-u8 low_byte(u16 number);
+auto low_byte(u16 number) -> u8;
 
-u8 high_byte(u16 number);
+auto high_byte(u16 number) -> u8;
 
-u8 low_nibble(u8 number);
+auto low_nibble(u8 number) -> u8;
 
-u8 high_nibble(u8 number);
+auto high_nibble(u8 number) -> u8;
 
-bool carried_out_of(unsigned int bit_position, u16 a, u16 b, bool cf);
+auto carried_out_of(unsigned int bit_position, u16 a, u16 b, bool cf) -> bool;
 
-bool borrow_from(unsigned int bit_position, u16 a, u16 b, bool cf);
+auto borrow_from(unsigned int bit_position, u16 a, u16 b, bool cf) -> bool;
 }

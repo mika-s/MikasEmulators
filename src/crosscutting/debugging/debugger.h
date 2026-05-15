@@ -9,18 +9,18 @@ namespace emu::debugger {
 using emu::misc::UInteger;
 
 struct KeyHasher {
-    std::size_t operator()(u8 const& k) const
+    auto operator()(u8 const& k) const -> std::size_t // NOLINT(*-identifier-length)
     {
         return k;
     }
 
-    std::size_t operator()(u16 const& k) const
+    auto operator()(u16 const& k) const -> std::size_t // NOLINT(*-identifier-length)
     {
         return k;
     }
 
     template<std::size_t M>
-    std::size_t operator()(UInteger<M> const& k) const
+    auto operator()(UInteger<M> const& k) const -> std::size_t // NOLINT(*-identifier-length)
     {
         return k.underlying();
     }
@@ -39,7 +39,7 @@ public:
         m_breakpoints.erase(breakpoint_address);
     }
 
-    std::unordered_map<A, Breakpoint<A, B>, KeyHasher> const& breakpoints() const
+    auto breakpoints() const -> std::unordered_map<A, Breakpoint<A, B>, KeyHasher> const&
     {
         return m_breakpoints;
     }
@@ -49,9 +49,9 @@ public:
         m_breakpoints.clear();
     }
 
-    bool has_breakpoint(A breakpoint_address)
+    auto has_breakpoint(A breakpoint_address) -> bool
     {
-        return m_breakpoints.find(breakpoint_address) != m_breakpoints.end();
+        return m_breakpoints.contains(breakpoint_address);
     }
 
 private:

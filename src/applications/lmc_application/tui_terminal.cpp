@@ -13,7 +13,7 @@ namespace emu::applications::lmc {
 
 using emu::lmc::OutType;
 
-void TuiTerminal::to_terminal(Data acc_reg, OutType out_type)
+void TuiTerminal::to_terminal(const Data acc_reg, const OutType out_type)
 {
     if (out_type == OutType::OUT) {
         std::cout << acc_reg.underlying() << "\n";
@@ -26,7 +26,7 @@ void TuiTerminal::from_terminal()
 {
     std::cout << "inp: " << std::flush;
 
-    u16 number;
+    u16 number = 0;
     std::cin >> number;
     notify_ui_observers_about_input_from_terminal(Data(number));
 }
@@ -67,10 +67,9 @@ void TuiTerminal::update_debug_only([[maybe_unused]] bool is_awaiting_input)
 {
 }
 
-void TuiTerminal::notify_ui_observers_about_input_from_terminal(Data input)
-{
+void TuiTerminal::notify_ui_observers_about_input_from_terminal(const Data input) const {
     for (UiObserver* observer : m_ui_observers) {
-        observer->gui_request({ .m_type = GuiRequestType::INPUT_FROM_TERMINAL, .m_data_payload = input });
+        observer->gui_request({ .m_type = GuiRequestType::INPUT_FROM_TERMINAL, .m_data_payload = input, .m_string_payload = "" });
     }
 }
 }

@@ -10,12 +10,12 @@ namespace emu::lmc {
 
 LmcOut::LmcOut() = default;
 
-Data LmcOut::eval()
+auto LmcOut::eval() -> Data
 {
     return opcode;
 }
 
-std::unique_ptr<InstructionInterface> LmcOut::parse(Scanner& scanner)
+auto LmcOut::parse(Scanner& scanner) -> std::unique_ptr<InstructionInterface>
 {
     scanner.skip(TokenKind::Out);
 

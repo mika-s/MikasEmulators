@@ -18,7 +18,7 @@ class LmcOperand {
 public:
     LmcOperand(std::optional<LmcInteger> integer_literal, std::optional<LmcLabelArgument> label_literal);
 
-    Data eval();
+    Data eval() const;
 
     static LmcOperand parse(Scanner& scanner, Environment& environment);
 

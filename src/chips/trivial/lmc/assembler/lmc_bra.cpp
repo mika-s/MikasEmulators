@@ -19,16 +19,16 @@ LmcBra::LmcBra(LmcOperand operand)
 {
 }
 
-Data LmcBra::eval()
+auto LmcBra::eval() -> Data
 {
     return opcode + m_operand.eval();
 }
 
-std::unique_ptr<InstructionInterface> LmcBra::parse(Scanner& scanner, Environment& environment)
+auto LmcBra::parse(Scanner& scanner, Environment& environment) -> std::unique_ptr<InstructionInterface>
 {
     scanner.skip(TokenKind::Bra);
 
-    LmcOperand operand = LmcOperand::parse(scanner, environment);
+    LmcOperand const operand = LmcOperand::parse(scanner, environment);
 
     return std::make_unique<LmcBra>(operand);
 }

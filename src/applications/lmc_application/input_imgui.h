@@ -4,10 +4,6 @@
 #include <SDL_scancode.h>
 
 namespace emu::applications::lmc {
-class GuiIo;
-}
-
-namespace emu::applications::lmc {
 
 class InputImgui : public Input {
 public:

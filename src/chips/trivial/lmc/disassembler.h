@@ -17,7 +17,7 @@ using emu::memory::EmulatorMemory;
 
 class Disassembler {
 public:
-    Disassembler(EmulatorMemory<Address, Data>& memory, std::ostream& iostream);
+    Disassembler(EmulatorMemory<Address, Data>& memory, std::ostream& ostream);
 
     void disassemble();
 
@@ -28,10 +28,10 @@ private:
 
     void print_next_instruction();
 
-    Data get_next_value();
+    auto get_next_value() -> Data;
 
-    static Address find_argument(Data raw_opcode);
+    static auto find_argument(Data raw_opcode) -> Address;
 
-    static Opcode find_opcode(Data raw_opcode);
+    static auto find_opcode(Data raw_opcode) -> Opcode;
 };
 }

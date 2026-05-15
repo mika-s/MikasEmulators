@@ -5,7 +5,7 @@
 
 namespace emu::applications::command_line_arguments {
 
-Options CommandLineArguments::find_options(std::vector<std::string> args)
+auto CommandLineArguments::find_options(std::vector<std::string> args) -> Options
 {
     Scanner scanner({ args.begin() + 1, args.end() });
     Options options(args);

@@ -14,7 +14,7 @@ MemoryMapForSynacorApplication::MemoryMapForSynacorApplication(EmulatorMemory<Ad
  * @param address is the address in memory to write to
  * @param value is the value that should be written to memory
  */
-void MemoryMapForSynacorApplication::write(Address address, RawData value)
+void MemoryMapForSynacorApplication::write(const Address address, const RawData value)
 {
     if (address <= Address(32767)) {
         m_memory.direct_write(address, value);
@@ -43,67 +43,75 @@ void MemoryMapForSynacorApplication::write(Address address, RawData value)
  * @param address is the address in memory to read from
  * @return the value in memory at the given address
  */
-RawData MemoryMapForSynacorApplication::read(Address address)
+auto MemoryMapForSynacorApplication::read(const Address address) -> RawData
 {
     if (address <= Address(32767)) {
         return m_memory.direct_read(address);
-    } else if (address == Address(32768)) {
-        return RawData(m_r0.underlying());
-    } else if (address == Address(32769)) {
-        return RawData(m_r1.underlying());
-    } else if (address == Address(32770)) {
-        return RawData(m_r2.underlying());
-    } else if (address == Address(32771)) {
-        return RawData(m_r3.underlying());
-    } else if (address == Address(32772)) {
-        return RawData(m_r4.underlying());
-    } else if (address == Address(32773)) {
-        return RawData(m_r5.underlying());
-    } else if (address == Address(32774)) {
-        return RawData(m_r6.underlying());
-    } else if (address == Address(32775)) {
-        return RawData(m_r7.underlying());
-    } else {
-        throw std::runtime_error("Invalid address");
     }
+    if (address == Address(32768)) {
+        return RawData(m_r0.underlying());
+    }
+    if (address == Address(32769)) {
+        return RawData(m_r1.underlying());
+    }
+    if (address == Address(32770)) {
+        return RawData(m_r2.underlying());
+    }
+    if (address == Address(32771)) {
+        return RawData(m_r3.underlying());
+    }
+    if (address == Address(32772)) {
+        return RawData(m_r4.underlying());
+    }
+    if (address == Address(32773)) {
+        return RawData(m_r5.underlying());
+    }
+    if (address == Address(32774)) {
+        return RawData(m_r6.underlying());
+    }
+    if (address == Address(32775)) {
+        return RawData(m_r7.underlying());
+    }
+
+    throw std::runtime_error("Invalid address");
 }
 
-Data MemoryMapForSynacorApplication::r0() const
+auto MemoryMapForSynacorApplication::r0() const -> Data
 {
     return m_r0;
 }
 
-Data MemoryMapForSynacorApplication::r1() const
+auto MemoryMapForSynacorApplication::r1() const -> Data
 {
     return m_r1;
 }
 
-Data MemoryMapForSynacorApplication::r2() const
+auto MemoryMapForSynacorApplication::r2() const -> Data
 {
     return m_r2;
 }
 
-Data MemoryMapForSynacorApplication::r3() const
+auto MemoryMapForSynacorApplication::r3() const -> Data
 {
     return m_r3;
 }
 
-Data MemoryMapForSynacorApplication::r4() const
+auto MemoryMapForSynacorApplication::r4() const -> Data
 {
     return m_r4;
 }
 
-Data MemoryMapForSynacorApplication::r5() const
+auto MemoryMapForSynacorApplication::r5() const -> Data
 {
     return m_r5;
 }
 
-Data MemoryMapForSynacorApplication::r6() const
+auto MemoryMapForSynacorApplication::r6() const -> Data
 {
     return m_r6;
 }
 
-Data MemoryMapForSynacorApplication::r7() const
+auto MemoryMapForSynacorApplication::r7() const -> Data
 {
     return m_r7;
 }

@@ -187,13 +187,13 @@ protected:
 
     std::shared_ptr<Tile> render_tile(u8 palette_idx, u8 tile_idx);
 
-    std::shared_ptr<Tile> render_debugging_tile(u8 tile_idx);
+    static std::shared_ptr<Tile> render_debugging_tile(u8 tile_idx);
 
     void draw_tiles(Framebuffer& screen, std::vector<u8> const& tile_ram, std::vector<u8> const& palette_ram);
 
     std::shared_ptr<Sprite> render_sprite(u8 palette_idx, u8 sprite_idx, bool flip_x, bool flip_y);
 
-    std::shared_ptr<Sprite> render_debugging_sprite(unsigned int rotation, u8 sprite_idx);
+    static std::shared_ptr<Sprite> render_debugging_sprite(unsigned int rotation, u8 sprite_idx);
 
     void draw_sprites(Framebuffer& screen, std::vector<u8> const& sprite_ram);
 

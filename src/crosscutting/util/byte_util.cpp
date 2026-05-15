@@ -4,7 +4,7 @@
 
 namespace emu::util::byte {
 
-bool is_bit_set(u8 variable, unsigned int bit_position)
+auto is_bit_set(u8 variable, unsigned int bit_position) -> bool
 {
     return (variable >> bit_position) & 1;
 }
@@ -19,12 +19,12 @@ void unset_bit(u8& variable, unsigned int bit_position)
     variable &= ~(1U << bit_position);
 }
 
-u16 to_u16(u8 farg, u8 sarg)
+auto to_u16(u8 farg, u8 sarg) -> u16
 {
     return static_cast<u16>((farg << 8U) + sarg);
 }
 
-u32 to_u32(u8 fiarg, u8 sarg, u8 targ, u8 foarg)
+auto to_u32(u8 fiarg, u8 sarg, u8 targ, u8 foarg) -> u32
 {
     return static_cast<u32>(fiarg << 24U | sarg << 16U | targ << 8U | foarg);
 }
@@ -37,9 +37,9 @@ u32 to_u32(u8 fiarg, u8 sarg, u8 targ, u8 foarg)
  * @param number is the uint16_t number to get the low byte of
  * @return the low byte
  */
-u8 low_byte(u16 number)
+auto low_byte(const u16 number) -> u8
 {
-    return (number >> (8 * 0)) & 0xff;
+    return number >> (8 * 0) & 0xff;
 }
 
 /**
@@ -50,22 +50,22 @@ u8 low_byte(u16 number)
  * @param number is the uint16_t number to get the high byte of
  * @return the high byte
  */
-u8 high_byte(u16 number)
+auto high_byte(const u16 number) -> u8
 {
-    return (number >> (8 * 1)) & 0xff;
+    return number >> (8 * 1) & 0xff;
 }
 
-u8 low_nibble(u8 number)
+auto low_nibble(const u8 number) -> u8
 {
     return number & 0x0f;
 }
 
-u8 high_nibble(u8 number)
+auto high_nibble(const u8 number) -> u8
 {
     return number & 0xf0;
 }
 
-bool carried_out_of(unsigned int bit_position, u16 a, u16 b, bool cf)
+auto carried_out_of(const unsigned int bit_position, u16 a, u16 b, bool cf) -> bool
 {
     const i32 result = a + b + (cf ? 1 : 0);
     const i32 carry = result ^ a ^ b;
@@ -73,7 +73,7 @@ bool carried_out_of(unsigned int bit_position, u16 a, u16 b, bool cf)
     return carry & (1 << (bit_position + 1));
 }
 
-bool borrow_from(unsigned int bit_position, u16 a, u16 b, bool cf)
+auto borrow_from(const unsigned int bit_position, u16 a, u16 b, bool cf) -> bool
 {
     const i32 result = a - b - (cf ? 1 : 0);
     const i32 carry = result ^ a ^ b;

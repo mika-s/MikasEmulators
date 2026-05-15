@@ -13,11 +13,11 @@ public:
 
     explicit Token(TokenKind kind, std::string literal);
 
-    [[nodiscard]] TokenKind kind() const;
+    [[nodiscard]] auto kind() const -> TokenKind;
 
-    [[nodiscard]] std::string string_literal() const;
+    [[nodiscard]] auto string_literal() const -> std::string;
 
-    friend std::ostream& operator<<(std::ostream& os, Token const& rhs)
+    friend auto operator<<(std::ostream& os, Token const& rhs) -> std::ostream& // NOLINT(*-identifier-length)
     {
         os << TokenKind_as_string.at(rhs.m_kind);
         if (rhs.m_kind == TokenKind::ShortOption) {

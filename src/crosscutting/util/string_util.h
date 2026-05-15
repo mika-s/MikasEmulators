@@ -40,9 +40,9 @@ std::vector<std::string> split(std::stringstream const& ss, std::string const& d
 
 std::string_view trim(std::string_view s);
 
-std::string prepend(std::string prefix, char const* txt);
+std::string prepend(const std::string &prefix, char const* txt);
 
-std::string append(std::string postfix, char const* txt);
+std::string append(const std::string &postfix, char const* txt);
 
 bool is_alphanumeric(std::string const& str);
 

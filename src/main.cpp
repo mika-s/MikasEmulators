@@ -23,7 +23,7 @@ using emu::exceptions::RomFileNotFoundException;
 using emu::exceptions::UnsupportedException;
 using emu::util::string::find_short_executable_name;
 
-int main(int argc, char* argv[])
+auto main(const int argc, char* argv[]) -> int
 {
     const std::string short_executable_name = find_short_executable_name(std::string(argv[0]));
     try {
@@ -33,7 +33,9 @@ int main(int argc, char* argv[])
 
             if (options.is_failed().first && !options.is_asking_for_help().first) {
                 throw InvalidProgramArgumentsException(options.is_failed().second, Frontend::print_main_usage);
-            } else if (options.is_debugging_cmd_parser().first) {
+            }
+
+            if (options.is_debugging_cmd_parser().first) {
                 for (std::string const& token : options.is_debugging_cmd_parser().second) {
                     std::cout << token << " ";
                 }

@@ -26,7 +26,7 @@ private:
     static constexpr unsigned int s_max_chars = 4;
     static constexpr std::size_t s_rows = 10;
     static constexpr std::size_t s_cols = 10;
-    static constexpr float s_box_width = 50.0f;
+    static constexpr float s_box_width = 50.0F;
 
     std::shared_ptr<DebugContainer<Address, Data, 10>> m_debug_container;
     bool m_is_debug_container_set { false };

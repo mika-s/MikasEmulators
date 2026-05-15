@@ -9,43 +9,44 @@ namespace emu::applications {
 using emu::exceptions::InvalidProgramArgumentsException;
 using emu::util::string::find_short_executable_name;
 
-Options::Options(std::vector<std::string> args)
+Options::Options(const std::vector<std::string> &args)
     : m_args(args)
 {
     m_short_executable_name = find_short_executable_name(args[0]);
 }
 
-std::vector<std::string> Options::args() const
+auto Options::args() const -> std::vector<std::string>
 {
     return m_args;
 }
 
-std::string Options::short_executable_name() const
+auto Options::short_executable_name() const -> std::string
 {
     return m_short_executable_name;
 }
 
-GuiType Options::gui_type(std::function<void(std::string const&)> const& print_usage) const
+auto Options::gui_type(std::function<void(std::string const&)> const& print_usage) const -> GuiType
 {
     if (!m_options.contains("g")) {
         return GuiType::ORDINARY;
     }
     if (m_options.at("g").size() > 1) {
         throw InvalidProgramArgumentsException("-g flag should only be used once", print_usage);
-    } else if (m_options.at("g").empty()) {
+    }
+    if (m_options.at("g").empty()) {
         throw InvalidProgramArgumentsException("-g flag needs an additional argument", print_usage);
     }
-
     if (m_options.at("g")[0] == "ordinary") {
         return GuiType::ORDINARY;
-    } else if (m_options.at("g")[0] == "debugging") {
-        return GuiType::DEBUGGING;
-    } else {
-        throw InvalidProgramArgumentsException("Unknown GUI type passed to the -g flag", print_usage);
     }
+    if (m_options.at("g")[0] == "debugging") {
+        return GuiType::DEBUGGING;
+    }
+
+    throw InvalidProgramArgumentsException("Unknown GUI type passed to the -g flag", print_usage);
 }
 
-std::pair<bool, std::string> Options::is_asking_for_help() const
+auto Options::is_asking_for_help() const -> std::pair<bool, std::string>
 {
     return { m_is_asking_for_help, m_is_asking_for_help_reason };
 }
@@ -56,7 +57,7 @@ void Options::set_is_asking_for_help(std::string reason)
     m_is_asking_for_help_reason = std::move(reason);
 }
 
-std::string Options::command() const
+auto Options::command() const -> std::string
 {
     return m_command;
 }
@@ -66,7 +67,7 @@ void Options::set_command(std::string command)
     m_command = std::move(command);
 }
 
-std::optional<std::string> Options::application() const
+auto Options::application() const -> std::optional<std::string>
 {
     return m_application;
 }
@@ -76,7 +77,7 @@ void Options::set_application(std::string application)
     m_application = std::optional(application);
 }
 
-std::optional<std::string> Options::path() const
+auto Options::path() const -> std::optional<std::string>
 {
     return m_path;
 }
@@ -93,8 +94,8 @@ void Options::set_tokens(std::vector<std::string> tokens)
 
 void Options::add_option(std::string const& name)
 {
-    if (m_options.count(name) == 0) {
-        std::vector<std::string> vec;
+    if (!m_options.contains(name)) {
+        constexpr std::vector<std::string> vec;
         m_options[name] = vec;
         m_is_asking_for_help = m_is_asking_for_help || m_options.contains(s_help_long) || m_options.contains(s_help_short);
         m_is_debugging_cmd_parser = m_is_debugging_cmd_parser || m_options.contains(s_debug_scanner_long);
@@ -103,7 +104,7 @@ void Options::add_option(std::string const& name)
 
 void Options::add_option(std::string const& name, std::string const& value)
 {
-    if (m_options.count(name) == 0) {
+    if (!m_options.contains(name)) {
         std::vector<std::string> vec;
         vec.emplace_back(value);
         m_options[name] = vec;
@@ -114,12 +115,12 @@ void Options::add_option(std::string const& name, std::string const& value)
     m_is_asking_for_help = m_is_asking_for_help || m_options.contains(s_help_long) || m_options.contains(s_help_short);
 }
 
-std::unordered_map<std::string, std::vector<std::string>> Options::options() const
+auto Options::options() const -> std::unordered_map<std::string, std::vector<std::string>>
 {
     return m_options;
 }
 
-std::pair<bool, std::string> Options::is_failed() const
+auto Options::is_failed() const -> std::pair<bool, std::string>
 {
     return { m_is_failed, m_failed_reason };
 }
@@ -132,7 +133,7 @@ void Options::fail(std::string reason)
         m_failed_reason = std::move(reason);
     }
 }
-std::pair<bool, std::vector<std::string>> Options::is_debugging_cmd_parser() const
+auto Options::is_debugging_cmd_parser() const -> std::pair<bool, std::vector<std::string>>
 {
     return { m_is_debugging_cmd_parser, m_cmd_tokens };
 }

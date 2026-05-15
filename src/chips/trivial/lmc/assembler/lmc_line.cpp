@@ -20,14 +20,14 @@ LmcLine::LmcLine(std::optional<LmcLabel> label, std::unique_ptr<LmcInstruction> 
 {
 }
 
-Data LmcLine::eval()
+auto LmcLine::eval() const -> Data
 {
     return m_instruction->eval();
 }
 
-LmcLine LmcLine::parse(Scanner& scanner, Environment& environment)
+auto LmcLine::parse(Scanner& scanner, Environment& environment) -> LmcLine
 {
-    std::optional<LmcLabel> label = LmcLabel::parse(scanner, environment);
+    std::optional<LmcLabel> const label = LmcLabel::parse(scanner, environment);
     std::unique_ptr<LmcInstruction> instruction = LmcInstruction::parse(scanner, environment);
 
     scanner.skip(TokenKind::Newline);

@@ -34,7 +34,7 @@ using emu::misc::Governor;
 
 StateContext::StateContext(
     GuiIo& gui_io,
-    std::shared_ptr<Ui> ui,
+    std::shared_ptr<Ui> ui, // NOLINT(*-identifier-length)
     std::shared_ptr<Input> input,
     std::shared_ptr<Cpu> cpu,
     EmulatorMemory<Address, RawData>& memory,
@@ -65,32 +65,32 @@ void StateContext::change_state(std::shared_ptr<State> new_state)
     m_current_state = std::move(new_state);
 }
 
-std::shared_ptr<State> StateContext::paused_state()
+auto StateContext::paused_state() -> std::shared_ptr<State>
 {
     return m_paused_state;
 }
 
-std::shared_ptr<State> StateContext::running_state()
+auto StateContext::running_state() -> std::shared_ptr<State>
 {
     return m_running_state;
 }
 
-std::shared_ptr<State> StateContext::running_awaiting_input_state()
+auto StateContext::running_awaiting_input_state() -> std::shared_ptr<State>
 {
     return m_running_awaiting_input_state;
 }
 
-std::shared_ptr<State> StateContext::stepping_state()
+auto StateContext::stepping_state() -> std::shared_ptr<State>
 {
     return m_stepping_state;
 }
 
-std::shared_ptr<State> StateContext::stopped_state()
+auto StateContext::stopped_state() -> std::shared_ptr<State>
 {
     return m_stopped_state;
 }
 
-std::shared_ptr<State> StateContext::current_state()
+auto StateContext::current_state() -> std::shared_ptr<State>
 {
     return m_current_state;
 }

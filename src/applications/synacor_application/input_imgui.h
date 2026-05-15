@@ -4,10 +4,6 @@
 #include <SDL_scancode.h>
 
 namespace emu::applications::synacor {
-class GuiIo;
-}
-
-namespace emu::applications::synacor {
 
 class InputImgui : public Input {
 public:

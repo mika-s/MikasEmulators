@@ -19,14 +19,14 @@ using emu::memory::EmulatorMemory;
  * @param memory is the memory
  * @param flag_reg is the flag register, which will be mutated
  */
-void sub(Data& acc_reg, Address address, EmulatorMemory<Address, Data> const& memory, Flags& flag_reg)
+void sub(Data& acc_reg, const Address address, EmulatorMemory<Address, Data> const& memory, Flags& flag_reg)
 {
     flag_reg.handle_negative_flag(acc_reg, memory.read(address));
 
     acc_reg -= memory.read(address);
 }
 
-void print_sub(std::ostream& ostream, Address address)
+void print_sub(std::ostream& ostream, const Address address)
 {
     ostream << "SUB "
             << address;

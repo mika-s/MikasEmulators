@@ -57,6 +57,6 @@ public:
 private:
     std::vector<UiObserver*> m_ui_observers;
 
-    void notify_ui_observers_about_input_from_terminal(Data input);
+    void notify_ui_observers_about_input_from_terminal(Data input) const;
 };
 }

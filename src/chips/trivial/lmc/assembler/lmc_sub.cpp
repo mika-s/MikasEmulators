@@ -19,16 +19,16 @@ LmcSub::LmcSub(LmcOperand operand)
 {
 }
 
-Data LmcSub::eval()
+auto LmcSub::eval() -> Data
 {
     return opcode + m_operand.eval();
 }
 
-std::unique_ptr<InstructionInterface> LmcSub::parse(Scanner& scanner, Environment& environment)
+auto LmcSub::parse(Scanner& scanner, Environment& environment) -> std::unique_ptr<InstructionInterface>
 {
     scanner.skip(TokenKind::Sub);
 
-    LmcOperand operand = LmcOperand::parse(scanner, environment);
+    LmcOperand const operand = LmcOperand::parse(scanner, environment);
 
     return std::make_unique<LmcSub>(operand);
 }

@@ -36,7 +36,7 @@ class SynacorApplication : public Emulator {
 public:
     explicit SynacorApplication(GuiType gui_type);
 
-    std::unique_ptr<Session> new_session() override;
+    auto new_session() -> std::unique_ptr<Session> override;
 
 private:
     static constexpr u16 s_max_value_in_file = 32776;

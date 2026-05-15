@@ -9,7 +9,7 @@ class MemoryMappedIo {
 public:
     virtual ~MemoryMappedIo() = default;
 
-    virtual D read(A address) = 0;
+    virtual auto read(A address) -> D = 0;
 
     virtual void write(A address, D value) = 0;
 };
