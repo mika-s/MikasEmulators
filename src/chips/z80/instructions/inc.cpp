@@ -83,7 +83,7 @@ void inc_r_undoc(u8& reg, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void inc_MHL(EmulatorMemory<u16, u8>& memory, u16 address, Flags& flag_reg, cyc& cycles)
+void inc_MHL(EmulatorMemory<u16, u8>& memory, const u16 address, Flags& flag_reg, cyc& cycles)
 {
     u8 value = memory.read(address);
     inc(value, flag_reg);
@@ -219,7 +219,7 @@ void inc_ixyl(u16& ixy_reg, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void inc_MixyPd(u16 ixy_reg, NextByte const& args, EmulatorMemory<u16, u8>& memory, Flags& flag_reg, cyc& cycles)
+void inc_MixyPd(const u16 ixy_reg, NextByte const& args, EmulatorMemory<u16, u8>& memory, Flags& flag_reg, cyc& cycles)
 {
     const u16 address = ixy_reg + static_cast<i8>(args.farg);
     u8 value = memory.read(address);
@@ -339,7 +339,7 @@ TEST_CASE("Z80: INC")
 
     SUBCASE("should set the overflow flag when overflowing and not otherwise")
     {
-        u8 acc_reg;
+        u8 acc_reg = 0;
 
         for (u8 acc_reg_counter = 0; acc_reg_counter < UINT8_MAX; ++acc_reg_counter) {
             Flags flag_reg;
@@ -390,7 +390,7 @@ TEST_CASE("Z80: INC r")
 
         inc_r(reg, flag_reg, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 
@@ -400,7 +400,7 @@ TEST_CASE("Z80: INC ss")
     u8 reg1 = 0;
     u8 reg2 = 0;
     u8 expected_reg1 = 0;
-    u8 expected_reg2;
+    u8 expected_reg2 = 0;
     u16 sp = 0;
 
     SUBCASE("should increase register pair")
@@ -436,11 +436,11 @@ TEST_CASE("Z80: INC ss")
 
         inc_ss(reg1, reg2, cycles);
 
-        CHECK_EQ(6, cycles);
+        CHECK_EQ(static_cast<cyc>(6), cycles);
 
         inc_sp(sp, cycles);
 
-        CHECK_EQ(6, cycles);
+        CHECK_EQ(static_cast<cyc>(6), cycles);
     }
 }
 
@@ -455,7 +455,7 @@ TEST_CASE("Z80: INC (HL)")
 
         inc_MHL(memory, 0x0001, flag_reg, cycles);
 
-        CHECK_EQ(11, cycles);
+        CHECK_EQ(static_cast<cyc>(11), cycles);
     }
 }
 
@@ -481,7 +481,7 @@ TEST_CASE("Z80: INC (IX or IY)")
 
         inc_ixy(ix, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 }
 }

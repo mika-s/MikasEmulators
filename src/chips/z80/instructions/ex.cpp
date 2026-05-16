@@ -34,15 +34,14 @@ void ex(u8& acc_reg, Flags& flag_reg, u8& acc_p_reg, Flags& flag_p_reg, cyc& cyc
     acc_reg = acc_p_reg;
     acc_p_reg = acc_temp;
 
-    Flags flags_temp;
-    flags_temp = flag_reg;
+    Flags const flags_temp = flag_reg;
     flag_reg = flag_p_reg;
     flag_p_reg = flags_temp;
 
     cycles = 4;
 }
 
-void ex_msp_dd(u16 sp, EmulatorMemory<u16, u8>& memory, u16& reg)
+void ex_msp_dd(const u16 sp, EmulatorMemory<u16, u8>& memory, u16& reg)
 {
     const u16 previous_reg = reg;
     reg = to_u16(memory.read(sp + 1), memory.read(sp));
@@ -65,7 +64,7 @@ void ex_msp_dd(u16 sp, EmulatorMemory<u16, u8>& memory, u16& reg)
  * @param l_reg is the L register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void ex_msp_hl(u16 sp, EmulatorMemory<u16, u8>& memory, u8& h_reg, u8& l_reg, cyc& cycles)
+void ex_msp_hl(const u16 sp, EmulatorMemory<u16, u8>& memory, u8& h_reg, u8& l_reg, cyc& cycles)
 {
     u16 hl = to_u16(h_reg, l_reg);
     ex_msp_dd(sp, memory, hl);
@@ -89,7 +88,7 @@ void ex_msp_hl(u16 sp, EmulatorMemory<u16, u8>& memory, u8& h_reg, u8& l_reg, cy
  * @param ixy_reg is the IX or IY register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void ex_msp_ixy(u16 sp, EmulatorMemory<u16, u8>& memory, u16& ixy_reg, cyc& cycles)
+void ex_msp_ixy(const u16 sp, EmulatorMemory<u16, u8>& memory, u16& ixy_reg, cyc& cycles)
 {
     ex_msp_dd(sp, memory, ixy_reg);
 
@@ -181,7 +180,7 @@ TEST_CASE("Z80: EX")
 
         ex(acc_reg, flag_reg, acc_p_reg, flag_p_reg, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 
@@ -195,7 +194,7 @@ TEST_CASE("Z80: EX (SP), HL")
         memory.add({ 0x33, 0x44 });
         u8 h_reg = 0x11;
         u8 l_reg = 0x22;
-        u8 sp = 0x00;
+        constexpr u8 sp = 0x00;
 
         ex_msp_hl(sp, memory, h_reg, l_reg, cycles);
 
@@ -205,18 +204,18 @@ TEST_CASE("Z80: EX (SP), HL")
         CHECK_EQ(0x11, memory.read(sp + 1));
     }
 
-    SUBCASE("should use 18 cycles")
+    SUBCASE("should use 19 cycles")
     {
         cycles = 0;
         EmulatorMemory<u16, u8> memory;
         memory.add({ 0x33, 0x44 });
         u8 h_reg = 0x11;
         u8 l_reg = 0x22;
-        u8 sp = 0x00;
+        constexpr u8 sp = 0x00;
 
         ex_msp_hl(sp, memory, h_reg, l_reg, cycles);
 
-        CHECK_EQ(19, cycles);
+        CHECK_EQ(static_cast<cyc>(19), cycles);
     }
 }
 
@@ -229,7 +228,7 @@ TEST_CASE("Z80: EX (SP), IX")
         EmulatorMemory<u16, u8> memory;
         memory.add({ 0x90, 0x48 });
         u16 ix_reg = 0x3988;
-        u8 sp = 0x00;
+        constexpr u8 sp = 0x00;
 
         ex_msp_ixy(sp, memory, ix_reg, cycles);
 
@@ -244,11 +243,11 @@ TEST_CASE("Z80: EX (SP), IX")
         EmulatorMemory<u16, u8> memory;
         memory.add({ 0x33, 0x44 });
         u16 ix_reg = 0x1122;
-        u8 sp = 0x00;
+        constexpr u8 sp = 0x00;
 
         ex_msp_ixy(sp, memory, ix_reg, cycles);
 
-        CHECK_EQ(23, cycles);
+        CHECK_EQ(static_cast<cyc>(23), cycles);
     }
 }
 
@@ -282,7 +281,7 @@ TEST_CASE("Z80: EX DE, HL")
 
         ex_de_hl(h_reg, l_reg, d_reg, e_reg, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 }

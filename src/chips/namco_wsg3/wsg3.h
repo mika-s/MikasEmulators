@@ -16,9 +16,9 @@ public:
 
     explicit Wsg3(std::vector<Waveform> waveforms);
 
-    std::vector<Waveform> waveforms();
+    auto waveforms() -> std::vector<Waveform>;
 
-    std::vector<i16> next_tick(std::vector<Voice>& voices);
+    auto next_tick(std::vector<Voice>& voices) -> std::vector<i16>;
 
 private:
     static constexpr unsigned int s_expected_number_of_waveforms = 16;

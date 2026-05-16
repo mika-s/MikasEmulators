@@ -14,13 +14,11 @@ using emu::memory::EmulatorMemory;
 using emu::util::byte::is_bit_set;
 using emu::util::byte::set_bit;
 
-void bit(unsigned int bit_number, u8 reg, Flags& flag_reg)
+void bit(const unsigned int bit_number, const u8 reg, Flags& flag_reg)
 {
     assert(bit_number < 8);
 
-    bool const is_set = is_bit_set(reg, bit_number);
-
-    if (is_set) {
+    if (is_bit_set(reg, bit_number)) {
         flag_reg.clear_zero_flag();
     } else {
         flag_reg.set_zero_flag();
@@ -44,7 +42,7 @@ void bit(unsigned int bit_number, u8 reg, Flags& flag_reg)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void bit_r(unsigned int bit_number, u8 reg, Flags& flag_reg, cyc& cycles)
+void bit_r(const unsigned int bit_number, const u8 reg, Flags& flag_reg, cyc& cycles)
 {
     assert(bit_number < 8);
 
@@ -68,7 +66,7 @@ void bit_r(unsigned int bit_number, u8 reg, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void bit_MHL(unsigned int bit_number, u16 hl_reg, EmulatorMemory<u16, u8> const& memory, Flags& flag_reg, cyc& cycles)
+void bit_MHL(const unsigned int bit_number, const u16 hl_reg, EmulatorMemory<u16, u8> const& memory, Flags& flag_reg, cyc& cycles)
 {
     assert(bit_number < 8);
 
@@ -117,11 +115,11 @@ TEST_CASE("LR35902: BIT r")
         cycles = 0;
         Flags flag_reg;
         flag_reg.from_u8(0x00);
-        u8 value = 0;
+        constexpr u8 value = 0;
 
         bit_r(1, value, flag_reg, cycles);
 
-        CHECK_EQ(8, cycles);
+        CHECK_EQ(static_cast<cyc>(8), cycles);
     }
 }
 }

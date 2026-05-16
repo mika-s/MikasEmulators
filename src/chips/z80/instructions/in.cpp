@@ -28,7 +28,7 @@ using emu::util::string::hexify_wo_0x;
  * @param io is the IO addresses
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void in_A_n(u8& acc_reg, NextByte const& args, std::vector<u8> io, cyc& cycles)
+void in_A_n(u8& acc_reg, NextByte const& args, const std::vector<u8> &io, cyc& cycles)
 {
     acc_reg = io[to_u16(acc_reg, args.farg)];
 
@@ -51,7 +51,7 @@ void in_A_n(u8& acc_reg, NextByte const& args, std::vector<u8> io, cyc& cycles)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void in_r_C(u8& reg, u8 b_reg, u8 c_reg, std::vector<u8> io, Flags& flag_reg, cyc& cycles)
+void in_r_C(u8& reg, const u8 b_reg, const u8 c_reg, const std::vector<u8> &io, Flags& flag_reg, cyc& cycles)
 {
     reg = io[to_u16(b_reg, c_reg)];
 
@@ -107,7 +107,7 @@ TEST_CASE("Z80: IN A, (n)")
 
         in_A_n(acc_reg, args, io, cycles);
 
-        CHECK_EQ(11, cycles);
+        CHECK_EQ(static_cast<cyc>(11), cycles);
     }
 }
 }

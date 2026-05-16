@@ -68,7 +68,7 @@ TEST_CASE("8080: LHLD")
 
         lhld(l_reg, h_reg, memory, args, cycles);
 
-        CHECK_EQ(16, cycles);
+        CHECK_EQ(static_cast<cyc>(16), cycles);
     }
 }
 }

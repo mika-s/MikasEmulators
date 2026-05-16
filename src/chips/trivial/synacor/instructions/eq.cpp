@@ -20,7 +20,7 @@ using emu::util::string::hexify;
  * @param b is the first operand to check for equality
  * @param c is the second operand to check for equality
  */
-void eq(EmulatorMemory<Address, RawData>& memory, RawData a, RawData b, RawData c)
+void eq(EmulatorMemory<Address, RawData>& memory, const RawData a, const RawData b, const RawData c)
 {
     if (b == c) {
         memory.write(Address(a.underlying()), RawData(1));
@@ -29,7 +29,7 @@ void eq(EmulatorMemory<Address, RawData>& memory, RawData a, RawData b, RawData 
     }
 }
 
-void print_eq(std::ostream& ostream, RawData a, RawData b, RawData c)
+void print_eq(std::ostream& ostream, const RawData a, const RawData b, const RawData c)
 {
     ostream << "EQ ";
 

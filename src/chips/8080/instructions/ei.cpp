@@ -51,7 +51,7 @@ TEST_CASE("8080: EI")
 
         ei(inte, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 }

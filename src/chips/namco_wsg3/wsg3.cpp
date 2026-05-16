@@ -19,12 +19,12 @@ Wsg3::Wsg3(std::vector<Waveform> waveforms)
     }
 }
 
-std::vector<Waveform> Wsg3::waveforms()
+auto Wsg3::waveforms() -> std::vector<Waveform>
 {
     return m_waveforms;
 }
 
-std::vector<i16> Wsg3::next_tick(std::vector<Voice>& voices)
+auto Wsg3::next_tick(std::vector<Voice>& voices) -> std::vector<i16>
 {
     if (voices.size() != s_expected_number_of_voices) {
         throw std::invalid_argument(

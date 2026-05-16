@@ -9,7 +9,7 @@ using emu::util::byte::high_byte;
 using emu::util::byte::low_byte;
 using emu::util::byte::to_u16;
 
-void add_to_register(u8& acc_reg, u8 value, bool cf, Flags& flag_reg)
+void add_to_register(u8& acc_reg, const u8 value, const bool cf, Flags& flag_reg)
 {
     const u8 previous = acc_reg;
     const u8 to_add = value + (cf ? 1 : 0);
@@ -22,7 +22,7 @@ void add_to_register(u8& acc_reg, u8 value, bool cf, Flags& flag_reg)
     flag_reg.handle_aux_carry_flag(previous, value, cf);
 }
 
-void sub_from_register(u8& acc_reg, u8 value, bool cf, Flags& flag_reg)
+void sub_from_register(u8& acc_reg, const u8 value, const bool cf, Flags& flag_reg)
 {
     const u8 previous = acc_reg;
     const u8 to_subtract = value + (cf ? 1 : 0);
@@ -40,12 +40,12 @@ void execute_call(u16& pc, u16& sp, EmulatorMemory<u16, u8>& memory, NextWord co
     execute_call(pc, sp, memory, args.farg, args.sarg);
 }
 
-void execute_call(u16& pc, u16& sp, EmulatorMemory<u16, u8>& memory, u8 farg, u8 sarg)
+void execute_call(u16& pc, u16& sp, EmulatorMemory<u16, u8>& memory, const u8 farg, const u8 sarg)
 {
     memory.write(--sp, high_byte(pc));
     memory.write(--sp, low_byte(pc));
 
-    pc = to_u16(sarg, farg);
+    pc = to_u16(sarg, farg); // NOLINT(*-suspicious-call-argument)
 }
 
 void execute_return(u16& pc, u16& sp, EmulatorMemory<u16, u8> const& memory)

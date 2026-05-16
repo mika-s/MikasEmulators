@@ -25,7 +25,7 @@ using emu::util::string::hexify_wo_0x;
  * @param io is the IO addresses, which might be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void out(u8 acc_reg, NextByte const& args, std::vector<u8>& io, cyc& cycles)
+void out(const u8 acc_reg, NextByte const& args, std::vector<u8>& io, cyc& cycles)
 {
     io[args.farg] = acc_reg;
 
@@ -43,7 +43,7 @@ TEST_CASE("8080: OUT")
     cyc cycles = 0;
     std::vector<u8> io = { 0, 2, 4, 6, 8, 10 };
     NextByte args = { .farg = 0x1 };
-    u8 acc_reg = 100;
+    constexpr u8 acc_reg = 100;
 
     SUBCASE("should store the accumulator in the addressed IO")
     {
@@ -58,7 +58,7 @@ TEST_CASE("8080: OUT")
 
         out(acc_reg, args, io, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 }
 }

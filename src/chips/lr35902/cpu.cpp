@@ -27,7 +27,7 @@ Cpu::Cpu(EmulatorMemory<u16, u8>& memory, const u16 initial_pc)
 
 Cpu::~Cpu() = default;
 
-bool Cpu::can_run_next_instruction() const
+auto Cpu::can_run_next_instruction() const -> bool
 {
     return m_pc < m_memory_size;
 }
@@ -58,34 +58,34 @@ void Cpu::stop()
     reset_state();
 }
 
-void Cpu::set_state_manually(ManualState manual_state)
+void Cpu::set_state_manually(const ManualState &new_state)
 {
-    m_ime = manual_state.m_ime;
-    m_ie = manual_state.m_ie;
-    m_sp = manual_state.m_sp;
-    m_pc = manual_state.m_pc;
-    m_acc_reg = manual_state.m_acc_reg;
-    m_b_reg = manual_state.m_b_reg;
-    m_c_reg = manual_state.m_c_reg;
-    m_d_reg = manual_state.m_d_reg;
-    m_e_reg = manual_state.m_e_reg;
-    m_h_reg = manual_state.m_h_reg;
-    m_l_reg = manual_state.m_l_reg;
-    m_flag_reg.from_u8(manual_state.m_flag_reg.to_u8());
+    m_ime = new_state.m_ime;
+    m_ie = new_state.m_ie;
+    m_sp = new_state.m_sp;
+    m_pc = new_state.m_pc;
+    m_acc_reg = new_state.m_acc_reg;
+    m_b_reg = new_state.m_b_reg;
+    m_c_reg = new_state.m_c_reg;
+    m_d_reg = new_state.m_d_reg;
+    m_e_reg = new_state.m_e_reg;
+    m_h_reg = new_state.m_h_reg;
+    m_l_reg = new_state.m_l_reg;
+    m_flag_reg.from_u8(new_state.m_flag_reg.to_u8());
 }
 
-void Cpu::interrupt(u8 new_pc)
+void Cpu::interrupt(const u8 new_pc)
 {
     m_ie = true;
     m_pc_from_interruptor = new_pc;
 }
 
-bool Cpu::is_inta() const
+auto Cpu::is_inta() const -> bool
 {
     return m_ime;
 }
 
-cyc Cpu::next_instruction()
+auto Cpu::next_instruction() -> cyc
 {
     cyc cycles = 0;
 
@@ -1620,7 +1620,7 @@ void Cpu::next_bits_instruction(u8 bits_opcode, cyc& cycles)
     }
 }
 
-cyc Cpu::handle_interrupt(cyc cycles)
+auto Cpu::handle_interrupt(cyc cycles) -> cyc
 {
     m_ime = m_ie = false;
     m_is_halted = false;
@@ -1632,14 +1632,14 @@ cyc Cpu::handle_interrupt(cyc cycles)
     return cycles;
 }
 
-NextByte Cpu::get_next_byte()
+auto Cpu::get_next_byte() -> NextByte
 {
     return {
         .farg = m_memory.read(m_pc++)
     };
 }
 
-NextWord Cpu::get_next_word()
+auto Cpu::get_next_word() -> NextWord
 {
     return {
         .farg = m_memory.read(m_pc++),
@@ -1647,77 +1647,77 @@ NextWord Cpu::get_next_word()
     };
 }
 
-u16 Cpu::address_in_HL() const
+auto Cpu::address_in_HL() const -> u16
 {
     return to_u16(m_h_reg, m_l_reg);
 }
 
-EmulatorMemory<u16, u8>& Cpu::memory()
+auto Cpu::memory() -> EmulatorMemory<u16, u8>&
 {
     return m_memory;
 }
 
-u16 Cpu::pc() const
+auto Cpu::pc() const -> u16
 {
     return m_pc;
 }
 
-u16 Cpu::sp() const
+auto Cpu::sp() const -> u16
 {
     return m_sp;
 }
 
-u8 Cpu::a() const
+auto Cpu::a() const -> u8
 {
     return m_acc_reg;
 }
 
-u8 Cpu::b() const
+auto Cpu::b() const -> u8
 {
     return m_b_reg;
 }
 
-u8 Cpu::c() const
+auto Cpu::c() const -> u8
 {
     return m_c_reg;
 }
 
-u8 Cpu::d() const
+auto Cpu::d() const -> u8
 {
     return m_d_reg;
 }
 
-u8 Cpu::e() const
+auto Cpu::e() const -> u8
 {
     return m_e_reg;
 }
 
-u8 Cpu::h() const
+auto Cpu::h() const -> u8
 {
     return m_h_reg;
 }
 
-u8 Cpu::l() const
+auto Cpu::l() const -> u8
 {
     return m_l_reg;
 }
 
-u8 Cpu::f() const
+auto Cpu::f() const -> u8
 {
     return m_flag_reg.to_u8();
 }
 
-bool Cpu::ime() const
+auto Cpu::ime() const -> bool
 {
     return m_ime;
 }
 
-bool Cpu::ie() const
+auto Cpu::ie() const -> bool
 {
     return m_ie;
 }
 
-void Cpu::print_debug(u8 opcode)
+void Cpu::print_debug(u8 opcode) const
 {
     if (false) {
         std::cout << "pc=" << hexify(static_cast<u16>(m_pc - 1)) // -1 because fetching opcode increments by one

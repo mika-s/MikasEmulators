@@ -26,14 +26,14 @@ using emu::util::string::hexify_wo_0x;
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void aci(u8& acc_reg, NextByte args, Flags& flag_reg, cyc& cycles)
+void aci(u8& acc_reg, const NextByte args, Flags& flag_reg, cyc& cycles)
 {
     const u8 previous = acc_reg;
     const u8 carry = flag_reg.is_carry_flag_set() ? 1 : 0;
     acc_reg += args.farg + carry;
 
-    flag_reg.handle_aux_carry_flag(previous, args.farg, carry);
-    flag_reg.handle_carry_flag(previous, args.farg, carry);
+    flag_reg.handle_aux_carry_flag(previous, args.farg, carry != 0);
+    flag_reg.handle_carry_flag(previous, args.farg, carry != 0);
     flag_reg.handle_sign_flag(acc_reg);
     flag_reg.handle_zero_flag(acc_reg);
     flag_reg.handle_parity_flag(acc_reg);
@@ -149,7 +149,7 @@ TEST_CASE("8080: ACI")
 
         aci(acc_reg, args, flag_reg, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 }
 }

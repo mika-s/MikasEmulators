@@ -230,7 +230,7 @@ void jp_m(u16& pc, NextWord const& args, Flags const& flag_reg, cyc& cycles)
  * @param address is the address in the HL register
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void jp_hl(u16& pc, u16 address, cyc& cycles)
+void jp_hl(u16& pc, const u16 address, cyc& cycles)
 {
     pc = address;
 
@@ -250,7 +250,7 @@ void jp_hl(u16& pc, u16 address, cyc& cycles)
  * @param ixy_reg is the IX or IY register with the address to jump to
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void jp_ixy(u16& pc, u16 ixy_reg, cyc& cycles)
+void jp_ixy(u16& pc, const u16 ixy_reg, cyc& cycles)
 {
     pc = ixy_reg;
 
@@ -300,7 +300,7 @@ TEST_CASE("Z80: JP")
 
         jp(pc, args, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 }
 
@@ -358,13 +358,13 @@ TEST_CASE("Z80: JP NZ")
 
         jp_nz(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
 
         flag_reg.clear_zero_flag();
 
         jp_nz(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 }
 
@@ -422,13 +422,13 @@ TEST_CASE("Z80: JP Z")
 
         jp_z(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
 
         flag_reg.set_zero_flag();
 
         jp_z(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 }
 
@@ -486,13 +486,13 @@ TEST_CASE("Z80: JP NC")
 
         jp_nc(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
 
         flag_reg.clear_carry_flag();
 
         jp_nc(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 }
 
@@ -550,13 +550,13 @@ TEST_CASE("Z80: JP C")
 
         jp_c(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
 
         flag_reg.set_carry_flag();
 
         jp_c(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 }
 
@@ -614,13 +614,13 @@ TEST_CASE("Z80: JP PO")
 
         jp_po(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
 
         flag_reg.clear_parity_overflow_flag();
 
         jp_po(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 }
 
@@ -678,13 +678,13 @@ TEST_CASE("Z80: JP PE")
 
         jp_pe(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
 
         flag_reg.set_parity_overflow_flag();
 
         jp_pe(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 }
 
@@ -742,13 +742,13 @@ TEST_CASE("Z80: JP P")
 
         jp_p(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
 
         flag_reg.clear_sign_flag();
 
         jp_p(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 }
 
@@ -806,13 +806,13 @@ TEST_CASE("Z80: JP M")
 
         jp_m(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
 
         flag_reg.set_sign_flag();
 
         jp_m(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 }
 
@@ -820,7 +820,7 @@ TEST_CASE("Z80: JP (HL)")
 {
     cyc cycles = 0;
     u16 pc = 0x1111;
-    u16 address = 0x432a;
+    constexpr u16 address = 0x432a;
 
     SUBCASE("should load address into PC")
     {
@@ -835,7 +835,7 @@ TEST_CASE("Z80: JP (HL)")
 
         jp_hl(pc, address, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 
@@ -843,7 +843,7 @@ TEST_CASE("Z80: JP (IX) or JP (IY)")
 {
     cyc cycles = 0;
     u16 pc = 0x1111;
-    u16 ix = 0x432a;
+    constexpr u16 ix = 0x432a;
 
     SUBCASE("should use 8 cycles")
     {
@@ -851,7 +851,7 @@ TEST_CASE("Z80: JP (IX) or JP (IY)")
 
         jp_ixy(pc, ix, cycles);
 
-        CHECK_EQ(8, cycles);
+        CHECK_EQ(static_cast<cyc>(8), cycles);
     }
 }
 }

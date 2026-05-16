@@ -33,7 +33,7 @@ void sub(u8& acc_reg, u8 value, Flags& flag_reg)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void sub_r(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
+void sub_r(u8& acc_reg, const u8 value, Flags& flag_reg, cyc& cycles)
 {
     sub(acc_reg, value, flag_reg);
 
@@ -56,10 +56,11 @@ void sub_r(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void sub_MixyPd(u8& acc_reg, u16 ixy_reg, NextByte const& args, EmulatorMemory<u16, u8>& memory, Flags& flag_reg, cyc& cycles)
+void sub_MixyPd(u8& acc_reg, const u16 ixy_reg, NextByte const& args, EmulatorMemory<u16, u8>& memory, Flags& flag_reg,
+    cyc& cycles)
 {
     const u16 address = ixy_reg + static_cast<i8>(args.farg);
-    u8 value = memory.read(address);
+    u8 const value = memory.read(address);
 
     sub(acc_reg, value, flag_reg);
 
@@ -103,7 +104,7 @@ void sub_n(u8& acc_reg, NextByte const& args, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void sub_MHL(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
+void sub_MHL(u8& acc_reg, const u8 value, Flags& flag_reg, cyc& cycles)
 {
     sub(acc_reg, value, flag_reg);
 
@@ -126,7 +127,7 @@ void sub_MHL(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void sub_r_undoc(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
+void sub_r_undoc(u8& acc_reg, const u8 value, Flags& flag_reg, cyc& cycles)
 {
     sub(acc_reg, value, flag_reg);
 
@@ -143,11 +144,11 @@ void sub_r_undoc(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
  * </ul>
  *
  * @param acc_reg is the accumulator register, which will be mutated
- * @param value is the value to subtract from the accumulator register
+ * @param ixy_reg_h_or_l is the value in IX or IY, high or low, that will be subtracted from the accumulator
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void sub_ixy_h_or_l(u8& acc_reg, u8 ixy_reg_h_or_l, Flags& flag_reg, cyc& cycles)
+void sub_ixy_h_or_l(u8& acc_reg, const u8 ixy_reg_h_or_l, Flags& flag_reg, cyc& cycles)
 {
     sub(acc_reg, ixy_reg_h_or_l, flag_reg);
 
@@ -198,7 +199,7 @@ TEST_CASE("Z80: SUB")
             for (u8 value = 0; value < UINT8_MAX; ++value) {
                 for (int carry = 0; carry < 2; ++carry) {
                     Flags flag_reg;
-                    if (carry) {
+                    if (carry > 0) {
                         flag_reg.set_carry_flag();
                     } else {
                         flag_reg.clear_carry_flag();
@@ -232,7 +233,7 @@ TEST_CASE("Z80: SUB r")
 
         sub_r(acc_reg, 0x1, flag_reg, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 
@@ -247,7 +248,7 @@ TEST_CASE("Z80: SUB n")
 
         sub_n(acc_reg, args, flag_reg, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 }
 
@@ -262,7 +263,7 @@ TEST_CASE("Z80: SUB (HL)")
 
         sub_MHL(acc_reg, args.farg, flag_reg, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 }
 }

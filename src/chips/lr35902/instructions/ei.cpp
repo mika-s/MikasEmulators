@@ -52,7 +52,7 @@ TEST_CASE("LR35902: EI")
 
         ei(ime, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 }

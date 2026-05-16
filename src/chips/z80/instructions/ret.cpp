@@ -289,7 +289,7 @@ TEST_CASE("Z80: RET")
 
         ret(pc, sp, memory, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 }
 
@@ -332,11 +332,11 @@ TEST_CASE("Z80: RET C")
         u16 sp = 0;
         EmulatorMemory<u16, u8> memory;
         memory.add(std::vector<u8> { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05 });
-        Flags flag_reg;
+        Flags const flag_reg;
 
         ret_c(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(5, cycles);
+        CHECK_EQ(static_cast<cyc>(5), cycles);
     }
 
     SUBCASE("should use 11 cycles when returning")
@@ -351,7 +351,7 @@ TEST_CASE("Z80: RET C")
 
         ret_c(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(11, cycles);
+        CHECK_EQ(static_cast<cyc>(11), cycles);
     }
 }
 
@@ -396,7 +396,7 @@ TEST_CASE("Z80: RET NC")
 
         ret_nc(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(5, cycles);
+        CHECK_EQ(static_cast<cyc>(5), cycles);
     }
 
     SUBCASE("should use 11 cycles when returning")
@@ -405,11 +405,11 @@ TEST_CASE("Z80: RET NC")
 
         u16 pc = 0;
         u16 sp = 0;
-        Flags flag_reg;
+        Flags const flag_reg;
 
         ret_nc(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(11, cycles);
+        CHECK_EQ(static_cast<cyc>(11), cycles);
     }
 }
 
@@ -451,11 +451,11 @@ TEST_CASE("Z80: RET Z")
         cycles = 0;
         u16 pc = 0;
         u16 sp = 0;
-        Flags flag_reg;
+        Flags const flag_reg;
 
         ret_z(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(5, cycles);
+        CHECK_EQ(static_cast<cyc>(5), cycles);
     }
 
     SUBCASE("should use 11 cycles when returning")
@@ -468,7 +468,7 @@ TEST_CASE("Z80: RET Z")
 
         ret_z(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(11, cycles);
+        CHECK_EQ(static_cast<cyc>(11), cycles);
     }
 }
 
@@ -512,7 +512,7 @@ TEST_CASE("Z80: RET NZ")
 
         ret_nz(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(5, cycles);
+        CHECK_EQ(static_cast<cyc>(5), cycles);
     }
 
     SUBCASE("should use 11 cycles when returning")
@@ -520,11 +520,11 @@ TEST_CASE("Z80: RET NZ")
         cycles = 0;
         u16 pc = 0;
         u16 sp = 0;
-        Flags flag_reg;
+        Flags const flag_reg;
 
         ret_nz(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(11, cycles);
+        CHECK_EQ(static_cast<cyc>(11), cycles);
     }
 }
 
@@ -563,11 +563,11 @@ TEST_CASE("Z80: RET M")
         cycles = 0;
         u16 pc = 0;
         u16 sp = 0;
-        Flags flag_reg;
+        Flags const flag_reg;
 
         ret_m(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(5, cycles);
+        CHECK_EQ(static_cast<cyc>(5), cycles);
     }
 
     SUBCASE("should use 11 cycles when returning")
@@ -580,7 +580,7 @@ TEST_CASE("Z80: RET M")
 
         ret_m(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(11, cycles);
+        CHECK_EQ(static_cast<cyc>(11), cycles);
     }
 }
 
@@ -624,7 +624,7 @@ TEST_CASE("Z80: RET P")
 
         ret_p(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(5, cycles);
+        CHECK_EQ(static_cast<cyc>(5), cycles);
     }
 
     SUBCASE("should use 11 cycles when returning")
@@ -632,11 +632,11 @@ TEST_CASE("Z80: RET P")
         cycles = 0;
         u16 pc = 0;
         u16 sp = 0;
-        Flags flag_reg;
+        Flags const flag_reg;
 
         ret_p(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(11, cycles);
+        CHECK_EQ(static_cast<cyc>(11), cycles);
     }
 }
 
@@ -675,11 +675,11 @@ TEST_CASE("Z80: RET PE")
         cycles = 0;
         u16 pc = 0;
         u16 sp = 0;
-        Flags flag_reg;
+        Flags const flag_reg;
 
         ret_pe(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(5, cycles);
+        CHECK_EQ(static_cast<cyc>(5), cycles);
     }
 
     SUBCASE("should use 11 cycles when returning")
@@ -692,7 +692,7 @@ TEST_CASE("Z80: RET PE")
 
         ret_pe(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(11, cycles);
+        CHECK_EQ(static_cast<cyc>(11), cycles);
     }
 }
 
@@ -737,7 +737,7 @@ TEST_CASE("Z80: RET PO")
 
         ret_po(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(5, cycles);
+        CHECK_EQ(static_cast<cyc>(5), cycles);
     }
 
     SUBCASE("should use 11 cycles when returning")
@@ -745,11 +745,11 @@ TEST_CASE("Z80: RET PO")
         cycles = 0;
         u16 pc = 0;
         u16 sp = 0;
-        Flags flag_reg;
+        Flags const flag_reg;
 
         ret_po(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(11, cycles);
+        CHECK_EQ(static_cast<cyc>(11), cycles);
     }
 }
 }

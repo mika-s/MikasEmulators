@@ -21,9 +21,9 @@ using emu::util::byte::is_bit_set;
  * @param acc_reg is the accumulator, and is used to set the X and Y flags
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void ccf(Flags& flag_reg, u8 acc_reg, cyc& cycles)
+void ccf(Flags& flag_reg, const u8 acc_reg, cyc& cycles)
 {
-    bool was_carry_set = flag_reg.is_carry_flag_set();
+    bool const was_carry_set = flag_reg.is_carry_flag_set();
     flag_reg.toggle_carry_flag();
     flag_reg.clear_add_subtract_flag();
     if (was_carry_set) {
@@ -96,7 +96,7 @@ TEST_CASE("Z80: CCF")
 
         ccf(flag_reg, acc_reg, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 }

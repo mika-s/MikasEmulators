@@ -78,7 +78,7 @@ TEST_CASE("8080: SBI")
     {
         Flags flag_reg;
         acc_reg = 0x3;
-        NextByte args = { 0 };
+        NextByte args = {};
 
         sbi(acc_reg, args, flag_reg, cycles);
 
@@ -90,7 +90,7 @@ TEST_CASE("8080: SBI")
     {
         Flags flag_reg;
         acc_reg = 0x1;
-        NextByte args = { 0 };
+        NextByte args = {};
 
         sbi(acc_reg, args, flag_reg, cycles);
 
@@ -155,7 +155,7 @@ TEST_CASE("8080: SBI")
 
         sbi(acc_reg, args, flag_reg, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 }
 }

@@ -28,9 +28,9 @@ public:
 
     ~Cpu();
 
-    [[nodiscard]] bool can_run_next_instruction() const;
+    [[nodiscard]] auto can_run_next_instruction() const -> bool;
 
-    cyc next_instruction();
+    auto next_instruction() -> cyc;
 
     void reset_state();
 
@@ -38,35 +38,35 @@ public:
 
     void stop();
 
-    void set_state_manually(ManualState new_state);
+    void set_state_manually(const ManualState &new_state);
 
-    EmulatorMemory<u16, u8>& memory();
+    auto memory() -> EmulatorMemory<u16, u8>&;
 
-    [[nodiscard]] u8 a() const;
+    [[nodiscard]] auto a() const -> u8;
 
-    [[nodiscard]] u8 b() const;
+    [[nodiscard]] auto b() const -> u8;
 
-    [[nodiscard]] u8 c() const;
+    [[nodiscard]] auto c() const -> u8;
 
-    [[nodiscard]] u8 d() const;
+    [[nodiscard]] auto d() const -> u8;
 
-    [[nodiscard]] u8 e() const;
+    [[nodiscard]] auto e() const -> u8;
 
-    [[nodiscard]] u8 h() const;
+    [[nodiscard]] auto h() const -> u8;
 
-    [[nodiscard]] u8 l() const;
+    [[nodiscard]] auto l() const -> u8;
 
-    [[nodiscard]] u8 f() const;
+    [[nodiscard]] auto f() const -> u8;
 
-    [[nodiscard]] u16 pc() const;
+    [[nodiscard]] auto pc() const -> u16;
 
-    [[nodiscard]] u16 sp() const;
+    [[nodiscard]] auto sp() const -> u16;
 
-    [[nodiscard]] bool is_inta() const;
+    [[nodiscard]] auto is_inta() const -> bool;
 
-    [[nodiscard]] bool ime() const;
+    [[nodiscard]] auto ime() const -> bool;
 
-    [[nodiscard]] bool ie() const;
+    [[nodiscard]] auto ie() const -> bool;
 
     void interrupt(u8 new_pc);
 
@@ -96,14 +96,14 @@ private:
 
     void next_bits_instruction(u8 bits_opcode, cyc& cycles);
 
-    cyc handle_interrupt(cyc cycles);
+    auto handle_interrupt(cyc cycles) -> cyc;
 
-    NextByte get_next_byte();
+    auto get_next_byte() -> NextByte;
 
-    NextWord get_next_word();
+    auto get_next_word() -> NextWord;
 
-    [[nodiscard]] u16 address_in_HL() const;
+    [[nodiscard]] auto address_in_HL() const -> u16;
 
-    void print_debug(u8 opcode);
+    void print_debug(u8 opcode) const;
 };
 }

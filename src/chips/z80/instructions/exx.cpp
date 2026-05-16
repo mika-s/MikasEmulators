@@ -135,7 +135,7 @@ TEST_CASE("Z80: EXX")
             h_reg, l_reg, h_p_reg, l_p_reg,
             cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 }

@@ -30,7 +30,7 @@ using emu::util::string::hexify_wo_0x;
  * @param args contains the argument with the address to call
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void shld(u8 l_reg, u8 h_reg, EmulatorMemory<u16, u8>& memory, NextWord const& args, cyc& cycles)
+void shld(const u8 l_reg, const u8 h_reg, EmulatorMemory<u16, u8>& memory, NextWord const& args, cyc& cycles)
 {
     const u16 l_address = to_u16(args.sarg, args.farg);
     const u16 h_address = l_address + 1;
@@ -51,8 +51,8 @@ void print_shld(std::ostream& ostream, NextWord const& args)
 TEST_CASE("8080: SHLD")
 {
     cyc cycles = 0;
-    u8 l_reg = 0x22;
-    u8 h_reg = 0x11;
+    constexpr u8 l_reg = 0x22;
+    constexpr u8 h_reg = 0x11;
     EmulatorMemory<u16, u8> memory;
     memory.add(std::vector<u8> { 0x00, 0xff, 0xaa, 0xbb, 0xcc, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa });
     NextWord args = { .farg = 0x2, .sarg = 0x0 };
@@ -71,7 +71,7 @@ TEST_CASE("8080: SHLD")
 
         shld(l_reg, h_reg, memory, args, cycles);
 
-        CHECK_EQ(16, cycles);
+        CHECK_EQ(static_cast<cyc>(16), cycles);
     }
 }
 }

@@ -18,7 +18,6 @@ using emu::util::byte::is_bit_set;
  * </ul>
  *
  * @param flag_reg is the flag register, which will be mutated
- * @param acc_reg is the accumulator, and is used to set the X and Y flags
  * @param cycles is the number of cycles variable, which will be mutated
  */
 void scf(Flags& flag_reg, cyc& cycles)
@@ -75,7 +74,7 @@ TEST_CASE("LR35902: SCF")
 
         scf(flag_reg, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 }

@@ -52,7 +52,7 @@ TEST_CASE("8080: STC")
 
         stc(flag_reg, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 }

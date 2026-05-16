@@ -66,12 +66,12 @@ TEST_CASE("8080: DCX")
     u8 reg1 = UINT8_MAX;
     u8 reg2 = UINT8_MAX;
     u8 expected_reg1 = UINT8_MAX;
-    u8 expected_reg2;
+    u8 expected_reg2 = 0;
     u16 sp = UINT16_MAX;
 
     SUBCASE("should decrease register pair")
     {
-        for (int i = UINT16_MAX; i > UINT16_MAX; --i) {
+        for (int i = UINT16_MAX; i > UINT16_MAX; --i) { // TODO: Fix
             if (reg2 == 0 && i != 0) {
                 --expected_reg1;
             }
@@ -101,13 +101,13 @@ TEST_CASE("8080: DCX")
 
         dcx(reg1, reg2, cycles);
 
-        CHECK_EQ(5, cycles);
+        CHECK_EQ(static_cast<cyc>(5), cycles);
 
         cycles = 0;
 
         dcx_sp(sp, cycles);
 
-        CHECK_EQ(5, cycles);
+        CHECK_EQ(static_cast<cyc>(5), cycles);
     }
 }
 }

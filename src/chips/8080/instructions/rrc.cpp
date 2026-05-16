@@ -57,7 +57,7 @@ TEST_CASE("8080: RRC")
 
             rrc(acc_reg, flag_reg, cycles);
 
-            u8 expected = acc_reg_counter >> 1u;
+            u8 expected = acc_reg_counter >> 1U;
             if (cy) {
                 set_bit(expected, msb);
             }
@@ -86,7 +86,7 @@ TEST_CASE("8080: RRC")
 
         rrc(acc_reg, flag_reg, cycles);
 
-        CHECK_EQ(0, acc_reg);
+        CHECK_EQ(static_cast<cyc>(0), acc_reg);
     }
 
     SUBCASE("should use 4 cycles")
@@ -97,7 +97,7 @@ TEST_CASE("8080: RRC")
 
         rrc(acc_reg, flag_reg, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 }

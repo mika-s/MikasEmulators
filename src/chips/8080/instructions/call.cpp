@@ -70,7 +70,7 @@ TEST_CASE("8080: CALL")
 
         call(pc, sp, memory, args, cycles);
 
-        CHECK_EQ(17, cycles);
+        CHECK_EQ(static_cast<cyc>(17), cycles);
     }
 }
 }

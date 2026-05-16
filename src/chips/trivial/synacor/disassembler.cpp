@@ -170,7 +170,7 @@ void Disassembler::print_next_instruction()
     m_ostream << "\n";
 }
 
-RawData Disassembler::get_next_value()
+auto Disassembler::get_next_value() -> RawData
 {
     return m_memory.read(m_pc++);
 }

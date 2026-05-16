@@ -27,7 +27,7 @@ using emu::util::byte::to_u16;
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void dad(u8& h_reg, u8& l_reg, u16 value_to_add, Flags& flag_reg, cyc& cycles)
+void dad(u8& h_reg, u8& l_reg, const u16 value_to_add, Flags& flag_reg, cyc& cycles)
 {
     const u16 previous = to_u16(h_reg, l_reg);
     const u16 next = previous + value_to_add;
@@ -73,7 +73,7 @@ TEST_CASE("8080: DAD")
 
         u8 h_reg = 0xff;
         u8 l_reg = 0xff;
-        u16 value_to_add = 0x1;
+        constexpr u16 value_to_add = 0x1;
 
         dad(h_reg, l_reg, value_to_add, flag_reg, cycles);
 
@@ -87,11 +87,11 @@ TEST_CASE("8080: DAD")
 
         u8 h_reg = 0;
         u8 l_reg = 0xe;
-        u16 value_to_add = 0x4;
+        constexpr u16 value_to_add = 0x4;
 
         dad(h_reg, l_reg, value_to_add, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 }
 }

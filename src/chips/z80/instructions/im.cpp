@@ -18,14 +18,14 @@ namespace emu::z80 {
  * @param value is the value to set the interrupt mode to
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void im(InterruptMode& interrupt_mode, InterruptMode value, cyc& cycles)
+void im(InterruptMode& interrupt_mode, const InterruptMode value, cyc& cycles)
 {
     interrupt_mode = value;
 
     cycles = 8;
 }
 
-void print_im(std::ostream& ostream, unsigned int interrupt_mode)
+void print_im(std::ostream& ostream, const unsigned int interrupt_mode)
 {
     ostream << "IM "
             << interrupt_mode;
@@ -34,7 +34,7 @@ void print_im(std::ostream& ostream, unsigned int interrupt_mode)
 TEST_CASE("Z80: IM")
 {
     cyc cycles = 0;
-    InterruptMode interrupt_mode = InterruptMode::ZERO;
+    auto interrupt_mode = InterruptMode::ZERO;
 
     SUBCASE("should set a new interrupt mode")
     {
@@ -53,13 +53,13 @@ TEST_CASE("Z80: IM")
         CHECK_EQ(InterruptMode::ZERO, interrupt_mode);
     }
 
-    SUBCASE("should use 10 cycles")
+    SUBCASE("should use 8 cycles")
     {
         cycles = 0;
 
         im(interrupt_mode, InterruptMode::ONE, cycles);
 
-        CHECK_EQ(8, cycles);
+        CHECK_EQ(static_cast<cyc>(8), cycles);
     }
 }
 }

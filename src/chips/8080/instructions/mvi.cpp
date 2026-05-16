@@ -123,7 +123,7 @@ TEST_CASE("8080: MVI")
 
         mvi_r(reg, args, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 
     SUBCASE("should use 10 cycles if memory is involved")
@@ -132,11 +132,11 @@ TEST_CASE("8080: MVI")
         NextByte args = { .farg = 0x21 };
         EmulatorMemory<u16, u8> memory;
         memory.add({ 0x10 });
-        u16 address = 0x0000;
+        constexpr u16 address = 0x0000;
 
         mvi_m(memory, address, args, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 }
 }

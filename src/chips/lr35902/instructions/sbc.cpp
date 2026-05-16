@@ -17,7 +17,7 @@ using emu::util::byte::low_byte;
 using emu::util::byte::to_u16;
 using emu::util::string::hexify_wo_0x;
 
-void sbc(u8& acc_reg, u8 value, Flags& flag_reg)
+void sbc(u8& acc_reg, const u8 value, Flags& flag_reg)
 {
     sub_from_register(acc_reg, value, flag_reg.is_carry_flag_set(), flag_reg);
 }
@@ -36,7 +36,7 @@ void sbc(u8& acc_reg, u8 value, Flags& flag_reg)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void sbc_A_r(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
+void sbc_A_r(u8& acc_reg, const u8 value, Flags& flag_reg, cyc& cycles)
 {
     sbc(acc_reg, value, flag_reg);
 
@@ -78,7 +78,7 @@ void sbc_A_n(u8& acc_reg, NextByte const& args, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void sbc_A_MHL(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
+void sbc_A_MHL(u8& acc_reg, const u8 value, Flags& flag_reg, cyc& cycles)
 {
     sbc(acc_reg, value, flag_reg);
 
@@ -100,7 +100,7 @@ void sbc_A_MHL(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void sbc_HL_ss(u8& h_reg, u8& l_reg, u16 value, Flags& flag_reg, cyc& cycles)
+void sbc_HL_ss(u8& h_reg, u8& l_reg, const u16 value, Flags& flag_reg, cyc& cycles)
 {
     u16 hl = to_u16(h_reg, l_reg);
 
@@ -138,7 +138,7 @@ TEST_CASE("LR35902: SBC (byte)")
             for (u8 value = 0; value < UINT8_MAX; ++value) {
                 for (int carry = 0; carry < 2; ++carry) {
                     Flags flag_reg;
-                    if (carry) {
+                    if (carry > 0) {
                         flag_reg.set_carry_flag();
                     } else {
                         flag_reg.clear_carry_flag();
@@ -165,7 +165,8 @@ TEST_CASE("LR35902: SBC (byte)")
 TEST_CASE("LR35902: SBC (word)")
 {
     cyc cycles = 0;
-    u8 h_reg, l_reg;
+    u8 h_reg = 0;
+    u8 l_reg = 0;
 
     SUBCASE("should set the zero flag when zero and not set otherwise")
     {
@@ -193,7 +194,7 @@ TEST_CASE("LR35902: SBC A, r")
 
         sbc_A_r(acc_reg, 0x1, flag_reg, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 
@@ -208,7 +209,7 @@ TEST_CASE("LR35902: SBC A, n")
 
         sbc_A_n(acc_reg, args, flag_reg, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 }
 
@@ -223,7 +224,7 @@ TEST_CASE("LR35902: SBC A, (HL)")
 
         sbc_A_MHL(acc_reg, args.farg, flag_reg, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 }
 
@@ -238,7 +239,7 @@ TEST_CASE("LR35902: SBC HL, ss")
 
         sbc_HL_ss(h_reg, l_reg, 31775, flag_reg, cycles);
 
-        CHECK_EQ(15, cycles);
+        CHECK_EQ(static_cast<cyc>(15), cycles);
     }
 }
 }

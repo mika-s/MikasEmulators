@@ -17,12 +17,12 @@ using emu::util::byte::low_byte;
 using emu::util::byte::to_u16;
 using emu::util::string::hexify_wo_0x;
 
-void adc(u8& acc_reg, u8 value, Flags& flag_reg)
+void adc(u8& acc_reg, const u8 value, Flags& flag_reg)
 {
     add_to_register(acc_reg, value, flag_reg.is_carry_flag_set(), flag_reg);
 }
 
-void adc(u16& reg, u16 value, Flags& flag_reg)
+void adc(u16& reg, const u16 value, Flags& flag_reg)
 {
     add_to_register(reg, value, flag_reg.is_carry_flag_set(), flag_reg);
 }
@@ -41,7 +41,7 @@ void adc(u16& reg, u16 value, Flags& flag_reg)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void adc_A_r(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
+void adc_A_r(u8& acc_reg, const u8 value, Flags& flag_reg, cyc& cycles)
 {
     adc(acc_reg, value, flag_reg);
 
@@ -62,7 +62,7 @@ void adc_A_r(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void adc_A_n(u8& acc_reg, NextByte args, Flags& flag_reg, cyc& cycles)
+void adc_A_n(u8& acc_reg, const NextByte args, Flags& flag_reg, cyc& cycles)
 {
     adc(acc_reg, args.farg, flag_reg);
 
@@ -83,7 +83,7 @@ void adc_A_n(u8& acc_reg, NextByte args, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void adc_A_MHL(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
+void adc_A_MHL(u8& acc_reg, const u8 value, Flags& flag_reg, cyc& cycles)
 {
     adc(acc_reg, value, flag_reg);
 
@@ -105,7 +105,7 @@ void adc_A_MHL(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void adc_hl_ss(u8& h_reg, u8& l_reg, u16 value, Flags& flag_reg, cyc& cycles)
+void adc_hl_ss(u8& h_reg, u8& l_reg, const u16 value, Flags& flag_reg, cyc& cycles)
 {
     u16 hl = to_u16(h_reg, l_reg);
 
@@ -145,7 +145,7 @@ TEST_CASE("LR35902: ADC (8-bit)")
             for (u8 value = 0; value < UINT8_MAX; ++value) {
                 for (int carry = 0; carry < 2; ++carry) {
                     Flags flag_reg;
-                    if (carry) {
+                    if (carry > 0) {
                         flag_reg.set_carry_flag();
                     } else {
                         flag_reg.clear_carry_flag();
@@ -203,7 +203,7 @@ TEST_CASE("LR35902: ADC A, r")
 
         adc_A_r(acc_reg, 0x1, flag_reg, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 
@@ -220,7 +220,7 @@ TEST_CASE("LR35902: ADC A, n")
 
         adc_A_n(acc_reg, args, flag_reg, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 }
 
@@ -236,7 +236,7 @@ TEST_CASE("LR35902: ADC A, [HL]")
 
         adc_A_MHL(acc_reg, 0x1, flag_reg, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 }
 }

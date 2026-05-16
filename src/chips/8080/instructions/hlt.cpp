@@ -52,7 +52,7 @@ TEST_CASE("8080: HLT")
 
         hlt(stopped, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 }
 }

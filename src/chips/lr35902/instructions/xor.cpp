@@ -18,7 +18,7 @@ using emu::memory::EmulatorMemory;
 using emu::memory::NextByte;
 using emu::util::string::hexify_wo_0x;
 
-void xor_(u8& acc_reg, u8 value, Flags& flag_reg)
+void xor_(u8& acc_reg, const u8 value, Flags& flag_reg)
 {
     acc_reg ^= value;
 
@@ -42,7 +42,7 @@ void xor_(u8& acc_reg, u8 value, Flags& flag_reg)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void xor_r(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
+void xor_r(u8& acc_reg, const u8 value, Flags& flag_reg, cyc& cycles)
 {
     xor_(acc_reg, value, flag_reg);
 
@@ -84,7 +84,7 @@ void xor_n(u8& acc_reg, NextByte const& args, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void xor_MHL(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
+void xor_MHL(u8& acc_reg, const u8 value, Flags& flag_reg, cyc& cycles)
 {
     xor_(acc_reg, value, flag_reg);
 
@@ -132,12 +132,12 @@ TEST_CASE("LR35902: XOR r")
     {
         cyc cycles = 0;
         u8 acc_reg = 0xe;
-        u8 reg = { 0 };
+        constexpr u8 reg = 0;
         Flags flag_reg;
 
         xor_r(acc_reg, reg, flag_reg, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 
@@ -152,7 +152,7 @@ TEST_CASE("LR35902: XOR n")
 
         xor_n(acc_reg, args, flag_reg, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 }
 
@@ -162,12 +162,12 @@ TEST_CASE("LR35902: XOR [HL]")
     {
         cyc cycles = 0;
         u8 acc_reg = 0xe;
-        u8 reg = { 0 };
+        constexpr u8 reg = 0;
         Flags flag_reg;
 
         xor_MHL(acc_reg, reg, flag_reg, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 }
 }

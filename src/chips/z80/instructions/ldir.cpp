@@ -87,16 +87,19 @@ void print_ldir(std::ostream& ostream)
 TEST_CASE("Z80: LDIR")
 {
     cyc cycles = 0;
-    u8 acc_reg = 0;
+    u8 const acc_reg = 0;
 
     SUBCASE("should transfer from (HL) to (DE) once, when BC is 1")
     {
         u16 pc = 0;
         EmulatorMemory<u16, u8> memory;
         memory.add({ 0x23, 0x56, 0x3a, 0x99, 0x3f, 0xaa });
-        u8 b_reg = 0, c_reg = 1;
-        u8 d_reg = 0, e_reg = 4;
-        u8 h_reg = 0, l_reg = 0;
+        u8 b_reg = 0;
+        u8 c_reg = 1;
+        u8 d_reg = 0;
+        u8 e_reg = 4;
+        u8 h_reg = 0;
+        u8 l_reg = 0;
         Flags flag_reg;
 
         ldir(pc, b_reg, c_reg, d_reg, e_reg, h_reg, l_reg,
@@ -115,9 +118,12 @@ TEST_CASE("Z80: LDIR")
         u16 pc = 0;
         EmulatorMemory<u16, u8> memory;
         memory.add({ 0x23, 0x56, 0x3a, 0x99, 0x3f, 0xaa, 0x52, 0x11, 0xcd });
-        u8 b_reg = 0, c_reg = 1;
-        u8 d_reg = 0, e_reg = 4;
-        u8 h_reg = 0, l_reg = 0;
+        u8 b_reg = 0;
+        u8 c_reg = 1;
+        u8 d_reg = 0;
+        u8 e_reg = 4;
+        u8 h_reg = 0;
+        u8 l_reg = 0;
         Flags flag_reg;
         flag_reg.set_half_carry_flag();
 
@@ -149,9 +155,12 @@ TEST_CASE("Z80: LDIR")
         u16 pc = 0;
         EmulatorMemory<u16, u8> memory;
         memory.add({ 0x23, 0x56, 0x3a, 0x99, 0x3f, 0xaa, 0x52, 0x11, 0xcd });
-        u8 b_reg = 0, c_reg = 1;
-        u8 d_reg = 0, e_reg = 4;
-        u8 h_reg = 0, l_reg = 0;
+        u8 b_reg = 0;
+        u8 c_reg = 1;
+        u8 d_reg = 0;
+        u8 e_reg = 4;
+        u8 h_reg = 0;
+        u8 l_reg = 0;
         Flags flag_reg;
         flag_reg.set_add_subtract_flag();
 
@@ -183,9 +192,12 @@ TEST_CASE("Z80: LDIR")
         u16 pc = 0;
         EmulatorMemory<u16, u8> memory;
         memory.add({ 0x23, 0x56, 0x3a, 0x99, 0x3f, 0xaa, 0x52, 0x11, 0xcd });
-        u8 b_reg = 0, c_reg = 3;
-        u8 d_reg = 0, e_reg = 4;
-        u8 h_reg = 0, l_reg = 0;
+        u8 b_reg = 0;
+        u8 c_reg = 3;
+        u8 d_reg = 0;
+        u8 e_reg = 4;
+        u8 h_reg = 0;
+        u8 l_reg = 0;
         Flags flag_reg;
         flag_reg.set_add_subtract_flag();
 
@@ -210,16 +222,19 @@ TEST_CASE("Z80: LDIR")
         u16 pc = 0;
         EmulatorMemory<u16, u8> memory;
         memory.add({ 0x23, 0x56, 0x3a, 0x99, 0x3f, 0xaa });
-        u8 b_reg = 0, c_reg = 2;
-        u8 d_reg = 0, e_reg = 4;
-        u8 h_reg = 0, l_reg = 0;
+        u8 b_reg = 0;
+        u8 c_reg = 2;
+        u8 d_reg = 0;
+        u8 e_reg = 4;
+        u8 h_reg = 0;
+        u8 l_reg = 0;
         Flags flag_reg;
         flag_reg.set_add_subtract_flag();
 
         ldir(pc, b_reg, c_reg, d_reg, e_reg, h_reg, l_reg,
             acc_reg, memory, flag_reg, cycles);
 
-        CHECK_EQ(21, cycles);
+        CHECK_EQ(static_cast<cyc>(21), cycles);
     }
 
     SUBCASE("should use 16 cycles when it's the last repetition")
@@ -227,16 +242,19 @@ TEST_CASE("Z80: LDIR")
         u16 pc = 0;
         EmulatorMemory<u16, u8> memory;
         memory.add({ 0x23, 0x56, 0x3a, 0x99, 0x3f, 0xaa });
-        u8 b_reg = 0, c_reg = 1;
-        u8 d_reg = 0, e_reg = 4;
-        u8 h_reg = 0, l_reg = 0;
+        u8 b_reg = 0;
+        u8 c_reg = 1;
+        u8 d_reg = 0;
+        u8 e_reg = 4;
+        u8 h_reg = 0;
+        u8 l_reg = 0;
         Flags flag_reg;
         flag_reg.set_add_subtract_flag();
 
         ldir(pc, b_reg, c_reg, d_reg, e_reg, h_reg, l_reg,
             acc_reg, memory, flag_reg, cycles);
 
-        CHECK_EQ(16, cycles);
+        CHECK_EQ(static_cast<cyc>(16), cycles);
     }
 }
 }

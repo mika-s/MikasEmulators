@@ -97,13 +97,13 @@ TEST_CASE("8080: JNZ")
 
         jnz(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
 
         flag_reg.set_zero_flag();
 
         jnz(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 }
 }

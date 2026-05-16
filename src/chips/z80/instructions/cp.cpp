@@ -16,7 +16,7 @@ using emu::memory::NextByte;
 using emu::util::byte::is_bit_set;
 using emu::util::string::hexify_wo_0x;
 
-void cp(u8& acc_reg, u8 value, Flags& flag_reg)
+void cp(const u8& acc_reg, const u8 value, Flags& flag_reg)
 {
     u8 acc_reg_copy = acc_reg;
 
@@ -49,7 +49,7 @@ void cp(u8& acc_reg, u8 value, Flags& flag_reg)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void cp_r(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
+void cp_r(const u8& acc_reg, const u8 value, Flags& flag_reg, cyc& cycles)
 {
     cp(acc_reg, value, flag_reg);
 
@@ -70,7 +70,7 @@ void cp_r(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void cp_n(u8& acc_reg, NextByte const& args, Flags& flag_reg, cyc& cycles)
+void cp_n(const u8& acc_reg, NextByte const& args, Flags& flag_reg, cyc& cycles)
 {
     cp(acc_reg, args.farg, flag_reg);
 
@@ -91,7 +91,7 @@ void cp_n(u8& acc_reg, NextByte const& args, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void cp_MHL(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
+void cp_MHL(const u8& acc_reg, const u8 value, Flags& flag_reg, cyc& cycles)
 {
     cp(acc_reg, value, flag_reg);
 
@@ -114,8 +114,8 @@ void cp_MHL(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void cp_MixyPd(u8& acc_reg, u16 ixy_reg, NextByte const& args, EmulatorMemory<u16, u8>& memory, Flags& flag_reg,
-    cyc& cycles)
+void cp_MixyPd(const u8& acc_reg, const u16 ixy_reg, NextByte const& args, EmulatorMemory<u16, u8>& memory,
+    Flags& flag_reg, cyc& cycles)
 {
     const u16 address = ixy_reg + static_cast<i8>(args.farg);
     u8 value = memory.read(address);
@@ -143,7 +143,7 @@ void cp_MixyPd(u8& acc_reg, u16 ixy_reg, NextByte const& args, EmulatorMemory<u1
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void cp_r_undoc(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
+void cp_r_undoc(const u8& acc_reg, const u8 value, Flags& flag_reg, cyc& cycles)
 {
     cp(acc_reg, value, flag_reg);
 
@@ -160,11 +160,11 @@ void cp_r_undoc(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
  * </ul>
  *
  * @param acc_reg is the accumulator register, which will be mutated
- * @param value is the value to compare with the accumulator register
+ * @param ixy_reg_h_or_l is the value in the IX or IY register, high or low, to be compared with the accumulator
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void cp_ixy_h_or_l(u8& acc_reg, u8 ixy_reg_h_or_l, Flags& flag_reg, cyc& cycles)
+void cp_ixy_h_or_l(const u8& acc_reg, const u8 ixy_reg_h_or_l, Flags& flag_reg, cyc& cycles)
 {
     cp(acc_reg, ixy_reg_h_or_l, flag_reg);
 
@@ -229,7 +229,7 @@ TEST_CASE("Z80: CP")
 TEST_CASE("Z80: CP r")
 {
     cyc cycles = 0;
-    u8 acc_reg = 0;
+    u8 const acc_reg = 0;
 
     SUBCASE("should use 7 cycles")
     {
@@ -238,14 +238,14 @@ TEST_CASE("Z80: CP r")
 
         cp_r(acc_reg, 0, flag_reg, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 
 TEST_CASE("Z80: CP n")
 {
     cyc cycles = 0;
-    u8 acc_reg = 0;
+    u8 const acc_reg = 0;
 
     SUBCASE("should use 7 cycles")
     {
@@ -255,14 +255,14 @@ TEST_CASE("Z80: CP n")
 
         cp_n(acc_reg, args, flag_reg, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 }
 
 TEST_CASE("Z80: CP [HL]")
 {
     cyc cycles = 0;
-    u8 acc_reg = 0;
+    u8 const acc_reg = 0;
 
     SUBCASE("should use 7 cycles")
     {
@@ -271,7 +271,7 @@ TEST_CASE("Z80: CP [HL]")
 
         cp_MHL(acc_reg, 0, flag_reg, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 }
 }

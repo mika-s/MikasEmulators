@@ -18,16 +18,16 @@ using emu::util::byte::low_byte;
 using emu::util::byte::to_u16;
 using emu::util::string::hexify_wo_0x;
 
-void add(u8& acc_reg, u8 value, Flags& flag_reg)
+void add(u8& acc_reg, const u8 value, Flags& flag_reg)
 {
     add_to_register(acc_reg, value, false, flag_reg);
 }
 
-void add(u16& reg, u16 value, Flags& flag_reg)
+void add(u16& reg, const u16 value, Flags& flag_reg)
 {
-    bool was_sign_flag_set = flag_reg.is_sign_flag_set();
-    bool was_zero_flag_set = flag_reg.is_zero_flag_set();
-    bool was_parity_overflow_flag_set = flag_reg.is_parity_overflow_flag_set();
+    bool const was_sign_flag_set = flag_reg.is_sign_flag_set();
+    bool const was_zero_flag_set = flag_reg.is_zero_flag_set();
+    bool const was_parity_overflow_flag_set = flag_reg.is_parity_overflow_flag_set();
 
     add_to_register(reg, value, false, flag_reg);
 
@@ -64,7 +64,7 @@ void add(u16& reg, u16 value, Flags& flag_reg)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void add_A_r(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
+void add_A_r(u8& acc_reg, const u8 value, Flags& flag_reg, cyc& cycles)
 {
     add(acc_reg, value, flag_reg);
 
@@ -85,7 +85,7 @@ void add_A_r(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void add_A_ixy_h_or_l(u8& acc_reg, u8 ixy_reg_h_or_l, Flags& flag_reg, cyc& cycles)
+void add_A_ixy_h_or_l(u8& acc_reg, const u8 ixy_reg_h_or_l, Flags& flag_reg, cyc& cycles)
 {
     add(acc_reg, ixy_reg_h_or_l, flag_reg);
 
@@ -108,11 +108,11 @@ void add_A_ixy_h_or_l(u8& acc_reg, u8 ixy_reg_h_or_l, Flags& flag_reg, cyc& cycl
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void add_A_MixyPd(u8& acc_reg, u16 ixy_reg, NextByte const& args, EmulatorMemory<u16, u8>& memory, Flags& flag_reg,
+void add_A_MixyPd(u8& acc_reg, const u16 ixy_reg, NextByte const& args, EmulatorMemory<u16, u8>& memory, Flags& flag_reg,
     cyc& cycles)
 {
     const u16 address = ixy_reg + static_cast<i8>(args.farg);
-    u8 value = memory.read(address);
+    u8 const value = memory.read(address);
 
     add(acc_reg, value, flag_reg);
 
@@ -156,7 +156,7 @@ void add_A_n(u8& acc_reg, NextByte const& args, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void add_A_MHL(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
+void add_A_MHL(u8& acc_reg, const u8 value, Flags& flag_reg, cyc& cycles)
 {
     add(acc_reg, value, flag_reg);
 
@@ -178,7 +178,7 @@ void add_A_MHL(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void add_HL_ss(u8& h_reg, u8& l_reg, u16 value, Flags& flag_reg, cyc& cycles)
+void add_HL_ss(u8& h_reg, u8& l_reg, const u16 value, Flags& flag_reg, cyc& cycles)
 {
     u16 hl = to_u16(h_reg, l_reg);
 
@@ -204,7 +204,7 @@ void add_HL_ss(u8& h_reg, u8& l_reg, u16 value, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void add_ixy_pp(u16& ixy_reg, u16 value_to_add, Flags& flag_reg, cyc& cycles)
+void add_ixy_pp(u16& ixy_reg, const u16 value_to_add, Flags& flag_reg, cyc& cycles)
 {
     add(ixy_reg, value_to_add, flag_reg);
 
@@ -227,7 +227,7 @@ void add_ixy_pp(u16& ixy_reg, u16 value_to_add, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void add_A_r_undoc(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
+void add_A_r_undoc(u8& acc_reg, const u8 value, Flags& flag_reg, cyc& cycles)
 {
     add(acc_reg, value, flag_reg);
 
@@ -286,7 +286,7 @@ TEST_CASE("Z80: ADD")
             for (u8 value = 0; value < UINT8_MAX; ++value) {
                 for (int carry = 0; carry < 2; ++carry) {
                     Flags flag_reg;
-                    if (carry) {
+                    if (carry > 0) {
                         flag_reg.set_carry_flag();
                     } else {
                         flag_reg.clear_carry_flag();
@@ -352,7 +352,7 @@ TEST_CASE("Z80: ADD A, r")
         u8 acc_reg = 0xe;
 
         add_A_r(acc_reg, 0x1, flag_reg, cycles);
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 
@@ -366,7 +366,7 @@ TEST_CASE("Z80: ADD A, n")
         NextByte args = { 0x1 };
 
         add_A_n(acc_reg, args, flag_reg, cycles);
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 }
 
@@ -379,7 +379,7 @@ TEST_CASE("Z80: ADD A, [HL]")
         u8 acc_reg = 0xe;
 
         add_A_MHL(acc_reg, 0x1, flag_reg, cycles);
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 }
 
@@ -413,7 +413,7 @@ TEST_CASE("Z80: ADD HL, ss")
 
         u8 h_reg = 0xff;
         u8 l_reg = 0xff;
-        u16 value_to_add = 0x1;
+        constexpr u16 value_to_add = 0x1;
 
         add_HL_ss(h_reg, l_reg, value_to_add, flag_reg, cycles);
 
@@ -441,11 +441,11 @@ TEST_CASE("Z80: ADD HL, ss")
 
         u8 h_reg = 0;
         u8 l_reg = 0xE;
-        u16 value_to_add = 0x4;
+        constexpr u16 value_to_add = 0x4;
 
         add_HL_ss(h_reg, l_reg, value_to_add, flag_reg, cycles);
 
-        CHECK_EQ(11, cycles);
+        CHECK_EQ(static_cast<cyc>(11), cycles);
     }
 }
 }

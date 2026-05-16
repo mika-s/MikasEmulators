@@ -188,7 +188,7 @@ TEST_CASE("LR35902: JP")
 
         jp(pc, args, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 }
 
@@ -244,13 +244,13 @@ TEST_CASE("LR35902: JP NZ")
 
         jp_nz(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
 
         flag_reg.clear_zero_flag();
 
         jp_nz(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 }
 
@@ -306,13 +306,13 @@ TEST_CASE("LR35902: JP Z")
 
         jp_z(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
 
         flag_reg.set_zero_flag();
 
         jp_z(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 }
 
@@ -368,13 +368,13 @@ TEST_CASE("LR35902: JP NC")
 
         jp_nc(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
 
         flag_reg.clear_carry_flag();
 
         jp_nc(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 }
 
@@ -430,13 +430,13 @@ TEST_CASE("LR35902: JP C")
 
         jp_c(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
 
         flag_reg.set_carry_flag();
 
         jp_c(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 }
 
@@ -444,7 +444,7 @@ TEST_CASE("LR35902: JP (HL)")
 {
     cyc cycles = 0;
     u16 pc = 0x1111;
-    u16 address = 0x432a;
+    constexpr u16 address = 0x432a;
 
     SUBCASE("should load address into PC")
     {
@@ -459,7 +459,7 @@ TEST_CASE("LR35902: JP (HL)")
 
         jp_hl(pc, address, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 }

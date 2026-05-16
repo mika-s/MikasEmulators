@@ -148,7 +148,7 @@ TEST_CASE("Z80: DAA")
 
         daa(acc_reg, flag_reg, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 }

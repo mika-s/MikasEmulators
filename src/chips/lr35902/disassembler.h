@@ -34,10 +34,10 @@ private:
 
     void print_next_bits_instruction(u8 bits_opcode);
 
-    void print_cartridge_header();
+    void print_cartridge_header() const;
 
-    NextByte get_next_byte();
+    auto get_next_byte() -> NextByte;
 
-    NextWord get_next_word();
+    auto get_next_word() -> NextWord;
 };
 }

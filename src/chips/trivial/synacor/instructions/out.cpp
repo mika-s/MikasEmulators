@@ -15,22 +15,22 @@ using emu::util::string::hexify;
  *
  * @param character is the character to print to the terminal
  */
-void out([[maybe_unused]] Data character)
+void out([[maybe_unused]] const Data character)
 {
     std::cout << static_cast<char>(character.underlying())
               << std::flush;
 }
 
-std::string as_str(RawData character)
+std::string as_str(const RawData character)
 {
     if (character.underlying() == 0x000a) {
         return "\\n";
-    } else {
-        return { static_cast<char>(character.underlying()) };
     }
+
+    return { static_cast<char>(character.underlying()) };
 }
 
-void print_out(std::ostream& ostream, RawData character)
+void print_out(std::ostream& ostream, const RawData character)
 {
     ostream << "OUT "
             << hexify(static_cast<u16>(character.underlying()))

@@ -11,7 +11,7 @@ Voice::Voice()
 {
 }
 
-u8 Voice::waveform_number() const
+auto Voice::waveform_number() const -> u8
 {
     return m_waveform_number;
 }
@@ -29,7 +29,7 @@ void Voice::waveform_number(u8 waveform_number)
     m_waveform_number = waveform_number;
 }
 
-u32 Voice::frequency() const
+auto Voice::frequency() const -> u32
 {
     return m_frequency;
 }
@@ -47,7 +47,7 @@ void Voice::frequency(u32 frequency)
     m_frequency = frequency;
 }
 
-u8 Voice::volume() const
+auto Voice::volume() const -> u8
 {
     return m_volume;
 }
@@ -65,12 +65,12 @@ void Voice::volume(u8 volume)
     m_volume = volume;
 }
 
-u32 Voice::accumulator() const
+auto Voice::accumulator() const -> u32
 {
     return m_accumulator;
 }
 
-void Voice::accumulator(u32 accumulator)
+void Voice::accumulator(const u32 accumulator)
 {
     m_accumulator = accumulator;
 }

@@ -113,7 +113,7 @@ TEST_CASE("8080: ANI")
 
         ani(acc_reg, args, flag_reg, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 }
 }

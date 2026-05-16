@@ -91,7 +91,7 @@ TEST_CASE("8080: LXI")
 
         lxi(reg1, reg2, args, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 }
 }

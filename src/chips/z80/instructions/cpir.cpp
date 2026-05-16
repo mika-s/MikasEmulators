@@ -32,7 +32,7 @@ using emu::util::byte::to_u16;
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void cpir(u16& pc, u8& b_reg, u8& c_reg, u8& h_reg, u8& l_reg, u8 acc_reg, EmulatorMemory<u16, u8> const& memory,
+void cpir(u16& pc, u8& b_reg, u8& c_reg, u8& h_reg, u8& l_reg, const u8 acc_reg, EmulatorMemory<u16, u8> const& memory,
     Flags& flag_reg, cyc& cycles)
 {
 

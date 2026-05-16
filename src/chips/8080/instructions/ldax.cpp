@@ -26,7 +26,7 @@ using emu::util::byte::to_u16;
  * @param memory is the memory
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void ldax(u8& acc_reg, u8 reg1, u8 reg2, EmulatorMemory<u16, u8> const& memory, cyc& cycles)
+void ldax(u8& acc_reg, const u8 reg1, const u8 reg2, EmulatorMemory<u16, u8> const& memory, cyc& cycles)
 {
     acc_reg = memory.read(to_u16(reg1, reg2));
 
@@ -45,8 +45,8 @@ TEST_CASE("8080: LDAX")
     u8 acc_reg = 0xe;
     EmulatorMemory<u16, u8> memory;
     memory.add(std::vector<u8> { 0x00, 0x01, 0x02, 0x03, 0xfd, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa });
-    u8 reg1 = 0;
-    u8 reg2 = 0x04;
+    constexpr u8 reg1 = 0;
+    constexpr u8 reg2 = 0x04;
 
     SUBCASE("should load the accumulator from memory using address in args")
     {
@@ -61,7 +61,7 @@ TEST_CASE("8080: LDAX")
 
         ldax(acc_reg, reg1, reg2, memory, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 }
 }

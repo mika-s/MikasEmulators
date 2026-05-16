@@ -28,7 +28,7 @@ using emu::util::byte::low_byte;
  * @param memory is the memory, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void push_qq(u8 reg1, u8 reg2, u16& sp, EmulatorMemory<u16, u8>& memory, cyc& cycles)
+void push_qq(const u8 reg1, const u8 reg2, u16& sp, EmulatorMemory<u16, u8>& memory, cyc& cycles)
 {
     memory.write(--sp, reg1);
     memory.write(--sp, reg2);
@@ -51,7 +51,7 @@ void push_qq(u8 reg1, u8 reg2, u16& sp, EmulatorMemory<u16, u8>& memory, cyc& cy
  * @param memory is the memory, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void push_af(Flags const& flag_reg, u8 acc_reg, u16& sp, EmulatorMemory<u16, u8>& memory, cyc& cycles)
+void push_af(Flags const& flag_reg, const u8 acc_reg, u16& sp, EmulatorMemory<u16, u8>& memory, cyc& cycles)
 {
     memory.write(--sp, acc_reg);
     memory.write(--sp, flag_reg.to_u8());
@@ -73,7 +73,7 @@ void push_af(Flags const& flag_reg, u8 acc_reg, u16& sp, EmulatorMemory<u16, u8>
  * @param memory is the memory, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void push_ixy(u16 ixy_reg, u16& sp, EmulatorMemory<u16, u8>& memory, cyc& cycles)
+void push_ixy(const u16 ixy_reg, u16& sp, EmulatorMemory<u16, u8>& memory, cyc& cycles)
 {
     memory.write(--sp, high_byte(ixy_reg));
     memory.write(--sp, low_byte(ixy_reg));
@@ -93,8 +93,8 @@ TEST_CASE("Z80: PUSH qq")
 
     SUBCASE("should push registers onto the stack")
     {
-        u8 reg1 = 0xaa;
-        u8 reg2 = 0xbb;
+        constexpr u8 reg1 = 0xaa;
+        constexpr u8 reg2 = 0xbb;
         u16 sp = 0x03;
 
         EmulatorMemory<u16, u8> memory;
@@ -115,7 +115,7 @@ TEST_CASE("Z80: PUSH qq")
         flag_reg.set_sign_flag();
         flag_reg.set_parity_overflow_flag();
         flag_reg.set_half_carry_flag();
-        u8 acc_reg = 0xbb;
+        constexpr u8 acc_reg = 0xbb;
         u16 sp = 0x03;
 
         EmulatorMemory<u16, u8> memory;
@@ -132,8 +132,8 @@ TEST_CASE("Z80: PUSH qq")
     {
         cycles = 0;
 
-        const u8 reg1 = 0;
-        const u8 reg2 = 0;
+        constexpr u8 reg1 = 0;
+        constexpr u8 reg2 = 0;
         u16 sp = 0x03;
 
         EmulatorMemory<u16, u8> memory;
@@ -141,7 +141,7 @@ TEST_CASE("Z80: PUSH qq")
 
         push_qq(reg1, reg2, sp, memory, cycles);
 
-        CHECK_EQ(11, cycles);
+        CHECK_EQ(static_cast<cyc>(11), cycles);
     }
 }
 
@@ -153,7 +153,7 @@ TEST_CASE("Z80: PUSH IX/IY")
     {
         cycles = 0;
 
-        const u16 ix = 0x01234;
+        constexpr u16 ix = 0x01234;
         u16 sp = 0x03;
 
         EmulatorMemory<u16, u8> memory;
@@ -161,7 +161,7 @@ TEST_CASE("Z80: PUSH IX/IY")
 
         push_ixy(ix, sp, memory, cycles);
 
-        CHECK_EQ(15, cycles);
+        CHECK_EQ(static_cast<cyc>(15), cycles);
     }
 }
 }

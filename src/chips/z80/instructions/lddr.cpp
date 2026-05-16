@@ -30,11 +30,12 @@ using emu::util::byte::to_u16;
  * @param h_reg is the H register, which will be mutated
  * @param l_reg is the L register, which will be mutated
  * @param acc_reg is the accumulator, for use in setting XF and YF
+ * @param memory is the memory, which will be mutated
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
 void lddr(u16& pc, u8& b_reg, u8& c_reg, u8& d_reg, u8& e_reg, u8& h_reg, u8& l_reg,
-    u8 acc_reg, EmulatorMemory<u16, u8>& memory, Flags& flag_reg, cyc& cycles)
+    const u8 acc_reg, EmulatorMemory<u16, u8>& memory, Flags& flag_reg, cyc& cycles)
 {
     u16 de = to_u16(d_reg, e_reg);
     u16 hl = to_u16(h_reg, l_reg);

@@ -59,7 +59,7 @@ TEST_CASE("8080: RLC")
 
             rlc(acc_reg, flag_reg, cycles);
 
-            u8 expected = acc_reg_counter << 1u;
+            u8 expected = acc_reg_counter << 1U;
             if (cy) {
                 set_bit(expected, lsb);
             }
@@ -100,7 +100,7 @@ TEST_CASE("8080: RLC")
 
         rlc(acc_reg, flag_reg, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 }

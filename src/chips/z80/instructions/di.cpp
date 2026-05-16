@@ -57,7 +57,7 @@ TEST_CASE("Z80: DI")
 
         di(iff1, iff2, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 }

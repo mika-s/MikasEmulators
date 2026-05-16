@@ -290,7 +290,7 @@ TEST_CASE("Z80: CALL")
 
         call(pc, sp, memory, args, cycles);
 
-        CHECK_EQ(17, cycles);
+        CHECK_EQ(static_cast<cyc>(17), cycles);
     }
 }
 
@@ -346,7 +346,7 @@ TEST_CASE("Z80: CALL NZ")
 
         call_nz(pc, sp, memory, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 
     SUBCASE("should use 17 cycles when called")
@@ -363,7 +363,7 @@ TEST_CASE("Z80: CALL NZ")
 
         call_nz(pc, sp, memory, args, flag_reg, cycles);
 
-        CHECK_EQ(17, cycles);
+        CHECK_EQ(static_cast<cyc>(17), cycles);
     }
 }
 
@@ -418,7 +418,7 @@ TEST_CASE("Z80: CALL Z")
 
         call_z(pc, sp, memory, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 
     SUBCASE("should use 17 cycles when called")
@@ -434,7 +434,7 @@ TEST_CASE("Z80: CALL Z")
 
         call_z(pc, sp, memory, args, flag_reg, cycles);
 
-        CHECK_EQ(17, cycles);
+        CHECK_EQ(static_cast<cyc>(17), cycles);
     }
 }
 
@@ -489,7 +489,7 @@ TEST_CASE("Z80: CALL NC")
 
         call_nc(pc, sp, memory, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 
     SUBCASE("should use 17 cycles when called")
@@ -505,7 +505,7 @@ TEST_CASE("Z80: CALL NC")
 
         call_nc(pc, sp, memory, args, flag_reg, cycles);
 
-        CHECK_EQ(17, cycles);
+        CHECK_EQ(static_cast<cyc>(17), cycles);
     }
 }
 
@@ -560,7 +560,7 @@ TEST_CASE("Z80: CALL C")
 
         call_c(pc, sp, memory, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 
     SUBCASE("should use 17 cycles when called")
@@ -576,7 +576,7 @@ TEST_CASE("Z80: CALL C")
 
         call_c(pc, sp, memory, args, flag_reg, cycles);
 
-        CHECK_EQ(17, cycles);
+        CHECK_EQ(static_cast<cyc>(17), cycles);
     }
 }
 
@@ -631,7 +631,7 @@ TEST_CASE("Z80: CALL PO")
 
         call_po(pc, sp, memory, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 
     SUBCASE("should use 17 cycles when called")
@@ -647,7 +647,7 @@ TEST_CASE("Z80: CALL PO")
 
         call_po(pc, sp, memory, args, flag_reg, cycles);
 
-        CHECK_EQ(17, cycles);
+        CHECK_EQ(static_cast<cyc>(17), cycles);
     }
 }
 
@@ -702,7 +702,7 @@ TEST_CASE("Z80: CALL PE")
 
         call_pe(pc, sp, memory, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 
     SUBCASE("should use 17 cycles when called")
@@ -718,7 +718,7 @@ TEST_CASE("Z80: CALL PE")
 
         call_pe(pc, sp, memory, args, flag_reg, cycles);
 
-        CHECK_EQ(17, cycles);
+        CHECK_EQ(static_cast<cyc>(17), cycles);
     }
 }
 
@@ -773,7 +773,7 @@ TEST_CASE("Z80: CALL P")
 
         call_p(pc, sp, memory, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 
     SUBCASE("should use 17 cycles when called")
@@ -789,7 +789,7 @@ TEST_CASE("Z80: CALL P")
 
         call_p(pc, sp, memory, args, flag_reg, cycles);
 
-        CHECK_EQ(17, cycles);
+        CHECK_EQ(static_cast<cyc>(17), cycles);
     }
 }
 
@@ -844,7 +844,7 @@ TEST_CASE("Z80: CALL M")
 
         call_m(pc, sp, memory, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 
     SUBCASE("should use 17 cycles when called")
@@ -860,7 +860,7 @@ TEST_CASE("Z80: CALL M")
 
         call_m(pc, sp, memory, args, flag_reg, cycles);
 
-        CHECK_EQ(17, cycles);
+        CHECK_EQ(static_cast<cyc>(17), cycles);
     }
 }
 }

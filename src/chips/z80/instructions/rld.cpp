@@ -23,7 +23,7 @@ using emu::memory::EmulatorMemory;
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void rld(u8& acc_reg, EmulatorMemory<u16, u8>& memory, u16 address, Flags& flag_reg, cyc& cycles)
+void rld(u8& acc_reg, EmulatorMemory<u16, u8>& memory, const u16 address, Flags& flag_reg, cyc& cycles)
 {
     u8 value = memory.read(address);
     u8 new_acc = acc_reg;

@@ -26,7 +26,7 @@ using emu::util::byte::to_u16;
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void rm(u16& pc, u16& sp, EmulatorMemory<u16, u8>& memory, Flags const& flag_reg, cyc& cycles)
+void rm(u16& pc, u16& sp, const EmulatorMemory<u16, u8>& memory, Flags const& flag_reg, cyc& cycles)
 {
     cycles = 0;
 
@@ -79,11 +79,11 @@ TEST_CASE("8080: RM")
         cycles = 0;
         u16 pc = 0;
         u16 sp = 0;
-        Flags flag_reg;
+        Flags const flag_reg;
 
         rm(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(5, cycles);
+        CHECK_EQ(static_cast<cyc>(5), cycles);
     }
 
     SUBCASE("should use 11 cycles when returning")
@@ -96,7 +96,7 @@ TEST_CASE("8080: RM")
 
         rm(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(11, cycles);
+        CHECK_EQ(static_cast<cyc>(11), cycles);
     }
 }
 }

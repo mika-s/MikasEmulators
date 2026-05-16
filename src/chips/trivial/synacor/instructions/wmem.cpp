@@ -19,12 +19,12 @@ using emu::util::string::hexify;
  * @param a is the address to write to
  * @param b is the address to read from
  */
-void wmem(EmulatorMemory<Address, RawData>& memory, RawData a, RawData b)
+void wmem(EmulatorMemory<Address, RawData>& memory, const RawData a, const RawData b)
 {
     memory.write(Address(a.underlying()), memory.read(Address(b.underlying())));
 }
 
-void print_wmem(std::ostream& ostream, RawData a, RawData b)
+void print_wmem(std::ostream& ostream, const RawData a, const RawData b)
 {
     ostream << "WMEM ";
 

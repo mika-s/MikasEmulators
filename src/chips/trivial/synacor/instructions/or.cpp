@@ -20,14 +20,14 @@ using emu::util::string::hexify;
  * @param b is the first operand to or
  * @param c is the second operand to or
  */
-void or_(EmulatorMemory<Address, RawData>& memory, RawData a, RawData b, RawData c)
+void or_(EmulatorMemory<Address, RawData>& memory, const RawData a, const RawData b, const RawData c)
 {
     memory.write(
         Address(a.underlying()),
         RawData(Data(b.underlying() | c.underlying()).underlying()));
 }
 
-void print_or(std::ostream& ostream, RawData a, RawData b, RawData c)
+void print_or(std::ostream& ostream, const RawData a, const RawData b, const RawData c)
 {
     ostream << "OR ";
 

@@ -25,7 +25,7 @@ using emu::util::string::hexify_wo_0x;
  * @param io is the IO addresses
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void in(u8& acc_reg, NextByte const& args, std::vector<u8> io, cyc& cycles)
+void in(u8& acc_reg, NextByte const& args, const std::vector<u8> &io, cyc& cycles)
 {
     acc_reg = io[args.farg];
 
@@ -58,7 +58,7 @@ TEST_CASE("8080: IN")
 
         in(acc_reg, args, io, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 }
 }

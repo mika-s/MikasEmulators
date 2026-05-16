@@ -21,12 +21,12 @@ using emu::util::byte::low_byte;
 using emu::util::byte::to_u16;
 using emu::util::string::hexify_wo_0x;
 
-void ld(u8& to, u8 value)
+void ld(u8& to, const u8 value)
 {
     to = value;
 }
 
-void ld_M(EmulatorMemory<u16, u8>& memory, u16 address, u8 value)
+void ld_M(EmulatorMemory<u16, u8>& memory, const u16 address, const u8 value)
 {
     memory.write(address, value);
 }
@@ -44,7 +44,7 @@ void ld_M(EmulatorMemory<u16, u8>& memory, u16 address, u8 value)
  * @param value is the value to move into to
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void ld_r_r(u8& to, u8 value, cyc& cycles)
+void ld_r_r(u8& to, const u8 value, cyc& cycles)
 {
     ld(to, value);
 
@@ -84,7 +84,7 @@ void ld_r_n(u8& to, NextByte const& args, cyc& cycles)
  * @param value is the value to load into to
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void ld_r_MHL(u8& to, u8 value, cyc& cycles)
+void ld_r_MHL(u8& to, const u8 value, cyc& cycles)
 {
     ld(to, value);
 
@@ -105,7 +105,7 @@ void ld_r_MHL(u8& to, u8 value, cyc& cycles)
  * @param value is the register value to load into memory
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void ld_MHL_r(EmulatorMemory<u16, u8>& memory, u16 address, u8 value, cyc& cycles)
+void ld_MHL_r(EmulatorMemory<u16, u8>& memory, const u16 address, const u8 value, cyc& cycles)
 {
     ld_M(memory, address, value);
 
@@ -126,7 +126,7 @@ void ld_MHL_r(EmulatorMemory<u16, u8>& memory, u16 address, u8 value, cyc& cycle
  * @param args contains value to load into memory
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void ld_MHL_n(EmulatorMemory<u16, u8>& memory, u16 address, NextByte const& args, cyc& cycles)
+void ld_MHL_n(EmulatorMemory<u16, u8>& memory, const u16 address, NextByte const& args, cyc& cycles)
 {
     ld_M(memory, address, args.farg);
 
@@ -146,7 +146,7 @@ void ld_MHL_n(EmulatorMemory<u16, u8>& memory, u16 address, NextByte const& args
  * @param value is the value to move into to_reg
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void ld_A_Mss(u8& to, u8 value, cyc& cycles)
+void ld_A_Mss(u8& to, const u8 value, cyc& cycles)
 {
     ld(to, value);
 
@@ -188,9 +188,9 @@ void ld_A_Mnn(u8& acc_reg, EmulatorMemory<u16, u8> const& memory, NextWord const
  * @param memory is the memory
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void ld_A_MC(u8& acc_reg, u8 c_reg, EmulatorMemory<u16, u8> const& memory, cyc& cycles)
+void ld_A_MC(u8& acc_reg, const u8 c_reg, EmulatorMemory<u16, u8> const& memory, cyc& cycles)
 {
-    acc_reg = memory.read(static_cast<u16>(c_reg));
+    acc_reg = memory.read(c_reg);
 
     cycles = 8;
 }
@@ -209,7 +209,7 @@ void ld_A_MC(u8& acc_reg, u8 c_reg, EmulatorMemory<u16, u8> const& memory, cyc& 
  * @param acc_reg is the accumulator value to load into to
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void ld_Mss_A(EmulatorMemory<u16, u8>& memory, u16 address, u8 acc_reg, cyc& cycles)
+void ld_Mss_A(EmulatorMemory<u16, u8>& memory, const u16 address, const u8 acc_reg, cyc& cycles)
 {
     ld_M(memory, address, acc_reg);
 
@@ -230,7 +230,7 @@ void ld_Mss_A(EmulatorMemory<u16, u8>& memory, u16 address, u8 acc_reg, cyc& cyc
  * @param args contains the argument with the address in memory to store the accumulator register
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void ld_Mnn_A(u8 acc_reg, EmulatorMemory<u16, u8>& memory, NextWord const& args, cyc& cycles)
+void ld_Mnn_A(const u8 acc_reg, EmulatorMemory<u16, u8>& memory, NextWord const& args, cyc& cycles)
 {
     const u16 address = to_u16(args.sarg, args.farg);
 
@@ -279,10 +279,10 @@ void ld_HL_Mnn(u8& h_reg, u8& l_reg, EmulatorMemory<u16, u8> const& memory, Next
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void ld_HL_SP_p_n(u8& h_reg, u8& l_reg, u16 sp, NextByte const& args, Flags& flag_reg, cyc& cycles)
+void ld_HL_SP_p_n(u8& h_reg, u8& l_reg, const u16 sp, NextByte const& args, Flags& flag_reg, cyc& cycles)
 {
     u16 sp_p_n = sp;
-    add_to_register(sp_p_n, static_cast<u16>(args.farg), false, flag_reg); // TODO: Signed
+    add_to_register(sp_p_n, args.farg, false, flag_reg); // TODO: Signed
     h_reg = high_byte(sp_p_n);
     l_reg = low_byte(sp_p_n);
     flag_reg.clear_zero_flag();
@@ -370,7 +370,7 @@ void ld_sp_nn(u16& sp, NextWord const& args, cyc& cycles)
  * @param hl is the value to store in SP
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void ld_sp_hl(u16& sp, u16 hl, cyc& cycles)
+void ld_sp_hl(u16& sp, const u16 hl, cyc& cycles)
 {
     sp = hl;
 
@@ -392,7 +392,7 @@ void ld_sp_hl(u16& sp, u16 hl, cyc& cycles)
  * @param args contains the argument with the address to call
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void ld_Mnn_HL(u8 h_reg, u8 l_reg, EmulatorMemory<u16, u8>& memory, NextWord const& args, cyc& cycles)
+void ld_Mnn_HL(const u8 h_reg, const u8 l_reg, EmulatorMemory<u16, u8>& memory, NextWord const& args, cyc& cycles)
 {
     const u16 l_address = to_u16(args.sarg, args.farg);
     const u16 h_address = l_address + 1;
@@ -417,9 +417,9 @@ void ld_Mnn_HL(u8 h_reg, u8 l_reg, EmulatorMemory<u16, u8>& memory, NextWord con
  * @param memory is the memory, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void ld_MC_A(u8 c_reg, u8 acc_reg, EmulatorMemory<u16, u8>& memory, cyc& cycles)
+void ld_MC_A(const u8 c_reg, const u8 acc_reg, EmulatorMemory<u16, u8>& memory, cyc& cycles)
 {
-    memory.write(static_cast<u16>(c_reg), acc_reg);
+    memory.write(c_reg, acc_reg);
 
     cycles = 8;
 }
@@ -439,7 +439,7 @@ void ld_MC_A(u8 c_reg, u8 acc_reg, EmulatorMemory<u16, u8>& memory, cyc& cycles)
  * @param args contains the argument with the address to call
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void ld_Mnn_dd(u8 hi_reg, u8 lo_reg, EmulatorMemory<u16, u8>& memory, NextWord const& args, cyc& cycles)
+void ld_Mnn_dd(const u8 hi_reg, const u8 lo_reg, EmulatorMemory<u16, u8>& memory, NextWord const& args, cyc& cycles)
 {
     const u16 lo_address = to_u16(args.sarg, args.farg);
     const u16 hi_address = lo_address + 1;
@@ -464,7 +464,7 @@ void ld_Mnn_dd(u8 hi_reg, u8 lo_reg, EmulatorMemory<u16, u8>& memory, NextWord c
  * @param args contains the argument with the address to lookup
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void ld_Mnn_sp(u16 sp, EmulatorMemory<u16, u8>& memory, NextWord const& args, cyc& cycles)
+void ld_Mnn_sp(const u16 sp, EmulatorMemory<u16, u8>& memory, NextWord const& args, cyc& cycles)
 {
     ld_Mnn_dd(high_byte(sp), low_byte(sp), memory, args, cycles);
 }
@@ -509,10 +509,9 @@ void ld_sp_Mnn(u16& sp, EmulatorMemory<u16, u8> const& memory, NextWord const& a
  * @param h_reg is the H register, which will be mutated
  * @param l_reg is the L register, which will be mutated
  * @param acc_reg is the accumulator
- * @param args contains the argument with the address to lookup
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void ld_MHLp_A(EmulatorMemory<u16, u8>& memory, u8& h_reg, u8& l_reg, u8 acc_reg, cyc& cycles)
+void ld_MHLp_A(EmulatorMemory<u16, u8>& memory, u8& h_reg, u8& l_reg, const u8 acc_reg, cyc& cycles)
 {
     u16 hl = to_u16(h_reg, l_reg);
 
@@ -537,10 +536,9 @@ void ld_MHLp_A(EmulatorMemory<u16, u8>& memory, u8& h_reg, u8& l_reg, u8 acc_reg
  * @param h_reg is the H register, which will be mutated
  * @param l_reg is the L register, which will be mutated
  * @param acc_reg is the accumulator
- * @param args contains the argument with the address to lookup
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void ld_MHLm_A(EmulatorMemory<u16, u8>& memory, u8& h_reg, u8& l_reg, u8 acc_reg, cyc& cycles)
+void ld_MHLm_A(EmulatorMemory<u16, u8>& memory, u8& h_reg, u8& l_reg, const u8 acc_reg, cyc& cycles)
 {
     u16 hl = to_u16(h_reg, l_reg);
 
@@ -565,7 +563,6 @@ void ld_MHLm_A(EmulatorMemory<u16, u8>& memory, u8& h_reg, u8& l_reg, u8 acc_reg
  * @param h_reg is the H register, which will be mutated
  * @param l_reg is the L register, which will be mutated
  * @param acc_reg is the accumulator
- * @param args contains the argument with the address to lookup
  * @param cycles is the number of cycles variable, which will be mutated
  */
 void ld_A_MHLp(u8& acc_reg, EmulatorMemory<u16, u8> const& memory, u8& h_reg, u8& l_reg, cyc& cycles)
@@ -593,7 +590,6 @@ void ld_A_MHLp(u8& acc_reg, EmulatorMemory<u16, u8> const& memory, u8& h_reg, u8
  * @param h_reg is the H register, which will be mutated
  * @param l_reg is the L register, which will be mutated
  * @param acc_reg is the accumulator
- * @param args contains the argument with the address to lookup
  * @param cycles is the number of cycles variable, which will be mutated
  */
 void ld_A_MHLm(u8& acc_reg, EmulatorMemory<u16, u8> const& memory, u8& h_reg, u8& l_reg, cyc& cycles)
@@ -695,7 +691,7 @@ TEST_CASE("LR35902: LD r, r'")
 
         ld_r_r(reg1, reg2, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 
@@ -709,7 +705,7 @@ TEST_CASE("LR35902: LD r, n")
 
         ld_r_n(reg, args, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 }
 
@@ -735,7 +731,7 @@ TEST_CASE("LR35902: LD (HL), r")
 
         ld_MHL_r(memory, to_u16(reg1, reg2), acc_reg, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 }
 
@@ -760,7 +756,7 @@ TEST_CASE("LR35902: LD A, (nn)")
 
         ld_A_Mnn(reg, memory, args, cycles);
 
-        CHECK_EQ(13, cycles);
+        CHECK_EQ(static_cast<cyc>(13), cycles);
     }
 }
 
@@ -787,7 +783,7 @@ TEST_CASE("LR35902: LD HL, (nn)")
 
         ld_HL_Mnn(h_reg, l_reg, memory, args, cycles);
 
-        CHECK_EQ(16, cycles);
+        CHECK_EQ(static_cast<cyc>(16), cycles);
     }
 }
 
@@ -820,15 +816,15 @@ TEST_CASE("LR35902: LD dd, nn")
 
         ld_dd_nn(reg1, reg2, args, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 }
 
 TEST_CASE("LR35902: LD (nn), HL")
 {
     cyc cycles = 0;
-    u8 l_reg = 0x22;
-    u8 h_reg = 0x11;
+    constexpr u8 l_reg = 0x22;
+    constexpr u8 h_reg = 0x11;
     EmulatorMemory<u16, u8> memory;
     memory.add(std::vector<u8> { 0x00, 0xff, 0xaa, 0xbb, 0xcc, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa });
     NextWord args = { .farg = 0x2, .sarg = 0x0 };
@@ -847,7 +843,7 @@ TEST_CASE("LR35902: LD (nn), HL")
 
         ld_Mnn_HL(l_reg, h_reg, memory, args, cycles);
 
-        CHECK_EQ(16, cycles);
+        CHECK_EQ(static_cast<cyc>(16), cycles);
     }
 }
 
@@ -856,7 +852,7 @@ TEST_CASE("LR35902: LD (nn), A")
     cyc cycles = 0;
     EmulatorMemory<u16, u8> memory;
     memory.add(std::vector<u8> { 0x00, 0x01, 0x02, 0x03, 0xfd, 0x05, 0x06, 0x07, 0x08, 0x09, 0xa });
-    u8 acc_reg = 0x45;
+    constexpr u8 acc_reg = 0x45;
     NextWord args = { .farg = 0x3, .sarg = 0x0 };
 
     SUBCASE("should store the accumulator in memory at the given address")
@@ -872,7 +868,7 @@ TEST_CASE("LR35902: LD (nn), A")
 
         ld_Mnn_A(acc_reg, memory, args, cycles);
 
-        CHECK_EQ(13, cycles);
+        CHECK_EQ(static_cast<cyc>(13), cycles);
     }
 }
 
@@ -880,8 +876,8 @@ TEST_CASE("LR35902: LD SP, HL")
 {
     cyc cycles = 0;
     u16 sp = 0;
-    u8 h_reg = 0x11;
-    u8 l_reg = 0x22;
+    constexpr u8 h_reg = 0x11;
+    constexpr u8 l_reg = 0x22;
 
     SUBCASE("should move HL into SP")
     {
@@ -890,13 +886,13 @@ TEST_CASE("LR35902: LD SP, HL")
         CHECK_EQ(0x1122, sp);
     }
 
-    SUBCASE("should use 5 cycles")
+    SUBCASE("should use 6 cycles")
     {
         cycles = 0;
 
         ld_sp_hl(sp, to_u16(h_reg, l_reg), cycles);
 
-        CHECK_EQ(6, cycles);
+        CHECK_EQ(static_cast<cyc>(6), cycles);
     }
 }
 

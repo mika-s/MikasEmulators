@@ -31,7 +31,7 @@ using emu::util::byte::unset_bit;
  * @param reg is the register to reset a bit in, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void res_r(unsigned int bit_number, u8& reg, cyc& cycles)
+void res_r(const unsigned int bit_number, u8& reg, cyc& cycles)
 {
     assert(bit_number < 8);
 
@@ -54,7 +54,7 @@ void res_r(unsigned int bit_number, u8& reg, cyc& cycles)
  * @param memory is the memory, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void res_MHL(unsigned int bit_number, u16 hl_reg, EmulatorMemory<u16, u8>& memory, cyc& cycles)
+void res_MHL(const unsigned int bit_number, const u16 hl_reg, EmulatorMemory<u16, u8>& memory, cyc& cycles)
 {
     assert(bit_number < 8);
 
@@ -100,7 +100,7 @@ TEST_CASE("LR35902: RES r")
 
         res_r(1, value, cycles);
 
-        CHECK_EQ(8, cycles);
+        CHECK_EQ(static_cast<cyc>(8), cycles);
     }
 }
 }

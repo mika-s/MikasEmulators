@@ -27,7 +27,7 @@ using emu::util::string::hexify_wo_0x;
  * @param io is the IO addresses, which might be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void out_n_A(u8 acc_reg, NextByte const& args, std::vector<u8>& io, cyc& cycles)
+void out_n_A(const u8 acc_reg, NextByte const& args, std::vector<u8>& io, cyc& cycles)
 {
     io[to_u16(acc_reg, args.farg)] = acc_reg;
 
@@ -49,7 +49,7 @@ void out_n_A(u8 acc_reg, NextByte const& args, std::vector<u8>& io, cyc& cycles)
  * @param io is the IO addresses, which might be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void out_C_r(u8 b_reg, u8 c_reg, u8 reg, std::vector<u8>& io, cyc& cycles)
+void out_C_r(const u8 b_reg, const u8 c_reg, const u8 reg, std::vector<u8>& io, cyc& cycles)
 {
     io[to_u16(b_reg, c_reg)] = reg;
 
@@ -86,7 +86,7 @@ TEST_CASE("Z80: OUT (n), A")
     cyc cycles = 0;
     std::vector<u8> io = { 0, 2, 4, 6, 8, 10 };
     NextByte args = { .farg = 0x1 };
-    u8 acc_reg = 100;
+    u8 const acc_reg = 100;
 
 //    SUBCASE("should store the accumulator in the addressed IO")
 //    {
@@ -101,7 +101,7 @@ TEST_CASE("Z80: OUT (n), A")
 
         out_n_A(acc_reg, args, io, cycles);
 
-        CHECK_EQ(11, cycles);
+        CHECK_EQ(static_cast<cyc>(11), cycles);
     }
 }
 }

@@ -62,7 +62,7 @@ void Cpu::remove_in_observer(InObserver* observer)
         m_in_observers.end());
 }
 
-bool Cpu::can_run_next_instruction() const
+auto Cpu::can_run_next_instruction() const -> bool
 {
     return m_pc < m_memory_size;
 }
@@ -102,39 +102,39 @@ void Cpu::stop()
     reset_state();
 }
 
-void Cpu::set_state_manually(ManualState manual_state)
+void Cpu::set_state_manually(const ManualState &new_state)
 {
-    m_iff1 = manual_state.m_iff1;
-    m_iff2 = manual_state.m_iff2;
-    m_sp = manual_state.m_sp;
-    m_pc = manual_state.m_pc;
-    m_acc_reg = manual_state.m_acc_reg;
-    m_acc_p_reg = manual_state.m_acc_p_reg;
-    m_b_reg = manual_state.m_b_reg;
-    m_b_p_reg = manual_state.m_b_p_reg;
-    m_c_reg = manual_state.m_c_reg;
-    m_c_p_reg = manual_state.m_c_p_reg;
-    m_d_reg = manual_state.m_d_reg;
-    m_d_p_reg = manual_state.m_d_p_reg;
-    m_e_reg = manual_state.m_e_reg;
-    m_e_p_reg = manual_state.m_e_p_reg;
-    m_h_reg = manual_state.m_h_reg;
-    m_h_p_reg = manual_state.m_h_p_reg;
-    m_l_reg = manual_state.m_l_reg;
-    m_l_p_reg = manual_state.m_l_p_reg;
-    m_ix_reg = manual_state.m_ix_reg;
-    m_iy_reg = manual_state.m_iy_reg;
-    m_i_reg = manual_state.m_i_reg;
-    m_r_reg = manual_state.m_r_reg;
-    m_flag_reg.from_u8(manual_state.m_flag_reg.to_u8());
-    m_flag_p_reg.from_u8(manual_state.m_flag_p_reg.to_u8());
-    m_interrupt_mode = manual_state.m_interrupt_mode;
+    m_iff1 = new_state.m_iff1;
+    m_iff2 = new_state.m_iff2;
+    m_sp = new_state.m_sp;
+    m_pc = new_state.m_pc;
+    m_acc_reg = new_state.m_acc_reg;
+    m_acc_p_reg = new_state.m_acc_p_reg;
+    m_b_reg = new_state.m_b_reg;
+    m_b_p_reg = new_state.m_b_p_reg;
+    m_c_reg = new_state.m_c_reg;
+    m_c_p_reg = new_state.m_c_p_reg;
+    m_d_reg = new_state.m_d_reg;
+    m_d_p_reg = new_state.m_d_p_reg;
+    m_e_reg = new_state.m_e_reg;
+    m_e_p_reg = new_state.m_e_p_reg;
+    m_h_reg = new_state.m_h_reg;
+    m_h_p_reg = new_state.m_h_p_reg;
+    m_l_reg = new_state.m_l_reg;
+    m_l_p_reg = new_state.m_l_p_reg;
+    m_ix_reg = new_state.m_ix_reg;
+    m_iy_reg = new_state.m_iy_reg;
+    m_i_reg = new_state.m_i_reg;
+    m_r_reg = new_state.m_r_reg;
+    m_flag_reg.from_u8(new_state.m_flag_reg.to_u8());
+    m_flag_p_reg.from_u8(new_state.m_flag_p_reg.to_u8());
+    m_interrupt_mode = new_state.m_interrupt_mode;
 }
 
-void Cpu::interrupt(u8 instruction_to_perform)
+void Cpu::interrupt(const u8 supplied_instruction_from_interruptor)
 {
     m_is_interrupted = true;
-    m_instruction_from_interruptor = instruction_to_perform;
+    m_instruction_from_interruptor = supplied_instruction_from_interruptor;
 }
 
 void Cpu::nmi_interrupt()
@@ -142,23 +142,24 @@ void Cpu::nmi_interrupt()
     m_is_nmi_interrupted = true;
 }
 
-bool Cpu::is_inta() const
+auto Cpu::is_inta() const -> bool
 {
     return m_iff1;
 }
 
-void Cpu::input(u16 port, u8 value)
+void Cpu::input(const u16 port, const u8 value)
 {
     m_io_in[port] = value;
 }
 
-cyc Cpu::next_instruction()
+auto Cpu::next_instruction() -> cyc
 {
     cyc cycles = 0;
 
     if (m_is_nmi_interrupted) {
         return handle_nonmaskable_interrupt(cycles);
-    } else if (m_iff1 && m_is_interrupted && m_interrupt_mode == InterruptMode::ZERO) {
+    }
+    if (m_iff1 && m_is_interrupted && m_interrupt_mode == InterruptMode::ZERO) {
         cycles += handle_maskable_interrupt_0(cycles);
     } else if (m_iff1 && m_is_interrupted) {
         return handle_maskable_interrupt_1_2(cycles);
@@ -2245,10 +2246,10 @@ void Cpu::next_ixy_instruction(u8 ixy_opcode, u16& ixy_reg, cyc& cycles)
     }
 }
 
-void Cpu::next_ixy_bits_instruction(NextWord args, u16& ixy_reg, cyc& cycles)
+void Cpu::next_ixy_bits_instruction(const NextWord args, const u16& ixy_reg, cyc& cycles)
 {
-    u8 d = args.farg;
-    u8 ixy_bits_opcode = args.sarg;
+    u8 const d = args.farg;
+    u8 const ixy_bits_opcode = args.sarg;
     print_debug(ixy_bits_opcode);
 
     switch (ixy_bits_opcode) {
@@ -2395,7 +2396,7 @@ void Cpu::next_ixy_bits_instruction(NextWord args, u16& ixy_reg, cyc& cycles)
     }
 }
 
-void Cpu::next_extd_instruction(u8 extd_opcode, cyc& cycles)
+void Cpu::next_extd_instruction(const u8 extd_opcode, cyc& cycles)
 {
     print_debug(extd_opcode);
     r_tick();
@@ -2562,7 +2563,7 @@ void Cpu::next_extd_instruction(u8 extd_opcode, cyc& cycles)
         rld(m_acc_reg, m_memory, address_in_HL(), m_flag_reg, cycles);
         break;
     case IN_C: {
-        u8 throwaway;
+        u8 throwaway = 0;
         notify_in_observers(to_u16(m_b_reg, m_c_reg));
         in_r_C(throwaway, m_b_reg, m_c_reg, m_io_in, m_flag_reg, cycles);
         break;
@@ -2653,7 +2654,7 @@ void Cpu::next_extd_instruction(u8 extd_opcode, cyc& cycles)
     }
 }
 
-cyc Cpu::handle_nonmaskable_interrupt(cyc cycles)
+auto Cpu::handle_nonmaskable_interrupt(cyc cycles) -> cyc
 {
     m_iff2 = m_iff1;
     m_iff1 = false;
@@ -2673,7 +2674,7 @@ void Cpu::nonmaskable_interrupt_finished()
     m_was_nmi_interrupted = false;
 }
 
-cyc Cpu::handle_maskable_interrupt_0(cyc cycles)
+auto Cpu::handle_maskable_interrupt_0(cyc cycles) -> cyc
 {
     m_iff1 = m_iff2 = false;
     m_is_interrupted = false;
@@ -2687,7 +2688,7 @@ cyc Cpu::handle_maskable_interrupt_0(cyc cycles)
     return cycles;
 }
 
-cyc Cpu::handle_maskable_interrupt_1_2(cyc cycles)
+auto Cpu::handle_maskable_interrupt_1_2(cyc cycles) -> cyc
 {
     m_iff1 = m_iff2 = false;
     m_is_interrupted = false;
@@ -2714,14 +2715,14 @@ cyc Cpu::handle_maskable_interrupt_1_2(cyc cycles)
     return cycles;
 }
 
-NextByte Cpu::get_next_byte()
+auto Cpu::get_next_byte() -> NextByte
 {
     return {
         .farg = m_memory.read(m_pc++)
     };
 }
 
-NextWord Cpu::get_next_word()
+auto Cpu::get_next_word() -> NextWord
 {
     return {
         .farg = m_memory.read(m_pc++),
@@ -2729,154 +2730,154 @@ NextWord Cpu::get_next_word()
     };
 }
 
-u16 Cpu::address_in_HL() const
+auto Cpu::address_in_HL() const -> u16
 {
     return to_u16(m_h_reg, m_l_reg);
 }
 
-EmulatorMemory<u16, u8>& Cpu::memory()
+auto Cpu::memory() const -> EmulatorMemory<u16, u8>&
 {
     return m_memory;
 }
 
-u16 Cpu::pc() const
+auto Cpu::pc() const -> u16
 {
     return m_pc;
 }
 
-u16 Cpu::sp() const
+auto Cpu::sp() const -> u16
 {
     return m_sp;
 }
 
-u8 Cpu::a() const
+auto Cpu::a() const -> u8
 {
     return m_acc_reg;
 }
 
-u8 Cpu::a_p() const
+auto Cpu::a_p() const -> u8
 {
     return m_acc_p_reg;
 }
 
-u8 Cpu::b() const
+auto Cpu::b() const -> u8
 {
     return m_b_reg;
 }
 
-u8 Cpu::b_p() const
+auto Cpu::b_p() const -> u8
 {
     return m_b_p_reg;
 }
 
-u8 Cpu::c() const
+auto Cpu::c() const -> u8
 {
     return m_c_reg;
 }
 
-u8 Cpu::c_p() const
+auto Cpu::c_p() const -> u8
 {
     return m_c_p_reg;
 }
 
-u8 Cpu::d() const
+auto Cpu::d() const -> u8
 {
     return m_d_reg;
 }
 
-u8 Cpu::d_p() const
+auto Cpu::d_p() const -> u8
 {
     return m_d_p_reg;
 }
 
-u8 Cpu::e() const
+auto Cpu::e() const -> u8
 {
     return m_e_reg;
 }
 
-u8 Cpu::e_p() const
+auto Cpu::e_p() const -> u8
 {
     return m_e_p_reg;
 }
 
-u8 Cpu::h() const
+auto Cpu::h() const -> u8
 {
     return m_h_reg;
 }
 
-u8 Cpu::h_p() const
+auto Cpu::h_p() const -> u8
 {
     return m_h_p_reg;
 }
 
-u8 Cpu::l() const
+auto Cpu::l() const -> u8
 {
     return m_l_reg;
 }
 
-u8 Cpu::l_p() const
+auto Cpu::l_p() const -> u8
 {
     return m_l_p_reg;
 }
 
-u8 Cpu::f() const
+auto Cpu::f() const -> u8
 {
     return m_flag_reg.to_u8();
 }
 
-u8 Cpu::f_p() const
+auto Cpu::f_p() const -> u8
 {
     return m_flag_p_reg.to_u8();
 }
 
-u16 Cpu::ix() const
+auto Cpu::ix() const -> u16
 {
     return m_ix_reg;
 }
 
-u16 Cpu::iy() const
+auto Cpu::iy() const -> u16
 {
     return m_iy_reg;
 }
 
-u8 Cpu::i() const
+auto Cpu::i() const -> u8
 {
     return m_i_reg;
 }
 
-u8 Cpu::r() const
+auto Cpu::r() const -> u8
 {
     return m_r_reg;
 }
 
-bool Cpu::is_interrupted() const
+auto Cpu::is_interrupted() const -> bool
 {
     return m_is_interrupted;
 }
 
-InterruptMode Cpu::interrupt_mode() const
+auto Cpu::interrupt_mode() const -> InterruptMode
 {
     return m_interrupt_mode;
 }
 
-bool Cpu::iff1() const
+auto Cpu::iff1() const -> bool
 {
     return m_iff1;
 }
 
-bool Cpu::iff2() const
+auto Cpu::iff2() const -> bool
 {
     return m_iff2;
 }
 
-void Cpu::notify_out_observers(u8 port)
+void Cpu::notify_out_observers(const u8 port) const
 {
     for (OutObserver* observer : m_out_observers) {
         observer->out_changed(port);
     }
 }
 
-void Cpu::notify_in_observers(u16 port)
+void Cpu::notify_in_observers(const u16 port) const
 {
     for (InObserver* observer : m_in_observers) {
         observer->in_requested(port);
@@ -2888,7 +2889,7 @@ void Cpu::r_tick()
     m_r_reg = m_r_reg == INT8_MAX ? 0 : m_r_reg + 1;
 }
 
-void Cpu::print_debug(u8 opcode)
+void Cpu::print_debug(u8 opcode) const
 {
     if (false) {
         std::cout << "pc=" << hexify(static_cast<u16>(m_pc - 1)) // -1 because fetching opcode increments by one

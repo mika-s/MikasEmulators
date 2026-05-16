@@ -25,7 +25,7 @@ void Flags::reset()
     clear_carry_flag();
 }
 
-u8 Flags::to_u8() const
+auto Flags::to_u8() const -> u8
 {
     const u8 z = (m_zero ? 1 : 0) << s_zero_flag_bit_number;
     const u8 n = (m_add_subtract ? 1 : 0) << s_add_subtract_bit_number;
@@ -35,7 +35,7 @@ u8 Flags::to_u8() const
     return z | n | h | c | 0b0000;
 }
 
-void Flags::from_u8(u8 value)
+void Flags::from_u8(const u8 value)
 {
     m_zero = is_bit_set(value, s_zero_flag_bit_number);
     m_add_subtract = is_bit_set(value, s_add_subtract_bit_number);
@@ -43,7 +43,7 @@ void Flags::from_u8(u8 value)
     m_carry = is_bit_set(value, s_carry_flag_bit_number);
 }
 
-void Flags::handle_carry_flag(u8 previous, int to_add, bool cf)
+void Flags::handle_carry_flag(const u8 previous, const int to_add, const bool cf)
 {
     if (carried_out_of(s_msb, previous, to_add, cf)) {
         set_carry_flag();
@@ -52,7 +52,7 @@ void Flags::handle_carry_flag(u8 previous, int to_add, bool cf)
     }
 }
 
-void Flags::handle_carry_flag(u16 previous, u16 to_add)
+void Flags::handle_carry_flag(const u16 previous, const u16 to_add)
 {
     if (((previous + to_add) >> 16) & 1) { // TODO: Change to carried_out_of bit 15
         set_carry_flag();
@@ -61,7 +61,7 @@ void Flags::handle_carry_flag(u16 previous, u16 to_add)
     }
 }
 
-void Flags::handle_borrow_flag(u8 previous, int to_subtract, bool cf)
+void Flags::handle_borrow_flag(const u8 previous, const int to_subtract, const bool cf)
 {
     if (borrow_from(s_msb + 1, previous, to_subtract, cf)) {
         set_carry_flag();
@@ -70,7 +70,7 @@ void Flags::handle_borrow_flag(u8 previous, int to_subtract, bool cf)
     }
 }
 
-void Flags::handle_borrow_flag(u16 previous, int to_subtract, bool cf)
+void Flags::handle_borrow_flag(const u16 previous, const int to_subtract, const bool cf)
 {
     if (borrow_from(s_msb_u16 + 1, previous, to_subtract, cf)) {
         set_carry_flag();
@@ -79,7 +79,7 @@ void Flags::handle_borrow_flag(u16 previous, int to_subtract, bool cf)
     }
 }
 
-void Flags::handle_half_carry_flag(u8 previous, u8 to_add, bool cf)
+void Flags::handle_half_carry_flag(const u8 previous, const u8 to_add, const bool cf)
 {
     if (carried_out_of(s_msb_first_nibble, previous, to_add, cf)) {
         set_half_carry_flag();
@@ -88,7 +88,7 @@ void Flags::handle_half_carry_flag(u8 previous, u8 to_add, bool cf)
     }
 }
 
-void Flags::handle_half_carry_flag(u16 previous, u16 to_add, bool cf)
+void Flags::handle_half_carry_flag(const u16 previous, const u16 to_add, const bool cf)
 {
     if (carried_out_of(s_msb_first_nibble_u16, previous, to_add, cf)) {
         set_half_carry_flag();
@@ -97,7 +97,7 @@ void Flags::handle_half_carry_flag(u16 previous, u16 to_add, bool cf)
     }
 }
 
-void Flags::handle_half_borrow_flag(u8 previous, u8 to_subtract, bool cf)
+void Flags::handle_half_borrow_flag(const u8 previous, const u8 to_subtract, const bool cf)
 {
     if (borrow_from(s_msb_first_nibble + 1, previous, to_subtract, cf)) {
         set_half_carry_flag();
@@ -106,7 +106,7 @@ void Flags::handle_half_borrow_flag(u8 previous, u8 to_subtract, bool cf)
     }
 }
 
-void Flags::handle_zero_flag(u8 number)
+void Flags::handle_zero_flag(const u8 number)
 {
     if (number == 0) {
         set_zero_flag();
@@ -115,7 +115,7 @@ void Flags::handle_zero_flag(u8 number)
     }
 }
 
-void Flags::handle_zero_flag(u16 number)
+void Flags::handle_zero_flag(const u16 number)
 {
     if (number == 0) {
         set_zero_flag();
@@ -134,7 +134,7 @@ void Flags::clear_zero_flag()
     m_zero = false;
 }
 
-bool Flags::is_zero_flag_set() const
+auto Flags::is_zero_flag_set() const -> bool
 {
     return m_zero;
 }
@@ -149,7 +149,7 @@ void Flags::clear_carry_flag()
     m_carry = false;
 }
 
-bool Flags::is_carry_flag_set() const
+auto Flags::is_carry_flag_set() const -> bool
 {
     return m_carry;
 }
@@ -173,7 +173,7 @@ void Flags::clear_half_carry_flag()
     m_half_carry = false;
 }
 
-bool Flags::is_half_carry_flag_set() const
+auto Flags::is_half_carry_flag_set() const -> bool
 {
     return m_half_carry;
 }
@@ -197,7 +197,7 @@ void Flags::clear_add_subtract_flag()
     m_add_subtract = false;
 }
 
-bool Flags::is_add_subtract_flag_set() const
+auto Flags::is_add_subtract_flag_set() const -> bool
 {
     return m_add_subtract;
 }

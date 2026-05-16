@@ -19,12 +19,12 @@ using emu::util::string::hexify;
  * @param a is the <a> register
  * @param b is the value to place into <a>
  */
-void set(EmulatorMemory<Address, RawData>& memory, RawData a, RawData b)
+void set(EmulatorMemory<Address, RawData>& memory, const RawData a, const RawData b)
 {
     memory.write(Address(a.underlying()), b);
 }
 
-void print_set(std::ostream& ostream, RawData a, RawData b)
+void print_set(std::ostream& ostream, const RawData a, const RawData b)
 {
     ostream << "SET ";
 

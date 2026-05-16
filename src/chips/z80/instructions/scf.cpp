@@ -21,7 +21,7 @@ using emu::util::byte::is_bit_set;
  * @param acc_reg is the accumulator, and is used to set the X and Y flags
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void scf(Flags& flag_reg, u8 acc_reg, cyc& cycles)
+void scf(Flags& flag_reg, const u8 acc_reg, cyc& cycles)
 {
     flag_reg.set_carry_flag();
     flag_reg.clear_half_carry_flag();
@@ -50,7 +50,7 @@ void print_scf(std::ostream& ostream)
 TEST_CASE("Z80: SCF")
 {
     cyc cycles = 0;
-    u8 acc_reg = 0;
+    constexpr u8 acc_reg = 0;
 
     SUBCASE("should set the carry flag and always reset the half carry and add/subtract flags")
     {
@@ -94,7 +94,7 @@ TEST_CASE("Z80: SCF")
 
         scf(flag_reg, acc_reg, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 }

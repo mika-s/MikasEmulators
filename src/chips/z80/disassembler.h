@@ -20,7 +20,7 @@ using emu::memory::NextWord;
 
 class Disassembler {
 public:
-    Disassembler(EmulatorMemory<u16, u8>& memory, std::ostream& iostream);
+    Disassembler(EmulatorMemory<u16, u8>& memory, std::ostream& ostream);
 
     void disassemble();
 
@@ -37,12 +37,12 @@ private:
 
     void print_next_ixy_instruction(u8 ixy_opcode, std::string const& ixy_reg);
 
-    void print_next_ixy_bits_instruction(NextWord args, std::string const& ixy_reg);
+    void print_next_ixy_bits_instruction(NextWord args, std::string const& ixy_reg) const;
 
     void print_next_extd_instruction(u8 extd_opcode);
 
-    NextByte get_next_byte();
+    auto get_next_byte() -> NextByte;
 
-    NextWord get_next_word();
+    auto get_next_word() -> NextWord;
 };
 }

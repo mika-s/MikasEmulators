@@ -45,6 +45,7 @@ void pop(u8& reg1, u8& reg2, u16& sp, EmulatorMemory<u16, u8> const& memory, cyc
  * </ul>
  *
  * @param flag_reg is the flag register
+ * @param acc_reg is the accumulator, which will be mutated
  * @param sp is the stack pointer, which will be mutated
  * @param memory is the memory
  * @param cycles is the number of cycles variable, which will be mutated
@@ -66,7 +67,7 @@ void pop_af(Flags& flag_reg, u8& acc_reg, u16& sp, EmulatorMemory<u16, u8> const
  *   <li>Condition bits affected: none</li>
  * </ul>
  *
- * @param ix_reg is the IX register register, which will be mutated
+ * @param ix_iy_reg is the IX or IY register, which will be mutated
  * @param sp is the stack pointer, which will be mutated
  * @param memory is the memory
  * @param cycles is the number of cycles variable, which will be mutated
@@ -134,7 +135,7 @@ TEST_CASE("Z80: POP qq")
 
         pop(reg1, reg2, sp, memory, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 }
 
@@ -154,7 +155,7 @@ TEST_CASE("Z80: POP IX/IY")
 
         pop_ixy(ix, sp, memory, cycles);
 
-        CHECK_EQ(14, cycles);
+        CHECK_EQ(static_cast<cyc>(14), cycles);
     }
 }
 }

@@ -58,7 +58,7 @@ TEST_CASE("8080: RAL")
 
             ral(acc_reg, flag_reg, cycles);
 
-            CHECK_EQ(static_cast<u8>(acc_reg_counter << 1u), acc_reg);
+            CHECK_EQ(static_cast<u8>(acc_reg_counter << 1U), acc_reg);
         }
     }
 
@@ -92,7 +92,7 @@ TEST_CASE("8080: RAL")
 
         ral(acc_reg, flag_reg, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 }

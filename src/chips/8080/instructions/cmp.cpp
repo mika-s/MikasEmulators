@@ -7,7 +7,7 @@
 
 namespace emu::i8080 {
 
-void cmp(u8& acc_reg, u8 arg, Flags& flag_reg)
+void cmp(const u8& acc_reg, const u8 arg, Flags& flag_reg)
 {
     const u8 previous = acc_reg;
     const u8 new_acc_reg = previous - arg;
@@ -33,7 +33,7 @@ void cmp(u8& acc_reg, u8 arg, Flags& flag_reg)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void cmp_r(u8& acc_reg, u8 reg, Flags& flag_reg, cyc& cycles)
+void cmp_r(u8& acc_reg, const u8 reg, Flags& flag_reg, cyc& cycles)
 {
     cmp(acc_reg, reg, flag_reg);
 
@@ -54,7 +54,7 @@ void cmp_r(u8& acc_reg, u8 reg, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void cmp_m(u8& acc_reg, u8 value_in_memory, Flags& flag_reg, cyc& cycles)
+void cmp_m(u8& acc_reg, const u8 value_in_memory, Flags& flag_reg, cyc& cycles)
 {
     cmp(acc_reg, value_in_memory, flag_reg);
 
@@ -90,21 +90,21 @@ TEST_CASE("8080: CMP")
     SUBCASE("should use 4 cycles if memory is not involved")
     {
         cycles = 0;
-        u8 value = 0;
+        constexpr u8 value = 0;
 
         cmp_r(acc_reg, value, flag_reg, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 
     SUBCASE("should use 7 cycles if memory is involved")
     {
         cycles = 0;
-        u8 value = 0;
+        constexpr u8 value = 0;
 
         cmp_m(acc_reg, value, flag_reg, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 }
 }

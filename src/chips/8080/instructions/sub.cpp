@@ -10,7 +10,7 @@
 
 namespace emu::i8080 {
 
-void sub(u8& acc_reg, u8 value, Flags& flag_reg)
+void sub(u8& acc_reg, const u8 value, Flags& flag_reg)
 {
     sub_from_register(acc_reg, value, false, flag_reg);
 }
@@ -29,7 +29,7 @@ void sub(u8& acc_reg, u8 value, Flags& flag_reg)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void sub_r(u8& acc_reg, u8 reg, Flags& flag_reg, cyc& cycles)
+void sub_r(u8& acc_reg, const u8 reg, Flags& flag_reg, cyc& cycles)
 {
     sub(acc_reg, reg, flag_reg);
 
@@ -50,7 +50,7 @@ void sub_r(u8& acc_reg, u8 reg, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void sub_m(u8& acc_reg, u8 value_in_memory, Flags& flag_reg, cyc& cycles)
+void sub_m(u8& acc_reg, const u8 value_in_memory, Flags& flag_reg, cyc& cycles)
 {
     sub(acc_reg, value_in_memory, flag_reg);
 
@@ -169,7 +169,7 @@ TEST_CASE("8080: SUB")
 
         sub_r(acc_reg, 0x1, flag_reg, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 
     SUBCASE("should use 7 cycles if memory is involved")
@@ -178,12 +178,12 @@ TEST_CASE("8080: SUB")
         Flags flag_reg;
         EmulatorMemory<u16, u8> memory;
         memory.add({ 0x10 });
-        u16 address = 0x0000;
+        constexpr u16 address = 0x0000;
         acc_reg = 0xe;
 
         sub_m(acc_reg, memory.read(address), flag_reg, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 }
 }

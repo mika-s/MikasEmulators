@@ -63,7 +63,7 @@ TEST_CASE("8080: CMC")
 
         cmc(flag_reg, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 }

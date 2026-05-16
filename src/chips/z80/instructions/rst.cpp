@@ -11,7 +11,7 @@ namespace emu::z80 {
 using emu::util::byte::high_byte;
 using emu::util::byte::low_byte;
 
-void rst(u16& pc, u16 new_pc, u16& sp, EmulatorMemory<u16, u8>& memory, cyc& cycles)
+void rst(u16& pc, const u16 new_pc, u16& sp, EmulatorMemory<u16, u8>& memory, cyc& cycles)
 {
     execute_call(pc, sp, memory, low_byte(new_pc), high_byte(new_pc));
 
@@ -187,7 +187,7 @@ void nmi(u16& pc, u16& sp, EmulatorMemory<u16, u8>& memory, cyc& cycles)
     rst(pc, 0x66, sp, memory, cycles);
 }
 
-void print_rst(std::ostream& ostream, int number)
+void print_rst(std::ostream& ostream, const int number)
 {
     ostream << "RST "
             << number;
@@ -200,7 +200,7 @@ TEST_CASE("Z80: RST")
         cyc cycles = 0;
 
         u16 pc = 0xac12;
-        u16 expected_new_pc = 0x00;
+        constexpr u16 expected_new_pc = 0x00;
         u16 sp = 0x03;
         EmulatorMemory<u16, u8> memory;
         memory.add(std::vector<u8> { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05 });
@@ -217,7 +217,7 @@ TEST_CASE("Z80: RST")
         cyc cycles = 0;
 
         u16 pc = 0xac12;
-        u16 expected_new_pc = 0x08;
+        constexpr u16 expected_new_pc = 0x08;
         u16 sp = 0x03;
         EmulatorMemory<u16, u8> memory;
         memory.add(std::vector<u8> { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05 });
@@ -234,7 +234,7 @@ TEST_CASE("Z80: RST")
         cyc cycles = 0;
 
         u16 pc = 0xac12;
-        u16 expected_new_pc = 0x10;
+        constexpr u16 expected_new_pc = 0x10;
         u16 sp = 0x03;
         EmulatorMemory<u16, u8> memory;
         memory.add(std::vector<u8> { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05 });
@@ -251,7 +251,7 @@ TEST_CASE("Z80: RST")
         cyc cycles = 0;
 
         u16 pc = 0xac12;
-        u16 expected_new_pc = 0x18;
+        constexpr u16 expected_new_pc = 0x18;
         u16 sp = 0x03;
         EmulatorMemory<u16, u8> memory;
         memory.add(std::vector<u8> { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05 });
@@ -268,7 +268,7 @@ TEST_CASE("Z80: RST")
         cyc cycles = 0;
 
         u16 pc = 0xac12;
-        u16 expected_new_pc = 0x20;
+        constexpr u16 expected_new_pc = 0x20;
         u16 sp = 0x03;
         EmulatorMemory<u16, u8> memory;
         memory.add(std::vector<u8> { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05 });
@@ -285,7 +285,7 @@ TEST_CASE("Z80: RST")
         cyc cycles = 0;
 
         u16 pc = 0xac12;
-        u16 expected_new_pc = 0x28;
+        constexpr u16 expected_new_pc = 0x28;
         u16 sp = 0x03;
         EmulatorMemory<u16, u8> memory;
         memory.add(std::vector<u8> { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05 });
@@ -302,7 +302,7 @@ TEST_CASE("Z80: RST")
         cyc cycles = 0;
 
         u16 pc = 0xac12;
-        u16 expected_new_pc = 0x30;
+        constexpr u16 expected_new_pc = 0x30;
         u16 sp = 0x03;
         EmulatorMemory<u16, u8> memory;
         memory.add(std::vector<u8> { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05 });
@@ -319,7 +319,7 @@ TEST_CASE("Z80: RST")
         cyc cycles = 0;
 
         u16 pc = 0xac12;
-        u16 expected_new_pc = 0x38;
+        constexpr u16 expected_new_pc = 0x38;
         u16 sp = 0x03;
         EmulatorMemory<u16, u8> memory;
         memory.add(std::vector<u8> { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05 });
@@ -342,7 +342,7 @@ TEST_CASE("Z80: RST")
 
         rst_0(pc, sp, memory, cycles);
 
-        CHECK_EQ(11, cycles);
+        CHECK_EQ(static_cast<cyc>(11), cycles);
     }
 }
 }

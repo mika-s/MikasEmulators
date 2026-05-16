@@ -14,7 +14,7 @@ using emu::memory::EmulatorMemory;
 using emu::memory::NextByte;
 using emu::util::string::hexify_wo_0x;
 
-void and_(u8& acc_reg, u8 value, Flags& flag_reg)
+void and_(u8& acc_reg, const u8 value, Flags& flag_reg)
 {
     acc_reg &= value;
 
@@ -45,7 +45,7 @@ void and_(u8& acc_reg, u8 value, Flags& flag_reg)
  * @param flag_reg is the flag register
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void and_r(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
+void and_r(u8& acc_reg, const u8 value, Flags& flag_reg, cyc& cycles)
 {
     and_(acc_reg, value, flag_reg);
 
@@ -95,7 +95,7 @@ void and_n(u8& acc_reg, NextByte const& args, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void and_MHL(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
+void and_MHL(u8& acc_reg, const u8 value, Flags& flag_reg, cyc& cycles)
 {
     and_(acc_reg, value, flag_reg);
 
@@ -118,11 +118,11 @@ void and_MHL(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void and_MixyPd(u8& acc_reg, u16 ixy_reg, NextByte const& args, EmulatorMemory<u16, u8>& memory, Flags& flag_reg,
+void and_MixyPd(u8& acc_reg, const u16 ixy_reg, NextByte const& args, EmulatorMemory<u16, u8>& memory, Flags& flag_reg,
     cyc& cycles)
 {
     const u16 address = ixy_reg + static_cast<i8>(args.farg);
-    u8 value = memory.read(address);
+    u8 const value = memory.read(address);
 
     and_(acc_reg, value, flag_reg);
 
@@ -151,7 +151,7 @@ void and_MixyPd(u8& acc_reg, u16 ixy_reg, NextByte const& args, EmulatorMemory<u
  * @param flag_reg is the flag register
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void and_r_undoc(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
+void and_r_undoc(u8& acc_reg, const u8 value, Flags& flag_reg, cyc& cycles)
 {
     and_(acc_reg, value, flag_reg);
 
@@ -168,11 +168,11 @@ void and_r_undoc(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
  * </ul>
  *
  * @param acc_reg is the accumulator register, which will be mutated
- * @param value contains the argument that should be anded with the accumulator
+ * @param ixy_reg_h_or_l contains the value of the IX or IY register, that should be anded with the accumulator
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void and_ixy_h_or_l(u8& acc_reg, u8 ixy_reg_h_or_l, Flags& flag_reg, cyc& cycles)
+void and_ixy_h_or_l(u8& acc_reg, const u8 ixy_reg_h_or_l, Flags& flag_reg, cyc& cycles)
 {
     and_(acc_reg, ixy_reg_h_or_l, flag_reg);
 
@@ -240,7 +240,7 @@ TEST_CASE("Z80: AND")
     {
         Flags flag_reg;
         acc_reg = 0x3;
-        u8 value = 0xff;
+        constexpr u8 value = 0xff;
 
         and_(acc_reg, value, flag_reg);
 
@@ -251,7 +251,7 @@ TEST_CASE("Z80: AND")
     {
         Flags flag_reg;
         acc_reg = 0x2;
-        u8 value = 0xff;
+        constexpr u8 value = 0xff;
 
         and_(acc_reg, value, flag_reg);
 
@@ -265,12 +265,12 @@ TEST_CASE("Z80: AND r")
     {
         cyc cycles = 0;
         u8 acc_reg = 0xe;
-        u8 value = 0;
+        constexpr u8 value = 0;
         Flags flag_reg;
 
         and_r(acc_reg, value, flag_reg, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 
@@ -280,12 +280,12 @@ TEST_CASE("Z80: AND n")
     {
         cyc cycles = 0;
         u8 acc_reg = 0xe;
-        NextByte args = { 0 };
+        NextByte args = {};
         Flags flag_reg;
 
         and_n(acc_reg, args, flag_reg, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 }
 
@@ -295,12 +295,12 @@ TEST_CASE("Z80: AND [HL]")
     {
         cyc cycles = 0;
         u8 acc_reg = 0xe;
-        u8 value = 0;
+        constexpr u8 value = 0;
         Flags flag_reg;
 
         and_MHL(acc_reg, value, flag_reg, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 }
 }

@@ -20,7 +20,7 @@ using emu::util::string::hexify;
  * @param a is the value to check for nonzero
  * @param b is the address to jump to
  */
-void jt(Address& pc, EmulatorMemory<Address, RawData> const& memory, RawData a, RawData b)
+void jt(Address& pc, EmulatorMemory<Address, RawData> const& memory, RawData a, const RawData b)
 {
     const RawData real_a = a >= RawData(32768) ? memory.read(Address(a)) : a;
 

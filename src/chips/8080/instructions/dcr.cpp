@@ -54,7 +54,7 @@ void dcr_r(u8& reg, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void dcr_m(EmulatorMemory<u16, u8>& memory, u16 address, Flags& flag_reg, cyc& cycles)
+void dcr_m(EmulatorMemory<u16, u8>& memory, const u16 address, Flags& flag_reg, cyc& cycles)
 {
     u8 value = memory.read(address);
 
@@ -166,7 +166,7 @@ TEST_CASE("8080: DCR")
 
         dcr_r(reg, flag_reg, cycles);
 
-        CHECK_EQ(5, cycles);
+        CHECK_EQ(static_cast<cyc>(5), cycles);
     }
 
     SUBCASE("should use 10 cycles when memory is involved")
@@ -175,11 +175,11 @@ TEST_CASE("8080: DCR")
         Flags flag_reg;
         EmulatorMemory<u16, u8> memory;
         memory.add({ 0x10 });
-        u16 address = 0x0000;
+        constexpr u16 address = 0x0000;
 
         dcr_m(memory, address, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 }
 }

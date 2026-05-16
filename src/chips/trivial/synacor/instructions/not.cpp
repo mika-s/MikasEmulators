@@ -17,14 +17,14 @@ using emu::util::string::hexify;
  *
  * @param memory is the memory, which will be mutated
  * @param a is the address of the register to store the not result into
- * @param b is the first operand to not
- * @param c is the second operand to not
+ * @param b is the value to not
  */
-void not_(EmulatorMemory<Address, RawData>& memory, RawData a, RawData b)
+void not_(EmulatorMemory<Address, RawData>& memory, const RawData a, const RawData b)
 {
     memory.write(
         Address(a.underlying()),
-        RawData(Data(~b.underlying()).underlying()));
+        RawData(Data(~b.underlying()).underlying())
+    );
 }
 
 void print_not(std::ostream& ostream, RawData a, RawData b)

@@ -25,7 +25,7 @@ using emu::memory::EmulatorMemory;
  * @param memory is the memory, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void push(u8 reg1, u8 reg2, u16& sp, EmulatorMemory<u16, u8>& memory, cyc& cycles)
+void push(const u8 reg1, const u8 reg2, u16& sp, EmulatorMemory<u16, u8>& memory, cyc& cycles)
 {
     memory.write(--sp, reg1);
     memory.write(--sp, reg2);
@@ -48,7 +48,7 @@ void push(u8 reg1, u8 reg2, u16& sp, EmulatorMemory<u16, u8>& memory, cyc& cycle
  * @param memory is the memory, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void push_psw(Flags const& flag_reg, u8 acc_reg, u16& sp, EmulatorMemory<u16, u8>& memory, cyc& cycles)
+void push_psw(Flags const& flag_reg, const u8 acc_reg, u16& sp, EmulatorMemory<u16, u8>& memory, cyc& cycles)
 {
     memory.write(--sp, acc_reg);
     memory.write(--sp, flag_reg.to_u8());
@@ -68,8 +68,8 @@ TEST_CASE("8080: PUSH")
 
     SUBCASE("should push registers onto the stack")
     {
-        u8 reg1 = 0xaa;
-        u8 reg2 = 0xbb;
+        constexpr u8 reg1 = 0xaa;
+        constexpr u8 reg2 = 0xbb;
         u16 sp = 0x03;
 
         EmulatorMemory<u16, u8> memory;
@@ -90,7 +90,7 @@ TEST_CASE("8080: PUSH")
         flag_reg.set_sign_flag();
         flag_reg.set_parity_flag();
         flag_reg.set_aux_carry_flag();
-        u8 acc_reg = 0xbb;
+        constexpr u8 acc_reg = 0xbb;
         u16 sp = 0x03;
 
         EmulatorMemory<u16, u8> memory;
@@ -107,8 +107,8 @@ TEST_CASE("8080: PUSH")
     {
         cycles = 0;
 
-        u8 reg1 = 0;
-        u8 reg2 = 0;
+        constexpr u8 reg1 = 0;
+        constexpr u8 reg2 = 0;
         u16 sp = 0x03;
 
         EmulatorMemory<u16, u8> memory;
@@ -116,7 +116,7 @@ TEST_CASE("8080: PUSH")
 
         push(reg1, reg2, sp, memory, cycles);
 
-        CHECK_EQ(11, cycles);
+        CHECK_EQ(static_cast<cyc>(11), cycles);
     }
 }
 }

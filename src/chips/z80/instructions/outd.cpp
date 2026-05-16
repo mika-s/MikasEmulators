@@ -31,8 +31,8 @@ using emu::util::byte::to_u16;
  * @param io is the IO addresses
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void outd(u8& b_reg, u8 c_reg, u8& h_reg, u8& l_reg, EmulatorMemory<u16, u8>& memory, Flags& flag_reg,
-    std::vector<u8> io, cyc& cycles)
+void outd(u8& b_reg, const u8 c_reg, u8& h_reg, u8& l_reg, EmulatorMemory<u16, u8>& memory, Flags& flag_reg,
+    const std::vector<u8> &io, cyc& cycles)
 {
     u16 hl = to_u16(h_reg, l_reg);
 
@@ -70,7 +70,7 @@ TEST_CASE("Z80: OUTD")
     SUBCASE("should store IO in HL, decrement HL, decrement B and set correct flags")
     {
         cycles = 0;
-        u16 init_hl = 10;
+        constexpr u16 init_hl = 10;
         h_reg = high_byte(init_hl);
         l_reg = low_byte(init_hl);
         b_reg = 2;
@@ -107,7 +107,7 @@ TEST_CASE("Z80: OUTD")
 
         outd(b_reg, c_reg, h_reg, l_reg, memory, flag_reg, io, cycles);
 
-        CHECK_EQ(16, cycles);
+        CHECK_EQ(static_cast<cyc>(16), cycles);
     }
 }
 }

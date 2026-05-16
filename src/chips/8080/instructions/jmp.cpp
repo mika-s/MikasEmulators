@@ -58,7 +58,7 @@ TEST_CASE("8080: JMP")
 
         jmp(pc, args, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 }
 }

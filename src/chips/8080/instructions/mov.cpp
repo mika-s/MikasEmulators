@@ -9,7 +9,7 @@ namespace emu::i8080 {
 
 using emu::memory::EmulatorMemory;
 
-void mov(u8& to, u8 value)
+void mov(u8& to, const u8 value)
 {
     to = value;
 }
@@ -24,10 +24,10 @@ void mov(u8& to, u8 value)
  * </ul>
  *
  * @param to is the register or memory location to move value to
- * @param reg is the value to move into to
+ * @param value is the value to move into to
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void mov_r_r(u8& to, u8 value, cyc& cycles)
+void mov_r_r(u8& to, const u8 value, cyc& cycles)
 {
     mov(to, value);
 
@@ -47,7 +47,7 @@ void mov_r_r(u8& to, u8 value, cyc& cycles)
  * @param value_in_memory is the value to move into to
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void mov_r_m(u8& to, u8 value_in_memory, cyc& cycles)
+void mov_r_m(u8& to, const u8 value_in_memory, cyc& cycles)
 {
     mov(to, value_in_memory);
 
@@ -68,7 +68,7 @@ void mov_r_m(u8& to, u8 value_in_memory, cyc& cycles)
  * @param new_value is the value to move into to
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void mov_m_r(EmulatorMemory<u16, u8>& memory, u16 address, u8 new_value, cyc& cycles)
+void mov_m_r(EmulatorMemory<u16, u8>& memory, const u16 address, const u8 new_value, cyc& cycles)
 {
     u8 value_in_memory = memory.read(address);
 
@@ -111,7 +111,7 @@ TEST_CASE("8080: MOV")
     {
         EmulatorMemory<u16, u8> memory;
         memory.add({ 0x10 });
-        u16 address = 0x0000;
+        constexpr u16 address = 0x0000;
         u8 value = 0;
 
         mov_m_r(memory, address, value, cycles);
@@ -130,11 +130,11 @@ TEST_CASE("8080: MOV")
     {
         cycles = 0;
         u8 reg1 = 0;
-        u8 reg2 = 0x11;
+        constexpr u8 reg2 = 0x11;
 
         mov_r_r(reg1, reg2, cycles);
 
-        CHECK_EQ(5, cycles);
+        CHECK_EQ(static_cast<cyc>(5), cycles);
     }
 
     SUBCASE("should use 7 cycles if memory is involved")
@@ -142,12 +142,12 @@ TEST_CASE("8080: MOV")
         cycles = 0;
         EmulatorMemory<u16, u8> memory;
         memory.add({ 0x10 });
-        u16 address = 0x0000;
-        u8 value = 0x20;
+        constexpr u16 address = 0x0000;
+        constexpr u8 value = 0x20;
 
         mov_m_r(memory, address, value, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 }
 }

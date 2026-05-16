@@ -22,7 +22,6 @@ using emu::util::byte::to_u16;
  *   <li>Condition bits affected: half carry, parity/overflow, add/subtract</li>
  * </ul>
  *
- * @param pc is the program counter, which will be mutated
  * @param b_reg is the B register, which will be mutated
  * @param c_reg is the C register, which will be mutated
  * @param d_reg is the D register, which will be mutated
@@ -30,10 +29,11 @@ using emu::util::byte::to_u16;
  * @param h_reg is the H register, which will be mutated
  * @param l_reg is the L register, which will be mutated
  * @param acc_reg is the accumulator, for use in setting XF and YF
+ * @param memory
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void ldi(u8& b_reg, u8& c_reg, u8& d_reg, u8& e_reg, u8& h_reg, u8& l_reg, u8 acc_reg,
+void ldi(u8& b_reg, u8& c_reg, u8& d_reg, u8& e_reg, u8& h_reg, u8& l_reg, const u8 acc_reg,
     EmulatorMemory<u16, u8>& memory, Flags& flag_reg, cyc& cycles)
 {
     u16 de = to_u16(d_reg, e_reg);

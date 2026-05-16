@@ -65,7 +65,7 @@ TEST_CASE("8080: XCHG")
 
         xchg(h_reg, l_reg, d_reg, e_reg, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 }

@@ -54,7 +54,7 @@ void swap(u8& reg, [[maybe_unused]] Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void swap_MHL(EmulatorMemory<u16, u8>& memory, u16 address, [[maybe_unused]] Flags& flag_reg, cyc& cycles)
+void swap_MHL(EmulatorMemory<u16, u8>& memory, const u16 address, [[maybe_unused]] Flags& flag_reg, cyc& cycles)
 {
     u8 value = memory.read(address);
 

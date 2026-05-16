@@ -119,7 +119,7 @@ void rrc_MHL(EmulatorMemory<u16, u8>& memory, u16 address, Flags& flag_reg, cyc&
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void rrc_MixyPd(u16 ixy_reg, u8 d, EmulatorMemory<u16, u8>& memory, Flags& flag_reg, cyc& cycles)
+void rrc_MixyPd(const u16 ixy_reg, const u8 d, EmulatorMemory<u16, u8>& memory, Flags& flag_reg, cyc& cycles)
 {
     const u16 address = ixy_reg + static_cast<i8>(d);
     u8 value = memory.read(address);
@@ -151,7 +151,7 @@ void rrc_MixyPd(u16 ixy_reg, u8 d, EmulatorMemory<u16, u8>& memory, Flags& flag_
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void rrc_MixyPd_r(u8& reg, u16 ixy_reg, u8 d, EmulatorMemory<u16, u8>& memory, Flags& flag_reg, cyc& cycles)
+void rrc_MixyPd_r(u8& reg, const u16 ixy_reg, const u8 d, EmulatorMemory<u16, u8>& memory, Flags& flag_reg, cyc& cycles)
 {
     const u16 address = ixy_reg + static_cast<i8>(d);
     u8 value = memory.read(address);
@@ -207,7 +207,7 @@ TEST_CASE("Z80: RRCA")
 
             rrca(acc_reg, flag_reg, cycles);
 
-            u8 expected = acc_reg_counter >> 1u;
+            u8 expected = acc_reg_counter >> 1U;
             if (cy) {
                 set_bit(expected, msb);
             }
@@ -285,7 +285,7 @@ TEST_CASE("Z80: RRCA")
 
         rrca(acc_reg, flag_reg, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 }

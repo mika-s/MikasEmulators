@@ -215,22 +215,22 @@ void Cpu::next_instruction()
     }
 }
 
-RawData Cpu::get_next_value()
+auto Cpu::get_next_value() -> RawData
 {
     return m_memory.read(m_pc++);
 }
 
-EmulatorMemory<Address, RawData>& Cpu::memory()
+auto Cpu::memory() -> EmulatorMemory<Address, RawData>&
 {
     return m_memory;
 }
 
-Address Cpu::pc() const
+auto Cpu::pc() const -> Address
 {
     return m_pc;
 }
 
-RawData Cpu::r0() const
+auto Cpu::r0() const -> RawData
 {
     return m_memory.read(Address(32768));
 }
@@ -240,21 +240,21 @@ void Cpu::input([[maybe_unused]] Data value)
     //    m_r0 = value;
 }
 
-void Cpu::notify_out_observers(Data character)
+void Cpu::notify_out_observers(const Data character)
 {
     for (OutObserver* observer : m_out_observers) {
         observer->out_changed(character);
     }
 }
 
-void Cpu::notify_in_observers()
+void Cpu::notify_in_observers() const
 {
     for (InObserver* observer : m_in_observers) {
         observer->in_requested();
     }
 }
 
-void Cpu::print_debug([[maybe_unused]] Data opcode)
+void Cpu::print_debug([[maybe_unused]] Data opcode) const
 {
     if (false) {
         std::cout << "pc=" << m_pc

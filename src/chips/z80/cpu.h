@@ -33,9 +33,9 @@ public:
 
     ~Cpu();
 
-    [[nodiscard]] bool can_run_next_instruction() const;
+    [[nodiscard]] auto can_run_next_instruction() const -> bool;
 
-    cyc next_instruction();
+    auto next_instruction() -> cyc;
 
     void reset_state();
 
@@ -43,7 +43,7 @@ public:
 
     void stop();
 
-    void set_state_manually(ManualState new_state);
+    void set_state_manually(const ManualState &new_state);
 
     void add_out_observer(OutObserver& observer);
 
@@ -53,61 +53,61 @@ public:
 
     void remove_in_observer(InObserver* observer);
 
-    EmulatorMemory<u16, u8>& memory();
+    auto memory() const -> EmulatorMemory<u16, u8>&;
 
-    [[nodiscard]] u8 a() const;
+    [[nodiscard]] auto a() const -> u8;
 
-    [[nodiscard]] u8 a_p() const;
+    [[nodiscard]] auto a_p() const -> u8;
 
-    [[nodiscard]] u8 b() const;
+    [[nodiscard]] auto b() const -> u8;
 
-    [[nodiscard]] u8 b_p() const;
+    [[nodiscard]] auto b_p() const -> u8;
 
-    [[nodiscard]] u8 c() const;
+    [[nodiscard]] auto c() const -> u8;
 
-    [[nodiscard]] u8 c_p() const;
+    [[nodiscard]] auto c_p() const -> u8;
 
-    [[nodiscard]] u8 d() const;
+    [[nodiscard]] auto d() const -> u8;
 
-    [[nodiscard]] u8 d_p() const;
+    [[nodiscard]] auto d_p() const -> u8;
 
-    [[nodiscard]] u8 e() const;
+    [[nodiscard]] auto e() const -> u8;
 
-    [[nodiscard]] u8 e_p() const;
+    [[nodiscard]] auto e_p() const -> u8;
 
-    [[nodiscard]] u8 h() const;
+    [[nodiscard]] auto h() const -> u8;
 
-    [[nodiscard]] u8 h_p() const;
+    [[nodiscard]] auto h_p() const -> u8;
 
-    [[nodiscard]] u8 l() const;
+    [[nodiscard]] auto l() const -> u8;
 
-    [[nodiscard]] u8 l_p() const;
+    [[nodiscard]] auto l_p() const -> u8;
 
-    [[nodiscard]] u8 f() const;
+    [[nodiscard]] auto f() const -> u8;
 
-    [[nodiscard]] u8 f_p() const;
+    [[nodiscard]] auto f_p() const -> u8;
 
-    [[nodiscard]] u16 ix() const;
+    [[nodiscard]] auto ix() const -> u16;
 
-    [[nodiscard]] u16 iy() const;
+    [[nodiscard]] auto iy() const -> u16;
 
-    [[nodiscard]] u8 i() const;
+    [[nodiscard]] auto i() const -> u8;
 
-    [[nodiscard]] u8 r() const;
+    [[nodiscard]] auto r() const -> u8;
 
-    [[nodiscard]] u16 pc() const;
+    [[nodiscard]] auto pc() const -> u16;
 
-    [[nodiscard]] u16 sp() const;
+    [[nodiscard]] auto sp() const -> u16;
 
-    [[nodiscard]] bool is_inta() const;
+    [[nodiscard]] auto is_inta() const -> bool;
 
-    [[nodiscard]] bool is_interrupted() const;
+    [[nodiscard]] auto is_interrupted() const -> bool;
 
-    [[nodiscard]] bool iff1() const;
+    [[nodiscard]] auto iff1() const -> bool;
 
-    [[nodiscard]] bool iff2() const;
+    [[nodiscard]] auto iff2() const -> bool;
 
-    [[nodiscard]] InterruptMode interrupt_mode() const;
+    [[nodiscard]] auto interrupt_mode() const -> InterruptMode;
 
     void interrupt(u8 supplied_instruction_from_interruptor);
 
@@ -165,30 +165,30 @@ private:
 
     void next_ixy_instruction(u8 ixy_opcode, u16& ixy_reg, cyc& cycles);
 
-    void next_ixy_bits_instruction(NextWord args, u16& ixy_reg, cyc& cycles);
+    void next_ixy_bits_instruction(NextWord args, const u16& ixy_reg, cyc& cycles);
 
     void next_extd_instruction(u8 extd_opcode, cyc& cycles);
 
-    cyc handle_nonmaskable_interrupt(cyc cycles);
+    auto handle_nonmaskable_interrupt(cyc cycles) -> cyc;
 
     void nonmaskable_interrupt_finished();
 
-    cyc handle_maskable_interrupt_0(cyc cycles);
+    auto handle_maskable_interrupt_0(cyc cycles) -> cyc;
 
-    cyc handle_maskable_interrupt_1_2(cyc cycles);
+    auto handle_maskable_interrupt_1_2(cyc cycles) -> cyc;
 
-    NextByte get_next_byte();
+    auto get_next_byte() -> NextByte;
 
-    NextWord get_next_word();
+    auto get_next_word() -> NextWord;
 
-    void notify_out_observers(u8 port);
+    void notify_out_observers(u8 port) const;
 
-    void notify_in_observers(u16 port);
+    void notify_in_observers(u16 port) const;
 
-    [[nodiscard]] u16 address_in_HL() const;
+    [[nodiscard]] auto address_in_HL() const -> u16;
 
     void r_tick();
 
-    void print_debug(u8 opcode);
+    void print_debug(u8 opcode) const;
 };
 }

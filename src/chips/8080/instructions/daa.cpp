@@ -132,7 +132,7 @@ TEST_CASE("8080: DAA")
 
         daa(acc_reg, flag_reg, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 }

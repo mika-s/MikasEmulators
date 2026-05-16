@@ -48,7 +48,7 @@ void sll(u8& value, Flags& flag_reg)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void sll_MixyPd(u16 ixy_reg, u8 d, EmulatorMemory<u16, u8>& memory, Flags& flag_reg, cyc& cycles)
+void sll_MixyPd(const u16 ixy_reg, const u8 d, EmulatorMemory<u16, u8>& memory, Flags& flag_reg, cyc& cycles)
 {
     const u16 address = ixy_reg + static_cast<i8>(d);
     u8 value = memory.read(address);
@@ -91,11 +91,12 @@ void sll_r_undoc(u8& reg, Flags& flag_reg, cyc& cycles)
  *   <li>Condition bits affected: carry, half carry, zero, sign, parity/overflow, add/subtract</li>
  * </ul>
  *
- * @param value_in_hl is the value in memory at HL's address, which will be mutated
+ * @param memory is the memory, which will be mutated
+ * @param address is the address in HL
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void sll_MHL_undoc(EmulatorMemory<u16, u8>& memory, u16 address, Flags& flag_reg, cyc& cycles)
+void sll_MHL_undoc(EmulatorMemory<u16, u8>& memory, const u16 address, Flags& flag_reg, cyc& cycles)
 {
     u8 value = memory.read(address);
 
@@ -122,7 +123,8 @@ void sll_MHL_undoc(EmulatorMemory<u16, u8>& memory, u16 address, Flags& flag_reg
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void sll_MixyPd_r_undoc(u8& reg, u16 ixy_reg, u8 d, EmulatorMemory<u16, u8>& memory, Flags& flag_reg, cyc& cycles)
+void sll_MixyPd_r_undoc(u8& reg, const u16 ixy_reg, const u8 d, EmulatorMemory<u16, u8>& memory, Flags& flag_reg,
+    cyc& cycles)
 {
     const u16 address = ixy_reg + static_cast<i8>(d);
     u8 value = memory.read(address);

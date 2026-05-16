@@ -177,7 +177,7 @@ TEST_CASE("LR35902: RET")
 
         ret(pc, sp, memory, cycles);
 
-        CHECK_EQ(16, cycles);
+        CHECK_EQ(static_cast<cyc>(16), cycles);
     }
 }
 
@@ -220,11 +220,11 @@ TEST_CASE("LR35902: RET C")
         u16 sp = 0;
         EmulatorMemory<u16, u8> memory;
         memory.add(std::vector<u8> { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05 });
-        Flags flag_reg;
+        Flags const flag_reg;
 
         ret_c(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(8, cycles);
+        CHECK_EQ(static_cast<cyc>(8), cycles);
     }
 
     SUBCASE("should use 20 cycles when returning")
@@ -239,7 +239,7 @@ TEST_CASE("LR35902: RET C")
 
         ret_c(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(20, cycles);
+        CHECK_EQ(static_cast<cyc>(20), cycles);
     }
 }
 
@@ -284,7 +284,7 @@ TEST_CASE("LR35902: RET NC")
 
         ret_nc(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(8, cycles);
+        CHECK_EQ(static_cast<cyc>(8), cycles);
     }
 
     SUBCASE("should use 20 cycles when returning")
@@ -293,11 +293,11 @@ TEST_CASE("LR35902: RET NC")
 
         u16 pc = 0;
         u16 sp = 0;
-        Flags flag_reg;
+        Flags const flag_reg;
 
         ret_nc(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(20, cycles);
+        CHECK_EQ(static_cast<cyc>(20), cycles);
     }
 }
 
@@ -339,11 +339,11 @@ TEST_CASE("LR35902: RET Z")
         cycles = 0;
         u16 pc = 0;
         u16 sp = 0;
-        Flags flag_reg;
+        Flags const flag_reg;
 
         ret_z(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(8, cycles);
+        CHECK_EQ(static_cast<cyc>(8), cycles);
     }
 
     SUBCASE("should use 20 cycles when returning")
@@ -356,7 +356,7 @@ TEST_CASE("LR35902: RET Z")
 
         ret_z(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(20, cycles);
+        CHECK_EQ(static_cast<cyc>(20), cycles);
     }
 }
 
@@ -400,7 +400,7 @@ TEST_CASE("LR35902: RET NZ")
 
         ret_nz(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(8, cycles);
+        CHECK_EQ(static_cast<cyc>(8), cycles);
     }
 
     SUBCASE("should use 20 cycles when returning")
@@ -408,11 +408,11 @@ TEST_CASE("LR35902: RET NZ")
         cycles = 0;
         u16 pc = 0;
         u16 sp = 0;
-        Flags flag_reg;
+        Flags const flag_reg;
 
         ret_nz(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(20, cycles);
+        CHECK_EQ(static_cast<cyc>(20), cycles);
     }
 }
 }

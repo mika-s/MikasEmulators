@@ -14,7 +14,7 @@ using emu::memory::EmulatorMemory;
 
 class Disassembler {
 public:
-    Disassembler(EmulatorMemory<Address, RawData>& memory, std::ostream& iostream);
+    Disassembler(EmulatorMemory<Address, RawData>& memory, std::ostream& ostream);
 
     void disassemble();
 
@@ -27,6 +27,6 @@ private:
 
     void print_next_instruction();
 
-    RawData get_next_value();
+    auto get_next_value() -> RawData;
 };
 }

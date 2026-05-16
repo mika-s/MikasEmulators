@@ -52,7 +52,7 @@ TEST_CASE("LR35902: HALT")
 
         halt(stopped, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 }

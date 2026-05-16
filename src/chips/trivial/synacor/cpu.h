@@ -33,7 +33,7 @@ public:
 
     ~Cpu();
 
-    [[nodiscard]] bool can_run_next_instruction() const;
+    [[nodiscard]] auto can_run_next_instruction() const -> bool;
 
     void next_instruction();
 
@@ -51,11 +51,11 @@ public:
 
     void remove_in_observer(InObserver* observer);
 
-    EmulatorMemory<Address, RawData>& memory();
+    auto memory() -> EmulatorMemory<Address, RawData>&;
 
-    [[nodiscard]] Address pc() const;
+    [[nodiscard]] auto pc() const -> Address;
 
-    [[nodiscard]] RawData r0() const;
+    [[nodiscard]] auto r0() const -> RawData;
 
     void input(Data value);
 
@@ -71,12 +71,12 @@ private:
     std::vector<OutObserver*> m_out_observers;
     std::vector<InObserver*> m_in_observers;
 
-    RawData get_next_value();
+    auto get_next_value() -> RawData;
 
     void notify_out_observers(Data character);
 
-    void notify_in_observers();
+    void notify_in_observers() const;
 
-    void print_debug(Data opcode);
+    void print_debug(Data opcode) const;
 };
 }

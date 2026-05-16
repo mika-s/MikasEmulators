@@ -26,7 +26,7 @@ using emu::util::string::hexify_wo_0x;
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void cpi(u8& acc_reg, NextByte const& args, Flags& flag_reg, cyc& cycles)
+void cpi(const u8& acc_reg, NextByte const& args, Flags& flag_reg, cyc& cycles)
 {
     const u16 new_acc_reg = acc_reg - args.farg;
 
@@ -75,7 +75,7 @@ TEST_CASE("8080: CPI")
 
         cpi(acc_reg, args, flag_reg, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 }
 }

@@ -10,7 +10,7 @@ public:
 
     void reset();
 
-    [[nodiscard]] u8 to_u8() const;
+    [[nodiscard]] auto to_u8() const -> u8;
 
     void from_u8(u8 value);
 
@@ -42,21 +42,21 @@ public:
 
     void handle_xy_flags(u8 number);
 
-    static bool should_parity_flag_be_set(u8 number);
+    static auto should_parity_flag_be_set(u8 number) -> bool;
 
-    static bool should_overflow_flag_be_set(u8 previous, u8 to_add, bool cf);
+    static auto should_overflow_flag_be_set(u8 previous, u8 to_add, bool cf) -> bool;
 
     void set_zero_flag();
 
     void clear_zero_flag();
 
-    [[nodiscard]] bool is_zero_flag_set() const;
+    [[nodiscard]] auto is_zero_flag_set() const -> bool;
 
     void set_carry_flag();
 
     void clear_carry_flag();
 
-    [[nodiscard]] bool is_carry_flag_set() const;
+    [[nodiscard]] auto is_carry_flag_set() const -> bool;
 
     void toggle_carry_flag();
 
@@ -64,7 +64,7 @@ public:
 
     void clear_half_carry_flag();
 
-    [[nodiscard]] bool is_half_carry_flag_set() const;
+    [[nodiscard]] auto is_half_carry_flag_set() const -> bool;
 
     void toggle_half_carry_flag();
 
@@ -72,27 +72,27 @@ public:
 
     void clear_add_subtract_flag();
 
-    [[nodiscard]] bool is_add_subtract_flag_set() const;
+    [[nodiscard]] auto is_add_subtract_flag_set() const -> bool;
 
     void set_sign_flag();
 
     void clear_sign_flag();
 
-    [[nodiscard]] bool is_sign_flag_set() const;
+    [[nodiscard]] auto is_sign_flag_set() const -> bool;
 
     void set_parity_overflow_flag();
 
     void clear_parity_overflow_flag();
 
-    [[nodiscard]] bool is_parity_overflow_flag_set() const;
+    [[nodiscard]] auto is_parity_overflow_flag_set() const -> bool;
 
-    [[nodiscard]] bool is_y_flag_set() const;
+    [[nodiscard]] auto is_y_flag_set() const -> bool;
 
     void set_y_flag();
 
     void clear_y_flag();
 
-    [[nodiscard]] bool is_x_flag_set() const;
+    [[nodiscard]] auto is_x_flag_set() const -> bool;
 
     void set_x_flag();
 

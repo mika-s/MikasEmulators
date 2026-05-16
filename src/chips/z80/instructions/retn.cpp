@@ -25,7 +25,7 @@ namespace emu::z80 {
  * @param iff2 is the second interrupt flag
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void retn(u16& pc, u16& sp, EmulatorMemory<u16, u8> const& memory, bool& iff1, bool iff2, cyc& cycles)
+void retn(u16& pc, u16& sp, EmulatorMemory<u16, u8> const& memory, bool& iff1, const bool iff2, cyc& cycles)
 {
     iff1 = iff2;
     execute_return(pc, sp, memory);

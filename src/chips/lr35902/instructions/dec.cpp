@@ -59,11 +59,12 @@ void dec_r(u8& reg, Flags& flag_reg, cyc& cycles)
  *   <li>Condition bits affected: half carry, zero, add/subtract</li>
  * </ul>
  *
- * @param value_in_hl is the value in memory at HL's address, which will be mutated
+ * @param memory is the memory, which will be mutated
+ * @param address is the address in HL
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void dec_MHL(EmulatorMemory<u16, u8>& memory, u16 address, Flags& flag_reg, cyc& cycles)
+void dec_MHL(EmulatorMemory<u16, u8>& memory, const u16 address, Flags& flag_reg, cyc& cycles)
 {
     u8 value = memory.read(address);
     dec_u8(value, flag_reg);
@@ -150,7 +151,7 @@ TEST_CASE("LR35902: DEC r")
 
         dec_r(reg, flag_reg, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 
@@ -165,13 +166,13 @@ TEST_CASE("LR35902: DEC ss")
 
         dec_ss(reg1, reg2, cycles);
 
-        CHECK_EQ(6, cycles);
+        CHECK_EQ(static_cast<cyc>(6), cycles);
 
         cycles = 0;
 
         dec_sp(sp, cycles);
 
-        CHECK_EQ(6, cycles);
+        CHECK_EQ(static_cast<cyc>(6), cycles);
     }
 }
 
@@ -186,7 +187,7 @@ TEST_CASE("LR35902: DEC (HL)")
 
         dec_MHL(memory, 0x0000, flag_reg, cycles);
 
-        CHECK_EQ(11, cycles);
+        CHECK_EQ(static_cast<cyc>(11), cycles);
     }
 }
 }

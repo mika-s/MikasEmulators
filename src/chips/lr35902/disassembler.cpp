@@ -1558,7 +1558,7 @@ void Disassembler::print_next_bits_instruction(u8 bits_opcode)
     }
 }
 
-void Disassembler::print_cartridge_header()
+void Disassembler::print_cartridge_header() const // NOLINT(*-function-cognitive-complexity)
 {
     if (0x0104 <= m_pc && m_pc <= 0x0133 + 1) { // Nintendo logo
         m_ostream << "db " << hexify_wo_0x(m_opcode) << " (Nintendo logo)\n";
@@ -1751,14 +1751,14 @@ void Disassembler::print_cartridge_header()
     }
 }
 
-NextByte Disassembler::get_next_byte()
+auto Disassembler::get_next_byte() -> NextByte
 {
     return {
         .farg = m_memory.read(m_pc++)
     };
 }
 
-NextWord Disassembler::get_next_word()
+auto Disassembler::get_next_word() -> NextWord
 {
     return {
         .farg = m_memory.read(m_pc++),

@@ -20,14 +20,14 @@ using emu::util::string::hexify;
  * @param b is the first operand to sum
  * @param c is the second operand to sum
  */
-void add(EmulatorMemory<Address, RawData>& memory, RawData a, RawData b, RawData c)
+void add(EmulatorMemory<Address, RawData>& memory, const RawData a, const RawData b, const RawData c)
 {
     memory.write(
         Address(a.underlying()),
         RawData(Data(b.underlying() + c.underlying()).underlying()));
 }
 
-void print_add(std::ostream& ostream, RawData a, RawData b, RawData c)
+void print_add(std::ostream& ostream, const RawData a, const RawData b, const RawData c)
 {
     ostream << "ADD ";
 

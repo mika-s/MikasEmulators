@@ -33,7 +33,7 @@ void Flags::reset()
     clear_carry_flag();
 }
 
-u8 Flags::to_u8() const
+auto Flags::to_u8() const -> u8
 {
     const u8 s = (m_sign ? 1 : 0) << s_sign_flag_bit_number;
     const u8 z = (m_zero ? 1 : 0) << s_zero_flag_bit_number;
@@ -47,7 +47,7 @@ u8 Flags::to_u8() const
     return s | z | y | h | x | pv | n | c;
 }
 
-void Flags::from_u8(u8 value)
+void Flags::from_u8(const u8 value)
 {
     m_sign = is_bit_set(value, s_sign_flag_bit_number);
     m_zero = is_bit_set(value, s_zero_flag_bit_number);
@@ -59,7 +59,7 @@ void Flags::from_u8(u8 value)
     m_carry = is_bit_set(value, s_carry_flag_bit_number);
 }
 
-void Flags::handle_carry_flag(u8 previous, int to_add, bool cf)
+void Flags::handle_carry_flag(const u8 previous, const int to_add, const bool cf)
 {
     if (carried_out_of(s_msb, previous, to_add, cf)) {
         set_carry_flag();
@@ -68,7 +68,7 @@ void Flags::handle_carry_flag(u8 previous, int to_add, bool cf)
     }
 }
 
-void Flags::handle_carry_flag(u16 previous, u16 to_add)
+void Flags::handle_carry_flag(const u16 previous, const u16 to_add)
 {
     if (((previous + to_add) >> 16) & 1) { // TODO: Change to carried_out_of bit 15
         set_carry_flag();
@@ -77,7 +77,7 @@ void Flags::handle_carry_flag(u16 previous, u16 to_add)
     }
 }
 
-void Flags::handle_borrow_flag(u8 previous, int to_subtract, bool cf)
+void Flags::handle_borrow_flag(const u8 previous, const int to_subtract, const bool cf)
 {
     if (borrow_from(s_msb + 1, previous, to_subtract, cf)) {
         set_carry_flag();
@@ -86,7 +86,7 @@ void Flags::handle_borrow_flag(u8 previous, int to_subtract, bool cf)
     }
 }
 
-void Flags::handle_borrow_flag(u16 previous, int to_subtract, bool cf)
+void Flags::handle_borrow_flag(const u16 previous, const int to_subtract, const bool cf)
 {
     if (borrow_from(s_msb_u16 + 1, previous, to_subtract, cf)) {
         set_carry_flag();
@@ -95,7 +95,7 @@ void Flags::handle_borrow_flag(u16 previous, int to_subtract, bool cf)
     }
 }
 
-void Flags::handle_half_carry_flag(u8 previous, u8 to_add, bool cf)
+void Flags::handle_half_carry_flag(const u8 previous, const u8 to_add, const bool cf)
 {
     if (carried_out_of(s_msb_first_nibble, previous, to_add, cf)) {
         set_half_carry_flag();
@@ -104,7 +104,7 @@ void Flags::handle_half_carry_flag(u8 previous, u8 to_add, bool cf)
     }
 }
 
-void Flags::handle_half_carry_flag(u16 previous, u16 to_add, bool cf)
+void Flags::handle_half_carry_flag(const u16 previous, const u16 to_add, const bool cf)
 {
     if (carried_out_of(s_msb_first_nibble_u16, previous, to_add, cf)) {
         set_half_carry_flag();
@@ -113,7 +113,7 @@ void Flags::handle_half_carry_flag(u16 previous, u16 to_add, bool cf)
     }
 }
 
-void Flags::handle_half_borrow_flag(u8 previous, u8 to_subtract, bool cf)
+void Flags::handle_half_borrow_flag(const u8 previous, const u8 to_subtract, const bool cf)
 {
     if (borrow_from(s_msb_first_nibble + 1, previous, to_subtract, cf)) {
         set_half_carry_flag();
@@ -122,7 +122,7 @@ void Flags::handle_half_borrow_flag(u8 previous, u8 to_subtract, bool cf)
     }
 }
 
-void Flags::handle_zero_flag(u8 number)
+void Flags::handle_zero_flag(const u8 number)
 {
     if (number == 0) {
         set_zero_flag();
@@ -131,7 +131,7 @@ void Flags::handle_zero_flag(u8 number)
     }
 }
 
-void Flags::handle_zero_flag(u16 number)
+void Flags::handle_zero_flag(const u16 number)
 {
     if (number == 0) {
         set_zero_flag();
@@ -140,7 +140,7 @@ void Flags::handle_zero_flag(u16 number)
     }
 }
 
-void Flags::handle_parity_flag(u8 number)
+void Flags::handle_parity_flag(const u8 number)
 {
     if (should_parity_flag_be_set(number)) {
         set_parity_overflow_flag();
@@ -149,7 +149,7 @@ void Flags::handle_parity_flag(u8 number)
     }
 }
 
-void Flags::handle_overflow_flag(u8 previous, u8 to_add, bool cf)
+void Flags::handle_overflow_flag(const u8 previous, const u8 to_add, const bool cf)
 {
     if (should_overflow_flag_be_set(previous, to_add, cf)) {
         set_parity_overflow_flag();
@@ -158,7 +158,7 @@ void Flags::handle_overflow_flag(u8 previous, u8 to_add, bool cf)
     }
 }
 
-void Flags::handle_sign_flag(u8 number)
+void Flags::handle_sign_flag(const u8 number)
 {
     if (number > INT8_MAX) {
         set_sign_flag();
@@ -167,7 +167,7 @@ void Flags::handle_sign_flag(u8 number)
     }
 }
 
-void Flags::handle_sign_flag(u16 number)
+void Flags::handle_sign_flag(const u16 number)
 {
     if (static_cast<i16>(number) < 0) {
         set_sign_flag();
@@ -176,7 +176,7 @@ void Flags::handle_sign_flag(u16 number)
     }
 }
 
-void Flags::handle_xy_flags(u8 number)
+void Flags::handle_xy_flags(const u8 number)
 {
     if (is_bit_set(number, s_y_flag_bit_number)) {
         set_y_flag();
@@ -191,19 +191,19 @@ void Flags::handle_xy_flags(u8 number)
     }
 }
 
-bool Flags::should_parity_flag_be_set(u8 number)
+auto Flags::should_parity_flag_be_set(const u8 number) -> bool
 {
     bool isOdd = false;
     u8 copy = number;
-    while (copy) {
+    while (copy != 0) {
         isOdd = !isOdd;
-        copy = copy & (copy - 1u);
+        copy = copy & (copy - 1U);
     }
 
     return !isOdd;
 }
 
-bool Flags::should_overflow_flag_be_set(u8 previous, u8 to_add, bool cf)
+auto Flags::should_overflow_flag_be_set(const u8 previous, const u8 to_add, const bool cf) -> bool
 {
     return carried_out_of(s_msb, previous, to_add, cf) != carried_out_of(s_msb - 1, previous, to_add, cf);
 }
@@ -218,7 +218,7 @@ void Flags::clear_zero_flag()
     m_zero = false;
 }
 
-bool Flags::is_zero_flag_set() const
+auto Flags::is_zero_flag_set() const -> bool
 {
     return m_zero;
 }
@@ -233,7 +233,7 @@ void Flags::clear_carry_flag()
     m_carry = false;
 }
 
-bool Flags::is_carry_flag_set() const
+auto Flags::is_carry_flag_set() const -> bool
 {
     return m_carry;
 }
@@ -257,7 +257,7 @@ void Flags::clear_half_carry_flag()
     m_half_carry = false;
 }
 
-bool Flags::is_half_carry_flag_set() const
+auto Flags::is_half_carry_flag_set() const -> bool
 {
     return m_half_carry;
 }
@@ -281,7 +281,7 @@ void Flags::clear_add_subtract_flag()
     m_add_subtract = false;
 }
 
-bool Flags::is_add_subtract_flag_set() const
+auto Flags::is_add_subtract_flag_set() const -> bool
 {
     return m_add_subtract;
 }
@@ -296,7 +296,7 @@ void Flags::clear_sign_flag()
     m_sign = false;
 }
 
-bool Flags::is_sign_flag_set() const
+auto Flags::is_sign_flag_set() const -> bool
 {
     return m_sign;
 }
@@ -311,12 +311,12 @@ void Flags::clear_parity_overflow_flag()
     m_parity_overflow = false;
 }
 
-bool Flags::is_parity_overflow_flag_set() const
+auto Flags::is_parity_overflow_flag_set() const -> bool
 {
     return m_parity_overflow;
 }
 
-bool Flags::is_y_flag_set() const
+auto Flags::is_y_flag_set() const -> bool
 {
     return m_y_unused_flag;
 }
@@ -331,7 +331,7 @@ void Flags::clear_y_flag()
     m_y_unused_flag = false;
 }
 
-bool Flags::is_x_flag_set() const
+auto Flags::is_x_flag_set() const -> bool
 {
     return m_x_unused_flag;
 }

@@ -52,7 +52,7 @@ TEST_CASE("8080: CMA")
 
         cma(acc_reg, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 }

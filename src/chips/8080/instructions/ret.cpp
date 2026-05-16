@@ -54,7 +54,7 @@ TEST_CASE("8080: RET")
 
         ret(pc, sp, memory, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 }
 }

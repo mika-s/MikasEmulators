@@ -97,13 +97,13 @@ TEST_CASE("8080: JPO")
 
         jpo(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
 
         flag_reg.set_parity_flag();
 
         jpo(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 }
 }

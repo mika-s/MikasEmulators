@@ -14,7 +14,7 @@ namespace emu::z80 {
 using emu::util::byte::is_bit_set;
 using emu::util::byte::set_bit;
 
-void bit(unsigned int bit_number, u8 reg, Flags& flag_reg)
+void bit(const unsigned int bit_number, const u8 reg, Flags& flag_reg)
 {
     assert(bit_number < 8);
 
@@ -52,7 +52,7 @@ void bit(unsigned int bit_number, u8 reg, Flags& flag_reg)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void bit_r(unsigned int bit_number, u8 reg, Flags& flag_reg, cyc& cycles)
+void bit_r(const unsigned int bit_number, const u8 reg, Flags& flag_reg, cyc& cycles)
 {
     assert(bit_number < 8);
 
@@ -88,7 +88,7 @@ void bit_r(unsigned int bit_number, u8 reg, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void bit_MHL(unsigned int bit_number, u16 hl_reg, EmulatorMemory<u16, u8> const& memory, Flags& flag_reg, cyc& cycles)
+void bit_MHL(const unsigned int bit_number, const u16 hl_reg, EmulatorMemory<u16, u8> const& memory, Flags& flag_reg, cyc& cycles)
 {
     assert(bit_number < 8);
 
@@ -114,9 +114,10 @@ void bit_MHL(unsigned int bit_number, u16 hl_reg, EmulatorMemory<u16, u8> const&
  * @param ixy_reg is the IX or IY register containing the base address
  * @param d contains address offset
  * @param memory is the memory
+ * @param flag_reg is the flag registry, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void bit_MixyPd(unsigned int bit_number, u16 ixy_reg, u8 d, EmulatorMemory<u16, u8> const& memory, Flags& flag_reg, cyc& cycles)
+void bit_MixyPd(const unsigned int bit_number, const u16 ixy_reg, u8 d, EmulatorMemory<u16, u8> const& memory, Flags& flag_reg, cyc& cycles)
 {
     assert(bit_number < 8);
 
@@ -127,7 +128,7 @@ void bit_MixyPd(unsigned int bit_number, u16 ixy_reg, u8 d, EmulatorMemory<u16, 
     cycles = 20;
 }
 
-void print_bit(std::ostream& ostream, unsigned int bit_number, std::string const& src)
+void print_bit(std::ostream& ostream, const unsigned int bit_number, std::string const& src)
 {
     assert(bit_number < 8);
 
@@ -137,7 +138,7 @@ void print_bit(std::ostream& ostream, unsigned int bit_number, std::string const
             << src;
 }
 
-void print_bit_MixyPn(std::ostream& ostream, unsigned int bit_number, std::string const& ixy_reg, u8 d)
+void print_bit_MixyPn(std::ostream& ostream, const unsigned int bit_number, std::string const& ixy_reg, const u8 d)
 {
     assert(bit_number < 8);
 
@@ -203,11 +204,11 @@ TEST_CASE("Z80: BIT r")
         cycles = 0;
         Flags flag_reg;
         flag_reg.from_u8(0x00);
-        u8 value = 0;
+        constexpr u8 value = 0;
 
         bit_r(1, value, flag_reg, cycles);
 
-        CHECK_EQ(8, cycles);
+        CHECK_EQ(static_cast<cyc>(8), cycles);
     }
 }
 }

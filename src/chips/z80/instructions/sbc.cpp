@@ -18,7 +18,7 @@ using emu::util::byte::low_byte;
 using emu::util::byte::to_u16;
 using emu::util::string::hexify_wo_0x;
 
-void sbc(u8& acc_reg, u8 value, Flags& flag_reg)
+void sbc(u8& acc_reg, const u8 value, Flags& flag_reg)
 {
     sub_from_register(acc_reg, value, flag_reg.is_carry_flag_set(), flag_reg);
 }
@@ -37,7 +37,7 @@ void sbc(u8& acc_reg, u8 value, Flags& flag_reg)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void sbc_A_r(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
+void sbc_A_r(u8& acc_reg, const u8 value, Flags& flag_reg, cyc& cycles)
 {
     sbc(acc_reg, value, flag_reg);
 
@@ -79,7 +79,7 @@ void sbc_A_n(u8& acc_reg, NextByte const& args, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void sbc_A_MHL(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
+void sbc_A_MHL(u8& acc_reg, const u8 value, Flags& flag_reg, cyc& cycles)
 {
     sbc(acc_reg, value, flag_reg);
 
@@ -102,11 +102,11 @@ void sbc_A_MHL(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void sbc_A_MixyPd(u8& acc_reg, u16 ixy_reg, NextByte const& args, EmulatorMemory<u16, u8>& memory, Flags& flag_reg,
-    cyc& cycles)
+void sbc_A_MixyPd(u8& acc_reg, const u16 ixy_reg, NextByte const& args, EmulatorMemory<u16, u8>& memory,
+    Flags& flag_reg, cyc& cycles)
 {
     const u16 address = ixy_reg + static_cast<i8>(args.farg);
-    u8 value = memory.read(address);
+    u8 const value = memory.read(address);
 
     sbc(acc_reg, value, flag_reg);
 
@@ -130,7 +130,7 @@ void sbc_A_MixyPd(u8& acc_reg, u16 ixy_reg, NextByte const& args, EmulatorMemory
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void sbc_HL_ss(u8& h_reg, u8& l_reg, u16 value, Flags& flag_reg, cyc& cycles)
+void sbc_HL_ss(u8& h_reg, u8& l_reg, const u16 value, Flags& flag_reg, cyc& cycles)
 {
     u16 hl = to_u16(h_reg, l_reg);
 
@@ -158,7 +158,7 @@ void sbc_HL_ss(u8& h_reg, u8& l_reg, u16 value, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void sbc_A_r_undoc(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
+void sbc_A_r_undoc(u8& acc_reg, const u8 value, Flags& flag_reg, cyc& cycles)
 {
     sbc(acc_reg, value, flag_reg);
 
@@ -175,11 +175,11 @@ void sbc_A_r_undoc(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
  * </ul>
  *
  * @param acc_reg is the accumulator register, which will be mutated
- * @param value is the value to subtract from the accumulator register
+ * @param ixy_reg_h_or_l is the value in IX or IY, high or low, that will be subtracted from the accumulator
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void sbc_A_ixy_h_or_l(u8& acc_reg, u8 ixy_reg_h_or_l, Flags& flag_reg, cyc& cycles)
+void sbc_A_ixy_h_or_l(u8& acc_reg, const u8 ixy_reg_h_or_l, Flags& flag_reg, cyc& cycles)
 {
     sbc(acc_reg, ixy_reg_h_or_l, flag_reg);
 
@@ -238,7 +238,7 @@ TEST_CASE("Z80: SBC (byte)")
             for (u8 value = 0; value < UINT8_MAX; ++value) {
                 for (int carry = 0; carry < 2; ++carry) {
                     Flags flag_reg;
-                    if (carry) {
+                    if (carry > 0) {
                         flag_reg.set_carry_flag();
                     } else {
                         flag_reg.clear_carry_flag();
@@ -266,7 +266,8 @@ TEST_CASE("Z80: SBC (byte)")
 TEST_CASE("Z80: SBC (word)")
 {
     cyc cycles = 0;
-    u8 h_reg, l_reg;
+    u8 h_reg = 0;
+    u8 l_reg = 0;
 
     SUBCASE("should set the parity/overflow flag")
     {
@@ -296,7 +297,7 @@ TEST_CASE("Z80: SBC (word)")
 
     SUBCASE("should set the sign flag when above 32767 and not otherwise")
     {
-        const u8 min_max = 100;
+        constexpr u8 min_max = 100;
         for (u16 hl_counter = UINT16_MAX / 2 - min_max;
              hl_counter < static_cast<u16>(UINT16_MAX / 2 + min_max); ++hl_counter) {
             for (u16 value = 0; value < UINT8_MAX; ++value) {
@@ -313,8 +314,7 @@ TEST_CASE("Z80: SBC (word)")
 
     SUBCASE("should set the sign flag when above 32767 and not otherwise")
     {
-
-        const u8 min_max = 100;
+        constexpr u8 min_max = 100;
         for (u16 hl_counter = UINT16_MAX / 2 - min_max;
              hl_counter < static_cast<u16>(UINT16_MAX / 2 + min_max); ++hl_counter) {
             for (u16 value = 0; value < UINT8_MAX; ++value) {
@@ -340,7 +340,7 @@ TEST_CASE("Z80: SBC A, r")
 
         sbc_A_r(acc_reg, 0x1, flag_reg, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 
@@ -355,7 +355,7 @@ TEST_CASE("Z80: SBC A, n")
 
         sbc_A_n(acc_reg, args, flag_reg, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 }
 
@@ -370,7 +370,7 @@ TEST_CASE("Z80: SBC A, (HL)")
 
         sbc_A_MHL(acc_reg, args.farg, flag_reg, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 }
 
@@ -385,7 +385,7 @@ TEST_CASE("Z80: SBC HL, ss")
 
         sbc_HL_ss(h_reg, l_reg, 31775, flag_reg, cycles);
 
-        CHECK_EQ(15, cycles);
+        CHECK_EQ(static_cast<cyc>(15), cycles);
     }
 }
 }

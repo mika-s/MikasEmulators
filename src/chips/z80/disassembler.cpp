@@ -2093,10 +2093,10 @@ void Disassembler::print_next_ixy_instruction(u8 ixy_opcode, std::string const& 
     }
 }
 
-void Disassembler::print_next_ixy_bits_instruction(NextWord args, std::string const& ixy_reg)
+void Disassembler::print_next_ixy_bits_instruction(const NextWord args, std::string const& ixy_reg) const
 {
-    u8 d = args.farg;
-    u8 ixy_bits_opcode = args.sarg;
+    u8 const d = args.farg;
+    u8 const ixy_bits_opcode = args.sarg;
 
     switch (ixy_bits_opcode) {
     case RLC_MIXY_P_n_B_UNDOC1:
@@ -2239,7 +2239,7 @@ void Disassembler::print_next_ixy_bits_instruction(NextWord args, std::string co
     }
 }
 
-void Disassembler::print_next_extd_instruction(u8 extd_opcode)
+void Disassembler::print_next_extd_instruction(const u8 extd_opcode)
 {
     switch (extd_opcode) {
     case IN_B_C:
@@ -2439,14 +2439,14 @@ void Disassembler::print_next_extd_instruction(u8 extd_opcode)
     }
 }
 
-NextByte Disassembler::get_next_byte()
+auto Disassembler::get_next_byte() -> NextByte
 {
     return {
         .farg = m_memory.read(m_pc++)
     };
 }
 
-NextWord Disassembler::get_next_word()
+auto Disassembler::get_next_word() -> NextWord
 {
     return {
         .farg = m_memory.read(m_pc++),

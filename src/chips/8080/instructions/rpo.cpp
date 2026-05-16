@@ -85,7 +85,7 @@ TEST_CASE("8080: RPO")
 
         rpo(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(5, cycles);
+        CHECK_EQ(static_cast<cyc>(5), cycles);
     }
 
     SUBCASE("should use 11 cycles when returning")
@@ -93,11 +93,11 @@ TEST_CASE("8080: RPO")
         cycles = 0;
         u16 pc = 0;
         u16 sp = 0;
-        Flags flag_reg;
+        Flags const flag_reg;
 
         rpo(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(11, cycles);
+        CHECK_EQ(static_cast<cyc>(11), cycles);
     }
 }
 }

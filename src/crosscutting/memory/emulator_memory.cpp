@@ -96,7 +96,7 @@ TEST_CASE("crosscutting: EmulatorMemory")
         memory.add(input1);
         memory.add(input2);
 
-        CHECK_EQ(15, memory.size());
+        CHECK_EQ(static_cast<std::size_t>(15), memory.size());
     }
 }
 }

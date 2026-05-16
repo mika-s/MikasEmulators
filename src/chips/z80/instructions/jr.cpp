@@ -170,7 +170,7 @@ TEST_CASE("Z80: JR")
 
         jr(pc, args, cycles);
 
-        CHECK_EQ(12, cycles);
+        CHECK_EQ(static_cast<cyc>(12), cycles);
     }
 }
 
@@ -228,7 +228,7 @@ TEST_CASE("Z80: JP C")
 
         jr_c(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 
     SUBCASE("should use 12 cycles when the carry flag is set")
@@ -241,7 +241,7 @@ TEST_CASE("Z80: JP C")
 
         jr_c(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(12, cycles);
+        CHECK_EQ(static_cast<cyc>(12), cycles);
     }
 }
 
@@ -299,7 +299,7 @@ TEST_CASE("Z80: JR NC")
 
         jr_nc(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 
     SUBCASE("should use 12 cycles when the carry flag is unset")
@@ -312,7 +312,7 @@ TEST_CASE("Z80: JR NC")
 
         jr_nc(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(12, cycles);
+        CHECK_EQ(static_cast<cyc>(12), cycles);
     }
 }
 
@@ -370,7 +370,7 @@ TEST_CASE("Z80: JR Z")
 
         jr_z(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 
     SUBCASE("should use 12 cycles when the zero flag is set")
@@ -383,7 +383,7 @@ TEST_CASE("Z80: JR Z")
 
         jr_z(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(12, cycles);
+        CHECK_EQ(static_cast<cyc>(12), cycles);
     }
 }
 
@@ -441,7 +441,7 @@ TEST_CASE("Z80: JR NZ")
 
         jr_nz(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 
     SUBCASE("should use 12 cycles when the zero flag is unset")
@@ -454,7 +454,7 @@ TEST_CASE("Z80: JR NZ")
 
         jr_nz(pc, args, flag_reg, cycles);
 
-        CHECK_EQ(12, cycles);
+        CHECK_EQ(static_cast<cyc>(12), cycles);
     }
 }
 }

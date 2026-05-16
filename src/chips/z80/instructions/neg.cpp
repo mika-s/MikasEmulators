@@ -69,7 +69,7 @@ TEST_CASE("Z80: NEG")
 
         neg(acc_reg, flag_reg, cycles);
 
-        CHECK_EQ(8, cycles);
+        CHECK_EQ(static_cast<cyc>(8), cycles);
     }
 }
 }

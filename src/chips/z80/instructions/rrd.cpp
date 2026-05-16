@@ -26,7 +26,7 @@ using emu::util::byte::set_bit;
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void rrd(u8& acc_reg, EmulatorMemory<u16, u8>& memory, u16 address, Flags& flag_reg, cyc& cycles)
+void rrd(u8& acc_reg, EmulatorMemory<u16, u8>& memory, const u16 address, Flags& flag_reg, cyc& cycles)
 {
     u8 value = memory.read(address);
     u8 new_acc = acc_reg;
@@ -163,7 +163,7 @@ TEST_CASE("Z80: RRD")
 
         rrd(acc_reg, memory, 0x0000, flag_reg, cycles);
 
-        CHECK_EQ(18, cycles);
+        CHECK_EQ(static_cast<cyc>(18), cycles);
     }
 }
 }

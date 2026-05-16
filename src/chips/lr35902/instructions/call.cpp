@@ -186,7 +186,7 @@ TEST_CASE("LR35902: CALL")
 
         call(pc, sp, memory, args, cycles);
 
-        CHECK_EQ(17, cycles);
+        CHECK_EQ(static_cast<cyc>(17), cycles);
     }
 }
 
@@ -242,7 +242,7 @@ TEST_CASE("LR35902: CALL NZ")
 
         call_nz(pc, sp, memory, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 
     SUBCASE("should use 17 cycles when called")
@@ -259,7 +259,7 @@ TEST_CASE("LR35902: CALL NZ")
 
         call_nz(pc, sp, memory, args, flag_reg, cycles);
 
-        CHECK_EQ(17, cycles);
+        CHECK_EQ(static_cast<cyc>(17), cycles);
     }
 }
 
@@ -314,7 +314,7 @@ TEST_CASE("LR35902: CALL Z")
 
         call_z(pc, sp, memory, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 
     SUBCASE("should use 17 cycles when called")
@@ -330,7 +330,7 @@ TEST_CASE("LR35902: CALL Z")
 
         call_z(pc, sp, memory, args, flag_reg, cycles);
 
-        CHECK_EQ(17, cycles);
+        CHECK_EQ(static_cast<cyc>(17), cycles);
     }
 }
 
@@ -385,7 +385,7 @@ TEST_CASE("LR35902: CALL NC")
 
         call_nc(pc, sp, memory, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 
     SUBCASE("should use 17 cycles when called")
@@ -401,7 +401,7 @@ TEST_CASE("LR35902: CALL NC")
 
         call_nc(pc, sp, memory, args, flag_reg, cycles);
 
-        CHECK_EQ(17, cycles);
+        CHECK_EQ(static_cast<cyc>(17), cycles);
     }
 }
 
@@ -456,7 +456,7 @@ TEST_CASE("LR35902: CALL C")
 
         call_c(pc, sp, memory, args, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 
     SUBCASE("should use 17 cycles when called")
@@ -472,7 +472,7 @@ TEST_CASE("LR35902: CALL C")
 
         call_c(pc, sp, memory, args, flag_reg, cycles);
 
-        CHECK_EQ(17, cycles);
+        CHECK_EQ(static_cast<cyc>(17), cycles);
     }
 }
 }

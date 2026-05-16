@@ -103,7 +103,7 @@ TEST_CASE("8080: CNZ")
 
         cnz(pc, sp, memory, args, flag_reg, cycles);
 
-        CHECK_EQ(11, cycles);
+        CHECK_EQ(static_cast<cyc>(11), cycles);
     }
 
     SUBCASE("should use 17 cycles when called")
@@ -120,7 +120,7 @@ TEST_CASE("8080: CNZ")
 
         cnz(pc, sp, memory, args, flag_reg, cycles);
 
-        CHECK_EQ(17, cycles);
+        CHECK_EQ(static_cast<cyc>(17), cycles);
     }
 }
 }

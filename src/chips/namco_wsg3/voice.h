@@ -8,19 +8,19 @@ class Voice {
 public:
     Voice();
 
-    [[nodiscard]] u8 waveform_number() const;
+    [[nodiscard]] auto waveform_number() const -> u8;
 
     void waveform_number(u8 waveform_number);
 
-    [[nodiscard]] u32 frequency() const;
+    [[nodiscard]] auto frequency() const -> u32;
 
     void frequency(u32 frequency);
 
-    [[nodiscard]] u8 volume() const;
+    [[nodiscard]] auto volume() const -> u8;
 
     void volume(u8 volume);
 
-    [[nodiscard]] u32 accumulator() const;
+    [[nodiscard]] auto accumulator() const -> u32;
 
     void accumulator(u32 accumulator);
 

@@ -20,14 +20,14 @@ using emu::util::string::hexify;
  * @param b is the first operand to and
  * @param c is the second operand to and
  */
-void and_(EmulatorMemory<Address, RawData>& memory, RawData a, RawData b, RawData c)
+void and_(EmulatorMemory<Address, RawData>& memory, const RawData a, const RawData b, const RawData c)
 {
     memory.write(
         Address(a.underlying()),
         RawData(Data(b.underlying() & c.underlying()).underlying()));
 }
 
-void print_and(std::ostream& ostream, RawData a, RawData b, RawData c)
+void print_and(std::ostream& ostream, const RawData a, const RawData b, const RawData c)
 {
     ostream << "AND ";
 

@@ -12,23 +12,23 @@ TEST_CASE("crosscutting: UInteger")
 {
     SUBCASE("should wrap around in the constructor")
     {
-        UInteger<1000> value(1010);
+        UInteger<1000> const value(1010);
 
-        CHECK_EQ(value.underlying(), 10);
+        CHECK_EQ(value.underlying(), 10UL);
     }
 
     SUBCASE("should not have the size parameter as legal value")
     {
-        UInteger<1000> value(1000);
+        UInteger<1000> const value(1000);
 
         CHECK_EQ(false, value.underlying() == 1000);
-        CHECK_EQ(value.underlying(), 0);
+        CHECK_EQ(value.underlying(), 0UL);
     }
 
     SUBCASE("should add like usual when result is under the max value")
     {
-        UInteger<1000> value1(10);
-        UInteger<1000> value2(20);
+        UInteger<1000> const value1(10);
+        UInteger<1000> const value2(20);
 
         UInteger<1000> result = value1 + value2;
 
@@ -41,18 +41,18 @@ TEST_CASE("crosscutting: UInteger")
 
     SUBCASE("should wrap around when adding")
     {
-        UInteger<1000> value1(500);
-        UInteger<1000> value2(501);
+        UInteger<1000> const value1(500);
+        UInteger<1000> const value2(501);
 
-        UInteger<1000> result = value1 + value2;
+        UInteger<1000> const result = value1 + value2;
 
         CHECK_EQ(result.underlying(), UInteger<1000>(1).underlying());
     }
 
     SUBCASE("should subtract like usual when result is above 0")
     {
-        UInteger<1000> value1(100);
-        UInteger<1000> value2(20);
+        UInteger<1000> const value1(100);
+        UInteger<1000> const value2(20);
 
         UInteger<1000> result = value1 - value2;
 
@@ -65,21 +65,21 @@ TEST_CASE("crosscutting: UInteger")
 
     SUBCASE("should wrap around when subtracting")
     {
-        UInteger<1000> value1(500);
-        UInteger<1000> value2(501);
+        UInteger<1000> const value1(500);
+        UInteger<1000> const value2(501);
 
-        UInteger<1000> result = value1 - value2;
+        UInteger<1000> const result = value1 - value2;
 
         CHECK_EQ(result.underlying(), UInteger<1000>(999).underlying());
     }
 
     SUBCASE("should add and subtract at the same time without problem")
     {
-        UInteger<1000> value1(100);
-        UInteger<1000> value2(20);
-        UInteger<1000> value3(300);
+        UInteger<1000> const value1(100);
+        UInteger<1000> const value2(20);
+        UInteger<1000> const value3(300);
 
-        UInteger<1000> result = value1 - value2 + value3;
+        UInteger<1000> const result = value1 - value2 + value3;
 
         CHECK_EQ(result.underlying(), UInteger<1000>(380).underlying());
     }
@@ -88,18 +88,18 @@ TEST_CASE("crosscutting: UInteger")
     {
         UInteger<1000> value(998);
 
-        CHECK_EQ(998, value++.underlying());
-        CHECK_EQ(999, value++.underlying());
-        CHECK_EQ(0, value.underlying());
+        CHECK_EQ(998UL, value++.underlying());
+        CHECK_EQ(999UL, value++.underlying());
+        CHECK_EQ(0UL, value.underlying());
     }
 
     SUBCASE("should be possible to decrement with --")
     {
         UInteger<1000> value(1);
 
-        CHECK_EQ(1, value--.underlying());
-        CHECK_EQ(0, value--.underlying());
-        CHECK_EQ(999, value.underlying());
+        CHECK_EQ(1UL, value--.underlying());
+        CHECK_EQ(0UL, value--.underlying());
+        CHECK_EQ(999UL, value.underlying());
     }
 
     SUBCASE("should be possible to increment with +=")
@@ -108,11 +108,11 @@ TEST_CASE("crosscutting: UInteger")
 
         value += UInteger<1000>(100);
 
-        CHECK_EQ(999, value.underlying());
+        CHECK_EQ(999UL, value.underlying());
 
         value += UInteger<1000>(1101);
 
-        CHECK_EQ(100, value.underlying());
+        CHECK_EQ(100UL, value.underlying());
     }
 
     SUBCASE("should be possible to increment with -=")
@@ -121,15 +121,15 @@ TEST_CASE("crosscutting: UInteger")
 
         value -= UInteger<1000>(100);
 
-        CHECK_EQ(101, value.underlying());
+        CHECK_EQ(101UL, value.underlying());
 
         value -= UInteger<1000>(2100);
 
-        CHECK_EQ(1, value.underlying());
+        CHECK_EQ(1UL, value.underlying());
 
         value -= UInteger<1000>(5);
 
-        CHECK_EQ(996, value.underlying());
+        CHECK_EQ(996UL, value.underlying());
     }
 
     SUBCASE("should support ==")

@@ -87,7 +87,7 @@ void rr_r(u8& reg, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void rr_MHL(EmulatorMemory<u16, u8>& memory, u16 address, Flags& flag_reg, cyc& cycles)
+void rr_MHL(EmulatorMemory<u16, u8>& memory, const u16 address, Flags& flag_reg, cyc& cycles)
 {
     u8 value = memory.read(address);
     rr(value, flag_reg);
@@ -122,7 +122,7 @@ TEST_CASE("LR35902: RRA")
 
             rra(acc_reg, flag_reg, cycles);
 
-            CHECK_EQ(static_cast<u8>(acc_reg_counter >> 1u), acc_reg);
+            CHECK_EQ(static_cast<u8>(acc_reg_counter >> 1U), acc_reg);
         }
     }
 
@@ -196,7 +196,7 @@ TEST_CASE("LR35902: RRA")
 
         rra(acc_reg, flag_reg, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 }

@@ -11,7 +11,7 @@ using emu::util::byte::high_byte;
 using emu::util::byte::low_byte;
 using emu::util::byte::to_u16;
 
-void ex_msp_dd(u16 sp, EmulatorMemory<u16, u8>& memory, u16& reg)
+void ex_msp_dd(const u16 sp, EmulatorMemory<u16, u8>& memory, u16& reg)
 {
     const u16 previous_reg = reg;
     reg = to_u16(memory.read(sp + 1), memory.read(sp));
@@ -28,13 +28,13 @@ void ex_msp_dd(u16 sp, EmulatorMemory<u16, u8>& memory, u16& reg)
  *   <li>Condition bits affected: none</li>
  * </ul>
  *
+ * @param sp is the stack pointer
+ * @param memory is the memory, which will be mutated
  * @param h_reg is the H register, which will be mutated
  * @param l_reg is the L register, which will be mutated
- * @param sp0 is the top of the stack, which will be mutated
- * @param sp1 is the second from the top of the stack, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void xthl(u16 sp, EmulatorMemory<u16, u8>& memory, u8& h_reg, u8& l_reg, cyc& cycles)
+void xthl(const u16 sp, EmulatorMemory<u16, u8>& memory, u8& h_reg, u8& l_reg, cyc& cycles)
 {
     u16 hl = to_u16(h_reg, l_reg);
     ex_msp_dd(sp, memory, hl);
@@ -59,7 +59,7 @@ TEST_CASE("8080: XTHL")
     {
         u8 h_reg = 0x11;
         u8 l_reg = 0x22;
-        u16 sp = 0x0000;
+        constexpr u16 sp = 0x0000;
 
         xthl(sp, memory, h_reg, l_reg, cycles);
 
@@ -74,11 +74,11 @@ TEST_CASE("8080: XTHL")
         cycles = 0;
         u8 h_reg = 0x11;
         u8 l_reg = 0x22;
-        u16 sp = 0x0000;
+        constexpr u16 sp = 0x0000;
 
         xthl(sp, memory, h_reg, l_reg, cycles);
 
-        CHECK_EQ(18, cycles);
+        CHECK_EQ(static_cast<cyc>(18), cycles);
     }
 }
 }

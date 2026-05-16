@@ -65,7 +65,7 @@ TEST_CASE("Z80: CPL")
             CHECK_EQ(static_cast<u8>(~acc_reg_counter), acc_reg);
             CHECK_EQ(true, flag_reg.is_half_carry_flag_set());
             CHECK_EQ(true, flag_reg.is_add_subtract_flag_set());
-            CHECK_EQ(4, cycles);
+            CHECK_EQ(static_cast<cyc>(4), cycles);
         }
     }
 }

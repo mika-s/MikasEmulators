@@ -75,7 +75,7 @@ TEST_CASE("Z80: DJNZ")
 
         djnz(b_reg, pc, { .farg = 0x03 }, cycles);
 
-        CHECK_EQ(8, cycles);
+        CHECK_EQ(static_cast<cyc>(8), cycles);
     }
 
     SUBCASE("should use 13 cycles when the register does not become 0")
@@ -85,7 +85,7 @@ TEST_CASE("Z80: DJNZ")
 
         djnz(b_reg, pc, { .farg = 0x03 }, cycles);
 
-        CHECK_EQ(13, cycles);
+        CHECK_EQ(static_cast<cyc>(13), cycles);
     }
 }
 }

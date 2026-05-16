@@ -15,7 +15,7 @@ using emu::util::string::hexify_wo_0x;
  * @param opcode is the opcode of the instruction
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void unused_1(u8 opcode, cyc& cycles)
+void unused_1(const u8 opcode, cyc& cycles)
 {
     std::cout << "Opcode not supposed to be used: " << hexify(opcode) << "\n";
 
@@ -25,9 +25,10 @@ void unused_1(u8 opcode, cyc& cycles)
 /**
  * Unused instruction of size 3
  * @param opcode is the opcode of the instruction
+ * @param pc is the program counter, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void unused_3(u8 opcode, u16& pc, cyc& cycles)
+void unused_3(const u8 opcode, u16& pc, cyc& cycles)
 {
     unused_1(opcode, cycles);
     pc += 2;

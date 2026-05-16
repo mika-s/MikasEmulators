@@ -66,7 +66,7 @@ TEST_CASE("8080: INX")
     u8 reg1 = 0;
     u8 reg2 = 0;
     u8 expected_reg1 = 0;
-    u8 expected_reg2;
+    u8 expected_reg2 = 0;
     u16 sp = 0;
 
     SUBCASE("should increase register pair")
@@ -102,11 +102,11 @@ TEST_CASE("8080: INX")
 
         inx(reg1, reg2, cycles);
 
-        CHECK_EQ(5, cycles);
+        CHECK_EQ(static_cast<cyc>(5), cycles);
 
         inx_sp(sp, cycles);
 
-        CHECK_EQ(5, cycles);
+        CHECK_EQ(static_cast<cyc>(5), cycles);
     }
 }
 }

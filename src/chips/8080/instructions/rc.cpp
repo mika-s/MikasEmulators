@@ -79,11 +79,11 @@ TEST_CASE("8080: RC")
         u16 sp = 0;
         EmulatorMemory<u16, u8> memory;
         memory.add(std::vector<u8> { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05 });
-        Flags flag_reg;
+        Flags const flag_reg;
 
         rc(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(5, cycles);
+        CHECK_EQ(static_cast<cyc>(5), cycles);
     }
 
     SUBCASE("should use 11 cycles when returning")
@@ -98,7 +98,7 @@ TEST_CASE("8080: RC")
 
         rc(pc, sp, memory, flag_reg, cycles);
 
-        CHECK_EQ(11, cycles);
+        CHECK_EQ(static_cast<cyc>(11), cycles);
     }
 }
 }

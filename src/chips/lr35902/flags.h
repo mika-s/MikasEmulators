@@ -10,7 +10,7 @@ public:
 
     void reset();
 
-    [[nodiscard]] u8 to_u8() const;
+    [[nodiscard]] auto to_u8() const -> u8;
 
     void from_u8(u8 value);
 
@@ -36,13 +36,13 @@ public:
 
     void clear_zero_flag();
 
-    [[nodiscard]] bool is_zero_flag_set() const;
+    [[nodiscard]] auto is_zero_flag_set() const -> bool;
 
     void set_carry_flag();
 
     void clear_carry_flag();
 
-    [[nodiscard]] bool is_carry_flag_set() const;
+    [[nodiscard]] auto is_carry_flag_set() const -> bool;
 
     void toggle_carry_flag();
 
@@ -50,7 +50,7 @@ public:
 
     void clear_half_carry_flag();
 
-    [[nodiscard]] bool is_half_carry_flag_set() const;
+    [[nodiscard]] auto is_half_carry_flag_set() const -> bool;
 
     void toggle_half_carry_flag();
 
@@ -58,7 +58,7 @@ public:
 
     void clear_add_subtract_flag();
 
-    [[nodiscard]] bool is_add_subtract_flag_set() const;
+    [[nodiscard]] auto is_add_subtract_flag_set() const -> bool;
 
 private:
     static constexpr unsigned int s_msb_u16 = 15;

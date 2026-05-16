@@ -64,7 +64,7 @@ TEST_CASE("8080: LDA")
 
         lda(acc_reg, memory, args, cycles);
 
-        CHECK_EQ(13, cycles);
+        CHECK_EQ(static_cast<cyc>(13), cycles);
     }
 }
 }

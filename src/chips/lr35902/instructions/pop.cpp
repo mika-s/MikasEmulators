@@ -45,6 +45,7 @@ void pop(u8& reg1, u8& reg2, u16& sp, EmulatorMemory<u16, u8> const& memory, cyc
  * </ul>
  *
  * @param flag_reg is the flag register
+ * @param acc_reg is accumulator register, which will be mutated
  * @param sp is the stack pointer, which will be mutated
  * @param memory is the memory
  * @param cycles is the number of cycles variable, which will be mutated
@@ -108,7 +109,7 @@ TEST_CASE("LR35902: POP qq")
 
         pop(reg1, reg2, sp, memory, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 }
 }

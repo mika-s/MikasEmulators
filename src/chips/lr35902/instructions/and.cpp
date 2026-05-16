@@ -18,7 +18,7 @@ using emu::memory::EmulatorMemory;
 using emu::memory::NextByte;
 using emu::util::string::hexify_wo_0x;
 
-void and_(u8& acc_reg, u8 value, Flags& flag_reg)
+void and_(u8& acc_reg, const u8 value, Flags& flag_reg)
 {
     acc_reg &= value;
 
@@ -42,7 +42,7 @@ void and_(u8& acc_reg, u8 value, Flags& flag_reg)
  * @param flag_reg is the flag register
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void and_r(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
+void and_r(u8& acc_reg, const u8 value, Flags& flag_reg, cyc& cycles)
 {
     and_(acc_reg, value, flag_reg);
 
@@ -84,7 +84,7 @@ void and_n(u8& acc_reg, NextByte const& args, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void and_MHL(u8& acc_reg, u8 value, Flags& flag_reg, cyc& cycles)
+void and_MHL(u8& acc_reg, const u8 value, Flags& flag_reg, cyc& cycles)
 {
     and_(acc_reg, value, flag_reg);
 
@@ -139,7 +139,7 @@ TEST_CASE("LR35902: AND r")
 
         and_r(acc_reg, value, flag_reg, cycles);
 
-        CHECK_EQ(4, cycles);
+        CHECK_EQ(static_cast<cyc>(4), cycles);
     }
 }
 
@@ -149,12 +149,12 @@ TEST_CASE("LR35902: AND n")
     {
         cyc cycles = 0;
         u8 acc_reg = 0xe;
-        NextByte args = { 0 };
+        NextByte args = {};
         Flags flag_reg;
 
         and_n(acc_reg, args, flag_reg, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 }
 
@@ -164,12 +164,12 @@ TEST_CASE("LR35902: AND [HL]")
     {
         cyc cycles = 0;
         u8 acc_reg = 0xe;
-        u8 value = 0;
+        constexpr u8 value = 0;
         Flags flag_reg;
 
         and_MHL(acc_reg, value, flag_reg, cycles);
 
-        CHECK_EQ(7, cycles);
+        CHECK_EQ(static_cast<cyc>(7), cycles);
     }
 }
 }

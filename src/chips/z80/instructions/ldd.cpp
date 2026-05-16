@@ -29,10 +29,11 @@ using emu::util::byte::to_u16;
  * @param h_reg is the H register, which will be mutated
  * @param l_reg is the L register, which will be mutated
  * @param acc_reg is the accumulator, for use in setting XF and YF
+ * @param memory is the memory, which will be mutated
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void ldd(u8& b_reg, u8& c_reg, u8& d_reg, u8& e_reg, u8& h_reg, u8& l_reg, u8 acc_reg,
+void ldd(u8& b_reg, u8& c_reg, u8& d_reg, u8& e_reg, u8& h_reg, u8& l_reg, const u8 acc_reg,
     EmulatorMemory<u16, u8>& memory, Flags& flag_reg, cyc& cycles)
 {
     u16 de = to_u16(d_reg, e_reg);
@@ -91,11 +92,11 @@ TEST_CASE("Z80: LDD")
         u8 e_reg = 2;
         u8 h_reg = 0;
         u8 l_reg = 6;
-        u8 acc_reg = 0;
+        constexpr u8 acc_reg = 0;
         EmulatorMemory<u16, u8> memory;
         memory.add({ 0x01, 0x42, 0x5a, 0xbb, 0xc3, 0x10, 0x00 });
         Flags flag_reg;
-        cyc cycles;
+        cyc cycles = 0;
 
         ldd(b_reg, c_reg, d_reg, e_reg, h_reg, l_reg, acc_reg, memory, flag_reg, cycles);
 

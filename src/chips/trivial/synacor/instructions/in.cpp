@@ -23,7 +23,7 @@ using emu::util::string::hexify;
  * @param a is address to write input to
  * @param memory is the memory, which will be mutated
  */
-void in(Address a, EmulatorMemory<Address, RawData>& memory)
+void in(const Address a, EmulatorMemory<Address, RawData>& memory)
 {
     memory.write(a, RawData(1)); // TODO
 }

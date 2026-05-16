@@ -55,7 +55,7 @@ void inr_r(u8& reg, Flags& flag_reg, cyc& cycles)
  * @param flag_reg is the flag register, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void inr_m(EmulatorMemory<u16, u8>& memory, u16 address, Flags& flag_reg, cyc& cycles)
+void inr_m(EmulatorMemory<u16, u8>& memory, const u16 address, Flags& flag_reg, cyc& cycles)
 {
     u8 value = memory.read(address);
 
@@ -172,7 +172,7 @@ TEST_CASE("8080: INR")
         u8 reg = 0xE;
         inr_r(reg, flag_reg, cycles);
 
-        CHECK_EQ(5, cycles);
+        CHECK_EQ(static_cast<cyc>(5), cycles);
     }
 
     SUBCASE("should use 10 cycles when memory is involved")
@@ -181,11 +181,11 @@ TEST_CASE("8080: INR")
         Flags flag_reg;
         EmulatorMemory<u16, u8> memory;
         memory.add({ 0x10 });
-        u16 address = 0x0000;
+        constexpr u16 address = 0x0000;
 
         inr_m(memory, address, flag_reg, cycles);
 
-        CHECK_EQ(10, cycles);
+        CHECK_EQ(static_cast<cyc>(10), cycles);
     }
 }
 }

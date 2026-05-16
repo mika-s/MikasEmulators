@@ -20,13 +20,13 @@ using emu::util::string::hexify;
  * @param stack is the stack, which will be mutated
  * @param a is the address to jump to
  */
-void call(Address& pc, std::stack<Address>& stack, RawData a)
+void call(Address& pc, std::stack<Address>& stack, const RawData a)
 {
     stack.emplace(pc.underlying() + 1);
     pc = Address(a.underlying());
 }
 
-void print_call(std::ostream& ostream, RawData a)
+void print_call(std::ostream& ostream, const RawData a)
 {
     ostream << "CALL ";
 

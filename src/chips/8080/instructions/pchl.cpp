@@ -16,7 +16,7 @@ namespace emu::i8080 {
  * @param address is the address in the HL register
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void pchl(u16& pc, u16 address, cyc& cycles)
+void pchl(u16& pc, const u16 address, cyc& cycles)
 {
     pc = address;
 
@@ -47,7 +47,7 @@ TEST_CASE("8080: PCHL")
 
         pchl(pc, address, cycles);
 
-        CHECK_EQ(5, cycles);
+        CHECK_EQ(static_cast<cyc>(5), cycles);
     }
 }
 }
