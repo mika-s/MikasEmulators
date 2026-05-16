@@ -15,7 +15,7 @@
 #include "lmc_out.h"
 #include "lmc_sta.h"
 #include "lmc_sub.h"
-#include <fmt/core.h>
+#include <format>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -64,7 +64,7 @@ auto LmcInstruction::parse(Scanner& scanner, Environment& environment) -> std::u
         return std::make_unique<LmcInstruction>(LmcDat::parse(scanner));
     default:
         throw std::invalid_argument(
-            fmt::format(
+            std::format(
                 "Invalid token when parsing instruction. Received {}.",
                 TokenKind_as_string.at(current_token.kind())));
     }

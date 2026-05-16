@@ -11,12 +11,12 @@
 
 namespace emu::util::string {
 
-std::string hexify(u8 val);
+auto hexify(u8 val) -> std::string;
 
-std::string hexify(u16 val);
+auto hexify(u16 val) -> std::string;
 
 template<std::size_t M>
-std::string hexify(emu::misc::UInteger<M> val)
+auto hexify(emu::misc::UInteger<M> val) -> std::string
 {
     std::stringstream ss;
     ss << "0x" << std::setfill('0') << std::setw(4) << std::hex << val;
@@ -24,27 +24,27 @@ std::string hexify(emu::misc::UInteger<M> val)
     return ss.str();
 }
 
-std::string hexify_wo_0x(u8 val);
+auto hexify_wo_0x(u8 val) -> std::string;
 
-std::string hexify_wo_0x(i8 val);
+auto hexify_wo_0x(i8 val) -> std::string;
 
-std::string hexify_wo_0x(u16 val);
+auto hexify_wo_0x(u16 val) -> std::string;
 
-std::string hexify_wo_0x(unsigned int val, int width);
+auto hexify_wo_0x(unsigned int val, int width) -> std::string;
 
-std::string find_short_executable_name(std::string name);
+auto find_short_executable_name(std::string name) -> std::string;
 
-std::string create_padding(std::size_t length_so_far, std::size_t expected_length);
+auto create_padding(std::size_t length_so_far, std::size_t expected_length) -> std::string;
 
-std::vector<std::string> split(std::stringstream const& ss, std::string const& delimiter);
+auto split(std::stringstream const& ss, std::string const& delimiter) -> std::vector<std::string>;
 
-std::string_view trim(std::string_view s);
+auto trim(std::string_view s) -> std::string_view;
 
-std::string prepend(const std::string &prefix, char const* txt);
+auto prepend(const std::string &prefix, char const* txt) -> std::string;
 
-std::string append(const std::string &postfix, char const* txt);
+auto append(const std::string &postfix, char const* txt) -> std::string;
 
-bool is_alphanumeric(std::string const& str);
+auto is_alphanumeric(std::string const& str) -> bool;
 
-bool is_alpha(std::string const& str);
+auto is_alpha(std::string const& str) -> bool;
 }

@@ -29,7 +29,7 @@ private:
     static constexpr int height = 128;
     static constexpr unsigned int tiles_per_row = 16;
 
-    static constexpr float scale = 4.0;
+    static constexpr float scale = 4.0F;
     static constexpr int scaled_width = static_cast<int>(scale * static_cast<float>(width));
     static constexpr int scaled_height = static_cast<int>(scale * static_cast<float>(height));
 
@@ -43,7 +43,7 @@ private:
 
     void prepare_framebuffers();
 
-    bool prepare_framebuffer(unsigned int palette_idx);
+    auto prepare_framebuffer(unsigned int palette_idx) -> bool;
 
     void render_image(u32 tile_texture);
 };

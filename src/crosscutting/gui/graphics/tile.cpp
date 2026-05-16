@@ -2,7 +2,7 @@
 #include "gui/graphics/color.h"
 #include "gui/graphics/framebuffer.h"
 #include <cstdint>
-#include <fmt/core.h>
+#include <format>
 #include <stdexcept>
 
 namespace emu::gui {
@@ -12,11 +12,13 @@ Tile::Tile(std::size_t height, std::size_t width)
     , m_width(width)
 {
     if (height != width) {
-        throw std::invalid_argument(fmt::format("Non-square tiles not supported: {}x{}", height, width));
-    } else if (m_height > UINT32_MAX) {
-        throw std::invalid_argument(fmt::format("Tile height too large: {}", height));
-    } else if (m_width > UINT32_MAX) {
-        throw std::invalid_argument(fmt::format("Tile width too large: {}", width));
+        throw std::invalid_argument(std::format("Non-square tiles not supported: {}x{}", height, width));
+    }
+    if (m_height > UINT32_MAX) {
+        throw std::invalid_argument(std::format("Tile height too large: {}", height));
+    }
+    if (m_width > UINT32_MAX) {
+        throw std::invalid_argument(std::format("Tile width too large: {}", width));
     }
 
     for (unsigned int row = 0; row < height; ++row) {
@@ -24,26 +26,27 @@ Tile::Tile(std::size_t height, std::size_t width)
     }
 }
 
-void Tile::set(std::size_t row, std::size_t col, Color value)
+void Tile::set(std::size_t row, std::size_t col, const Color value)
 {
     if (row > m_height - 1) {
-        throw std::runtime_error(fmt::format("row of {} is too large, height is {}", row, m_height));
-    } else if (col > m_width - 1) {
-        throw std::runtime_error(fmt::format("col of {} is too large, width is {}", col, m_width));
+        throw std::runtime_error(std::format("row of {} is too large, height is {}", row, m_height));
+    }
+    if (col > m_width - 1) {
+        throw std::runtime_error(std::format("col of {} is too large, width is {}", col, m_width));
     }
 
     m_values[row][col] = value;
 }
 
-Color Tile::get(std::size_t row, std::size_t col)
+auto Tile::get(const std::size_t row, const std::size_t col) const -> Color
 {
     return m_values[row][col];
 }
 
 void Tile::map_to_framebuffer(
     Framebuffer& framebuffer,
-    unsigned int origin_row,
-    unsigned int origin_col)
+    const unsigned int origin_row,
+    const unsigned int origin_col) const
 {
     for (unsigned int px_row = 0; px_row < static_cast<unsigned int>(m_height); ++px_row) {
         for (unsigned int px_col = 0; px_col < static_cast<unsigned int>(m_width); ++px_col) {
@@ -53,7 +56,7 @@ void Tile::map_to_framebuffer(
     }
 }
 
-std::size_t Tile::size() const
+auto Tile::size() const -> std::size_t
 {
     return m_width;
 }

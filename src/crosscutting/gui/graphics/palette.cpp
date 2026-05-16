@@ -1,11 +1,11 @@
 #include "palette.h"
 #include "gui/graphics/color.h"
-#include <fmt/core.h>
+#include <format>
 #include <stdexcept>
 
 namespace emu::gui {
 
-Palette::Palette(Color color1, Color color2, Color color3, Color color4)
+Palette::Palette(const Color color1, const Color color2, const Color color3, const Color color4)
     : m_color1(color1)
     , m_color2(color2)
     , m_color3(color3)
@@ -13,18 +13,21 @@ Palette::Palette(Color color1, Color color2, Color color3, Color color4)
 {
 }
 
-Color const& Palette::operator[](std::size_t address) const
+auto Palette::operator[](std::size_t address) const -> Color const&
 {
     if (address == 0) {
         return m_color1;
-    } else if (address == 1) {
-        return m_color2;
-    } else if (address == 2) {
-        return m_color3;
-    } else if (address == 3) {
-        return m_color4;
-    } else {
-        throw std::runtime_error(fmt::format("Invalid color index in Palette: {}", address));
     }
+    if (address == 1) {
+        return m_color2;
+    }
+    if (address == 2) {
+        return m_color3;
+    }
+    if (address == 3) {
+        return m_color4;
+    }
+
+    throw std::runtime_error(std::format("Invalid color index in Palette: {}", address));
 }
 }

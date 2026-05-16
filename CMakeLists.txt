@@ -18,7 +18,6 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
-find_package(fmt REQUIRED)
 find_program(iwyu_path NAMES include-what-you-use iwyu)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/libs/doctest)
@@ -43,7 +42,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
         Glad
         ImGui
         Doctest
-        fmt::fmt
         Crosscutting
         I8080
         LR35902

@@ -9,7 +9,7 @@
 #include "synacor_application_session.h"
 #include "tui_terminal.h"
 #include <cassert>
-#include <fmt/core.h>
+#include <format>
 #include <iosfwd>
 #include <vector>
 
@@ -69,10 +69,10 @@ void SynacorApplication::load_file()
     for (u16 const value : as_u16) {
         if (value >= s_max_value_in_file) {
             throw std::runtime_error(
-                fmt::format("Value too large in {}. Max value is {}, but was {}", m_loaded_file, s_max_value_in_file, value));
-        } else {
-            as_RawData.emplace_back(value);
+                std::format("Value too large in {}. Max value is {}, but was {}", m_loaded_file, s_max_value_in_file, value));
         }
+
+        as_RawData.emplace_back(value);
     }
 
     m_memory.add(as_RawData);

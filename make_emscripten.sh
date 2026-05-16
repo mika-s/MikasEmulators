@@ -70,7 +70,7 @@ emcc \
   src/crosscutting/util/file_util.cpp \
   src/crosscutting/util/string_util.cpp \
   -I src -I src/applications/lmc_application -I src/chips/trivial/lmc -I libs/imgui -I libs/glad/include -I libs/doctest -I ~/include \
-  -DFMT_HEADER_ONLY \
+  --std=c++20 \
   -DDOCTEST_CONFIG_DISABLE \
   -s USE_SDL=2 \
   -s MAX_WEBGL_VERSION=2 \

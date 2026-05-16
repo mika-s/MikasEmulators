@@ -221,13 +221,13 @@ private:
                 bool const is_currently_looking_at_pc = address == pc;
 
                 if (m_is_following_pc && is_currently_looking_at_pc) {
-                    ImGui::SetScrollHereY(0.25f);
+                    ImGui::SetScrollHereY(0.25F);
                 } else {
                     bool const is_scrolling_due_to_goto_pc = m_is_going_to_pc && is_currently_looking_at_pc;
                     bool const is_scrolling_due_to_given_address = m_is_going_to_address && address == m_address_to_goto;
                     bool const is_scrolling_due_to_goto_bp = m_is_going_to_breakpoint && address == m_bp_address_to_goto;
                     if (is_scrolling_due_to_goto_pc || is_scrolling_due_to_given_address || is_scrolling_due_to_goto_bp) {
-                        ImGui::SetScrollHereY(0.25f);
+                        ImGui::SetScrollHereY(0.25F);
                     }
                 }
 

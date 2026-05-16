@@ -3,7 +3,7 @@
 #include "command_line_arguments/token.h"
 #include "command_line_arguments/token_kind.h"
 #include "options.h"
-#include <fmt/core.h>
+#include <format>
 #include <stdexcept>
 #include <string>
 
@@ -21,7 +21,7 @@ void ShortOption::parse(Scanner& scanner, Options& options)
 
         options.add_option(name_literal, value_literal);
     } else {
-        throw std::invalid_argument(fmt::format("Option -{} requires a value after it", name_literal));
+        throw std::invalid_argument(std::format("Option -{} requires a value after it", name_literal));
     }
 }
 }

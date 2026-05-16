@@ -3,8 +3,9 @@
 #include "crosscutting/typedefs.h"
 #include "debugging/debug_container.h"
 #include "imgui.h"
+#include <algorithm>
 #include <cstddef>
-#include <fmt/core.h>
+#include <format>
 #include <string>
 #include <utility>
 #include <vector>
@@ -19,7 +20,7 @@ void WaveformPane::attach_debug_container(std::shared_ptr<DebugContainer<u16, u8
     m_is_debug_container_set = true;
 }
 
-void WaveformPane::draw(char const* title, bool* p_open)
+void WaveformPane::draw(char const* title, bool* p_open) const
 {
     if (!ImGui::Begin(title, p_open, ImGuiWindowFlags_MenuBar)) {
         ImGui::End();
@@ -35,17 +36,15 @@ void WaveformPane::draw(char const* title, bool* p_open)
         for (auto& waveform : m_debug_container->waveforms()) {
             const std::vector<u8> samples = waveform.samples();
             float samples_as_float[waveform.samples().size()]; // NOLINT
-            float max = 0.0f;
+            float max = 0.0F;
             for (std::size_t sample_idx = 0; sample_idx < samples.size(); ++sample_idx) {
                 const u8 sample = samples[sample_idx];
                 samples_as_float[sample_idx] = static_cast<float>(sample);
-                if (max < sample) {
-                    max = sample;
-                }
+                max = std::max<float>(max, sample);
             }
 
             ImGui::PlotHistogram(
-                fmt::format("{}", waveform_idx).c_str(),
+                std::format("{}", waveform_idx).c_str(),
                 samples_as_float,
                 IM_ARRAYSIZE(samples_as_float),
                 0, nullptr, 0, max + 1, ImVec2(0, waveform_width));

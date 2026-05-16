@@ -23,7 +23,7 @@
 #include <SDL_log.h>
 #include <algorithm>
 #include <cstdlib>
-#include <fmt/core.h>
+#include <format>
 #include <string>
 #include <unordered_map>
 #include <utility>
@@ -78,12 +78,12 @@ GuiImgui::~GuiImgui()
     m_gl_context = nullptr;
 }
 
-void GuiImgui::to_terminal(Data acc_reg, OutType out_type)
+void GuiImgui::to_terminal(const Data acc_reg, const OutType out_type)
 {
     if (out_type == OutType::OUT) {
-        m_output.push_back(fmt::format("{}\n", acc_reg.underlying()));
+        m_output.push_back(std::format("{}\n", acc_reg.underlying()));
     } else {
-        m_output.push_back(fmt::format("{}", static_cast<char>(acc_reg.underlying())));
+        m_output.push_back(std::format("{}", static_cast<char>(acc_reg.underlying())));
     }
 }
 
@@ -108,7 +108,7 @@ void GuiImgui::remove_ui_observer(UiObserver* observer)
         m_gui_observers.end());
 }
 
-void GuiImgui::notify_gui_observers(const GuiRequest& request)
+void GuiImgui::notify_gui_observers(const GuiRequest& request) const
 {
     for (UiObserver* observer : m_gui_observers) {
         observer->gui_request(request);
@@ -319,7 +319,7 @@ void GuiImgui::render(const bool is_awaiting_input, std::string const& game_wind
     SDL_GL_SwapWindow(m_win);
 }
 
-void GuiImgui::update_debug_only(bool is_awaiting_input)
+void GuiImgui::update_debug_only(const bool is_awaiting_input)
 {
     render(is_awaiting_input, "Stepping");
 }
@@ -329,7 +329,7 @@ void GuiImgui::render_code_editor()
     m_code_editor.draw("Code editor", &m_show_code_editor);
 }
 
-void GuiImgui::render_terminal_window(bool is_awaiting_input, std::string const& game_window_subtitle)
+void GuiImgui::render_terminal_window(const bool is_awaiting_input, std::string const& game_window_subtitle)
 {
     const std::string prefix = "Program";
     const std::string id = "###" + prefix; // NOLINT(*-identifier-length)

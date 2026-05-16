@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cctype>
-#include <fmt/core.h>
+#include <format>
 #include <iterator>
 #include <sstream>
 #include <stdexcept>
@@ -30,10 +30,9 @@ auto Scanner::current_token() -> Token
 
 void Scanner::skip(const TokenKind next)
 {
-    TokenKind const current = current_token().kind();
-    if (current != next) {
+    if (TokenKind const current = current_token().kind(); current != next) {
         throw std::invalid_argument(
-            fmt::format(
+            std::format(
                 "Skipping wrong token. Was {}, but expecting {}.",
                 TokenKind_as_string.at(current),
                 TokenKind_as_string.at(next)));
@@ -45,7 +44,7 @@ auto Scanner::tokens_as_strings() -> std::vector<std::string>
 {
     std::vector<std::string> tokens;
     std::transform(m_all_scanned_tokens.begin(), m_all_scanned_tokens.end(), std::back_inserter(tokens),
-        [](Token const& token) { std::stringstream ss; ss << token; return ss.str(); });
+        [](Token const& token) -> std::string { std::stringstream ss; ss << token; return ss.str(); });
 
     return tokens;
 }
@@ -73,7 +72,7 @@ void Scanner::read_token(std::string const& line)
 
     while (m_current_pos < line.length()) {
         if (!(handle_single_character(line) || handle_short_option(line) || handle_long_option(line) || handle_identifier(line))) {
-            throw std::invalid_argument(fmt::format("Unable to parse character(s) in position {} of arguments", m_current_pos));
+            throw std::invalid_argument(std::format("Unable to parse character(s) in position {} of arguments", m_current_pos));
         }
     }
 }
@@ -102,9 +101,9 @@ auto Scanner::handle_short_option(std::string const& line) -> bool
         }
 
         if (m_current_pos + 1 < line.length() && std::isalnum(line[m_current_pos + 1])) {
-            const std::string literal = std::string({ line[m_current_pos + 1] });
+            const auto literal = std::string({ line[m_current_pos + 1] });
 
-            assert(literal.length() != 0);
+            assert(!literal.empty());
 
             m_tokens.emplace_back(TokenKind::ShortOption, literal);
             m_all_scanned_tokens.emplace_back(TokenKind::ShortOption, literal);
@@ -163,8 +162,7 @@ auto Scanner::handle_long_option(std::string const& line) -> bool
 
 auto Scanner::handle_identifier(std::string const& line) -> bool
 {
-    char const current_char = line[m_current_pos];
-    if (current_char != s_start_of_flag) {
+    if (char const current_char = line[m_current_pos]; current_char != s_start_of_flag) {
         const std::size_t length = line.length();
         const std::size_t start = m_current_pos;
 

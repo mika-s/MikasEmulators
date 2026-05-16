@@ -22,7 +22,7 @@ public:
 
     void skip(TokenKind next);
 
-    auto current_address() -> Address;
+    [[nodiscard]] auto current_address() const -> Address;
 
 private:
     unsigned int m_real_line_no;

@@ -5,9 +5,10 @@
 namespace emu::util::gui {
 
 auto number_to_pixels(
-    unsigned int number,
-    unsigned int row_offset,
-    unsigned int col_offset) -> std::vector<std::pair<int, int>>
+    const unsigned int number,
+    const unsigned int row_offset,
+    const unsigned int col_offset
+) -> std::vector<std::pair<int, int>>
 {
     switch (number) {
     case 0x0:

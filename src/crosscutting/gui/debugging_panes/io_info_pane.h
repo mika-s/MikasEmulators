@@ -45,10 +45,10 @@ public:
                 ImGui::Text("%s", name.c_str());
 
                 if (is_active) {
-                    ImGui::SameLine(250.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+                    ImGui::SameLine(250.0F, ImGui::GetStyle().ItemInnerSpacing.x);
                     ImGui::Text("x");
 
-                    ImGui::SameLine(300.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+                    ImGui::SameLine(300.0F, ImGui::GetStyle().ItemInnerSpacing.x);
                     ImGui::Text("%s", hexify(new_value).c_str());
                 }
 
@@ -59,7 +59,7 @@ public:
                         ImGui::Text("  %s", bit_name.c_str());
 
                         if (is_active) {
-                            ImGui::SameLine(300.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+                            ImGui::SameLine(300.0F, ImGui::GetStyle().ItemInnerSpacing.x);
                             ImGui::Text(is_bit_set(new_value, bit_number) ? "x" : "");
                         }
                     }

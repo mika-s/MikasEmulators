@@ -9,7 +9,7 @@ class Palette {
 public:
     Palette(Color color1, Color color2, Color color3, Color color4);
 
-    Color const& operator[](std::size_t address) const;
+    auto operator[](std::size_t address) const -> Color const&;
 
 private:
     Color m_color1;

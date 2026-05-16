@@ -2,7 +2,7 @@
 #include "cpu_io.h"
 #include "crosscutting/util/byte_util.h"
 #include "imgui.h"
-#include <fmt/core.h>
+#include <format>
 
 namespace emu::applications::zxspectrum_48k {
 
@@ -14,7 +14,7 @@ void KeyboardPane::attach_cpu_io(CpuIo const* cpu_io)
     m_is_cpu_io_set = true;
 }
 
-void KeyboardPane::draw(char const* title, bool* p_open)
+void KeyboardPane::draw(char const* title, bool* p_open) const
 {
     if (!ImGui::Begin(title, p_open, ImGuiWindowFlags_MenuBar)) {
         ImGui::End();
@@ -24,8 +24,8 @@ void KeyboardPane::draw(char const* title, bool* p_open)
     if (!m_is_cpu_io_set) {
         ImGui::Text("CpuIo is not provided this pane.");
     } else {
-        const ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg //
-            | ImGuiTableFlags_SizingFixedSame | ImGuiTableFlags_NoHostExtendX;
+        constexpr ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg //
+                                          | ImGuiTableFlags_SizingFixedSame | ImGuiTableFlags_NoHostExtendX;
 
         if (ImGui::BeginTable("keyboard", s_cols, flags)) {
             for (std::size_t row = 0; row < s_rows; ++row) {
@@ -36,10 +36,10 @@ void KeyboardPane::draw(char const* title, bool* p_open)
                     ImGui::TableSetColumnIndex(col);
 
                     if (col > 0 && !is_bit_set(keyboard_values, col - 1)) {
-                        ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, ImGui::GetColorU32(ImVec4(0.3f, 0.3f, 0.7f, 0.65f)));
+                        ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, ImGui::GetColorU32(ImVec4(0.3F, 0.3F, 0.7F, 0.65F)));
                     }
 
-                    const std::string label = fmt::format("{}", s_keyboard_labels[row][col]);
+                    const std::string label = std::format("{}", s_keyboard_labels[row][col]);
                     ImGui::Text(
                         label.c_str(),
                         label.c_str(),

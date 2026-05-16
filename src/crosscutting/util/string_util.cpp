@@ -4,7 +4,7 @@
 #include <cctype>
 #include <cstdlib>
 #include <cstring>
-#include <fmt/core.h>
+#include <format>
 #include <iomanip>
 #include <stdexcept>
 #include <tuple>
@@ -71,8 +71,7 @@ auto find_short_executable_name(std::string name) -> std::string
 {
     const std::string delimiter = "/";
 
-    std::size_t pos;
-    std::string token;
+    std::size_t pos = 0;
     while ((pos = name.find(delimiter)) != std::string::npos) {
         std::ignore = name.substr(0, pos);
         name.erase(0, pos + delimiter.length());
@@ -85,7 +84,7 @@ auto create_padding(std::size_t length_so_far, std::size_t expected_length) -> s
 {
     if (length_so_far > expected_length) {
         throw std::invalid_argument(
-            fmt::format(
+            std::format(
                 "length_so_far cannot be larger than expected_length: {} > {}",
                 length_so_far,
                 expected_length));
@@ -103,11 +102,10 @@ auto split(std::stringstream const& ss, std::string const& delimiter) -> std::ve
 {
     std::vector<std::string> split_string;
     std::string s = ss.str();
-    std::string token;
-    std::size_t pos;
+    std::size_t pos = 0;
 
     while ((pos = s.find(delimiter)) != std::string::npos) {
-        token = s.substr(0, pos);
+        std::string const token = s.substr(0, pos);
         split_string.push_back(token);
         s.erase(0, pos + delimiter.length());
     }
@@ -161,11 +159,11 @@ auto append(const std::string &postfix, char const* txt) -> std::string
 
 auto is_alphanumeric(std::string const& str) -> bool
 {
-    return std::find_if(str.begin(), str.end(), [](char const& c) { return isalnum(c); }) == str.end();
+    return std::find_if(str.begin(), str.end(), [](char const& c) -> int { return isalnum(c); }) == str.end();
 }
 
 auto is_alpha(std::string const& str) -> bool
 {
-    return std::find_if(str.begin(), str.end(), [](char const& c) { return !isalpha(c); }) == str.end();
+    return std::find_if(str.begin(), str.end(), [](char const& c) -> bool { return !isalpha(c); }) == str.end();
 }
 }

@@ -2,13 +2,13 @@
 #include "crosscutting/typedefs.h"
 #include "gui/graphics/color.h"
 #include <algorithm>
-#include <fmt/core.h>
+#include <format>
 #include <iterator>
 #include <stdexcept>
 
 namespace emu::gui {
 
-Framebuffer::Framebuffer(unsigned int height, unsigned int width, Color init_color)
+Framebuffer::Framebuffer(const unsigned int height, const unsigned int width, const Color init_color)
     : m_height(height)
     , m_width(width)
 {
@@ -21,12 +21,13 @@ Framebuffer::Framebuffer(unsigned int height, unsigned int width, Color init_col
     }
 }
 
-void Framebuffer::set(unsigned int row, unsigned int col, Color value)
+void Framebuffer::set(unsigned int row, unsigned int col, const Color value)
 {
     if (row > m_height - 1) {
-        throw std::runtime_error(fmt::format("row of {} is too large, height is {}", row, m_height));
-    } else if (col > m_width - 1) {
-        throw std::runtime_error(fmt::format("col of {} is too large, width is {}", col, m_width));
+        throw std::runtime_error(std::format("row of {} is too large, height is {}", row, m_height));
+    }
+    if (col > m_width - 1) {
+        throw std::runtime_error(std::format("col of {} is too large, width is {}", col, m_width));
     }
 
     m_values[row][col] = value.to_u32();
@@ -48,7 +49,7 @@ void Framebuffer::clear()
     }
 }
 
-std::vector<u32> Framebuffer::to_output_vector()
+auto Framebuffer::to_output_vector() const -> std::vector<u32>
 {
     std::vector<u32> output;
 
@@ -61,12 +62,12 @@ std::vector<u32> Framebuffer::to_output_vector()
     return output;
 }
 
-unsigned int Framebuffer::height() const
+auto Framebuffer::height() const -> unsigned int
 {
     return m_height;
 }
 
-unsigned int Framebuffer::width() const
+auto Framebuffer::width() const -> unsigned int
 {
     return m_width;
 }

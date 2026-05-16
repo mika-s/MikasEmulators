@@ -1,6 +1,6 @@
 #include "wsg3.h"
 #include "voice.h"
-#include <fmt/core.h>
+#include <format>
 #include <stdexcept>
 #include <utility>
 
@@ -12,7 +12,7 @@ Wsg3::Wsg3(std::vector<Waveform> waveforms)
 
     if (m_waveforms.size() != s_expected_number_of_waveforms) {
         throw std::invalid_argument(
-            fmt::format(
+            std::format(
                 "Expected number of waveforms is {}, but number of waveforms provided is {}",
                 s_expected_number_of_waveforms,
                 m_waveforms.size()));
@@ -24,11 +24,11 @@ auto Wsg3::waveforms() -> std::vector<Waveform>
     return m_waveforms;
 }
 
-auto Wsg3::next_tick(std::vector<Voice>& voices) -> std::vector<i16>
+auto Wsg3::next_tick(std::vector<Voice>& voices) const -> std::vector<i16>
 {
     if (voices.size() != s_expected_number_of_voices) {
         throw std::invalid_argument(
-            fmt::format(
+            std::format(
                 "Expected number of voices is {}, but number of voices provided is {}",
                 s_expected_number_of_voices,
                 voices.size()));

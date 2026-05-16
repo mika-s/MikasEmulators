@@ -18,7 +18,7 @@ public:
 
     auto waveforms() -> std::vector<Waveform>;
 
-    auto next_tick(std::vector<Voice>& voices) -> std::vector<i16>;
+    auto next_tick(std::vector<Voice>& voices) const -> std::vector<i16>;
 
 private:
     static constexpr unsigned int s_expected_number_of_waveforms = 16;

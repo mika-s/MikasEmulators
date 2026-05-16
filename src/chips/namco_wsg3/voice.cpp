@@ -1,5 +1,5 @@
 #include "voice.h"
-#include <fmt/core.h>
+#include <format>
 #include <stdexcept>
 
 namespace emu::wsg3 {
@@ -20,7 +20,7 @@ void Voice::waveform_number(u8 waveform_number)
 {
     if (waveform_number > waveforms_supported - 1) {
         throw std::invalid_argument(
-            fmt::format(
+            std::format(
                 "Waveform number has to be between 0 and {}, but was {}",
                 waveforms_supported - 1,
                 waveform_number));
@@ -38,7 +38,7 @@ void Voice::frequency(u32 frequency)
 {
     if (frequency > max_frequency - 1) {
         throw std::invalid_argument(
-            fmt::format(
+            std::format(
                 "Frequency has to be between 0 and {}, but was {}",
                 max_frequency - 1,
                 frequency));
@@ -56,7 +56,7 @@ void Voice::volume(u8 volume)
 {
     if (volume > volume_levels_supported - 1) {
         throw std::invalid_argument(
-            fmt::format(
+            std::format(
                 "Volume has to be between 0 and {}, but was {}",
                 volume_levels_supported - 1,
                 volume));

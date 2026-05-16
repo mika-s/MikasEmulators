@@ -19,11 +19,11 @@ public:
 
     void clear();
 
-    std::vector<u32> to_output_vector();
+    [[nodiscard]] auto to_output_vector() const -> std::vector<u32>;
 
-    unsigned int height() const;
+    [[nodiscard]] auto height() const -> unsigned int;
 
-    unsigned int width() const;
+    [[nodiscard]] auto width() const -> unsigned int;
 
 private:
     unsigned int m_height;

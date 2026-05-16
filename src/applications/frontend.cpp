@@ -35,7 +35,7 @@
 #include "options.h"
 #include <algorithm>
 #include <cstdlib>
-#include <fmt/core.h>
+#include <format>
 #include <iostream>
 #include <iterator>
 #include <optional>
@@ -58,7 +58,7 @@ void Frontend::run(Options const& options)
         test(options);
     } else {
         throw InvalidProgramArgumentsException(
-            fmt::format("Unknown command: {}", command),
+            std::format("Unknown command: {}", command),
             print_main_usage);
     }
 }
@@ -93,8 +93,8 @@ void Frontend::run_program(Options const& options)
         std::string const& program = application_opt.value();
         if (!is_supporting(program)) {
             throw InvalidProgramArgumentsException(
-                fmt::format("Unsupported game or program: {}", program),
-                Frontend::print_run_usage);
+                std::format("Unsupported game or program: {}", program),
+                print_run_usage);
         }
 
         if (options.is_asking_for_help().first) {
@@ -145,8 +145,8 @@ void Frontend::disassemble(Options const& options)
 
             if (options.options().contains("format")) {
                 throw InvalidProgramArgumentsException(
-                    fmt::format("Unrecognized format: {}", options.options().at("format")[0]),
-                    Frontend::print_disassemble_usage);
+                    std::format("Unrecognized format: {}", options.options().at("format")[0]),
+                    print_disassemble_usage);
             }
 
             i8080::Disassembler disassembler(memory, std::cout);
@@ -156,8 +156,8 @@ void Frontend::disassemble(Options const& options)
 
             if (options.options().contains("format")) {
                 throw InvalidProgramArgumentsException(
-                    fmt::format("Unrecognized format: {}", options.options().at("format")[0]),
-                    Frontend::print_disassemble_usage);
+                    std::format("Unrecognized format: {}", options.options().at("format")[0]),
+                    print_disassemble_usage);
             } else {
                 memory.add(read_file_into_vector(file_path));
             }
@@ -175,8 +175,8 @@ void Frontend::disassemble(Options const& options)
                     format.to_memory(memory);
                 } else {
                     throw InvalidProgramArgumentsException(
-                        fmt::format("Unrecognized format: {}", options.options().at("format")[0]),
-                        Frontend::print_disassemble_usage);
+                        std::format("Unrecognized format: {}", options.options().at("format")[0]),
+                        print_disassemble_usage);
                 }
             } else {
                 memory.add(read_file_into_vector(file_path));
@@ -187,8 +187,8 @@ void Frontend::disassemble(Options const& options)
         } else if (cpu == "Synacor") {
             if (options.options().contains("format")) {
                 throw InvalidProgramArgumentsException(
-                    fmt::format("Unrecognized format: {}", options.options().at("format")[0]),
-                    Frontend::print_disassemble_usage);
+                    std::format("Unrecognized format: {}", options.options().at("format")[0]),
+                    print_disassemble_usage);
             }
 
             std::vector<u8> as_u8 = read_file_into_vector(file_path);
@@ -201,10 +201,10 @@ void Frontend::disassemble(Options const& options)
             for (u16 value : as_u16) {
                 if (value >= 32776) {
                     throw std::runtime_error(
-                        fmt::format("Value too large in {}. Max value is {}, but was {}", file_path, 32776, value));
-                } else {
-                    as_RawData.emplace_back(value);
+                        std::format("Value too large in {}. Max value is {}, but was {}", file_path, 32776, value));
                 }
+
+                as_RawData.emplace_back(value);
             }
             EmulatorMemory<emu::synacor::Address, emu::synacor::RawData> memory;
             memory.add(as_RawData);
@@ -212,9 +212,7 @@ void Frontend::disassemble(Options const& options)
             emu::synacor::Disassembler disassembler(memory, std::cout);
             disassembler.disassemble();
         } else {
-            throw InvalidProgramArgumentsException(
-                fmt::format("Invalid CPU: {}", cpu),
-                Frontend::print_disassemble_usage);
+            throw InvalidProgramArgumentsException(std::format("Invalid CPU: {}", cpu), print_disassemble_usage);
         }
     }
 }
@@ -236,7 +234,7 @@ void Frontend::test(Options const& options)
             context.addFilter("test-case", "Synacor*");
         } else {
             for (std::string const& cpu : opts["cpu"]) {
-                context.addFilter("test-case", fmt::format("{}*", cpu).c_str());
+                context.addFilter("test-case", std::format("{}*", cpu).c_str());
             }
         }
 
@@ -257,12 +255,12 @@ void Frontend::print_run_usage(std::string const& program_name)
 
     std::cout << "Applications:\n";
 
-    for (auto& program_description : s_supported_programs) {
-        std::string const padding = create_padding(program_description.first.size(), s_padding_to_description);
-        if (program_description.first == "NEWLINE") {
+    for (const auto&[program, desc] : s_supported_programs) {
+        std::string const padding = create_padding(program.size(), s_padding_to_description);
+        if (program == "NEWLINE") {
             std::cout << "\n";
         } else {
-            std::cout << "  " << program_description.first << padding << program_description.second << "\n";
+            std::cout << "  " << program << padding << desc << "\n";
         }
     }
 
@@ -277,23 +275,23 @@ void Frontend::print_disassemble_usage(std::string const& program_name)
 
     std::cout << "CPUs:\n";
 
-    for (auto& cpu_description : s_supported_cpus) {
-        std::string const padding = create_padding(cpu_description.first.size(), s_padding_to_description);
-        if (cpu_description.first == "NEWLINE") {
+    for (const auto&[cpu, desc] : s_supported_cpus) {
+        std::string const padding = create_padding(cpu.size(), s_padding_to_description);
+        if (cpu == "NEWLINE") {
             std::cout << "\n";
         } else {
-            std::cout << "  " << cpu_description.first << padding << cpu_description.second << "\n";
+            std::cout << "  " << cpu << padding << desc << "\n";
         }
     }
 
     std::cout << "\nFormats:\n";
 
-    for (const auto&[fst, snd] : s_supported_formats) {
-        std::string const padding = create_padding(fst.size(), s_padding_to_description);
-        if (fst == "NEWLINE") {
+    for (const auto&[format, desc] : s_supported_formats) {
+        std::string const padding = create_padding(format.size(), s_padding_to_description);
+        if (format == "NEWLINE") {
             std::cout << "\n";
         } else {
-            std::cout << "  " << fst << padding << snd << "\n";
+            std::cout << "  " << format << padding << desc << "\n";
         }
     }
 }
@@ -305,12 +303,12 @@ void Frontend::print_test_usage(std::string const& program_name)
 
     std::cout << "CPUs:\n";
 
-    for (const auto&[fst, snd] : s_supported_cpus) {
-        std::string const padding = create_padding(fst.size(), s_padding_to_description);
-        if (fst == "NEWLINE") {
+    for (const auto&[cpu, desc] : s_supported_cpus) {
+        std::string const padding = create_padding(cpu.size(), s_padding_to_description);
+        if (cpu == "NEWLINE") {
             std::cout << "\n";
         } else {
-            std::cout << "  " << fst << padding << snd << "\n";
+            std::cout << "  " << cpu << padding << desc << "\n";
         }
     }
 
@@ -318,10 +316,10 @@ void Frontend::print_test_usage(std::string const& program_name)
                  "CPU is provided.\nThe crosscutting unit tests are always run.\n";
     std::cout << "\nExamples:\n";
 
-    for (const auto&[fst, snd] : s_test_examples) {
-        std::cout << "  " << snd << ":\n";
+    for (const auto&[example, desc] : s_test_examples) {
+        std::cout << "  " << desc << ":\n";
         std::cout << "    "
-                  << "./" << program_name << " test " << fst << "\n\n";
+                  << "./" << program_name << " test " << example << "\n\n";
     }
 }
 
@@ -379,14 +377,14 @@ auto Frontend::choose_emulator(std::string const& program, Options const& option
     }
 }
 
-bool Frontend::is_supporting(std::string const& program)
+auto Frontend::is_supporting(std::string const& program) -> bool
 {
     std::vector<std::string> program_names;
     std::transform(s_supported_programs.begin(), s_supported_programs.end(), std::back_inserter(program_names),
         [](std::pair<std::string, std::string> const& program_description) { return program_description.first; });
     std::vector<std::string> program_names_filtered;
     std::copy_if(program_names.begin(), program_names.end(), std::back_inserter(program_names_filtered),
-        [](std::string const& program_name) { return program_name != "NEWLINE"; });
+        [](std::string const& program_name) -> bool { return program_name != "NEWLINE"; });
 
     return std::find(program_names_filtered.begin(), program_names_filtered.end(), program) != program_names_filtered.end();
 }

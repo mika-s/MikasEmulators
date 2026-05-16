@@ -150,7 +150,7 @@ void SpritemapPane::render_image(u32 tile_texture)
         m_framebuffers[m_chosen_rotation][m_chosen_palette_idx].to_output_vector().data());
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    const ImVec2 image_size = ImVec2(scaled_width, scaled_height);
+    constexpr auto image_size = ImVec2(scaled_width, scaled_height);
     ImGui::Image(
         (void*)((intptr_t)tile_texture), image_size,
         ImVec2(0, 0),

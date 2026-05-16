@@ -2,7 +2,7 @@
 #include "crosscutting/exceptions/invalid_program_arguments_exception.h"
 #include "options.h"
 #include "usage.h"
-#include <fmt/core.h>
+#include <format>
 #include <functional>
 #include <string>
 #include <unordered_map>
@@ -13,19 +13,19 @@ namespace emu::applications::game_boy {
 
 using emu::exceptions::InvalidProgramArgumentsException;
 
-Settings Settings::from_options(Options const& options)
+auto Settings::from_options(Options const& options) -> Settings
 {
     using namespace applications::game_boy;
 
     for (auto const& opt : options.options()) {
         if (!s_recognized_options.contains(opt.first)) {
-            throw InvalidProgramArgumentsException(fmt::format("Unknown flag: {}", opt.first), print_usage);
+            throw InvalidProgramArgumentsException(std::format("Unknown flag: {}", opt.first), print_usage);
         }
     }
 
-    Settings settings {};
+    constexpr Settings settings {};
 
-    std::unordered_map<std::string, std::vector<std::string>> opts = options.options();
+    std::unordered_map<std::string, std::vector<std::string>> const opts = options.options();
 
     return settings;
 }

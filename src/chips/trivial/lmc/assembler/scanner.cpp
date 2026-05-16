@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <cctype>
 #include <cstdlib>
-#include <fmt/core.h>
+#include <format>
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
@@ -28,7 +28,7 @@ Scanner::Scanner(std::stringstream const& code, bool is_debugging)
     m_code_lines = split(code, "\n");
 }
 
-auto Scanner::current_address() -> Address
+auto Scanner::current_address() const -> Address
 {
     return m_current_address;
 }
@@ -44,10 +44,9 @@ auto Scanner::current_token() -> Token
 
 void Scanner::skip(const TokenKind next)
 {
-    TokenKind const current = current_token().kind();
-    if (current != next) {
+    if (TokenKind const current = current_token().kind(); current != next) {
         throw std::invalid_argument(
-            fmt::format(
+            std::format(
                 "Skipping wrong token. Was {}, but expecting {}.",
                 TokenKind_as_string.at(current),
                 TokenKind_as_string.at(next)));
@@ -98,7 +97,7 @@ void Scanner::read_tokens(std::string const& line)
 
     while (m_current_pos < line.length()) {
         if (!(handle_single_character(line) || handle_number(line) || handle_keyword(line) || handle_inline_comment(line))) {
-            throw std::invalid_argument(fmt::format("Unable to parse character(s) in position {} of arguments", m_current_pos));
+            throw std::invalid_argument(std::format("Unable to parse character(s) in position {} of arguments", m_current_pos));
         }
     }
 }

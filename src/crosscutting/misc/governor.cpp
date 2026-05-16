@@ -4,7 +4,7 @@
 namespace emu::misc {
 
 Governor::Governor(
-    long double limit,
+    const long double limit,
     std::function<long double()> tick_retriever)
     : m_last_tick(0)
     , m_limit(limit)

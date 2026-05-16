@@ -2,7 +2,7 @@
 #include "crosscutting/exceptions/invalid_program_arguments_exception.h"
 #include "options.h"
 #include "usage.h"
-#include <fmt/core.h>
+#include <format>
 #include <functional>
 #include <sstream>
 #include <string>
@@ -18,7 +18,7 @@ Settings Settings::from_options(Options const& options)
 {
     for (auto const& opt : options.options()) {
         if (!s_recognized_options.contains(opt.first)) {
-            throw InvalidProgramArgumentsException(fmt::format("Unknown flag: {}", opt.first), print_usage);
+            throw InvalidProgramArgumentsException(std::format("Unknown flag: {}", opt.first), print_usage);
         }
     }
 

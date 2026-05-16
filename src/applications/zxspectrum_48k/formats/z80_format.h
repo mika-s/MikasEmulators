@@ -60,7 +60,7 @@ public:
 
     void print_header() override;
 
-    ManualState to_cpu_state() override;
+    auto to_cpu_state() -> ManualState override;
 
     void to_memory(EmulatorMemory<u16, u8>& memory) override;
 
@@ -235,23 +235,23 @@ private:
 
     void parse_v3();
 
-    InterruptMode parse_interrupt_mode(u8 raw_interrupt_mode);
+    auto parse_interrupt_mode(u8 raw_interrupt_mode) -> InterruptMode;
 
-    JoystickType parse_joystick_type(u8 raw_joystick_type);
+    auto parse_joystick_type(u8 raw_joystick_type) -> JoystickType;
 
-    HardwareMode parse_hardware_mode(u8 raw_hardware_mode);
+    [[nodiscard]] auto parse_hardware_mode(u8 raw_hardware_mode) const -> HardwareMode;
 
-    u8 get_next_byte();
+    auto get_next_byte() -> u8;
 
-    u16 get_next_word();
+    auto get_next_word() -> u16;
 
-    std::string version_string();
+    auto version_string() -> std::string;
 
-    std::string interrupt_string();
+    [[nodiscard]] auto interrupt_string() const -> std::string;
 
-    std::string synchronization_string();
+    auto synchronization_string() -> std::string;
 
-    std::string mgt_type_string();
+    auto mgt_type_string() -> std::string;
 };
 
 }

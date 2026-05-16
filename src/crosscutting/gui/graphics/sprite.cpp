@@ -3,7 +3,7 @@
 #include "gui/graphics/framebuffer.h"
 #include <algorithm>
 #include <cstdint>
-#include <fmt/core.h>
+#include <format>
 #include <iterator>
 #include <stdexcept>
 
@@ -15,10 +15,12 @@ Sprite::Sprite(std::size_t height, std::size_t width)
 {
     if (height != width) {
         throw std::invalid_argument("Non-square tiles not supported");
-    } else if (m_height > UINT32_MAX) {
-        throw std::invalid_argument(fmt::format("Sprite height too large: {}", height));
-    } else if (m_width > UINT32_MAX) {
-        throw std::invalid_argument(fmt::format("Sprite width too large: {}", width));
+    }
+    if (m_height > UINT32_MAX) {
+        throw std::invalid_argument(std::format("Sprite height too large: {}", height));
+    }
+    if (m_width > UINT32_MAX) {
+        throw std::invalid_argument(std::format("Sprite width too large: {}", width));
     }
 
     for (unsigned int row = 0; row < height; ++row) {
@@ -29,9 +31,10 @@ Sprite::Sprite(std::size_t height, std::size_t width)
 void Sprite::set(std::size_t row, std::size_t col, Color value)
 {
     if (row > m_height - 1) {
-        throw std::runtime_error(fmt::format("row of {} is too large, height is {}", row, m_height));
-    } else if (col > m_width - 1) {
-        throw std::runtime_error(fmt::format("col of {} is too large, width is {}", col, m_width));
+        throw std::runtime_error(std::format("row of {} is too large, height is {}", row, m_height));
+    }
+    if (col > m_width - 1) {
+        throw std::runtime_error(std::format("col of {} is too large, width is {}", col, m_width));
     }
 
     m_values[row][col] = value;
@@ -42,7 +45,7 @@ void Sprite::flip_horizontal()
     std::for_each(
         std::begin(m_values),
         std::end(m_values),
-        [](auto& i) { std::reverse(std::begin(i), std::end(i)); });
+        [](auto& i) -> auto { std::reverse(std::begin(i), std::end(i)); });
 }
 
 void Sprite::flip_vertical()
@@ -69,12 +72,12 @@ void Sprite::map_to_framebuffer(Framebuffer& framebuffer, int origin_row, int or
     }
 }
 
-Color Sprite::get(std::size_t row, std::size_t col)
+auto Sprite::get(const std::size_t row, const std::size_t col) const -> Color
 {
     return m_values[row][col];
 }
 
-std::size_t Sprite::size() const
+auto Sprite::size() const -> std::size_t
 {
     return m_width;
 }

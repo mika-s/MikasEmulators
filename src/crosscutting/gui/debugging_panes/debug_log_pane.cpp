@@ -2,8 +2,7 @@
 #include "crosscutting/logging//logger.h"
 #include "crosscutting/util/string_util.h"
 #include <chrono>
-#include <fmt/chrono.h> // IWYU pragma: keep
-#include <fmt/core.h>
+#include <format>
 #include <string>
 #include <utility>
 
@@ -36,7 +35,7 @@ void DebugLogPane::clear()
 void DebugLogPane::add_log_with_timestamp(char const* fmt, va_list args)
 {
     auto now = std::chrono::system_clock::now();
-    add_log(prepend(fmt::format("{:%Y-%m-%d %H:%M:%OS}: ", now), fmt).c_str(), args);
+    add_log(prepend(std::format("{:%Y-%m-%d %H:%M:%OS}: ", now), fmt).c_str(), args);
 }
 
 void DebugLogPane::add_log(char const* fmt, va_list args)
@@ -45,7 +44,7 @@ void DebugLogPane::add_log(char const* fmt, va_list args)
 
     m_buf.appendfv(fmt, args);
 
-    for (int new_size = m_buf.size(); old_size < new_size; old_size++) {
+    for (int const new_size = m_buf.size(); old_size < new_size; old_size++) {
         if (m_buf[old_size] == '\n') {
             m_line_offsets.push_back(old_size + 1);
         }
@@ -71,11 +70,11 @@ void DebugLogPane::draw(char const* title, bool* p_open)
             ImGui::OpenPopup("Options");
         }
         ImGui::SameLine();
-        bool clear_button = ImGui::Button("Clear");
+        bool const clear_button = ImGui::Button("Clear");
         ImGui::SameLine();
-        bool copy_button = ImGui::Button("Copy");
+        bool const copy_button = ImGui::Button("Copy");
         ImGui::SameLine();
-        m_filter.Draw("Filter", -100.0f);
+        m_filter.Draw("Filter", -100.0F);
 
         ImGui::Separator();
         ImGui::BeginChild("scrolling", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
@@ -121,7 +120,7 @@ void DebugLogPane::draw(char const* title, bool* p_open)
         ImGui::PopStyleVar();
 
         if (m_should_autoscroll && ImGui::GetScrollY() >= ImGui::GetScrollMaxY()) {
-            ImGui::SetScrollHereY(1.0f);
+            ImGui::SetScrollHereY(1.0F);
         }
 
         ImGui::EndChild();

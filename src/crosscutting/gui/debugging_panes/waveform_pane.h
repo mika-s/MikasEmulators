@@ -19,10 +19,10 @@ public:
 
     void attach_debug_container(std::shared_ptr<DebugContainer<u16, u8, 16>> debug_container);
 
-    void draw(char const* title, bool* p_open = nullptr);
+    void draw(char const* title, bool* p_open = nullptr) const;
 
 private:
-    static constexpr float waveform_width = 80.0f;
+    static constexpr float waveform_width = 80.0F;
 
     std::shared_ptr<DebugContainer<u16, u8, 16>> m_debug_container;
     bool m_is_debug_container_set;

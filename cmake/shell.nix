@@ -4,13 +4,9 @@
     nativeBuildInputs = with pkgs.buildPackages; [
       libX11
       cmakeMinimal
-      fmt
+      emscripten
       include-what-you-use
       SDL2
       SDL2_image
     ];
-
-      buildInputs = with pkgs; [
-        fmt
-      ];
 }

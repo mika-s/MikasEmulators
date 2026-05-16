@@ -16,7 +16,7 @@ public:
 
     virtual ~Tile() = default;
 
-    virtual bool is_initialized()
+    virtual auto is_initialized() -> bool
     {
         return true;
     }
@@ -26,23 +26,23 @@ public:
     void map_to_framebuffer(
         Framebuffer& framebuffer,
         unsigned int origin_row,
-        unsigned int origin_col);
+        unsigned int origin_col) const;
 
-    std::size_t size() const;
+    [[nodiscard]] auto size() const -> std::size_t;
 
 private:
     std::vector<std::vector<Color>> m_values;
     std::size_t m_height;
     std::size_t m_width;
 
-    Color get(std::size_t row, std::size_t col);
+    [[nodiscard]] auto get(std::size_t row, std::size_t col) const -> Color;
 };
 
 class UninitializedTile : public Tile {
 public:
     UninitializedTile();
 
-    bool is_initialized() override
+    auto is_initialized() -> bool override
     {
         return false;
     }

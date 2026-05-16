@@ -7,23 +7,23 @@ class Color {
 public:
     Color(u8 alpha, u8 red, u8 green, u8 blue);
 
-    [[nodiscard]] bool is_transparent() const;
+    [[nodiscard]] auto is_transparent() const -> bool;
 
-    [[nodiscard]] u32 to_u32() const;
+    [[nodiscard]] auto to_u32() const -> u32;
 
-    static Color black();
+    static auto black() -> Color;
 
-    static Color transparent();
+    static auto transparent() -> Color;
 
-    static Color white();
+    static auto white() -> Color;
 
-    static Color red();
+    static auto red() -> Color;
 
-    static Color green();
+    static auto green() -> Color;
 
-    static Color blue();
+    static auto blue() -> Color;
 
-    static Color yellow();
+    static auto yellow() -> Color;
 
 private:
     u8 m_alpha;

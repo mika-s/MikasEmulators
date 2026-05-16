@@ -4,22 +4,22 @@
 
 namespace emu::util::byte {
 
-auto is_bit_set(u8 variable, unsigned int bit_position) -> bool
+auto is_bit_set(const u8 variable, const unsigned int bit_position) -> bool
 {
     return (variable >> bit_position) & 1;
 }
 
-void set_bit(u8& variable, unsigned int bit_position)
+void set_bit(u8& variable, const unsigned int bit_position)
 {
     variable |= (1U << bit_position);
 }
 
-void unset_bit(u8& variable, unsigned int bit_position)
+void unset_bit(u8& variable, const unsigned int bit_position)
 {
     variable &= ~(1U << bit_position);
 }
 
-auto to_u16(u8 farg, u8 sarg) -> u16
+auto to_u16(const u8 farg, const u8 sarg) -> u16
 {
     return static_cast<u16>((farg << 8U) + sarg);
 }
@@ -65,7 +65,7 @@ auto high_nibble(const u8 number) -> u8
     return number & 0xf0;
 }
 
-auto carried_out_of(const unsigned int bit_position, u16 a, u16 b, bool cf) -> bool
+auto carried_out_of(const unsigned int bit_position, const u16 a, const u16 b, const bool cf) -> bool
 {
     const i32 result = a + b + (cf ? 1 : 0);
     const i32 carry = result ^ a ^ b;
@@ -73,7 +73,7 @@ auto carried_out_of(const unsigned int bit_position, u16 a, u16 b, bool cf) -> b
     return carry & (1 << (bit_position + 1));
 }
 
-auto borrow_from(const unsigned int bit_position, u16 a, u16 b, bool cf) -> bool
+auto borrow_from(const unsigned int bit_position, const u16 a, const u16 b, const bool cf) -> bool
 {
     const i32 result = a - b - (cf ? 1 : 0);
     const i32 carry = result ^ a ^ b;

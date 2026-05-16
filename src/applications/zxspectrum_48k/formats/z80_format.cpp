@@ -11,7 +11,7 @@
 #include "crosscutting/util/byte_util.h"
 #include "crosscutting/util/file_util.h"
 #include "crosscutting/util/string_util.h"
-#include <fmt/core.h>
+#include <format>
 #include <iostream>
 #include <stdexcept>
 #include <string>
@@ -36,7 +36,7 @@ Z80Format::Z80Format(std::string const& file_path)
     parse();
 }
 
-std::string Z80Format::version_string()
+auto Z80Format::version_string() -> std::string
 {
     switch (m_version) {
     case Z80FormatVersion::v1:
@@ -50,7 +50,7 @@ std::string Z80Format::version_string()
     }
 }
 
-std::string Z80Format::interrupt_string()
+auto Z80Format::interrupt_string() const -> std::string
 {
     switch (m_interrupt_mode) {
     case InterruptMode::ZERO:
@@ -64,7 +64,7 @@ std::string Z80Format::interrupt_string()
     }
 }
 
-std::string Z80Format::synchronization_string()
+auto Z80Format::synchronization_string() -> std::string
 {
     switch (m_synchronization) {
     case 0:
@@ -75,11 +75,11 @@ std::string Z80Format::synchronization_string()
     case 3:
         return "Low video synchronisation";
     default:
-        throw std::invalid_argument(fmt::format("m_synchronization cannot be {}. Has to be between 0-3.", m_synchronization));
+        throw std::invalid_argument(std::format("m_synchronization cannot be {}. Has to be between 0-3.", m_synchronization));
     }
 }
 
-std::string Z80Format::mgt_type_string()
+auto Z80Format::mgt_type_string() -> std::string
 {
     switch (m_mgt_type) {
     case 0:
@@ -89,11 +89,11 @@ std::string Z80Format::mgt_type_string()
     case 16:
         return "Plus D";
     default:
-        throw std::invalid_argument(fmt::format("m_mgt_type cannot be {}. Has to be 0, 1 or 16.", m_mgt_type));
+        throw std::invalid_argument(std::format("m_mgt_type cannot be {}. Has to be 0, 1 or 16.", m_mgt_type));
     }
 }
 
-void Z80Format::print_header()
+void Z80Format::print_header() // NOLINT(*-function-cognitive-complexity)
 {
     std::cout << "Header data for " << m_file_path << ":\n\n";
     std::cout << "Version: " << version_string() << "\n\n";
@@ -180,7 +180,7 @@ void Z80Format::print_header()
     }
 }
 
-ManualState Z80Format::to_cpu_state()
+auto Z80Format::to_cpu_state() -> ManualState
 {
     return {
         .m_iff1 = m_iff1,
@@ -248,14 +248,14 @@ void Z80Format::read_block_v1(EmulatorMemory<u16, u8>& memory)
 
     if (!(eb1 == 0x00 && eb2 == 0xed && eb3 == 0xed && eb4 == 0x00)) {
         throw std::invalid_argument(
-            fmt::format(
+            std::format(
                 "The four final bytes were not 0x00 0xed 0xed 0x00, but {} {} {} {}",
                 hexify(eb1), hexify(eb2), hexify(eb3), hexify(eb4)));
     }
 
     if (output.size() != 0xc000) {
         throw std::invalid_argument(
-            fmt::format(
+            std::format(
                 "Output size is wrong when reading z80 format. Was {} but should be 0xc000",
                 hexify(static_cast<u16>(output.size()))));
     }
@@ -275,7 +275,7 @@ void Z80Format::read_block_v2(EmulatorMemory<u16, u8>& memory)
     //    std::cout << "\tLength: " << hexify(length_of_compressed_data) << "\n";
     //    std::cout << "\tPage number: " << hexify(page_number) << "\n\n";
 
-    u16 offset;
+    u16 offset = 0;
     switch (page_number) {
     case 4:
         offset = 0x8000;
@@ -291,7 +291,7 @@ void Z80Format::read_block_v2(EmulatorMemory<u16, u8>& memory)
     }
 
     // We disregard the compression bool in the v1 header when using v2 block parsing.
-    bool is_compressed = length_of_compressed_data != 0xffff;
+    const bool is_compressed = length_of_compressed_data != 0xffff;
 
     int i = 0;
     while (i++ < length_of_compressed_data) {
@@ -312,7 +312,7 @@ void Z80Format::read_block_v2(EmulatorMemory<u16, u8>& memory)
 
     if (output.size() != 0x4000) {
         throw std::invalid_argument(
-            fmt::format(
+            std::format(
                 "Output size is wrong when reading z80 format. Was {} but should be 0x4000",
                 hexify(static_cast<u16>(output.size()))));
     }
@@ -400,7 +400,7 @@ void Z80Format::parse_v2()
         m_version = Z80FormatVersion::v3;
     } else {
         throw std::invalid_argument(
-            fmt::format("Invalid header length: {}. Must be {} for v2 or {}/{} for v3.",
+            std::format("Invalid header length: {}. Must be {} for v2 or {}/{} for v3.",
                 m_length_of_additional_header_block, s_header_size_additional_v2,
                 s_header_size_additional_v3_1, s_header_size_additional_v3_2));
     }
@@ -411,7 +411,7 @@ void Z80Format::parse_v2()
 
     if (m_hardware_mode != HardwareMode::_48k && m_hardware_mode != HardwareMode::_48k_If1) {
         throw UnsupportedException(
-            fmt::format("Only hardware modes {} and {} are supported, but {} was provided",
+            std::format("Only hardware modes {} and {} are supported, but {} was provided",
                 s_hardware_mode_as_string.at(HardwareMode::_48k),
                 s_hardware_mode_as_string.at(HardwareMode::_48k_If1),
                 s_hardware_mode_as_string.at(m_hardware_mode)));
@@ -420,7 +420,7 @@ void Z80Format::parse_v2()
     m_byte_35 = get_next_byte();
     m_byte_36 = get_next_byte();
 
-    u8 misc_byte3 = get_next_byte();
+    u8 const misc_byte3 = get_next_byte();
     m_is_r_reg_emulation_on = is_bit_set(misc_byte3, 0);
     m_is_ldir_emulation_on = is_bit_set(misc_byte3, 1);
     m_is_ay_sound_in_use = is_bit_set(misc_byte3, 2);
@@ -445,7 +445,7 @@ void Z80Format::parse_v3()
     }
 
     m_is_multiface_rom_paged = get_next_byte() == 0xff;
-    if (m_is_mgt_rom_paged) {
+    if (m_is_multiface_rom_paged) {
         throw UnsupportedException("Multiface ROM paging");
     }
 
@@ -467,7 +467,7 @@ void Z80Format::parse_v3()
     }
 }
 
-InterruptMode Z80Format::parse_interrupt_mode(u8 raw_interrupt_mode)
+auto Z80Format::parse_interrupt_mode(u8 raw_interrupt_mode) -> InterruptMode
 {
     switch (raw_interrupt_mode) {
     case 0:
@@ -477,11 +477,11 @@ InterruptMode Z80Format::parse_interrupt_mode(u8 raw_interrupt_mode)
     case 2:
         return InterruptMode::TWO;
     default:
-        throw std::invalid_argument(fmt::format("Invalid interrupt mode: {}", raw_interrupt_mode));
+        throw std::invalid_argument(std::format("Invalid interrupt mode: {}", raw_interrupt_mode));
     }
 }
 
-JoystickType Z80Format::parse_joystick_type(u8 raw_joystick_type)
+auto Z80Format::parse_joystick_type(u8 raw_joystick_type) -> JoystickType
 {
     switch (raw_joystick_type) {
     case 0:
@@ -497,11 +497,11 @@ JoystickType Z80Format::parse_joystick_type(u8 raw_joystick_type)
     case 3:
         return JoystickType::Sinclair_2_Right;
     default:
-        throw std::invalid_argument(fmt::format("Invalid joystick type: {}", raw_joystick_type));
+        throw std::invalid_argument(std::format("Invalid joystick type: {}", raw_joystick_type));
     }
 }
 
-HardwareMode Z80Format::parse_hardware_mode(u8 raw_hardware_mode)
+auto Z80Format::parse_hardware_mode(u8 raw_hardware_mode) const -> HardwareMode
 {
     switch (m_version) {
     case Z80FormatVersion::v2:
@@ -517,7 +517,7 @@ HardwareMode Z80Format::parse_hardware_mode(u8 raw_hardware_mode)
         case 4:
             return HardwareMode::_128k_If1;
         default:
-            throw std::invalid_argument(fmt::format("Invalid hardware mode for v2: {}", raw_hardware_mode));
+            throw std::invalid_argument(std::format("Invalid hardware mode for v2: {}", raw_hardware_mode));
         }
     case Z80FormatVersion::v3:
         switch (raw_hardware_mode) {
@@ -536,14 +536,14 @@ HardwareMode Z80Format::parse_hardware_mode(u8 raw_hardware_mode)
         case 6:
             return HardwareMode::_128k_MGT;
         default:
-            throw std::invalid_argument(fmt::format("Invalid hardware mode for v2: {}", raw_hardware_mode));
+            throw std::invalid_argument(std::format("Invalid hardware mode for v2: {}", raw_hardware_mode));
         }
     default:
         throw std::invalid_argument("Cannot only parse hardware mode in v2 or v3");
     }
 }
 
-u8 Z80Format::get_next_byte()
+auto Z80Format::get_next_byte() -> u8
 {
     const NextByte next_byte = {
         .farg = m_raw_data.read(m_byte_counter++)
@@ -552,7 +552,7 @@ u8 Z80Format::get_next_byte()
     return next_byte.farg;
 }
 
-u16 Z80Format::get_next_word()
+auto Z80Format::get_next_word() -> u16
 {
     const NextWord next_word = {
         .farg = m_raw_data.read(m_byte_counter++),

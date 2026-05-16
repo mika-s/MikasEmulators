@@ -1,6 +1,6 @@
 #include "environment.h"
 #include "crosscutting/misc/uinteger.h"
-#include <fmt/core.h>
+#include <format>
 #include <stdexcept>
 
 namespace emu::lmc {
@@ -13,7 +13,7 @@ void Environment::add_label(std::string const& label, Address address)
     if (m_mapping.contains(label)) {
 #endif
         throw std::invalid_argument(
-            fmt::format(
+            std::format(
                 "The {} label in the source code has already been assigned to an address: {}.",
                 label,
                 m_mapping.at(label).underlying()));
@@ -22,15 +22,14 @@ void Environment::add_label(std::string const& label, Address address)
     m_mapping.insert({ label, address });
 }
 
-auto Environment::get_address_given_label(std::string const& label) -> Address
+auto Environment::get_address_given_label(std::string const& label) const -> Address
 {
 #ifdef __EMSCRIPTEN__
     if (m_mapping.count(label) == 0) {
 #else
     if (!m_mapping.contains(label)) {
 #endif
-        throw std::invalid_argument(
-            fmt::format("Could not find the {} label in the source code.", label));
+        throw std::invalid_argument(std::format("Could not find the {} label in the source code.", label));
     }
     return m_mapping.at(label);
 }

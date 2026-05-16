@@ -48,12 +48,13 @@ private:
 
     void prepare_framebuffers();
 
-    bool prepare_framebuffer(unsigned int palette_idx);
+    auto prepare_framebuffer(unsigned int palette_idx) -> bool;
 
-    bool prepare_framebuffer_for_rotation(
+    auto prepare_framebuffer_for_rotation(
         std::vector<std::shared_ptr<Sprite>> const& sprites,
         unsigned int rotation,
-        unsigned int palette_idx);
+        unsigned int palette_idx
+    ) -> bool;
 
     void render_image(u32 tile_texture);
 };

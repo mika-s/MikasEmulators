@@ -52,11 +52,10 @@ auto read_file_into_vector(std::string const& path) -> std::vector<u8>
 
 auto read_file(std::string const& path) -> std::stringstream
 {
-    std::string line;
     std::stringstream ss;
-    std::ifstream file(path, std::ios::in);
 
-    if (file.is_open()) {
+    if (std::ifstream file(path, std::ios::in); file.is_open()) {
+        std::string line;
         while (getline(file, line)) {
             ss << line << "\n";
         }

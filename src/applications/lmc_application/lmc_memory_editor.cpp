@@ -4,7 +4,7 @@
 #include "crosscutting/misc/uinteger.h"
 #include "imgui.h"
 #include <cstring>
-#include <fmt/core.h>
+#include <format>
 #include <memory>
 #include <string>
 #include <utility>
@@ -43,14 +43,14 @@ void LmcMemoryEditor::draw(char const* title, bool* p_open)
         if (ImGui::BeginTable("memory_editor", s_cols, flags)) {
             unsigned int address = 0;
             for (std::size_t col = 0; col < s_cols; ++col) {
-                ImGui::TableSetupColumn(fmt::format("##lme-col-ts{}", col).c_str(), ImGuiTableColumnFlags_WidthFixed, s_box_width);
+                ImGui::TableSetupColumn(std::format("##lme-col-ts{}", col).c_str(), ImGuiTableColumnFlags_WidthFixed, s_box_width);
             }
             for (std::size_t row = 0; row < s_rows; ++row) {
                 ImGui::TableNextRow();
                 for (std::size_t col = 0; col < s_cols; ++col) {
                     ImGui::TableSetColumnIndex(col);
-                    strncpy(m_values[address], fmt::format("{}", memory[address].underlying()).c_str(), s_max_chars);
-                    ImGui::InputText(fmt::format("{}", address).c_str(), m_values[address], //
+                    strncpy(m_values[address], std::format("{}", memory[address].underlying()).c_str(), s_max_chars);
+                    ImGui::InputText(std::format("{}", address).c_str(), m_values[address], //
                         IM_ARRAYSIZE(m_values[address]), ImGuiInputTextFlags_CharsDecimal | ImGuiInputTextFlags_ReadOnly);
                     //                        if (ImGui::IsItemDeactivatedAfterEdit()) {
                     //                            std::cout << "Modified\n";

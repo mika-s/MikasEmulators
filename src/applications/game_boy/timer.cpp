@@ -3,7 +3,7 @@
 #include "applications/game_boy/interrupts.h"
 #include "crosscutting/util/byte_util.h"
 #include <algorithm>
-#include <fmt/core.h>
+#include <format>
 #include <stdexcept>
 
 namespace emu::applications::game_boy {
@@ -11,7 +11,7 @@ namespace emu::applications::game_boy {
 using emu::util::byte::is_bit_set;
 using emu::util::byte::set_bit;
 
-void Timer::update(cyc cycles)
+void Timer::update(const cyc cycles)
 {
     m_internal_divider_counter += cycles;
     if (m_internal_divider_counter >= 0xff) {
@@ -48,7 +48,7 @@ void Timer::update(cyc cycles)
     }
 }
 
-u8 Timer::divider() const
+auto Timer::divider() const -> u8
 {
     return m_divider;
 }
@@ -58,27 +58,27 @@ void Timer::reset_divider()
     m_divider = 0;
 }
 
-u8 Timer::counter() const
+auto Timer::counter() const -> u8
 {
     return m_counter;
 }
 
-void Timer::counter(u8 new_value)
+void Timer::counter(const u8 new_value)
 {
     m_counter = new_value;
 }
 
-u8 Timer::modulo() const
+auto Timer::modulo() const -> u8
 {
     return m_modulo;
 }
 
-void Timer::modulo(u8 new_value)
+void Timer::modulo(const u8 new_value)
 {
     m_modulo = new_value;
 }
 
-u8 Timer::control() const
+auto Timer::control() const -> u8
 {
     u8 value = 0;
 
@@ -104,7 +104,7 @@ u8 Timer::control() const
     return value;
 }
 
-void Timer::control(u8 new_value)
+void Timer::control(const u8 new_value)
 {
     m_is_running = is_bit_set(new_value, s_timer_enabled_bit);
 
@@ -124,7 +124,7 @@ void Timer::control(u8 new_value)
         break;
     default:
         throw std::runtime_error(
-            fmt::format(
+            std::format(
                 "Programming error: Timer speed of {} should never be possible. Legal values are 00, 01, 10 and 11.",
                 speed));
     }

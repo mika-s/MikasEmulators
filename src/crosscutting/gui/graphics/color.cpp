@@ -4,7 +4,7 @@
 
 namespace emu::gui {
 
-Color::Color(u8 alpha, u8 red, u8 green, u8 blue)
+Color::Color(const u8 alpha, const u8 red, const u8 green, const u8 blue)
     : m_alpha(alpha)
     , m_red(red)
     , m_green(green)
@@ -12,47 +12,47 @@ Color::Color(u8 alpha, u8 red, u8 green, u8 blue)
 {
 }
 
-u32 Color::to_u32() const
+auto Color::to_u32() const -> u32
 {
     return emu::util::byte::to_u32(m_alpha, m_blue, m_green, m_red);
 }
 
-bool Color::is_transparent() const
+auto Color::is_transparent() const -> bool
 {
     return m_alpha == 0;
 }
 
-Color Color::black()
+auto Color::black() -> Color
 {
     return { 0xff, 0, 0, 0 };
 }
 
-Color Color::transparent()
+auto Color::transparent() -> Color
 {
     return { 0, 0, 0, 0 };
 }
 
-Color Color::white()
+auto Color::white() -> Color
 {
     return { 0xff, 0xff, 0xff, 0xff };
 }
 
-Color Color::red()
+auto Color::red() -> Color
 {
     return { 0xff, 0xff, 0, 0 };
 }
 
-Color Color::green()
+auto Color::green() -> Color
 {
     return { 0xff, 0, 0xff, 0 };
 }
 
-Color Color::blue()
+auto Color::blue() -> Color
 {
     return { 0xff, 0, 0, 0xff };
 }
 
-Color Color::yellow()
+auto Color::yellow() -> Color
 {
     return { 0xff, 0xff, 0xff, 0 };
 }

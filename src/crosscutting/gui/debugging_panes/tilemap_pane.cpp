@@ -13,7 +13,7 @@
 
 namespace emu::gui {
 
-TilemapPane::TilemapPane(int default_palette_idx)
+TilemapPane::TilemapPane(const int default_palette_idx)
     : m_is_debug_container_set(false)
     , m_framebuffers({})
     , m_chosen_palette_idx(default_palette_idx)
@@ -32,7 +32,7 @@ void TilemapPane::attach_debug_container(std::shared_ptr<DebugContainer<u16, u8,
     m_is_debug_container_set = true;
 }
 
-void TilemapPane::draw(char const* title, u32 tile_texture, bool* p_open)
+void TilemapPane::draw(char const* title, const u32 tile_texture, bool* p_open)
 {
     if (!ImGui::Begin(title, p_open, ImGuiWindowFlags_MenuBar)) {
         ImGui::End();
@@ -75,7 +75,7 @@ void TilemapPane::prepare_framebuffers()
     m_number_of_palettes = number_of_palettes;
 }
 
-bool TilemapPane::prepare_framebuffer(unsigned int palette_idx)
+auto TilemapPane::prepare_framebuffer(const unsigned int palette_idx) -> bool
 {
     const std::vector<std::shared_ptr<Tile>> tiles = m_debug_container->tiles()[palette_idx];
     const std::size_t number_of_tiles = tiles.size();
@@ -101,7 +101,7 @@ bool TilemapPane::prepare_framebuffer(unsigned int palette_idx)
     return true;
 }
 
-void TilemapPane::render_image(u32 tile_texture)
+void TilemapPane::render_image(const u32 tile_texture)
 {
     glBindTexture(GL_TEXTURE_2D, tile_texture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -110,7 +110,7 @@ void TilemapPane::render_image(u32 tile_texture)
         m_framebuffers[m_chosen_palette_idx].to_output_vector().data());
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    const ImVec2 image_size = ImVec2(scaled_width, scaled_height);
+    constexpr auto image_size = ImVec2(scaled_width, scaled_height);
     ImGui::Image(
         (void*)((intptr_t)tile_texture), image_size,
         ImVec2(0, 0),

@@ -12,7 +12,7 @@
 #include <SDL_log.h>
 #include <algorithm>
 #include <cstdlib>
-#include <fmt/core.h>
+#include <format>
 #include <string>
 #include <unordered_map>
 #include <utility>
@@ -66,7 +66,7 @@ GuiImgui::~GuiImgui()
 
 void GuiImgui::to_terminal(const Data character)
 {
-    m_output.push_back(fmt::format("{}", static_cast<char>(character.underlying())));
+    m_output.push_back(std::format("{}", static_cast<char>(character.underlying())));
 }
 
 void GuiImgui::from_terminal()

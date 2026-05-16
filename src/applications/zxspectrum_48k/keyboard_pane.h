@@ -16,7 +16,7 @@ class KeyboardPane {
 public:
     void attach_cpu_io(CpuIo const* cpu_io);
 
-    void draw(char const* title, bool* p_open = nullptr);
+    void draw(char const* title, bool* p_open = nullptr) const;
 
 private:
     static constexpr std::size_t s_rows = 8;

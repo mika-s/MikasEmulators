@@ -2,7 +2,7 @@
 #include "crosscutting/exceptions/invalid_program_arguments_exception.h"
 #include "options.h"
 #include "usage.h"
-#include <fmt/core.h>
+#include <format>
 #include <functional>
 #include <optional>
 #include <string>
@@ -14,11 +14,11 @@ namespace emu::applications::zxspectrum_48k {
 
 using emu::exceptions::InvalidProgramArgumentsException;
 
-Settings Settings::from_options(Options const& options)
+auto Settings::from_options(Options const& options) -> Settings
 {
     for (auto const& opt : options.options()) {
         if (!s_recognized_options.contains(opt.first)) {
-            throw InvalidProgramArgumentsException(fmt::format("Unknown flag: {}", opt.first), print_usage);
+            throw InvalidProgramArgumentsException(std::format("Unknown flag: {}", opt.first), print_usage);
         }
     }
 
@@ -27,9 +27,7 @@ Settings Settings::from_options(Options const& options)
         .m_is_only_printing_header = false
     };
 
-    const std::optional<std::string> path = options.path();
-
-    if (path.has_value()) {
+    if (const std::optional<std::string> path = options.path(); path.has_value()) {
         settings.m_snapshot_file = path.value();
     }
 
