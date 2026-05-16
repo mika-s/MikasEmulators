@@ -4,7 +4,7 @@
 #include "gui_request.h"
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
-#include "imgui_impl_sdl.h"
+#include "imgui_impl_sdl2.h"
 #include "interfaces/ui_observer.h"
 #include "ui.h"
 #include <SDL.h>
@@ -208,7 +208,7 @@ void GuiImgui::render(const bool is_awaiting_input, std::string const& game_wind
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplSDL2_NewFrame(m_win);
+    ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 
     ImGuiStyle& style = ImGui::GetStyle();

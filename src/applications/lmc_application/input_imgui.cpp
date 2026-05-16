@@ -1,7 +1,7 @@
 #include "input_imgui.h"
 #include "gui_io.h"
 #include "imgui.h"
-#include "imgui_impl_sdl.h"
+#include "imgui_impl_sdl2.h"
 #include <SDL_events.h>
 
 namespace emu::applications::lmc {

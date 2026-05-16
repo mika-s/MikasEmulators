@@ -83,7 +83,7 @@ private:
     IoInfoPane<u16, u8, 16> m_io_info;
     MemoryEditorPane<u16, u8, 16> m_memory_editor;
 
-    void notify_gui_observers(GuiRequest request);
+    void notify_gui_observers(GuiRequest request) const;
 
     void init();
 

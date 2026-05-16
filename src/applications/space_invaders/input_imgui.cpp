@@ -2,7 +2,7 @@
 #include "crosscutting/util/byte_util.h"
 #include "gui_io.h"
 #include "imgui.h"
-#include "imgui_impl_sdl.h"
+#include "imgui_impl_sdl2.h"
 #include "space_invaders/cpu_io.h"
 #include "space_invaders/interfaces/key_observer.h"
 #include "space_invaders/key_request.h"

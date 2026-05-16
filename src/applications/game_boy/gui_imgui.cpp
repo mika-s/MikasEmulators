@@ -6,7 +6,7 @@
 #include "gui_request.h"
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
-#include "imgui_impl_sdl.h"
+#include "imgui_impl_sdl2.h"
 #include "interfaces/gui_observer.h"
 #include "lcd_control.h"
 #include <SDL.h>
@@ -180,7 +180,7 @@ void GuiImgui::init()
     ImGui_ImplSDL2_InitForOpenGL(m_win, m_gl_context);
     ImGui_ImplOpenGL3_Init(glsl_version.c_str());
 
-    const ImVec4 background = ImVec4(35 / 255.0f, 35 / 255.0f, 35 / 255.0f, 1.00f);
+    const ImVec4 background = ImVec4(35 / 255.0F, 35 / 255.0F, 35 / 255.0F, 1.00F);
     glClearColor(background.x, background.y, background.z, background.w);
 
     glGenTextures(1, &m_screen_texture);
@@ -188,7 +188,7 @@ void GuiImgui::init()
 }
 
 void GuiImgui::update_screen(
-    LcdControl lcd_control,
+    const LcdControl lcd_control,
     std::vector<u8> const& tile_ram_1,
     [[maybe_unused]] std::vector<u8> const& tile_ram_2,
     [[maybe_unused]] std::vector<u8> const& tile_ram_3,
@@ -198,7 +198,7 @@ void GuiImgui::update_screen(
     std::vector<u8> const& palette_ram,
     std::string const& game_window_subtitle)
 {
-    std::vector<u32> framebuffer = create_framebuffer(lcd_control, tile_ram_1, sprite_ram, palette_ram);
+    const std::vector<u32> framebuffer = create_framebuffer(lcd_control, tile_ram_1, sprite_ram, palette_ram);
 
     glBindTexture(GL_TEXTURE_2D, m_screen_texture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -214,20 +214,20 @@ void GuiImgui::render(std::string const& game_window_subtitle)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplSDL2_NewFrame(m_win);
+    ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 
     ImGuiStyle& style = ImGui::GetStyle();
-    style.WindowRounding = 0.0f;
+    style.WindowRounding = 0.0F;
 
-    int window_width;
-    int window_height;
+    int window_width = 0;
+    int window_height = 0;
     SDL_GetWindowSize(m_win, &window_width, &window_height);
 
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-    ImGui::SetNextWindowPos(ImVec2(.0f, .0f), ImGuiCond_Always);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0F, 0.0F));
+    ImGui::SetNextWindowPos(ImVec2(.0F, .0F), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(static_cast<float>(window_width), static_cast<float>(window_height)), ImGuiCond_Always);
-    ImGui::SetNextWindowBgAlpha(0.0f);
+    ImGui::SetNextWindowBgAlpha(0.0F);
 
     ImGui::Begin("Main window", nullptr,
         ImGuiWindowFlags_NoResize                    //
@@ -271,7 +271,7 @@ void GuiImgui::render(std::string const& game_window_subtitle)
 
     ImGui::DockSpace(
         ImGui::GetID("Docking"),
-        ImVec2(0.0f, 0.0f),
+        ImVec2(0.0F, 0.0F),
         ImGuiDockNodeFlags_None | ImGuiDockNodeFlags_PassthruCentralNode);
 
     if (m_show_log) {

@@ -7,8 +7,8 @@ set(SOURCES_IMGUI
         imgui_impl_opengl3.cpp
         imgui_impl_opengl3.h
         imgui_impl_opengl3_loader.h
-        imgui_impl_sdl.cpp
-        imgui_impl_sdl.h
+        imgui_impl_sdl2.cpp
+        imgui_impl_sdl2.h
         imgui_internal.h
         imgui_memory_editor.h
         imgui_tables.cpp

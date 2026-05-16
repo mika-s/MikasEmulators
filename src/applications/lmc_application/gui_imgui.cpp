@@ -13,7 +13,7 @@
 #ifdef __EMSCRIPTEN__
 #include "imgui_impl_sdl_emscripten.h"
 #else
-#include "imgui_impl_sdl.h"
+#include "imgui_impl_sdl2.h"
 #endif
 #include "interfaces/ui_observer.h"
 #include "lmc_memory_editor.h"
@@ -219,21 +219,21 @@ void GuiImgui::init()
     ImGui_ImplSDL2_InitForOpenGL(m_win, m_gl_context);
     ImGui_ImplOpenGL3_Init(glsl_version.c_str());
 
-    const ImVec4 background = ImVec4(35 / 255.0f, 35 / 255.0f, 35 / 255.0f, 1.00f);
+    constexpr auto background = ImVec4(35 / 255.0F, 35 / 255.0F, 35 / 255.0F, 1.00F);
     glClearColor(background.x, background.y, background.z, background.w);
 }
 
-void GuiImgui::update_screen(bool is_awaiting_input, std::string const& game_window_subtitle)
+void GuiImgui::update_screen(const bool is_awaiting_input, std::string const& game_window_subtitle)
 {
     render(is_awaiting_input, game_window_subtitle);
 }
 
-void GuiImgui::render(bool is_awaiting_input, std::string const& game_window_subtitle)
+void GuiImgui::render(const bool is_awaiting_input, std::string const& game_window_subtitle)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplSDL2_NewFrame(m_win);
+    ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 
     ImGuiStyle& style = ImGui::GetStyle();
@@ -244,7 +244,7 @@ void GuiImgui::render(bool is_awaiting_input, std::string const& game_window_sub
     SDL_GetWindowSize(m_win, &window_width, &window_height);
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0F, 0.0F));
-    ImGui::SetNextWindowPos(ImVec2(.0f, .0f), ImGuiCond_Always);
+    ImGui::SetNextWindowPos(ImVec2(.0F, .0F), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(static_cast<float>(window_width), static_cast<float>(window_height)), ImGuiCond_Always);
     ImGui::SetNextWindowBgAlpha(0.0F);
 

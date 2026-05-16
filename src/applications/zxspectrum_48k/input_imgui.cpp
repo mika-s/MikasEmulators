@@ -4,7 +4,7 @@
 #include "crosscutting/util/byte_util.h"
 #include "gui_io.h"
 #include "imgui.h"
-#include "imgui_impl_sdl.h"
+#include "imgui_impl_sdl2.h"
 #include "interfaces/key_observer.h"
 #include "key_request.h"
 #include <SDL_events.h>

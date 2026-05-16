@@ -11,4 +11,6 @@ roms/8080/*/
 roms/z80/*/
 
 pacman_imgui.ini
+space-invaders_imgui.ini
 synacor_imgui.ini
+zxspectrum-48k_imgui.ini

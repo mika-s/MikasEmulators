@@ -4,7 +4,7 @@
 #include "gui_request.h"
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
-#include "imgui_impl_sdl.h"
+#include "imgui_impl_sdl2.h"
 #include "space_invaders/interfaces/gui_observer.h"
 #include <SDL.h>
 #include <SDL_error.h>
@@ -61,19 +61,19 @@ void GuiImgui::remove_gui_observer(GuiObserver* observer)
         m_gui_observers.end());
 }
 
-void GuiImgui::notify_gui_observers(GuiRequest request)
+void GuiImgui::notify_gui_observers(const GuiRequest request) const
 {
     for (GuiObserver* observer : m_gui_observers) {
         observer->gui_request(request);
     }
 }
 
-void GuiImgui::attach_debugger(std::shared_ptr<Debugger<u16, 16>> debugger)
+void GuiImgui::attach_debugger(const std::shared_ptr<Debugger<u16, 16>> debugger)
 {
     m_disassembly.attach_debugger(debugger);
 }
 
-void GuiImgui::attach_debug_container(std::shared_ptr<DebugContainer<u16, u8, 16>> debug_container)
+void GuiImgui::attach_debug_container(const std::shared_ptr<DebugContainer<u16, u8, 16>> debug_container)
 {
     m_cpu_info.attach_debug_container(debug_container);
     m_io_info.attach_debug_container(debug_container);
@@ -163,7 +163,7 @@ void GuiImgui::init()
     ImGui_ImplSDL2_InitForOpenGL(m_win, m_gl_context);
     ImGui_ImplOpenGL3_Init(glsl_version.c_str());
 
-    const ImVec4 background = ImVec4(35 / 255.0f, 35 / 255.0f, 35 / 255.0f, 1.00f);
+    constexpr auto background = ImVec4(35 / 255.0F, 35 / 255.0F, 35 / 255.0F, 1.00F);
     glClearColor(background.x, background.y, background.z, background.w);
 
     glGenTextures(1, &m_screen_texture);
@@ -171,7 +171,7 @@ void GuiImgui::init()
 
 void GuiImgui::update_screen(std::vector<u8> const& vram, std::string const& game_window_subtitle)
 {
-    std::vector<u32> framebuffer = create_framebuffer(vram);
+    const std::vector<u32> framebuffer = create_framebuffer(vram);
 
     glBindTexture(GL_TEXTURE_2D, m_screen_texture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -188,20 +188,20 @@ void GuiImgui::render(std::string const& game_window_subtitle)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplSDL2_NewFrame(m_win);
+    ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 
     ImGuiStyle& style = ImGui::GetStyle();
-    style.WindowRounding = 0.0f;
+    style.WindowRounding = 0.0F;
 
-    int window_width;
-    int window_height;
+    int window_width = 0;
+    int window_height = 0;
     SDL_GetWindowSize(m_win, &window_width, &window_height);
 
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-    ImGui::SetNextWindowPos(ImVec2(.0f, .0f), ImGuiCond_Always);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0F, 0.0F));
+    ImGui::SetNextWindowPos(ImVec2(.0F, .0F), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(static_cast<float>(window_width), static_cast<float>(window_height)), ImGuiCond_Always);
-    ImGui::SetNextWindowBgAlpha(0.0f);
+    ImGui::SetNextWindowBgAlpha(0.0F);
 
     ImGui::Begin("Main window", nullptr,
         ImGuiWindowFlags_NoResize                    //
@@ -242,7 +242,7 @@ void GuiImgui::render(std::string const& game_window_subtitle)
 
     ImGui::DockSpace(
         ImGui::GetID("Docking"),
-        ImVec2(0.0f, 0.0f),
+        ImVec2(0.0F, 0.0F),
         ImGuiDockNodeFlags_None | ImGuiDockNodeFlags_PassthruCentralNode);
 
     if (m_show_log) {
@@ -291,7 +291,7 @@ void GuiImgui::render_game_window(std::string const& game_window_subtitle)
 
     ImGui::Begin(title.c_str(), &m_show_game);
 
-    const ImVec2 image_size = ImVec2(s_scaled_width, s_scaled_height);
+    constexpr auto image_size = ImVec2(s_scaled_width, s_scaled_height);
     ImGui::Image(
         (void*)((intptr_t)m_screen_texture), image_size,
         ImVec2(0, 0),
@@ -306,18 +306,18 @@ void GuiImgui::render_game_info_window()
 {
     ImGui::Begin("Game info", &m_show_game_info);
 
-    ImGui::Text("Avg %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    ImGui::Text("Avg %.3f ms/frame (%.1f FPS)", 1000.0F / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
     ImGui::Separator();
 
     if (ImGui::Button("Run")) {
         notify_gui_observers({ .m_type = GuiRequestType::RUN });
     }
-    ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+    ImGui::SameLine(0.0F, ImGui::GetStyle().ItemInnerSpacing.x);
     if (ImGui::Button("Pause")) {
         notify_gui_observers({ .m_type = GuiRequestType::PAUSE });
     }
-    ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+    ImGui::SameLine(0.0F, ImGui::GetStyle().ItemInnerSpacing.x);
     if (ImGui::Button("Stop")) {
         notify_gui_observers({ .m_type = GuiRequestType::STOP });
     }
