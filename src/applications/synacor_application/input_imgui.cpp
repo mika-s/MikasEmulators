@@ -13,9 +13,7 @@ void InputImgui::read(GuiIo& gui_io)
     while (SDL_PollEvent(&read_input_event) != 0) {
         ImGui_ImplSDL2_ProcessEvent(&read_input_event);
 
-        ImGuiIO const& io = ImGui::GetIO(); // NOLINT(*-identifier-length)
-
-        if (!io.WantCaptureKeyboard) {
+        if (ImGuiIO const& io = ImGui::GetIO(); !io.WantCaptureKeyboard) {
             switch (read_input_event.type) {
             case SDL_QUIT:
                 gui_io.m_is_quitting = true;
@@ -57,9 +55,7 @@ void InputImgui::read_debug_only(GuiIo& gui_io)
     while (SDL_PollEvent(&read_input_event) != 0) {
         ImGui_ImplSDL2_ProcessEvent(&read_input_event);
 
-        ImGuiIO const& io = ImGui::GetIO(); // NOLINT(*-identifier-length)
-
-        if (!io.WantCaptureKeyboard) {
+        if (ImGuiIO const& io = ImGui::GetIO(); !io.WantCaptureKeyboard) {
             switch (read_input_event.type) {
             case SDL_QUIT:
                 gui_io.m_is_quitting = true;

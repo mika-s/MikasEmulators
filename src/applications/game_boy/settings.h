@@ -12,7 +12,7 @@ namespace emu::applications::game_boy {
 class Settings {
 public:
 
-    static Settings from_options(Options const& options);
+    static auto from_options(Options const& options) -> Settings;
 
 private:
     static const inline std::string s_help_short = "h";

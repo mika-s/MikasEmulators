@@ -50,7 +50,7 @@ using emu::z80::InterruptMode;
 
 ZxSpectrum48kSession::ZxSpectrum48kSession(
     [[maybe_unused]] Settings const& settings,
-    bool is_starting_paused,
+    const bool is_starting_paused,
     std::shared_ptr<Gui> gui,
     std::shared_ptr<Input> input,
     EmulatorMemory<u16, u8>& memory)
@@ -93,11 +93,11 @@ ZxSpectrum48kSession::ZxSpectrum48kSession(
 
 ZxSpectrum48kSession::ZxSpectrum48kSession(
     Settings const& settings,
-    bool is_starting_paused,
+    const bool is_starting_paused,
     std::shared_ptr<Gui> gui,
     std::shared_ptr<Input> input,
     EmulatorMemory<u16, u8>& memory,
-    ManualState initial_cpu_state)
+    const ManualState &initial_cpu_state)
     : ZxSpectrum48kSession(settings, is_starting_paused, std::move(gui), std::move(input), memory)
 {
     m_cpu->set_state_manually(initial_cpu_state);
@@ -115,7 +115,7 @@ void ZxSpectrum48kSession::run()
 {
     m_cpu->start();
 
-    cyc cycles;
+    cyc cycles = 0;
 
     while (!m_state_context->current_state()->is_exit_state()) {
         m_state_context->current_state()->perform(cycles);
@@ -134,7 +134,7 @@ void ZxSpectrum48kSession::stop()
 
 void ZxSpectrum48kSession::setup_cpu()
 {
-    const u16 initial_pc = 0;
+    constexpr u16 initial_pc = 0;
 
     m_cpu = std::make_shared<Cpu>(m_memory, initial_pc);
 
@@ -145,17 +145,17 @@ void ZxSpectrum48kSession::setup_cpu()
 void ZxSpectrum48kSession::setup_debugging()
 {
     m_debug_container = std::make_shared<DebugContainer<u16, u8, 16>>();
-    m_debug_container->add_register(RegisterDebugContainer<u8>("A", [&]() { return m_cpu->a(); }));
-    m_debug_container->add_register(RegisterDebugContainer<u8>("B", [&]() { return m_cpu->b(); }));
-    m_debug_container->add_register(RegisterDebugContainer<u8>("C", [&]() { return m_cpu->c(); }));
-    m_debug_container->add_register(RegisterDebugContainer<u8>("D", [&]() { return m_cpu->d(); }));
-    m_debug_container->add_register(RegisterDebugContainer<u8>("E", [&]() { return m_cpu->e(); }));
-    m_debug_container->add_register(RegisterDebugContainer<u8>("H", [&]() { return m_cpu->h(); }));
-    m_debug_container->add_register(RegisterDebugContainer<u8>("L", [&]() { return m_cpu->l(); }));
-    m_debug_container->add_pc([&]() { return m_cpu->pc(); });
-    m_debug_container->add_sp([&]() { return m_cpu->sp(); });
-    m_debug_container->add_is_interrupted([&]() { return m_cpu->is_interrupted(); });
-    m_debug_container->add_interrupt_mode([&]() {
+    m_debug_container->add_register(RegisterDebugContainer<u8>("A", [&]() -> u8 { return m_cpu->a(); }));
+    m_debug_container->add_register(RegisterDebugContainer<u8>("B", [&]() -> u8 { return m_cpu->b(); }));
+    m_debug_container->add_register(RegisterDebugContainer<u8>("C", [&]() -> u8 { return m_cpu->c(); }));
+    m_debug_container->add_register(RegisterDebugContainer<u8>("D", [&]() -> u8 { return m_cpu->d(); }));
+    m_debug_container->add_register(RegisterDebugContainer<u8>("E", [&]() -> u8 { return m_cpu->e(); }));
+    m_debug_container->add_register(RegisterDebugContainer<u8>("H", [&]() -> u8 { return m_cpu->h(); }));
+    m_debug_container->add_register(RegisterDebugContainer<u8>("L", [&]() -> u8 { return m_cpu->l(); }));
+    m_debug_container->add_pc([&]() -> u16 { return m_cpu->pc(); });
+    m_debug_container->add_sp([&]() -> u16 { return m_cpu->sp(); });
+    m_debug_container->add_is_interrupted([&]() -> bool { return m_cpu->is_interrupted(); });
+    m_debug_container->add_interrupt_mode([&]() -> std::string {
         switch (m_cpu->interrupt_mode()) {
         case InterruptMode::ZERO:
             return "0";
@@ -169,7 +169,7 @@ void ZxSpectrum48kSession::setup_debugging()
     });
     m_debug_container->add_flag_register(FlagRegisterDebugContainer<u8>(
         "F",
-        [&]() { return m_cpu->f(); },
+        [&]() -> u8 { return m_cpu->f(); },
         { { "s", 7 },
             { "z", 6 },
             { "u", 5 },
@@ -180,22 +180,22 @@ void ZxSpectrum48kSession::setup_debugging()
             { "c", 0 } }));
     m_debug_container->add_io(IoDebugContainer<u8>(
         "0xfe",
-        [&]() { return m_outputs_during_cycle.contains(s_port_0xfe); },
-        [&]() { return m_outputs_during_cycle[s_port_0xfe]; }));
+        [&]() -> bool { return m_outputs_during_cycle.contains(s_port_0xfe); },
+        [&]() -> u8 { return m_outputs_during_cycle[s_port_0xfe]; }));
     m_debug_container->add_io(IoDebugContainer<u8>(
         "LAST-K",
-        [&]() { return true; },
-        [&]() { return memory().at(0x5c08); }));
+        [&]() -> bool { return true; },
+        [&]() -> u8 { return memory().at(0x5c08); }));
     m_debug_container->add_io(IoDebugContainer<u8>(
         "IFF1",
-        [&]() { return true; },
-        [&]() { return m_cpu->iff1() ? 1 : 0; }));
+        [&]() -> bool { return true; },
+        [&]() -> int { return m_cpu->iff1() ? 1 : 0; }));
     m_debug_container->add_io(IoDebugContainer<u8>(
         "IFF2",
-        [&]() { return true; },
-        [&]() { return m_cpu->iff2() ? 1 : 0; }));
+        [&]() -> bool { return true; },
+        [&]() -> int { return m_cpu->iff2() ? 1 : 0; }));
     m_debug_container->add_memory(MemoryDebugContainer<u8>(
-        [&]() { return memory(); }));
+        [&]() -> std::vector<u8> { return memory(); }));
     m_debug_container->add_disassembled_program(disassemble_program());
 
     m_gui->attach_debugger(m_debugger);
@@ -222,7 +222,7 @@ void ZxSpectrum48kSession::gui_request(GuiRequest request)
     }
 }
 
-void ZxSpectrum48kSession::in_requested(u16 port)
+void ZxSpectrum48kSession::in_requested(const u16 port)
 {
     // Should take 12.5 cycles instead of 11, when accessing 0xFE.
     if (!is_bit_set(port, 0)) {
@@ -230,7 +230,7 @@ void ZxSpectrum48kSession::in_requested(u16 port)
     }
 }
 
-void ZxSpectrum48kSession::out_changed(u16 port)
+void ZxSpectrum48kSession::out_changed(const u16 port)
 {
     if (!m_outputs_during_cycle.contains(port)) {
         m_outputs_during_cycle[port] = m_cpu->a();
@@ -253,7 +253,7 @@ void ZxSpectrum48kSession::out_changed(u16 port)
     }
 }
 
-void ZxSpectrum48kSession::key_pressed(KeyRequest request)
+void ZxSpectrum48kSession::key_pressed(const KeyRequest request)
 {
     switch (request) {
     case TOGGLE_MUTE:
@@ -264,12 +264,12 @@ void ZxSpectrum48kSession::key_pressed(KeyRequest request)
     }
 }
 
-std::vector<u8> ZxSpectrum48kSession::memory()
+auto ZxSpectrum48kSession::memory() const -> std::vector<u8>
 {
     return { m_memory.begin(), m_memory.end() };
 }
 
-std::vector<DisassembledLine<u16, 16>> ZxSpectrum48kSession::disassemble_program()
+auto ZxSpectrum48kSession::disassemble_program() const -> std::vector<DisassembledLine<u16, 16>>
 {
     EmulatorMemory<u16, u8> sliced_for_disassembly = m_memory.slice(0, 0x4000);
 
@@ -280,11 +280,11 @@ std::vector<DisassembledLine<u16, 16>> ZxSpectrum48kSession::disassemble_program
     std::vector<std::string> disassembled_program = split(ss, "\n");
 
     disassembled_program.erase(
-        std::remove_if(disassembled_program.begin(), disassembled_program.end(), [](std::string const& s) { return s.empty(); }));
+        std::remove_if(disassembled_program.begin(), disassembled_program.end(), [](std::string const& s) -> bool { return s.empty(); }));
 
     std::vector<DisassembledLine<u16, 16>> lines;
     std::transform(disassembled_program.begin(), disassembled_program.end(), std::back_inserter(lines),
-        [](std::string const& line) { return DisassembledLine<u16, 16>(line); });
+        [](std::string const& line) -> DisassembledLine<u16, 16> { return DisassembledLine<u16, 16>(line); });
 
     return lines;
 }

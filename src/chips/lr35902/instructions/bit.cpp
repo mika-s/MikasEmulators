@@ -30,17 +30,20 @@ void bit(const unsigned int bit_number, const u8 reg, Flags& flag_reg)
 
 /**
  * Test bit (register)
- * <ul>
- *   <li>Size: 2</li>
- *   <li>Cycles: 2</li>
- *   <li>States: 8</li>
- *   <li>Condition bits affected: half carry, zero, add/subtract</li>
- * </ul>
  *
- * @param bit_number is the bit number to test
- * @param reg is the register to test a bit in
- * @param flag_reg is the flag register, which will be mutated
- * @param cycles is the number of cycles variable, which will be mutated
+ * - Size: 2
+ * - Cycles: 2
+ * - States: 8
+ * - Condition bits affected:
+ *   - half carry
+ *   - zero
+ *   - add/subtract
+ *
+ *
+ * @param [in] bit_number is the bit number to test
+ * @param [in] reg is the register to test a bit in
+ * @param [in,out] flag_reg is the flag register
+ * @param [in,out] cycles is the number of cycles variable
  */
 void bit_r(const unsigned int bit_number, const u8 reg, Flags& flag_reg, cyc& cycles)
 {

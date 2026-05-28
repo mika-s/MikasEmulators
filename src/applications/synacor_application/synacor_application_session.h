@@ -116,10 +116,10 @@ private:
 
     void setup_debugging();
 
-    std::vector<RawData> memory();
+    auto memory() -> std::vector<RawData>;
 
     void input_from_terminal(Data input) const;
 
-    std::vector<DisassembledLine<Address, 16>> disassemble_program();
+    auto disassemble_program() -> std::vector<DisassembledLine<Address, 16>>;
 };
 }

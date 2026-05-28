@@ -108,8 +108,7 @@ void Timer::control(const u8 new_value)
 {
     m_is_running = is_bit_set(new_value, s_timer_enabled_bit);
 
-    u8 const speed = 0b00000011 & new_value;
-    switch (speed) {
+    switch (u8 const speed = 0b00000011 & new_value) {
     case 0b00:
         m_timer_clock_speed = TimerClockSpeed::_4096Hz;
         break;

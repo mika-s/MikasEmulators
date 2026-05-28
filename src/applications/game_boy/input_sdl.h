@@ -47,8 +47,8 @@ private:
 
     std::vector<InterruptObserver*> m_interrupt_observers;
 
-    void notify_io_observers(IoRequest request);
+    void notify_io_observers(IoRequest request) const;
 
-    void notify_interrupt_observers(Interrupts interrupt);
+    void notify_interrupt_observers(Interrupts interrupt) const;
 };
 }

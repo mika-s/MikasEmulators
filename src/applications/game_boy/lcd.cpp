@@ -10,12 +10,12 @@ class LcdControl;
 
 namespace emu::applications::game_boy {
 
-LcdControl& Lcd::lcd_control()
+auto Lcd::lcd_control() -> LcdControl&
 {
     return m_lcd_control;
 }
 
-LcdStatus& Lcd::lcd_status()
+auto Lcd::lcd_status() -> LcdStatus&
 {
     return m_lcd_status;
 }
@@ -47,7 +47,7 @@ void Lcd::remove_interrupt_observer(InterruptObserver* observer)
         m_interrupt_observers.end());
 }
 
-void Lcd::notify_interrupt_observers(Interrupts interrupt)
+void Lcd::notify_interrupt_observers(const Interrupts interrupt) const
 {
     for (InterruptObserver* observer : m_interrupt_observers) {
         observer->interrupt(interrupt);

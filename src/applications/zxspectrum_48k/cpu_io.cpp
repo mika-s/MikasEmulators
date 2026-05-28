@@ -3,7 +3,7 @@
 
 namespace emu::applications::zxspectrum_48k {
 
-u8 CpuIo::border_color()
+auto CpuIo::border_color() const -> u8
 {
     return m_out_port0xfe & s_border_color_mask;
 }
@@ -13,7 +13,7 @@ void CpuIo::add_key_canceler(std::function<void()> const& cancel_func)
     m_cancel_last_keypress.emplace_back(s_count_before_key_cancel, cancel_func);
 }
 
-u8 CpuIo::keyboard_input(u16 port)
+auto CpuIo::keyboard_input(const u16 port) -> u8
 {
     const u8 value = m_keyboard.at(port);
 
@@ -22,7 +22,7 @@ u8 CpuIo::keyboard_input(u16 port)
     return value;
 }
 
-u8 CpuIo::keyboard_input(u16 port) const
+auto CpuIo::keyboard_input(const u16 port) const -> u8
 {
     return m_keyboard.at(port);
 }

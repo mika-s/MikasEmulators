@@ -122,8 +122,8 @@ private:
 
     void setup_debugging();
 
-    std::vector<u8> memory();
+    std::vector<u8> memory() const;
 
-    std::vector<DisassembledLine<u16, 16>> disassemble_program();
+    std::vector<DisassembledLine<u16, 16>> disassemble_program() const;
 };
 }

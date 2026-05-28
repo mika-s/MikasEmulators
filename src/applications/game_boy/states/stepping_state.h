@@ -17,7 +17,7 @@ class SteppingState : public State {
 public:
     explicit SteppingState(std::shared_ptr<StateContext> state_context);
 
-    bool is_exit_state() override;
+    auto is_exit_state() -> bool override;
 
     void transition_to_run() override;
 
@@ -43,21 +43,21 @@ private:
 
     std::shared_ptr<StateContext> m_ctx;
 
-    bool await_input_and_update_debug();
+    auto await_input_and_update_debug() -> bool;
 
-    std::vector<u8> tile_ram_block_1();
+    [[nodiscard]] auto tile_ram_block_1() const -> std::vector<u8>;
 
-    std::vector<u8> tile_ram_block_2();
+    [[nodiscard]] auto tile_ram_block_2() const -> std::vector<u8>;
 
-    std::vector<u8> tile_ram_block_3();
+    [[nodiscard]] auto tile_ram_block_3() const -> std::vector<u8>;
 
-    std::vector<u8> tile_map_1();
+    [[nodiscard]] auto tile_map_1() const -> std::vector<u8>;
 
-    std::vector<u8> tile_map_2();
+    [[nodiscard]] auto tile_map_2() const -> std::vector<u8>;
 
-    std::vector<u8> sprite_ram();
+    [[nodiscard]] auto sprite_ram() const -> std::vector<u8>;
 
-    std::vector<u8> palette_ram();
+    [[nodiscard]] auto palette_ram() const -> std::vector<u8>;
 };
 
 }

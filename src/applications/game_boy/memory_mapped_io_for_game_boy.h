@@ -32,23 +32,23 @@ public:
 
     void write(u16 address, u8 value) override;
 
-    u8 read(u16 address) override;
+    auto read(u16 address) -> u8 override;
 
     void p1_button_keys(unsigned int bit_number, bool is_setting);
 
     void p1_direction_keys(unsigned int bit_number, bool is_setting);
 
-    [[nodiscard]] u8 p1() const;
+    [[nodiscard]] auto p1() const -> u8;
 
-    [[nodiscard]] bool ie();
+    [[nodiscard]] auto ie() -> bool;
 
-    [[nodiscard]] u8 if_();
+    [[nodiscard]] auto if_() -> u8;
 
     void interrupt(Interrupts interrupt);
 
     void reset_interrupt(Interrupts interrupt);
 
-    [[nodiscard]] bool is_boot_rom_active() const;
+    [[nodiscard]] auto is_boot_rom_active() const -> bool;
 
 private:
     static constexpr u16 s_interrupt_bit_vblank = 0;
@@ -154,6 +154,6 @@ private:
     u8 m_p1_direction_keys { 0xff };
     bool m_is_reading_direction_keys { false };
 
-    void dma_transfer(u8 value);
+    void dma_transfer(u8 value) const;
 };
 }

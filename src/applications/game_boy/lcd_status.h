@@ -23,14 +23,14 @@ public:
 
     void update_from_memory(u8 value);
 
-    u8 to_u8() const;
+    [[nodiscard]] auto to_u8() const -> u8;
 
 private:
-    static unsigned int const s_lyc_eq_ly_stat_interrupt_source_bit = 6;
-    static unsigned int const s_mode_2_oam_stat_interrupt_source_bit = 5;
-    static unsigned int const s_mode_1_vblank_stat_interrupt_source_bit = 4;
-    static unsigned int const s_mode_0_hblank_stat_interrupt_source_bit = 3;
-    static unsigned int const s_lyc_eq_ly_bit = 2;
-    static unsigned int const s_lcd_status_mode_bit_pattern = 0b00000011;
+    static constexpr unsigned int s_lyc_eq_ly_stat_interrupt_source_bit = 6;
+    static constexpr unsigned int s_mode_2_oam_stat_interrupt_source_bit = 5;
+    static constexpr unsigned int s_mode_1_vblank_stat_interrupt_source_bit = 4;
+    static constexpr unsigned int s_mode_0_hblank_stat_interrupt_source_bit = 3;
+    static constexpr unsigned int s_lyc_eq_ly_bit = 2;
+    static constexpr unsigned int s_lcd_status_mode_bit_pattern = 0b00000011;
 };
 }

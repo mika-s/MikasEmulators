@@ -25,13 +25,13 @@ public:
 
     std::vector<std::pair<unsigned int, std::function<void()>>> m_cancel_last_keypress;
 
-    u8 border_color();
+    auto border_color() const -> u8;
 
     void add_key_canceler(std::function<void()> const& cancel_func);
 
-    u8 keyboard_input(u16 port);
+    auto keyboard_input(u16 port) -> u8;
 
-    u8 keyboard_input(u16 port) const;
+    auto keyboard_input(u16 port) const -> u8;
 
 private:
     static constexpr u8 s_border_color_mask = 0b00000111;

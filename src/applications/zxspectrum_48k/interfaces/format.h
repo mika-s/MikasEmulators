@@ -14,7 +14,7 @@ public:
 
     virtual void print_header() = 0;
 
-    virtual ManualState to_cpu_state() = 0;
+    virtual auto to_cpu_state() -> ManualState = 0;
 
     virtual void to_memory(EmulatorMemory<u16, u8>& memory) = 0;
 };

@@ -23,7 +23,7 @@ void InputSdl::remove_io_observer(KeyObserver* observer)
         m_io_observers.end());
 }
 
-void InputSdl::notify_io_observers(IoRequest request)
+void InputSdl::notify_io_observers(IoRequest request) const
 {
     for (KeyObserver* observer : m_io_observers) {
         observer->key_pressed(request);
@@ -42,7 +42,7 @@ void InputSdl::remove_interrupt_observer(InterruptObserver* observer)
         m_interrupt_observers.end());
 }
 
-void InputSdl::read(GuiIo& gui_io, std::shared_ptr<MemoryMappedIoForGameBoy> memory_mapped_io)
+void InputSdl::read(GuiIo& gui_io, const std::shared_ptr<MemoryMappedIoForGameBoy> memory_mapped_io)
 {
     SDL_Event read_input_event;
 
@@ -157,7 +157,7 @@ void InputSdl::read(GuiIo& gui_io, std::shared_ptr<MemoryMappedIoForGameBoy> mem
 
 void InputSdl::read_debug_only([[maybe_unused]] GuiIo& gui_io) { }
 
-void InputSdl::notify_interrupt_observers(Interrupts interrupt)
+void InputSdl::notify_interrupt_observers(const Interrupts interrupt) const
 {
     for (InterruptObserver* observer : m_interrupt_observers) {
         observer->interrupt(interrupt);

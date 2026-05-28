@@ -6,7 +6,7 @@ namespace emu::applications::game_boy {
 using emu::util::byte::is_bit_set;
 using emu::util::byte::set_bit;
 
-void LcdControl::update_from_memory(u8 value)
+void LcdControl::update_from_memory(const u8 value)
 {
     m_is_ldc_and_ppu_enabled = is_bit_set(value, s_ldc_and_ppu_enabled_bit);
     m_window_tile_map_area = is_bit_set(value, s_window_tile_map_area_bit) ? 1 : 0;
@@ -18,26 +18,26 @@ void LcdControl::update_from_memory(u8 value)
     m_is_bg_and_window_enabled = is_bit_set(value, s_bg_and_window_enable_bit);
 }
 
-u8 LcdControl::to_u8() const
+auto LcdControl::to_u8() const -> u8
 {
     u8 value = 0;
 
     if (m_is_ldc_and_ppu_enabled) {
         set_bit(value, s_ldc_and_ppu_enabled_bit);
     }
-    if (m_window_tile_map_area) {
+    if (m_window_tile_map_area != 0) {
         set_bit(value, s_window_tile_map_area_bit);
     }
     if (m_is_window_enabled) {
         set_bit(value, s_window_enable_bit);
     }
-    if (m_bg_and_window_tile_data_area) {
+    if (m_bg_and_window_tile_data_area != 0) {
         set_bit(value, s_bg_and_window_tile_data_area_bit);
     }
-    if (m_bg_tile_map_area) {
+    if (m_bg_tile_map_area != 0) {
         set_bit(value, s_bg_tile_map_area_bit);
     }
-    if (m_obj_size) {
+    if (m_obj_size != 0) {
         set_bit(value, s_obj_size_bit);
     }
     if (m_is_obj_enabled) {

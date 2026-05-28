@@ -27,9 +27,9 @@ class ZxSpectrum48k : public Emulator {
 public:
     ZxSpectrum48k(
         Settings settings,
-        const GuiType gui_type);
+        GuiType gui_type);
 
-    std::unique_ptr<Session> new_session() override;
+    auto new_session() -> std::unique_ptr<Session> override;
 
 private:
     Settings m_settings;
@@ -42,7 +42,7 @@ private:
 
     void setup_printing_session();
 
-    void setup_ordinary_session(const GuiType gui_type);
+    void setup_ordinary_session(GuiType gui_type);
 
     void load_files();
 

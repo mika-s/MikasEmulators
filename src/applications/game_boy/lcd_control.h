@@ -17,17 +17,17 @@ public:
 
     void update_from_memory(u8 value);
 
-    u8 to_u8() const;
+    [[nodiscard]] auto to_u8() const -> u8;
 
 private:
-    static const unsigned int s_ldc_and_ppu_enabled_bit = 7;
-    static const unsigned int s_window_tile_map_area_bit = 6;
-    static const unsigned int s_window_enable_bit = 5;
-    static const unsigned int s_bg_and_window_tile_data_area_bit = 4;
-    static const unsigned int s_bg_tile_map_area_bit = 3;
-    static const unsigned int s_obj_size_bit = 2;
-    static const unsigned int s_obj_enable_bit = 1;
-    static const unsigned int s_bg_and_window_enable_bit = 0;
+    static constexpr unsigned int s_ldc_and_ppu_enabled_bit = 7;
+    static constexpr unsigned int s_window_tile_map_area_bit = 6;
+    static constexpr unsigned int s_window_enable_bit = 5;
+    static constexpr unsigned int s_bg_and_window_tile_data_area_bit = 4;
+    static constexpr unsigned int s_bg_tile_map_area_bit = 3;
+    static constexpr unsigned int s_obj_size_bit = 2;
+    static constexpr unsigned int s_obj_enable_bit = 1;
+    static constexpr unsigned int s_bg_and_window_enable_bit = 0;
 };
 
 }

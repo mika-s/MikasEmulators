@@ -83,10 +83,10 @@ private:
 
     std::vector<std::function<void()>> m_cancel_last_keypress;
 
-    void notify_io_observers(KeyRequest request);
+    void notify_io_observers(KeyRequest request) const;
 
     void cancel_shift(CpuIo& cpu_io);
 
-    void handle_text(CpuIo& cpu_io, std::string text, bool is_shift_pressed);
+    void handle_text(CpuIo& cpu_io, const std::string &text, bool is_shift_pressed);
 };
 }

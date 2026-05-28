@@ -61,19 +61,19 @@ void GuiImgui::remove_gui_observer(GuiObserver* observer)
         m_gui_observers.end());
 }
 
-void GuiImgui::notify_gui_observers(GuiRequest request)
+void GuiImgui::notify_gui_observers(const GuiRequest request) const
 {
     for (GuiObserver* observer : m_gui_observers) {
         observer->gui_request(request);
     }
 }
 
-void GuiImgui::attach_debugger(std::shared_ptr<Debugger<u16, 16>> debugger)
+void GuiImgui::attach_debugger(const std::shared_ptr<Debugger<u16, 16>> debugger)
 {
     m_disassembly.attach_debugger(debugger);
 }
 
-void GuiImgui::attach_debug_container(std::shared_ptr<DebugContainer<u16, u8, 16>> debug_container)
+void GuiImgui::attach_debug_container(const std::shared_ptr<DebugContainer<u16, u8, 16>> debug_container)
 {
     m_cpu_info.attach_debug_container(debug_container);
     m_io_info.attach_debug_container(debug_container);
@@ -161,7 +161,7 @@ void GuiImgui::init()
     SDL_GL_MakeCurrent(m_win, m_gl_context);
     SDL_GL_SetSwapInterval(1);
 
-    if (!gladLoadGLLoader(static_cast<GLADloadproc>(SDL_GL_GetProcAddress))) {
+    if (!gladLoadGLLoader(SDL_GL_GetProcAddress)) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error initializing glad");
         exit(1);
     }
@@ -180,7 +180,7 @@ void GuiImgui::init()
     ImGui_ImplSDL2_InitForOpenGL(m_win, m_gl_context);
     ImGui_ImplOpenGL3_Init(glsl_version.c_str());
 
-    const ImVec4 background = ImVec4(35 / 255.0F, 35 / 255.0F, 35 / 255.0F, 1.00F);
+    constexpr auto background = ImVec4(35 / 255.0F, 35 / 255.0F, 35 / 255.0F, 1.00F);
     glClearColor(background.x, background.y, background.z, background.w);
 
     glGenTextures(1, &m_screen_texture);
@@ -329,7 +329,7 @@ void GuiImgui::render_game_pane(std::string const& game_window_subtitle)
 
     ImGui::Begin(title.c_str(), &m_show_game);
 
-    const ImVec2 image_size = ImVec2(s_scaled_width, s_scaled_height);
+    constexpr auto image_size = ImVec2(s_scaled_width, s_scaled_height);
     ImGui::Image(
         (void*)((intptr_t)m_screen_texture), image_size,
         ImVec2(0, 0),
@@ -344,18 +344,18 @@ void GuiImgui::render_game_info_pane()
 {
     ImGui::Begin("Game info", &m_show_game_info);
 
-    ImGui::Text("Avg %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    ImGui::Text("Avg %.3f ms/frame (%.1f FPS)", 1000.0F / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
     ImGui::Separator();
 
     if (ImGui::Button("Run")) {
         notify_gui_observers({ .m_type = GuiRequestType::RUN });
     }
-    ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+    ImGui::SameLine(0.0F, ImGui::GetStyle().ItemInnerSpacing.x);
     if (ImGui::Button("Pause")) {
         notify_gui_observers({ .m_type = GuiRequestType::PAUSE });
     }
-    ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+    ImGui::SameLine(0.0F, ImGui::GetStyle().ItemInnerSpacing.x);
     if (ImGui::Button("Stop")) {
         notify_gui_observers({ .m_type = GuiRequestType::STOP });
     }

@@ -31,7 +31,8 @@ StateContext::StateContext(
     std::shared_ptr<DebugContainer<u16, u8, 16>> debug_container,
     std::unordered_map<u8, u8>& outputs_during_cycle,
     Governor& governor,
-    bool& is_in_debug_mode)
+    bool& is_in_debug_mode
+)
     : m_is_in_debug_mode(is_in_debug_mode)
     , m_gui_io(gui_io)
     , m_gui(std::move(gui))
@@ -56,27 +57,27 @@ void StateContext::change_state(std::shared_ptr<State> new_state)
     m_current_state = std::move(new_state);
 }
 
-std::shared_ptr<State> StateContext::paused_state()
+auto StateContext::paused_state() -> std::shared_ptr<State>
 {
     return m_paused_state;
 }
 
-std::shared_ptr<State> StateContext::running_state()
+auto StateContext::running_state() -> std::shared_ptr<State>
 {
     return m_running_state;
 }
 
-std::shared_ptr<State> StateContext::stepping_state()
+auto StateContext::stepping_state() -> std::shared_ptr<State>
 {
     return m_stepping_state;
 }
 
-std::shared_ptr<State> StateContext::stopped_state()
+auto StateContext::stopped_state() -> std::shared_ptr<State>
 {
     return m_stopped_state;
 }
 
-std::shared_ptr<State> StateContext::current_state()
+auto StateContext::current_state() -> std::shared_ptr<State>
 {
     return m_current_state;
 }
@@ -113,7 +114,7 @@ void StateContext::remove_interrupt_observer(InterruptObserver* observer)
         m_interrupt_observers.end());
 }
 
-void StateContext::notify_interrupt_observers(Interrupts interrupt)
+void StateContext::notify_interrupt_observers(const Interrupts interrupt) const
 {
     for (InterruptObserver* observer : m_interrupt_observers) {
         observer->interrupt(interrupt);

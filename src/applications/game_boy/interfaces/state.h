@@ -8,7 +8,7 @@ class State {
 public:
     virtual ~State() = default;
 
-    virtual bool is_exit_state() = 0;
+    virtual auto is_exit_state() -> bool = 0;
 
     virtual void transition_to_run() = 0;
 

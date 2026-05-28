@@ -112,7 +112,7 @@ public:
 
     void remove_interrupt_observer(InterruptObserver* observer);
 
-    void notify_interrupt_observers(Interrupts interrupt);
+    void notify_interrupt_observers(Interrupts interrupt) const;
 
 private:
     std::shared_ptr<State> m_current_state;

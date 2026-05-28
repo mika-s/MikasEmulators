@@ -73,6 +73,6 @@ private:
 
     void notify_io_observers(IoRequest request);
 
-    void notify_interrupt_observers(Interrupts interrupt);
+    void notify_interrupt_observers(Interrupts interrupt) const;
 };
 }

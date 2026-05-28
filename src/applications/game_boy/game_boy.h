@@ -29,9 +29,10 @@ class GameBoy : public Emulator {
 public:
     GameBoy(
         Settings const& settings,
-        const GuiType gui_type);
+        GuiType gui_type
+    );
 
-    std::unique_ptr<Session> new_session() override;
+    auto new_session() -> std::unique_ptr<Session> override;
 
 private:
     EmulatorMemory<u16, u8> m_memory;

@@ -31,9 +31,7 @@ auto Settings::from_options(Options const& options) -> Settings
         settings.m_snapshot_file = path.value();
     }
 
-    const std::unordered_map<std::string, std::vector<std::string>> opts = options.options();
-
-    if (opts.contains("print-header")) {
+    if (options.options().contains("print-header")) {
         settings.m_is_only_printing_header = true;
     }
 

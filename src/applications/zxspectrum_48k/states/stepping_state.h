@@ -58,11 +58,11 @@ private:
 
     std::shared_ptr<StateContext> m_ctx;
 
-    bool await_input_and_update_debug();
+    auto await_input_and_update_debug() -> bool;
 
-    std::vector<u8> vram();
+    auto vram() const -> std::vector<u8>;
 
-    std::vector<u8> color_ram();
+    auto color_ram() const -> std::vector<u8>;
 };
 
 }

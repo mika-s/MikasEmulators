@@ -6,7 +6,7 @@ namespace emu::applications::game_boy {
 using emu::util::byte::is_bit_set;
 using emu::util::byte::set_bit;
 
-void LcdStatus::update_from_memory(u8 value)
+void LcdStatus::update_from_memory(const u8 value)
 {
     switch (value & s_lcd_status_mode_bit_pattern) {
     case 0:
@@ -33,7 +33,7 @@ void LcdStatus::update_from_memory(u8 value)
     m_is_lyc_eq_ly_stat_interrupt_source = is_bit_set(value, s_lyc_eq_ly_stat_interrupt_source_bit);
 }
 
-u8 LcdStatus::to_u8() const
+auto LcdStatus::to_u8() const -> u8
 {
     u8 value = 0;
 

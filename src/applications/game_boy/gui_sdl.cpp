@@ -116,7 +116,7 @@ void GuiSdl::init()
 }
 
 void GuiSdl::update_screen(
-    LcdControl lcd_control,
+    const LcdControl lcd_control,
     std::vector<u8> const& tile_ram_1,
     [[maybe_unused]] std::vector<u8> const& tile_ram_2,
     [[maybe_unused]] std::vector<u8> const& tile_ram_3,
@@ -126,7 +126,7 @@ void GuiSdl::update_screen(
     std::vector<u8> const& palette_ram,
     std::string const& game_window_subtitle)
 {
-    std::vector<u32> framebuffer = create_framebuffer(lcd_control, tile_ram_1, sprite_ram, palette_ram);
+    const std::vector<u32> framebuffer = create_framebuffer(lcd_control, tile_ram_1, sprite_ram, palette_ram);
 
     void* pixels = nullptr;
     int pitch = 0;

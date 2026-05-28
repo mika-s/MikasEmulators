@@ -37,7 +37,7 @@ MemoryMappedIoForGameBoy::MemoryMappedIoForGameBoy(
  * @param address is the address in memory to write to
  * @param value is the value that should be written to memory
  */
-void MemoryMappedIoForGameBoy::write(u16 address, u8 value)
+void MemoryMappedIoForGameBoy::write(const u16 address, const u8 value) // NOLINT(*-function-cognitive-complexity)
 {
     if (address <= s_address_rom_end) {
         // Writes to ROM are ignored.
@@ -134,7 +134,7 @@ void MemoryMappedIoForGameBoy::write(u16 address, u8 value)
  * @param address is the address in memory to read from
  * @return the value in memory at the given address
  */
-u8 MemoryMappedIoForGameBoy::read(u16 address)
+auto MemoryMappedIoForGameBoy::read(const u16 address) -> u8
 {
     if (address <= s_address_rom_end) {
         if (address <= s_address_boot_rom_end && m_is_boot_rom_active) {
@@ -205,12 +205,12 @@ u8 MemoryMappedIoForGameBoy::read(u16 address)
     }
 }
 
-bool MemoryMappedIoForGameBoy::ie()
+auto MemoryMappedIoForGameBoy::ie() -> bool
 {
     return m_ie;
 }
 
-void MemoryMappedIoForGameBoy::p1_button_keys(unsigned int bit_number, bool is_setting)
+void MemoryMappedIoForGameBoy::p1_button_keys(const unsigned int bit_number, const bool is_setting)
 {
     if (is_setting) {
         set_bit(m_p1_button_keys, bit_number);
@@ -219,7 +219,7 @@ void MemoryMappedIoForGameBoy::p1_button_keys(unsigned int bit_number, bool is_s
     }
 }
 
-void MemoryMappedIoForGameBoy::p1_direction_keys(unsigned int bit_number, bool is_setting)
+void MemoryMappedIoForGameBoy::p1_direction_keys(const unsigned int bit_number, const bool is_setting)
 {
     if (is_setting) {
         set_bit(m_p1_direction_keys, bit_number);
@@ -228,17 +228,16 @@ void MemoryMappedIoForGameBoy::p1_direction_keys(unsigned int bit_number, bool i
     }
 }
 
-u8 MemoryMappedIoForGameBoy::p1() const
+auto MemoryMappedIoForGameBoy::p1() const -> u8
 {
     return m_p1_button_keys;
 }
 
-u8 MemoryMappedIoForGameBoy::if_()
-{
+auto MemoryMappedIoForGameBoy::if_() -> u8 {
     return m_if;
 }
 
-void MemoryMappedIoForGameBoy::interrupt(Interrupts interrupt)
+void MemoryMappedIoForGameBoy::interrupt(const Interrupts interrupt)
 {
     u8 value = read(s_address_interrupt_f_register);
 
@@ -260,7 +259,7 @@ void MemoryMappedIoForGameBoy::interrupt(Interrupts interrupt)
     write(s_address_interrupt_f_register, value);
 }
 
-void MemoryMappedIoForGameBoy::reset_interrupt(Interrupts interrupt)
+void MemoryMappedIoForGameBoy::reset_interrupt(const Interrupts interrupt)
 {
     u8 value = read(s_address_interrupt_f_register);
 
@@ -282,12 +281,12 @@ void MemoryMappedIoForGameBoy::reset_interrupt(Interrupts interrupt)
     write(s_address_interrupt_f_register, value);
 }
 
-bool MemoryMappedIoForGameBoy::is_boot_rom_active() const
+auto MemoryMappedIoForGameBoy::is_boot_rom_active() const -> bool
 {
     return m_is_boot_rom_active;
 }
 
-void MemoryMappedIoForGameBoy::dma_transfer(u8 value)
+void MemoryMappedIoForGameBoy::dma_transfer(const u8 value) const
 {
     for (u16 dest_address = s_address_object_attribute_memory_beginning, src_address = value << 8;
          dest_address <= s_address_object_attribute_memory_end;

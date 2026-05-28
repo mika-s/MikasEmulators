@@ -174,7 +174,7 @@ void GuiImgui::init()
     SDL_GL_SetSwapInterval(1);
 
 #ifndef __EMSCRIPTEN__
-    if (!gladLoadGLLoader(static_cast<GLADloadproc>(SDL_GL_GetProcAddress))) {
+    if (!gladLoadGLLoader(SDL_GL_GetProcAddress)) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error initializing glad");
         exit(1);
     }

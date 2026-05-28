@@ -80,7 +80,7 @@ public:
         std::shared_ptr<Gui> gui,
         std::shared_ptr<Input> input,
         EmulatorMemory<u16, u8>& memory,
-        ManualState initial_cpu_state);
+        const ManualState &initial_cpu_state);
 
     ~ZxSpectrum48kSession() override;
 
@@ -134,8 +134,8 @@ private:
 
     void setup_debugging();
 
-    std::vector<u8> memory();
+    std::vector<u8> memory() const;
 
-    std::vector<DisassembledLine<u16, 16>> disassemble_program();
+    std::vector<DisassembledLine<u16, 16>> disassemble_program() const;
 };
 }

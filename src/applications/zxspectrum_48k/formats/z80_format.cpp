@@ -36,7 +36,7 @@ Z80Format::Z80Format(std::string const& file_path)
     parse();
 }
 
-auto Z80Format::version_string() -> std::string
+auto Z80Format::version_string() const -> std::string
 {
     switch (m_version) {
     case Z80FormatVersion::v1:
@@ -481,7 +481,7 @@ auto Z80Format::parse_interrupt_mode(u8 raw_interrupt_mode) -> InterruptMode
     }
 }
 
-auto Z80Format::parse_joystick_type(u8 raw_joystick_type) -> JoystickType
+auto Z80Format::parse_joystick_type(u8 raw_joystick_type) const -> JoystickType
 {
     switch (raw_joystick_type) {
     case 0:

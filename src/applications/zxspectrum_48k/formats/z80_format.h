@@ -235,9 +235,9 @@ private:
 
     void parse_v3();
 
-    auto parse_interrupt_mode(u8 raw_interrupt_mode) -> InterruptMode;
+    static auto parse_interrupt_mode(u8 raw_interrupt_mode) -> InterruptMode;
 
-    auto parse_joystick_type(u8 raw_joystick_type) -> JoystickType;
+    auto parse_joystick_type(u8 raw_joystick_type) const -> JoystickType;
 
     [[nodiscard]] auto parse_hardware_mode(u8 raw_hardware_mode) const -> HardwareMode;
 
@@ -245,7 +245,7 @@ private:
 
     auto get_next_word() -> u16;
 
-    auto version_string() -> std::string;
+    [[nodiscard]] auto version_string() const -> std::string;
 
     [[nodiscard]] auto interrupt_string() const -> std::string;
 

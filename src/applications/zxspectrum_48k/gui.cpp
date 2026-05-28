@@ -13,7 +13,7 @@ void Gui::create_table()
     m_has_created_table = true;
 }
 
-void Gui::draw_borders(Framebuffer& framebuffer, u8 border_color)
+void Gui::draw_borders(Framebuffer& framebuffer, const u8 border_color)
 {
     const Color color = s_ordinary_colors[border_color];
 
@@ -42,13 +42,13 @@ void Gui::draw_borders(Framebuffer& framebuffer, u8 border_color)
     }
 }
 
-Color Gui::find_ink(u8 value, bool is_bright)
+auto Gui::find_ink(const u8 value, const bool is_bright) -> Color
 {
     const u8 number = value & s_ink_mask;
     return is_bright ? s_bright_colors[number] : s_ordinary_colors[number];
 }
 
-Color Gui::find_paper(u8 value, bool is_bright)
+auto Gui::find_paper(const u8 value, const bool is_bright) -> Color
 {
     const u8 number = (value & s_paper_mask) >> s_paper_shift;
     return is_bright ? s_bright_colors[number] : s_ordinary_colors[number];

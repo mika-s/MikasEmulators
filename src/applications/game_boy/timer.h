@@ -21,19 +21,19 @@ class Timer {
 public:
     void update(cyc cycles);
 
-    [[nodiscard]] u8 divider() const;
+    [[nodiscard]] auto divider() const -> u8;
 
     void reset_divider();
 
-    [[nodiscard]] u8 counter() const;
+    [[nodiscard]] auto counter() const -> u8;
 
     void counter(u8 new_value);
 
-    [[nodiscard]] u8 modulo() const;
+    [[nodiscard]] auto modulo() const -> u8;
 
     void modulo(u8 new_value);
 
-    [[nodiscard]] u8 control() const;
+    [[nodiscard]] auto control() const -> u8;
 
     void control(u8 new_value);
 

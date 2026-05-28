@@ -44,16 +44,14 @@ void InputImgui::remove_interrupt_observer(InterruptObserver* observer)
         m_interrupt_observers.end());
 }
 
-void InputImgui::read(GuiIo& gui_io, std::shared_ptr<MemoryMappedIoForGameBoy> memory_mapped_io)
+void InputImgui::read(GuiIo& gui_io, const std::shared_ptr<MemoryMappedIoForGameBoy> memory_mapped_io) // NOLINT(*-function-cognitive-complexity)
 {
     SDL_Event read_input_event;
 
     while (SDL_PollEvent(&read_input_event) != 0) {
         ImGui_ImplSDL2_ProcessEvent(&read_input_event);
 
-        ImGuiIO& io = ImGui::GetIO();
-
-        if (!io.WantCaptureKeyboard) {
+        if (ImGuiIO const& io = ImGui::GetIO(); !io.WantCaptureKeyboard) {
             switch (read_input_event.type) {
             case SDL_QUIT:
                 gui_io.m_is_quitting = true;
@@ -192,9 +190,7 @@ void InputImgui::read_debug_only(GuiIo& gui_io)
     while (SDL_PollEvent(&read_input_event) != 0) {
         ImGui_ImplSDL2_ProcessEvent(&read_input_event);
 
-        ImGuiIO& io = ImGui::GetIO();
-
-        if (!io.WantCaptureKeyboard) {
+        if (ImGuiIO const& io = ImGui::GetIO(); !io.WantCaptureKeyboard) {
             switch (read_input_event.type) {
             case SDL_QUIT:
                 gui_io.m_is_quitting = true;
@@ -232,7 +228,7 @@ void InputImgui::read_debug_only(GuiIo& gui_io)
     }
 }
 
-void InputImgui::notify_interrupt_observers(Interrupts interrupt)
+void InputImgui::notify_interrupt_observers(Interrupts interrupt) const
 {
     for (InterruptObserver* observer : m_interrupt_observers) {
         observer->interrupt(interrupt);

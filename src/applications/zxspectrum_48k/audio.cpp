@@ -14,7 +14,7 @@ Audio::Audio()
         exit(1);
     }
 
-    SDL_AudioSpec audio_spec {
+    const SDL_AudioSpec audio_spec {
         .freq = s_sdl_frequency,
         .format = AUDIO_S16SYS,
         .channels = 1,
@@ -54,7 +54,7 @@ void Audio::toggle_mute()
     m_is_muted = !m_is_muted;
 }
 
-void Audio::generate_audio(u8* stream, int len)
+void Audio::generate_audio(u8* stream, const int len)
 {
     [[maybe_unused]] auto* stream16 = (i16*)stream;
     [[maybe_unused]] int samples = static_cast<int>(len / sizeof(i16));
@@ -64,7 +64,7 @@ void Audio::generate_audio(u8* stream, int len)
     //    play(ufo_sound, samples, stream16, m_ufo_x, dummy);
 }
 
-void Audio::play(std::vector<double> sound, int samples, i16* stream16, std::size_t& x, bool& is_sound_on) const
+void Audio::play(const std::vector<double> &sound, const int samples, i16* stream16, std::size_t& x, bool& is_sound_on) const
 {
     for (int i = 0; i < samples; i++) {
         if (x < sound.size()) {

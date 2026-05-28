@@ -65,19 +65,19 @@ void GuiImgui::remove_gui_observer(GuiObserver* observer)
         m_gui_observers.end());
 }
 
-void GuiImgui::notify_gui_observers(GuiRequest request)
+void GuiImgui::notify_gui_observers(const GuiRequest request)
 {
     for (GuiObserver* observer : m_gui_observers) {
         observer->gui_request(request);
     }
 }
 
-void GuiImgui::attach_debugger(std::shared_ptr<Debugger<u16, 16>> debugger)
+void GuiImgui::attach_debugger(const std::shared_ptr<Debugger<u16, 16>> debugger)
 {
     m_disassembly.attach_debugger(debugger);
 }
 
-void GuiImgui::attach_debug_container(std::shared_ptr<DebugContainer<u16, u8, 16>> debug_container)
+void GuiImgui::attach_debug_container(const std::shared_ptr<DebugContainer<u16, u8, 16>> debug_container)
 {
     m_cpu_info.attach_debug_container(debug_container);
     m_io_info.attach_debug_container(debug_container);

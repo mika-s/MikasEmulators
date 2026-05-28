@@ -21,7 +21,7 @@ public:
 
     void write(u16 address, u8 value) override;
 
-    u8 read(u16 address) override;
+    auto read(u16 address) -> u8 override;
 
 private:
     static constexpr u16 s_address_rom_end = 0x3fff;

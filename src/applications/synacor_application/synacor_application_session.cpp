@@ -75,7 +75,8 @@ SynacorApplicationSession::SynacorApplicationSession(
         m_governor,
         m_is_only_run_once,
         m_is_awaiting_input,
-        m_is_in_debug_mode);
+        m_is_in_debug_mode
+    );
     m_state_context->set_running_state(std::make_shared<RunningState>(m_state_context));
     m_state_context->set_running_awaiting_input_state(std::make_shared<RunningAwaitingInputState>(m_state_context));
     m_state_context->set_paused_state(std::make_shared<PausedState>(m_state_context));

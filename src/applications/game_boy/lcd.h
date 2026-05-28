@@ -14,9 +14,9 @@ namespace emu::applications::game_boy {
 
 class Lcd {
 public:
-    [[nodiscard]] LcdControl& lcd_control();
+    [[nodiscard]] auto lcd_control() -> LcdControl&;
 
-    [[nodiscard]] LcdStatus& lcd_status();
+    [[nodiscard]] auto lcd_status() -> LcdStatus&;
 
     void increment_scanline();
 
@@ -26,7 +26,7 @@ public:
 
     void remove_interrupt_observer(InterruptObserver* observer);
 
-    void notify_interrupt_observers(Interrupts interrupt);
+    void notify_interrupt_observers(Interrupts interrupt) const;
 
     u8 m_ly { 0 };
     u8 m_lyc { 0 };

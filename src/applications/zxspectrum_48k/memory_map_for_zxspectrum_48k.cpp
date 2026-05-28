@@ -14,7 +14,7 @@ MemoryMapForZxSpectrum48k::MemoryMapForZxSpectrum48k(EmulatorMemory<u16, u8>& me
  * @param address is the address in memory to write to
  * @param value is the value that should be written to memory
  */
-void MemoryMapForZxSpectrum48k::write(u16 address, u8 value)
+void MemoryMapForZxSpectrum48k::write(const u16 address, const u8 value)
 {
     if (address <= s_address_rom_end) {
     } else {
@@ -28,7 +28,7 @@ void MemoryMapForZxSpectrum48k::write(u16 address, u8 value)
  * @param address is the address in memory to read from
  * @return the value in memory at the given address
  */
-u8 MemoryMapForZxSpectrum48k::read(u16 address)
+auto MemoryMapForZxSpectrum48k::read(const u16 address) -> u8
 {
     return m_memory.direct_read(address);
 }

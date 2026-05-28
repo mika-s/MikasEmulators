@@ -87,14 +87,13 @@ public:
 
     void attach_memory_mapper(std::shared_ptr<MemoryMappedIoForGameBoy> memory_mapper);
 
-    std::vector<std::vector<std::shared_ptr<Tile>>> tiles();
+    auto tiles() -> std::vector<std::vector<std::shared_ptr<Tile>>>;
 
-    std::tuple<
+    auto sprites() -> std::tuple<
         std::vector<std::vector<std::shared_ptr<Sprite>>>,
         std::vector<std::vector<std::shared_ptr<Sprite>>>,
         std::vector<std::vector<std::shared_ptr<Sprite>>>,
-        std::vector<std::vector<std::shared_ptr<Sprite>>>>
-    sprites();
+        std::vector<std::vector<std::shared_ptr<Sprite>>>>;
 
 protected:
     static constexpr int s_tile_size = 8;
@@ -162,27 +161,29 @@ protected:
 
     unsigned int m_number_of_palettes;
 
-    void render_play_area(
+    static void render_play_area(
         Framebuffer& screen,
         std::vector<u8> const& tile_ram,
-        std::vector<u8> const& palette_ram);
+        std::vector<u8> const& palette_ram
+    );
 
-    std::shared_ptr<Tile> render_tile(u8 palette_idx, u8 tile_idx);
+    static auto render_tile(u8 palette_idx, u8 tile_idx) -> std::shared_ptr<Tile>;
 
-    std::shared_ptr<Tile> render_debugging_tile(u8 tile_idx);
+    static auto render_debugging_tile(u8 tile_idx) -> std::shared_ptr<Tile>;
 
-    void draw_tiles(Framebuffer& screen, std::vector<u8> const& tile_ram, std::vector<u8> const& palette_ram);
+    static void draw_tiles(Framebuffer& screen, std::vector<u8> const& tile_ram, std::vector<u8> const& palette_ram);
 
-    std::shared_ptr<Sprite> render_sprite(u8 palette_idx, u8 sprite_idx, bool flip_x, bool flip_y);
+    static auto render_sprite(u8 palette_idx, u8 sprite_idx, bool flip_x, bool flip_y) -> std::shared_ptr<Sprite>;
 
-    std::shared_ptr<Sprite> render_debugging_sprite(unsigned int rotation, u8 sprite_idx);
+    static auto render_debugging_sprite(unsigned int rotation, u8 sprite_idx) -> std::shared_ptr<Sprite>;
 
-    void draw_sprites(Framebuffer& screen, std::vector<u8> const& sprite_ram);
+    static void draw_sprites(Framebuffer& screen, std::vector<u8> const& sprite_ram);
 
-    std::vector<u32> create_framebuffer(
-        LcdControl lcd_control,
+    auto create_framebuffer(
+        const LcdControl &lcd_control,
         std::vector<u8> const& tile_ram,
         std::vector<u8> const& sprite_ram,
-        std::vector<u8> const& palette_ram);
+        std::vector<u8> const& palette_ram
+    ) -> std::vector<u32>;
 };
 }

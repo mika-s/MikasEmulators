@@ -14,7 +14,7 @@ public:
     std::string m_snapshot_file;
     bool m_is_only_printing_header;
 
-    static Settings from_options(Options const& options);
+    static auto from_options(Options const& options) -> Settings;
 
 private:
     static const inline std::string s_help_short = "h";

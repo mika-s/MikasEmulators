@@ -45,7 +45,7 @@ GameBoy::GameBoy(Settings const& settings, const GuiType gui_type)
     m_gui->attach_memory_mapper(m_memory_mapped_io);
 }
 
-std::unique_ptr<Session> GameBoy::new_session()
+auto GameBoy::new_session() -> std::unique_ptr<Session>
 {
     return std::make_unique<GameBoySession>(
         m_is_starting_paused,
@@ -58,7 +58,7 @@ std::unique_ptr<Session> GameBoy::new_session()
         m_memory);
 }
 
-std::vector<u8> create_empty_vector(std::size_t size)
+auto create_empty_vector(const std::size_t size) -> std::vector<u8>
 {
     std::vector<u8> vec(size, 0);
     return vec;

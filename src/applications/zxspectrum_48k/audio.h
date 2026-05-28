@@ -29,9 +29,9 @@ private:
 
     void generate_audio(u8* stream, int len);
 
-    void play(std::vector<double> sound, int samples, i16* stream16, std::size_t& x, bool& is_sound_on) const;
+    void play(const std::vector<double> &sound, int samples, i16* stream16, std::size_t& x, bool& is_sound_on) const;
 
-    static void forward_callback(void* userdata, u8* stream, int len)
+    static void forward_callback(void* userdata, u8* stream, const int len)
     {
         static_cast<Audio*>(userdata)->generate_audio(stream, len);
     }

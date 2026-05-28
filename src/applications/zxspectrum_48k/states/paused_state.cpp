@@ -15,7 +15,7 @@ PausedState::PausedState(std::shared_ptr<StateContext> state_context)
 {
 }
 
-bool PausedState::is_exit_state()
+auto PausedState::is_exit_state() -> bool
 {
     return false;
 }
@@ -46,7 +46,9 @@ void PausedState::perform([[maybe_unused]] cyc& cycles)
             m_ctx->m_gui_io.m_is_quitting = false;
             transition_to_stop();
             return;
-        } else if (m_ctx->m_gui_io.m_is_toggling_pause) {
+        }
+
+        if (m_ctx->m_gui_io.m_is_toggling_pause) {
             m_ctx->m_gui_io.m_is_toggling_pause = false;
             transition_to_run();
             return;
@@ -56,12 +58,12 @@ void PausedState::perform([[maybe_unused]] cyc& cycles)
     }
 }
 
-std::vector<u8> PausedState::vram()
+auto PausedState::vram() -> std::vector<u8>
 {
     return { m_ctx->m_memory.begin() + 0x4000, m_ctx->m_memory.begin() + 0x57ff + 1 };
 }
 
-std::vector<u8> PausedState::color_ram()
+auto PausedState::color_ram() -> std::vector<u8>
 {
     return { m_ctx->m_memory.begin() + 0x5800, m_ctx->m_memory.begin() + 0x5aff + 1 };
 }

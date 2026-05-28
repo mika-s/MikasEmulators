@@ -42,7 +42,7 @@ using emu::lr35902::Disassembler;
 using emu::util::string::split;
 
 GameBoySession::GameBoySession(
-    bool is_starting_paused,
+    const bool is_starting_paused,
     std::shared_ptr<Gui> gui,
     std::shared_ptr<Lcd> lcd,
     std::shared_ptr<Input> input,
@@ -113,7 +113,7 @@ void GameBoySession::run()
 {
     m_cpu->start();
 
-    cyc cycles;
+    cyc cycles = 0;
 
     while (!m_state_context->current_state()->is_exit_state()) {
         m_state_context->current_state()->perform(cycles);
@@ -132,7 +132,7 @@ void GameBoySession::stop()
 
 void GameBoySession::setup_cpu()
 {
-    const u16 initial_pc = 0;
+    constexpr u16 initial_pc = 0;
 
     m_cpu = std::make_shared<Cpu>(m_memory, initial_pc);
 }
@@ -142,31 +142,31 @@ void GameBoySession::setup_debugging()
     m_debug_container = std::make_shared<DebugContainer<u16, u8, 16>>();
     m_debug_container->add_register(RegisterDebugContainer<u8>(
         "A",
-        [&]() { return m_cpu->a(); }));
+        [&]() -> u8 { return m_cpu->a(); }));
     m_debug_container->add_register(RegisterDebugContainer<u8>(
         "B",
-        [&]() { return m_cpu->b(); }));
+        [&]() -> u8 { return m_cpu->b(); }));
     m_debug_container->add_register(RegisterDebugContainer<u8>(
         "C",
-        [&]() { return m_cpu->c(); }));
+        [&]() -> u8 { return m_cpu->c(); }));
     m_debug_container->add_register(RegisterDebugContainer<u8>(
         "D",
-        [&]() { return m_cpu->d(); }));
+        [&]() -> u8 { return m_cpu->d(); }));
     m_debug_container->add_register(RegisterDebugContainer<u8>(
         "E",
-        [&]() { return m_cpu->e(); }));
+        [&]() -> u8 { return m_cpu->e(); }));
     m_debug_container->add_register(RegisterDebugContainer<u8>(
         "H",
-        [&]() { return m_cpu->h(); }));
+        [&]() -> u8 { return m_cpu->h(); }));
     m_debug_container->add_register(RegisterDebugContainer<u8>(
         "L",
-        [&]() { return m_cpu->l(); }));
-    m_debug_container->add_pc([&]() { return m_cpu->pc(); });
-    m_debug_container->add_sp([&]() { return m_cpu->sp(); });
-    m_debug_container->add_is_interrupted([&]() { return m_cpu->ime(); });
+        [&]() -> u8 { return m_cpu->l(); }));
+    m_debug_container->add_pc([&]() -> u16 { return m_cpu->pc(); });
+    m_debug_container->add_sp([&]() -> u16 { return m_cpu->sp(); });
+    m_debug_container->add_is_interrupted([&]() -> bool { return m_cpu->ime(); });
     m_debug_container->add_flag_register(FlagRegisterDebugContainer<u8>(
         "F",
-        [&]() { return m_cpu->f(); },
+        [&]() -> u8 { return m_cpu->f(); },
         { { "z", 7 },
             { "n", 6 },
             { "h", 5 },
@@ -176,12 +176,12 @@ void GameBoySession::setup_debugging()
             { "0", 1 },
             { "0", 0 } }));
     m_debug_container->add_memory(MemoryDebugContainer<u8>(
-        [&]() { return memory(); }));
+        [&]() -> std::vector<u8> { return memory(); }));
     m_debug_container->add_disassembled_program(disassemble_program());
     m_debug_container->add_io(IoDebugContainer<u8>(
         "LCD control",
-        [&]() { return true; },
-        [&]() { return m_lcd->lcd_control().to_u8(); },
+        [&]() -> bool { return true; },
+        [&]() -> u8 { return m_lcd->lcd_control().to_u8(); },
         { { "BG and Window enable/priority", 0 },
             { "OBJ enable", 1 },
             { "OBJ size", 2 },
@@ -192,8 +192,8 @@ void GameBoySession::setup_debugging()
             { "LCD enable", 7 } }));
     m_debug_container->add_io(IoDebugContainer<u8>(
         "LCD status",
-        [&]() { return true; },
-        [&]() { return m_lcd->lcd_status().to_u8(); },
+        [&]() -> bool { return true; },
+        [&]() -> u8 { return m_lcd->lcd_status().to_u8(); },
         { { "LCD status mode 1", 0 },
             { "LCD status mode 2", 1 },
             { "LYC=LY", 2 },
@@ -204,24 +204,24 @@ void GameBoySession::setup_debugging()
             { "Unused", 7 } }));
     m_debug_container->add_io(IoDebugContainer<u8>(
         "timer divider",
-        [&]() { return true; },
-        [&]() { return m_timer->divider(); }));
+        [&]() -> bool { return true; },
+        [&]() -> u8 { return m_timer->divider(); }));
     m_debug_container->add_io(IoDebugContainer<u8>(
         "timer counter",
-        [&]() { return true; },
-        [&]() { return m_timer->counter(); }));
+        [&]() -> bool { return true; },
+        [&]() -> u8 { return m_timer->counter(); }));
     m_debug_container->add_io(IoDebugContainer<u8>(
         "timer modulo",
-        [&]() { return true; },
-        [&]() { return m_timer->modulo(); }));
+        [&]() -> bool { return true; },
+        [&]() -> u8 { return m_timer->modulo(); }));
     m_debug_container->add_io(IoDebugContainer<u8>(
         "timer control",
-        [&]() { return true; },
-        [&]() { return m_timer->control(); }));
+        [&]() -> bool { return true; },
+        [&]() -> u8 { return m_timer->control(); }));
     m_debug_container->add_io(IoDebugContainer<u8>(
         "boot rom active",
-        [&]() { return true; },
-        [&]() { return m_memory_mapped_io->is_boot_rom_active(); }));
+        [&]() -> bool { return true; },
+        [&]() -> bool { return m_memory_mapped_io->is_boot_rom_active(); }));
     //    m_debug_container->add_tilemap(m_gui->tiles());
     //    m_debug_container->add_spritemap(m_gui->sprites());
     //    m_debug_container->add_waveforms(m_audio->waveforms());
@@ -290,7 +290,7 @@ void GameBoySession::interrupt(Interrupts interrupt)
     m_memory_mapped_io->reset_interrupt(interrupt);
 }
 
-std::vector<u8> GameBoySession::memory()
+auto GameBoySession::memory() const -> std::vector<u8>
 {
     //    std::vector<u8> memory;
     //    memory.reserve(0xffff);
@@ -301,7 +301,7 @@ std::vector<u8> GameBoySession::memory()
     return { m_memory.begin(), m_memory.end() }; // TODO: Go through the memory mapper
 }
 
-std::vector<DisassembledLine<u16, 16>> GameBoySession::disassemble_program()
+auto GameBoySession::disassemble_program() const -> std::vector<DisassembledLine<u16, 16>>
 {
     std::vector<u8> values;
     values.reserve(0x7fff);
@@ -319,11 +319,11 @@ std::vector<DisassembledLine<u16, 16>> GameBoySession::disassemble_program()
     std::vector<std::string> disassembled_program = split(ss, "\n");
 
     disassembled_program.erase(
-        std::remove_if(disassembled_program.begin(), disassembled_program.end(), [](std::string const& s) { return s.empty(); }));
+        std::remove_if(disassembled_program.begin(), disassembled_program.end(), [](std::string const& s) -> bool { return s.empty(); }));
 
     std::vector<DisassembledLine<u16, 16>> lines;
     std::transform(disassembled_program.begin(), disassembled_program.end(), std::back_inserter(lines),
-        [](std::string const& line) { return DisassembledLine<u16, 16>(line); });
+        [](std::string const& line) -> DisassembledLine<u16, 16> { return DisassembledLine<u16, 16>(line); });
 
     return lines;
 }

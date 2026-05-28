@@ -15,7 +15,7 @@ PausedState::PausedState(std::shared_ptr<StateContext> state_context)
 {
 }
 
-bool PausedState::is_exit_state()
+auto PausedState::is_exit_state() -> bool
 {
     return false;
 }
@@ -46,48 +46,51 @@ void PausedState::perform([[maybe_unused]] cyc& cycles)
             m_ctx->m_gui_io.m_is_quitting = false;
             transition_to_stop();
             return;
-        } else if (m_ctx->m_gui_io.m_is_toggling_pause) {
+        }
+
+        if (m_ctx->m_gui_io.m_is_toggling_pause) {
             m_ctx->m_gui_io.m_is_toggling_pause = false;
             transition_to_run();
             return;
         }
+
         m_ctx->m_gui->update_screen(m_ctx->m_lcd->lcd_control(),
             tile_ram_block_1(), tile_ram_block_2(), tile_ram_block_3(),
             tile_map_1(), tile_map_2(), sprite_ram(), palette_ram(), s_game_window_subtitle);
     }
 }
 
-std::vector<u8> PausedState::tile_ram_block_1()
+auto PausedState::tile_ram_block_1() const -> std::vector<u8>
 {
     return { m_ctx->m_memory.begin() + 0x8000, m_ctx->m_memory.begin() + 0x87ff + 1 };
 }
 
-std::vector<u8> PausedState::tile_ram_block_2()
+auto PausedState::tile_ram_block_2() const -> std::vector<u8>
 {
     return { m_ctx->m_memory.begin() + 0x8800, m_ctx->m_memory.begin() + 0x8fff + 1 };
 }
 
-std::vector<u8> PausedState::tile_ram_block_3()
+auto PausedState::tile_ram_block_3() const -> std::vector<u8>
 {
     return { m_ctx->m_memory.begin() + 0x9000, m_ctx->m_memory.begin() + 0x97ff + 1 };
 }
 
-std::vector<u8> PausedState::palette_ram()
+auto PausedState::palette_ram() const -> std::vector<u8>
 {
     return { m_ctx->m_memory.begin() + 0x4400, m_ctx->m_memory.begin() + 0x47ff + 1 };
 }
 
-std::vector<u8> PausedState::sprite_ram()
+auto PausedState::sprite_ram() const -> std::vector<u8>
 {
     return { m_ctx->m_memory.begin() + 0x4ff0, m_ctx->m_memory.begin() + 0x506f + 1 };
 }
 
-std::vector<u8> PausedState::tile_map_1()
+auto PausedState::tile_map_1() const -> std::vector<u8>
 {
     return { m_ctx->m_memory.begin() + 0x9800, m_ctx->m_memory.begin() + 0x9bff + 1 };
 }
 
-std::vector<u8> PausedState::tile_map_2()
+auto PausedState::tile_map_2() const -> std::vector<u8>
 {
     return { m_ctx->m_memory.begin() + 0x9c00, m_ctx->m_memory.begin() + 0x9fff + 1 };
 }

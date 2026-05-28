@@ -26,7 +26,7 @@ RunningState::RunningState(std::shared_ptr<StateContext> state_context)
 {
 }
 
-bool RunningState::is_exit_state()
+auto RunningState::is_exit_state() -> bool
 {
     return false;
 }
@@ -72,7 +72,9 @@ void RunningState::perform(cyc& cycles)
             m_ctx->m_gui_io.m_is_quitting = false;
             transition_to_stop();
             return;
-        } else if (m_ctx->m_gui_io.m_is_toggling_pause) {
+        }
+
+        if (m_ctx->m_gui_io.m_is_toggling_pause) {
             m_ctx->m_gui_io.m_is_toggling_pause = false;
             transition_to_pause();
             return;
@@ -86,7 +88,7 @@ void RunningState::perform(cyc& cycles)
     }
 }
 
-void RunningState::update_graphics(cyc cycles)
+void RunningState::update_graphics(const cyc cycles) const
 {
     if (m_ctx->m_lcd->lcd_control().m_is_ldc_and_ppu_enabled) {
         m_ctx->m_scanline_counter -= cycles;
@@ -97,7 +99,7 @@ void RunningState::update_graphics(cyc cycles)
     if (m_ctx->m_scanline_counter <= 0) {
         m_ctx->m_lcd->increment_scanline();
 
-        u8 current_line = m_ctx->m_memory_mapped_io->read(0xff44);
+        u8 const current_line = m_ctx->m_memory_mapped_io->read(0xff44);
         m_ctx->m_scanline_counter = 456;
 
         if (current_line == 144) {
@@ -110,37 +112,37 @@ void RunningState::update_graphics(cyc cycles)
     }
 }
 
-std::vector<u8> RunningState::tile_ram_block_1()
+auto RunningState::tile_ram_block_1() const -> std::vector<u8>
 {
     return { m_ctx->m_memory.begin() + 0x8000, m_ctx->m_memory.begin() + 0x87ff + 1 };
 }
 
-std::vector<u8> RunningState::tile_ram_block_2()
+auto RunningState::tile_ram_block_2() const -> std::vector<u8>
 {
     return { m_ctx->m_memory.begin() + 0x8800, m_ctx->m_memory.begin() + 0x8fff + 1 };
 }
 
-std::vector<u8> RunningState::tile_ram_block_3()
+auto RunningState::tile_ram_block_3() const -> std::vector<u8>
 {
     return { m_ctx->m_memory.begin() + 0x9000, m_ctx->m_memory.begin() + 0x97ff + 1 };
 }
 
-std::vector<u8> RunningState::palette_ram()
+auto RunningState::palette_ram() const -> std::vector<u8>
 {
     return { m_ctx->m_memory.begin() + 0x4400, m_ctx->m_memory.begin() + 0x47ff + 1 };
 }
 
-std::vector<u8> RunningState::sprite_ram()
+auto RunningState::sprite_ram() const -> std::vector<u8>
 {
     return { m_ctx->m_memory.begin() + 0x4ff0, m_ctx->m_memory.begin() + 0x506f + 1 };
 }
 
-std::vector<u8> RunningState::tile_map_1()
+auto RunningState::tile_map_1() const -> std::vector<u8>
 {
     return { m_ctx->m_memory.begin() + 0x9800, m_ctx->m_memory.begin() + 0x9bff + 1 };
 }
 
-std::vector<u8> RunningState::tile_map_2()
+auto RunningState::tile_map_2() const -> std::vector<u8>
 {
     return { m_ctx->m_memory.begin() + 0x9c00, m_ctx->m_memory.begin() + 0x9fff + 1 };
 }

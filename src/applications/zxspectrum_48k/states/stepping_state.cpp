@@ -19,7 +19,7 @@ SteppingState::SteppingState(std::shared_ptr<StateContext> state_context)
 {
 }
 
-bool SteppingState::is_exit_state()
+auto SteppingState::is_exit_state() -> bool
 {
     return false;
 }
@@ -66,7 +66,9 @@ void SteppingState::perform(cyc& cycles)
         m_ctx->m_gui_io.m_is_quitting = false;
         transition_to_stop();
         return;
-    } else if (m_ctx->m_gui_io.m_is_toggling_pause) {
+    }
+
+    if (m_ctx->m_gui_io.m_is_toggling_pause) {
         m_ctx->m_gui_io.m_is_toggling_pause = false;
         transition_to_run();
         return;
@@ -81,7 +83,7 @@ void SteppingState::perform(cyc& cycles)
     m_is_stepping_cycle = false;
 }
 
-bool SteppingState::await_input_and_update_debug()
+auto SteppingState::await_input_and_update_debug() -> bool
 {
     while (true) {
         m_ctx->m_input->read_debug_only(m_ctx->m_cpu_io, m_ctx->m_gui_io);
@@ -90,18 +92,26 @@ bool SteppingState::await_input_and_update_debug()
             m_ctx->m_gui_io.m_is_quitting = false;
             transition_to_stop();
             return true;
-        } else if (m_ctx->m_gui_io.m_is_toggling_pause) {
+        }
+
+        if (m_ctx->m_gui_io.m_is_toggling_pause) {
             m_ctx->m_gui_io.m_is_toggling_pause = false;
             transition_to_pause();
             return true;
-        } else if (m_ctx->m_gui_io.m_is_stepping_cycle) {
+        }
+
+        if (m_ctx->m_gui_io.m_is_stepping_cycle) {
             m_ctx->m_gui_io.m_is_stepping_cycle = false;
             m_is_stepping_cycle = true;
             break;
-        } else if (m_ctx->m_gui_io.m_is_stepping_instruction) {
+        }
+
+        if (m_ctx->m_gui_io.m_is_stepping_instruction) {
             m_ctx->m_gui_io.m_is_stepping_instruction = false;
             break;
-        } else if (m_ctx->m_gui_io.m_is_continuing_execution) {
+        }
+
+        if (m_ctx->m_gui_io.m_is_continuing_execution) {
             m_ctx->m_gui_io.m_is_continuing_execution = false;
             transition_to_run();
             return true;
@@ -113,12 +123,12 @@ bool SteppingState::await_input_and_update_debug()
     return false;
 }
 
-std::vector<u8> SteppingState::vram()
+auto SteppingState::vram() const -> std::vector<u8>
 {
     return { m_ctx->m_memory.begin() + 0x4000, m_ctx->m_memory.begin() + 0x57ff + 1 };
 }
 
-std::vector<u8> SteppingState::color_ram()
+auto SteppingState::color_ram() const -> std::vector<u8>
 {
     return { m_ctx->m_memory.begin() + 0x5800, m_ctx->m_memory.begin() + 0x5aff + 1 };
 }

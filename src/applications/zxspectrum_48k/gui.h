@@ -125,20 +125,20 @@ protected:
 
     static void draw_borders(Framebuffer& framebuffer, u8 border_color);
 
-    Color find_ink(u8 value, bool is_bright);
+    static auto find_ink(u8 value, bool is_bright) -> Color;
 
-    Color find_paper(u8 value, bool is_bright);
+    auto find_paper(u8 value, bool is_bright) -> Color;
 
-    bool find_flash_mode(u8 value);
+    auto find_flash_mode(u8 value) -> bool;
 
-    bool find_bright_mode(u8 value);
+    auto find_bright_mode(u8 value) -> bool;
 
-    u16 display_address_from_xy(u8 row, u8 col, u8 pixel_line);
+    auto display_address_from_xy(u8 row, u8 col, u8 pixel_line) -> u16;
 
-    u16 attribute_address_from_xy(u8 row, u8 col);
+    auto attribute_address_from_xy(u8 row, u8 col) -> u16;
 
     void draw_attribute_blocks(Framebuffer& framebuffer, std::vector<u8> const& vram, std::vector<u8> const& color_ram);
 
-    std::vector<u32> create_framebuffer(std::vector<u8> const& vram, std::vector<u8> const& color_ram, u8 border_color);
+    auto create_framebuffer(std::vector<u8> const& vram, std::vector<u8> const& color_ram, u8 border_color) -> std::vector<u32>;
 };
 }

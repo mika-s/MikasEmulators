@@ -83,10 +83,10 @@ private:
 
     std::vector<KeyObserver*> m_io_observers;
 
-    void notify_io_observers(KeyRequest request);
+    void notify_io_observers(KeyRequest request) const;
 
-    void cancel_shift(CpuIo& cpu_io);
+    static void cancel_shift(CpuIo& cpu_io);
 
-    void handle_text(CpuIo& cpu_io, std::string text, bool is_shift_pressed);
+    static void handle_text(CpuIo& cpu_io, const std::string &text, bool is_shift_pressed);
 };
 }

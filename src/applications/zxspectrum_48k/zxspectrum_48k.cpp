@@ -62,18 +62,20 @@ void ZxSpectrum48k::setup_ordinary_session(const GuiType gui_type)
     m_gui->create_table();
 }
 
-std::unique_ptr<Session> ZxSpectrum48k::new_session()
+auto ZxSpectrum48k::new_session() -> std::unique_ptr<Session>
 {
     if (m_settings.m_is_only_printing_header) {
         return std::make_unique<ZxSpectrum48kPrintHeaderSession>(m_format);
-    } else if (!m_settings.m_snapshot_file.empty()) {
-        return std::make_unique<ZxSpectrum48kSession>(m_settings, m_is_starting_paused, m_gui, m_input, m_memory, m_format->to_cpu_state());
-    } else {
-        return std::make_unique<ZxSpectrum48kSession>(m_settings, m_is_starting_paused, m_gui, m_input, m_memory);
     }
+
+    if (!m_settings.m_snapshot_file.empty()) {
+        return std::make_unique<ZxSpectrum48kSession>(m_settings, m_is_starting_paused, m_gui, m_input, m_memory, m_format->to_cpu_state());
+    }
+
+    return std::make_unique<ZxSpectrum48kSession>(m_settings, m_is_starting_paused, m_gui, m_input, m_memory);
 }
 
-std::vector<u8> create_empty_vector(std::size_t size)
+static auto create_empty_vector(const std::size_t size) -> std::vector<u8>
 {
     std::vector<u8> vec(size, 0);
     return vec;
