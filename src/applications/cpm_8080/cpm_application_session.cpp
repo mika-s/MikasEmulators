@@ -47,9 +47,7 @@ void CpmApplicationSession::out_changed(const u8 port)
     if (port == s_finished_port) {
         m_is_finished = true;
     } else if (port == s_output_port) {
-        const u8 operation = m_cpu->c();
-
-        if (operation == s_C_WRITE) {
+        if (const u8 operation = m_cpu->c(); operation == s_C_WRITE) {
             c_write(m_cpu->e());
         } else if (operation == s_C_WRITESTR) {
             c_writestr(m_cpu->memory(), to_u16(m_cpu->d(), m_cpu->e()));
@@ -70,13 +68,13 @@ void CpmApplicationSession::setup_cpu()
 
 void CpmApplicationSession::c_write(const u8 e) // NOLINT(*-identifier-length)
 {
-    std::cout << e;
+    std::cout << static_cast<char>(e);
 }
 
 void CpmApplicationSession::c_writestr(EmulatorMemory<u16, u8> const& memory, u16 address)
 {
     do {
-        std::cout << memory.read(address++);
+        std::cout << static_cast<char>(memory.read(address++));
     } while (memory.read(address) != '$');
 }
 }

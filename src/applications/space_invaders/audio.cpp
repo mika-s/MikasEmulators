@@ -14,11 +14,11 @@ using emu::util::byte::is_bit_set;
 Audio::Audio()
 {
     if (SDL_Init(SDL_INIT_AUDIO) != 0) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error initializing SDL audio: %s", SDL_GetError());
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error initializing SDL audio: %s", SDL_GetError()); // NOLINT(*-pro-type-vararg)
         exit(1);
     }
 
-    SDL_AudioSpec audio_spec {
+    SDL_AudioSpec const audio_spec {
         .freq = 11025,
         .format = AUDIO_S16SYS,
         .channels = 1,
@@ -36,7 +36,7 @@ Audio::Audio()
         nullptr,
         0);
     if (m_audio_device == 0) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error opening audio device: %s", SDL_GetError());
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error opening audio device: %s", SDL_GetError()); // NOLINT(*-pro-type-vararg)
         exit(1);
     }
     SDL_PauseAudioDevice(m_audio_device, 0);
@@ -49,7 +49,7 @@ Audio::~Audio()
     SDL_QuitSubSystem(SDL_INIT_AUDIO);
 }
 
-void Audio::play_sound_port_1(u8 acc_reg)
+void Audio::play_sound_port_1(const u8 acc_reg)
 {
     if (is_rising_edge(acc_reg, s_ufo)) {
         m_is_ufo_sound_on = true;
@@ -94,7 +94,7 @@ void Audio::play_sound_port_2(u8 acc_reg)
     }
 }
 
-void Audio::change_volume(unsigned int new_volume)
+void Audio::change_volume(const unsigned int new_volume)
 {
     SDL_LockAudioDevice(m_audio_device);
     m_volume = new_volume;
@@ -108,10 +108,10 @@ void Audio::toggle_mute()
     SDL_UnlockAudioDevice(m_audio_device);
 }
 
-void Audio::generate_audio(u8* stream, int len)
+void Audio::generate_audio(u8* stream, const int len)
 {
     auto* stream16 = (i16*)stream;
-    int samples = static_cast<int>(len / sizeof(i16));
+    int const samples = static_cast<int>(len / sizeof(i16));
 
     SDL_memset(stream, 0, len); // no sound
 
@@ -148,11 +148,11 @@ void Audio::generate_audio(u8* stream, int len)
     }
 }
 
-void Audio::play(std::vector<double> sound, int samples, i16* stream16, std::size_t& x, bool& is_sound_on) const
+void Audio::play(const std::vector<double> &sound, const int samples, i16* stream16, std::size_t& x, bool& is_sound_on) const
 {
     for (int i = 0; i < samples; i++) {
         if (x < sound.size()) {
-            stream16[i] += static_cast<i16>(sound[x++] * m_volume * !m_is_muted);
+            stream16[i] += static_cast<i16>(sound.at(x++) * m_volume * !m_is_muted);
         } else {
             is_sound_on = false;
             x = 0;
@@ -161,7 +161,7 @@ void Audio::play(std::vector<double> sound, int samples, i16* stream16, std::siz
     }
 }
 
-bool Audio::is_rising_edge(u8 acc_reg, unsigned int value) const
+auto Audio::is_rising_edge(const u8 acc_reg, const unsigned int value) const -> bool
 {
     bool const is_currently_set = is_bit_set(acc_reg, value);
     bool const was_formerly_set = is_bit_set(m_last_acc_reg, value);
@@ -169,7 +169,7 @@ bool Audio::is_rising_edge(u8 acc_reg, unsigned int value) const
     return is_currently_set && !was_formerly_set;
 }
 
-bool Audio::is_falling_edge(u8 acc_reg, unsigned int value) const
+auto Audio::is_falling_edge(const u8 acc_reg, const unsigned int value) const -> bool
 {
     bool const is_currently_set = is_bit_set(acc_reg, value);
     bool const was_formerly_set = is_bit_set(m_last_acc_reg, value);

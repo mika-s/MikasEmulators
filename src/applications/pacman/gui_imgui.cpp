@@ -55,12 +55,10 @@ void GuiImgui::add_gui_observer(GuiObserver& observer)
 
 void GuiImgui::remove_gui_observer(GuiObserver* observer)
 {
-    m_gui_observers.erase(
-        std::remove(m_gui_observers.begin(), m_gui_observers.end(), observer),
-        m_gui_observers.end());
+    std::erase(m_gui_observers, observer);
 }
 
-void GuiImgui::notify_gui_observers(GuiRequest request) const
+void GuiImgui::notify_gui_observers(const GuiRequest request) const
 {
     for (GuiObserver* observer : m_gui_observers) {
         observer->gui_request(request);
@@ -107,7 +105,7 @@ void GuiImgui::toggle_sprite_debug()
 void GuiImgui::init()
 {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error initializing SDL: %s", SDL_GetError());
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error initializing SDL: %s", SDL_GetError()); // NOLINT(*-pro-type-vararg)
         exit(1);
     }
 
@@ -146,22 +144,22 @@ void GuiImgui::init()
         s_scaled_width,
         s_scaled_height,
         SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_MAXIMIZED);
-    if (!m_win) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error creating SDL window: %s", SDL_GetError());
+    if (m_win == nullptr) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error creating SDL window: %s", SDL_GetError()); // NOLINT(*-pro-type-vararg)
         exit(1);
     }
 
     SDL_SetWindowMinimumSize(m_win, s_width, s_height);
     m_gl_context = SDL_GL_CreateContext(m_win);
-    if (!m_gl_context) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error creating context: %s", SDL_GetError());
+    if (m_gl_context == nullptr) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error creating context: %s", SDL_GetError()); // NOLINT(*-pro-type-vararg)
         exit(1);
     }
     SDL_GL_MakeCurrent(m_win, m_gl_context);
     SDL_GL_SetSwapInterval(1);
 
-    if (!gladLoadGLLoader(static_cast<GLADloadproc>(SDL_GL_GetProcAddress))) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error initializing glad");
+    if (gladLoadGLLoader(SDL_GL_GetProcAddress) == 0) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error initializing glad"); // NOLINT(*-pro-type-vararg)
         exit(1);
     }
 
@@ -324,9 +322,10 @@ void GuiImgui::render_game_pane(std::string const& game_window_subtitle)
 
     ImGui::Begin(title.c_str(), &m_show_game);
 
-    constexpr ImVec2 image_size = ImVec2(s_scaled_width, s_scaled_height);
+    constexpr auto image_size = ImVec2(s_scaled_width, s_scaled_height);
     ImGui::Image(
-        (void*)((intptr_t)m_screen_texture), image_size,
+        m_screen_texture,
+        image_size,
         ImVec2(0, 0),
         ImVec2(1, 1),
         ImColor(255, 255, 255, 255),
@@ -339,7 +338,7 @@ void GuiImgui::render_game_info_pane()
 {
     ImGui::Begin("Game info", &m_show_game_info);
 
-    ImGui::Text("Avg %.3f ms/frame (%.1f FPS)", 1000.0F / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    ImGui::Text("Avg %.3f ms/frame (%.1f FPS)", 1000.0F / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate); // NOLINT(*-pro-type-vararg)
 
     ImGui::Separator();
 

@@ -31,7 +31,7 @@ MemoryMappedIoForPacman::MemoryMappedIoForPacman(EmulatorMemory<u16, u8>& memory
  * @param address is the address in memory to write to
  * @param value is the value that should be written to memory
  */
-void MemoryMappedIoForPacman::write(u16 address, const u8 value)
+void MemoryMappedIoForPacman::write(u16 address, const u8 value) // NOLINT(*-function-cognitive-complexity)
 {
     address &= s_address_mask;
 
@@ -140,7 +140,7 @@ auto MemoryMappedIoForPacman::in0_read() const -> u8
     return m_in0_read;
 }
 
-void MemoryMappedIoForPacman::in1_read(unsigned int bit_number, bool is_setting)
+void MemoryMappedIoForPacman::in1_read(const unsigned int bit_number, const bool is_setting)
 {
     if (is_setting) {
         set_bit(m_in1_read, bit_number);

@@ -18,9 +18,7 @@ void Logger::add_log_observer(LogObserver& observer)
 
 [[maybe_unused]] void Logger::remove_log_observer(LogObserver* observer)
 {
-    m_log_observers.erase(
-        std::remove(m_log_observers.begin(), m_log_observers.end(), observer),
-        m_log_observers.end());
+    std::erase(m_log_observers, observer);
 }
 
 void Logger::info(char const* fmt, ...)

@@ -37,7 +37,7 @@ void Gui::load_color_rom(std::vector<u8> const& color_rom)
         const u8 blue = (is_bit_set(byte, 6) ? 0x51 : 0)
             + (is_bit_set(byte, 7) ? 0xae : 0);
 
-        m_colors.emplace_back(0xff, red, green, blue);
+        m_colors.emplace_back(0xFF, red, green, blue);
     }
 
     m_has_loaded_color_rom = true;
@@ -155,21 +155,19 @@ auto Gui::sprites() -> std::tuple<
     return { m_sprites, m_sprites_x, m_sprites_y, m_sprites_xy };
 }
 
-auto Gui::render_tile(u8 palette_idx, const u8 tile_idx) -> std::shared_ptr<Tile>
+auto Gui::render_tile(u8 palette_idx, const u8 tile_idx) const -> std::shared_ptr<Tile>
 {
     if (palette_idx >= m_number_of_palettes) {
         palette_idx = 0;
     }
 
-    std::shared_ptr<Tile> tile = m_tiles[palette_idx][tile_idx];
-
-    if (tile->is_initialized()) {
+    if (std::shared_ptr<Tile> tile = m_tiles[palette_idx][tile_idx]; tile->is_initialized()) {
         return tile;
     }
 
     const Palette palette = m_palettes[palette_idx];
 
-    std::shared_ptr<Tile> new_tile = std::make_shared<Tile>(s_tile_size, s_tile_size);
+    auto new_tile = std::make_shared<Tile>(s_tile_size, s_tile_size);
 
     int const rom_beginning = tile_idx * s_bytes_per_tile;
     int const rom_end = rom_beginning + s_bytes_per_tile;
@@ -221,7 +219,8 @@ auto Gui::render_debugging_tile(const u8 tile_idx) -> std::shared_ptr<Tile>
 void Gui::render_play_area(
     Framebuffer& screen,
     std::vector<u8> const& tile_ram,
-    std::vector<u8> const& palette_ram)
+    std::vector<u8> const& palette_ram
+) const
 {
     unsigned int origin_row = s_visible_area_start_row * s_tile_size;
     unsigned int origin_col = (s_visible_area_width_in_tiles + s_border_size_in_tiles - 1) * s_tile_size;
@@ -253,7 +252,8 @@ void Gui::render_play_area(
 void Gui::render_top_bar(
     Framebuffer& screen,
     std::vector<u8> const& tile_ram,
-    std::vector<u8> const& palette_ram)
+    std::vector<u8> const& palette_ram
+) const
 {
     // First row
     unsigned int origin_row = 0;
@@ -297,7 +297,8 @@ void Gui::render_top_bar(
 void Gui::render_bottom_bar(
     Framebuffer& screen,
     std::vector<u8> const& tile_ram,
-    std::vector<u8> const& palette_ram)
+    std::vector<u8> const& palette_ram
+) const
 {
     // First row
     unsigned int origin_col = 0;
@@ -381,7 +382,8 @@ void Gui::render_bottom_bar(
 void Gui::draw_tiles(
     Framebuffer& screen,
     std::vector<u8> const& tile_ram,
-    std::vector<u8> const& palette_ram)
+    std::vector<u8> const& palette_ram
+)
 {
     render_bottom_bar(screen, tile_ram, palette_ram);
     render_play_area(screen, tile_ram, palette_ram);
@@ -397,7 +399,7 @@ static auto color_or_transparent(Palette const& palette, const int color_idx, co
     return palette[color_idx];
 }
 
-auto Gui::render_sprite(u8 palette_idx, const u8 sprite_idx, const bool flip_x, const bool flip_y) -> std::shared_ptr<Sprite>
+auto Gui::render_sprite(u8 palette_idx, const u8 sprite_idx, const bool flip_x, const bool flip_y) const -> std::shared_ptr<Sprite>
 {
     if (palette_idx >= 64) {
         palette_idx = 0;
@@ -406,33 +408,32 @@ auto Gui::render_sprite(u8 palette_idx, const u8 sprite_idx, const bool flip_x, 
     std::shared_ptr<Sprite> sprite;
 
     if (flip_x && flip_y) {
-        sprite = m_sprites_xy[palette_idx][sprite_idx];
+        sprite = m_sprites_xy.at(palette_idx).at(sprite_idx);
     } else if (flip_x) {
-        sprite = m_sprites_x[palette_idx][sprite_idx];
+        sprite = m_sprites_x.at(palette_idx).at(sprite_idx);
     } else if (flip_y) {
-        sprite = m_sprites_y[palette_idx][sprite_idx];
+        sprite = m_sprites_y.at(palette_idx).at(sprite_idx);
     } else {
-        sprite = m_sprites[palette_idx][sprite_idx];
+        sprite = m_sprites.at(palette_idx).at(sprite_idx);
     }
 
     if (sprite->is_initialized()) {
         return sprite;
     }
 
-    const Palette palette = m_palettes[palette_idx];
+    const Palette palette = m_palettes.at(palette_idx);
 
-    std::shared_ptr<Sprite> new_sprite = std::make_shared<Sprite>(s_sprite_size, s_sprite_size);
+    auto new_sprite = std::make_shared<Sprite>(s_sprite_size, s_sprite_size);
 
     int origin_row = 0;
     int origin_col = 0;
 
-    const std::vector<int> group_idx_order = { 5, 1, 6, 2, 7, 3, 4, 0 };
-    for (int group_idx : group_idx_order) {
+    for (const std::vector group_idx_order = { 5, 1, 6, 2, 7, 3, 4, 0 }; int const group_idx : group_idx_order) {
         int const beginning = (sprite_idx * s_bytes_per_sprite) + (group_idx * 8);
         int const end = (sprite_idx * s_bytes_per_sprite) + (group_idx * 8) + 8;
 
         for (int rom_idx = end - 1; beginning <= rom_idx; --rom_idx) {
-            const u8 sprite_byte = m_sprite_rom[rom_idx];
+            const u8 sprite_byte = m_sprite_rom.at(rom_idx);
 
             int const pixel1_color_idx = (is_bit_set(sprite_byte, 4) << 1) | is_bit_set(sprite_byte, 0);
             int const pixel2_color_idx = (is_bit_set(sprite_byte, 5) << 1) | is_bit_set(sprite_byte, 1);
@@ -490,14 +491,14 @@ auto Gui::render_debugging_sprite(const unsigned int rotation, const u8 sprite_i
     return new_sprite;
 }
 
-void Gui::draw_sprites(Framebuffer& screen, std::vector<u8> const& sprite_ram)
+void Gui::draw_sprites(Framebuffer& screen, std::vector<u8> const& sprite_ram) const
 {
     u16 sprite_coordinates_address = 0x506f - s_sprite_ram_address_offset;
     u16 sprite_data_address = 0x4fff - s_sprite_ram_address_offset;
 
     for (int sprite_no = 0; sprite_no < s_number_of_sprites; ++sprite_no) {
-        const u8 palette_idx = sprite_ram[sprite_data_address--];
-        const u8 flags = sprite_ram[sprite_data_address--];
+        const u8 palette_idx = sprite_ram.at(sprite_data_address--);
+        const u8 flags = sprite_ram.at(sprite_data_address--);
 
         bool const flip_y = is_bit_set(flags, 0);
         bool const flip_x = is_bit_set(flags, 1);
@@ -512,11 +513,11 @@ void Gui::draw_sprites(Framebuffer& screen, std::vector<u8> const& sprite_ram)
         const u8 sprite_idx = (flags & 0b11111100) >> 2;
 
         std::shared_ptr<Sprite> const sprite = m_is_sprite_debug_enabled
-            ? m_debugging_sprites[rotation][sprite_idx]
+            ? m_debugging_sprites.at(rotation).at(sprite_idx)
             : render_sprite(palette_idx, sprite_idx, flip_x, flip_y);
 
-        int const sprite_origin_row = sprite_ram[sprite_coordinates_address--];
-        int const sprite_origin_col = sprite_ram[sprite_coordinates_address--];
+        int const sprite_origin_row = sprite_ram.at(sprite_coordinates_address--);
+        int const sprite_origin_col = sprite_ram.at(sprite_coordinates_address--);
 
         int const converted_row = s_height - (s_border_size_in_tiles * s_tile_size) - sprite_origin_row;
         int const converted_col = s_width - sprite_origin_col - 1;
@@ -527,14 +528,14 @@ void Gui::draw_sprites(Framebuffer& screen, std::vector<u8> const& sprite_ram)
 
 void Gui::draw_edges(Framebuffer& screen)
 {
-    for (int row = 0; row < s_height; row++) {
-        for (int col = 0; col < s_width_invisible_border; col++) {
+    for (std::size_t row = 0; row < s_height; row++) {
+        for (std::size_t col = 0; col < s_width_invisible_border; col++) {
             screen.set(row, col, Color::black());
         }
     }
 
-    for (int row = 0; row < s_height; row++) {
-        for (int col = s_width - s_width_invisible_border; col < s_width; col++) {
+    for (std::size_t row = 0; row < s_height; row++) {
+        for (std::size_t col = s_width - s_width_invisible_border; col < s_width; col++) {
             screen.set(row, col, Color::black());
         }
     }
@@ -544,7 +545,7 @@ auto Gui::create_framebuffer(
     std::vector<u8> const& tile_ram,
     std::vector<u8> const& sprite_ram,
     std::vector<u8> const& palette_ram,
-    bool is_screen_flipped
+    const bool is_screen_flipped
 ) -> std::vector<u32>
 {
     if (!m_has_loaded_color_rom) {

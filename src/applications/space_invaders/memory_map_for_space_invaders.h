@@ -22,7 +22,7 @@ public:
 
     void write(u16 address, u8 value) override;
 
-    u8 read(u16 address) override;
+    auto read(u16 address) -> u8 override;
 
 private:
     static constexpr std::size_t s_address_mask = 0x3fff;

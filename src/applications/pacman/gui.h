@@ -60,8 +60,8 @@ public:
         std::vector<u8> const& sprite_ram,
         std::vector<u8> const& palette_ram,
         bool is_screen_flipped,
-        std::string const& game_window_subtitle)
-        = 0;
+        std::string const& game_window_subtitle
+    ) = 0;
 
     virtual void update_debug_only() = 0;
 
@@ -83,14 +83,13 @@ public:
 
     void load_sprite_rom(std::vector<u8> const& sprite_rom);
 
-    std::vector<std::vector<std::shared_ptr<Tile>>> tiles();
+    auto tiles() -> std::vector<std::vector<std::shared_ptr<Tile>>>;
 
-    std::tuple<
+    auto sprites() -> std::tuple<
         std::vector<std::vector<std::shared_ptr<Sprite>>>,
         std::vector<std::vector<std::shared_ptr<Sprite>>>,
         std::vector<std::vector<std::shared_ptr<Sprite>>>,
-        std::vector<std::vector<std::shared_ptr<Sprite>>>>
-    sprites();
+        std::vector<std::vector<std::shared_ptr<Sprite>>>>;
 
 protected:
     static constexpr int s_tile_size = 8;
@@ -115,9 +114,9 @@ protected:
     static constexpr unsigned int s_sprite_number_of_rotations = 4;
 
     // Border
-    static constexpr int s_border_size_in_tiles = 2;
-    static constexpr int s_width_invisible_border = s_border_size_in_tiles * s_tile_size;
-    static constexpr int s_width_both_borders = 2 * s_width_invisible_border;
+    static constexpr std::size_t s_border_size_in_tiles = 2;
+    static constexpr std::size_t s_width_invisible_border = s_border_size_in_tiles * s_tile_size;
+    static constexpr std::size_t s_width_both_borders = 2 * s_width_invisible_border;
 
     // Visible area
     static constexpr u16 s_playarea_start_address_offset = 0x0040;
@@ -139,8 +138,8 @@ protected:
     static constexpr int s_play_area_height_in_tiles = 32;
 
     // Final width and height
-    static constexpr int s_width = s_width_visible_area + s_width_both_borders;
-    static constexpr int s_height = s_height_visible_area;
+    static constexpr std::size_t s_width = s_width_visible_area + s_width_both_borders;
+    static constexpr std::size_t s_height = s_height_visible_area;
 
     static constexpr float s_scale = 4.0;
     static constexpr int s_scaled_width = static_cast<int>(s_scale * static_cast<float>(s_width));
@@ -173,36 +172,42 @@ protected:
     void render_play_area(
         Framebuffer& screen,
         std::vector<u8> const& tile_ram,
-        std::vector<u8> const& palette_ram);
+        std::vector<u8> const& palette_ram) const;
 
     void render_top_bar(
         Framebuffer& screen,
         std::vector<u8> const& tile_ram,
-        std::vector<u8> const& palette_ram);
+        std::vector<u8> const& palette_ram) const;
 
     void render_bottom_bar(
         Framebuffer& screen,
         std::vector<u8> const& tile_ram,
-        std::vector<u8> const& palette_ram);
+        std::vector<u8> const& palette_ram) const;
 
-    std::shared_ptr<Tile> render_tile(u8 palette_idx, u8 tile_idx);
+    [[nodiscard]] auto render_tile(u8 palette_idx, u8 tile_idx) const -> std::shared_ptr<Tile>;
 
-    static std::shared_ptr<Tile> render_debugging_tile(u8 tile_idx);
+    static auto render_debugging_tile(u8 tile_idx) -> std::shared_ptr<Tile>;
 
     void draw_tiles(Framebuffer& screen, std::vector<u8> const& tile_ram, std::vector<u8> const& palette_ram);
 
-    std::shared_ptr<Sprite> render_sprite(u8 palette_idx, u8 sprite_idx, bool flip_x, bool flip_y);
+    [[nodiscard]] auto render_sprite(
+        u8 palette_idx,
+        u8 sprite_idx,
+        bool flip_x,
+        bool flip_y
+    ) const -> std::shared_ptr<Sprite>;
 
-    static std::shared_ptr<Sprite> render_debugging_sprite(unsigned int rotation, u8 sprite_idx);
+    static auto render_debugging_sprite(unsigned int rotation, u8 sprite_idx) -> std::shared_ptr<Sprite>;
 
-    void draw_sprites(Framebuffer& screen, std::vector<u8> const& sprite_ram);
+    void draw_sprites(Framebuffer& screen, std::vector<u8> const& sprite_ram) const;
 
     static void draw_edges(Framebuffer& screen);
 
-    std::vector<u32> create_framebuffer(
+    auto create_framebuffer(
         std::vector<u8> const& tile_ram,
         std::vector<u8> const& sprite_ram,
         std::vector<u8> const& palette_ram,
-        bool is_screen_flipped);
+        bool is_screen_flipped
+    ) -> std::vector<u32>;
 };
 }

@@ -14,7 +14,7 @@ namespace emu::applications::pacman {
 
 using emu::exceptions::InvalidProgramArgumentsException;
 
-auto Settings::from_options(Options const& options) -> Settings
+auto Settings::from_options(Options const& options) -> Settings // NOLINT(*-function-cognitive-complexity)
 {
     using namespace applications::pacman;
 
@@ -37,7 +37,7 @@ auto Settings::from_options(Options const& options) -> Settings
     std::unordered_map<std::string, std::vector<std::string>> opts = options.options();
 
     for (auto& opt : opts["d"]) {
-        switch (opt[0]) {
+        switch (opt.at(0)) {
         case 'n':
             if (opt == "n=1") {
                 settings.m_number_of_lives = NumberOfLives::One;

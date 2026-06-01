@@ -14,7 +14,7 @@ MemoryMapForSpaceInvaders::MemoryMapForSpaceInvaders(EmulatorMemory<u16, u8>& me
  * @param address is the address in memory to write to
  * @param value is the value that should be written to memory
  */
-void MemoryMapForSpaceInvaders::write(u16 address, u8 value)
+void MemoryMapForSpaceInvaders::write(u16 address, const u8 value)
 {
     address &= s_address_mask;
 
@@ -31,14 +31,14 @@ void MemoryMapForSpaceInvaders::write(u16 address, u8 value)
  * @param address is the address in memory to read from
  * @return the value in memory at the given address
  */
-u8 MemoryMapForSpaceInvaders::read(u16 address)
+auto MemoryMapForSpaceInvaders::read(u16 address) -> u8
 {
     address &= s_address_mask;
 
     if (address <= s_address_ram_end) {
         return m_memory.direct_read(address);
-    } else {
-        return 0;
     }
+
+    return 0;
 }
 }

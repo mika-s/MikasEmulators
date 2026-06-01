@@ -40,12 +40,12 @@ SpaceInvaders::SpaceInvaders(Settings const& settings, const GuiType gui_type)
     m_memory.attach_memory_mapper(m_memory_mapped_io);
 }
 
-std::unique_ptr<Session> SpaceInvaders::new_session()
+auto SpaceInvaders::new_session() -> std::unique_ptr<Session>
 {
     return std::make_unique<SpaceInvadersSession>(m_settings, m_is_starting_paused, m_gui, m_input, m_memory);
 }
 
-std::vector<u8> create_empty_vector(std::size_t size)
+static auto create_empty_vector(const std::size_t size) -> std::vector<u8>
 {
     std::vector<u8> vec(size, 0);
     return vec;

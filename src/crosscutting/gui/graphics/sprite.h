@@ -27,7 +27,7 @@ public:
 
     void flip_vertical();
 
-    void map_to_framebuffer(Framebuffer& framebuffer, int origin_row, int origin_col);
+    void map_to_framebuffer(Framebuffer& framebuffer, int origin_row, int origin_col) const;
 
     [[nodiscard]] auto size() const -> std::size_t;
 

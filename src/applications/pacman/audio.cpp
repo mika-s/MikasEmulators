@@ -57,7 +57,7 @@ Audio::~Audio()
     SDL_QuitSubSystem(SDL_INIT_AUDIO);
 }
 
-void Audio::handle_sound(const bool is_sound_enabled, std::vector<Voice>& voices)
+void Audio::handle_sound(const bool is_sound_enabled, std::vector<Voice>& voices) const
 {
     if (!is_sound_enabled) {
         return;

@@ -14,7 +14,7 @@ namespace emu::applications::space_invaders {
 
 using emu::exceptions::InvalidProgramArgumentsException;
 
-Settings Settings::from_options(Options const& options)
+auto Settings::from_options(Options const& options) -> Settings
 {
     for (auto const& opt : options.options()) {
         if (!s_recognized_options.contains(opt.first)) {
@@ -31,7 +31,7 @@ Settings Settings::from_options(Options const& options)
     std::unordered_map<std::string, std::vector<std::string>> opts = options.options();
 
     for (auto opt : opts["d"]) {
-        switch (opt[0]) {
+        switch (opt.at(0)) {
         case 'n':
             if (opt == "n=3") {
                 settings.m_number_of_lives = NumberOfLives::Three;

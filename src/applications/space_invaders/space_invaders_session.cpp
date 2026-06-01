@@ -43,7 +43,7 @@ using emu::util::string::split;
 
 SpaceInvadersSession::SpaceInvadersSession(
     Settings const& settings,
-    bool is_starting_paused,
+    const bool is_starting_paused,
     std::shared_ptr<Gui> gui,
     std::shared_ptr<Input> input,
     EmulatorMemory<u16, u8>& memory)
@@ -97,7 +97,7 @@ void SpaceInvadersSession::run()
 {
     m_cpu->start();
 
-    cyc cycles;
+    cyc cycles = 0;
 
     while (!m_state_context->current_state()->is_exit_state()) {
         m_state_context->current_state()->perform(cycles);
@@ -116,7 +116,7 @@ void SpaceInvadersSession::stop()
 
 void SpaceInvadersSession::setup_cpu()
 {
-    const u16 initial_pc = 0;
+    constexpr u16 initial_pc = 0;
 
     m_cpu = std::make_shared<Cpu>(m_memory, initial_pc);
 
@@ -127,19 +127,19 @@ void SpaceInvadersSession::setup_cpu()
 void SpaceInvadersSession::setup_debugging()
 {
     m_debug_container = std::make_shared<DebugContainer<u16, u8, 16>>();
-    m_debug_container->add_register(RegisterDebugContainer<u8>("A", [&]() { return m_cpu->a(); }));
-    m_debug_container->add_register(RegisterDebugContainer<u8>("B", [&]() { return m_cpu->b(); }));
-    m_debug_container->add_register(RegisterDebugContainer<u8>("C", [&]() { return m_cpu->c(); }));
-    m_debug_container->add_register(RegisterDebugContainer<u8>("D", [&]() { return m_cpu->d(); }));
-    m_debug_container->add_register(RegisterDebugContainer<u8>("E", [&]() { return m_cpu->e(); }));
-    m_debug_container->add_register(RegisterDebugContainer<u8>("H", [&]() { return m_cpu->h(); }));
-    m_debug_container->add_register(RegisterDebugContainer<u8>("L", [&]() { return m_cpu->l(); }));
-    m_debug_container->add_pc([&]() { return m_cpu->pc(); });
-    m_debug_container->add_sp([&]() { return m_cpu->sp(); });
-    m_debug_container->add_is_interrupted([&]() { return m_cpu->is_interrupted(); });
+    m_debug_container->add_register(RegisterDebugContainer<u8>("A", [&]() -> u8 { return m_cpu->a(); }));
+    m_debug_container->add_register(RegisterDebugContainer<u8>("B", [&]() -> u8 { return m_cpu->b(); }));
+    m_debug_container->add_register(RegisterDebugContainer<u8>("C", [&]() -> u8 { return m_cpu->c(); }));
+    m_debug_container->add_register(RegisterDebugContainer<u8>("D", [&]() -> u8 { return m_cpu->d(); }));
+    m_debug_container->add_register(RegisterDebugContainer<u8>("E", [&]() -> u8 { return m_cpu->e(); }));
+    m_debug_container->add_register(RegisterDebugContainer<u8>("H", [&]() -> u8 { return m_cpu->h(); }));
+    m_debug_container->add_register(RegisterDebugContainer<u8>("L", [&]() -> u8 { return m_cpu->l(); }));
+    m_debug_container->add_pc([&]() -> u16 { return m_cpu->pc(); });
+    m_debug_container->add_sp([&]() -> u16 { return m_cpu->sp(); });
+    m_debug_container->add_is_interrupted([&]() -> bool { return m_cpu->is_interrupted(); });
     m_debug_container->add_flag_register(FlagRegisterDebugContainer<u8>(
         "F",
-        [&]() { return m_cpu->f(); },
+        [&]() -> u8 { return m_cpu->f(); },
         { { "s", 7 },
             { "z", 6 },
             { "u", 5 },
@@ -150,20 +150,20 @@ void SpaceInvadersSession::setup_debugging()
             { "c", 0 } }));
     m_debug_container->add_io(IoDebugContainer<u8>(
         "shift (change offset)",
-        [&]() { return m_outputs_during_cycle.contains(s_out_port_shift_offset); },
-        [&]() { return m_outputs_during_cycle[s_out_port_shift_offset]; }));
+        [&]() -> bool { return m_outputs_during_cycle.contains(s_out_port_shift_offset); },
+        [&]() -> u8 { return m_outputs_during_cycle[s_out_port_shift_offset]; }));
     m_debug_container->add_io(IoDebugContainer<u8>(
         "shift (do shift)",
-        [&]() { return m_outputs_during_cycle.contains(s_out_port_do_shift); },
-        [&]() { return m_outputs_during_cycle[s_out_port_do_shift]; }));
+        [&]() -> bool { return m_outputs_during_cycle.contains(s_out_port_do_shift); },
+        [&]() -> u8 { return m_outputs_during_cycle[s_out_port_do_shift]; }));
     m_debug_container->add_io(IoDebugContainer<u8>(
         "watchdog",
-        [&]() { return m_outputs_during_cycle.contains(s_out_port_watchdog); },
-        [&]() { return m_outputs_during_cycle[s_out_port_watchdog]; }));
+        [&]() -> bool { return m_outputs_during_cycle.contains(s_out_port_watchdog); },
+        [&]() -> u8 { return m_outputs_during_cycle[s_out_port_watchdog]; }));
     m_debug_container->add_io(IoDebugContainer<u8>(
         "out sound 1",
-        [&]() { return m_outputs_during_cycle.contains(s_out_port_sound_1); },
-        [&]() { return m_outputs_during_cycle[s_out_port_sound_1]; },
+        [&]() -> bool { return m_outputs_during_cycle.contains(s_out_port_sound_1); },
+        [&]() -> u8 { return m_outputs_during_cycle[s_out_port_sound_1]; },
         { { "ufo", 0 },
             { "shot", 1 },
             { "flash", 2 },
@@ -171,15 +171,15 @@ void SpaceInvadersSession::setup_debugging()
             { "extended_play", 4 } }));
     m_debug_container->add_io(IoDebugContainer<u8>(
         "out sound 2",
-        [&]() { return m_outputs_during_cycle.contains(s_out_port_sound_2); },
-        [&]() { return m_outputs_during_cycle[s_out_port_sound_2]; },
+        [&]() -> bool { return m_outputs_during_cycle.contains(s_out_port_sound_2); },
+        [&]() -> u8 { return m_outputs_during_cycle[s_out_port_sound_2]; },
         { { "fleet_movement_1", 0 },
             { "fleet_movement_2", 1 },
             { "fleet_movement_3", 2 },
             { "fleet_movement_4", 3 },
             { "ufo_hit", 4 } }));
     m_debug_container->add_memory(MemoryDebugContainer<u8>(
-        [&]() { return memory(); }));
+        [&]() -> std::vector<u8> { return memory(); }));
     m_debug_container->add_disassembled_program(disassemble_program());
 
     m_gui->attach_debugger(m_debugger);
@@ -187,7 +187,7 @@ void SpaceInvadersSession::setup_debugging()
     m_gui->attach_logger(m_logger);
 }
 
-void SpaceInvadersSession::gui_request(GuiRequest request)
+void SpaceInvadersSession::gui_request(const GuiRequest request)
 {
     switch (request.m_type) {
     case RUN:
@@ -205,7 +205,7 @@ void SpaceInvadersSession::gui_request(GuiRequest request)
     }
 }
 
-void SpaceInvadersSession::in_requested(u8 port)
+void SpaceInvadersSession::in_requested(const u8 port)
 {
     switch (port) {
     case s_in_port_unused:
@@ -225,7 +225,7 @@ void SpaceInvadersSession::in_requested(u8 port)
     }
 }
 
-void SpaceInvadersSession::out_changed(u8 port)
+void SpaceInvadersSession::out_changed(const u8 port)
 {
     if (!m_outputs_during_cycle.contains(port)) {
         m_outputs_during_cycle[port] = m_cpu->a();
@@ -253,7 +253,7 @@ void SpaceInvadersSession::out_changed(u8 port)
     }
 }
 
-void SpaceInvadersSession::key_pressed(KeyRequest request)
+void SpaceInvadersSession::key_pressed(const KeyRequest request)
 {
     switch (request) {
     case TOGGLE_MUTE:
@@ -264,12 +264,12 @@ void SpaceInvadersSession::key_pressed(KeyRequest request)
     }
 }
 
-std::vector<u8> SpaceInvadersSession::memory()
+auto SpaceInvadersSession::memory() const -> std::vector<u8>
 {
     return { m_memory.begin(), m_memory.begin() + 0x3fff + 1 };
 }
 
-std::vector<DisassembledLine<u16, 16>> SpaceInvadersSession::disassemble_program()
+auto SpaceInvadersSession::disassemble_program() const -> std::vector<DisassembledLine<u16, 16>>
 {
     EmulatorMemory<u16, u8> sliced_for_disassembly = m_memory.slice(0, 0x2000);
 
@@ -279,12 +279,11 @@ std::vector<DisassembledLine<u16, 16>> SpaceInvadersSession::disassemble_program
 
     std::vector<std::string> disassembled_program = split(ss, "\n");
 
-    disassembled_program.erase(
-        std::remove_if(disassembled_program.begin(), disassembled_program.end(), [](std::string const& s) { return s.empty(); }));
+    std::erase_if(disassembled_program, [](std::string const& s) -> bool { return s.empty(); });
 
     std::vector<DisassembledLine<u16, 16>> lines;
-    std::transform(disassembled_program.begin(), disassembled_program.end(), std::back_inserter(lines),
-        [](std::string const& line) { return DisassembledLine<u16, 16>(line); });
+    std::ranges::transform(disassembled_program, std::back_inserter(lines),
+        [](std::string const& line) -> DisassembledLine<u16, 16> { return DisassembledLine<u16, 16>(line); });
 
     return lines;
 }

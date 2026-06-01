@@ -51,7 +51,7 @@ auto Pacman::new_session() -> std::unique_ptr<Session>
         m_memory);
 }
 
-auto create_empty_vector(const std::size_t size) -> std::vector<u8>
+static auto create_empty_vector(const std::size_t size) -> std::vector<u8>
 {
     std::vector<u8> vec(size, 0);
     return vec;

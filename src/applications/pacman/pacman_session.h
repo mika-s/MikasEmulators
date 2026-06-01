@@ -119,8 +119,8 @@ private:
 
     void setup_debugging();
 
-    auto memory() -> std::vector<u8>;
+    auto memory() const -> std::vector<u8>;
 
-    auto disassemble_program() -> std::vector<DisassembledLine<u16, 16>>;
+    auto disassemble_program() const -> std::vector<DisassembledLine<u16, 16>>;
 };
 }

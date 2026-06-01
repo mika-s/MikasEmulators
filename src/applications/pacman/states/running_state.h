@@ -41,11 +41,11 @@ private:
 
     std::shared_ptr<StateContext> m_ctx;
 
-    std::vector<u8> tile_ram();
+    std::vector<u8> tile_ram() const;
 
-    std::vector<u8> sprite_ram();
+    std::vector<u8> sprite_ram() const;
 
-    std::vector<u8> palette_ram();
+    std::vector<u8> palette_ram() const;
 };
 
 }

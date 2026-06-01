@@ -289,12 +289,12 @@ void PacmanSession::key_pressed(const IoRequest request)
     }
 }
 
-auto PacmanSession::memory() -> std::vector<u8>
+auto PacmanSession::memory() const -> std::vector<u8>
 {
     return { m_memory.begin(), m_memory.end() };
 }
 
-auto PacmanSession::disassemble_program() -> std::vector<DisassembledLine<u16, 16>>
+auto PacmanSession::disassemble_program() const -> std::vector<DisassembledLine<u16, 16>>
 {
     EmulatorMemory<u16, u8> sliced_for_disassembly = m_memory.slice(0, 0x3fff);
 

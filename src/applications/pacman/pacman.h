@@ -27,7 +27,8 @@ class Pacman : public Emulator {
 public:
     Pacman(
         Settings const& settings,
-        GuiType gui_type);
+        GuiType gui_type
+    );
 
     auto new_session() -> std::unique_ptr<Session> override;
 

@@ -22,12 +22,10 @@ void InputImgui::add_io_observer(KeyObserver& observer)
 
 void InputImgui::remove_io_observer(KeyObserver* observer)
 {
-    m_io_observers.erase(
-        std::remove(m_io_observers.begin(), m_io_observers.end(), observer),
-        m_io_observers.end());
+    std::erase(m_io_observers, observer);
 }
 
-void InputImgui::notify_io_observers(KeyRequest request)
+void InputImgui::notify_io_observers(KeyRequest request) const
 {
     for (KeyObserver* observer : m_io_observers) {
         observer->key_pressed(request);
@@ -62,9 +60,7 @@ void InputImgui::read(CpuIo& cpu_io, GuiIo& gui_io)
     while (SDL_PollEvent(&read_input_event) != 0) {
         ImGui_ImplSDL2_ProcessEvent(&read_input_event);
 
-        ImGuiIO& io = ImGui::GetIO();
-
-        if (!io.WantCaptureKeyboard) {
+        if (ImGuiIO const& io = ImGui::GetIO(); !io.WantCaptureKeyboard) {
             switch (read_input_event.type) {
             case SDL_QUIT:
                 gui_io.m_is_quitting = true;
@@ -169,9 +165,7 @@ void InputImgui::read_debug_only(GuiIo& gui_io)
     while (SDL_PollEvent(&read_input_event) != 0) {
         ImGui_ImplSDL2_ProcessEvent(&read_input_event);
 
-        ImGuiIO& io = ImGui::GetIO();
-
-        if (!io.WantCaptureKeyboard) {
+        if (ImGuiIO const& io = ImGui::GetIO(); !io.WantCaptureKeyboard) {
             switch (read_input_event.type) {
             case SDL_QUIT:
                 gui_io.m_is_quitting = true;

@@ -35,7 +35,7 @@ void Framebuffer::set(unsigned int row, unsigned int col, const Color value)
 
 void Framebuffer::flip_vertical()
 {
-    std::reverse(std::begin(m_values), std::end(m_values));
+    std::ranges::reverse(m_values);
 }
 
 void Framebuffer::clear()

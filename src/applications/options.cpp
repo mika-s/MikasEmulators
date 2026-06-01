@@ -12,7 +12,7 @@ using emu::util::string::find_short_executable_name;
 Options::Options(const std::vector<std::string> &args)
     : m_args(args)
 {
-    m_short_executable_name = find_short_executable_name(args[0]);
+    m_short_executable_name = find_short_executable_name(args.at(0));
 }
 
 auto Options::args() const -> std::vector<std::string>
@@ -36,10 +36,10 @@ auto Options::gui_type(std::function<void(std::string const&)> const& print_usag
     if (m_options.at("g").empty()) {
         throw InvalidProgramArgumentsException("-g flag needs an additional argument", print_usage);
     }
-    if (m_options.at("g")[0] == "ordinary") {
+    if (m_options.at("g").at(0) == "ordinary") {
         return GuiType::ORDINARY;
     }
-    if (m_options.at("g")[0] == "debugging") {
+    if (m_options.at("g").at(0) == "debugging") {
         return GuiType::DEBUGGING;
     }
 

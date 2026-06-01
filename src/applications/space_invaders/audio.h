@@ -82,13 +82,13 @@ private:
 
     unsigned int m_volume = 5000;
 
-    [[nodiscard]] bool is_rising_edge(u8 acc_reg, unsigned int value) const;
+    [[nodiscard]] auto is_rising_edge(u8 acc_reg, unsigned int value) const -> bool;
 
-    [[nodiscard]] bool is_falling_edge(u8 acc_reg, unsigned int value) const;
+    [[nodiscard]] auto is_falling_edge(u8 acc_reg, unsigned int value) const -> bool;
 
     void generate_audio(u8* stream, int len);
 
-    void play(std::vector<double> sound, int samples, i16* stream16, std::size_t& x, bool& is_sound_on) const;
+    void play(const std::vector<double> &sound, int samples, i16* stream16, std::size_t& x, bool& is_sound_on) const;
 
     static void forward_callback(void* userdata, u8* stream, int len)
     {

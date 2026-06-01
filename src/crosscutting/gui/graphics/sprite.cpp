@@ -28,7 +28,7 @@ Sprite::Sprite(std::size_t height, std::size_t width)
     }
 }
 
-void Sprite::set(std::size_t row, std::size_t col, Color value)
+void Sprite::set(std::size_t row, std::size_t col, const Color value)
 {
     if (row > m_height - 1) {
         throw std::runtime_error(std::format("row of {} is too large, height is {}", row, m_height));
@@ -50,10 +50,10 @@ void Sprite::flip_horizontal()
 
 void Sprite::flip_vertical()
 {
-    std::reverse(std::begin(m_values), std::end(m_values));
+    std::ranges::reverse(m_values);
 }
 
-void Sprite::map_to_framebuffer(Framebuffer& framebuffer, int origin_row, int origin_col)
+void Sprite::map_to_framebuffer(Framebuffer& framebuffer, const int origin_row, const int origin_col) const
 {
     for (unsigned int row = 0; row < m_height; ++row) {
         for (unsigned int col = 0; col < m_width; ++col) {

@@ -16,12 +16,10 @@ void InputSdl::add_io_observer(KeyObserver& observer)
 
 void InputSdl::remove_io_observer(KeyObserver* observer)
 {
-    m_io_observers.erase(
-        std::remove(m_io_observers.begin(), m_io_observers.end(), observer),
-        m_io_observers.end());
+    std::erase(m_io_observers, observer);
 }
 
-void InputSdl::notify_io_observers(IoRequest request) const
+void InputSdl::notify_io_observers(const IoRequest request) const
 {
     for (KeyObserver* observer : m_io_observers) {
         observer->key_pressed(request);

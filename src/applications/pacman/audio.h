@@ -24,11 +24,11 @@ public:
 
     ~Audio();
 
-    void handle_sound(bool is_sound_enabled, std::vector<Voice>& voices);
+    void handle_sound(bool is_sound_enabled, std::vector<Voice>& voices) const;
 
     void toggle_mute();
 
-    std::vector<Waveform> waveforms();
+    auto waveforms() -> std::vector<Waveform>;
 
 private:
     static constexpr unsigned int s_samples_per_waveform = 32;
@@ -44,8 +44,9 @@ private:
 
     bool m_is_muted { false };
 
-    static std::vector<Waveform> load_waveforms_from_roms(
+    static auto load_waveforms_from_roms(
         std::vector<u8> const& sound_rom1,
-        std::vector<u8> const& sound_rom2);
+        std::vector<u8> const& sound_rom2
+    ) -> std::vector<Waveform>;
 };
 }

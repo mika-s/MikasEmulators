@@ -52,18 +52,20 @@ protected:
 
     Framebuffer m_framebuffer;
 
-    std::vector<u32> create_framebuffer(std::vector<u8> const& vram)
+    auto create_framebuffer(std::vector<u8> const& vram) -> std::vector<u32>
     {
         for (int i = 0; i < s_height * s_width / s_bits_in_byte; ++i) {
             int const y = i * s_bits_in_byte / s_height;
             int const base_x = (i * s_bits_in_byte) % s_height;
-            const u8 current_byte = vram[static_cast<std::size_t>(i)];
+            const u8 current_byte = vram.at(static_cast<std::size_t>(i));
 
             for (u8 bit = 0; bit < s_bits_in_byte; ++bit) {
                 int px = base_x + bit;
                 int py = y;
                 bool const is_pixel_lit = is_bit_set(current_byte, bit);
-                u8 r = 0, g = 0, b = 0;
+                u8 r = 0;
+                u8 g = 0;
+                u8 b = 0;
 
                 if (is_pixel_lit) {
                     if (px < 16) {

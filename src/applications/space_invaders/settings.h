@@ -32,7 +32,7 @@ public:
     BonusLifeAt m_bonus_life_at;
     CoinInfo m_coin_info;
 
-    static Settings from_options(Options const& options);
+    static auto from_options(Options const& options) -> Settings;
 
 private:
     static const inline std::string s_help_short = "h";

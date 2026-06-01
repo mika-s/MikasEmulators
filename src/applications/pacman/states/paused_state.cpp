@@ -15,7 +15,7 @@ PausedState::PausedState(std::shared_ptr<StateContext> state_context)
 {
 }
 
-bool PausedState::is_exit_state()
+auto PausedState::is_exit_state() -> bool
 {
     return false;
 }
@@ -46,26 +46,35 @@ void PausedState::perform([[maybe_unused]] cyc& cycles)
             m_ctx->m_gui_io.m_is_quitting = false;
             transition_to_stop();
             return;
-        } else if (m_ctx->m_gui_io.m_is_toggling_pause) {
+        }
+
+        if (m_ctx->m_gui_io.m_is_toggling_pause) {
             m_ctx->m_gui_io.m_is_toggling_pause = false;
             transition_to_run();
             return;
         }
-        m_ctx->m_gui->update_screen(tile_ram(), sprite_ram(), palette_ram(), m_ctx->m_memory_mapped_io->is_screen_flipped(), s_game_window_subtitle);
+
+        m_ctx->m_gui->update_screen(
+            tile_ram(),
+            sprite_ram(),
+            palette_ram(),
+            m_ctx->m_memory_mapped_io->is_screen_flipped(),
+            s_game_window_subtitle
+        );
     }
 }
 
-std::vector<u8> PausedState::tile_ram()
+auto PausedState::tile_ram() const -> std::vector<u8>
 {
     return { m_ctx->m_memory.begin() + 0x4000, m_ctx->m_memory.begin() + 0x43ff + 1 };
 }
 
-std::vector<u8> PausedState::palette_ram()
+auto PausedState::palette_ram() const -> std::vector<u8>
 {
     return { m_ctx->m_memory.begin() + 0x4400, m_ctx->m_memory.begin() + 0x47ff + 1 };
 }
 
-std::vector<u8> PausedState::sprite_ram()
+auto PausedState::sprite_ram() const -> std::vector<u8>
 {
     return { m_ctx->m_memory.begin() + 0x4ff0, m_ctx->m_memory.begin() + 0x506f + 1 };
 }

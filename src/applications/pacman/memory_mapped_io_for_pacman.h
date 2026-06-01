@@ -28,29 +28,29 @@ public:
 
     void write(u16 address, u8 value) override;
 
-    u8 read(u16 address) override;
+    auto read(u16 address) -> u8 override;
 
-    bool is_interrupt_enabled();
+    auto is_interrupt_enabled() -> bool;
 
     void in0_read(unsigned int bit_number, bool is_setting);
 
-    [[nodiscard]] u8 in0_read() const;
+    [[nodiscard]] auto in0_read() const -> u8;
 
     void in1_read(unsigned int bit_number, bool is_setting);
 
-    [[nodiscard]] u8 in1_read() const;
+    [[nodiscard]] auto in1_read() const -> u8;
 
-    static u8 coin_counter();
+    [[nodiscard]] auto coin_counter() -> u8;
 
-    u8 dipswitches() const;
+    [[nodiscard]] auto dipswitches() const -> u8;
 
-    bool is_sound_enabled() const;
+    [[nodiscard]] auto is_sound_enabled() const -> bool;
 
-    bool is_aux_board_enabled() const;
+    [[nodiscard]] auto is_aux_board_enabled() const -> bool;
 
-    bool is_screen_flipped() const;
+    [[nodiscard]] auto is_screen_flipped() const -> bool;
 
-    std::vector<Voice>& voices();
+    auto voices() -> std::vector<Voice>&;
 
 private:
     static constexpr unsigned int s_sound_enabled_bit = 0;

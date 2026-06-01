@@ -41,7 +41,8 @@ public:
         std::vector<u8> const& sprite_ram,
         std::vector<u8> const& palette_ram,
         bool is_screen_flipped,
-        std::string const& game_window_subtitle) override;
+        std::string const& game_window_subtitle
+    ) override;
 
     void update_debug_only() override;
 
