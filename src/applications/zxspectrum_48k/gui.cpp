@@ -45,26 +45,26 @@ void Gui::draw_borders(Framebuffer& framebuffer, const u8 border_color)
 auto Gui::find_ink(const u8 value, const bool is_bright) -> Color
 {
     const u8 number = value & s_ink_mask;
-    return is_bright ? s_bright_colors[number] : s_ordinary_colors[number];
+    return is_bright ? s_bright_colors.at(number) : s_ordinary_colors.at(number);
 }
 
 auto Gui::find_paper(const u8 value, const bool is_bright) -> Color
 {
     const u8 number = (value & s_paper_mask) >> s_paper_shift;
-    return is_bright ? s_bright_colors[number] : s_ordinary_colors[number];
+    return is_bright ? s_bright_colors.at(number) : s_ordinary_colors.at(number);
 }
 
-bool Gui::find_flash_mode(u8 value)
+auto Gui::find_flash_mode(const u8 value) -> bool
 {
     return is_bit_set(value, s_flash_bit);
 }
 
-bool Gui::find_bright_mode(u8 value)
+auto Gui::find_bright_mode(const u8 value) -> bool
 {
     return is_bit_set(value, s_bright_bit);
 }
 
-u16 Gui::display_address_from_xy(u8 row, u8 col, u8 pixel_line)
+auto Gui::display_address_from_xy(const u8 row, const u8 col, const u8 pixel_line) -> u16
 {
     const u16 a0 = is_bit_set(col, 0) << 0;
     const u16 a1 = is_bit_set(col, 1) << 1;
@@ -85,7 +85,7 @@ u16 Gui::display_address_from_xy(u8 row, u8 col, u8 pixel_line)
     return address - s_vram_offset;
 }
 
-u16 Gui::attribute_address_from_xy(u8 row, u8 col) {
+auto Gui::attribute_address_from_xy(const u8 row, const u8 col) -> u16 {
     const u16 a0 = is_bit_set(col, 0) << 0;
     const u16 a1 = is_bit_set(col, 1) << 1;
     const u16 a2 = is_bit_set(col, 2) << 2;
@@ -109,12 +109,12 @@ void Gui::draw_attribute_blocks(Framebuffer& framebuffer, std::vector<u8> const&
             for (u8 pixel_line = 0; pixel_line < 8; ++pixel_line) {
                 for (u8 bit_no = 0; bit_no < 8; ++bit_no) {
                     const u16 display_address = display_address_from_xy(row, col, pixel_line);
-                    const u8 display_value = vram[display_address];
+                    const u8 display_value = vram.at(display_address);
                     const unsigned int y = row * s_attribute_blocks_pixel_width + pixel_line + s_height_top_border;
                     const unsigned int x = col * s_attribute_blocks_pixel_width + (7 - bit_no) + s_width_left_border;
 
                     const u16 attribute_address = attribute_address_from_xy(row, col);
-                    const u8 attribute_value = color_ram[attribute_address];
+                    const u8 attribute_value = color_ram.at(attribute_address);
                     const bool is_bright = find_bright_mode(attribute_value);
                     const Color ink = find_ink(attribute_value, is_bright);
                     const Color paper = find_paper(attribute_value, is_bright);
@@ -126,7 +126,7 @@ void Gui::draw_attribute_blocks(Framebuffer& framebuffer, std::vector<u8> const&
     }
 }
 
-std::vector<u32> Gui::create_framebuffer(std::vector<u8> const& vram, std::vector<u8> const& color_ram, u8 border_color)
+auto Gui::create_framebuffer(std::vector<u8> const& vram, std::vector<u8> const& color_ram, const u8 border_color) -> std::vector<u32>
 {
     if (!m_has_created_table) {
         throw std::runtime_error("Programming error: The lookup tables have to be made first. Run create_table() first.");

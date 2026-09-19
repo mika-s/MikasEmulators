@@ -10,7 +10,7 @@ public:
 
     void reset();
 
-    [[nodiscard]] u8 to_u8() const;
+    [[nodiscard]] auto to_u8() const -> u8;
 
     void from_u8(u8 value);
 
@@ -30,19 +30,19 @@ public:
 
     void handle_sign_flag(u8 number);
 
-    static bool should_parity_flag_be_set(u8 number);
+    static auto should_parity_flag_be_set(u8 number) -> bool;
 
     void set_zero_flag();
 
     void clear_zero_flag();
 
-    [[nodiscard]] bool is_zero_flag_set() const;
+    [[nodiscard]] auto is_zero_flag_set() const -> bool;
 
     void set_carry_flag();
 
     void clear_carry_flag();
 
-    [[nodiscard]] bool is_carry_flag_set() const;
+    [[nodiscard]] auto is_carry_flag_set() const -> bool;
 
     void toggle_carry_flag();
 
@@ -50,19 +50,19 @@ public:
 
     void clear_aux_carry_flag();
 
-    [[nodiscard]] bool is_aux_carry_flag_set() const;
+    [[nodiscard]] auto is_aux_carry_flag_set() const -> bool;
 
     void set_sign_flag();
 
     void clear_sign_flag();
 
-    [[nodiscard]] bool is_sign_flag_set() const;
+    [[nodiscard]] auto is_sign_flag_set() const -> bool;
 
     void set_parity_flag();
 
     void clear_parity_flag();
 
-    [[nodiscard]] bool is_parity_flag_set() const;
+    [[nodiscard]] auto is_parity_flag_set() const -> bool;
 
 private:
     static constexpr unsigned int msb = 7;

@@ -31,7 +31,7 @@ class PausedState : public State {
 public:
     explicit PausedState(std::shared_ptr<StateContext> state_context);
 
-    bool is_exit_state() override;
+    auto is_exit_state() -> bool override;
 
     void transition_to_run() override;
 
@@ -48,7 +48,7 @@ private:
 
     std::shared_ptr<StateContext> m_ctx;
 
-    std::vector<u8> vram();
+    [[nodiscard]] auto vram() const -> std::vector<u8>;
 };
 
 }

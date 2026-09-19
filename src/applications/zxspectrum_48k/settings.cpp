@@ -16,9 +16,9 @@ using emu::exceptions::InvalidProgramArgumentsException;
 
 auto Settings::from_options(Options const& options) -> Settings
 {
-    for (auto const& opt : options.options()) {
-        if (!s_recognized_options.contains(opt.first)) {
-            throw InvalidProgramArgumentsException(std::format("Unknown flag: {}", opt.first), print_usage);
+    for (const auto&[flag, desc] : options.options()) {
+        if (!s_recognized_options.contains(flag)) {
+            throw InvalidProgramArgumentsException(std::format("Unknown flag: {}", flag), print_usage);
         }
     }
 

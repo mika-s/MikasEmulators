@@ -62,7 +62,7 @@ void SynacorApplication::load_file()
     const std::vector<u8> as_u8 = read_file_into_vector(m_loaded_file);
     std::vector<u16> as_u16;
     for (unsigned int i = 0; i < as_u8.size(); i += 2) {
-        as_u16.push_back(to_u16(as_u8[i + 1], as_u8[i]));
+        as_u16.push_back(to_u16(as_u8.at(i + 1), as_u8.at(i)));
     }
 
     std::vector<RawData> as_RawData;

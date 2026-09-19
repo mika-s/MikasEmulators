@@ -58,12 +58,12 @@ void PausedState::perform([[maybe_unused]] cyc& cycles)
     }
 }
 
-auto PausedState::vram() -> std::vector<u8>
+auto PausedState::vram() const -> std::vector<u8>
 {
     return { m_ctx->m_memory.begin() + 0x4000, m_ctx->m_memory.begin() + 0x57ff + 1 };
 }
 
-auto PausedState::color_ram() -> std::vector<u8>
+auto PausedState::color_ram() const -> std::vector<u8>
 {
     return { m_ctx->m_memory.begin() + 0x5800, m_ctx->m_memory.begin() + 0x5aff + 1 };
 }

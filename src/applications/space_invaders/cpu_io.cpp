@@ -3,7 +3,7 @@
 
 namespace emu::applications::space_invaders {
 
-CpuIo::CpuIo(u8 in_port0, u8 in_port1, u8 in_port2)
+CpuIo::CpuIo(const u8 in_port0, const u8 in_port1, const u8 in_port2)
     : m_in_port0(in_port0)
     , m_in_port1(in_port1)
     , m_in_port2(in_port2)

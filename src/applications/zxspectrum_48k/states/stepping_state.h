@@ -31,7 +31,7 @@ class SteppingState : public State {
 public:
     explicit SteppingState(std::shared_ptr<StateContext> state_context);
 
-    bool is_exit_state() override;
+    auto is_exit_state() -> bool override;
 
     void transition_to_run() override;
 
@@ -60,9 +60,9 @@ private:
 
     auto await_input_and_update_debug() -> bool;
 
-    auto vram() const -> std::vector<u8>;
+    [[nodiscard]] auto vram() const -> std::vector<u8>;
 
-    auto color_ram() const -> std::vector<u8>;
+    [[nodiscard]] auto color_ram() const -> std::vector<u8>;
 };
 
 }

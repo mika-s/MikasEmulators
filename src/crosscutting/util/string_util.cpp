@@ -159,11 +159,11 @@ auto append(const std::string &postfix, char const* txt) -> std::string
 
 auto is_alphanumeric(std::string const& str) -> bool
 {
-    return std::find_if(str.begin(), str.end(), [](char const& c) -> int { return isalnum(c); }) == str.end();
+    return std::ranges::find_if(str, [](char const& c) -> int { return isalnum(c); }) == str.end();
 }
 
 auto is_alpha(std::string const& str) -> bool
 {
-    return std::find_if(str.begin(), str.end(), [](char const& c) -> bool { return !isalpha(c); }) == str.end();
+    return std::ranges::find_if(str, [](char const& c) -> bool { return !isalpha(c); }) == str.end();
 }
 }

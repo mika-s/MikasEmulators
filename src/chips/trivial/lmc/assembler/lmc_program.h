@@ -14,9 +14,9 @@ class LmcProgram {
 public:
     explicit LmcProgram(std::vector<LmcLine> lines);
 
-    std::vector<Data> eval() const;
+    auto eval() const -> std::vector<Data>;
 
-    static LmcProgram parse(Scanner& scanner, Environment& environment);
+    static auto parse(Scanner& scanner, Environment& environment) -> LmcProgram;
 
 private:
     std::vector<LmcLine> m_lines;

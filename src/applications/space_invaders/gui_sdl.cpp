@@ -112,9 +112,9 @@ void GuiSdl::update_screen(std::vector<u8> const& vram, std::string const& game_
     if (SDL_LockTexture(m_texture, nullptr, &pixels, &pitch) != 0) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error while locking SDL texture: %s", SDL_GetError()); // NOLINT(*-pro-type-vararg)
         exit(1);
-    } else {
-        SDL_memcpy(pixels, framebuffer.data(), static_cast<std::size_t>(pitch * s_height));
     }
+
+    SDL_memcpy(pixels, framebuffer.data(), static_cast<std::size_t>(pitch * s_height));
 
     const std::string title = game_window_subtitle.empty() ? "Space Invaders" : "Space Invaders - " + game_window_subtitle;
 

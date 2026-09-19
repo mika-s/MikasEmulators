@@ -37,15 +37,15 @@ void Sprite::set(std::size_t row, std::size_t col, const Color value)
         throw std::runtime_error(std::format("col of {} is too large, width is {}", col, m_width));
     }
 
-    m_values[row][col] = value;
+    m_values.at(row).at(col) = value;
 }
 
 void Sprite::flip_horizontal()
 {
-    std::for_each(
-        std::begin(m_values),
-        std::end(m_values),
-        [](auto& i) -> auto { std::reverse(std::begin(i), std::end(i)); });
+    std::ranges::for_each(
+        m_values,
+        [](auto& i) -> auto { std::reverse(std::begin(i), std::end(i)); }
+    );
 }
 
 void Sprite::flip_vertical()
@@ -74,7 +74,7 @@ void Sprite::map_to_framebuffer(Framebuffer& framebuffer, const int origin_row, 
 
 auto Sprite::get(const std::size_t row, const std::size_t col) const -> Color
 {
-    return m_values[row][col];
+    return m_values.at(row).at(col);
 }
 
 auto Sprite::size() const -> std::size_t

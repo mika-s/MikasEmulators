@@ -85,9 +85,7 @@ void GuiImgui::add_ui_observer(UiObserver& observer)
 
 void GuiImgui::remove_ui_observer(UiObserver* observer)
 {
-    m_gui_observers.erase(
-        std::remove(m_gui_observers.begin(), m_gui_observers.end(), observer),
-        m_gui_observers.end());
+    std::erase(m_gui_observers, observer);
 }
 
 void GuiImgui::notify_gui_observers(GuiRequest const& request) const
@@ -119,7 +117,7 @@ void GuiImgui::attach_logger(std::shared_ptr<Logger> logger)
 void GuiImgui::init()
 {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error initializing SDL video: %s", SDL_GetError());
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error initializing SDL video: %s", SDL_GetError()); // NOLINT(*-pro-type-vararg)
         exit(1);
     }
 
@@ -158,24 +156,24 @@ void GuiImgui::init()
         s_scaled_width,
         s_scaled_height,
         SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_MAXIMIZED);
-    if (!m_win) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error creating SDL window: %s", SDL_GetError());
+    if (m_win == nullptr) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error creating SDL window: %s", SDL_GetError()); // NOLINT(*-pro-type-vararg)
         exit(1);
     }
 
     SDL_SetWindowMinimumSize(m_win, s_width, s_height);
 
     m_gl_context = SDL_GL_CreateContext(m_win);
-    if (!m_gl_context) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error creating context: %s", SDL_GetError());
+    if (m_gl_context == nullptr) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error creating context: %s", SDL_GetError()); // NOLINT(*-pro-type-vararg)
         exit(1);
     }
     SDL_GL_MakeCurrent(m_win, m_gl_context);
     SDL_GL_SetSwapInterval(1);
 
 #ifndef __EMSCRIPTEN__
-    if (!gladLoadGLLoader(SDL_GL_GetProcAddress)) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error initializing glad");
+    if (gladLoadGLLoader(SDL_GL_GetProcAddress) == 0) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error initializing glad"); // NOLINT(*-pro-type-vararg)
         exit(1);
     }
 #endif
@@ -241,7 +239,7 @@ void GuiImgui::render(const bool is_awaiting_input, std::string const& game_wind
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("File")) {
             if (ImGui::MenuItem("Exit", "Alt+F4")) {
-                notify_gui_observers({ .m_type = GuiRequestType::STOP });
+                notify_gui_observers({ .m_type = GuiRequestType::STOP, .m_string_payload = "" });
             }
             ImGui::EndMenu();
         }
@@ -313,24 +311,24 @@ void GuiImgui::render_game_info_window()
 {
     ImGui::Begin("Program info", &m_show_game_info);
 
-    ImGui::Text("Avg %.3f ms/frame (%.1f FPS)", 1000.0F / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    ImGui::Text("Avg %.3f ms/frame (%.1f FPS)", 1000.0F / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate); // NOLINT(*-pro-type-vararg)
 
     ImGui::Separator();
 
     if (ImGui::Button("Run")) {
-        notify_gui_observers({ .m_type = GuiRequestType::RUN });
+        notify_gui_observers({ .m_type = GuiRequestType::RUN, .m_string_payload = "" });
     }
     ImGui::SameLine(0.0F, ImGui::GetStyle().ItemInnerSpacing.x);
     if (ImGui::Button("Pause")) {
-        notify_gui_observers({ .m_type = GuiRequestType::PAUSE });
+        notify_gui_observers({ .m_type = GuiRequestType::PAUSE, .m_string_payload = "" });
     }
     ImGui::SameLine(0.0F, ImGui::GetStyle().ItemInnerSpacing.x);
     if (ImGui::Button("Stop")) {
-        notify_gui_observers({ .m_type = GuiRequestType::STOP });
+        notify_gui_observers({ .m_type = GuiRequestType::STOP, .m_string_payload = "" });
     }
     ImGui::Separator();
     if (ImGui::Checkbox("Debug mode", &m_is_in_debug_mode)) {
-        notify_gui_observers({ .m_type = GuiRequestType::DEBUG_MODE, .m_bool_payload = m_is_in_debug_mode });
+        notify_gui_observers({ .m_type = GuiRequestType::DEBUG_MODE, .m_bool_payload = m_is_in_debug_mode, .m_string_payload = "" });
     }
 
     ImGui::End();
@@ -357,6 +355,6 @@ void GuiImgui::render_memory_editor_window()
 
 void GuiImgui::input_sent(std::string const& input)
 {
-    notify_gui_observers({ .m_type = GuiRequestType::INPUT_FROM_TERMINAL, .m_data_payload = Data(std::stoi(input)) });
+    notify_gui_observers({ .m_type = GuiRequestType::INPUT_FROM_TERMINAL, .m_data_payload = Data(std::stoi(input)), .m_string_payload = "" });
 }
 }

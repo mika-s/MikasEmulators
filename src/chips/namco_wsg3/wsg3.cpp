@@ -40,7 +40,7 @@ auto Wsg3::next_tick(std::vector<Voice>& voices) const -> std::vector<i16>
         for (auto& voice : voices) {
             voice.accumulator((voice.frequency() + voice.accumulator()) & s_mask_for_20_bit);
             const u32 sample_idx = voice.accumulator() >> 15;
-            i16 voice_sample = m_waveforms[voice.waveform_number()].samples()[sample_idx];
+            i16 voice_sample = m_waveforms.at(voice.waveform_number()).samples().at(sample_idx);
             voice_sample *= voice.volume();
             sample += voice_sample;
         }

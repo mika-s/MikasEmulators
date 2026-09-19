@@ -237,7 +237,7 @@ private:
 
     static auto parse_interrupt_mode(u8 raw_interrupt_mode) -> InterruptMode;
 
-    auto parse_joystick_type(u8 raw_joystick_type) const -> JoystickType;
+    [[nodiscard]] auto parse_joystick_type(u8 raw_joystick_type) const -> JoystickType;
 
     [[nodiscard]] auto parse_hardware_mode(u8 raw_hardware_mode) const -> HardwareMode;
 

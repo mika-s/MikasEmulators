@@ -124,7 +124,7 @@ void SynacorApplicationSession::stop()
     m_state_context->change_state(m_state_context->stopped_state());
 }
 
-void SynacorApplicationSession::gui_request(GuiRequest request)
+void SynacorApplicationSession::gui_request(const GuiRequest request)
 {
     switch (request.m_type) {
     case RUN:
@@ -207,11 +207,11 @@ auto SynacorApplicationSession::disassemble_program() -> std::vector<Disassemble
         std::vector<std::string> disassembled_program = split(ss, "\n");
 
         disassembled_program.erase(
-            std::remove_if(disassembled_program.begin(), disassembled_program.end(), [](std::string const& s) -> bool { return s.empty(); }));
+            std::ranges::remove_if(disassembled_program, [](std::string const& s) -> bool { return s.empty(); }).begin());
 
         std::vector<DisassembledLine<Address, 16>> lines;
-        std::transform(disassembled_program.begin(), disassembled_program.end(), std::back_inserter(lines),
-            [](std::string const& line) -> DisassembledLine<Address, 16> { return DisassembledLine<Address, 16>(line); });
+        std::ranges::transform(disassembled_program, std::back_inserter(lines),
+                               [](std::string const& line) -> DisassembledLine<Address, 16> { return DisassembledLine<Address, 16>(line); });
 
         return lines;
 }

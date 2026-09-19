@@ -21,7 +21,7 @@ RunningState::RunningState(std::shared_ptr<StateContext> state_context)
 {
 }
 
-bool RunningState::is_exit_state()
+auto RunningState::is_exit_state() -> bool
 {
     return false;
 }
@@ -79,7 +79,9 @@ void RunningState::perform(cyc& cycles)
             m_ctx->m_gui_io.m_is_quitting = false;
             transition_to_stop();
             return;
-        } else if (m_ctx->m_gui_io.m_is_toggling_pause) {
+        }
+
+        if (m_ctx->m_gui_io.m_is_toggling_pause) {
             m_ctx->m_gui_io.m_is_toggling_pause = false;
             transition_to_pause();
             return;

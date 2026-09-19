@@ -21,7 +21,7 @@ TEST_CASE("crosscutting: EmulatorMemory")
 
         for (std::size_t i = 0; i < input.size(); ++i) {
             const u16 address = static_cast<u16>(i);
-            CHECK_EQ(input[i], memory.read(address));
+            CHECK_EQ(input.at(i), memory.read(address));
         }
     }
 
@@ -36,12 +36,12 @@ TEST_CASE("crosscutting: EmulatorMemory")
 
         for (std::size_t i = 0; i < input.size(); ++i) {
             const u16 address = static_cast<u16>(i);
-            CHECK_EQ(input[i], memory.read(address));
+            CHECK_EQ(input.at(i), memory.read(address));
         }
 
         for (std::size_t i = input.size(), j = 0; i < 2 * input.size(); ++i, ++j) {
             const u16 address = static_cast<u16>(i);
-            CHECK_EQ(input[j], memory.read(address));
+            CHECK_EQ(input.at(j), memory.read(address));
         }
     }
 
@@ -57,12 +57,12 @@ TEST_CASE("crosscutting: EmulatorMemory")
 
         for (std::size_t i = 0; i < input1.size(); ++i) {
             const u16 address = static_cast<u16>(i);
-            CHECK_EQ(input1[i], memory.read(address));
+            CHECK_EQ(input1.at(i), memory.read(address));
         }
 
         for (std::size_t i = input1.size(), j = 0; i < input1.size() + input2.size(); ++i, ++j) {
             const u16 address = static_cast<u16>(i);
-            CHECK_EQ(input2[j], memory.read(address));
+            CHECK_EQ(input2.at(j), memory.read(address));
         }
     }
 
@@ -77,11 +77,10 @@ TEST_CASE("crosscutting: EmulatorMemory")
         memory.write(5, 100);
 
         for (std::size_t i = 0; i < input.size(); ++i) {
-            const u16 address = static_cast<u16>(i);
-            if (address == 5) {
+            if (const u16 address = static_cast<u16>(i); address == 5) {
                 CHECK_EQ(100, memory.read(address));
             } else {
-                CHECK_EQ(input[i], memory.read(address));
+                CHECK_EQ(input.at(i), memory.read(address));
             }
         }
     }

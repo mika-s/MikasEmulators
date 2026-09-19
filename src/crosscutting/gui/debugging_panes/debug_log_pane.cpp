@@ -51,7 +51,7 @@ void DebugLogPane::add_log(char const* fmt, va_list args)
     }
 }
 
-void DebugLogPane::draw(char const* title, bool* p_open)
+void DebugLogPane::draw(char const* title, bool* p_open) // NOLINT(*-function-cognitive-complexity)
 {
     if (!ImGui::Begin(title, p_open)) {
         ImGui::End();
@@ -59,7 +59,7 @@ void DebugLogPane::draw(char const* title, bool* p_open)
     }
 
     if (!m_is_logger_set) {
-        ImGui::Text("The logger is not provided this pane.");
+        ImGui::Text("The logger is not provided this pane."); // NOLINT(*-pro-type-vararg)
     } else {
         if (ImGui::BeginPopup("Options")) {
             ImGui::Checkbox("Auto-scroll", &m_should_autoscroll);
@@ -77,7 +77,12 @@ void DebugLogPane::draw(char const* title, bool* p_open)
         m_filter.Draw("Filter", -100.0F);
 
         ImGui::Separator();
-        ImGui::BeginChild("scrolling", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
+        ImGui::BeginChild(
+            "scrolling",
+            ImVec2(0, 0),
+            false,
+            ImGuiWindowFlags_HorizontalScrollbar
+        );
 
         if (clear_button) {
             clear();

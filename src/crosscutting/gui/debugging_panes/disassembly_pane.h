@@ -56,13 +56,13 @@ public:
         }
 
         if (!m_is_debugger_set) {
-            ImGui::Text("The debugger is not provided this pane.");
+            ImGui::Text("The debugger is not provided this pane."); // NOLINT(*-pro-type-vararg)
         } else if (!m_is_debug_container_set) {
-            ImGui::Text("The debug container is not provided this pane.");
+            ImGui::Text("The debug container is not provided this pane."); // NOLINT(*-pro-type-vararg)
         } else if (!m_is_logger_set) {
-            ImGui::Text("The logger is not provided this pane.");
+            ImGui::Text("The logger is not provided this pane."); // NOLINT(*-pro-type-vararg)
         } else if (!m_debug_container->is_disassembled_program_set()) {
-            ImGui::Text("Disassembled program is not provided to this pane.");
+            ImGui::Text("Disassembled program is not provided to this pane."); // NOLINT(*-pro-type-vararg)
         } else {
             reset_temp_state();
             draw_menubar();
@@ -104,7 +104,7 @@ private:
         m_is_going_to_breakpoint = false;
     }
 
-    void draw_menubar()
+    void draw_menubar() // NOLINT(*-function-cognitive-complexity)
     {
         if (ImGui::BeginMenuBar()) {
             if (ImGui::BeginMenu("Menu")) {
@@ -128,13 +128,13 @@ private:
                             if (m_debug_container->is_decimal()) {
                                 std::stringstream ss;
                                 ss << address;
-                                ImGui::Text("%s", ss.str().c_str());
+                                ImGui::Text("%s", ss.str().c_str()); // NOLINT(*-pro-type-vararg)
                             } else {
-                                ImGui::Text("%s", hexify(address).c_str());
+                                ImGui::Text("%s", hexify(address).c_str()); // NOLINT(*-pro-type-vararg)
                             }
 
                             if (ImGui::IsItemHovered()) {
-                                ImGui::SetTooltip("%s", tooltip.line().c_str());
+                                ImGui::SetTooltip("%s", tooltip.line().c_str()); // NOLINT(*-pro-type-vararg)
                             }
 
                             ImGui::TableSetColumnIndex(1);
@@ -205,15 +205,17 @@ private:
         m_address_to_goto = A(std::stoi(m_address_to_goto_str, nullptr, address_base));
     }
 
-    void draw_addresses()
+    void draw_addresses() // NOLINT(*-function-cognitive-complexity)
     {
         if (m_debug_container->is_disassembled_program_set()) {
             A const pc = m_debug_container->pc();
 
             ImGui::BeginChild(
                 "disassembled_code_child",
-                ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y),
-                false, ImGuiWindowFlags_HorizontalScrollbar);
+                ImVec2(ImGui::GetContentRegionAvail().x,ImGui::GetContentRegionAvail().y),
+                false,
+                ImGuiWindowFlags_HorizontalScrollbar
+            );
 
             for (auto const& line : m_debug_container->disassembled_program()) {
                 A const address = line.address();

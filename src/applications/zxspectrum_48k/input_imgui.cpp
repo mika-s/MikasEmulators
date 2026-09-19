@@ -26,9 +26,7 @@ void InputImgui::add_io_observer(KeyObserver& observer)
 
 void InputImgui::remove_io_observer(KeyObserver* observer)
 {
-    m_io_observers.erase(
-        std::remove(m_io_observers.begin(), m_io_observers.end(), observer),
-        m_io_observers.end());
+    std::erase(m_io_observers, observer);
 }
 
 void InputImgui::notify_io_observers(const KeyRequest request) const
@@ -49,7 +47,7 @@ void InputImgui::handle_text(CpuIo& cpu_io, const std::string &text, const bool 
         cancel_shift(cpu_io);
     }
 
-    switch (text[0]) {
+    switch (text.at(0)) {
     case 'z':
         unset_bit(cpu_io.m_keyboard[0xfefe], s_Z_bit);
         cpu_io.add_key_canceler([&] { set_bit(cpu_io.m_keyboard[0xfefe], s_Z_bit); });
@@ -496,9 +494,7 @@ void InputImgui::read(CpuIo& cpu_io, GuiIo& gui_io)
     while (SDL_PollEvent(&read_input_event) != 0) {
         ImGui_ImplSDL2_ProcessEvent(&read_input_event);
 
-        ImGuiIO& io = ImGui::GetIO();
-
-        if (!io.WantCaptureKeyboard) {
+        if (ImGuiIO const& io = ImGui::GetIO(); !io.WantCaptureKeyboard) {
             switch (read_input_event.type) {
             case SDL_QUIT:
                 gui_io.m_is_quitting = true;

@@ -21,7 +21,7 @@ class CpmApplicationSession
 public:
     CpmApplicationSession(
         std::string loaded_file,
-        EmulatorMemory<u16, u8> m_memory);
+        EmulatorMemory<u16, u8> memory);
 
     void run() override;
 

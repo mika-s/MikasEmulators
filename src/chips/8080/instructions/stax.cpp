@@ -27,7 +27,7 @@ using emu::util::byte::to_u16;
  * @param memory is the memory, which will be mutated
  * @param cycles is the number of cycles variable, which will be mutated
  */
-void stax(const u8 acc_reg, const u8 reg1, u8 reg2, EmulatorMemory<u16, u8>& memory, cyc& cycles)
+void stax(const u8 acc_reg, const u8 reg1, const u8 reg2, EmulatorMemory<u16, u8>& memory, cyc& cycles)
 {
     const u16 address = to_u16(reg1, reg2);
 

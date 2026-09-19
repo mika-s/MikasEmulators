@@ -204,7 +204,7 @@ void ZxSpectrum48kSession::setup_debugging()
     m_gui->attach_logger(m_logger);
 }
 
-void ZxSpectrum48kSession::gui_request(GuiRequest request)
+void ZxSpectrum48kSession::gui_request(const GuiRequest request)
 {
     switch (request.m_type) {
     case RUN:
@@ -280,11 +280,11 @@ auto ZxSpectrum48kSession::disassemble_program() const -> std::vector<Disassembl
     std::vector<std::string> disassembled_program = split(ss, "\n");
 
     disassembled_program.erase(
-        std::remove_if(disassembled_program.begin(), disassembled_program.end(), [](std::string const& s) -> bool { return s.empty(); }));
+        std::ranges::remove_if(disassembled_program, [](std::string const& s) -> bool { return s.empty(); }).begin());
 
     std::vector<DisassembledLine<u16, 16>> lines;
-    std::transform(disassembled_program.begin(), disassembled_program.end(), std::back_inserter(lines),
-        [](std::string const& line) -> DisassembledLine<u16, 16> { return DisassembledLine<u16, 16>(line); });
+    std::ranges::transform(disassembled_program, std::back_inserter(lines),
+                           [](std::string const& line) -> DisassembledLine<u16, 16> { return DisassembledLine<u16, 16>(line); });
 
     return lines;
 }

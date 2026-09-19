@@ -50,7 +50,7 @@ private:
             throw std::runtime_error("Programming error: no elements in split disassembler line");
         }
 
-        return A(std::stoi(split[0], nullptr, B));
+        return A(std::stoi(split.at(0), nullptr, B));
     }
 };
 }

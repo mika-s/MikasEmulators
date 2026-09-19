@@ -48,9 +48,9 @@ private:
 
     std::shared_ptr<StateContext> m_ctx;
 
-    auto vram() -> std::vector<u8>;
+    [[nodiscard]] auto vram() const -> std::vector<u8>;
 
-    auto color_ram() -> std::vector<u8>;
+    [[nodiscard]] auto color_ram() const -> std::vector<u8>;
 };
 
 }

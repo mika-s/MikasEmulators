@@ -22,7 +22,7 @@ public:
         m_is_debug_container_set = true;
     }
 
-    void draw(char const* title, bool* p_open = nullptr)
+    void draw(char const* title, bool* p_open = nullptr) // NOLINT(*-function-cognitive-complexity)
     {
         if (!ImGui::Begin(title, p_open)) {
             ImGui::End();
@@ -30,11 +30,11 @@ public:
         }
 
         if (!m_is_debug_container_set) {
-            ImGui::Text("The debug container is not provided this pane.");
+            ImGui::Text("The debug container is not provided this pane."); // NOLINT(*-pro-type-vararg)
         } else if (!m_debug_container->is_io_set()) {
-            ImGui::Text("IO is not provided to this pane.");
+            ImGui::Text("IO is not provided to this pane."); // NOLINT(*-pro-type-vararg)
         } else {
-            ImGui::Text("IO:");
+            ImGui::Text("IO:"); // NOLINT(*-pro-type-vararg)
             ImGui::Separator();
             for (auto const& io : m_debug_container->io()) {
                 const std::string name = io.name();
@@ -42,25 +42,25 @@ public:
                 const D new_value = io.value();
                 bool const is_divided_into_bits = io.is_divided_into_bits();
 
-                ImGui::Text("%s", name.c_str());
+                ImGui::Text("%s", name.c_str()); // NOLINT(*-pro-type-vararg)
 
                 if (is_active) {
                     ImGui::SameLine(250.0F, ImGui::GetStyle().ItemInnerSpacing.x);
-                    ImGui::Text("x");
+                    ImGui::Text("x"); // NOLINT(*-pro-type-vararg)
 
                     ImGui::SameLine(300.0F, ImGui::GetStyle().ItemInnerSpacing.x);
-                    ImGui::Text("%s", hexify(new_value).c_str());
+                    ImGui::Text("%s", hexify(new_value).c_str()); // NOLINT(*-pro-type-vararg)
                 }
 
                 if (is_divided_into_bits) {
                     for (auto const& bit : io.bit_names()) {
                         auto& [bit_name, bit_number] = bit;
 
-                        ImGui::Text("  %s", bit_name.c_str());
+                        ImGui::Text("  %s", bit_name.c_str()); // NOLINT(*-pro-type-vararg)
 
                         if (is_active) {
                             ImGui::SameLine(300.0F, ImGui::GetStyle().ItemInnerSpacing.x);
-                            ImGui::Text(is_bit_set(new_value, bit_number) ? "x" : "");
+                            ImGui::Text(is_bit_set(new_value, bit_number) ? "x" : ""); // NOLINT(*-pro-type-vararg)
                         }
                     }
                 }

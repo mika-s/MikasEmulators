@@ -30,7 +30,7 @@ void Framebuffer::set(unsigned int row, unsigned int col, const Color value)
         throw std::runtime_error(std::format("col of {} is too large, width is {}", col, m_width));
     }
 
-    m_values[row][col] = value.to_u32();
+    m_values.at(row).at(col) = value.to_u32();
 }
 
 void Framebuffer::flip_vertical()
@@ -44,7 +44,7 @@ void Framebuffer::clear()
 
     for (unsigned int row = 0; row < m_height; ++row) {
         for (unsigned int col = 0; col < m_width; ++col) {
-            m_values[row][col] = black;
+            m_values.at(row).at(col) = black;
         }
     }
 }
@@ -55,7 +55,7 @@ auto Framebuffer::to_output_vector() const -> std::vector<u32>
 
     for (unsigned int row = 0; row < m_height; ++row) {
         for (unsigned int col = 0; col < m_width; ++col) {
-            output.push_back(m_values[row][col]);
+            output.push_back(m_values.at(row).at(col));
         }
     }
 

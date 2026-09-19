@@ -31,7 +31,7 @@ class RunningState : public State {
 public:
     explicit RunningState(std::shared_ptr<StateContext> state_context);
 
-    bool is_exit_state() override;
+    auto is_exit_state() -> bool override;
 
     void transition_to_run() override;
 
@@ -56,9 +56,9 @@ private:
 
     std::shared_ptr<StateContext> m_ctx;
 
-    std::vector<u8> vram() const;
+    [[nodiscard]] auto vram() const -> std::vector<u8>;
 
-    std::vector<u8> color_ram() const;
+    [[nodiscard]] auto color_ram() const -> std::vector<u8>;
 };
 
 }

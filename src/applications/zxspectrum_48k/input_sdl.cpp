@@ -23,9 +23,7 @@ void InputSdl::add_io_observer(KeyObserver& observer)
 
 void InputSdl::remove_io_observer(KeyObserver* observer)
 {
-    m_io_observers.erase(
-        std::remove(m_io_observers.begin(), m_io_observers.end(), observer),
-        m_io_observers.end());
+    std::erase(m_io_observers, observer);
 }
 
 void InputSdl::notify_io_observers(const KeyRequest request) const
@@ -47,7 +45,7 @@ void InputSdl::handle_text(CpuIo& cpu_io, const std::string &text, const bool is
         cancel_shift(cpu_io);
     }
 
-    switch (text[0]) {
+    switch (text.at(0)) {
     case 'z':
         unset_bit(cpu_io.m_keyboard[0xfefe], s_Z_bit);
         m_cancel_last_keypress.emplace_back([&] { set_bit(cpu_io.m_keyboard[0xfefe], s_Z_bit); });

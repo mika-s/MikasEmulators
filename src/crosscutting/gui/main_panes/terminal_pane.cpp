@@ -16,12 +16,15 @@ void TerminalPane::add_pane_observer(TerminalPaneObserver& observer)
 
 void TerminalPane::remove_pane_observer(TerminalPaneObserver* observer)
 {
-    m_pane_observers.erase(
-        std::remove(m_pane_observers.begin(), m_pane_observers.end(), observer),
-        m_pane_observers.end());
+    std::erase(m_pane_observers, observer);
 }
 
-void TerminalPane::draw(char const* title, bool is_awaiting_input, std::vector<std::string> const& output, bool* p_open)
+void TerminalPane::draw(
+    char const* title,
+    const bool is_awaiting_input,
+    std::vector<std::string> const& output,
+    bool* p_open
+)
 {
     if (!ImGui::Begin(title, p_open, ImGuiWindowFlags_MenuBar)) {
         ImGui::End();
@@ -31,7 +34,7 @@ void TerminalPane::draw(char const* title, bool is_awaiting_input, std::vector<s
     ImGui::BeginChild("scrolling", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
 
     vector_to_output_array(output);
-    const ImGuiInputTextFlags output_flags = ImGuiInputTextFlags_AllowTabInput | ImGuiInputTextFlags_ReadOnly;
+    constexpr ImGuiInputTextFlags output_flags = ImGuiInputTextFlags_AllowTabInput | ImGuiInputTextFlags_ReadOnly;
     ImGui::InputTextMultiline("##output", m_output_buffer, IM_ARRAYSIZE(m_output_buffer), //
         ImVec2(ImGui::GetWindowWidth(), ImGui::GetWindowHeight() - 30), output_flags);
 
@@ -73,7 +76,7 @@ void TerminalPane::vector_to_output_array(std::vector<std::string> const& output
 {
     int i = 0;
     for (std::string const& element : output) {
-        for (char ch : element) {
+        for (char const ch : element) {
             m_output_buffer[i++] = ch;
         }
     }

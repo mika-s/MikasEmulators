@@ -50,7 +50,7 @@ public:
 
     void remove_in_observer(InObserver* observer);
 
-    EmulatorMemory<u16, u8>& memory();
+    EmulatorMemory<u16, u8>& memory() const;
 
     [[nodiscard]] u8 a() const;
 
@@ -114,12 +114,12 @@ private:
 
     NextWord get_next_word();
 
-    void notify_out_observers(u8 port);
+    void notify_out_observers(u8 port) const;
 
-    void notify_in_observers(u8 port);
+    void notify_in_observers(u8 port) const;
 
     [[nodiscard]] u16 address_in_HL() const;
 
-    void print_debug();
+    void print_debug() const;
 };
 }

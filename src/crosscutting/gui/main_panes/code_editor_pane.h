@@ -35,25 +35,25 @@ public:
         }
 
         if (!m_is_debug_container_set) {
-            ImGui::Text("The debug container is not provided this pane.");
+            ImGui::Text("The debug container is not provided this pane."); // NOLINT(*-pro-type-vararg)
         } else if (!m_debug_container->is_file_content_set()) {
-            ImGui::Text("The file content is not provided to this pane.");
+            ImGui::Text("The file content is not provided to this pane."); // NOLINT(*-pro-type-vararg)
         } else {
             ImGui::BeginChild("scrolling", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
 
             strncpy(buffer, m_debug_container->file_content().c_str(), s_buffer_size - 1);
 
-            const ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
+            constexpr ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
             ImGui::InputTextMultiline("##code", buffer, IM_ARRAYSIZE(buffer), //
-                ImVec2(ImGui::GetWindowWidth(), ImGui::GetWindowHeight() - 30.0f), flags);
+                ImVec2(ImGui::GetWindowWidth(), ImGui::GetWindowHeight() - 30.0F), flags);
             if (ImGui::IsItemDeactivatedAfterEdit()) {
                 notify_pane_observers_about_source_code_change();
             }
 
-            ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(2 / 7.0f, 0.6f, 0.6f));
-            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(2 / 7.0f, 0.7f, 0.7f));
-            ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(2 / 7.0f, 0.8f, 0.8f));
-            if (ImGui::Button("Assemble, load and reset", ImVec2(300.0f, 25.0f))) {
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor::HSV(2 / 7.0F, 0.6F, 0.6F)));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor::HSV(2 / 7.0F, 0.7F, 0.7F)));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor::HSV(2 / 7.0F, 0.8F, 0.8F)));
+            if (ImGui::Button("Assemble, load and reset", ImVec2(300.0F, 25.0F))) {
                 notify_pane_observers_about_assemble_and_load_request();
             }
             ImGui::PopStyleColor(3);
@@ -71,9 +71,7 @@ public:
 
     void remove_pane_observer(CodeEditorPaneObserver* observer)
     {
-        m_pane_observers.erase(
-            std::remove(m_pane_observers.begin(), m_pane_observers.end(), observer),
-            m_pane_observers.end());
+        std::erase(m_pane_observers, observer);
     }
 
 private:
@@ -93,7 +91,7 @@ private:
         }
     }
 
-    void notify_pane_observers_about_assemble_and_load_request()
+    void notify_pane_observers_about_assemble_and_load_request() const
     {
         for (CodeEditorPaneObserver* observer : m_pane_observers) {
             observer->assemble_and_load_request();

@@ -20,7 +20,7 @@ Scanner::Scanner(std::stringstream const& code)
 {
 }
 
-Scanner::Scanner(std::stringstream const& code, bool is_debugging)
+Scanner::Scanner(std::stringstream const& code, const bool is_debugging)
     : m_real_line_no(0)
     , m_current_address(0)
     , m_is_debugging(is_debugging)
@@ -39,7 +39,7 @@ auto Scanner::current_token() -> Token
         read_next_line();
     }
 
-    return tokens_current_line[0];
+    return tokens_current_line.at(0);
 }
 
 void Scanner::skip(const TokenKind next)
@@ -71,12 +71,12 @@ void Scanner::read_next_line()
             std::cout << m_real_line_no + 1 << ": " << std::flush;
         }
         tokens_current_line.emplace_back(TokenKind::Eof);
-    } else if (m_code_lines[m_real_line_no].empty() || is_comment_line(m_code_lines[m_real_line_no])) {
+    } else if (m_code_lines.at(m_real_line_no).empty() || is_comment_line(m_code_lines.at(m_real_line_no))) {
     } else {
         if (m_is_debugging) {
             std::cout << m_real_line_no + 1 << ": " << std::flush;
         }
-        read_tokens(m_code_lines[m_real_line_no]);
+        read_tokens(m_code_lines.at(m_real_line_no));
         tokens_current_line.emplace_back(TokenKind::Newline);
     }
 
@@ -113,7 +113,7 @@ auto Scanner::is_comment_line(std::string const& line) -> bool
 
 auto Scanner::handle_single_character(std::string const& line) -> bool
 {
-    switch (line[m_current_pos]) {
+    switch (line.at(m_current_pos)) {
     case '\n':
         tokens_current_line.emplace_back(TokenKind::Newline);
         ++m_current_pos;
@@ -131,11 +131,11 @@ auto Scanner::handle_single_character(std::string const& line) -> bool
 
 auto Scanner::handle_number(std::string const& line) -> bool
 {
-    if (std::isdigit(line[m_current_pos])) {
+    if (std::isdigit(line.at(m_current_pos)) != 0) {
         const std::size_t length = line.length();
         const std::size_t start = m_current_pos;
 
-        while (m_current_pos + 1 < length && std::isdigit(line[m_current_pos + 1])) {
+        while (m_current_pos + 1 < length && std::isdigit(line.at(m_current_pos + 1)) != 0) {
             ++m_current_pos;
         }
 
@@ -153,11 +153,11 @@ auto Scanner::handle_number(std::string const& line) -> bool
 
 auto Scanner::handle_keyword(std::string const& line) -> bool
 {
-    if (std::isalpha(line[m_current_pos])) {
+    if (std::isalpha(line.at(m_current_pos)) != 0) {
         const std::size_t length = line.length();
         const std::size_t start = m_current_pos;
 
-        while (m_current_pos + 1 < length && std::isalpha(line[m_current_pos + 1])) {
+        while (m_current_pos + 1 < length && std::isalpha(line.at(m_current_pos + 1)) != 0) {
             ++m_current_pos;
         }
 
@@ -165,7 +165,7 @@ auto Scanner::handle_keyword(std::string const& line) -> bool
 
         std::string const keyword = line.substr(start, m_current_pos - start);
         std::string normalized_keyword = keyword;
-        std::transform(normalized_keyword.begin(), normalized_keyword.end(), normalized_keyword.begin(), ::toupper);
+        std::ranges::transform(normalized_keyword, normalized_keyword.begin(), toupper);
 
 #ifdef __EMSCRIPTEN__
         if (keyword_string_as_TokenKind.count(normalized_keyword) > 0) {
@@ -185,7 +185,7 @@ auto Scanner::handle_keyword(std::string const& line) -> bool
 
 auto Scanner::handle_inline_comment(std::string const& line) -> bool
 {
-    if (line[m_current_pos] == '/' && m_current_pos != line.size() - 1 && line[m_current_pos + 1] == '/') {
+    if (line.at(m_current_pos) == '/' && m_current_pos != line.size() - 1 && line.at(m_current_pos + 1) == '/') {
         m_current_pos = line.length();
         return true;
     }

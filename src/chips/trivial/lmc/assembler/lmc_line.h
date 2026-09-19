@@ -20,9 +20,9 @@ class LmcLine {
 public:
     LmcLine(std::optional<LmcLabel> label, std::unique_ptr<LmcInstruction> instruction);
 
-    Data eval() const;
+    [[nodiscard]] auto eval() const -> Data;
 
-    static LmcLine parse(Scanner& scanner, Environment& environment);
+    static auto parse(Scanner& scanner, Environment& environment) -> LmcLine;
 
 private:
     std::optional<LmcLabel> m_label;

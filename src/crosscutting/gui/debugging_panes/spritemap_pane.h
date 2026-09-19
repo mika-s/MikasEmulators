@@ -56,6 +56,6 @@ private:
         unsigned int palette_idx
     ) -> bool;
 
-    void render_image(u32 tile_texture);
+    void render_image(u32 tile_texture) const;
 };
 }

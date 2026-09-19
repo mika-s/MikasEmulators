@@ -13,7 +13,7 @@ public:
 
     void shift(u8 shift_value);
 
-    [[nodiscard]] u8 read() const;
+    [[nodiscard]] auto read() const -> u8;
 
 private:
     u16 m_value;

@@ -32,8 +32,8 @@ private:
 
     void print_next_instruction();
 
-    NextByte get_next_byte();
+    auto get_next_byte() -> NextByte;
 
-    NextWord get_next_word();
+    auto get_next_word() -> NextWord;
 };
 }

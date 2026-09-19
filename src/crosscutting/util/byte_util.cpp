@@ -24,7 +24,7 @@ auto to_u16(const u8 farg, const u8 sarg) -> u16
     return static_cast<u16>((farg << 8U) + sarg);
 }
 
-auto to_u32(u8 fiarg, u8 sarg, u8 targ, u8 foarg) -> u32
+auto to_u32(const u8 fiarg, const u8 sarg, const u8 targ, const u8 foarg) -> u32
 {
     return static_cast<u32>(fiarg << 24U | sarg << 16U | targ << 8U | foarg);
 }

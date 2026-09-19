@@ -53,9 +53,7 @@ void Cpu::add_out_observer(OutObserver& observer)
 
 void Cpu::remove_out_observer(OutObserver* observer)
 {
-    m_out_observers.erase(
-        std::remove(m_out_observers.begin(), m_out_observers.end(), observer),
-        m_out_observers.end());
+    std::erase(m_out_observers, observer);
 }
 
 void Cpu::add_in_observer(InObserver& observer)
@@ -65,12 +63,10 @@ void Cpu::add_in_observer(InObserver& observer)
 
 void Cpu::remove_in_observer(InObserver* observer)
 {
-    m_in_observers.erase(
-        std::remove(m_in_observers.begin(), m_in_observers.end(), observer),
-        m_in_observers.end());
+    std::erase(m_in_observers, observer);
 }
 
-bool Cpu::can_run_next_instruction() const
+auto Cpu::can_run_next_instruction() const -> bool
 {
     return m_pc < m_memory_size;
 }
@@ -91,8 +87,8 @@ void Cpu::reset_state()
     m_inte = false;
     m_is_interrupted = false;
     m_instruction_from_interruptor = 0;
-    std::fill(m_io_in.begin(), m_io_in.end(), 0);
-    std::fill(m_io_out.begin(), m_io_out.end(), 0);
+    std::ranges::fill(m_io_in, 0);
+    std::ranges::fill(m_io_out, 0);
 }
 
 void Cpu::start()
@@ -104,23 +100,23 @@ void Cpu::stop()
     reset_state();
 }
 
-void Cpu::interrupt(u8 instruction_to_perform)
+void Cpu::interrupt(const u8 supplied_instruction_from_interruptor)
 {
     m_is_interrupted = true;
-    m_instruction_from_interruptor = instruction_to_perform;
+    m_instruction_from_interruptor = supplied_instruction_from_interruptor;
 }
 
-bool Cpu::is_inta() const
+auto Cpu::is_inta() const -> bool
 {
     return m_inte;
 }
 
-void Cpu::input(u8 port, u8 value)
+void Cpu::input(const u8 port, const u8 value)
 {
-    m_io_in[port] = value;
+    m_io_in.at(port) = value;
 }
 
-cyc Cpu::next_instruction()
+auto Cpu::next_instruction() -> cyc
 {
     cyc cycles = 0;
 
@@ -917,14 +913,14 @@ cyc Cpu::next_instruction()
     return cycles;
 }
 
-NextByte Cpu::get_next_byte()
+auto Cpu::get_next_byte() -> NextByte
 {
     return {
         .farg = m_memory.read(m_pc++)
     };
 }
 
-NextWord Cpu::get_next_word()
+auto Cpu::get_next_word() -> NextWord
 {
     return {
         .farg = m_memory.read(m_pc++),
@@ -932,86 +928,86 @@ NextWord Cpu::get_next_word()
     };
 }
 
-u16 Cpu::address_in_HL() const
+auto Cpu::address_in_HL() const -> u16
 {
     return to_u16(m_h_reg, m_l_reg);
 }
 
-EmulatorMemory<u16, u8>& Cpu::memory()
+auto Cpu::memory() const -> EmulatorMemory<u16, u8>&
 {
     return m_memory;
 }
 
-u16 Cpu::pc() const
+auto Cpu::pc() const -> u16
 {
     return m_pc;
 }
 
-u16 Cpu::sp() const
+auto Cpu::sp() const -> u16
 {
     return m_sp;
 }
 
-u8 Cpu::a() const
+auto Cpu::a() const -> u8
 {
     return m_acc_reg;
 }
 
-u8 Cpu::b() const
+auto Cpu::b() const -> u8
 {
     return m_b_reg;
 }
 
-u8 Cpu::c() const
+auto Cpu::c() const -> u8
 {
     return m_c_reg;
 }
 
-u8 Cpu::d() const
+auto Cpu::d() const -> u8
 {
     return m_d_reg;
 }
 
-u8 Cpu::e() const
+auto Cpu::e() const -> u8
 {
     return m_e_reg;
 }
 
-u8 Cpu::h() const
+auto Cpu::h() const -> u8
 {
     return m_h_reg;
 }
 
-u8 Cpu::l() const
+auto Cpu::l() const -> u8
 {
     return m_l_reg;
 }
 
-u8 Cpu::f() const
+auto Cpu::f() const -> u8
 {
     return m_flag_reg.to_u8();
 }
 
-bool Cpu::is_interrupted() const
+auto Cpu::is_interrupted() const -> bool
 {
     return m_is_interrupted;
 }
 
-void Cpu::notify_out_observers(u8 port)
+void Cpu::notify_out_observers(const u8 port) const
 {
     for (OutObserver* observer : m_out_observers) {
         observer->out_changed(port);
     }
 }
 
-void Cpu::notify_in_observers(u8 port)
+void Cpu::notify_in_observers(const u8 port) const
 {
     for (InObserver* observer : m_in_observers) {
         observer->in_requested(port);
     }
 }
 
-void Cpu::print_debug()
+void Cpu::print_debug() const
 {
     std::cout << "pc=" << hexify(m_pc)
               << ",sp=" << hexify(m_sp)

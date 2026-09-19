@@ -92,7 +92,7 @@ private:
     MemoryEditorPane<u16, u8, 16> m_memory_editor;
     KeyboardPane m_keyboard_info;
 
-    void notify_gui_observers(GuiRequest request);
+    void notify_gui_observers(GuiRequest request) const;
 
     void init();
 

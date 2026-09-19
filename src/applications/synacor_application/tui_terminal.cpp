@@ -35,9 +35,7 @@ void TuiTerminal::add_ui_observer(UiObserver& observer)
 
 void TuiTerminal::remove_ui_observer(UiObserver* observer)
 {
-    m_ui_observers.erase(
-        std::remove(m_ui_observers.begin(), m_ui_observers.end(), observer),
-        m_ui_observers.end());
+    std::erase(m_ui_observers, observer);
 }
 
 void TuiTerminal::attach_debugger([[maybe_unused]] std::shared_ptr<Debugger<Address, 16>> debugger)
@@ -63,7 +61,7 @@ void TuiTerminal::update_debug_only([[maybe_unused]] bool is_awaiting_input)
 void TuiTerminal::notify_ui_observers_about_input_from_terminal(const Data input) const
 {
     for (UiObserver* observer : m_ui_observers) {
-        observer->gui_request({ .m_type = GuiRequestType::INPUT_FROM_TERMINAL, .m_data_payload = input });
+        observer->gui_request({ .m_type = GuiRequestType::INPUT_FROM_TERMINAL, .m_data_payload = input, .m_string_payload = "" });
     }
 }
 }

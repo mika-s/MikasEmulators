@@ -10,7 +10,7 @@ auto Assembler::assemble(std::stringstream const& code) -> std::vector<Data>
 {
     Scanner scanner(code);
     Environment environment;
-    LmcProgram program = LmcProgram::parse(scanner, environment);
+    const LmcProgram program = LmcProgram::parse(scanner, environment);
     std::vector<Data> assembled_code = program.eval();
 
     return assembled_code;

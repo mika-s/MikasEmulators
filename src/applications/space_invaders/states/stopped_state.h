@@ -16,7 +16,7 @@ class StoppedState : public State {
 public:
     explicit StoppedState(std::shared_ptr<StateContext> state_context);
 
-    bool is_exit_state() override;
+    auto is_exit_state() -> bool override;
 
     void transition_to_run() override;
 

@@ -75,7 +75,7 @@ void Audio::play_sound_port_1(const u8 acc_reg)
     m_last_acc_reg = acc_reg;
 }
 
-void Audio::play_sound_port_2(u8 acc_reg)
+void Audio::play_sound_port_2(const u8 acc_reg)
 {
     if (is_rising_edge(acc_reg, s_fleet_movement_1)) {
         m_is_fleet_movement_1_sound_on = true;

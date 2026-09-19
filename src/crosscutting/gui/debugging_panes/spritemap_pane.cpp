@@ -13,7 +13,7 @@
 
 namespace emu::gui {
 
-SpritemapPane::SpritemapPane(int default_palette_idx)
+SpritemapPane::SpritemapPane(const int default_palette_idx)
     : m_is_debug_container_set(false)
     , m_framebuffers({ {}, {}, {}, {} })
     , m_chosen_palette_idx(default_palette_idx)
@@ -42,9 +42,9 @@ void SpritemapPane::draw(char const* title, u32 sprite_texture, bool* p_open)
     }
 
     if (!m_is_debug_container_set) {
-        ImGui::Text("The debug container is not provided this pane.");
+        ImGui::Text("The debug container is not provided this pane."); // NOLINT(*-pro-type-vararg)
     } else if (!m_debug_container->is_spritemap_set()) {
-        ImGui::Text("The spritemap is not provided to this pane.");
+        ImGui::Text("The spritemap is not provided to this pane."); // NOLINT(*-pro-type-vararg)
     } else {
         if (m_are_all_sprites_rendered) {
             ImGui::SliderInt(
@@ -61,7 +61,12 @@ void SpritemapPane::draw(char const* title, u32 sprite_texture, bool* p_open)
                 m_number_of_rotations - 1,
                 "%d",
                 m_slider_flags);
-            ImGui::BeginChild("spritemap_image_child", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
+            ImGui::BeginChild(
+                "spritemap_image_child",
+                ImVec2(0, 0),
+                false,
+                ImGuiWindowFlags_HorizontalScrollbar
+            );
             render_image(sprite_texture);
             ImGui::EndChild();
         } else {
@@ -86,26 +91,26 @@ void SpritemapPane::prepare_framebuffers()
     m_number_of_palettes = number_of_palettes;
 }
 
-bool SpritemapPane::prepare_framebuffer(unsigned int palette_idx)
+auto SpritemapPane::prepare_framebuffer(const unsigned int palette_idx) -> bool
 {
     auto const all_sprites = m_debug_container->sprites();
 
-    const std::vector<std::shared_ptr<Sprite>> sprites = std::get<0>(all_sprites)[palette_idx];
+    const std::vector<std::shared_ptr<Sprite>> sprites = std::get<0>(all_sprites).at(palette_idx);
     if (!prepare_framebuffer_for_rotation(sprites, 0, palette_idx)) {
         return false;
     }
 
-    const std::vector<std::shared_ptr<Sprite>> sprites_x = std::get<1>(all_sprites)[palette_idx];
+    const std::vector<std::shared_ptr<Sprite>> sprites_x = std::get<1>(all_sprites).at(palette_idx);
     if (!prepare_framebuffer_for_rotation(sprites_x, 1, palette_idx)) {
         return false;
     }
 
-    const std::vector<std::shared_ptr<Sprite>> sprites_y = std::get<2>(all_sprites)[palette_idx];
+    const std::vector<std::shared_ptr<Sprite>> sprites_y = std::get<2>(all_sprites).at(palette_idx);
     if (!prepare_framebuffer_for_rotation(sprites_y, 2, palette_idx)) {
         return false;
     }
 
-    const std::vector<std::shared_ptr<Sprite>> sprites_xy = std::get<3>(all_sprites)[palette_idx];
+    const std::vector<std::shared_ptr<Sprite>> sprites_xy = std::get<3>(all_sprites).at(palette_idx);
     if (!prepare_framebuffer_for_rotation(sprites_xy, 3, palette_idx)) {
         return false;
     }
@@ -113,35 +118,40 @@ bool SpritemapPane::prepare_framebuffer(unsigned int palette_idx)
     return true;
 }
 
-bool SpritemapPane::prepare_framebuffer_for_rotation(
+auto SpritemapPane::prepare_framebuffer_for_rotation(
     std::vector<std::shared_ptr<Sprite>> const& sprites,
-    unsigned int rotation,
-    unsigned int palette_idx)
+    const unsigned int rotation,
+    const unsigned int palette_idx
+) -> bool
 {
     const std::size_t number_of_sprites = sprites.size();
-    const std::size_t sprite_size = sprites[0]->size();
+    const std::size_t sprite_size = sprites.at(0)->size();
     const std::size_t rows = number_of_sprites / sprites_per_row;
 
     for (unsigned int row = 0; row < rows; ++row) {
         for (unsigned int col = 0; col < sprites_per_row; ++col) {
-            std::shared_ptr<Sprite> const& sprite = sprites[row * sprites_per_row + col];
+            std::shared_ptr<Sprite> const& sprite = sprites.at(row * sprites_per_row + col);
 
             if (!sprite->is_initialized()) {
                 return false;
             }
 
-            if (m_framebuffers[rotation].size() <= palette_idx) {
-                m_framebuffers[rotation].emplace_back(height, width, Color::black());
+            if (m_framebuffers.at(rotation).size() <= palette_idx) {
+                m_framebuffers.at(rotation).emplace_back(height, width, Color::black());
             }
 
-            sprite->map_to_framebuffer(m_framebuffers[rotation][palette_idx], row * sprite_size, col * sprite_size);
+            sprite->map_to_framebuffer(
+                m_framebuffers.at(rotation).at(palette_idx),
+                row * sprite_size,
+                col * sprite_size
+            );
         }
     }
 
     return true;
 }
 
-void SpritemapPane::render_image(u32 tile_texture)
+void SpritemapPane::render_image(const u32 tile_texture) const
 {
     glBindTexture(GL_TEXTURE_2D, tile_texture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -152,7 +162,8 @@ void SpritemapPane::render_image(u32 tile_texture)
 
     constexpr auto image_size = ImVec2(scaled_width, scaled_height);
     ImGui::Image(
-        (void*)((intptr_t)tile_texture), image_size,
+        tile_texture,
+        image_size,
         ImVec2(0, 0),
         ImVec2(1, 1),
         ImColor(255, 255, 255, 255),

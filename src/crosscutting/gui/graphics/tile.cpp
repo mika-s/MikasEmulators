@@ -35,12 +35,12 @@ void Tile::set(std::size_t row, std::size_t col, const Color value)
         throw std::runtime_error(std::format("col of {} is too large, width is {}", col, m_width));
     }
 
-    m_values[row][col] = value;
+    m_values.at(row).at(col) = value;
 }
 
 auto Tile::get(const std::size_t row, const std::size_t col) const -> Color
 {
-    return m_values[row][col];
+    return m_values.at(row).at(col);
 }
 
 void Tile::map_to_framebuffer(

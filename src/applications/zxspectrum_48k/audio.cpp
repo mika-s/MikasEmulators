@@ -32,7 +32,7 @@ Audio::Audio()
         nullptr,
         0);
     if (m_audio_device == 0) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error opening audio device: %s", SDL_GetError());
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error opening audio device: %s", SDL_GetError()); // NOLINT(*-pro-type-vararg)
         exit(1);
     }
     SDL_PauseAudioDevice(m_audio_device, 0);
@@ -57,7 +57,7 @@ void Audio::toggle_mute()
 void Audio::generate_audio(u8* stream, const int len)
 {
     [[maybe_unused]] auto* stream16 = (i16*)stream;
-    [[maybe_unused]] int samples = static_cast<int>(len / sizeof(i16));
+    [[maybe_unused]] int const samples = static_cast<int>(len / sizeof(i16));
 
     SDL_memset(stream, 0, len); // no sound
 
@@ -68,7 +68,7 @@ void Audio::play(const std::vector<double> &sound, const int samples, i16* strea
 {
     for (int i = 0; i < samples; i++) {
         if (x < sound.size()) {
-            stream16[i] += static_cast<i16>(sound[x++] * m_volume * !m_is_muted);
+            stream16[i] += static_cast<i16>(sound.at(x++) * m_volume * !m_is_muted);
         } else {
             is_sound_on = false;
             x = 0;

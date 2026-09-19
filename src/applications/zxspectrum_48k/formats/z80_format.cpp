@@ -145,9 +145,9 @@ void Z80Format::print_header() // NOLINT(*-function-cognitive-complexity)
         std::cout << "Last OUT 0xfffd:       " << hexify(m_last_out_0xfffd) << "\n";
         for (std::size_t i = 0; i < s_number_of_sound_registers; ++i) {
             if (i < 10) {
-                std::cout << "Sound chip " << i << ":          " << hexify(m_sound_chip_registers[i]) << "\n";
+                std::cout << "Sound chip " << i << ":          " << hexify(m_sound_chip_registers.at(i)) << "\n";
             } else {
-                std::cout << "Sound chip " << i << ":         " << hexify(m_sound_chip_registers[i]) << "\n";
+                std::cout << "Sound chip " << i << ":         " << hexify(m_sound_chip_registers.at(i)) << "\n";
             }
         }
     }
@@ -163,13 +163,13 @@ void Z80Format::print_header() // NOLINT(*-function-cognitive-complexity)
         std::cout << "0-8192:                " << (m_is_0_to_8192_rom ? "ROM" : "RAM") << "\n";
         std::cout << "8192-16383:            " << (m_is_8192_to_16383_rom ? "ROM" : "RAM") << "\n";
         for (std::size_t i = 0; i < s_number_of_keyboard_mappings; ++i) {
-            std::cout << "KB map for UD joy " << i << ":   " << hexify(m_keyboard_mappings_for_ud_joystick[i]) << "\n";
+            std::cout << "KB map for UD joy " << i << ":   " << hexify(m_keyboard_mappings_for_ud_joystick.at(i)) << "\n";
         }
-        std::cout << "KB label left:         " << high_byte(m_ascii_keyboard_mapping[0]) << low_byte(m_ascii_keyboard_mapping[0]) << "\n";
-        std::cout << "KB label right:        " << high_byte(m_ascii_keyboard_mapping[1]) << low_byte(m_ascii_keyboard_mapping[1]) << "\n";
-        std::cout << "KB label down:         " << high_byte(m_ascii_keyboard_mapping[2]) << low_byte(m_ascii_keyboard_mapping[2]) << "\n";
-        std::cout << "KB label up:           " << high_byte(m_ascii_keyboard_mapping[3]) << low_byte(m_ascii_keyboard_mapping[3]) << "\n";
-        std::cout << "KB label fire:         " << high_byte(m_ascii_keyboard_mapping[4]) << low_byte(m_ascii_keyboard_mapping[4]) << "\n";
+        std::cout << "KB label left:         " << high_byte(m_ascii_keyboard_mapping.at(0)) << low_byte(m_ascii_keyboard_mapping.at(0)) << "\n";
+        std::cout << "KB label right:        " << high_byte(m_ascii_keyboard_mapping.at(1)) << low_byte(m_ascii_keyboard_mapping.at(1)) << "\n";
+        std::cout << "KB label down:         " << high_byte(m_ascii_keyboard_mapping.at(2)) << low_byte(m_ascii_keyboard_mapping.at(2)) << "\n";
+        std::cout << "KB label up:           " << high_byte(m_ascii_keyboard_mapping.at(3)) << low_byte(m_ascii_keyboard_mapping.at(3)) << "\n";
+        std::cout << "KB label fire:         " << high_byte(m_ascii_keyboard_mapping.at(4)) << low_byte(m_ascii_keyboard_mapping.at(4)) << "\n";
         std::cout << "MGT type:              " << hexify(m_mgt_type) << " (" << mgt_type_string() << ")"
                   << "\n";
         std::cout << "Discp. inh. btn stat:  " << hexify(m_disciple_inhibit_button_status) << "\n";
@@ -261,7 +261,7 @@ void Z80Format::read_block_v1(EmulatorMemory<u16, u8>& memory)
     }
 
     for (u16 address = 0x4000; address < 0xffff; ++address) {
-        memory.write(address, output[address - 0x4000]);
+        memory.write(address, output.at(address - 0x4000));
     }
 }
 
@@ -318,7 +318,7 @@ void Z80Format::read_block_v2(EmulatorMemory<u16, u8>& memory)
     }
 
     for (std::size_t j = offset, k = 0; k < output.size(); ++j, ++k) {
-        memory.write(j, output[k]);
+        memory.write(j, output.at(k));
     }
 }
 

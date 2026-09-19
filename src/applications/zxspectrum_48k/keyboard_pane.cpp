@@ -22,7 +22,7 @@ void KeyboardPane::draw(char const* title, bool* p_open) const
     }
 
     if (!m_is_cpu_io_set) {
-        ImGui::Text("CpuIo is not provided this pane.");
+        ImGui::Text("CpuIo is not provided this pane."); // NOLINT(*-pro-type-vararg)
     } else {
         constexpr ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg //
                                           | ImGuiTableFlags_SizingFixedSame | ImGuiTableFlags_NoHostExtendX;
@@ -39,8 +39,8 @@ void KeyboardPane::draw(char const* title, bool* p_open) const
                         ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, ImGui::GetColorU32(ImVec4(0.3F, 0.3F, 0.7F, 0.65F)));
                     }
 
-                    const std::string label = std::format("{}", s_keyboard_labels[row][col]);
-                    ImGui::Text(
+                    const std::string label = std::format("{}", s_keyboard_labels.at(row).at(col));
+                    ImGui::Text( // NOLINT(*-pro-type-vararg)
                         label.c_str(),
                         label.c_str(),
                         label.size(),

@@ -28,9 +28,9 @@ void WaveformPane::draw(char const* title, bool* p_open) const
     }
 
     if (!m_is_debug_container_set) {
-        ImGui::Text("The debug container is not provided this pane.");
+        ImGui::Text("The debug container is not provided this pane."); // NOLINT(*-pro-type-vararg)
     } else if (!m_debug_container->is_waveforms_set()) {
-        ImGui::Text("The waveforms are not provided to this pane.");
+        ImGui::Text("The waveforms are not provided to this pane."); // NOLINT(*-pro-type-vararg)
     } else {
         unsigned int waveform_idx = 0;
         for (auto& waveform : m_debug_container->waveforms()) {

@@ -24,7 +24,7 @@ auto Color::is_transparent() const -> bool
 
 auto Color::black() -> Color
 {
-    return { 0xff, 0, 0, 0 };
+    return { 0xFF, 0, 0, 0 };
 }
 
 auto Color::transparent() -> Color
@@ -34,26 +34,26 @@ auto Color::transparent() -> Color
 
 auto Color::white() -> Color
 {
-    return { 0xff, 0xff, 0xff, 0xff };
+    return { 0xFF, 0xFF, 0xFF, 0xFF };
 }
 
 auto Color::red() -> Color
 {
-    return { 0xff, 0xff, 0, 0 };
+    return { 0xFF, 0xFF, 0, 0 };
 }
 
 auto Color::green() -> Color
 {
-    return { 0xff, 0, 0xff, 0 };
+    return { 0xFF, 0, 0xFF, 0 };
 }
 
 auto Color::blue() -> Color
 {
-    return { 0xff, 0, 0, 0xff };
+    return { 0xFF, 0, 0, 0xFF };
 }
 
 auto Color::yellow() -> Color
 {
-    return { 0xff, 0xff, 0xff, 0 };
+    return { 0xFF, 0xFF, 0xFF, 0 };
 }
 }

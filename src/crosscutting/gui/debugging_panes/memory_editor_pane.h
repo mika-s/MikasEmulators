@@ -27,9 +27,9 @@ public:
         }
 
         if (!m_is_debug_container_set) {
-            ImGui::Text("The debug container is not provided this pane.");
+            ImGui::Text("The debug container is not provided this pane."); // NOLINT(*-pro-type-vararg)
         } else if (!m_debug_container->is_memory_set()) {
-            ImGui::Text("Memory is not provided to this pane.");
+            ImGui::Text("Memory is not provided to this pane."); // NOLINT(*-pro-type-vararg)
         } else {
             m_memory_editor.DrawContents(
                 m_debug_container->memory().value().data(),

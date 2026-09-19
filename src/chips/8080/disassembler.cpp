@@ -809,14 +809,14 @@ void Disassembler::print_next_instruction()
     m_ostream << "\n";
 }
 
-NextByte Disassembler::get_next_byte()
+auto Disassembler::get_next_byte() -> NextByte
 {
     return {
         .farg = m_memory.read(m_pc++)
     };
 }
 
-NextWord Disassembler::get_next_word()
+auto Disassembler::get_next_word() -> NextWord
 {
     return {
         .farg = m_memory.read(m_pc++),
