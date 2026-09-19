@@ -89,10 +89,10 @@ public:
     void interrupt(Interrupts interrupt) override;
 
 private:
-    static constexpr long double s_fps = 60.0L;
-    static constexpr long double s_tick_limit = 1000.0L / s_fps;
+    static constexpr double s_fps = 60.0;
+    static constexpr double s_tick_limit = 1000.0 / s_fps;
     static constexpr int s_cycles_per_ms = 3072;
-    static constexpr long double s_cycles_per_tick = s_cycles_per_ms * s_tick_limit;
+    static constexpr double s_cycles_per_tick = s_cycles_per_ms * s_tick_limit;
 
     bool m_is_in_debug_mode { false };
 
@@ -122,8 +122,8 @@ private:
 
     void setup_debugging();
 
-    std::vector<u8> memory() const;
+    auto memory() const -> std::vector<u8>;
 
-    std::vector<DisassembledLine<u16, 16>> disassemble_program() const;
+    auto disassemble_program() const -> std::vector<DisassembledLine<u16, 16>>;
 };
 }

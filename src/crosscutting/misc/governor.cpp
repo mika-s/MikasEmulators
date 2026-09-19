@@ -4,8 +4,8 @@
 namespace emu::misc {
 
 Governor::Governor(
-    const long double limit,
-    std::function<long double()> tick_retriever)
+    const double limit,
+    std::function<double()> tick_retriever)
     : m_last_tick(0)
     , m_limit(limit)
     , m_tick_retriever(std::move(tick_retriever))
@@ -14,8 +14,8 @@ Governor::Governor(
 
 auto Governor::is_time_to_update() -> bool
 {
-    long double const ticks = m_tick_retriever();
-    long double const current_ms = ticks - m_last_tick;
+    double const ticks = m_tick_retriever();
+    double const current_ms = ticks - m_last_tick;
 
     bool const should_update = current_ms >= m_limit;
 

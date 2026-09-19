@@ -87,10 +87,10 @@ public:
     void key_pressed(IoRequest request) override;
 
 private:
-    static constexpr long double s_fps = 60.0L;
-    static constexpr long double s_tick_limit = 1000.0L / s_fps;
+    static constexpr double s_fps = 60.0;
+    static constexpr double s_tick_limit = 1000.0 / s_fps;
     static constexpr int s_cycles_per_ms = 3072;
-    static constexpr long double s_cycles_per_tick = s_cycles_per_ms * s_tick_limit;
+    static constexpr double s_cycles_per_tick = s_cycles_per_ms * s_tick_limit;
     static constexpr int s_out_port_vblank_interrupt_return = 0;
 
     bool m_is_in_debug_mode { false };

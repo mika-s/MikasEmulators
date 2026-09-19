@@ -90,8 +90,8 @@ public:
 
 private:
     // Game loop - begin
-    static constexpr long double s_fps = 60.0L;
-    static constexpr long double s_tick_limit = 1000.0L / s_fps;
+    static constexpr double s_fps = 60.0;
+    static constexpr double s_tick_limit = 1000.0 / s_fps;
     // Game loop - end
 
     // IO - begin

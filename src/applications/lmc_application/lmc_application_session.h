@@ -90,10 +90,10 @@ private:
     static constexpr unsigned int s_program_size = 100;
 
     // Game loop - begin
-    static constexpr long double s_fps = 60.0L;
-    static constexpr long double s_tick_limit = 1000.0L / s_fps;
+    static constexpr double s_fps = 60.0;
+    static constexpr double s_tick_limit = 1000.0 / s_fps;
     static constexpr int s_cycles_per_ms = 2000;
-    static constexpr long double s_cycles_per_tick = s_cycles_per_ms * s_tick_limit;
+    static constexpr double s_cycles_per_tick = s_cycles_per_ms * s_tick_limit;
     // Game loop - end
 
     bool m_is_only_run_once { false };
@@ -119,12 +119,12 @@ private:
 
     void setup_debugging();
 
-    std::vector<Data> memory();
+    auto memory() -> std::vector<Data>;
 
     void assemble_and_load_request();
 
     void input_from_terminal(Data input) const;
 
-    std::vector<DisassembledLine<Address, 10>> disassemble_program();
+    auto disassemble_program() -> std::vector<DisassembledLine<Address, 10>>;
 };
 }

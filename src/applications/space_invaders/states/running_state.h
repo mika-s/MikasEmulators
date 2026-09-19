@@ -47,10 +47,10 @@ private:
     static inline std::string s_game_window_subtitle = "";
 
     // Game loop - begin
-    static constexpr long double s_fps = 60.0L;
-    static constexpr long double s_tick_limit = 1000.0L / s_fps;
+    static constexpr double s_fps = 60.0;
+    static constexpr double s_tick_limit = 1000.0 / s_fps;
     static constexpr int s_cycles_per_ms = 2000;
-    static constexpr long double s_cycles_per_tick = s_cycles_per_ms * s_tick_limit;
+    static constexpr double s_cycles_per_tick = s_cycles_per_ms * s_tick_limit;
     // Game loop - end
 
     static constexpr unsigned int s_rst_1_i8080 = 0xcf;

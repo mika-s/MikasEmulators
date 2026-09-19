@@ -2,9 +2,9 @@
 
 namespace emu::misc {
 
-auto sdl_get_ticks_high_performance() -> long double
+auto sdl_get_ticks_high_performance() -> double
 {
-    return static_cast<long double>(
-        1000.0L * SDL_GetPerformanceCounter() / SDL_GetPerformanceFrequency());
-}
+    return 1000.0 * static_cast<double>(SDL_GetPerformanceCounter())
+               / static_cast<double>(SDL_GetPerformanceFrequency());
+    }
 }
