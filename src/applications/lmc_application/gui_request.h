@@ -6,7 +6,7 @@ namespace emu::applications::lmc {
 
 using emu::lmc::Data;
 
-enum GuiRequestType {
+enum class GuiRequestType {
     RUN,
     PAUSE,
     STOP,

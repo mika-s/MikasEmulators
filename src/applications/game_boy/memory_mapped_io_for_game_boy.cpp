@@ -242,16 +242,16 @@ void MemoryMappedIoForGameBoy::interrupt(const Interrupts interrupt)
     u8 value = read(s_address_interrupt_f_register);
 
     switch (interrupt) {
-    case VBLANK:
+    case Interrupts::VBLANK:
         set_bit(value, s_interrupt_bit_vblank);
         break;
-    case LCD:
+    case Interrupts::LCD:
         set_bit(value, s_interrupt_bit_lcd);
         break;
-    case TIMER:
+    case Interrupts::TIMER:
         set_bit(value, s_interrupt_bit_timer);
         break;
-    case JOYPAD:
+    case Interrupts::JOYPAD:
         set_bit(value, s_interrupt_bit_joypad);
         break;
     }
@@ -264,16 +264,16 @@ void MemoryMappedIoForGameBoy::reset_interrupt(const Interrupts interrupt)
     u8 value = read(s_address_interrupt_f_register);
 
     switch (interrupt) {
-    case VBLANK:
+    case Interrupts::VBLANK:
         unset_bit(value, s_interrupt_bit_vblank);
         break;
-    case LCD:
+    case Interrupts::LCD:
         unset_bit(value, s_interrupt_bit_lcd);
         break;
-    case TIMER:
+    case Interrupts::TIMER:
         unset_bit(value, s_interrupt_bit_timer);
         break;
-    case JOYPAD:
+    case Interrupts::JOYPAD:
         unset_bit(value, s_interrupt_bit_joypad);
         break;
     }

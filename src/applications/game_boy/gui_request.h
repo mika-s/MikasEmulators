@@ -2,7 +2,7 @@
 
 namespace emu::applications::game_boy {
 
-enum GuiRequestType {
+enum class GuiRequestType {
     RUN,
     PAUSE,
     STOP,

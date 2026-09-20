@@ -127,19 +127,19 @@ void SynacorApplicationSession::stop()
 void SynacorApplicationSession::gui_request(const GuiRequest request)
 {
     switch (request.m_type) {
-    case RUN:
+    case GuiRequestType::RUN:
         m_state_context->change_state(m_state_context->running_state());
         break;
-    case PAUSE:
+    case GuiRequestType::PAUSE:
         m_state_context->change_state(m_state_context->paused_state());
         break;
-    case STOP:
+    case GuiRequestType::STOP:
         m_state_context->change_state(m_state_context->stopped_state());
         break;
-    case DEBUG_MODE:
+    case GuiRequestType::DEBUG_MODE:
         m_is_in_debug_mode = request.m_bool_payload;
         break;
-    case INPUT_FROM_TERMINAL:
+    case GuiRequestType::INPUT_FROM_TERMINAL:
         input_from_terminal(request.m_data_payload);
         break;
     }

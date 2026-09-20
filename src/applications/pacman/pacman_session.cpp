@@ -242,16 +242,16 @@ void PacmanSession::setup_debugging()
 void PacmanSession::gui_request(const GuiRequest request)
 {
     switch (request.m_type) {
-    case RUN:
+   case GuiRequestType::RUN:
         m_state_context->change_state(m_state_context->running_state());
         break;
-    case PAUSE:
+    case GuiRequestType::PAUSE:
         m_state_context->change_state(m_state_context->paused_state());
         break;
-    case STOP:
+    case GuiRequestType::STOP:
         m_state_context->change_state(m_state_context->stopped_state());
         break;
-    case DEBUG_MODE:
+    case GuiRequestType::DEBUG_MODE:
         m_is_in_debug_mode = request.m_payload;
         break;
     }
@@ -275,13 +275,13 @@ void PacmanSession::out_changed(const u16 port)
 void PacmanSession::key_pressed(const IoRequest request)
 {
     switch (request) {
-    case TOGGLE_MUTE:
+    case IoRequest::TOGGLE_MUTE:
         m_audio->toggle_mute();
         break;
-    case TOGGLE_TILE_DEBUG:
+    case IoRequest::TOGGLE_TILE_DEBUG:
         m_gui->toggle_tile_debug();
         break;
-    case TOGGLE_SPRITE_DEBUG:
+    case IoRequest::TOGGLE_SPRITE_DEBUG:
         m_gui->toggle_sprite_debug();
         break;
     default:
@@ -305,11 +305,11 @@ auto PacmanSession::disassemble_program() const -> std::vector<DisassembledLine<
     std::vector<std::string> disassembled_program = split(ss, "\n");
 
     disassembled_program.erase(
-        std::remove_if(disassembled_program.begin(), disassembled_program.end(), [](std::string const& s) -> bool { return s.empty(); }));
+        std::ranges::remove_if(disassembled_program, [](std::string const& s) -> bool { return s.empty(); }).begin());
 
     std::vector<DisassembledLine<u16, 16>> lines;
-    std::transform(disassembled_program.begin(), disassembled_program.end(), std::back_inserter(lines),
-        [](std::string const& line) -> DisassembledLine<u16, 16> { return DisassembledLine<u16, 16>(line); });
+    std::ranges::transform(disassembled_program, std::back_inserter(lines),
+                           [](std::string const& line) -> DisassembledLine<u16, 16> { return DisassembledLine<u16, 16>(line); });
 
     return lines;
 }

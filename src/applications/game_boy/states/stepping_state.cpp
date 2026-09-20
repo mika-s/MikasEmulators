@@ -66,7 +66,7 @@ void SteppingState::perform(cyc& cycles)
         }
     }
 
-    m_ctx->notify_interrupt_observers(VBLANK);
+    m_ctx->notify_interrupt_observers(Interrupts::VBLANK);
 
     m_ctx->m_input->read(m_ctx->m_gui_io, m_ctx->m_memory_mapped_io);
     if (m_ctx->m_gui_io.m_is_quitting) {

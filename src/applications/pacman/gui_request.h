@@ -2,7 +2,7 @@
 
 namespace emu::applications::pacman {
 
-enum GuiRequestType {
+enum class GuiRequestType {
     RUN,
     PAUSE,
     STOP,

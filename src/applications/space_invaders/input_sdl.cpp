@@ -99,7 +99,7 @@ void InputSdl::read(CpuIo& cpu_io, GuiIo& gui_io)
         case SDL_KEYDOWN:
             switch (read_input_event.key.keysym.scancode) {
             case s_mute:
-                notify_io_observers(TOGGLE_MUTE);
+                notify_io_observers(KeyRequest::TOGGLE_MUTE);
                 break;
             case s_pause:
                 gui_io.m_is_toggling_pause = true;

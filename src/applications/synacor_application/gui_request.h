@@ -6,7 +6,7 @@ namespace emu::applications::synacor {
 
 using emu::synacor::Data;
 
-enum GuiRequestType {
+enum class GuiRequestType {
     RUN,
     PAUSE,
     STOP,

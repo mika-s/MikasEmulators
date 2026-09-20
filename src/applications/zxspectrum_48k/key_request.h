@@ -2,7 +2,7 @@
 
 namespace emu::applications::zxspectrum_48k {
 
-enum KeyRequest {
+enum class KeyRequest {
     TOGGLE_MUTE,
 };
 

@@ -142,28 +142,28 @@ void LmcApplicationSession::stop()
     m_state_context->change_state(m_state_context->stopped_state());
 }
 
-void LmcApplicationSession::gui_request(GuiRequest request)
+void LmcApplicationSession::gui_request(const GuiRequest request)
 {
     switch (request.m_type) {
-    case RUN:
+    case GuiRequestType::RUN:
         m_state_context->change_state(m_state_context->running_state());
         break;
-    case PAUSE:
+    case GuiRequestType::PAUSE:
         m_state_context->change_state(m_state_context->paused_state());
         break;
-    case STOP:
+    case GuiRequestType::STOP:
         m_state_context->change_state(m_state_context->stopped_state());
         break;
-    case DEBUG_MODE:
+    case GuiRequestType::DEBUG_MODE:
         m_is_in_debug_mode = request.m_bool_payload;
         break;
-    case SOURCE_CODE:
+    case GuiRequestType::SOURCE_CODE:
         m_file_content = request.m_string_payload;
         break;
-    case ASSEMBLE_AND_LOAD:
+    case GuiRequestType::ASSEMBLE_AND_LOAD:
         assemble_and_load_request();
         break;
-    case INPUT_FROM_TERMINAL:
+    case GuiRequestType::INPUT_FROM_TERMINAL:
         input_from_terminal(request.m_data_payload);
         break;
     }

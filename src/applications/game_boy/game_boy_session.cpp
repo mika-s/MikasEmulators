@@ -234,31 +234,31 @@ void GameBoySession::setup_debugging()
 void GameBoySession::gui_request(GuiRequest request)
 {
     switch (request.m_type) {
-    case RUN:
+    case GuiRequestType::RUN:
         m_state_context->change_state(m_state_context->running_state());
         break;
-    case PAUSE:
+    case GuiRequestType::PAUSE:
         m_state_context->change_state(m_state_context->paused_state());
         break;
-    case STOP:
+    case GuiRequestType::STOP:
         m_state_context->change_state(m_state_context->stopped_state());
         break;
-    case DEBUG_MODE:
+    case GuiRequestType::DEBUG_MODE:
         m_is_in_debug_mode = request.m_payload;
         break;
     }
 }
 
-void GameBoySession::key_pressed(IoRequest request)
+void GameBoySession::key_pressed(const IoRequest request)
 {
     switch (request) {
-    case TOGGLE_MUTE:
+    case IoRequest::TOGGLE_MUTE:
         m_audio->toggle_mute();
         break;
-    case TOGGLE_TILE_DEBUG:
+    case IoRequest::TOGGLE_TILE_DEBUG:
         m_gui->toggle_tile_debug();
         break;
-    case TOGGLE_SPRITE_DEBUG:
+    case IoRequest::TOGGLE_SPRITE_DEBUG:
         m_gui->toggle_sprite_debug();
         break;
     default:
@@ -271,16 +271,16 @@ void GameBoySession::interrupt(const Interrupts interrupt)
     m_memory_mapped_io->interrupt(interrupt);
 
     switch (interrupt) {
-    case VBLANK:
+    case Interrupts::VBLANK:
         m_cpu->interrupt(0x40);
         break;
-    case LCD:
+    case Interrupts::LCD:
         m_cpu->interrupt(0x48);
         break;
-    case TIMER:
+    case Interrupts::TIMER:
         m_cpu->interrupt(0x50);
         break;
-    case JOYPAD:
+    case Interrupts::JOYPAD:
         m_cpu->interrupt(0x60);
         break;
     default:

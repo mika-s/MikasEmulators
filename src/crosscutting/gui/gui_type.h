@@ -2,7 +2,7 @@
 
 namespace emu::gui {
 
-enum GuiType {
+enum class GuiType {
     ORDINARY,
     DEBUGGING
 };

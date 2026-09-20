@@ -93,69 +93,69 @@ void InputImgui::read(GuiIo& gui_io, const std::shared_ptr<MemoryMappedIoForGame
             case SDL_KEYDOWN:
                 switch (read_input_event.key.keysym.scancode) {
                 case s_tile_debug:
-                    notify_io_observers(TOGGLE_TILE_DEBUG);
+                    notify_io_observers(IoRequest::TOGGLE_TILE_DEBUG);
                     break;
                 case s_sprite_debug:
-                    notify_io_observers(TOGGLE_SPRITE_DEBUG);
+                    notify_io_observers(IoRequest::TOGGLE_SPRITE_DEBUG);
                     break;
                 case s_mute:
-                    notify_io_observers(TOGGLE_MUTE);
+                    notify_io_observers(IoRequest::TOGGLE_MUTE);
                     break;
                 case s_pause:
                     gui_io.m_is_toggling_pause = true;
                     break;
                 case s_p1_start:
                     if (!m_is_pressing_start) {
-                        notify_interrupt_observers(JOYPAD);
+                        notify_interrupt_observers(Interrupts::JOYPAD);
                     }
                     m_is_pressing_start = true;
                     memory_mapped_io->p1_button_keys(s_bit_number_start, false);
                     break;
                 case s_p1_select:
                     if (!m_is_pressing_select) {
-                        notify_interrupt_observers(JOYPAD);
+                        notify_interrupt_observers(Interrupts::JOYPAD);
                     }
                     m_is_pressing_select = true;
                     memory_mapped_io->p1_button_keys(s_bit_number_select, false);
                     break;
                 case s_up:
                     if (!m_is_pressing_up) {
-                        notify_interrupt_observers(JOYPAD);
+                        notify_interrupt_observers(Interrupts::JOYPAD);
                     }
                     m_is_pressing_up = true;
                     memory_mapped_io->p1_direction_keys(s_bit_number_up, false);
                     break;
                 case s_down:
                     if (!m_is_pressing_down) {
-                        notify_interrupt_observers(JOYPAD);
+                        notify_interrupt_observers(Interrupts::JOYPAD);
                     }
                     m_is_pressing_down = true;
                     memory_mapped_io->p1_direction_keys(s_bit_number_down, false);
                     break;
                 case s_left:
                     if (!m_is_pressing_left) {
-                        notify_interrupt_observers(JOYPAD);
+                        notify_interrupt_observers(Interrupts::JOYPAD);
                     }
                     m_is_pressing_left = true;
                     memory_mapped_io->p1_direction_keys(s_bit_number_left, false);
                     break;
                 case s_right:
                     if (!m_is_pressing_right) {
-                        notify_interrupt_observers(JOYPAD);
+                        notify_interrupt_observers(Interrupts::JOYPAD);
                     }
                     m_is_pressing_right = true;
                     memory_mapped_io->p1_direction_keys(s_bit_number_right, false);
                     break;
                 case s_a:
                     if (!m_is_pressing_a) {
-                        notify_interrupt_observers(JOYPAD);
+                        notify_interrupt_observers(Interrupts::JOYPAD);
                     }
                     m_is_pressing_a = true;
                     memory_mapped_io->p1_button_keys(s_bit_number_a, false);
                     break;
                 case s_b:
                     if (!m_is_pressing_b) {
-                        notify_interrupt_observers(JOYPAD);
+                        notify_interrupt_observers(Interrupts::JOYPAD);
                     }
                     m_is_pressing_b = true;
                     memory_mapped_io->p1_button_keys(s_bit_number_b, false);

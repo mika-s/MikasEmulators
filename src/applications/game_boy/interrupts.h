@@ -2,7 +2,7 @@
 
 namespace emu::applications::game_boy {
 
-enum Interrupts {
+enum class Interrupts {
     VBLANK,
     LCD,
     TIMER,

@@ -2,7 +2,7 @@
 
 namespace emu::applications::space_invaders {
 
-enum GuiRequestType {
+enum class GuiRequestType {
     RUN,
     PAUSE,
     STOP,

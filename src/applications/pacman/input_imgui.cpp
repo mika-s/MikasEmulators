@@ -18,9 +18,7 @@ void InputImgui::add_io_observer(KeyObserver& observer)
 
 void InputImgui::remove_io_observer(KeyObserver* observer)
 {
-    m_io_observers.erase(
-        std::remove(m_io_observers.begin(), m_io_observers.end(), observer),
-        m_io_observers.end());
+    std::erase(m_io_observers, observer);
 }
 
 void InputImgui::notify_io_observers(const IoRequest request) const
@@ -90,13 +88,13 @@ void InputImgui::read(GuiIo& gui_io, const std::shared_ptr<MemoryMappedIoForPacm
             case SDL_KEYDOWN:
                 switch (read_input_event.key.keysym.scancode) {
                 case s_tile_debug:
-                    notify_io_observers(TOGGLE_TILE_DEBUG);
+                    notify_io_observers(IoRequest::TOGGLE_TILE_DEBUG);
                     break;
                 case s_sprite_debug:
-                    notify_io_observers(TOGGLE_SPRITE_DEBUG);
+                    notify_io_observers(IoRequest::TOGGLE_SPRITE_DEBUG);
                     break;
                 case s_mute:
-                    notify_io_observers(TOGGLE_MUTE);
+                    notify_io_observers(IoRequest::TOGGLE_MUTE);
                     break;
                 case s_pause:
                     gui_io.m_is_toggling_pause = true;

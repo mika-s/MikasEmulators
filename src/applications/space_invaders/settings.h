@@ -9,19 +9,19 @@ class Options;
 
 namespace emu::applications::space_invaders {
 
-enum NumberOfLives {
+enum class NumberOfLives {
     Three = 0,
     Four = 1,
     Five = 2,
     Six = 3
 };
 
-enum BonusLifeAt {
+enum class BonusLifeAt {
     _1000 = 1,
     _1500 = 0
 };
 
-enum CoinInfo {
+enum class CoinInfo {
     On = 0,
     Off = 1
 };

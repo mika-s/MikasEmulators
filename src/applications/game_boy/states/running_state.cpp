@@ -103,7 +103,7 @@ void RunningState::update_graphics(const cyc cycles) const
         m_ctx->m_scanline_counter = 456;
 
         if (current_line == 144) {
-            m_ctx->notify_interrupt_observers(VBLANK);
+            m_ctx->notify_interrupt_observers(Interrupts::VBLANK);
         } else if (current_line > 153) {
             m_ctx->m_lcd->reset_scanline();
         } else if (current_line < 144) {

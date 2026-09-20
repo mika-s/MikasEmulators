@@ -207,16 +207,16 @@ void ZxSpectrum48kSession::setup_debugging()
 void ZxSpectrum48kSession::gui_request(const GuiRequest request)
 {
     switch (request.m_type) {
-    case RUN:
+    case GuiRequestType::RUN:
         m_state_context->change_state(m_state_context->running_state());
         break;
-    case PAUSE:
+    case GuiRequestType::PAUSE:
         m_state_context->change_state(m_state_context->paused_state());
         break;
-    case STOP:
+    case GuiRequestType::STOP:
         m_state_context->change_state(m_state_context->stopped_state());
         break;
-    case DEBUG_MODE:
+    case GuiRequestType::DEBUG_MODE:
         m_is_in_debug_mode = request.m_payload;
         break;
     }
@@ -256,7 +256,7 @@ void ZxSpectrum48kSession::out_changed(const u16 port)
 void ZxSpectrum48kSession::key_pressed(const KeyRequest request)
 {
     switch (request) {
-    case TOGGLE_MUTE:
+    case KeyRequest::TOGGLE_MUTE:
         m_audio.toggle_mute();
         break;
     default:

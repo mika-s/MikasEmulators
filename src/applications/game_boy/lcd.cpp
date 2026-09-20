@@ -26,7 +26,7 @@ void Lcd::increment_scanline()
 
     m_lcd_status.m_is_lyc_eq_ly = m_ly == m_lyc;
     if (m_lcd_status.m_is_lyc_eq_ly) {
-        notify_interrupt_observers(LCD);
+        notify_interrupt_observers(Interrupts::LCD);
     }
 }
 

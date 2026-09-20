@@ -2,7 +2,7 @@
 
 namespace emu::applications::zxspectrum_48k {
 
-enum GuiRequestType {
+enum class GuiRequestType {
     RUN,
     PAUSE,
     STOP,

@@ -40,7 +40,7 @@ void Timer::update(const cyc cycles)
 
             if (m_counter == 0xff) {
                 m_counter = m_modulo;
-                notify_interrupt_observers(TIMER);
+                notify_interrupt_observers(Interrupts::TIMER);
             } else {
                 ++m_counter;
             }
