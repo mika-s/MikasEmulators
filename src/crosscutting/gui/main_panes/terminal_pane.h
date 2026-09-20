@@ -9,7 +9,15 @@ class TerminalPaneObserver {
 public:
     virtual ~TerminalPaneObserver() = default;
 
+    TerminalPaneObserver(const TerminalPaneObserver&) = delete;
+    auto operator=(const TerminalPaneObserver&) -> TerminalPaneObserver& = delete;
+    TerminalPaneObserver(TerminalPaneObserver&&) = delete;
+    auto operator=(TerminalPaneObserver&&) -> TerminalPaneObserver& = delete;
+
     virtual void input_sent(std::string const& input) = 0;
+
+protected:
+    TerminalPaneObserver() = default;
 };
 
 class TerminalPane {

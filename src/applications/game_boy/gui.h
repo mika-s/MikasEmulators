@@ -53,6 +53,11 @@ public:
 
     virtual ~Gui() = default;
 
+    Gui(const Gui&) = delete;
+    auto operator=(const Gui&) -> Gui& = delete;
+    Gui(Gui&&) = delete;
+    auto operator=(Gui&&) -> Gui& = delete;
+
     virtual void add_gui_observer(GuiObserver& observer) = 0;
 
     virtual void remove_gui_observer(GuiObserver* observer) = 0;

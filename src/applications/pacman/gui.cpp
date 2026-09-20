@@ -58,10 +58,10 @@ void Gui::load_palette_rom(std::vector<u8> const& palette_rom)
     std::vector<Color> colors;
 
     for (u8 const byte : palette_rom) {
-        colors.push_back(m_colors[byte]);
+        colors.push_back(m_colors.at(byte));
 
         if (colors.size() == 4) {
-            m_palettes.emplace_back(colors[0], colors[1], colors[2], colors[3]);
+            m_palettes.emplace_back(colors.at(0), colors.at(1), colors.at(2), colors.at(3));
             colors.clear();
         }
     }
@@ -90,7 +90,7 @@ void Gui::load_tile_rom(std::vector<u8> const& tile_rom)
         m_tiles.emplace_back(tile_count, std::make_shared<UninitializedTile>());
 
         for (unsigned int tile_idx = 0; tile_idx < tile_count; ++tile_idx) {
-            m_tiles[palette_idx][tile_idx] = render_tile(palette_idx, tile_idx);
+            m_tiles.at(palette_idx).at(tile_idx) = render_tile(palette_idx, tile_idx);
         }
     }
 
@@ -124,16 +124,16 @@ void Gui::load_sprite_rom(std::vector<u8> const& sprite_rom)
         m_sprites_xy.emplace_back(sprite_count, std::make_shared<UninitializedSprite>());
 
         for (unsigned int sprite_idx = 0; sprite_idx < sprite_count; ++sprite_idx) {
-            m_sprites[palette_idx][sprite_idx] = render_sprite(palette_idx, sprite_idx, false, false);
-            m_sprites_x[palette_idx][sprite_idx] = render_sprite(palette_idx, sprite_idx, true, false);
-            m_sprites_y[palette_idx][sprite_idx] = render_sprite(palette_idx, sprite_idx, false, true);
-            m_sprites_xy[palette_idx][sprite_idx] = render_sprite(palette_idx, sprite_idx, true, true);
+            m_sprites.at(palette_idx).at(sprite_idx) = render_sprite(palette_idx, sprite_idx, false, false);
+            m_sprites_x.at(palette_idx).at(sprite_idx) = render_sprite(palette_idx, sprite_idx, true, false);
+            m_sprites_y.at(palette_idx).at(sprite_idx) = render_sprite(palette_idx, sprite_idx, false, true);
+            m_sprites_xy.at(palette_idx).at(sprite_idx) = render_sprite(palette_idx, sprite_idx, true, true);
         }
     }
 
     for (unsigned int rotation = 0; rotation < s_sprite_number_of_rotations; ++rotation) {
         for (unsigned int sprite_idx = 0; sprite_idx < sprite_count; ++sprite_idx) {
-            m_debugging_sprites[rotation].push_back(render_debugging_sprite(rotation, sprite_idx));
+            m_debugging_sprites.at(rotation).push_back(render_debugging_sprite(rotation, sprite_idx));
         }
     }
 
@@ -161,11 +161,11 @@ auto Gui::render_tile(u8 palette_idx, const u8 tile_idx) const -> std::shared_pt
         palette_idx = 0;
     }
 
-    if (std::shared_ptr<Tile> tile = m_tiles[palette_idx][tile_idx]; tile->is_initialized()) {
+    if (std::shared_ptr<Tile> tile = m_tiles.at(palette_idx).at(tile_idx); tile->is_initialized()) {
         return tile;
     }
 
-    const Palette palette = m_palettes[palette_idx];
+    const Palette palette = m_palettes.at(palette_idx);
 
     auto new_tile = std::make_shared<Tile>(s_tile_size, s_tile_size);
 
@@ -176,7 +176,7 @@ auto Gui::render_tile(u8 palette_idx, const u8 tile_idx) const -> std::shared_pt
     int origin_col = 0;
 
     for (int rom_idx = rom_end - 1; rom_idx >= rom_beginning; --rom_idx) {
-        const u8 tile_byte = m_tile_rom[rom_idx];
+        const u8 tile_byte = m_tile_rom.at(rom_idx);
 
         int const pixel1_color_idx = (is_bit_set(tile_byte, 4) << 1) | is_bit_set(tile_byte, 0);
         int const pixel2_color_idx = (is_bit_set(tile_byte, 5) << 1) | is_bit_set(tile_byte, 1);
@@ -227,11 +227,11 @@ void Gui::render_play_area(
     unsigned int play_area_row = 0;
 
     for (int address = s_playarea_start_address_offset; address <= s_playarea_stop_address_offset; ++address) {
-        const u8 tile_idx = tile_ram[address];
-        const u8 palette_idx = palette_ram[address] & 0x7f;
+        const u8 tile_idx = tile_ram.at(address);
+        const u8 palette_idx = palette_ram.at(address) & 0x7f;
 
         if (m_is_tile_debug_enabled) {
-            m_debugging_tiles[tile_idx]
+            m_debugging_tiles.at(tile_idx)
                 ->map_to_framebuffer(screen, origin_row, origin_col);
         } else {
             render_tile(palette_idx, tile_idx)
@@ -260,11 +260,11 @@ void Gui::render_top_bar(
     unsigned int origin_col = 0;
 
     for (int address = s_topbar_r1_start_address_offset; s_topbar_r1_stop_address_offset <= address; --address) {
-        const u8 tile_idx = tile_ram[address];
-        const u8 palette_idx = palette_ram[address] & 0x7f;
+        const u8 tile_idx = tile_ram.at(address);
+        const u8 palette_idx = palette_ram.at(address) & 0x7f;
 
         if (m_is_tile_debug_enabled) {
-            m_debugging_tiles[tile_idx]
+            m_debugging_tiles.at(tile_idx)
                 ->map_to_framebuffer(screen, origin_row, origin_col);
         } else {
             render_tile(palette_idx, tile_idx)
@@ -279,11 +279,11 @@ void Gui::render_top_bar(
     origin_col = 0;
 
     for (int address = s_topbar_r2_start_address_offset; s_topbar_r2_stop_address_offset <= address; --address) {
-        const u8 tile_idx = tile_ram[address];
-        const u8 palette_idx = palette_ram[address] & 0x7f;
+        const u8 tile_idx = tile_ram.at(address);
+        const u8 palette_idx = palette_ram.at(address) & 0x7f;
 
         if (m_is_tile_debug_enabled) {
-            m_debugging_tiles[tile_idx]
+            m_debugging_tiles.at(tile_idx)
                 ->map_to_framebuffer(screen, origin_row, origin_col);
         } else {
             render_tile(palette_idx, tile_idx)
@@ -305,11 +305,11 @@ void Gui::render_bottom_bar(
     unsigned int origin_row = s_bottombar_start_row * s_tile_size;
 
     for (int address = s_bottombar_r1_start_address_offset; s_bottombar_r1_stop_address_offset <= address; --address) {
-        const u8 tile_idx = tile_ram[address];
-        const u8 palette_idx = palette_ram[address] & 0x7f;
+        const u8 tile_idx = tile_ram.at(address);
+        const u8 palette_idx = palette_ram.at(address) & 0x7f;
 
         if (m_is_tile_debug_enabled) {
-            m_debugging_tiles[tile_idx]
+            m_debugging_tiles.at(tile_idx)
                 ->map_to_framebuffer(screen, origin_row, origin_col);
         } else {
             render_tile(palette_idx, tile_idx)
@@ -324,11 +324,11 @@ void Gui::render_bottom_bar(
     origin_row = (s_bottombar_start_row + 1) * s_tile_size;
 
     for (int address = s_bottombar_r2_start_address_offset; s_bottombar_r2_stop_address_offset <= address; --address) {
-        const u8 tile_idx = tile_ram[address];
-        const u8 palette_idx = palette_ram[address] & 0x7f;
+        const u8 tile_idx = tile_ram.at(address);
+        const u8 palette_idx = palette_ram.at(address) & 0x7f;
 
         if (m_is_tile_debug_enabled) {
-            m_debugging_tiles[tile_idx]
+            m_debugging_tiles.at(tile_idx)
                 ->map_to_framebuffer(screen, origin_row, origin_col);
         } else {
             render_tile(palette_idx, tile_idx)
@@ -383,8 +383,7 @@ void Gui::draw_tiles(
     Framebuffer& screen,
     std::vector<u8> const& tile_ram,
     std::vector<u8> const& palette_ram
-)
-{
+) const {
     render_bottom_bar(screen, tile_ram, palette_ram);
     render_play_area(screen, tile_ram, palette_ram);
     render_top_bar(screen, tile_ram, palette_ram);

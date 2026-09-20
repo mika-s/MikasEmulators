@@ -74,6 +74,11 @@ public:
 
     ~LmcApplicationSession() override;
 
+    LmcApplicationSession(const LmcApplicationSession&) = delete;
+    auto operator=(const LmcApplicationSession&) -> LmcApplicationSession& = delete;
+    LmcApplicationSession(LmcApplicationSession&&) = delete;
+    auto operator=(LmcApplicationSession&&) -> LmcApplicationSession& = delete;
+
     void run() override;
 
     void pause() override;

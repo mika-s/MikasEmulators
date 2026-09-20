@@ -84,6 +84,11 @@ public:
 
     ~ZxSpectrum48kSession() override;
 
+    ZxSpectrum48kSession(const ZxSpectrum48kSession&) = delete;
+    auto operator=(const ZxSpectrum48kSession&) -> ZxSpectrum48kSession& = delete;
+    ZxSpectrum48kSession(ZxSpectrum48kSession&&) = delete;
+    auto operator=(ZxSpectrum48kSession&&) -> ZxSpectrum48kSession& = delete;
+
     void run() override;
 
     void pause() override;

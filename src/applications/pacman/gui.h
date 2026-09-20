@@ -51,6 +51,11 @@ public:
 
     virtual ~Gui() = default;
 
+    Gui(const Gui&) = delete;
+    auto operator=(const Gui&) -> Gui& = delete;
+    Gui(Gui&&) = delete;
+    auto operator=(Gui&&) -> Gui& = delete;
+
     virtual void add_gui_observer(GuiObserver& observer) = 0;
 
     virtual void remove_gui_observer(GuiObserver* observer) = 0;
@@ -188,7 +193,7 @@ protected:
 
     static auto render_debugging_tile(u8 tile_idx) -> std::shared_ptr<Tile>;
 
-    void draw_tiles(Framebuffer& screen, std::vector<u8> const& tile_ram, std::vector<u8> const& palette_ram);
+    void draw_tiles(Framebuffer& screen, std::vector<u8> const& tile_ram, std::vector<u8> const& palette_ram) const;
 
     [[nodiscard]] auto render_sprite(
         u8 palette_idx,

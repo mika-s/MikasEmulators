@@ -35,6 +35,11 @@ public:
 
     ~GuiSdl() override;
 
+    GuiSdl(const GuiSdl&) = delete;
+    auto operator=(const GuiSdl&) -> GuiSdl& = delete;
+    GuiSdl(GuiSdl&&) = delete;
+    auto operator=(GuiSdl&&) -> GuiSdl& = delete;
+
     void add_gui_observer(GuiObserver& observer) override;
 
     void remove_gui_observer(GuiObserver* observer) override;

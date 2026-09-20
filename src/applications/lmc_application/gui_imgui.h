@@ -57,6 +57,11 @@ public:
 
     ~GuiImgui() override;
 
+    GuiImgui(const GuiImgui&) = delete;
+    auto operator=(const GuiImgui&) -> GuiImgui& = delete;
+    GuiImgui(GuiImgui&&) = delete;
+    auto operator=(GuiImgui&&) -> GuiImgui& = delete;
+
     void to_terminal(Data acc_reg, OutType out_type) override;
 
     void from_terminal() override;

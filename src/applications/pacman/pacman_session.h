@@ -74,6 +74,11 @@ public:
 
     ~PacmanSession() override;
 
+    PacmanSession(const PacmanSession&) = delete;
+    auto operator=(const PacmanSession&) -> PacmanSession& = delete;
+    PacmanSession(PacmanSession&&) = delete;
+    auto operator=(PacmanSession&&) -> PacmanSession& = delete;
+
     void run() override;
 
     void pause() override;

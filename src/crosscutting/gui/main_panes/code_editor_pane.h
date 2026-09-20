@@ -13,9 +13,17 @@ class CodeEditorPaneObserver {
 public:
     virtual ~CodeEditorPaneObserver() = default;
 
+    CodeEditorPaneObserver(const CodeEditorPaneObserver&) = delete;
+    auto operator=(const CodeEditorPaneObserver&) -> CodeEditorPaneObserver& = delete;
+    CodeEditorPaneObserver(CodeEditorPaneObserver&&) = delete;
+    auto operator=(CodeEditorPaneObserver&&) -> CodeEditorPaneObserver& = delete;
+
     virtual void source_code_changed(std::string const& source_code) = 0;
 
     virtual void assemble_and_load_request() = 0;
+
+protected:
+    CodeEditorPaneObserver() = default;
 };
 
 template<class A, class D, std::size_t B>

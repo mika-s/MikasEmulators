@@ -76,6 +76,11 @@ public:
 
     ~GameBoySession() override;
 
+    GameBoySession(const GameBoySession&) = delete;
+    auto operator=(const GameBoySession&) -> GameBoySession& = delete;
+    GameBoySession(GameBoySession&&) = delete;
+    auto operator=(GameBoySession&&) -> GameBoySession& = delete;
+
     void run() override;
 
     void pause() override;

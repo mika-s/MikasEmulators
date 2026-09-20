@@ -74,6 +74,11 @@ public:
 
     ~SpaceInvadersSession() override;
 
+    SpaceInvadersSession(const SpaceInvadersSession&) = delete;
+    auto operator=(const SpaceInvadersSession&) -> SpaceInvadersSession& = delete;
+    SpaceInvadersSession(SpaceInvadersSession&&) = delete;
+    auto operator=(SpaceInvadersSession&&) -> SpaceInvadersSession& = delete;
+
     void run() override;
 
     void pause() override;

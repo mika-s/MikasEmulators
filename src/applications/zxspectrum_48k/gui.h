@@ -40,6 +40,11 @@ class Gui {
 public:
     virtual ~Gui() = default;
 
+    Gui(const Gui&) = delete;
+    auto operator=(const Gui&) -> Gui& = delete;
+    Gui(Gui&&) = delete;
+    auto operator=(Gui&&) -> Gui& = delete;
+
     void create_table();
 
     virtual void add_gui_observer(GuiObserver& observer) = 0;
@@ -64,6 +69,8 @@ public:
     virtual void attach_logger(std::shared_ptr<Logger> logger) = 0;
 
 protected:
+    Gui() = default;
+
     static constexpr int s_flash_bit = 7;
     static constexpr int s_bright_bit = 6;
     static constexpr unsigned int s_ink_mask = 0b00000111;

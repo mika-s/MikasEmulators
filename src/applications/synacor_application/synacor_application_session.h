@@ -73,6 +73,11 @@ public:
 
     ~SynacorApplicationSession() override;
 
+    SynacorApplicationSession(const SynacorApplicationSession&) = delete;
+    auto operator=(const SynacorApplicationSession&) -> SynacorApplicationSession& = delete;
+    SynacorApplicationSession(SynacorApplicationSession&&) = delete;
+    auto operator=(SynacorApplicationSession&&) -> SynacorApplicationSession& = delete;
+
     void run() override;
 
     void pause() override;
