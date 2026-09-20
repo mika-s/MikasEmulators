@@ -13,6 +13,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <string>
+#include <string_view>
 #include <unordered_map>
 #include <utility>
 
@@ -167,7 +168,7 @@ void GuiImgui::init()
     glGenTextures(1, &m_screen_texture);
 }
 
-void GuiImgui::update_screen(std::vector<u8> const& vram, std::string const& game_window_subtitle)
+void GuiImgui::update_screen(std::vector<u8> const& vram, std::string_view const& game_window_subtitle)
 {
     const std::vector<u32> framebuffer = create_framebuffer(vram);
 
@@ -181,7 +182,7 @@ void GuiImgui::update_screen(std::vector<u8> const& vram, std::string const& gam
     render(game_window_subtitle);
 }
 
-void GuiImgui::render(std::string const& game_window_subtitle)
+void GuiImgui::render(std::string_view const& game_window_subtitle)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -281,13 +282,21 @@ void GuiImgui::update_debug_only()
     render("Stepping");
 }
 
-void GuiImgui::render_game_window(std::string const& game_window_subtitle)
+void GuiImgui::render_game_window(std::string_view const& game_window_subtitle)
 {
-    const std::string prefix = "Game";
-    const std::string id = "###" + prefix;
-    const std::string title = game_window_subtitle.empty() ? prefix + id : prefix + " - " + game_window_subtitle + id;
+    constexpr std::string_view title = "Game";
+    constexpr std::string_view id = "###Game";
 
-    ImGui::Begin(title.c_str(), &m_show_game);
+    std::string imgui_title;
+    imgui_title.reserve(title.size() + game_window_subtitle.size() + id.size() + 3);
+
+    imgui_title.append(title);
+    if (!game_window_subtitle.empty()) {
+        imgui_title.append(" - ").append(game_window_subtitle);
+    }
+    imgui_title.append(id);
+
+    ImGui::Begin(imgui_title.c_str(), &m_show_game);
 
     constexpr auto image_size = ImVec2(s_scaled_width, s_scaled_height);
     ImGui::Image(

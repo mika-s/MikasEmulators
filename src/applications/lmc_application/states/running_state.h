@@ -3,7 +3,7 @@
 #include "applications/lmc_application/interfaces/state.h"
 #include "crosscutting/typedefs.h"
 #include <memory>
-#include <string>
+#include <string_view>
 
 namespace emu::applications::lmc {
 class StateContext;
@@ -31,7 +31,7 @@ public:
     void perform(cyc& cycles) override;
 
 private:
-    static inline std::string s_game_window_subtitle = "";
+    static constexpr std::string_view s_game_window_subtitle = "";
 
     // Game loop - begin
     static constexpr double s_fps = 60.0;

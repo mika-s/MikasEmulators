@@ -135,12 +135,10 @@ void Timer::add_interrupt_observer(InterruptObserver& observer)
 
 void Timer::remove_interrupt_observer(InterruptObserver* observer)
 {
-    m_interrupt_observers.erase(
-        std::remove(m_interrupt_observers.begin(), m_interrupt_observers.end(), observer),
-        m_interrupt_observers.end());
+    std::erase(m_interrupt_observers, observer);
 }
 
-void Timer::notify_interrupt_observers(Interrupts interrupt)
+void Timer::notify_interrupt_observers(Interrupts interrupt) const
 {
     for (InterruptObserver* observer : m_interrupt_observers) {
         observer->interrupt(interrupt);

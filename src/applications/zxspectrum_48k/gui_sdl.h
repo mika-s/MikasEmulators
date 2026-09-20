@@ -6,7 +6,7 @@
 #include <SDL_video.h>
 #include <cstddef>
 #include <memory>
-#include <string>
+#include <string_view>
 #include <vector>
 
 namespace emu::applications::zxspectrum_48k {
@@ -43,7 +43,7 @@ public:
         std::vector<u8> const& vram,
         std::vector<u8> const& color_ram,
         u8 border_color,
-        std::string const& game_window_subtitle) override;
+        std::string_view const& game_window_subtitle) override;
 
     void update_debug_only() override;
 

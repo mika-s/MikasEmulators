@@ -32,7 +32,7 @@ public:
 
     virtual void remove_gui_observer(GuiObserver* observer) = 0;
 
-    virtual void update_screen(std::vector<u8> const& vram, std::string const& game_window_subtitle) = 0;
+    virtual void update_screen(std::vector<u8> const& vram, std::string_view const& game_window_subtitle) = 0;
 
     virtual void update_debug_only() = 0;
 

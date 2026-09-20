@@ -54,7 +54,7 @@ void RunningState::perform(cyc& cycles)
         while (cycles < static_cast<cyc>(s_cycles_per_tick / 2)) {
             cycles += m_ctx->m_cpu->next_instruction();
             if (m_ctx->m_is_in_debug_mode && m_ctx->m_debugger->has_breakpoint(m_ctx->m_cpu->pc())) {
-                m_ctx->m_logger->info("Breakpoint hit: 0x%04x", m_ctx->m_cpu->pc());
+                m_ctx->m_logger->info("Breakpoint hit: 0x%04x", m_ctx->m_cpu->pc()); // NOLINT(*-pro-type-vararg)
                 transition_to_step();
                 return;
             }
@@ -68,7 +68,7 @@ void RunningState::perform(cyc& cycles)
         while (cycles < static_cast<cyc>(s_cycles_per_tick / 2)) {
             cycles += m_ctx->m_cpu->next_instruction();
             if (m_ctx->m_is_in_debug_mode && m_ctx->m_debugger->has_breakpoint(m_ctx->m_cpu->pc())) {
-                m_ctx->m_logger->info("Breakpoint hit: 0x%04x", m_ctx->m_cpu->pc());
+                m_ctx->m_logger->info("Breakpoint hit: 0x%04x", m_ctx->m_cpu->pc()); // NOLINT(*-pro-type-vararg)
                 transition_to_step();
                 return;
             }
@@ -95,7 +95,7 @@ void RunningState::perform(cyc& cycles)
     }
 }
 
-std::vector<u8> RunningState::vram()
+auto RunningState::vram() const -> std::vector<u8>
 {
     return { m_ctx->m_memory.begin() + 0x2400, m_ctx->m_memory.begin() + 0x3fff + 1 };
 }

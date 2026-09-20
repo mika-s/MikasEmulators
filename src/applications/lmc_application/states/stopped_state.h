@@ -3,7 +3,7 @@
 #include "applications/lmc_application/interfaces/state.h"
 #include "crosscutting/typedefs.h"
 #include <memory>
-#include <string>
+#include <string_view>
 
 namespace emu::applications::lmc {
 class StateContext;
@@ -31,7 +31,7 @@ public:
     void perform(cyc& cycles) override;
 
 private:
-    static inline std::string s_game_window_subtitle = "Stopped";
+    static constexpr std::string_view s_game_window_subtitle = "Stopped";
 
     [[maybe_unused]] std::shared_ptr<StateContext> m_ctx;
 };

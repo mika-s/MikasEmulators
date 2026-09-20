@@ -13,6 +13,7 @@
 #include <cstddef>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace emu::applications::lmc {
@@ -66,7 +67,7 @@ public:
 
     void remove_ui_observer(UiObserver* observer) override;
 
-    void update_screen(bool is_awaiting_input, std::string const& game_window_subtitle) override;
+    void update_screen(bool is_awaiting_input, std::string_view const& game_window_subtitle) override;
 
     void update_debug_only(bool is_awaiting_input) override;
 
@@ -112,11 +113,11 @@ private:
 
     void init();
 
-    void render(bool is_awaiting_input, std::string const& game_window_subtitle);
+    void render(bool is_awaiting_input, std::string_view const& game_window_subtitle);
 
     void render_code_editor();
 
-    void render_terminal_window(bool is_awaiting_input, std::string const& game_window_subtitle);
+    void render_terminal_window(bool is_awaiting_input, std::string_view const& game_window_subtitle);
 
     void render_game_info_window();
 

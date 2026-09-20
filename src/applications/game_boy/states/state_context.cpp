@@ -109,9 +109,7 @@ void StateContext::add_interrupt_observer(InterruptObserver& observer)
 
 void StateContext::remove_interrupt_observer(InterruptObserver* observer)
 {
-    m_interrupt_observers.erase(
-        std::remove(m_interrupt_observers.begin(), m_interrupt_observers.end(), observer),
-        m_interrupt_observers.end());
+    std::erase(m_interrupt_observers, observer);
 }
 
 void StateContext::notify_interrupt_observers(const Interrupts interrupt) const

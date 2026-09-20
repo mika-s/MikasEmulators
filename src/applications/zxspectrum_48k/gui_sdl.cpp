@@ -111,7 +111,7 @@ void GuiSdl::update_screen(
     std::vector<u8> const& vram,
     std::vector<u8> const& color_ram,
     const u8 border_color,
-    std::string const& game_window_subtitle)
+    std::string_view const& game_window_subtitle)
 {
     const std::vector<u32> framebuffer = create_framebuffer(vram, color_ram, border_color);
 
@@ -125,7 +125,10 @@ void GuiSdl::update_screen(
 
     SDL_memcpy(pixels, framebuffer.data(), static_cast<std::size_t>(pitch * s_height));
 
-    const std::string title = game_window_subtitle.empty() ? "ZX Spectrum 48k" : "ZX Spectrum 48k - " + game_window_subtitle;
+    const std::string title_if_missing_subtitle = "ZX Spectrum 48k";
+    const std::string title_if_not_missing_subtitle = "ZX Spectrum 48k - " + std::string(game_window_subtitle);
+
+    const std::string title = game_window_subtitle.empty() ? title_if_missing_subtitle : title_if_not_missing_subtitle;
 
     SDL_SetWindowTitle(m_win, title.c_str());
     SDL_UnlockTexture(m_texture);

@@ -6,7 +6,7 @@
 #include "crosscutting/util/byte_util.h"
 #include <cstddef>
 #include <memory>
-#include <string>
+#include <string_view>
 #include <vector>
 
 namespace emu::applications::zxspectrum_48k {
@@ -50,7 +50,7 @@ public:
         std::vector<u8> const& vram,
         std::vector<u8> const& color_ram,
         u8 border_color,
-        std::string const& game_window_subtitle)
+        std::string_view const& game_window_subtitle)
         = 0;
 
     virtual void update_debug_only() = 0;

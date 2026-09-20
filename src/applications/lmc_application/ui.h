@@ -38,7 +38,7 @@ public:
 
     virtual void remove_ui_observer(UiObserver* observer) = 0;
 
-    virtual void update_screen(bool is_awaiting_input, std::string const& game_window_subtitle) = 0;
+    virtual void update_screen(bool is_awaiting_input, std::string_view const& game_window_subtitle) = 0;
 
     virtual void update_debug_only(bool is_awaiting_input) = 0;
 

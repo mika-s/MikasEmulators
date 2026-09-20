@@ -119,7 +119,7 @@ void GuiSdl::update_screen(
     std::vector<u8> const& sprite_ram,
     std::vector<u8> const& palette_ram,
     const bool is_screen_flipped,
-    std::string const& game_window_subtitle)
+    std::string_view const& game_window_subtitle)
 {
     const std::vector<u32> framebuffer = create_framebuffer(tile_ram, sprite_ram, palette_ram, is_screen_flipped);
 
@@ -133,7 +133,10 @@ void GuiSdl::update_screen(
 
     SDL_memcpy(pixels, framebuffer.data(), pitch * s_height);
 
-    const std::string title = game_window_subtitle.empty() ? "Pacman" : "Pacman - " + game_window_subtitle;
+    const std::string title_if_missing_subtitle = "Pacman";
+    const std::string title_if_not_missing_subtitle = "Pacman - " + std::string(game_window_subtitle);
+
+    const std::string title = game_window_subtitle.empty() ? title_if_missing_subtitle : title_if_not_missing_subtitle;
 
     SDL_SetWindowTitle(m_win, title.c_str());
     SDL_UnlockTexture(m_texture);

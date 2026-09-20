@@ -13,7 +13,7 @@
 #include <SDL_video.h>
 #include <cstddef>
 #include <memory>
-#include <string>
+#include <string_view>
 #include <vector>
 
 namespace emu::applications::pacman {
@@ -59,7 +59,7 @@ public:
         std::vector<u8> const& sprite_ram,
         std::vector<u8> const& palette_ram,
         bool is_screen_flipped,
-        std::string const& game_window_subtitle) override;
+        std::string_view const& game_window_subtitle) override;
 
     void update_debug_only() override;
 
@@ -110,9 +110,9 @@ private:
 
     void init();
 
-    void render(std::string const& game_window_subtitle);
+    void render(std::string_view const& game_window_subtitle);
 
-    void render_game_pane(std::string const& game_window_subtitle);
+    void render_game_pane(std::string_view const& game_window_subtitle);
 
     void render_game_info_pane();
 

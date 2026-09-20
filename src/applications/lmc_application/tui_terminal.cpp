@@ -42,9 +42,7 @@ void TuiTerminal::add_ui_observer(UiObserver& observer)
 
 void TuiTerminal::remove_ui_observer(UiObserver* observer)
 {
-    m_ui_observers.erase(
-        std::remove(m_ui_observers.begin(), m_ui_observers.end(), observer),
-        m_ui_observers.end());
+    std::erase(m_ui_observers, observer);
 }
 
 void TuiTerminal::attach_debugger([[maybe_unused]] std::shared_ptr<Debugger<Address, 10>> debugger)
@@ -59,7 +57,7 @@ void TuiTerminal::attach_logger([[maybe_unused]] std::shared_ptr<Logger> logger)
 {
 }
 
-void TuiTerminal::update_screen([[maybe_unused]] bool is_awaiting_input, [[maybe_unused]] std::string const& game_window_subtitle)
+void TuiTerminal::update_screen([[maybe_unused]] bool is_awaiting_input, [[maybe_unused]] std::string_view const& game_window_subtitle)
 {
 }
 

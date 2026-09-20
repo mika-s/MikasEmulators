@@ -3,7 +3,7 @@
 #include "crosscutting/typedefs.h"
 #include "game_boy/interfaces/state.h"
 #include <memory>
-#include <string>
+#include <string_view>
 #include <vector>
 
 namespace emu::applications::game_boy {
@@ -30,7 +30,7 @@ public:
     void perform(cyc& cycles) override;
 
 private:
-    static inline std::string s_game_window_subtitle = "Paused";
+    static constexpr std::string_view s_game_window_subtitle = "Paused";
 
     std::shared_ptr<StateContext> m_ctx;
 

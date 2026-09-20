@@ -10,6 +10,7 @@ helpers/cfg/test_source_code.txt
 roms/8080/*/
 roms/z80/*/
 
+lmc_imgui.ini
 pacman_imgui.ini
 space-invaders_imgui.ini
 synacor_imgui.ini

@@ -71,7 +71,7 @@ private:
     bool m_is_pressing_a { false };
     bool m_is_pressing_b { false };
 
-    void notify_io_observers(IoRequest request);
+    void notify_io_observers(IoRequest request) const;
 
     void notify_interrupt_observers(Interrupts interrupt) const;
 };

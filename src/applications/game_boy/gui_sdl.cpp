@@ -51,9 +51,7 @@ void GuiSdl::add_gui_observer(GuiObserver& observer)
 
 void GuiSdl::remove_gui_observer(GuiObserver* observer)
 {
-    m_gui_observers.erase(
-        std::remove(m_gui_observers.begin(), m_gui_observers.end(), observer),
-        m_gui_observers.end());
+    std::erase(m_gui_observers, observer);
 }
 
 void GuiSdl::attach_debugger([[maybe_unused]] std::shared_ptr<Debugger<u16, 16>> debugger)
@@ -79,7 +77,7 @@ void GuiSdl::toggle_sprite_debug()
 void GuiSdl::init()
 {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error initializing SDL: %s", SDL_GetError());
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error initializing SDL: %s", SDL_GetError()); // NOLINT(*-pro-type-vararg)
         exit(1);
     }
 
@@ -90,27 +88,27 @@ void GuiSdl::init()
         s_scaled_width,
         s_scaled_height,
         SDL_WINDOW_RESIZABLE);
-    if (!m_win) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error creating SDL window: %s", SDL_GetError());
+    if (m_win == nullptr) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error creating SDL window: %s", SDL_GetError()); // NOLINT(*-pro-type-vararg)
         exit(1);
     }
 
     m_rend = SDL_CreateRenderer(m_win, -1, SDL_RENDERER_ACCELERATED);
 
-    if (!m_rend) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error creating SDL renderer: %s", SDL_GetError());
+    if (m_rend == nullptr) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error creating SDL renderer: %s", SDL_GetError()); // NOLINT(*-pro-type-vararg)
         exit(1);
     }
 
     if (SDL_RenderSetScale(m_rend, s_scale, s_scale) != 0) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error setting renderer s_scale in SDL: %s", SDL_GetError());
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error setting renderer s_scale in SDL: %s", SDL_GetError()); // NOLINT(*-pro-type-vararg)
         exit(1);
     }
 
     m_texture = SDL_CreateTexture(m_rend, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STREAMING, s_width, s_height);
 
-    if (!m_texture) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error creating SDL texture: %s", SDL_GetError());
+    if (m_texture == nullptr) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error creating SDL texture: %s", SDL_GetError()); // NOLINT(*-pro-type-vararg)
         exit(1);
     }
 }
@@ -124,7 +122,7 @@ void GuiSdl::update_screen(
     [[maybe_unused]] std::vector<u8> const& tile_map_2,
     std::vector<u8> const& sprite_ram,
     std::vector<u8> const& palette_ram,
-    std::string const& game_window_subtitle)
+    std::string_view const& game_window_subtitle)
 {
     const std::vector<u32> framebuffer = create_framebuffer(lcd_control, tile_ram_1, sprite_ram, palette_ram);
 
@@ -132,13 +130,16 @@ void GuiSdl::update_screen(
     int pitch = 0;
 
     if (SDL_LockTexture(m_texture, nullptr, &pixels, &pitch) != 0) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error while locking SDL texture: %s", SDL_GetError());
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error while locking SDL texture: %s", SDL_GetError()); // NOLINT(*-pro-type-vararg)
         exit(1);
     } else {
         SDL_memcpy(pixels, framebuffer.data(), pitch * s_height);
     }
 
-    const std::string title = game_window_subtitle.empty() ? "Game Boy" : "Game Boy - " + game_window_subtitle;
+    const std::string title_if_missing_subtitle = "Game Boy";
+    const std::string title_if_not_missing_subtitle = "Game Boy - " + std::string(game_window_subtitle);
+
+    const std::string title = game_window_subtitle.empty() ? title_if_missing_subtitle : title_if_not_missing_subtitle;
 
     SDL_SetWindowTitle(m_win, title.c_str());
     SDL_UnlockTexture(m_texture);

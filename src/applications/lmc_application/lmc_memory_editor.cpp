@@ -49,7 +49,7 @@ void LmcMemoryEditor::draw(char const* title, bool* p_open)
                 ImGui::TableNextRow();
                 for (std::size_t col = 0; col < s_cols; ++col) {
                     ImGui::TableSetColumnIndex(col);
-                    strncpy(m_values[address], std::format("{}", memory[address].underlying()).c_str(), s_max_chars);
+                    strncpy(m_values[address], std::format("{}", memory.at(address).underlying()).c_str(), s_max_chars);
                     ImGui::InputText(std::format("{}", address).c_str(), m_values[address], //
                         IM_ARRAYSIZE(m_values[address]), ImGuiInputTextFlags_CharsDecimal | ImGuiInputTextFlags_ReadOnly);
                     //                        if (ImGui::IsItemDeactivatedAfterEdit()) {

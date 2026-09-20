@@ -115,7 +115,7 @@ void LmcApplicationSession::run()
 {
     m_cpu->start();
 
-    cyc cycles;
+    cyc cycles = 0;
 
 #ifdef __EMSCRIPTEN__
     loop = [&] {
@@ -244,8 +244,8 @@ void LmcApplicationSession::setup_cpu()
 void LmcApplicationSession::setup_debugging()
 {
     m_debug_container = std::make_shared<DebugContainer<Address, Data, 10>>();
-    m_debug_container->add_register(RegisterDebugContainer<Data>("A", [&]() { return m_cpu->a(); }));
-    m_debug_container->add_pc([&]() { return m_cpu->pc(); });
+    m_debug_container->add_register(RegisterDebugContainer<Data>("A", [&]() -> Data { return m_cpu->a(); }));
+    m_debug_container->add_pc([&]() -> Address { return m_cpu->pc(); });
     m_debug_container->add_flag_register(FlagRegisterDebugContainer<Data>(
         "F",
         [&]() -> Data { return Data(m_cpu->f()); },
@@ -273,11 +273,11 @@ auto LmcApplicationSession::disassemble_program() -> std::vector<DisassembledLin
     std::vector<std::string> disassembled_program = split(ss, "\n");
 
     disassembled_program.erase(
-        std::remove_if(disassembled_program.begin(), disassembled_program.end(), [](std::string const& s) -> bool { return s.empty(); }));
+        std::ranges::remove_if(disassembled_program, [](std::string const& s) -> bool { return s.empty(); }).begin());
 
     std::vector<DisassembledLine<Address, 10>> lines;
-    std::transform(disassembled_program.begin(), disassembled_program.end(), std::back_inserter(lines),
-        [](std::string const& line) -> DisassembledLine<Address, 10> { return DisassembledLine<Address, 10>(line); });
+    std::ranges::transform(disassembled_program, std::back_inserter(lines),
+                           [](std::string const& line) -> DisassembledLine<Address, 10> { return DisassembledLine<Address, 10>(line); });
 
     return lines;
 }

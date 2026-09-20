@@ -25,6 +25,7 @@
 #include <cstdlib>
 #include <format>
 #include <string>
+#include <string_view>
 #include <unordered_map>
 #include <utility>
 
@@ -103,9 +104,7 @@ void GuiImgui::add_ui_observer(UiObserver& observer)
 
 void GuiImgui::remove_ui_observer(UiObserver* observer)
 {
-    m_gui_observers.erase(
-        std::remove(m_gui_observers.begin(), m_gui_observers.end(), observer),
-        m_gui_observers.end());
+    std::erase(m_gui_observers, observer);
 }
 
 void GuiImgui::notify_gui_observers(const GuiRequest& request) const
@@ -138,7 +137,7 @@ void GuiImgui::attach_logger(std::shared_ptr<Logger> logger)
 void GuiImgui::init()
 {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error initializing SDL video: %s", SDL_GetError());
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error initializing SDL video: %s", SDL_GetError()); // NOLINT(*-pro-type-vararg)
         exit(1);
     }
 
@@ -183,24 +182,24 @@ void GuiImgui::init()
         s_scaled_width,
         s_scaled_height,
         SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_MAXIMIZED);
-    if (!m_win) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error creating SDL window: %s", SDL_GetError());
+    if (m_win == nullptr) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error creating SDL window: %s", SDL_GetError()); // NOLINT(*-pro-type-vararg)
         exit(1);
     }
 
     SDL_SetWindowMinimumSize(m_win, s_width, s_height);
 
     m_gl_context = SDL_GL_CreateContext(m_win);
-    if (!m_gl_context) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error creating context: %s", SDL_GetError());
+    if (m_gl_context == nullptr) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error creating context: %s", SDL_GetError()); // NOLINT(*-pro-type-vararg)
         exit(1);
     }
     SDL_GL_MakeCurrent(m_win, m_gl_context);
     SDL_GL_SetSwapInterval(1);
 
 #ifndef __EMSCRIPTEN__
-    if (!gladLoadGLLoader(static_cast<GLADloadproc>(SDL_GL_GetProcAddress))) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error initializing glad");
+    if (gladLoadGLLoader(SDL_GL_GetProcAddress) == 0) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error initializing glad"); // NOLINT(*-pro-type-vararg)
         exit(1);
     }
 #endif
@@ -223,12 +222,12 @@ void GuiImgui::init()
     glClearColor(background.x, background.y, background.z, background.w);
 }
 
-void GuiImgui::update_screen(const bool is_awaiting_input, std::string const& game_window_subtitle)
+void GuiImgui::update_screen(const bool is_awaiting_input, std::string_view const& game_window_subtitle)
 {
     render(is_awaiting_input, game_window_subtitle);
 }
 
-void GuiImgui::render(const bool is_awaiting_input, std::string const& game_window_subtitle)
+void GuiImgui::render(const bool is_awaiting_input, std::string_view const& game_window_subtitle)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -329,36 +328,45 @@ void GuiImgui::render_code_editor()
     m_code_editor.draw("Code editor", &m_show_code_editor);
 }
 
-void GuiImgui::render_terminal_window(const bool is_awaiting_input, std::string const& game_window_subtitle)
+void GuiImgui::render_terminal_window(const bool is_awaiting_input, std::string_view const& game_window_subtitle)
 {
-    const std::string prefix = "Program";
-    const std::string id = "###" + prefix; // NOLINT(*-identifier-length)
+    constexpr std::string_view title = "Program";
+    constexpr std::string_view id = "###Program";
+
     std::string terminal_status;
     if (is_awaiting_input) {
         terminal_status = " (awaiting input)";
     }
-    const std::string title = game_window_subtitle.empty() ? prefix + terminal_status + id
-                                                           : prefix + " - " + game_window_subtitle + terminal_status + id;
 
-    m_terminal.draw(title.c_str(), is_awaiting_input, m_output, &m_show_terminal);
+    std::string imgui_title;
+    imgui_title.reserve(title.size() + terminal_status.size() + game_window_subtitle.size() + id.size() + 3);
+
+    imgui_title.append(title);
+    if (!game_window_subtitle.empty()) {
+        imgui_title.append(" - ").append(game_window_subtitle);
+    }
+    imgui_title.append(terminal_status);
+    imgui_title.append(id);
+
+    m_terminal.draw(imgui_title.c_str(), is_awaiting_input, m_output, &m_show_terminal);
 }
 
 void GuiImgui::render_game_info_window()
 {
     ImGui::Begin("Program info", &m_show_game_info);
 
-    ImGui::Text("Avg %.3f ms/frame (%.1f FPS)", 1000.0F / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    ImGui::Text("Avg %.3f ms/frame (%.1f FPS)", 1000.0F / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate); // NOLINT(*-pro-type-vararg)
 
     ImGui::Separator();
 
     if (ImGui::Button("Run")) {
         notify_gui_observers({ .m_type = GuiRequestType::RUN, .m_string_payload = "" });
     }
-    ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+    ImGui::SameLine(0.0F, ImGui::GetStyle().ItemInnerSpacing.x);
     if (ImGui::Button("Pause")) {
         notify_gui_observers({ .m_type = GuiRequestType::PAUSE, .m_string_payload = "" });
     }
-    ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+    ImGui::SameLine(0.0F, ImGui::GetStyle().ItemInnerSpacing.x);
     if (ImGui::Button("Stop")) {
         notify_gui_observers({ .m_type = GuiRequestType::STOP, .m_string_payload = "" });
     }

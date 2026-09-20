@@ -55,7 +55,7 @@ private:
 
     std::vector<InterruptObserver*> m_interrupt_observers;
 
-    void notify_interrupt_observers(Interrupts interrupt);
+    void notify_interrupt_observers(Interrupts interrupt) const;
 };
 
 }

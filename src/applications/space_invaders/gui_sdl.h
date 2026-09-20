@@ -6,7 +6,7 @@
 #include <SDL_video.h>
 #include <cstddef>
 #include <memory>
-#include <string>
+#include <string_view>
 #include <vector>
 
 namespace emu::applications::space_invaders {
@@ -38,7 +38,7 @@ public:
 
     void remove_gui_observer(GuiObserver* observer) override;
 
-    void update_screen(std::vector<u8> const& vram, std::string const& game_window_subtitle) override;
+    void update_screen(std::vector<u8> const& vram, std::string_view const& game_window_subtitle) override;
 
     void update_debug_only() override;
 

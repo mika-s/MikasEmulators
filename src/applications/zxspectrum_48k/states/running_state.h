@@ -3,7 +3,7 @@
 #include "crosscutting/typedefs.h"
 #include "zxspectrum_48k/interfaces/state.h"
 #include <memory>
-#include <string>
+#include <string_view>
 #include <vector>
 
 namespace emu::applications::zxspectrum_48k {
@@ -44,7 +44,7 @@ public:
     void perform(cyc& cycles) override;
 
 private:
-    static inline std::string s_game_window_subtitle = "";
+    static constexpr std::string_view s_game_window_subtitle = "";
     static constexpr unsigned int s_rst_7_z80 = 0xff;
 
     // Game loop - begin

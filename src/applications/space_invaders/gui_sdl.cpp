@@ -102,7 +102,7 @@ void GuiSdl::init()
     }
 }
 
-void GuiSdl::update_screen(std::vector<u8> const& vram, std::string const& game_window_subtitle)
+void GuiSdl::update_screen(std::vector<u8> const& vram, std::string_view const& game_window_subtitle)
 {
     const std::vector<u32> framebuffer = create_framebuffer(vram);
 
@@ -116,7 +116,10 @@ void GuiSdl::update_screen(std::vector<u8> const& vram, std::string const& game_
 
     SDL_memcpy(pixels, framebuffer.data(), static_cast<std::size_t>(pitch * s_height));
 
-    const std::string title = game_window_subtitle.empty() ? "Space Invaders" : "Space Invaders - " + game_window_subtitle;
+    const std::string title_if_missing_subtitle = "Space Invaders";
+    const std::string title_if_not_missing_subtitle = "Space Invaders - " + std::string(game_window_subtitle);
+
+    const std::string title = game_window_subtitle.empty() ? title_if_missing_subtitle : title_if_not_missing_subtitle;
 
     SDL_SetWindowTitle(m_win, title.c_str());
     SDL_UnlockTexture(m_texture);

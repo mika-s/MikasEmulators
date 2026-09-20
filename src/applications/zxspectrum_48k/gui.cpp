@@ -15,7 +15,7 @@ void Gui::create_table()
 
 void Gui::draw_borders(Framebuffer& framebuffer, const u8 border_color)
 {
-    const Color color = s_ordinary_colors[border_color];
+    const Color color = s_ordinary_colors.at(border_color);
 
     for (int row = 0; row < s_height; row++) {
         for (int col = 0; col < s_width_both_borders / 2; col++) {

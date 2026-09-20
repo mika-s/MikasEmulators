@@ -4,7 +4,7 @@
 #include "ui.h"
 #include <cstddef>
 #include <memory>
-#include <string>
+#include <string_view>
 #include <vector>
 
 namespace emu::applications::lmc {
@@ -44,7 +44,7 @@ public:
 
     void remove_ui_observer(UiObserver* observer) override;
 
-    void update_screen(bool is_awaiting_input, std::string const& game_window_subtitle) override;
+    void update_screen(bool is_awaiting_input, std::string_view const& game_window_subtitle) override;
 
     void update_debug_only(bool is_awaiting_input) override;
 

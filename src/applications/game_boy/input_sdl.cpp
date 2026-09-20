@@ -18,9 +18,7 @@ void InputSdl::add_io_observer(KeyObserver& observer)
 
 void InputSdl::remove_io_observer(KeyObserver* observer)
 {
-    m_io_observers.erase(
-        std::remove(m_io_observers.begin(), m_io_observers.end(), observer),
-        m_io_observers.end());
+    std::erase(m_io_observers, observer);
 }
 
 void InputSdl::notify_io_observers(IoRequest request) const
@@ -37,9 +35,7 @@ void InputSdl::add_interrupt_observer(InterruptObserver& observer)
 
 void InputSdl::remove_interrupt_observer(InterruptObserver* observer)
 {
-    m_interrupt_observers.erase(
-        std::remove(m_interrupt_observers.begin(), m_interrupt_observers.end(), observer),
-        m_interrupt_observers.end());
+    std::erase(m_interrupt_observers, observer);
 }
 
 void InputSdl::read(GuiIo& gui_io, const std::shared_ptr<MemoryMappedIoForGameBoy> memory_mapped_io)

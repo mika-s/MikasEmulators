@@ -266,7 +266,7 @@ void GameBoySession::key_pressed(IoRequest request)
     }
 }
 
-void GameBoySession::interrupt(Interrupts interrupt)
+void GameBoySession::interrupt(const Interrupts interrupt)
 {
     m_memory_mapped_io->interrupt(interrupt);
 
@@ -319,11 +319,11 @@ auto GameBoySession::disassemble_program() const -> std::vector<DisassembledLine
     std::vector<std::string> disassembled_program = split(ss, "\n");
 
     disassembled_program.erase(
-        std::remove_if(disassembled_program.begin(), disassembled_program.end(), [](std::string const& s) -> bool { return s.empty(); }));
+        std::ranges::remove_if(disassembled_program, [](std::string const& s) -> bool { return s.empty(); }).begin());
 
     std::vector<DisassembledLine<u16, 16>> lines;
-    std::transform(disassembled_program.begin(), disassembled_program.end(), std::back_inserter(lines),
-        [](std::string const& line) -> DisassembledLine<u16, 16> { return DisassembledLine<u16, 16>(line); });
+    std::ranges::transform(disassembled_program, std::back_inserter(lines),
+                           [](std::string const& line) -> DisassembledLine<u16, 16> { return DisassembledLine<u16, 16>(line); });
 
     return lines;
 }

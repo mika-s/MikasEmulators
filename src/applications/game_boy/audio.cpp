@@ -23,7 +23,7 @@ Audio::Audio(
 {
 
     if (SDL_Init(SDL_INIT_AUDIO) != 0) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error initializing SDL audio: %s", SDL_GetError());
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error initializing SDL audio: %s", SDL_GetError()); // NOLINT(*-pro-type-vararg)
         exit(1);
     }
 
@@ -45,7 +45,7 @@ Audio::Audio(
         nullptr,
         0);
     if (m_audio_device == 0) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error opening audio device: %s", SDL_GetError());
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error opening audio device: %s", SDL_GetError()); // NOLINT(*-pro-type-vararg)
         exit(1);
     }
     SDL_PauseAudioDevice(m_audio_device, 0);
@@ -67,7 +67,7 @@ void Audio::handle_sound(const bool is_sound_enabled, std::vector<Voice>& voices
     const std::vector<i16> buffer = m_sound_chip.next_tick(voices);
 
     for (int i = 0; i < s_samples_per_frame; i++) {
-        const u16 sample = buffer[s_resampling_ratio * static_cast<float>(i)] * m_volume * (m_is_muted ? 0 : 1);
+        const u16 sample = buffer.at(s_resampling_ratio * static_cast<float>(i)) * m_volume * (m_is_muted ? 0 : 1);
         SDL_QueueAudio(m_audio_device, &sample, 1 * sizeof(i16));
     }
 }

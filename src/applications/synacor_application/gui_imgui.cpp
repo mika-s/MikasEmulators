@@ -14,6 +14,7 @@
 #include <cstdlib>
 #include <format>
 #include <string>
+#include <string_view>
 #include <unordered_map>
 #include <utility>
 
@@ -196,12 +197,12 @@ void GuiImgui::init()
     glClearColor(background.x, background.y, background.z, background.w);
 }
 
-void GuiImgui::update_screen(const bool is_awaiting_input, std::string const& game_window_subtitle)
+void GuiImgui::update_screen(const bool is_awaiting_input, std::string_view const& game_window_subtitle)
 {
     render(is_awaiting_input, game_window_subtitle);
 }
 
-void GuiImgui::render(const bool is_awaiting_input, std::string const& game_window_subtitle)
+void GuiImgui::render(const bool is_awaiting_input, std::string_view const& game_window_subtitle)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -293,18 +294,27 @@ void GuiImgui::update_debug_only(const bool is_awaiting_input)
     render(is_awaiting_input, "Stepping");
 }
 
-void GuiImgui::render_terminal_window(const bool is_awaiting_input, std::string const& game_window_subtitle)
+void GuiImgui::render_terminal_window(const bool is_awaiting_input, std::string_view const& game_window_subtitle)
 {
-    const std::string prefix = "Program";
-    const std::string id = "###" + prefix; // NOLINT(*-identifier-length)
+    constexpr std::string_view title = "Program";
+    constexpr std::string_view id = "###Program";
+
     std::string terminal_status;
     if (is_awaiting_input) {
         terminal_status = " (awaiting input)";
     }
-    const std::string title = game_window_subtitle.empty() ? prefix + terminal_status + id
-                                                           : prefix + " - " + game_window_subtitle + terminal_status + id;
 
-    m_terminal.draw(title.c_str(), is_awaiting_input, m_output, &m_show_terminal);
+    std::string imgui_title;
+    imgui_title.reserve(title.size() + terminal_status.size() + game_window_subtitle.size() + id.size() + 3);
+
+    imgui_title.append(title);
+    if (!game_window_subtitle.empty()) {
+        imgui_title.append(" - ").append(game_window_subtitle);
+    }
+    imgui_title.append(terminal_status);
+    imgui_title.append(id);
+
+    m_terminal.draw(imgui_title.c_str(), is_awaiting_input, m_output, &m_show_terminal);
 }
 
 void GuiImgui::render_game_info_window()

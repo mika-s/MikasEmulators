@@ -7,7 +7,7 @@
 #include "crosscutting/util/byte_util.h"
 #include <cstddef>
 #include <memory>
-#include <string>
+#include <string_view>
 #include <tuple>
 #include <vector>
 
@@ -60,7 +60,7 @@ public:
         std::vector<u8> const& sprite_ram,
         std::vector<u8> const& palette_ram,
         bool is_screen_flipped,
-        std::string const& game_window_subtitle
+        std::string_view const& game_window_subtitle
     ) = 0;
 
     virtual void update_debug_only() = 0;
