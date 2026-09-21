@@ -84,7 +84,7 @@ auto TilemapPane::prepare_framebuffer(const unsigned int palette_idx) -> bool
 
     for (unsigned int row = 0; row < rows; ++row) {
         for (unsigned int col = 0; col < tiles_per_row; ++col) {
-            std::shared_ptr<Tile> const& tile = tiles.at(row * tiles_per_row + col);
+            std::shared_ptr<Tile> const& tile = tiles.at((row * tiles_per_row) + col);
 
             if (!tile->is_initialized()) {
                 return false;

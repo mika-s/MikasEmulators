@@ -56,7 +56,7 @@ public:
 
     void remove_in_observer(InObserver* observer);
 
-    auto memory() -> EmulatorMemory<Address, RawData>&;
+    auto memory() const -> EmulatorMemory<Address, RawData>&;
 
     [[nodiscard]] auto pc() const -> Address;
 
@@ -78,7 +78,7 @@ private:
 
     auto get_next_value() -> RawData;
 
-    void notify_out_observers(Data character);
+    void notify_out_observers(Data character) const;
 
     void notify_in_observers() const;
 

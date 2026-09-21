@@ -13,7 +13,7 @@ auto is_bit_set(u8 variable, unsigned int bit_position) -> bool;
 template<std::size_t M>
 auto is_bit_set(UInteger<M> variable, unsigned int bit_position) -> bool
 {
-    return (variable.underlying() >> bit_position) & 1;
+    return variable.underlying() >> bit_position & 1;
 }
 
 void set_bit(u8& variable, unsigned int bit_position);

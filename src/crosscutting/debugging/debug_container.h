@@ -176,8 +176,8 @@ public:
     MemoryDebugContainer() = default;
 
     explicit MemoryDebugContainer(std::function<std::vector<D>()> value_retriever)
+        : m_value_retriever(std::move(value_retriever))
     {
-        m_value_retriever = std::move(value_retriever);
     }
 
     [[nodiscard]] auto value() const -> std::vector<D>
@@ -190,7 +190,7 @@ private:
 };
 
 /**
- * Contains the data that is used in the debugging panes.
+ * Contains the data used in the debugging panes.
  *
  * @tparam A is the address type
  * @tparam D is the data type

@@ -164,7 +164,6 @@ void Disassembler::print_next_instruction()
         break;
     default:
         m_ostream << "db " << hexify_wo_0x(static_cast<u16>(m_opcode.underlying()));
-        //throw UnrecognizedOpcodeException(static_cast<u16>(m_opcode.underlying()));
     }
 
     m_ostream << "\n";

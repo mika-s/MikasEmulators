@@ -130,7 +130,7 @@ auto SpritemapPane::prepare_framebuffer_for_rotation(
 
     for (unsigned int row = 0; row < rows; ++row) {
         for (unsigned int col = 0; col < sprites_per_row; ++col) {
-            std::shared_ptr<Sprite> const& sprite = sprites.at(row * sprites_per_row + col);
+            std::shared_ptr<Sprite> const& sprite = sprites.at((row * sprites_per_row) + col);
 
             if (!sprite->is_initialized()) {
                 return false;
@@ -157,7 +157,7 @@ void SpritemapPane::render_image(const u32 tile_texture) const
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, //
-        m_framebuffers[m_chosen_rotation][m_chosen_palette_idx].to_output_vector().data());
+        m_framebuffers.at(m_chosen_rotation).at(m_chosen_palette_idx).to_output_vector().data());
     glBindTexture(GL_TEXTURE_2D, 0);
 
     constexpr auto image_size = ImVec2(scaled_width, scaled_height);

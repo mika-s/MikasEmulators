@@ -44,9 +44,7 @@ void Cpu::add_out_observer(OutObserver& observer)
 
 void Cpu::remove_out_observer(OutObserver* observer)
 {
-    m_out_observers.erase(
-        std::remove(m_out_observers.begin(), m_out_observers.end(), observer),
-        m_out_observers.end());
+    std::erase(m_out_observers, observer);
 }
 
 void Cpu::add_in_observer(InObserver& observer)
@@ -56,9 +54,7 @@ void Cpu::add_in_observer(InObserver& observer)
 
 void Cpu::remove_in_observer(InObserver* observer)
 {
-    m_in_observers.erase(
-        std::remove(m_in_observers.begin(), m_in_observers.end(), observer),
-        m_in_observers.end());
+    std::erase(m_in_observers, observer);
 }
 
 auto Cpu::can_run_next_instruction() const -> bool
@@ -85,7 +81,7 @@ void Cpu::stop()
 
 void Cpu::next_instruction()
 {
-    Data raw_opcode = get_next_value();
+    Data const raw_opcode = get_next_value();
     const Opcode opcode = find_opcode(raw_opcode);
 
     print_debug(raw_opcode);
@@ -127,42 +123,42 @@ void Cpu::next_instruction()
     }
 }
 
-Data Cpu::get_next_value()
+auto Cpu::get_next_value() -> Data
 {
     return m_memory.read(m_pc++);
 }
 
-EmulatorMemory<Address, Data>& Cpu::memory()
+auto Cpu::memory() const -> EmulatorMemory<Address, Data>&
 {
     return m_memory;
 }
 
-Data Cpu::a() const
+auto Cpu::a() const -> Data
 {
     return m_acc_reg;
 }
 
-u8 Cpu::f() const
+auto Cpu::f() const -> u8
 {
     return m_flag_reg.to_u8();
 }
 
-Address Cpu::pc() const
+auto Cpu::pc() const -> Address
 {
     return m_pc;
 }
 
-void Cpu::input(Data value)
+void Cpu::input(const Data value)
 {
     m_acc_reg = value;
 }
 
-Address Cpu::find_argument(Data raw_opcode)
+auto Cpu::find_argument(const Data raw_opcode) -> Address
 {
     return Address(raw_opcode.underlying());
 }
 
-Opcode Cpu::find_opcode(Data raw_opcode)
+auto Cpu::find_opcode(const Data raw_opcode) -> Opcode
 {
     if (Data(0) <= raw_opcode && raw_opcode <= Data(99)) {
         return Opcode::HLT;
@@ -191,21 +187,21 @@ Opcode Cpu::find_opcode(Data raw_opcode)
     }
 }
 
-void Cpu::notify_out_observers(Data acc_reg, OutType out_type)
+void Cpu::notify_out_observers(const Data acc_reg, const OutType out_type) const
 {
     for (OutObserver* observer : m_out_observers) {
         observer->out_changed(acc_reg, out_type);
     }
 }
 
-void Cpu::notify_in_observers()
+void Cpu::notify_in_observers() const
 {
     for (InObserver* observer : m_in_observers) {
         observer->in_requested();
     }
 }
 
-void Cpu::print_debug([[maybe_unused]] Data opcode)
+void Cpu::print_debug([[maybe_unused]] Data opcode) const
 {
     if (false) {
         std::cout << "pc=" << m_pc

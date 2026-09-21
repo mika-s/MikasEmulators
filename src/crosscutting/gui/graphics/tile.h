@@ -16,6 +16,11 @@ public:
 
     virtual ~Tile() = default;
 
+    Tile(const Tile&) = delete;
+    auto operator=(const Tile&) -> Tile& = delete;
+    Tile(Tile&&) = delete;
+    auto operator=(Tile&&) -> Tile& = delete;
+
     virtual auto is_initialized() -> bool
     {
         return true;

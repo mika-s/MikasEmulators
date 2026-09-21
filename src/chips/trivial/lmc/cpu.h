@@ -57,7 +57,7 @@ public:
 
     void remove_in_observer(InObserver* observer);
 
-    auto memory() -> EmulatorMemory<Address, Data>&;
+    auto memory() const -> EmulatorMemory<Address, Data>&;
 
     [[nodiscard]] auto a() const -> Data;
 
@@ -85,10 +85,10 @@ private:
 
     static auto find_opcode(Data raw_opcode) -> Opcode;
 
-    void notify_out_observers(Data acc_reg, OutType out_type);
+    void notify_out_observers(Data acc_reg, OutType out_type) const;
 
-    void notify_in_observers();
+    void notify_in_observers() const;
 
-    void print_debug(Data opcode);
+    void print_debug(Data opcode) const;
 };
 }

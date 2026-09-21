@@ -150,9 +150,9 @@ private:
                                 if (m_debug_container->is_decimal()) {
                                     std::stringstream ss;
                                     ss << address;
-                                    m_logger->info("Removing breakpoint: %s", ss.str().c_str());
+                                    m_logger->info("Removing breakpoint: %s", ss.str().c_str()); // NOLINT(*-pro-type-vararg)
                                 } else {
-                                    m_logger->info("Removing breakpoint: 0x%04x", address);
+                                    m_logger->info("Removing breakpoint: 0x%04x", address); // NOLINT(*-pro-type-vararg)
                                 }
                                 ImGui::PopID();
                                 break;
@@ -177,14 +177,14 @@ private:
     {
         ImGui::Checkbox("Follow PC", &m_is_following_pc);
         if (m_is_following_pc != m_is_following_pc_previous) {
-            m_logger->info(m_is_following_pc ? "Following PC" : "Stop following PC");
+            m_logger->info(m_is_following_pc ? "Following PC" : "Stop following PC"); // NOLINT(*-pro-type-vararg)
         }
         m_is_following_pc_previous = m_is_following_pc;
         ImGui::SameLine();
 
         if (ImGui::Button("Go to PC")) {
             m_is_going_to_pc = true;
-            m_logger->info("Going to PC");
+            m_logger->info("Going to PC"); // NOLINT(*-pro-type-vararg)
         }
         ImGui::SameLine();
 
@@ -194,9 +194,9 @@ private:
             if (m_debug_container->is_decimal()) {
                 std::stringstream ss;
                 ss << m_address_to_goto;
-                m_logger->info("Going to address: %s", m_address_to_goto);
+                m_logger->info("Going to address: %s", m_address_to_goto); // NOLINT(*-pro-type-vararg)
             } else {
-                m_logger->info("Going to address: 0x%04x", m_address_to_goto);
+                m_logger->info("Going to address: 0x%04x", m_address_to_goto); // NOLINT(*-pro-type-vararg)
             }
         }
         ImGui::SameLine();
@@ -245,18 +245,18 @@ private:
                             if (m_debug_container->is_decimal()) {
                                 std::stringstream ss;
                                 ss << address;
-                                m_logger->info("Removing breakpoint: %s", ss.str().c_str());
+                                m_logger->info("Removing breakpoint: %s", ss.str().c_str()); // NOLINT(*-pro-type-vararg)
                             } else {
-                                m_logger->info("Removing breakpoint: 0x%04x", address);
+                                m_logger->info("Removing breakpoint: 0x%04x", address); // NOLINT(*-pro-type-vararg)
                             }
                         } else {
                             m_debugger->add_breakpoint(address, Breakpoint<A, B>(line));
                             if (m_debug_container->is_decimal()) {
                                 std::stringstream ss;
                                 ss << address;
-                                m_logger->info("Adding breakpoint: %s", ss.str().c_str());
+                                m_logger->info("Adding breakpoint: %s", ss.str().c_str()); // NOLINT(*-pro-type-vararg)
                             } else {
-                                m_logger->info("Adding breakpoint: 0x%04x", address);
+                                m_logger->info("Adding breakpoint: 0x%04x", address); // NOLINT(*-pro-type-vararg)
                             }
                         }
                     }

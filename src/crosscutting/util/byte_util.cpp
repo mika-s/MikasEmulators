@@ -6,7 +6,7 @@ namespace emu::util::byte {
 
 auto is_bit_set(const u8 variable, const unsigned int bit_position) -> bool
 {
-    return (variable >> bit_position) & 1;
+    return (variable >> bit_position & 1) != 0;
 }
 
 void set_bit(u8& variable, const unsigned int bit_position)
@@ -70,7 +70,7 @@ auto carried_out_of(const unsigned int bit_position, const u16 a, const u16 b, c
     const i32 result = a + b + (cf ? 1 : 0);
     const i32 carry = result ^ a ^ b;
 
-    return carry & (1 << (bit_position + 1));
+    return (carry & 1 << (bit_position + 1)) != 0;
 }
 
 auto borrow_from(const unsigned int bit_position, const u16 a, const u16 b, const bool cf) -> bool
@@ -78,7 +78,7 @@ auto borrow_from(const unsigned int bit_position, const u16 a, const u16 b, cons
     const i32 result = a - b - (cf ? 1 : 0);
     const i32 carry = result ^ a ^ b;
 
-    return carry & (1 << bit_position);
+    return (carry & 1 << bit_position) != 0;
 }
 
 TEST_CASE("crosscutting: byte-util")

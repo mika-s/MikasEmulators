@@ -31,6 +31,9 @@ using emu::util::string::hexify;
 
 Z80Format::Z80Format(std::string const& file_path)
     : m_file_path(file_path)
+    , m_interrupt_mode(InterruptMode::ZERO)
+    , m_joystick_type(JoystickType::UserDefined)
+    , m_hardware_mode(HardwareMode::_48k)
 {
     m_raw_data.add(read_file_into_vector(file_path));
     parse();
@@ -246,7 +249,7 @@ void Z80Format::read_block_v1(EmulatorMemory<u16, u8>& memory)
     const u8 eb3 = get_next_byte();
     const u8 eb4 = get_next_byte();
 
-    if (!(eb1 == 0x00 && eb2 == 0xed && eb3 == 0xed && eb4 == 0x00)) {
+    if (eb1 != 0x00 || eb2 != 0xed || eb3 != 0xed || eb4 != 0x00) {
         throw std::invalid_argument(
             std::format(
                 "The four final bytes were not 0x00 0xed 0xed 0x00, but {} {} {} {}",

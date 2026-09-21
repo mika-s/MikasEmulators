@@ -16,6 +16,11 @@ public:
 
     virtual ~Sprite() = default;
 
+    Sprite(const Sprite&) = delete;
+    auto operator=(const Sprite&) -> Sprite& = delete;
+    Sprite(Sprite&&) = delete;
+    auto operator=(Sprite&&) -> Sprite& = delete;
+
     virtual auto is_initialized() -> bool
     {
         return true;

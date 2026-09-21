@@ -83,9 +83,7 @@ void Frontend::run_program(Options const& options)
     } else {
         const std::optional<std::string> application_opt = options.application();
         if (!application_opt.has_value()) {
-            throw InvalidProgramArgumentsException(
-                "Game or program not provided",
-                Frontend::print_run_usage);
+            throw InvalidProgramArgumentsException("Game or program not provided", print_run_usage);
         }
 
         std::string const& program = application_opt.value();

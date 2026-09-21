@@ -25,6 +25,6 @@ private:
     static constexpr float waveform_width = 80.0F;
 
     std::shared_ptr<DebugContainer<u16, u8, 16>> m_debug_container;
-    bool m_is_debug_container_set;
+    bool m_is_debug_container_set { false };
 };
 }

@@ -41,9 +41,7 @@ void Cpu::add_out_observer(OutObserver& observer)
 
 void Cpu::remove_out_observer(OutObserver* observer)
 {
-    m_out_observers.erase(
-        std::remove(m_out_observers.begin(), m_out_observers.end(), observer),
-        m_out_observers.end());
+    std::erase(m_out_observers, observer);
 }
 
 void Cpu::add_in_observer(InObserver& observer)
@@ -53,12 +51,10 @@ void Cpu::add_in_observer(InObserver& observer)
 
 void Cpu::remove_in_observer(InObserver* observer)
 {
-    m_in_observers.erase(
-        std::remove(m_in_observers.begin(), m_in_observers.end(), observer),
-        m_in_observers.end());
+    std::erase(m_in_observers, observer);
 }
 
-bool Cpu::can_run_next_instruction() const
+auto Cpu::can_run_next_instruction() const -> bool
 {
     return m_pc < Address(m_memory.size()) && !m_is_halted;
 }
@@ -220,7 +216,7 @@ auto Cpu::get_next_value() -> RawData
     return m_memory.read(m_pc++);
 }
 
-auto Cpu::memory() -> EmulatorMemory<Address, RawData>&
+auto Cpu::memory() const -> EmulatorMemory<Address, RawData>&
 {
     return m_memory;
 }
@@ -240,7 +236,7 @@ void Cpu::input([[maybe_unused]] Data value)
     //    m_r0 = value;
 }
 
-void Cpu::notify_out_observers(const Data character)
+void Cpu::notify_out_observers(const Data character) const
 {
     for (OutObserver* observer : m_out_observers) {
         observer->out_changed(character);

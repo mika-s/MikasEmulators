@@ -38,7 +38,7 @@ void WaveformPane::draw(char const* title, bool* p_open) const
             float samples_as_float[waveform.samples().size()]; // NOLINT
             float max = 0.0F;
             for (std::size_t sample_idx = 0; sample_idx < samples.size(); ++sample_idx) {
-                const u8 sample = samples[sample_idx];
+                const u8 sample = samples.at(sample_idx);
                 samples_as_float[sample_idx] = static_cast<float>(sample);
                 max = std::max<float>(max, sample);
             }
