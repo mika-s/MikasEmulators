@@ -31,9 +31,9 @@ void LmcMemoryEditor::draw(char const* title, bool* p_open)
     }
 
     if (!m_is_debug_container_set) {
-        ImGui::Text("The debug container is not provided this pane.");
+        ImGui::Text("The debug container is not provided this pane."); // NOLINT(*-pro-type-vararg)
     } else if (!m_debug_container->is_memory_set()) {
-        ImGui::Text("Memory is not provided to this pane.");
+        ImGui::Text("Memory is not provided to this pane."); // NOLINT(*-pro-type-vararg)
     } else {
         constexpr ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg //
                                           | ImGuiTableFlags_SizingFixedSame | ImGuiTableFlags_NoHostExtendX;
@@ -45,9 +45,9 @@ void LmcMemoryEditor::draw(char const* title, bool* p_open)
             for (std::size_t col = 0; col < s_cols; ++col) {
                 ImGui::TableSetupColumn(std::format("##lme-col-ts{}", col).c_str(), ImGuiTableColumnFlags_WidthFixed, s_box_width);
             }
-            for (std::size_t row = 0; row < s_rows; ++row) {
+            for (int row = 0; row < s_rows; ++row) {
                 ImGui::TableNextRow();
-                for (std::size_t col = 0; col < s_cols; ++col) {
+                for (int col = 0; col < s_cols; ++col) {
                     ImGui::TableSetColumnIndex(col);
                     strncpy(m_values[address], std::format("{}", memory.at(address).underlying()).c_str(), s_max_chars);
                     ImGui::InputText(std::format("{}", address).c_str(), m_values[address], //

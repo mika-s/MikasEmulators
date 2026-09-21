@@ -30,6 +30,12 @@ public:
         std::shared_ptr<Lcd> lcd,
         Settings settings);
 
+    ~MemoryMappedIoForGameBoy() override = default;
+    MemoryMappedIoForGameBoy(const MemoryMappedIoForGameBoy&) = delete;
+    auto operator=(const MemoryMappedIoForGameBoy&) -> MemoryMappedIoForGameBoy& = delete;
+    MemoryMappedIoForGameBoy(MemoryMappedIoForGameBoy&&) = delete;
+    auto operator=(MemoryMappedIoForGameBoy&&) -> MemoryMappedIoForGameBoy& = delete;
+
     void write(u16 address, u8 value) override;
 
     auto read(u16 address) -> u8 override;

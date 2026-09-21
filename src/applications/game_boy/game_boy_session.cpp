@@ -231,7 +231,7 @@ void GameBoySession::setup_debugging()
     m_gui->attach_logger(m_logger);
 }
 
-void GameBoySession::gui_request(GuiRequest request)
+void GameBoySession::gui_request(const GuiRequest request)
 {
     switch (request.m_type) {
     case GuiRequestType::RUN:

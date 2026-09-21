@@ -67,7 +67,7 @@ void RunningState::perform(cyc& cycles)
             }
             ++cycles;
             if (m_ctx->m_is_in_debug_mode && m_ctx->m_debugger->has_breakpoint(m_ctx->m_cpu->pc())) {
-                m_ctx->m_logger->info("Breakpoint hit: %03d", m_ctx->m_cpu->pc());
+                m_ctx->m_logger->info("Breakpoint hit: %03d", m_ctx->m_cpu->pc()); // NOLINT(*-pro-type-vararg)
                 transition_to_step();
                 return;
             }

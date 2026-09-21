@@ -24,6 +24,11 @@ public:
 
     ~Audio();
 
+    Audio(const Audio&) = delete;
+    auto operator=(const Audio&) -> Audio& = delete;
+    Audio(Audio&&) = delete;
+    auto operator=(Audio&&) -> Audio& = delete;
+
     void handle_sound(bool is_sound_enabled, std::vector<Voice>& voices) const;
 
     void toggle_mute();

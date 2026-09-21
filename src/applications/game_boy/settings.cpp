@@ -15,8 +15,6 @@ using emu::exceptions::InvalidProgramArgumentsException;
 
 auto Settings::from_options(Options const& options) -> Settings
 {
-    using namespace applications::game_boy;
-
     for (const auto&[flag, desc] : options.options()) {
         if (!s_recognized_options.contains(flag)) {
             throw InvalidProgramArgumentsException(std::format("Unknown flag: {}", flag), print_usage);

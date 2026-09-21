@@ -24,9 +24,12 @@ using emu::util::byte::to_u32;
 
 class Ui {
 public:
-    Ui() = default;
-
     virtual ~Ui() = default;
+
+    Ui(const Ui&) = delete;
+    auto operator=(const Ui&) -> Ui& = delete;
+    Ui(Ui&&) = delete;
+    auto operator=(Ui&&) -> Ui& = delete;
 
     virtual void to_terminal(Data acc_reg, OutType out_type) = 0;
 
@@ -49,6 +52,8 @@ public:
     virtual void attach_logger(std::shared_ptr<Logger> logger) = 0;
 
 protected:
+    Ui() = default;
+
     static constexpr float s_scale = 4.0;
     static constexpr int s_width = 224;
     static constexpr int s_height = 256;

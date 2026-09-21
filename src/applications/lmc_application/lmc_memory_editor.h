@@ -24,8 +24,8 @@ public:
 private:
     static constexpr unsigned int s_max_addresses = 100;
     static constexpr unsigned int s_max_chars = 4;
-    static constexpr std::size_t s_rows = 10;
-    static constexpr std::size_t s_cols = 10;
+    static constexpr int s_rows = 10;
+    static constexpr int s_cols = 10;
     static constexpr float s_box_width = 50.0F;
 
     std::shared_ptr<DebugContainer<Address, Data, 10>> m_debug_container;

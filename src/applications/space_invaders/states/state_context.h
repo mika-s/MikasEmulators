@@ -54,6 +54,12 @@ public:
         Governor& governor,
         bool& is_in_debug_mode);
 
+    ~StateContext() = default;
+    StateContext(const StateContext&) = delete;
+    auto operator=(const StateContext&) -> StateContext& = delete;
+    StateContext(StateContext&&) = delete;
+    auto operator=(StateContext&&) -> StateContext& = delete;
+
     bool& m_is_in_debug_mode;
 
     CpuIo& m_cpu_io;

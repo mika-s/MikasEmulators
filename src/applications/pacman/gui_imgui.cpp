@@ -92,14 +92,14 @@ void GuiImgui::attach_logger(std::shared_ptr<Logger> logger)
 void GuiImgui::toggle_tile_debug()
 {
     m_is_tile_debug_enabled = !m_is_tile_debug_enabled;
-    m_logger->info(m_is_tile_debug_enabled ? "Tile debug: on" : "Tile debug: off");
+    m_logger->info(m_is_tile_debug_enabled ? "Tile debug: on" : "Tile debug: off"); // NOLINT(*-pro-type-vararg)
     m_framebuffer.clear();
 }
 
 void GuiImgui::toggle_sprite_debug()
 {
     m_is_sprite_debug_enabled = !m_is_sprite_debug_enabled;
-    m_logger->info(m_is_sprite_debug_enabled ? "Sprite debug: on" : "Sprite debug: off");
+    m_logger->info(m_is_sprite_debug_enabled ? "Sprite debug: on" : "Sprite debug: off"); // NOLINT(*-pro-type-vararg)
     m_framebuffer.clear();
 }
 

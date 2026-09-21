@@ -116,23 +116,25 @@ void Frontend::disassemble(Options const& options)
         if (!opts.contains("cpu")) {
             throw InvalidProgramArgumentsException(
                 "No CPUs provided",
-                Frontend::print_disassemble_usage);
+                print_disassemble_usage);
         }
         std::vector<std::string> const& cpus = opts["cpu"];
         if (cpus.empty()) {
             throw InvalidProgramArgumentsException(
                 "CPU has to be provided on the following format: --cpu=<CPU>",
-                Frontend::print_disassemble_usage);
-        } else if (cpus.size() > 1) {
+                print_disassemble_usage);
+        }
+
+        if (cpus.size() > 1) {
             throw InvalidProgramArgumentsException(
                 "Only one CPU can be provided at a time",
-                Frontend::print_disassemble_usage);
+                print_disassemble_usage);
         }
         std::string const& cpu = cpus.at(0);
         if (!options.path().has_value()) {
             throw InvalidProgramArgumentsException(
                 "Path to a file has to be provided",
-                Frontend::print_disassemble_usage);
+                print_disassemble_usage);
         }
 
         const std::string file_path = options.path().value();
@@ -156,9 +158,9 @@ void Frontend::disassemble(Options const& options)
                 throw InvalidProgramArgumentsException(
                     std::format("Unrecognized format: {}", options.options().at("format").at(0)),
                     print_disassemble_usage);
-            } else {
-                memory.add(read_file_into_vector(file_path));
             }
+
+            memory.add(read_file_into_vector(file_path));
 
             lr35902::Disassembler disassembler(memory, std::cout);
             disassembler.disassemble();
@@ -323,56 +325,74 @@ void Frontend::print_test_usage(std::string const& program_name)
 
 auto Frontend::choose_emulator(std::string const& program, Options const& options) -> std::unique_ptr<Emulator>
 {
-    using namespace applications;
-
     if (program == "pacman") {
         return std::make_unique<pacman::Pacman>(
             pacman::Settings::from_options(options),
             options.gui_type(pacman::print_usage));
-    } else if (program == "zx-spectrum-48k") {
+    }
+
+    if (program == "zx-spectrum-48k") {
         return std::make_unique<zxspectrum_48k::ZxSpectrum48k>(
             zxspectrum_48k::Settings::from_options(options),
             options.gui_type(zxspectrum_48k::print_usage));
-    } else if (program == "prelim") {
+    }
+
+    if (program == "prelim") {
         return std::make_unique<cpm::z80::CpmApplication>("roms/z80/prelim.com");
-    } else if (program == "zexall") {
+    }
+
+    if (program == "zexall") {
         return std::make_unique<cpm::z80::CpmApplication>("roms/z80/zexall.cim");
-    } else if (program == "zexdoc") {
+    }
+
+    if (program == "zexdoc") {
         return std::make_unique<cpm::z80::CpmApplication>("roms/z80/zexdoc.cim");
-    } else if (program == "space_invaders") {
+    }
+
+    if (program == "space_invaders") {
         return std::make_unique<space_invaders::SpaceInvaders>(
             space_invaders::Settings::from_options(options),
             options.gui_type(space_invaders::print_usage));
-    } else if (program == "TST8080") {
+    }
+
+    if (program == "TST8080") {
         return std::make_unique<cpm::i8080::CpmApplication>("roms/8080/TST8080.COM");
-    } else if (program == "8080PRE") {
+    }
+
+    if (program == "8080PRE") {
         return std::make_unique<cpm::i8080::CpmApplication>("roms/8080/8080PRE.COM");
-    } else if (program == "8080EXM") {
+    }
+
+    if (program == "8080EXM") {
         return std::make_unique<cpm::i8080::CpmApplication>("roms/8080/8080EXM.COM");
-    } else if (program == "CPUTEST") {
+    }
+
+    if (program == "CPUTEST") {
         return std::make_unique<cpm::i8080::CpmApplication>("roms/8080/CPUTEST.COM");
-    } else if (program == "game_boy") {
+    }
+
+    if (program == "game_boy") {
         return std::make_unique<game_boy::GameBoy>(
             game_boy::Settings::from_options(options),
             options.gui_type(game_boy::print_usage));
-    } else if (program == "lmc_application") {
+    }
+
+    if (program == "lmc_application") {
         if (options.path().has_value()) {
             return std::make_unique<lmc::LmcApplication>(
                 options.path().value(),
                 options.gui_type(lmc::print_usage));
-        } else {
-            throw InvalidProgramArgumentsException(
-                "You have to specify the path of the file to run",
-                lmc::print_usage);
         }
-    } else if (program == "synacor_application") {
+
+        throw InvalidProgramArgumentsException("You have to specify the path of the file to run",lmc::print_usage);
+    }
+
+    if (program == "synacor_application") {
         return std::make_unique<synacor::SynacorApplication>(
             options.gui_type(synacor::print_usage));
-    } else {
-        throw InvalidProgramArgumentsException(
-            "Illegal program argument when choosing emulator",
-            Frontend::print_run_usage);
     }
+
+    throw InvalidProgramArgumentsException("Illegal program argument when choosing emulator", print_run_usage);
 }
 
 auto Frontend::is_supporting(std::string const& program) -> bool

@@ -17,9 +17,10 @@ MemoryMappedIoForPacman::MemoryMappedIoForPacman(EmulatorMemory<u16, u8>& memory
     , m_is_sound_enabled(false)
     , m_is_aux_board_enabled(false)
     , m_is_screen_flipped(false)
+    , m_dipswitches(0)
     , m_voices({ Voice(), Voice(), Voice() })
+    , m_in0_write(0)
 {
-
     dipswitches(settings);
     board_test(settings);
     cabinet_mode(settings);
@@ -306,72 +307,72 @@ auto MemoryMappedIoForPacman::voices() -> std::vector<Voice>&
 void MemoryMappedIoForPacman::voice1_accumulator(const u8 value, const u16 address)
 {
     const u8 sample = address - s_address_voice1_sound_beginning;
-    m_voices[0].accumulator(m_voices[0].accumulator() & ~(0x0f << (sample * 4)));
-    m_voices[0].accumulator(m_voices[0].accumulator() | (low_nibble(value) << (sample * 4)));
+    m_voices.at(0).accumulator(m_voices.at(0).accumulator() & ~(0x0f << (sample * 4)));
+    m_voices.at(0).accumulator(m_voices.at(0).accumulator() | (low_nibble(value) << (sample * 4)));
 }
 
 void MemoryMappedIoForPacman::voice1_waveform(const u8 value)
 {
-    m_voices[0].waveform_number(value & 0b111);
+    m_voices.at(0).waveform_number(value & 0b111);
 }
 
 void MemoryMappedIoForPacman::voice1_frequency(const u8 frequency, const u16 address)
 {
     const u8 sample = address - s_address_voice1_frequency_beginning;
-    m_voices[0].frequency(m_voices[0].frequency() & ~(0x0f << (sample * 4)));
-    m_voices[0].frequency(m_voices[0].frequency() | (low_nibble(frequency) << (sample * 4)));
+    m_voices.at(0).frequency(m_voices.at(0).frequency() & ~(0x0f << (sample * 4)));
+    m_voices.at(0).frequency(m_voices.at(0).frequency() | (low_nibble(frequency) << (sample * 4)));
 }
 
 void MemoryMappedIoForPacman::voice1_volume(const u8 volume)
 {
-    m_voices[0].volume(low_nibble(volume));
+    m_voices.at(0).volume(low_nibble(volume));
 }
 
 void MemoryMappedIoForPacman::voice2_accumulator(const u8 value, const u16 address)
 {
     const u8 sample = address - s_address_voice2_sound_beginning + 1;
-    m_voices[1].accumulator(m_voices[1].accumulator() & ~(0x0f << (sample * 4)));
-    m_voices[1].accumulator(m_voices[1].accumulator() | (low_nibble(value) << (sample * 4)));
+    m_voices.at(1).accumulator(m_voices.at(1).accumulator() & ~(0x0f << (sample * 4)));
+    m_voices.at(1).accumulator(m_voices.at(1).accumulator() | (low_nibble(value) << (sample * 4)));
 }
 
 void MemoryMappedIoForPacman::voice2_waveform(const u8 value)
 {
-    m_voices[1].waveform_number(value & 0b111);
+    m_voices.at(1).waveform_number(value & 0b111);
 }
 
 void MemoryMappedIoForPacman::voice2_frequency(const u8 frequency, const u16 address)
 {
     const u8 sample = address - s_address_voice2_frequency_beginning + 1;
-    m_voices[1].frequency(m_voices[1].frequency() & ~(0x0f << (sample * 4)));
-    m_voices[1].frequency(m_voices[1].frequency() | (low_nibble(frequency) << (sample * 4)));
+    m_voices.at(1).frequency(m_voices.at(1).frequency() & ~(0x0f << (sample * 4)));
+    m_voices.at(1).frequency(m_voices.at(1).frequency() | (low_nibble(frequency) << (sample * 4)));
 }
 
 void MemoryMappedIoForPacman::voice2_volume(const u8 volume)
 {
-    m_voices[1].volume(low_nibble(volume));
+    m_voices.at(1).volume(low_nibble(volume));
 }
 
 void MemoryMappedIoForPacman::voice3_accumulator(const u8 value, const u16 address)
 {
     const u8 sample = address - s_address_voice3_sound_beginning + 1;
-    m_voices[2].accumulator(m_voices[2].accumulator() & ~(0x0f << (sample * 4)));
-    m_voices[2].accumulator(m_voices[2].accumulator() | (low_nibble(value) << (sample * 4)));
+    m_voices.at(2).accumulator(m_voices.at(2).accumulator() & ~(0x0f << (sample * 4)));
+    m_voices.at(2).accumulator(m_voices.at(2).accumulator() | (low_nibble(value) << (sample * 4)));
 }
 
 void MemoryMappedIoForPacman::voice3_waveform(const u8 value)
 {
-    m_voices[2].waveform_number(value & 0b111);
+    m_voices.at(2).waveform_number(value & 0b111);
 }
 
 void MemoryMappedIoForPacman::voice3_frequency(const u8 frequency, const u16 address)
 {
     const u8 sample = address - s_address_voice3_frequency_beginning + 1;
-    m_voices[2].frequency(m_voices[2].frequency() & ~(0x0f << (sample * 4)));
-    m_voices[2].frequency(m_voices[2].frequency() | (low_nibble(frequency) << (sample * 4)));
+    m_voices.at(2).frequency(m_voices.at(2).frequency() & ~(0x0f << (sample * 4)));
+    m_voices.at(2).frequency(m_voices.at(2).frequency() | (low_nibble(frequency) << (sample * 4)));
 }
 
 void MemoryMappedIoForPacman::voice3_volume(const u8 volume)
 {
-    m_voices[2].volume(low_nibble(volume));
+    m_voices.at(2).volume(low_nibble(volume));
 }
 }

@@ -19,6 +19,7 @@ using emu::util::gui::number_to_pixels;
 Gui::Gui()
     : m_framebuffer(Framebuffer(s_height, s_width, Color::white()))
     , m_debugging_sprites({ {}, {}, {}, {} })
+    , m_number_of_palettes(0)
 {
 }
 

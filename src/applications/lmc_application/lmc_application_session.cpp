@@ -51,8 +51,8 @@ using emu::util::byte::to_u16;
 using emu::util::string::split;
 
 LmcApplicationSession::LmcApplicationSession(
-    bool is_only_run_once,
-    bool is_starting_paused,
+    const bool is_only_run_once,
+    const bool is_starting_paused,
     std::shared_ptr<Ui> gui,
     std::shared_ptr<Input> input,
     std::string loaded_file,
@@ -183,7 +183,7 @@ static auto create_work_ram(const std::size_t size) -> std::vector<Data>
 
 void LmcApplicationSession::assemble_and_load_request()
 {
-    m_logger->info("Trying to assemble and load source code...");
+    m_logger->info("Trying to assemble and load source code..."); // NOLINT(*-pro-type-vararg)
 
     m_cpu->reset_state();
     m_ui->clear_terminal();
@@ -202,14 +202,14 @@ void LmcApplicationSession::assemble_and_load_request()
             m_memory.clear();
             m_memory.add(code);
             m_memory.add(remaining_memory);
-            m_logger->info("Ok");
+            m_logger->info("Ok"); // NOLINT(*-pro-type-vararg)
         } else {
             m_memory.clear();
             m_memory.add({ code.begin(), code.begin() + s_program_size });
-            m_logger->info("The program is too large: truncating it");
+            m_logger->info("The program is too large: truncating it"); // NOLINT(*-pro-type-vararg)
         }
     } catch (std::exception& ex) {
-        m_logger->info(ex.what());
+        m_logger->info(ex.what()); // NOLINT(*-pro-type-vararg)
     }
 
     m_debug_container->add_disassembled_program(disassemble_program());

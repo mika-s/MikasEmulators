@@ -132,9 +132,9 @@ void GuiSdl::update_screen(
     if (SDL_LockTexture(m_texture, nullptr, &pixels, &pitch) != 0) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error while locking SDL texture: %s", SDL_GetError()); // NOLINT(*-pro-type-vararg)
         exit(1);
-    } else {
-        SDL_memcpy(pixels, framebuffer.data(), pitch * s_height);
     }
+
+    SDL_memcpy(pixels, framebuffer.data(), static_cast<std::size_t>(pitch) * s_height);
 
     const std::string title_if_missing_subtitle = "Game Boy";
     const std::string title_if_not_missing_subtitle = "Game Boy - " + std::string(game_window_subtitle);

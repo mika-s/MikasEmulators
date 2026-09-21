@@ -5,7 +5,7 @@
 
 namespace emu::exceptions {
 
-using namespace emu::util::string;
+using emu::util::string::hexify;
 
 UnrecognizedOpcodeException::UnrecognizedOpcodeException(const u8 opcode)
     : runtime_error("Unrecognized opcode")

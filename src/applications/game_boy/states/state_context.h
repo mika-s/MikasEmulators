@@ -64,6 +64,12 @@ public:
         Governor& governor,
         bool& is_in_debug_mode);
 
+    ~StateContext() = default;
+    StateContext(const StateContext&) = delete;
+    auto operator=(const StateContext&) -> StateContext& = delete;
+    StateContext(StateContext&&) = delete;
+    auto operator=(StateContext&&) -> StateContext& = delete;
+
     bool& m_is_in_debug_mode;
 
     GuiIo& m_gui_io;
@@ -86,7 +92,7 @@ public:
 
     Governor& m_governor;
 
-    int m_scanline_counter = { 456 };
+    u64 m_scanline_counter = { 456 };
 
     void change_state(std::shared_ptr<State> new_state);
 

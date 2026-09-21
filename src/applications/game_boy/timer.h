@@ -50,8 +50,8 @@ private:
     bool m_is_running { false };
     TimerClockSpeed m_timer_clock_speed { TimerClockSpeed::_4096Hz };
 
-    int m_internal_counter { 0 };
-    int m_internal_divider_counter { 0 };
+    u64 m_internal_counter { 0 };
+    u64 m_internal_divider_counter { 0 };
 
     std::vector<InterruptObserver*> m_interrupt_observers;
 
