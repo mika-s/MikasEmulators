@@ -48,9 +48,7 @@ using emu::util::string::create_padding;
 
 void Frontend::run(Options const& options)
 {
-    std::string const& command = options.command();
-
-    if (command == "run") {
+    if (std::string const& command = options.command(); command == "run") {
         run_program(options);
     } else if (command == "disassemble") {
         disassemble(options);
@@ -130,7 +128,7 @@ void Frontend::disassemble(Options const& options)
                 "Only one CPU can be provided at a time",
                 Frontend::print_disassemble_usage);
         }
-        std::string const& cpu = cpus[0];
+        std::string const& cpu = cpus.at(0);
         if (!options.path().has_value()) {
             throw InvalidProgramArgumentsException(
                 "Path to a file has to be provided",
@@ -145,7 +143,7 @@ void Frontend::disassemble(Options const& options)
 
             if (options.options().contains("format")) {
                 throw InvalidProgramArgumentsException(
-                    std::format("Unrecognized format: {}", options.options().at("format")[0]),
+                    std::format("Unrecognized format: {}", options.options().at("format").at(0)),
                     print_disassemble_usage);
             }
 
@@ -156,7 +154,7 @@ void Frontend::disassemble(Options const& options)
 
             if (options.options().contains("format")) {
                 throw InvalidProgramArgumentsException(
-                    std::format("Unrecognized format: {}", options.options().at("format")[0]),
+                    std::format("Unrecognized format: {}", options.options().at("format").at(0)),
                     print_disassemble_usage);
             } else {
                 memory.add(read_file_into_vector(file_path));
@@ -168,14 +166,14 @@ void Frontend::disassemble(Options const& options)
             EmulatorMemory<u16, u8> memory;
 
             if (options.options().contains("format")) {
-                if (!options.options().at("format").empty() && options.options().at("format")[0] == "SX_Spectrum_Z80") {
+                if (!options.options().at("format").empty() && options.options().at("format").at(0) == "SX_Spectrum_Z80") {
                     memory.add(read_file_into_vector("roms/z80/zxspectrum_48k/48k.rom")); // $0000-$3fff: 48k.rom
                     memory.add(std::vector<u8>(0xbfff, 0x00));
                     Z80Format format(file_path);
                     format.to_memory(memory);
                 } else {
                     throw InvalidProgramArgumentsException(
-                        std::format("Unrecognized format: {}", options.options().at("format")[0]),
+                        std::format("Unrecognized format: {}", options.options().at("format").at(0)),
                         print_disassemble_usage);
                 }
             } else {
@@ -187,14 +185,14 @@ void Frontend::disassemble(Options const& options)
         } else if (cpu == "Synacor") {
             if (options.options().contains("format")) {
                 throw InvalidProgramArgumentsException(
-                    std::format("Unrecognized format: {}", options.options().at("format")[0]),
+                    std::format("Unrecognized format: {}", options.options().at("format").at(0)),
                     print_disassemble_usage);
             }
 
             std::vector<u8> as_u8 = read_file_into_vector(file_path);
             std::vector<u16> as_u16;
             for (unsigned int i = 0; i < as_u8.size(); i += 2) {
-                as_u16.push_back(to_u16(as_u8[i + 1], as_u8[i]));
+                as_u16.push_back(to_u16(as_u8.at(i + 1), as_u8.at(i)));
             }
 
             std::vector<emu::synacor::RawData> as_RawData;
@@ -380,12 +378,14 @@ auto Frontend::choose_emulator(std::string const& program, Options const& option
 auto Frontend::is_supporting(std::string const& program) -> bool
 {
     std::vector<std::string> program_names;
-    std::transform(s_supported_programs.begin(), s_supported_programs.end(), std::back_inserter(program_names),
-        [](std::pair<std::string, std::string> const& program_description) { return program_description.first; });
+    std::ranges::transform(s_supported_programs, std::back_inserter(program_names),
+                           [](std::pair<std::string, std::string> const& program_description) -> std::basic_string<char> {
+                               return program_description.first;
+                           });
     std::vector<std::string> program_names_filtered;
-    std::copy_if(program_names.begin(), program_names.end(), std::back_inserter(program_names_filtered),
-        [](std::string const& program_name) -> bool { return program_name != "NEWLINE"; });
+    std::ranges::copy_if(program_names, std::back_inserter(program_names_filtered),
+                         [](std::string const& program_name) -> bool { return program_name != "NEWLINE"; });
 
-    return std::find(program_names_filtered.begin(), program_names_filtered.end(), program) != program_names_filtered.end();
+    return std::ranges::find(program_names_filtered, program) != program_names_filtered.end();
 }
 }

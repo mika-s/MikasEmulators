@@ -32,9 +32,14 @@ public:
 
     ~Cpu();
 
-    [[nodiscard]] bool can_run_next_instruction() const;
+    Cpu(const Cpu&) = delete;
+    auto operator=(const Cpu&) -> Cpu& = delete;
+    Cpu(Cpu&&) = delete;
+    auto operator=(Cpu&&) -> Cpu& = delete;
 
-    cyc next_instruction();
+    [[nodiscard]] auto can_run_next_instruction() const -> bool;
+
+    auto next_instruction() -> cyc;
 
     void reset_state();
 
@@ -50,31 +55,31 @@ public:
 
     void remove_in_observer(InObserver* observer);
 
-    EmulatorMemory<u16, u8>& memory() const;
+    [[nodiscard]] auto memory() const -> EmulatorMemory<u16, u8>&;
 
-    [[nodiscard]] u8 a() const;
+    [[nodiscard]] auto a() const -> u8;
 
-    [[nodiscard]] u8 b() const;
+    [[nodiscard]] auto b() const -> u8;
 
-    [[nodiscard]] u8 c() const;
+    [[nodiscard]] auto c() const -> u8;
 
-    [[nodiscard]] u8 d() const;
+    [[nodiscard]] auto d() const -> u8;
 
-    [[nodiscard]] u8 e() const;
+    [[nodiscard]] auto e() const -> u8;
 
-    [[nodiscard]] u8 h() const;
+    [[nodiscard]] auto h() const -> u8;
 
-    [[nodiscard]] u8 l() const;
+    [[nodiscard]] auto l() const -> u8;
 
-    [[nodiscard]] u8 f() const;
+    [[nodiscard]] auto f() const -> u8;
 
-    [[nodiscard]] u16 pc() const;
+    [[nodiscard]] auto pc() const -> u16;
 
-    [[nodiscard]] u16 sp() const;
+    [[nodiscard]] auto sp() const -> u16;
 
-    [[nodiscard]] bool is_inta() const;
+    [[nodiscard]] auto is_inta() const -> bool;
 
-    [[nodiscard]] bool is_interrupted() const;
+    [[nodiscard]] auto is_interrupted() const -> bool;
 
     void interrupt(u8 supplied_instruction_from_interruptor);
 
@@ -110,15 +115,15 @@ private:
     std::vector<OutObserver*> m_out_observers;
     std::vector<InObserver*> m_in_observers;
 
-    NextByte get_next_byte();
+    auto get_next_byte() -> NextByte;
 
-    NextWord get_next_word();
+    auto get_next_word() -> NextWord;
 
     void notify_out_observers(u8 port) const;
 
     void notify_in_observers(u8 port) const;
 
-    [[nodiscard]] u16 address_in_HL() const;
+    [[nodiscard]] auto address_in_HL() const -> u16;
 
     void print_debug() const;
 };

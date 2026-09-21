@@ -33,6 +33,11 @@ public:
 
     ~Cpu();
 
+    Cpu(const Cpu&) = delete;
+    auto operator=(const Cpu&) -> Cpu& = delete;
+    Cpu(Cpu&&) = delete;
+    auto operator=(Cpu&&) -> Cpu& = delete;
+
     [[nodiscard]] auto can_run_next_instruction() const -> bool;
 
     void next_instruction();

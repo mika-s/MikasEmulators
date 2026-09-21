@@ -2096,9 +2096,8 @@ void Disassembler::print_next_ixy_instruction(u8 ixy_opcode, std::string const& 
 void Disassembler::print_next_ixy_bits_instruction(const NextWord args, std::string const& ixy_reg) const
 {
     u8 const d = args.farg;
-    u8 const ixy_bits_opcode = args.sarg;
 
-    switch (ixy_bits_opcode) {
+    switch (u8 const ixy_bits_opcode = args.sarg) {
     case RLC_MIXY_P_n_B_UNDOC1:
         print_rlc_MixyPn_r(m_ostream, ixy_reg, d, "B");
         break;

@@ -45,9 +45,7 @@ void Cpu::add_out_observer(OutObserver& observer)
 
 void Cpu::remove_out_observer(OutObserver* observer)
 {
-    m_out_observers.erase(
-        std::remove(m_out_observers.begin(), m_out_observers.end(), observer),
-        m_out_observers.end());
+    std::erase(m_out_observers, observer);
 }
 
 void Cpu::add_in_observer(InObserver& observer)
@@ -57,9 +55,7 @@ void Cpu::add_in_observer(InObserver& observer)
 
 void Cpu::remove_in_observer(InObserver* observer)
 {
-    m_in_observers.erase(
-        std::remove(m_in_observers.begin(), m_in_observers.end(), observer),
-        m_in_observers.end());
+    std::erase(m_in_observers, observer);
 }
 
 auto Cpu::can_run_next_instruction() const -> bool
@@ -89,8 +85,8 @@ void Cpu::reset_state()
     m_is_nmi_interrupted = false;
     m_instruction_from_interruptor = 0;
     m_interrupt_mode = InterruptMode::ZERO;
-    std::fill(m_io_in.begin(), m_io_in.end(), 0);
-    std::fill(m_io_out.begin(), m_io_out.end(), 0);
+    std::ranges::fill(m_io_in, 0);
+    std::ranges::fill(m_io_out, 0);
 }
 
 void Cpu::start()
@@ -149,7 +145,7 @@ auto Cpu::is_inta() const -> bool
 
 void Cpu::input(const u16 port, const u8 value)
 {
-    m_io_in[port] = value;
+    m_io_in.at(port) = value;
 }
 
 auto Cpu::next_instruction() -> cyc

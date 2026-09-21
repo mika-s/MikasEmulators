@@ -16,6 +16,12 @@ class Disassembler {
 public:
     Disassembler(EmulatorMemory<Address, RawData>& memory, std::ostream& ostream);
 
+    ~Disassembler() = default;
+    Disassembler(const Disassembler&) = delete;
+    auto operator=(const Disassembler&) -> Disassembler& = delete;
+    Disassembler(Disassembler&&) = delete;
+    auto operator=(Disassembler&&) -> Disassembler& = delete;
+
     void disassemble();
 
 private:
