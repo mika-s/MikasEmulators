@@ -1,6 +1,5 @@
-#include "terminal_pane.h"
 #include "imgui.h"
-#include <algorithm>
+#include "terminal_pane.h"
 #include <cstddef>
 #include <cstring>
 #include <string>
@@ -32,11 +31,11 @@ void TerminalPane::draw(
         return;
     }
 
-    ImGui::BeginChild("scrolling", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
+    ImGui::BeginChild("scrolling", ImVec2(0, 0), 0, ImGuiWindowFlags_HorizontalScrollbar);
 
     vector_to_output_array(output);
     constexpr ImGuiInputTextFlags output_flags = ImGuiInputTextFlags_AllowTabInput | ImGuiInputTextFlags_ReadOnly;
-    ImGui::InputTextMultiline("##output", m_output_buffer, IM_ARRAYSIZE(m_output_buffer), //
+    ImGui::InputTextMultiline("##output", m_output_buffer.data(), m_output_buffer.size(),
         ImVec2(ImGui::GetWindowWidth(), ImGui::GetWindowHeight() - 30), output_flags);
 
     if (is_awaiting_input) {
@@ -50,10 +49,10 @@ void TerminalPane::draw(
     if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && !ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0)) {
         ImGui::SetKeyboardFocusHere(0);
     }
-    if (ImGui::InputText("Input", m_input_buffer, IM_ARRAYSIZE(m_input_buffer), input_flags)) {
-        if (strlen(m_input_buffer) != 0) {
+    if (ImGui::InputText("Input", m_input_buffer.data(), m_input_buffer.size(), input_flags)) {
+        if (!m_input_buffer.empty()) {
             notify_pane_observers_about_new_input();
-            strcpy(m_input_buffer, "");
+            strcpy(m_input_buffer.data(), "");
         }
     }
 
@@ -69,7 +68,7 @@ void TerminalPane::draw(
 void TerminalPane::notify_pane_observers_about_new_input()
 {
     for (TerminalPaneObserver* observer : m_pane_observers) {
-        observer->input_sent(std::string(m_input_buffer));
+        observer->input_sent(std::string(m_input_buffer.data()));
     }
 }
 
@@ -81,14 +80,14 @@ void TerminalPane::vector_to_output_array(std::vector<std::string> const& output
     for (std::string const& element : output) {
         for (char const ch : element) {
             if (i >= max_length) {
-                m_output_buffer[i] = '\0';
+                m_output_buffer.at(i) = '\0';
                 return;
             }
 
-            m_output_buffer[i++] = ch;
+            m_output_buffer.at(i++) = ch;
         }
     }
 
-    m_output_buffer[i] = '\0';
+    m_output_buffer.at(i) = '\0';
 }
 }

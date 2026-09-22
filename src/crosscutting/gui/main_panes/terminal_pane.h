@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <string>
 #include <vector>
 
@@ -38,8 +39,8 @@ private:
     static constexpr unsigned int output_buffer_size = 65536;
     static constexpr unsigned int input_buffer_size = 4;
 
-    char m_output_buffer[output_buffer_size] {}; // NOLINT
-    char m_input_buffer[input_buffer_size] {};   // NOLINT
+    std::array<char, output_buffer_size> m_output_buffer {};
+    std::array<char, input_buffer_size> m_input_buffer {};
 
     std::vector<TerminalPaneObserver*> m_pane_observers;
 
