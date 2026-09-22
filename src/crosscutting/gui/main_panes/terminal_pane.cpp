@@ -1,6 +1,7 @@
 #include "terminal_pane.h"
 #include "imgui.h"
 #include <algorithm>
+#include <cstddef>
 #include <cstring>
 #include <string>
 #include <vector>
@@ -74,12 +75,20 @@ void TerminalPane::notify_pane_observers_about_new_input()
 
 void TerminalPane::vector_to_output_array(std::vector<std::string> const& output)
 {
-    int i = 0;
+    std::size_t i = 0;
+    constexpr std::size_t max_length = output_buffer_size - 1;
+
     for (std::string const& element : output) {
         for (char const ch : element) {
+            if (i >= max_length) {
+                m_output_buffer[i] = '\0';
+                return;
+            }
+
             m_output_buffer[i++] = ch;
         }
     }
+
     m_output_buffer[i] = '\0';
 }
 }

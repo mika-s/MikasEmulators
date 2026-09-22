@@ -195,7 +195,6 @@ void Cpu::next_instruction()
     }
     case OUT: {
         const RawData farg = get_next_value();
-        out(Data(farg.underlying()));
         notify_out_observers(Data(farg.underlying()));
         break;
     }
